@@ -1,24 +1,4 @@
 ------------------------------------------------------------
-User: fewtrell  Wed Jun  2 16:02:41 PDT 2004
-calibGenCAL/src
-
-Modified Files:
-	ciFit.cxx 
-Log Message:
-updated std:: namespace specifiers in ciFit.cxx
-
-    *
-------------------------------------------------------------
-User: fewtrell  Wed Jun  2 16:02:41 PDT 2004
-calibGenCAL/doc
-
-Modified Files:
-	release.notes 
-Log Message:
-updated std:: namespace specifiers in ciFit.cxx
-
-    *
-------------------------------------------------------------
 User: fewtrell  Wed Jun  2 14:55:07 PDT 2004
 calibGenCAL/doc
 
