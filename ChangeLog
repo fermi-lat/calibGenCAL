@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: fewtrell  Wed Jul  7 11:57:49 PDT 2004
+calibGenCAL/src
+
+Modified Files:
+	ciFit.cxx 
+Log Message:
+updated .dtd filename in ciFit.exe for nonlinearity xml file
+    *
+------------------------------------------------------------
+User: fewtrell  Wed Jul  7 11:57:49 PDT 2004
 calibGenCAL/doc
 
 Modified Files:
