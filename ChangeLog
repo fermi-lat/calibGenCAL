@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Jun  2 14:52:27 PDT 2004
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+updates suggested by heather to help build on linux
+    *
+------------------------------------------------------------
 User: fewtrell  Fri May 28 19:10:23 PDT 2004
 calibGenCAL/doc
 
