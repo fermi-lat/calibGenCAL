@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Jan  6 15:33:11 PST 2005
+calibGenCAL/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+fixed error in cifit error msg
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Jan  6 15:33:04 PST 2005
 calibGenCAL/cmt
 
