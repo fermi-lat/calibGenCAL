@@ -5,3 +5,8 @@ D:\GLAST_DATA\ebf031005015905_new.root
 ../output/mupeak.txt
 ../output/Histograms_ped_rat.root
 ../output/Histograms_peak.root
+../xml/pedestals.xml
+../xml/mucorrped.xml
+../xml/muslopes.xml
+../xml/light_asym.xml
+../xml/gains.xml

@@ -84,6 +84,8 @@ int main(int argn, char** argc) {
   inputFile >> peakFileXML;
   std::cout << "peak xml file: " << peakFileXML << std::endl;
 
+  inputFile.close();
+
   // first pass
   {
 	 muonCalib r(&digiFileNames, 0, 0, pedHist.c_str());

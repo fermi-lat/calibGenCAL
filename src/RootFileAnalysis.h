@@ -1,3 +1,10 @@
+/*
+  RootFileAnalysis contains the following features...
+
+  1) ability to read in one or more GLAST digi, recon and/or mc root files.
+  2) ability to step/rewind through events in those files
+*/
+
 #ifndef RootFileAnalysis_h
 #define RootFileAnalysis_h 1
 
