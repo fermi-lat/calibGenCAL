@@ -3,12 +3,13 @@
 
 #include <string>
 #include <vector>
+#include <ostream>
 
 using namespace std;
 
 namespace CGCUtil {
 
-  const string CVS_TAG("$Name$");
+  const string CVS_TAG("$Name:  $");
 
   /// Template function fills any STL type container with zero values
   template <class T> static void fill_zero(T &container) {
