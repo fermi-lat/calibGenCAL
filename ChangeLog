@@ -1,4 +1,19 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Jun 18 13:23:32 PDT 2004
+calibGenCAL/src
+
+Modified Files:
+	getCorrPedestalsXML.cxx getGainsXML.cxx getLightAsymXML.cxx 
+	getMuSlopesXML.cxx getPedestalsXML.cxx muonCalib.h 
+	muonCalibChain_option.dat muonCalib_option.dat 
+Log Message:
+fixed 2 bugs in muoncalib.  unitialized startevent & wrong order of deletes in destructor
+
+put filenames as commandline arguments in the XML output applications
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Jun 16 06:20:32 PDT 2004
 calibGenCAL/xml
 
