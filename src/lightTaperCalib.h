@@ -1,5 +1,5 @@
 #ifndef lightTaperCalib_Class
-#define lightTaperCalib_Class
+#define lightTaperCalib_Class 1
 
 #include <string>
 #include "TROOT.h"

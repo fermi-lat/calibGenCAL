@@ -8,221 +8,20 @@
 #include "TGraph.h"
 #include "TSpline.h"
 
-#include "xml/IFile.h"
-#include "idents/CalXtalId.h"
-
 #include "RootFileAnalysis.h"
-#include "ICfg.h"
+
+#include "cfCfg.h"
+#include "CalDefs.h"
 
 using namespace std;
 
 // CONSTANTS //
-const int N_FACES  = 2;
-const int N_LYRS = 8;
-const int N_RNGS = 4;
-const int N_COLS  = 12;
-const int N_RNGS_PER_TOWER = N_FACES * N_LYRS * N_RNGS * N_COLS;
 const double mu2ci_thr_rat = 1.7;
-
-////////////////////////// GENERAL UTILITIES //////////////////////////////////////////
-
-/// finds position of last directory delimeter ('/' || '\\')
-/// in path, returns -1 if no delim is found
-string::size_type path_find_last_delim(string &path) {
-  // find last directory delimeter.
-  string::size_type fwdslash_pos = path.find_last_of('/');
-  string::size_type bckslash_pos = path.find_last_of('\\');
-
-  // check for 'not found' case
-  if (fwdslash_pos == path.npos) fwdslash_pos = path.npos;
-  if (bckslash_pos == path.npos) bckslash_pos = path.npos;
-
-  return max(fwdslash_pos,bckslash_pos);
-
-}
-
-string &path_remove_dir(string &path) {
-  string::size_type slash_pos;
-  
-  // if there was no delimeter, return path unaltered
-  if ((slash_pos = path_find_last_delim(path)) == path.npos) 
-    return path;
-
-  // else remove everything up to & including the delimeter
-  path.erase(0,slash_pos+1);
-
-  return path;
-}
-
-/// removes filename extension from end of path string.
-string &path_remove_ext(string &path) {
-  // return path unaltered if there is no '.'
-  string::size_type dot_pos;
-  if ((dot_pos = path.find_last_of('.')) == path.npos)
-    return path;
-
-  // find last delim (extension must be after this point)
-  string::size_type slash_pos = path_find_last_delim(path);
-
-  // if there is no '/' then just erase everything from '.' onward
-  // or if slash is before the '.'
-  if (slash_pos == path.npos || slash_pos < dot_pos)
-    path.erase(dot_pos, path.size());
-
-  // otherwise return the string as is
-  return path;
-}
-
-///////////////////////////////////////////////////////////////////////////////////
-
-
-class cfCfg : ICfg {
-public:
-  // basic ctor
-  cfCfg() : valid(false) {};
-  virtual ~cfCfg() {};
-
-  // clear all values, delete all pointers
-  void clear();
-
-  // read in config data from config file, calculate dependent vars
-  int readCfgFile(const string& path);
-
-  // return data valid flag.
-  bool isValid() {return valid;}
-
-  // print summary to ostream
-  void summarize();
-public:  // i know, don't make members public, but it's just easier this way!
-  // CONFIGURABLE PARAMETERS //
-
-  // SECTION: TEST_INFO //
-  string timestamp;
-  string startTime;
-  string stopTime; 
-
-  string instrument;    
-  vector<int> towerList;
-
-  string triggerMode;   
-  string instrumentMode;
-  string source;
-
-  vector<int> dacSettings;
-  int nPulsesPerDac;
-
-  // SECTION: PATHS //
-  // current setup has us reading in 6 input files 2 rngs each and 3 different FLE settings
-  string outputDir; ///< folder for autonamed output files
-  string outputXMLPath;   
-  string outputTXTPath;
-
-  string dtdFile; ///< Data descriptoin file for .xml output
-
-  string rootFileLE1;
-  string rootFileHE1;
-  string rootFileLE2;
-  string rootFileHE2;
-  string rootFileLE3;
-  string rootFileHE3;
-  
-  // SECTION: SPLINE CONFIG //
-  vector<int> splineGroupWidth;
-  vector<int> splineSkipLow;
-  vector<int> splineSkipHigh;
-  vector<int> splineNPtsMin;
-
-  // DERIVED FROM CONFIG PARMS //
-  int nPulsesPerXtal;
-  int nPulsesPerRun;
-  int nDacs;
-
-private:
-  bool valid;   // set to false member data is incomplete/invalid.
-
-  string baseFilename; ///< used as the base for auto-generating output filenames.  derived from input root filename.
-
-  // Section decription strings
-  static const string testInfo;
-  static const string paths;
-  static const string splineCfg;
-
-};
-
-const string cfCfg::testInfo("TEST_INFO");
-const string cfCfg::paths("PATHS");
-const string cfCfg::splineCfg("SPLINE_CFG");
-
-int cfCfg::readCfgFile(const string& path) {
-  clear();
-
-  xml::IFile ifile(path.c_str());
-  
-  // TEST INFO
-  timestamp = ifile.getString(testInfo.c_str(), "TIMESTAMP");
-  startTime = ifile.getString(testInfo.c_str(), "STARTTIME");
-  stopTime  = ifile.getString(testInfo.c_str(), "STOPTIME");
-
-  instrument    = ifile.getString(testInfo.c_str(), "INSTRUMENT");
-  towerList     = ifile.getIntVector(testInfo.c_str(), "TOWER_LIST");
-
-  triggerMode    = ifile.getString(testInfo.c_str(), "TRIGGER_MODE");
-  instrumentMode = ifile.getString(testInfo.c_str(), "INST_MODE");
-  source         = ifile.getString(testInfo.c_str(), "TEST_SOURCE");
-  
-  dacSettings        = ifile.getIntVector(testInfo.c_str(), "DAC_SETTINGS");
-  nPulsesPerDac      = ifile.getInt(testInfo.c_str(), "N_PULSES_PER_DAC");
-
-  // PATHS
-  outputDir = ifile.getString(paths.c_str(), "OUTPUT_FOLDER");
-
-  dtdFile = ifile.getString(paths.c_str(), "DTD_FILE");
-
-  outputXMLPath      = ifile.getString(paths.c_str(), "XMLPATH");
-  outputTXTPath      = ifile.getString(paths.c_str(), "TXTPATH");
-  
-  rootFileLE1 = ifile.getString(paths.c_str(), "ROOTFILE_LE1");
-  rootFileHE1 = ifile.getString(paths.c_str(), "ROOTFILE_HE1");
-  rootFileLE2 = ifile.getString(paths.c_str(), "ROOTFILE_LE2");
-  rootFileHE2 = ifile.getString(paths.c_str(), "ROOTFILE_HE2");
-  rootFileLE3 = ifile.getString(paths.c_str(), "ROOTFILE_LE3");
-  rootFileHE3 = ifile.getString(paths.c_str(), "ROOTFILE_HE3");
-
-  // SPLINE CFG
-  splineGroupWidth = ifile.getIntVector(splineCfg.c_str(), "GROUP_WIDTH");
-  splineSkipLow    = ifile.getIntVector(splineCfg.c_str(), "SKIP_LOW"  );
-  splineSkipHigh   = ifile.getIntVector(splineCfg.c_str(), "SKIP_HIGH" );
-  splineNPtsMin    = ifile.getIntVector(splineCfg.c_str(), "N_PTS_MIN" );
-  
-  // Geneate derived config quantities.
-  nDacs          = dacSettings.size();
-  nPulsesPerXtal = nPulsesPerDac * nDacs;
-  nPulsesPerRun  = N_COLS*nPulsesPerXtal;
-
-  baseFilename = rootFileLE1;
-  path_remove_dir(baseFilename);
-  path_remove_ext(baseFilename);
-
-  // Auto-generate output filenames
-  if (outputXMLPath.length() == 0)
-    outputXMLPath = outputDir + "ciFit." + baseFilename + ".xml";
-  if (outputTXTPath.length() == 0)
-    outputTXTPath = outputDir + "ciFit." + baseFilename + ".txt";
-
-  return 0;
-}
-
-void cfCfg::clear() {  
-}
-
-void cfCfg::summarize() {
-}
-
 
 //////////////////////////////////////////////////////
 // class cfData - represents one complete set of intNonlin data ////////
 //////////////////////////////////////////////////////
-class cfData {
+class cfData : protected CalDefs {
   friend class RootCI;
 
 public:
@@ -240,7 +39,6 @@ public:
   const vector<int>& getSplineDAC(int rng) const {return m_splineDac[rng];}
   const vector<float>& getSplineADC(const int lyr, const int col, const int face, const int rng) const {return m_splineADC[lyr][col][face][rng];}
 
-  static const string RNG_MNEM[];
 
 private:
   TF1 splineFunc;
@@ -258,11 +56,6 @@ private:
   // int c-style array copy of cfCfg::m_dacSettings needed by some fit routines
   float *m_dacArr;
 };
-
-const string cfData::RNG_MNEM[] = {"LEX8",
-                                   "LEX1",
-                                   "HEX8",
-                                   "HEX1"};
 
 cfData::cfData(cfCfg &cfg) :
   splineFunc("spline_fitter","pol2",0,4095),
@@ -506,7 +299,7 @@ int cfData::WriteSplinesXML(const string &filename, const string &dtdFilename) {
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit.cxx,v 1.10 2004/12/23 02:13:29 fewtrell Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit.cxx,v 1.11 2004/12/23 03:28:28 fewtrell Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
@@ -606,7 +399,7 @@ int cfData::WriteSplinesXML(const string &filename, const string &dtdFilename) {
 // needed for populating the cfData class                                //
 //////////////////////////////////////////////////////
 
-class RootCI : public RootFileAnalysis {
+class RootCI : public RootFileAnalysis, protected CalDefs {
 public:
   // @enum Diode Specify LE, HE, BOTH_DIODES
   typedef enum Diode {
@@ -673,18 +466,20 @@ void RootCI::DigiCal() {
   TIter calDigiIter(calDigiCol);
 
   // Loop through each xtal interaction
-  CalDigi *cdig = 0;
-  while ((cdig = (CalDigi*)calDigiIter.Next())) {  //loop through each 'hit' in one event
-    CalXtalId id = cdig->getPackedId();  // get interaction information
+  CalDigi *pdig = 0;
+  while ((pdig = (CalDigi*)calDigiIter.Next())) {  //loop through each 'hit' in one event
+    CalDigi cdig = *pdig; // use ref to reduce '->'
+
+    CalXtalId id = cdig.getPackedId();  // get interaction information
     int col = id.getColumn();
     if (col != testCol) continue;
 
     int lyr = id.getLayer();
 
     // Loop through each readout on current xtal
-    int numRo = cdig->getNumReadouts();
+    int numRo = cdig.getNumReadouts();
     for (int iRo=0; iRo<numRo; iRo++){
-      const CalXtalReadout &acRo = *(cdig->getXtalReadout(iRo));
+      const CalXtalReadout &acRo = *(cdig.getXtalReadout(iRo));
 
       // POS FACE
       CalXtalId::XtalFace face  = CalXtalId::POS;
@@ -740,7 +535,6 @@ void RootCI::Go(Int_t numEvents)
   // BEGINNING OF EVENT LOOP
   for (Int_t ievent=m_startEvent; ievent<nMax; ievent++, curI=ievent) {
     if (m_evt) m_evt->Clear();
-    if (m_rec) m_rec->Clear();
 
     getEvent(ievent);
     // Digi ONLY analysis
@@ -813,7 +607,7 @@ int main(int argc, char **argv) {
   data.FitData();
   // data_high_thresh.FitData();
   // data.corr_FLE_Thresh(data_high_thresh);
-  //data->ReadSplinesTXT("../output/ciSplines.txt");
+  //data.ReadSplinesTXT("../output/ciSplines.txt");
   data.WriteSplinesTXT(cfg.outputTXTPath);
   data.WriteSplinesXML(cfg.outputXMLPath, cfg.dtdFile);
 

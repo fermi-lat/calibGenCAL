@@ -33,3 +33,5 @@ v2r5p1 updated doxygen.  removed runMuonCalibChain.cxx (was not removed before).
 v3r0 New calibration types introduced.  MevPerDac/IntegralNonlinearity/New Asymetry.  old types no longer used.  muonCalib completely rewritten.
 
 v3r0p1 Small code modifcations to get Linux build w/ no warnings
+
+v3r0p2 Made slight changes to event & hit selection.  Separated some generic code into individual units.  Fixed xtal pitch error in config file.

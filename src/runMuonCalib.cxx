@@ -1,11 +1,10 @@
 #include <iostream>
-#include <string>
 #include <fstream>
 
 #include "TSystem.h"
 
 #include "muonCalib.h"
-#include "mcOptions.h"
+#include "mcCfg.h"
 
 using namespace std;
 
@@ -89,12 +88,12 @@ int main(int argc, char** argv) {
     
     
     ///////////////////////////////
-    // *** PHASE 2: ASYMETRY *** //
+    // *** PHASE 2: ASYMMETRY *** //
     ///////////////////////////////
 
     if (!cfg.readInAsym) {
-      // PASS 3 - Asymetry
-      cfg.ostr << "Calculating asymetry - " << cfg.nEvtAsym << " events" << endl;
+      // PASS 3 - Asymmetry
+      cfg.ostr << "Calculating asymmetry - " << cfg.nEvtAsym << " events" << endl;
       
       // rewind input file
       appData.rewind();
@@ -102,26 +101,26 @@ int main(int argc, char** argv) {
       // open new histogram file
       if (cfg.genHistfiles) appData.openHistFile(cfg.asymHistFile);
       
-      // retrieve asymetry data from events
+      // retrieve asymmetry data from events
       appData.fillAsymHists(cfg.nEvtAsym, cfg.genOptAsymHists); // otherwise it's too many zeros
       
-      // fit for asymetry results
+      // fit for asymmetry results
       appData.populateAsymArrays();
 
-      // output asymetry TXT file(s)
+      // output asymmetry TXT file(s)
       if (cfg.genTXT) appData.writeAsymTXT(cfg.asymFileLLTXT,
 					   cfg.asymFileLSTXT,
 					   cfg.asymFileSLTXT,
 					   cfg.asymFileSSTXT);
       
-      // output asymetry XML file
+      // output asymmetry XML file
       if (cfg.genXML) appData.writeAsymXML(cfg.asymFileXML,cfg.dtdFile);
       
-      // save asymetry histogram file.
+      // save asymmetry histogram file.
       if (cfg.genHistfiles) appData.flushHists();
     } else {
       // ALTERNATE SHORTCUT TO CALCULATING ASYM
-      cfg.ostr << "Reading asymetry from " << cfg.asymFileLLTXT << " "
+      cfg.ostr << "Reading asymmetry from " << cfg.asymFileLLTXT << " "
                << cfg.asymFileLSTXT << " "
                << cfg.asymFileSLTXT << " "
                << cfg.asymFileSSTXT << " "

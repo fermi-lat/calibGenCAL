@@ -87,23 +87,22 @@ RootFileAnalysis::RootFileAnalysis(const vector<string> &mcFilenames,
 }
 
 RootFileAnalysis::~RootFileAnalysis() {
+  if (m_mc) {
+    m_mc->Clear();
+    delete m_mc;
+    m_mc = 0;
+  }
+
   if (m_evt) {
     m_evt->Clear();
     delete m_evt;
     m_evt = 0;
   }
-
    
   if (m_rec) {
     m_rec->Clear();
     delete m_rec;
     m_rec = 0;
-  }
-
-  if (m_mc) {
-    m_mc->Clear();
-    delete m_mc;
-    m_mc = 0;
   }
 }
 

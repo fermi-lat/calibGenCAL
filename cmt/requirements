@@ -1,12 +1,14 @@
 package calibGenCAL
-version v3r0p1
+version v3r0p2
 
-branches src xml output
+private 
+
+branches src xml output doc
 
 use GlastPolicy v*
-use mcRootData v*
-use digiRootData v*
 use reconRootData v*
+use digiRootData v*
+use mcRootData v*
 use RootPolicy v*
 use xml v*
 use Event v*
@@ -21,22 +23,22 @@ macro rootcint_end   "" vsnet "-->"
 macro_append ROOT_libs " -lHist -lGraf -lGpad " \
              WIN32 " ${ROOT_PATH}/lib/libHist.lib ${ROOT_PATH}/lib/libGraf.lib ${ROOT_PATH}/lib/libGpad.lib "
 
-macro calibgencal_headers   "" WIN32  ""
-
-macro source "*.cxx" WIN32 "*.h *.cxx"
-
-#apply_pattern library_Llinkopts library="muonCalib"
-apply_pattern library_Llinkopts library="RootFileAnalysis"
-
 library RootFileAnalysis -no_share RootFileAnalysis.cxx
-#library muonCalib -no_share muonCalib.cxx 
+library CalDefs -no_share CalDefs.cxx
+library CGCUtil -no_share CGCUtil.cxx
 
-application runMuonCalib runMuonCalib.cxx mcOptions.cxx muonCalib.cxx
+macro RootFileAnalysis_lib "" WIN32 "$(calibGenCALDir)/RootFIleAnalysis.lib"
+macro CalDefs_lib "" WIN32 "$(calibGenCALDir)/CalDefs.lib"
+macro CGCUtil_lib "" WIN32 "$(calibGenCALDir)/CGCUtil.lib"
+
+macro all_static_libs "$(CalDefs_lib) $(CGCUtil_lib) $(RootFileAnalysis_lib)"
 
 application compare_constants compare_constants.cxx
-
 application genNtuple genNtuple.cxx
 
-application ciFit ciFit.cxx
+
+application runMuonCalib runMuonCalib.cxx muonCalib.cxx mcCfg.cxx $(all_static_libs)
+
+application ciFit ciFit.cxx cfCfg.cxx $(all_static_libs)
 
 
