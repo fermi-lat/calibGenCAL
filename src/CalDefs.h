@@ -24,7 +24,7 @@ public:
   static short lyr2Xlyr(short lyr) {return lyr/2;} ///< converts a layer #(0-7) to an X-layer # (0-3)
   static short lyr2Ylyr(short lyr) {return lyr/2;} ///< converts a layer #(0-7) to a Y-layer # (0-3)
   //bool  isXlyr(short lyr) {return lyr%2==0;} ///< returns true if layer is an X-layer
-  static bool  isXlyr(short lyr);
+  static bool  isXlyr(short lyr) {return lyr%2==0;} ///< returns true if layer is an X-layer
   
   static short diode2X8rng(short diode) {return diode*2;} ///< get the # for the X8 adc range belonging to given diode
   static short diode2X1rng(short diode) {return diode*2 +1;} ///< get the # for the X1 adc range belonging to given diode

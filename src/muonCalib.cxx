@@ -284,7 +284,7 @@ void muonCalib::initPedHists() {
 
       m_pedHists[nRng] = new TH1F(tmp.c_str(),
                                   tmp.c_str(),
-                                  500,0,1000);
+                                  1000,0,1000);
     }
   }
   else // clear existing histsograms
@@ -353,26 +353,35 @@ void muonCalib::fitPedHists() {
   m_calPed.resize(MAX_RNG_IDX);
   m_calPedErr.resize(MAX_RNG_IDX);
 
+  TF1 mygaus("mygaus","gaus",0,1000);
+  //mygaus.SetParLimits(2,0.5,1000);  // put limit on sigma parameter
+  
   for (int nRng = 0; nRng < MAX_RNG_IDX; nRng++) {
     //select histogram from list
     TH1F &h= *m_pedHists[nRng];
-
+    
     // trim outliers
     float av = h.GetMean();float err =h.GetRMS();
     for( int iter=0; iter<3;iter++ ) {
       h.SetAxisRange(av-3*err,av+3*err);
       av = h.GetMean(); err= h.GetRMS();
     }
+    
+    // reset initial f1 parameters
+    mygaus.SetParameter(0,h.GetEntries()/err); // ballpark for height.
+    mygaus.SetParameter(1,av);
+    mygaus.SetParameter(2,err);
 
     // run gaussian fit
-    h.Fit("gaus", "Q","", av-3*err, av+3*err );
+    float fitWidth = max(3.0*err,5.0); 
+    h.Fit("mygaus", "QBI","", av-fitWidth, av+fitWidth);
     h.SetAxisRange(av-150,av+150);
 
     //assign values to permanet arrays
     m_calPed[nRng] =
-      ((TF1&)*h.GetFunction("gaus")).GetParameter(1);
+      mygaus.GetParameter(1);
     m_calPedErr[nRng] =
-      ((TF1&)*h.GetFunction("gaus")).GetParameter(2);
+      mygaus.GetParameter(2);
   }
 }
 
@@ -1154,22 +1163,26 @@ void muonCalib::loadA2PSplines() {
   m_asym2PosSplines.resize(MAX_XTAL_IDX);
 
   // create position (Y-axis) array
-  double pos[N_ASYM_PTS];
-  for (int i = 0; i < N_ASYM_PTS; i++) pos[i] = i + 1.5; // (center of the column)
-  double asym[N_ASYM_PTS];
+  double pos[N_ASYM_PTS+2]; // linearly interpolate for 1st and last points (+2 points)
+  for (int i = 0; i < N_ASYM_PTS+2; i++) pos[i] = i + 0.5; // (center of the column)
+  double asym[N_ASYM_PTS+2];
 
   // PER XTAL LOOP
   for (int nXtal = 0; nXtal < MAX_XTAL_IDX; nXtal++) {
-    // copy asym vector into array
+    // copy asym vector into middle of array
     vector<float> &asymVec = m_calAsymLL[nXtal];
-    copy(asymVec.begin(),asymVec.end(),asym);
+    copy(asymVec.begin(),asymVec.end(),asym+1);
+
+    // interpolate 1st & last points
+    asym[0] = 2*asym[1]-asym[2];
+    asym[N_ASYM_PTS+1] = 2*asym[N_ASYM_PTS]-asym[N_ASYM_PTS-1];
 
     //generate splinename
     string name("asym2pos_");
     appendXtalStr(nXtal,name);
 
     // create spline object
-    TSpline3 *mySpline= new TSpline3(name.c_str(), asym, pos, N_ASYM_PTS);
+    TSpline3 *mySpline= new TSpline3(name.c_str(), asym, pos, N_ASYM_PTS+2);
     mySpline->SetName(name.c_str());
     m_asym2PosSplines[nXtal] = mySpline;
   }
@@ -1336,7 +1349,7 @@ void muonCalib::fillMPDHists(int nEvts) {
 
       // fit straight line through graph
       graph.Fit(&lineFunc,"WQN");
-      lineSlope = lineFunc.GetParameter(1); //
+      lineSlope = lineFunc.GetParameter(1);
 
       float tan = lineSlope*slopeFactor; //slope = rise/run = dy/dx = colPos/lyrNum
       float sec = sqrt(1 + tan*tan); //sec proportional to hyp which is pathlen.
@@ -1436,11 +1449,15 @@ void muonCalib::fitMPDHists() {
 
     // get slope
     float large2small = lineFunc.GetParameter(1);
-    // TODO: this should be propogated to m_calMPDSmallErr
-    float lineErr = lineFunc.GetParError(1);
+    
+    // in order to combine slope & MPD error for final error
+    // I need the relative error for both values - so sayeth sasha
+    float relLineErr = lineFunc.GetParError(1)/large2small;
+    float relMPDErr = m_calMPDLargeErr[nXtal]/m_calMPDLarge[nXtal];
 
     m_calMPDSmall[nXtal] = m_calMPDLarge[nXtal]*large2small;
-    m_calMPDSmallErr[nXtal] = m_calMPDLargeErr[nXtal]*large2small;
+    m_calMPDSmallErr[nXtal] = m_calMPDSmall[nXtal]*
+		sqrt(relLineErr*relLineErr + relMPDErr*relMPDErr);
   }
 }
 
@@ -1554,7 +1571,15 @@ void muonCalib::writeAsymXML(const string &filename, const string &dtdFilename) 
           << "\" nXtal=\"" << N_COLS 
           <<"\" nFace=\"" << 1
           << "\" nRange=\"" << 1
+          << "\" nXpos=\"" << 1
           << "\"/>" << endl;
+  
+  // -- GENERATE xpos VALUES -- //
+  outfile << " <xpos values=\"";
+  for (int i = 0; i < N_ASYM_PTS; i++) outfile << i+1.5 << " ";
+  outfile << "\"/>" << endl;
+  
+  // -- OUTPUT ASYMETRY DATA -- //
   outfile << " <tower iRow=\"0\" iCol=\"0\">"<< endl;
 
   for (int lyr=0; lyr < N_LYRS; lyr++) {
@@ -1562,8 +1587,7 @@ void muonCalib::writeAsymXML(const string &filename, const string &dtdFilename) 
     for (int col=0; col < N_COLS; col++) {
       outfile << "   <xtal iXtal=\"" << col << "\">" << endl;
       outfile << "    <face end=\"NA\">" << endl;
-      
-      
+       
       int nXtal = getNXtal(lyr,col);
       outfile << "     <asym " << endl;
       // ASYM LL
@@ -1610,7 +1634,6 @@ void muonCalib::writeAsymXML(const string &filename, const string &dtdFilename) 
         outfile << " " << m_calAsymSSErr[nXtal][i];
       outfile << "\" />" << endl;
 
-      outfile << "     </asym>" << endl;
       outfile << "    </face>" << endl;
       outfile << "   </xtal>" << endl;
     }
@@ -1641,12 +1664,13 @@ void muonCalib::writeMPDXML(const string &filename, const string &dtdFilename) {
   outfile << "]>" << endl;
 
   outfile << "<calCalib>" << endl;
-  outfile << " <generic instrument=\"" << m_instrument <<"\" timestamp=\""<< m_timestamp <<"\" calibType=\"CAL_MevPerDAC\" fmtVersion=\"v2r2\">" << endl;
+  outfile << " <generic instrument=\"" << m_instrument <<"\" timestamp=\""<< m_timestamp <<"\" calibType=\"CAL_MevPerDac\" fmtVersion=\"v2r2\">" << endl;
   outfile << " </generic>" << endl;
   outfile << " <dimension nRow=\"1\" nCol=\"1\" nLayer=\"" << N_LYRS 
           << "\" nXtal=\"" << N_COLS 
           <<"\" nFace=\"" << 1 
           << "\" nRange=\"" << 1 
+          << "\" nXpos=\"" << 1 
           << "\"/>" << endl;
   outfile << " <tower iRow=\"0\" iCol=\"0\">"<< endl;
 
@@ -1657,12 +1681,15 @@ void muonCalib::writeMPDXML(const string &filename, const string &dtdFilename) {
       outfile << "   <xtal iXtal=\"" << col << "\">" << endl;
       outfile << "    <face end=\"" << "NA" << "\">" << endl;
 
-      outfile << "     <mevPerDAC bigVal=\"" << m_calMPDLarge[nXtal] 
+      outfile << "     <mevPerDac bigVal=\"" << m_calMPDLarge[nXtal] 
               << "\" bigSig=\"" << m_calMPDLargeErr[nXtal]
               << "\" smallVal=\"" << m_calMPDSmall[nXtal]
               << "\" smallSig=\"" << m_calMPDSmallErr[nXtal]
               << "\">" << endl;
-          
+      outfile << "      <bigSmall end=\"POS\" bigSmallRatioVals=\"0\" bigSmallRatioSigs=\"0\"/>" << endl;
+      outfile << "      <bigSmall end=\"NEG\" bigSmallRatioVals=\"0\" bigSmallRatioSigs=\"0\"/>" << endl;
+      outfile << "     </mevPerDac>" << endl;
+
       outfile << "    </face>" << endl;
       outfile << "   </xtal>" << endl;
     }

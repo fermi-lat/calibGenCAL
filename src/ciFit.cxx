@@ -296,7 +296,7 @@ void cfData::WriteSplinesXML(const string &filename, const string &dtdFilename) 
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit.cxx,v 1.15 2005/01/11 00:11:36 fewtrell Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit.cxx,v 1.16 2005/01/11 00:43:13 fewtrell Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
@@ -335,7 +335,7 @@ void cfData::WriteSplinesXML(const string &filename, const string &dtdFilename) 
           << "\" nXtal=\"" << N_COLS 
           << "\" nFace=\"" << N_FACES 
           << "\" nRange=\"" << N_RNGS << "\"" << endl;
-  xmlFile << "           nDACCol=\"" << N_RNGS << "\" />" << endl;
+  xmlFile << "           nDacCol=\"" << N_RNGS << "\" />" << endl;
 
   //
   // DAC values for rest of file.
