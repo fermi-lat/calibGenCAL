@@ -1,30 +1,33 @@
-// TODO
-// added ROOT version checking into mc & recon chains as well as digi.
+/// @todo added ROOT version checking into mc & recon chains as well as digi.
 
-#include <iostream>
-#include <vector>
-#include <string>
+// LOCAL INCLUDES
+#include "RootFileAnalysis.h"
 
-//ROOT INCLUDES
+// GLAST INCLUDES
+
+//EXTLIB INCLUDES
 #include "TFile.h"
 #include "TChainElement.h"
 #include "TStreamerInfo.h"
 
-#include "RootFileAnalysis.h"
+// STD INCLUDES
+#include <iostream>
+#include <vector>
+#include <string>
 
 using namespace std;
 
 RootFileAnalysis::RootFileAnalysis(const vector<string> &mcFilenames,
-				   const vector<string> &digiFilenames,
-				   const vector<string> &recFilenames,
-				   ostream &ostr) :
+                                   const vector<string> &digiFilenames,
+                                   const vector<string> &recFilenames,
+                                   ostream &ostr) :
   m_mcChain("mc"),
   m_digiChain("Digi"),
   m_recChain("rec"),
   m_mcFilenames(mcFilenames),
   m_digiFilenames(digiFilenames),
   m_recFilenames(recFilenames),
-  m_ostr(ostr)
+  m_ostrm(ostr)
 {
   
   zeroMembers();
@@ -34,8 +37,8 @@ RootFileAnalysis::RootFileAnalysis(const vector<string> &mcFilenames,
     m_mcEnabled = true;
 
     for(vector<string>::const_iterator itr = mcFilenames.begin();
-	itr != mcFilenames.end(); ++itr) {
-      m_ostr << "mc file added to chain: " << *itr << endl;
+        itr != mcFilenames.end(); ++itr) {
+      m_ostrm << "mc file added to chain: " << *itr << endl;
       m_mcChain.Add(itr->c_str());
     }
     m_mcChain.SetBranchAddress("McEvent",&m_mcEvt);
@@ -47,8 +50,8 @@ RootFileAnalysis::RootFileAnalysis(const vector<string> &mcFilenames,
     m_digiEnabled = true;
 
     for(vector<string>::const_iterator itr = digiFilenames.begin();
-	itr != digiFilenames.end(); ++itr) {
-      m_ostr << "digi file added to chain: " << *itr << endl;
+        itr != digiFilenames.end(); ++itr) {
+      m_ostrm << "digi file added to chain: " << *itr << endl;
       m_digiChain.Add(itr->c_str());
     }
     m_digiChain.SetBranchAddress("DigiEvent",&m_digiEvt);
@@ -65,9 +68,9 @@ RootFileAnalysis::RootFileAnalysis(const vector<string> &mcFilenames,
       int fileDigiEvtVer = ((TStreamerInfo*)curFile.GetStreamerInfoList()->FindObject("DigiEvent"))->GetClassVersion();
 
       if (fileDigiEvtVer != codeDigiEvtVer) {
-	m_ostr << "WARNING: digFile=" << curFilenames << " created with DigiEvent version"
-	     << fileDigiEvtVer << " code is linked to DigiEvent version"
-	     << codeDigiEvtVer << endl;
+        m_ostrm << "WARNING: digFile=" << curFilenames << " created with DigiEvent version"
+               << fileDigiEvtVer << " code is linked to DigiEvent version"
+               << codeDigiEvtVer << endl;
       }
     }
   }
@@ -77,8 +80,8 @@ RootFileAnalysis::RootFileAnalysis(const vector<string> &mcFilenames,
     m_recEnabled = true;
 
     for(vector<string>::const_iterator itr = recFilenames.begin();
-	itr != recFilenames.end(); ++itr) {
-      m_ostr << "rec file added to chain: " << *itr << endl;
+        itr != recFilenames.end(); ++itr) {
+      m_ostrm << "rec file added to chain: " << *itr << endl;
       m_recChain.Add(itr->c_str());
     }
     m_recChain.SetBranchAddress("RecEvent",&m_recEvt);
@@ -111,7 +114,7 @@ UInt_t RootFileAnalysis::getEvent(UInt_t iEvt) {
 
   UInt_t nBytes = 0;
   // if using chains, check the array of chains and move
-  // the event pointer to the requested event
+  // the event pointer to the Req event
   for (Int_t i = 0; i < m_chainArr.GetEntries(); i++) {
     nBytes += ((TChain*)m_chainArr.At(i))->GetEvent(iEvt);
   }
@@ -122,7 +125,7 @@ UInt_t RootFileAnalysis::getEvent(UInt_t iEvt) {
 
 UInt_t RootFileAnalysis::getEntries() const {
   // Purpose and Method:  Determine the number of events to iterate over
-  //   checking to be sure that the requested number of events is less than
+  //   checking to be sure that the Req number of events is less than
   //   the min number of events in all files
 
   UInt_t nEntries = 0;

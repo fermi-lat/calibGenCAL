@@ -1,4 +1,4 @@
-calibGenCAL CVS Tag: $Name: v3r1p3 $
+calibGenCAL CVS Tag: $Name: v3r1p5 $
 
 --- Begin cfg_file: ../src/ciFit_option.xml ---
 > <?xml version="1.0" ?>
@@ -6,8 +6,8 @@ calibGenCAL CVS Tag: $Name: v3r1p3 $
 > 
 > <!DOCTYPE ifile SYSTEM "$(XMLROOT)/xmldata/ifile.dtd" >
 > 
-> <ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit_option.xml,v 1.5 2005/01/11 00:11:36 fewtrell Exp $"
->        cvs_Revision="$Revision: 1.5 $" >
+> <ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit_option.xml,v 1.6 2005/01/13 04:03:17 fewtrell Exp $"
+>        cvs_Revision="$Revision: 1.6 $" >
 > 
 >   <section name="TEST_INFO"> Test configuration info.
 >     <item name="TIMESTAMP"      value="2004-11-11-14:39"> Timestamp for test run.</item>

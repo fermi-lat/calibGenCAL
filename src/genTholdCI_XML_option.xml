@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+
+<!DOCTYPE ifile SYSTEM "$(XMLROOT)/xmldata/ifile.dtd" >
+
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/muonCalib_option.xml,v 1.4 2005/01/13 04:03:17 fewtrell Exp $" cvs_Revision="$Revision: 1.4 $" >
+
+  <section name="TEST_INFO"> Test configuration info.
+    <item name="TIMESTAMP"    value="2004-07-31-06:50"> Timestamp for test run.</item>
+
+    <item name="INSTRUMENT"   value="LAT"> Instrument name</item>
+    <item name="TOWER_LIST"   value="1"> Listof towers currently installed. </item>
+  </section>
+
+  <section name="PATHS"> Intput/Output file paths
+    NOTE: All environment variables will be expanded with facilities::Util::expandEnvVar()
+
+    <item name="PERFACE_FILE_TXT"    value="../output/fake_tholdci_perface.txt"> Path to input per-face threshold values (FLE, FHE, LAC).</item>
+    <item name="PERRANGE_FILE_TXT"   value="../output/fake_tholdci_perrange.txt"> Path to input per-range threshold values (ULD peds).</item>
+
+    <item name="DTD_FILE"            value="$(CALIBUTILROOT)/xml/calCalib_v2r2.dtd"> Data description file for XML ouptut ).</item>
+
+    <item name="OUTPUT_FOLDER"       value="../output/"> Folder for auto-named output files </item>
+
+    <item name="THOLDFILE_XML"       value="../output/fake_tholdci.xml"> Path for output data in xml format. </item>
+  </section>
+</ifile>
+

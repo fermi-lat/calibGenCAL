@@ -1,22 +1,28 @@
 #ifndef cfCfg_H
 #define cfCfg_H 1
 
-#include <string>
-#include <fstream>
-
-#include "xml/IFile.h"
-
+// LOCAL INCLUDES
 #include "ICfg.h"
 #include "CalDefs.h"
 #include "CGCUtil.h"
 
-using namespace std;
+// GLAST INCLUDES
+#include "xml/IFile.h"
 
-class cfCfg : ICfg, protected CalDefs {
-public:
+// EXTLIB INCLUDES
+
+// STD INCLUDES
+#include <string>
+#include <fstream>
+
+using namespace std;
+using namespace CalDefs;
+
+class CfCfg : ICfg {
+ public:
   // basic ctor
-  cfCfg() : valid(false) {};
-  virtual ~cfCfg() {};
+  CfCfg() : valid(false) {};
+  virtual ~CfCfg() {};
 
   // clear all values, delete all pointers
   void clear();
@@ -29,7 +35,7 @@ public:
 
   // print summary to ostream
   void summarize();
-public:  // i know, don't make members public, but it's just easier this way!
+ public:  // i know, don't make members public, but it's just easier this way!
   // CONFIGURABLE PARAMETERS //
 
   // SECTION: TEST_INFO //
@@ -44,7 +50,7 @@ public:  // i know, don't make members public, but it's just easier this way!
   string instrumentMode;
   string source;
 
-  vector<int> dacSettings;
+  vector<int> dacVals;
   int nPulsesPerDAC;
 
   // SECTION: PATHS //
@@ -86,7 +92,7 @@ public:  // i know, don't make members public, but it's just easier this way!
   CGCUtil::multiplexor_ostream ostr;
   ofstream logstr;
 
-private:
+ private:
   bool valid;   // set to false member data is incomplete/invalid.
 
   string baseFilename; ///< used as the base for auto-generating output filenames.  derived from input root filename.
@@ -99,4 +105,4 @@ private:
 };
 
 
-#endif // cfCfg_H
+#endif // CfCfg_H

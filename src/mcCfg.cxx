@@ -1,16 +1,22 @@
-#include "facilities/Util.h"
-
-#include "mcCfg.h"
+// LOCAL INCLUDES
+#include "McCfg.h"
 #include "CGCUtil.h"
 
-const string mcCfg::TEST_INFO("TEST_INFO");
-const string mcCfg::PATHS("PATHS");
-const string mcCfg::GENERAL("GENERAL");
-const string mcCfg::CONSTANTS("CONSTANTS");
+// GLAST INCLUDES
+#include "facilities/Util.h"
+
+// EXTLIB INCLUDES
+
+// STD INCLUDES
+
+const string McCfg::TEST_INFO("TEST_INFO");
+const string McCfg::PATHS("PATHS");
+const string McCfg::GENERAL("GENERAL");
+const string McCfg::CONSTANTS("CONSTANTS");
 
 using namespace CGCUtil;
 
-void mcCfg::readCfgFile(const string& cfgPath) {
+void McCfg::readCfgFile(const string& cfgPath) {
   clear();
 
   xml::IFile ifile(cfgPath.c_str());
@@ -69,8 +75,9 @@ void mcCfg::readCfgFile(const string& cfgPath) {
   //  SECTION: CONSTANTS //
   hitThresh = ifile.getDouble(CONSTANTS.c_str(), "HIT_THRESH");
   
-  cellHorPitch = ifile.getDouble(CONSTANTS.c_str(), "CELL_HOR_PITCH");
+  cellHorPitch  = ifile.getDouble(CONSTANTS.c_str(), "CELL_HOR_PITCH");
   cellVertPitch = ifile.getDouble(CONSTANTS.c_str(), "CELL_VERT_PITCH");
+  csiLength     = ifile.getDouble(CONSTANTS.c_str(), "CSI_LENGTH");
 
   maxAsymLL = ifile.getDouble(CONSTANTS.c_str(), "MAX_ASYM_LL");
   maxAsymLS = ifile.getDouble(CONSTANTS.c_str(), "MAX_ASYM_LS");
@@ -128,29 +135,29 @@ void mcCfg::readCfgFile(const string& cfgPath) {
   
   if (asymHistFile.length() == 0)
     asymHistFile = outputDir + "mc_asym." + baseFilename + ".root";
-	    
+            
   if (mpdHistFile.length() == 0)
     mpdHistFile = outputDir + "mc_mevperdac." + baseFilename + ".root";
 
 
   if (pedFileTXT.length() == 0)
     pedFileTXT = outputDir + "mc_peds." + baseFilename + ".txt";
-		
+                
   if (asymFileLLTXT.length() == 0)
     asymFileLLTXT = outputDir + "mc_asymLL." + baseFilename + ".txt";
-		  
+                  
   if (asymFileLSTXT.length() == 0)
     asymFileLSTXT = outputDir + "mc_asymLS." + baseFilename + ".txt";
-		    
+                    
   if (asymFileSLTXT.length() == 0)
     asymFileSLTXT = outputDir + "mc_asymSL." + baseFilename + ".txt";
-		      
+                      
   if (asymFileSSTXT.length() == 0)
     asymFileSSTXT = outputDir + "mc_asymSS." + baseFilename + ".txt";
-			
+                        
   if (largeMPDFileTXT.length() == 0)
     largeMPDFileTXT = outputDir + "mc_mpdLarge." + baseFilename + ".txt";
-			    
+                            
   if (smallMPDFileTXT.length() == 0)
     smallMPDFileTXT = outputDir + "mc_mpdSmall." + baseFilename + ".txt";
 
@@ -160,15 +167,15 @@ void mcCfg::readCfgFile(const string& cfgPath) {
   // setup output stream
   // add cout by default
   ostr.getostreams().push_back(&cout);
-  // add user requested logfile
+  // add user Req logfile
   if (genLogfile) {
     logstr.open(logfile.c_str());
     ostr.getostreams().push_back(&logstr);
   }
 }
 
-void mcCfg::clear() {
+void McCfg::clear() {
 }
 
-void mcCfg::summarize() {
+void McCfg::summarize() {
 }

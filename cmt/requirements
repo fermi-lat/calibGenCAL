@@ -1,19 +1,19 @@
 package calibGenCAL
-version v3r1p4
+version v3r2
 
 private 
 
 branches src doc xml output 
 
-use GlastPolicy v*
+use GlastPolicy   v*
 use reconRootData v*
-use digiRootData v*
-use mcRootData v*
-use RootPolicy v*
-use xml v*
-use Event v*
-use facilities v*
-use calibUtil v*
+use digiRootData  v*
+use mcRootData    v*
+use RootPolicy    v*
+use xml           v*
+use Event         v*
+use facilities    v*
+use calibUtil     v*
 
 #because the latter package unfortunately exposes RootcintPolicy, the following macros have to be defined
 # to protect windows builds. this really needs fixing!
@@ -25,8 +25,10 @@ macro rootcint_end   "" vsnet "-->"
 macro_append ROOT_libs " -lHist -lGraf -lGpad " \
              WIN32 " ${ROOT_PATH}/lib/libHist.lib ${ROOT_PATH}/lib/libGraf.lib ${ROOT_PATH}/lib/libGpad.lib "
 
-application runMuonCalib runMuonCalib.cxx muonCalib.cxx mcCfg.cxx RootFileAnalysis.cxx CGCUtil.cxx CalDefs.cxx
+application runMuonCalib runMuonCalib.cxx MuonCalib.cxx McCfg.cxx RootFileAnalysis.cxx CGCUtil.cxx CalDefs.cxx
 
-application ciFit ciFit.cxx cfCfg.cxx RootFileAnalysis.cxx CGCUtil.cxx CalDefs.cxx
+application runCIFit runCIFit.cxx CfCfg.cxx RootFileAnalysis.cxx CGCUtil.cxx CalDefs.cxx
+
+application genTholdCI_XML genTholdCI_XML.cxx CalDefs.cxx CGCUtil.cxx
 
 

@@ -1,6 +1,17 @@
 #ifndef RootFileAnalysis_h
 #define RootFileAnalysis_h 1
 
+// LOCAL INCLUDES
+
+// GLAST INCLUDES
+#include "digiRootData/DigiEvent.h"
+#include "reconRootData/ReconEvent.h"
+#include "mcRootData/McEvent.h"
+
+// EXTLIB INCLUDES
+#include "TChain.h"
+
+// STD INCLUDES
 #include <string>
 #include <vector>
 #include <iostream>
@@ -12,23 +23,16 @@
   2) ability to step/rewind through events in those files
 */
 
-#include "digiRootData/DigiEvent.h"
-#include "reconRootData/ReconEvent.h"
-#include "mcRootData/McEvent.h"
-
-//ROOT INCLUDES
-#include "TChain.h"
-
 using namespace std;
 
 class RootFileAnalysis {
-public :
-  /// Special ctor which accepts TChains for input files
-  RootFileAnalysis(const vector<string> &mcFilenames,
-		   const vector<string> &digiFilenames,
-		   const vector<string> &recFilenames,
-                   ostream &ostr = cout);
- ~RootFileAnalysis();
+  public :
+    /// Special ctor which accepts TChains for input files
+    RootFileAnalysis(const vector<string> &mcFilenames,
+                     const vector<string> &digiFilenames,
+                     const vector<string> &recFilenames,
+                     ostream &ostr = cout);
+  ~RootFileAnalysis();
 
   /// start next Go with this event
   void startWithEvt(Int_t nEvt) { m_startEvt = nEvt; };
@@ -40,7 +44,7 @@ public :
   /// retrieve a pointer to event number.
   UInt_t getEvent(UInt_t ievt);
 
-protected:
+ protected:
   /// Optional TChain input
   TChain      m_mcChain, m_digiChain, m_recChain;
 
@@ -66,7 +70,7 @@ protected:
   vector<string> m_digiFilenames;
   vector<string> m_recFilenames;
 
-  ostream &m_ostr;
+  ostream &m_ostrm;
 
 };
 

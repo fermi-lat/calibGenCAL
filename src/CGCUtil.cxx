@@ -1,4 +1,11 @@
+// LOCAL INCLUDES
 #include "CGCUtil.h"
+
+// GLAST INCLUDES
+
+// EXTLIB INCLUDES
+
+// STD INCLUDES
 
 namespace CGCUtil {
 
@@ -34,9 +41,9 @@ namespace CGCUtil {
 
     // check for 'not found' cases
     if (fwdslash_pos == path.npos)
-       return (bckslash_pos == path.npos) ? path.npos : bckslash_pos;
+      return (bckslash_pos == path.npos) ? path.npos : bckslash_pos;
     if (bckslash_pos == path.npos)
-       return (fwdslash_pos == path.npos) ? path.npos : fwdslash_pos;
+      return (fwdslash_pos == path.npos) ? path.npos : fwdslash_pos;
 
     return max(fwdslash_pos,bckslash_pos);
   }
