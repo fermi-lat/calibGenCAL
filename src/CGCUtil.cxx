@@ -104,26 +104,35 @@ namespace CGCUtil {
                  "%c %z", tm_now) == 0) {
       strcpy(time_str,""); // error case
       cerr << __FILE__  << ":"     << __LINE__ << " " 
-           << "Error generating time string!" << endl;
+           << "WARNING. error generating time string!" << endl;
     }
     
+    // GENERATE PACKAGE PATH STRINGS
+
     ostr << "************** ENVIRONMENT SUMMARY *****************" << endl;
     ostr << " RUNTIME : " << time_str << endl;
     ostr << " HOSTNAME: " << host     << endl;
     ostr << " USER    : " << user     << endl;
-    ostr << " CVSTAG  : " << CVS_TAG  << endl;
     ostr << endl;
-    ostr << " PACKAGE      "  << "PATH" << endl;
 
-#if 0  // package root environment variables not guaranteed
-    ostr << " calibGenCAL  "  << getenv("calibGenCALROOT")  << endl;  
-    ostr << " ROOT         "  << getenv("ROOTROOT")         << endl;
-    ostr << " digiRootData "  << getenv("digiRootDataROOT") << endl;
-    ostr << " Event        "  << getenv("EventROOT")        << endl;
-    ostr << " idents       "  << getenv("identsROOT")       << endl;
-    ostr << " calibUtil    "  << getenv("calibUtilROOT")    << endl;
-#endif
+    // test that enviroment variables are present
+    if (!getenv("CALIBGENCALROOT") ||
+        !getenv("ROOTROOT")        ||
+        !getenv("DIGIROOTDATAROOT")||
+        !getenv("EVENTROOT")       ||
+        !getenv("IDENTSROOT")      ||
+        !getenv("CALIBUTILROOT")) {
+      cerr << __FILE__  << ":"     << __LINE__ << " " 
+           << "WARNING. error retrieveing packageROOT paths" << endl;
+    } else {
+      ostr << " PACKAGE      "  << "PATH" << endl;
+      ostr << " calibGenCAL  "  << getenv("CALIBGENCALROOT")  << endl;  
+      ostr << " ROOT         "  << getenv("ROOTROOT")         << endl;
+      ostr << " digiRootData "  << getenv("DIGIROOTDATAROOT") << endl;
+      ostr << " Event        "  << getenv("EVENTROOT")        << endl;
+      ostr << " idents       "  << getenv("IDENTSROOT")       << endl;
+      ostr << " calibUtil    "  << getenv("CALIBUTILROOT")    << endl;
+    }
     ostr << "****************************************************" << endl;
-    
   }
 };
