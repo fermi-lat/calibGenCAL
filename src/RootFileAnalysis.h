@@ -16,7 +16,8 @@
 #include <vector>
 #include <iostream>
 
-/*
+/** \brief Makes a VCR for GLAST root event files
+
   RootFileAnalysis contains the following features...
 
   1) ability to read in one or more GLAST digi, recon and/or mc root files.
@@ -27,43 +28,47 @@ using namespace std;
 
 class RootFileAnalysis {
   public :
-    /// Special ctor which accepts TChains for input files
     RootFileAnalysis(const vector<string> &mcFilenames,
                      const vector<string> &digiFilenames,
                      const vector<string> &recFilenames,
                      ostream &ostr = cout);
   ~RootFileAnalysis();
 
-  /// start next Go with this event
+  /// Manually set next event to be read.  fseek() of sorts
   void startWithEvt(Int_t nEvt) { m_startEvt = nEvt; };
-  /// reset for next Go to start at beginning of file
+  /// Rewind file back to event 0.
   void rewind() { m_startEvt = 0; };
 
-  /// returns number of events in all open files
+  /// returns total number of events in all open files
   UInt_t getEntries() const;
-  /// retrieve a pointer to event number.
+  /// Retrieve pointers to given event #.
   UInt_t getEvent(UInt_t ievt);
 
  protected:
-  /// Optional TChain input
+  /// Chains store event data for all files
   TChain      m_mcChain, m_digiChain, m_recChain;
 
-  /// Pointer to a McEvent
+  /// Pointer to current McEvent
   McEvent     *m_mcEvt;
-  /// pointer to a DigiEvent, w/ each get event, ROOT will
+  /// pointer to current DigiEvent
   DigiEvent   *m_digiEvt;
-  /// pointer to a ReconEvent
+  /// pointer to current ReconEvent
   ReconEvent  *m_recEvt;
 
-  /// pointers to TChains
+  /// helpful list of all 3 TChains
   TObjArray   m_chainArr;
 
-  bool m_mcEnabled, m_digiEnabled, m_recEnabled;
+  /// true if MC data stream is enabled
+  bool m_mcEnabled;
+  /// true if Digi data stream is enabled
+  bool m_digiEnabled;
+  /// true if Recon data stream is enabled
+  bool m_recEnabled;
 
-  /// starting event number
+  /// current event number
   Int_t m_startEvt;
 
-  /// Zeros out all member vars, does NOT free memory,for use in constructor
+  /// Zeros out all member vars, does NOT free memory, for use in constructor
   void zeroMembers();
 
   vector<string> m_mcFilenames;
