@@ -507,7 +507,6 @@ void muonCalib::DigiCal()
 void muonCalib::FitRatHist(){
   for (int layer=0;layer < 8;layer++){
    for(int col=0;col<12;col++){
-
     int histid = layer*12+col;
     TProfile* h = (TProfile*)rathist->At(histid);
     h->Fit("pol1","Q");
@@ -536,12 +535,12 @@ void muonCalib::FitMuHist(){
        float ave = h->GetMean();
        float rms = h->GetRMS();
      
-       lognormal->SetParameter( 0, h->GetEntries() );
+       lognormal->SetParameter( 0, 5*rms*h->GetBinContent(ave) );
        lognormal->SetParameter( 1, ave );
        lognormal->SetParameter( 2, 2*rms );
        lognormal->SetParameter( 3,  .5 );
-       lognormal->SetParLimits( 2, rms/9, 4*rms );
-       lognormal->SetParLimits( 1, ave-rms, ave+rms*2 );
+       lognormal->SetParLimits( 2, rms/2, 4*rms );
+       lognormal->SetParLimits( 1, ave-rms, ave );
        h->Fit( "lognormal", "R" );
        ave= lognormal->GetParameters(1);
        rms= lognormal->GetParameter(2);
@@ -589,6 +588,7 @@ void muonCalib::WriteMuPeaks(const char* fileName){
    }
   }
 }
+
 void muonCalib::WriteMuSlopes(const char* fileName){
     std::ofstream mslout(fileName); 
   for (int layer=0;layer < 8;layer++){
@@ -598,6 +598,7 @@ void muonCalib::WriteMuSlopes(const char* fileName){
    }
   }
 }
+
 void muonCalib::FitPedHist(){
   for (int layer=0;layer < 8;layer++){
   for(int col=0;col<12;col++){
@@ -739,7 +740,6 @@ void muonCalib::PrintCalCorrPed(const char* fileName){
         muped << std::endl;
 			}
     }
-  
 }
 
 void muonCalib::ReadCalPed(const char* fileName){
@@ -896,62 +896,6 @@ void muonCalib::HistDefine() {
     DigiHistDefine();
     ReconHistDefine();
 }
-
-void muonCalib::muSlopestoXML(){
-    std::ofstream xml( "mSlopes.xml" );
-    short int rg, layer, column, face;
-    
-    //header
-    xml<<"<?xml version=\"1.0\" ?>"<<endl<<endl;
-    xml<<"<!-- $Header: my Pdl-->"<<endl<<endl;
-    xml<<"<!-- Approximately real  CAL muon slope XML file for EM, according to calCalibv3.dtd -->"<<endl<<endl;
-
-    xml<<"<!DOCTYPE calCalib SYSTEM \"../calCalib_v2.dtd\" [] >"<<endl<<endl;
-
-    //calCalib
-    xml<<"<calCalib>"<<endl
-      <<"\t<generic\tinstrument=\"EM\" timestamp=\"2003-11-2-12:56\""<<endl
-      <<"\t\t\t\tcalibType=\"CAL_MuSlope\" fmtVersion=\"v2r0\">"<<endl<<endl
-      <<"\t\t<inputSample\tstartTime=\"2003-2-21-05:49:12\""
-      <<" stopTime=\"2003-2-24-07:07:02\""<<endl
-      <<"\t\t\t\t\ttriggers=\"random\" mode=\"normal\" source=\"stuff\" >"<<endl
-      <<endl;
-    
-    xml<<"\t\tTimes are start and stop time of calibration run."<<endl
-      <<"\t\tOther attributes are just made up for code testing."<<endl;    
-    
-    xml<<"\t\t</inputSample>"<<endl
-      <<"\t</generic>"<<endl<<endl<<endl;
-    
-    xml<<"<!-- EM instrument: 8 layers, 12 columns -->"<<endl<<endl
-      <<"\t<dimension nRow=\"1\" nCol=\"1\" "
-      <<"nLayer=\"8\" nXtal=\"12\" nFace=\"1\" />"<<endl<<endl;
-    
-    xml<<"\t<tower iRow=\"0\" iCol=\"0\">"<<endl;
-    
-    for( layer=0; layer<8; layer++ ){
-      xml<<"\t\t<layer iLayer=\""<<layer<<"\">"<<endl;
-      
-      for( column=0; column<12; column++ ){
-        xml<<"\t\t\t<xtal iXtal=\""<<column<<"\">"<<endl;
-        xml<<"\t\t\t\t<face end=\"NA\">"<<endl;
-        tree->GetEntry( layer*24 + column*2 + face );
-        for( rg=0; rg<4; rg++ ){
-          xml<<"\t\t\t\t\t<muSlope slope=\""<<slope<<"\" range=\"";
-          xml<<((rg<2)?"L":"H")<<"EX"<<((rg%2==0)?"8":"1")<<"\" />"<<endl;
-        }
-        xml<<"\t\t\t\t</face>"<<endl;  
-        xml<<"\t\t\t</xtal>"<<endl;
-      }
-      xml<<"\t\t</layer>"<<endl;
-    }
-    
-    //end file
-    xml<<"\t</tower>"<<endl;
-    xml<<"</calCalib>"<<endl;
-    xml.close();
-}
-
 
 void muonCalib::Go(Int_t numEvents)
 {    
