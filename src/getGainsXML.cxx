@@ -4,11 +4,13 @@
 int main(int argc, char** argv)
 {
 
-  if(argc <= 1) {
+  if(argc <= 2) {
+	 std::cout << "Usage: getCorrPedestalsXML: infile xmloutfile\n";
     std::cout << "First argument should be an ascii file containing calibration constants for muon slope" << std::endl;
     exit(1);
   }
     std::ifstream mupeaksin(argv[1]); 
+	 std::ofstream gainout(argv[2]);
     
     float mupeaks[8][12][2], mupeaksig[8][12][2];
 
@@ -39,7 +41,6 @@ int main(int argc, char** argv)
     char posface[] ="POS";
     char negface[] ="NEG";
     char* face;
-    std::ofstream gainout("../xml/gains.xml"); 
     char  q= '"';
 
   gainout << "<?xml version=\"1.0\" ?>" << std::endl;

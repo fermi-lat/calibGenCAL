@@ -3,12 +3,14 @@
 
 int main(int argc, char** argv)
 {
-  if(argc <= 1) {
+  if(argc <= 2) {
+	 std::cout << "Usage: getPedestalsXML infile xmloutfile\n";
     std::cout << "First argument should be an ascii file containing calibration constants for pedestal" << std::endl;
     exit(1);
   }
 
   std::ifstream mupedIn(argv[1]); 
+  std::ofstream pedout(argv[2]);
     
   float muped[8][12][2][4];
   float mupedRms[8][12][2][4];
@@ -30,7 +32,6 @@ int main(int argc, char** argv)
   char posface[] ="POS";
   char negface[] ="NEG";
   char* face;
-  std::ofstream pedout("../xml/pedestals.xml"); 
   char  q= '"';
 
   pedout << "<?xml version=\"1.0\" ?>" << std::endl;

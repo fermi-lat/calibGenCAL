@@ -4,12 +4,14 @@
 int main(int argc, char** argv)
 {
 
-  if(argc <= 1) {
+  if(argc <= 2) {
+	 std::cout << "Usage: getMuSllopesXML infile outfilexml\n";
     std::cout << "First argument should be an ascii file containing calibration constants for muon slope" << std::endl;
     exit(1);
   }
     
    std::ifstream muslopesin(argv[1]); 
+	std::ofstream muslopesout(argv[2]);
     
     float muslopes[8][12];
 
@@ -37,7 +39,6 @@ int main(int argc, char** argv)
     char negface[] ="NEG";
     char naface[] = "NA";
     char* face;
-    std::ofstream muslopesout("../xml/muslopes.xml"); 
     char  q= '"';
 
     muslopesout << "<?xml version=\"1.0\" ?>" << std::endl;

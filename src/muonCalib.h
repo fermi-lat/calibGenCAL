@@ -348,11 +348,9 @@ inline muonCalib::muonCalib(TChain *digiChain,
 }
 
 inline muonCalib::~muonCalib() {
-  if (histFile) histFile->Close();
-
-
-  if (histFile) delete histFile;
   if (m_histList) delete m_histList;
+  if (histFile) histFile->Close();
+  if (histFile) delete histFile;
 
   if (digiFile) delete digiFile;
   if (reconFile) delete reconFile;
@@ -597,6 +595,7 @@ inline void muonCalib::Clear() {
   m_recChain = 0;
   m_mcChain = 0;
 
+  m_StartEvent = 0;
   evt = 0;
   rec = 0;
   mc = 0;
