@@ -1,5 +1,5 @@
 package calibGenCAL
-version v2r4
+version v2r5p1
 
 branches src xml output
 
