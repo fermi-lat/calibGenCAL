@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri May 28 18:50:08 PDT 2004
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+added ciFit - charnge injection calibration application
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri May 28 18:49:21 PDT 2004
 calibGenCAL/src
 
