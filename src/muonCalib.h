@@ -210,7 +210,11 @@ public :
   void PrintCalCorrPed(const char* fileName);
   void ZeroPeds();
 
-private:
+protected:
+  UInt_t digiEventId, reconEventId, mcEventId;
+  UInt_t digiRunNum, reconRunNum, mcRunNum;
+
+
   /// starting event number
   Int_t m_StartEvent;
   /// list of user histograms
@@ -323,11 +327,11 @@ inline muonCalib::muonCalib(TChain *digiChain,
       int fileDigiEventVer = ((TStreamerInfo *)curFile.GetStreamerInfoList()->FindObject("DigiEvent"))->GetClassVersion();
 
       if (fileDigiEventVer != codeDigiEventVer) {
-		  cout << "WARNING: digFile=" << curFileName << " created with DigiEvent Ver#"
-				 << fileDigiEventVer << " code is linked to DigiEvent Ver#"
+		  cout << "WARNING: digFile=" << curFileName << " created with DigiEvent version"
+				 << fileDigiEventVer << " code is linked to DigiEvent version"
 				 << codeDigiEventVer << endl;
 		} else {
-		  cout << "DigiEvent Ver#" << fileDigiEventVer << " in " << curFileName
+		  cout << "DigiEvent version" << fileDigiEventVer << " in " << curFileName
 				 << " matches code, should be ok." << endl;
 		}
 	 }
@@ -344,11 +348,11 @@ inline muonCalib::muonCalib(TChain *digiChain,
 }
 
 inline muonCalib::~muonCalib() {
-  histFile->Close();
+  if (histFile) histFile->Close();
 
-  //if (m_histList) delete m_histList;
 
   if (histFile) delete histFile;
+  if (m_histList) delete m_histList;
 
   if (digiFile) delete digiFile;
   if (reconFile) delete reconFile;
@@ -426,10 +430,10 @@ inline void muonCalib::Init(const char* digiFileName, const char* reconFileName,
 		((TStreamerInfo *)digiFile->GetStreamerInfoList()->FindObject("DigiEvent"))->GetClassVersion();
 	 int codeDigiEventVer = DigiEvent::Class()->GetClassVersion();
 	 if (fileDigiEventVer != codeDigiEventVer) {
-		cout << "WARNING: digFile=" << digiFileName << " created with DigiEvent Ver#" << fileDigiEventVer
-			  << " code is linked to DigiEvent Ver#" << codeDigiEventVer << endl;
+		cout << "WARNING: digFile=" << digiFileName << " created with DigiEvent version" << fileDigiEventVer
+			  << " code is linked to DigiEvent version" << codeDigiEventVer << endl;
 	 } else {
-		cout << "DigiEvent Ver#" << fileDigiEventVer << " in " << digiFileName <<
+		cout << "DigiEvent version" << fileDigiEventVer << " in " << digiFileName <<
 		  " matches code, should be ok." << endl;
 	 }
 
@@ -527,10 +531,12 @@ inline void muonCalib::MakeHistList() {
   // Purpose and Method:  Make a THashList of histograms
   //   This avoids the need to refresh the histogram pointers
 
+  if (!histFile) return;
+  
   if (m_histList) delete m_histList;
 
   m_histList = new THashList(30, 5);
-
+  
   TList* list = histFile->GetList();
   TIter iter(list);
 
