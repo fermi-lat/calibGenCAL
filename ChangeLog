@@ -1,4 +1,22 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Jan 31 06:01:59 PST 2005
+calibGenCAL/src
+
+Modified Files:
+	CGCUtil.cxx CGCUtil.h CalDefs.cxx CalDefs.h ICfg.h 
+	RootFileAnalysis.cxx RootFileAnalysis.h cfCfg.cxx cfCfg.h 
+	mainpage.h mcCfg.cxx mcCfg.h muonCalib.cxx muonCalib.h 
+	muonCalib_option.xml runMuonCalib.cxx 
+Added Files:
+	genTholdCI_XML.cxx genTholdCI_XML_option.xml runCIFit.cxx 
+Removed Files:
+	ciFit.cxx 
+Log Message:
+added genTholdCI_XML.
+fixed bad bug where i mixed up all the int-nonlin splines in muon calib
+update CalDefs to object oriented code.
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Jan 31 06:01:58 PST 2005
 calibGenCAL/output
 
