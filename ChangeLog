@@ -1,5 +1,24 @@
 ------------------------------------------------------------
 User: fewtrell  Thu Dec 30 16:09:39 PST 2004
+calibGenCAL/src
+
+Modified Files:
+	ICfg.h RootFileAnalysis.cxx ciFit.cxx lightTaperCalib.h 
+	muonCalib.cxx muonCalib.h muonCalib_option.xml 
+	runMuonCalib.cxx 
+Added Files:
+	CGCUtil.cxx CGCUtil.h CalDefs.cxx CalDefs.h mcCfg.cxx mcCfg.h 
+Log Message:
+preparing for v3r0p2
+
+fixed bad xtal pitch in mc options file.
+slight modifications to event & hit selection in muon calib gain & asym.
+modularized some generic code.
+
+
+    *
+------------------------------------------------------------
+User: fewtrell  Thu Dec 30 16:09:39 PST 2004
 calibGenCAL/output
 
 Modified Files:
