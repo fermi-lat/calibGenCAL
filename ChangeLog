@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: fewtrell  Wed Feb  2 20:11:05 PST 2005
+calibGenCAL/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+fixed bug whrere all small diode MevPerDac values were INVERTED!!!!
+    *
+------------------------------------------------------------
+User: fewtrell  Wed Feb  2 20:11:05 PST 2005
 calibGenCAL/cmt
 
 Modified Files:
