@@ -111,14 +111,18 @@ namespace CGCUtil {
     ostr << " RUNTIME : " << time_str << endl;
     ostr << " HOSTNAME: " << host     << endl;
     ostr << " USER    : " << user     << endl;
+    ostr << " CVSTAG  : " << CVS_TAG  << endl;
     ostr << endl;
     ostr << " PACKAGE      "  << "PATH" << endl;
-    ostr << " calibGenCAL  "  << getenv("calibGenCALROOT")  << endl;
+
+#if 0  // package root environment variables not guaranteed
+    ostr << " calibGenCAL  "  << getenv("calibGenCALROOT")  << endl;  
     ostr << " ROOT         "  << getenv("ROOTROOT")         << endl;
     ostr << " digiRootData "  << getenv("digiRootDataROOT") << endl;
     ostr << " Event        "  << getenv("EventROOT")        << endl;
     ostr << " idents       "  << getenv("identsROOT")       << endl;
     ostr << " calibUtil    "  << getenv("calibUtilROOT")    << endl;
+#endif
     ostr << "****************************************************" << endl;
     
   }
