@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: chehtman  Fri Feb 25 15:45:38 PST 2005
+calibGenCAL/src
+
+Added Files:
+	runMuTrigEff.cxx MuTrigEff_option.xml MtCfg.h MtCfg.cxx 
+Log Message:
+adding new executable runMuTrigEff to find the FLE thresholds for muons and charge injection
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r3p3, operation: add
 Package: calibGenCAL
