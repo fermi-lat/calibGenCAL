@@ -1,60 +1,60 @@
+// LOCAL INCLUDES
+#include "CalDefs.h"
+
+// GLAST INCLUDES
+
+// EXTLIB INCLUDES
+
+// STD INCLUDES
 #include <sstream>
 #include <iomanip>
-
-#include "CalDefs.h"
+#include <stdexcept>
 
 using namespace std;
 
 //populate static arrays.
 
-static const string _face_mnem[]= {"POS",
-"NEG"};
+namespace CalDefs {
+  static const string _face_mnem[]= {"POS",
+                                     "NEG"};
 
-const vector<string> CalDefs::FACE_MNEM(_face_mnem,_face_mnem+sizeof(_face_mnem)/sizeof(string));
+  const vector<string> FaceNum::MNEM(_face_mnem,_face_mnem+sizeof(_face_mnem)/sizeof(string));
 
-static const string _rng_mnem[] = {"LEX8",
-"LEX1",
-"HEX8",
-"HEX1"};
+  static const string _diode_mnem[] = {"LARGE",
+                                       "SMALL"};
 
-const vector<string> CalDefs::RNG_MNEM(_rng_mnem, _rng_mnem+sizeof(_rng_mnem)/sizeof(string));
+  const vector<string> DiodeNum::MNEM(_diode_mnem,_diode_mnem+sizeof(_diode_mnem)/sizeof(string));
 
-string &CalDefs::appendXtalStr(int nXtal, string &str) {
-   ostringstream tmpStrm;
-   tmpStrm << "L" << setfill('0') << setw(2) << nXtal2lyr(nXtal)
-      << "C" << setw(1) << nXtal2col(nXtal);
-   return str += tmpStrm.str();
-   }
+  static const string _rng_mnem[] = {"LEX8",
+                                     "LEX1",
+                                     "HEX8",
+                                     "HEX1"};
 
-string &CalDefs::appendFaceStr(int nFace, string &str) {
-   appendXtalStr(
-      nFace2nXtal(nFace),str);
+  const vector<string> RngNum::MNEM(_rng_mnem, _rng_mnem+sizeof(_rng_mnem)/sizeof(string));
 
-   ostringstream tmpStrm;
-   tmpStrm << "F" << setw(1) << nFace2face(nFace);
+  ostream& operator<< (ostream &strm, const XtalIdx &idx) {
+    strm << "T" << setfill('0') << setw(2) << idx.getTwr();
+    strm << "L"                 << setw(1) << idx.getLyr();
+    strm << "C" << setfill('0') << setw(2) << idx.getCol();
+    return strm;
+  }
+    
+  ostream& operator<< (ostream &strm, const FaceIdx &idx) {
+    strm << idx.getXtalIdx();
+    strm << "F" << setw(1) << idx.getFace();
+    return strm;
+  }
+    
+  ostream& operator<< (ostream &strm, const DiodeIdx &idx) {
+    strm << idx.getFaceIdx();
+    strm << "D" << setw(1) << idx.getDiode();
+    return strm;
+  }
+    
+  ostream& operator<< (ostream &strm, const RngIdx &idx) {
+    strm << idx.getFaceIdx();
+    strm << "R" << setw(1) << idx.getRng();
+    return strm;
+  }
 
-   return str += tmpStrm.str();
-   }
-
-string &CalDefs::appendDiodeStr(int nDiode, string &str) {
-   appendFaceStr(
-      nDiode2nFace(nDiode),str);
-
-   ostringstream tmpStrm;
-   tmpStrm << "D" << setw(1) << nDiode2diode(nDiode);
-
-   return str += tmpStrm.str();
-   }
-
-string &CalDefs::appendRngStr(int nRng, string &str) {
-   appendFaceStr(
-      nRng2nFace(nRng),str);
-
-   ostringstream tmpStrm;
-   tmpStrm << "R" << setw(1) << nRng2rng(nRng);
-
-   return str += tmpStrm.str();
-   }
-
-
-
+}

@@ -1,6 +1,13 @@
 #ifndef CGCUtil_H
 #define CGCUtil_H 1
 
+// LOCAL INCLUDES
+
+// GLAST INCLUDES
+
+// EXTLIB INCLUDES
+
+// STD INCLUDES
 #include <string>
 #include <vector>
 #include <ostream>
@@ -9,7 +16,7 @@ using namespace std;
 
 namespace CGCUtil {
 
-  const string CVS_TAG("$Name:  $");
+  const string CVS_TAG("$Name: v3r1p5 $");
 
   /// Template function fills any STL type container with zero values
   template <class T> static void fill_zero(T &container) {
@@ -39,7 +46,7 @@ namespace CGCUtil {
       // write the incoming character into each stream
       streamvector::iterator _b = _streams.begin(), _e = _streams.end();
       for(; _b != _e; _b++)
-	(*_b)->put(c);
+        (*_b)->put(c);
     
       return c;
     }
@@ -59,12 +66,12 @@ namespace CGCUtil {
    *
    */
   class multiplexor_ostream : public ostream
-  {
-  public:
-    multiplexor_ostream() : ostream(new multiplexor_streambuf()), ios(0) {}
-    virtual ~multiplexor_ostream() { delete rdbuf(); }
+    {
+    public:
+      multiplexor_ostream() : ostream(new multiplexor_streambuf()), ios(0) {}
+      virtual ~multiplexor_ostream() { delete rdbuf(); }
   
-    streamvector& getostreams() { return ((multiplexor_streambuf*)rdbuf())->_streams; }
-  };
+      streamvector& getostreams() { return ((multiplexor_streambuf*)rdbuf())->_streams; }
+    };
 };
 #endif // CGCUtil_H

@@ -1,17 +1,23 @@
-#include "facilities/Util.h"
-
+// LOCAL INCLUDES
 #include "cfCfg.h"
 #include "CalDefs.h"
 #include "CGCUtil.h"
 
+// GLAST INCLUDES
+#include "facilities/Util.h"
+
+// EXTLIB INCLUDES
+
+// STD INCLUDES
+
 using namespace CGCUtil;
 
-const string cfCfg::TEST_INFO("TEST_INFO");
-const string cfCfg::PATHS("PATHS");
-const string cfCfg::SPLINE_CFG("SPLINE_CFG");
-const string cfCfg::GENERAL("GENERAL");
+const string CfCfg::TEST_INFO("TEST_INFO");
+const string CfCfg::PATHS("PATHS");
+const string CfCfg::SPLINE_CFG("SPLINE_CFG");
+const string CfCfg::GENERAL("GENERAL");
 
-void cfCfg::readCfgFile(const string& path) {
+void CfCfg::readCfgFile(const string& path) {
   clear();
 
   xml::IFile ifile(path.c_str());
@@ -28,7 +34,7 @@ void cfCfg::readCfgFile(const string& path) {
   instrumentMode = ifile.getString(TEST_INFO.c_str(), "INST_MODE");
   source         = ifile.getString(TEST_INFO.c_str(), "TEST_SOURCE");
   
-  dacSettings    = ifile.getIntVector(TEST_INFO.c_str(), "DAC_SETTINGS");
+  dacVals    = ifile.getIntVector(TEST_INFO.c_str(), "DAC_SETTINGS");
   nPulsesPerDAC  = ifile.getInt(TEST_INFO.c_str(), "N_PULSES_PER_DAC");
 
   // PATHS
@@ -70,9 +76,9 @@ void cfCfg::readCfgFile(const string& path) {
   splineNPtsMin    = ifile.getIntVector(SPLINE_CFG.c_str(), "N_PTS_MIN" );
   
   // Geneate derived config quantities.
-  nDACs          = dacSettings.size();
+  nDACs          = dacVals.size();
   nPulsesPerXtal = nPulsesPerDAC * nDACs;
-  nPulsesPerRun  = N_COLS*nPulsesPerXtal;
+  nPulsesPerRun  = ColNum::N_VALS*nPulsesPerXtal;
 
   baseFilename = rootFileLE1;
   path_remove_dir(baseFilename);
@@ -89,15 +95,15 @@ void cfCfg::readCfgFile(const string& path) {
   // setup output stream
   // add cout by default
   ostr.getostreams().push_back(&cout);
-  // add user requested logfile
+  // add user Req logfile
   if (genLogfile) {
     logstr.open(logfile.c_str());
     ostr.getostreams().push_back(&logstr);
   }
 }
 
-void cfCfg::clear() {  
+void CfCfg::clear() {  
 }
 
-void cfCfg::summarize() {
+void CfCfg::summarize() {
 }

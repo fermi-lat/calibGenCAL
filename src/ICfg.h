@@ -1,10 +1,18 @@
 #ifndef ICfg_H
 #define ICfg_H 1
 
+// LOCAL INCLUDES
+
+// GLAST INCLUDES
+
+// EXTLIB INCLUDES
+
+// STD INCLUDES
+#include <string>
+
 /*!
    \class ICfg Abastract template class for config classes used in calibGenCAL
  */
-
 
 using namespace std;
 

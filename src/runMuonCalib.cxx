@@ -1,22 +1,28 @@
-#include <iostream>
-#include <fstream>
+// LOCAL INCLUDES
+#include "MuonCalib.h"
+#include "McCfg.h"
 
+// GLAST INCLUDES
+
+// EXTLIB INCLUDES
 #include "TSystem.h"
 
-#include "muonCalib.h"
-#include "mcCfg.h"
+// STD INCLUDES
+#include <iostream>
+#include <fstream>
 
 using namespace std;
 
 int main(int argc, char** argv) {
   string cfgPath;
   if(argc > 1) cfgPath = argv[1];
-  else cfgPath = "../src/muonCalib_option.xml";
+  else cfgPath = "../src/MuonCalib_option.xml";
     
-  mcCfg cfg;
+  McCfg cfg;
   try {
     cfg.readCfgFile(cfgPath);
 
+    // identify calibGenCAL package version
     cfg.ostr << "calibGenCAL CVS Tag: " << CGCUtil::CVS_TAG << endl;
 
     // insert quoted config file into log stream //
@@ -32,7 +38,7 @@ int main(int argc, char** argv) {
       cfg.ostr << "--- End " << cfgPath << " ---" << endl;
     }
   
-    muonCalib appData(cfg.rootFileList, 
+    MuonCalib appData(cfg.rootFileList, 
                       cfg.instrument, 
                       cfg.towerList, 
                       cfg.ostr, 
@@ -40,6 +46,7 @@ int main(int argc, char** argv) {
                       cfg.hitThresh,
                       cfg.cellHorPitch,
                       cfg.cellVertPitch,
+                      cfg.csiLength,
                       cfg.maxAsymLL,
                       cfg.maxAsymLS,
                       cfg.maxAsymSL,
@@ -118,9 +125,9 @@ int main(int argc, char** argv) {
 
       // output asymmetry TXT file(s)
       if (cfg.genTXT) appData.writeAsymTXT(cfg.asymFileLLTXT,
-					   cfg.asymFileLSTXT,
-					   cfg.asymFileSLTXT,
-					   cfg.asymFileSSTXT);
+                                           cfg.asymFileLSTXT,
+                                           cfg.asymFileSLTXT,
+                                           cfg.asymFileSSTXT);
       
       // output asymmetry XML file
       if (cfg.genXML) appData.writeAsymXML(cfg.asymFileXML,cfg.dtdFile);
@@ -170,7 +177,7 @@ int main(int argc, char** argv) {
     
   } catch (string s) {
     // generic exception handler...  all my exceptions are simple C++ strings
-    cfg.ostr << "muonCalib:  exception thrown: " << s << endl;
+    cfg.ostr << "MuonCalib:  exception thrown: " << s << endl;
     return -1;
   }
     
