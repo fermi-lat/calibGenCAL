@@ -14,16 +14,16 @@
 
 using namespace std;
 
-RootFileAnalysis::RootFileAnalysis(const vector<string> &digiFilenames,
+RootFileAnalysis::RootFileAnalysis(const vector<string> &mcFilenames,
+				   const vector<string> &digiFilenames,
 				   const vector<string> &recFilenames,
-				   const vector<string> &mcFilenames,
-               ostream &ostr) :
-  m_digiFilenames(digiFilenames),
-  m_recFilenames(recFilenames),
-  m_mcFilenames(mcFilenames),
+				   ostream &ostr) :
   m_mcChain("mc"),
   m_digiChain("Digi"),
   m_recChain("rec"),
+  m_mcFilenames(mcFilenames),
+  m_digiFilenames(digiFilenames),
+  m_recFilenames(recFilenames),
   m_ostr(ostr)
 {
   

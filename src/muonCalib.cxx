@@ -12,8 +12,6 @@
 #include <functional>
 #include <cmath>
 
-#include "idents/CalXtalId.h"
-
 using namespace std;
 
 //////////////////////////GENERAL UTILITIES /////////////////////////////////////
@@ -145,7 +143,7 @@ muonCalib::muonCalib(const vector<string> &digiFilenames,
                      double minAsymSS)
   :
   // initialize all member objects
-    RootFileAnalysis(digiFilenames,vector<string>(0),vector<string>(0),ostr),
+    RootFileAnalysis(vector<string>(0),digiFilenames,vector<string>(0),ostr),
     m_timestamp(timestamp),
     m_instrument(instrument),
     m_towerList(towerList),
@@ -255,10 +253,10 @@ void muonCalib::fillRoughPedHists(int nEvts) {
 
     CalDigi *calDigi = 0;
 
-    for( int cde_nb=0; calDigi=(CalDigi*) calDigiCol->At(cde_nb); cde_nb++ ) { //loop through each 'hit' in one event
+    for( int cde_nb=0; (calDigi=(CalDigi*) calDigiCol->At(cde_nb)); cde_nb++ ) { //loop through each 'hit' in one event
       const CalXtalReadout& cRo=*calDigi->getXtalReadout(LEX8); // get LEX8 data
 
-      idents::CalXtalId id = calDigi->getPackedId(); // get interaction information
+      CalXtalId id(calDigi->getPackedId()); // get interaction information
       int lyr = id.getLayer();
       //int tower = id.getTower();
       int col = id.getColumn();
@@ -292,7 +290,7 @@ void muonCalib::fitRoughPedHists() {
     }
 
     // gaussian fit
-    int fitresult= h.Fit("gaus", "Q","", av-3*err, av+3*err );
+    h.Fit("gaus", "Q","", av-3*err, av+3*err );
     h.SetAxisRange(av-150,av+150);
 
     // assign values to permanent arrays
@@ -362,13 +360,13 @@ void muonCalib::fillPedHists(int nEvts) {
 
     CalDigi *calDigi = 0;
 
-    for( int cde_nb=0; calDigi=(CalDigi*)calDigiCol->At(cde_nb); cde_nb++ ) { //loop through each 'hit' in one event
+    for( int cde_nb=0; (calDigi=(CalDigi*)calDigiCol->At(cde_nb)); cde_nb++ ) { //loop through each 'hit' in one event
       if (calDigi->getMode() != CalXtalId::ALLRANGE)
          throw string("muon calibration requires ALLRANGE Cal data");
 
       const CalXtalReadout& cRo=*calDigi->getXtalReadout(LEX8); // 1st look at LEX8 vals
 
-      idents::CalXtalId id = calDigi->getPackedId(); // get interaction information
+      CalXtalId id(calDigi->getPackedId()); // get interaction information
       int lyr = id.getLayer();
       int col = id.getColumn();
       int nXtal = getNXtal(lyr,col);
@@ -413,7 +411,7 @@ void muonCalib::fitPedHists() {
     }
 
     // run gaussian fit
-    int fitresult= h.Fit("gaus", "Q","", av-3*err, av+3*err );
+    h.Fit("gaus", "Q","", av-3*err, av+3*err );
     h.SetAxisRange(av-150,av+150);
 
     //assign values to permanet arrays
@@ -453,7 +451,7 @@ void muonCalib::readCalPeds(const string &filename) {
   if (!infile.is_open())
      throw string("Unable to open " + filename);
 
-  int nRead = 0;
+  unsigned nRead = 0;
   while(infile.good()) {
     float av,err;int lyr,col,face, rng;
     infile >> lyr
@@ -619,7 +617,7 @@ void muonCalib::summarizeHits(hitSummary &hs) {
   // PER HIT LOOP:
   for( int cde_nb=0; (calDigi=(CalDigi*) calDigiCol->At(cde_nb)); cde_nb++ ) {
     // get geometry id for hit.
-    CalXtalId id = calDigi->getPackedId();
+    CalXtalId id(calDigi->getPackedId());
     int lyr = id.getLayer();
     int col = id.getColumn();
     int nXtal = getNXtal(lyr,col);
@@ -654,14 +652,13 @@ void muonCalib::summarizeHits(hitSummary &hs) {
       //m_ostr << "nHits " << hs.count;// << endl;
 
       // used to determine if xtal is x or y layer
-      idents::CalXtalId tmpXtal(0,lyr,0);
       //m_ostr << " lyr " << lyr << " col " << col ;//<< " xtal " << nXtal << endl;
-      if (tmpXtal.isX()) { // X layer
+      if (isXlyr(lyr)) { // X layer
         hs.perLyrX[lyr2Xlyr(lyr)]++;
         hs.perColX[col]++;
         hs.hitListX.push_back(nXtal);
         //m_ostr << " X" << " xLyrId " << lyr2Xlyr(lyr) << " perLyrX " << hs.perLyrX[lyr2Xlyr(lyr)] << " perCol " << hs.perColX[col] << endl;
-      }else{ // y layer
+      } else { // y layer
         hs.perLyrY[lyr2Ylyr(lyr)]++;
         hs.perColY[col]++;
         hs.hitListY.push_back(nXtal);
@@ -900,10 +897,9 @@ void muonCalib::fillAsymHists(int nEvts, bool genOptHists) {
       int nXtal = hitList[i];
 
       int lyr = nXtal2lyr(nXtal);
-      int col = nXtal2col(nXtal);
 
       // position will be the vertical track column in longitudinal direction
-      int pos = (idents::CalXtalId(0,lyr,0).isX()) ? YPos : XPos;
+      int pos = (isXlyr(lyr)) ? YPos : XPos;
       if (pos == 0 || pos == 11) continue; // skip extreme ends of xtal, as variance is high.
 
       // calculate the 4 dac vals
@@ -1054,7 +1050,7 @@ void muonCalib::populateAsymArrays() {
     TProfile &profSL = *m_asymProfsSL[nXtal];
     TProfile &profSS = *m_asymProfsSS.at(nXtal);
 
-    int lyr = nXtal2lyr(nXtal); int col = nXtal2col(nXtal);
+    // int lyr = nXtal2lyr(nXtal); int col = nXtal2col(nXtal);
     // m_ostr << "Asym entries lyr=" << lyr << " col=" << col
     // << " LL=" << profLL->GetEntries() << endl;
     // m_ostr << " per bin ";
@@ -1158,7 +1154,7 @@ void muonCalib::readAsymTXT(const string &filenameLL,
   for (int nFile = 0; nFile < 4; nFile++) {
     int lyr, col;
     int nXtal;
-    int nRead = 0;
+    unsigned nRead = 0;
     vector<vector<float > > *calVec, *errVec;
     const string *filename;
 

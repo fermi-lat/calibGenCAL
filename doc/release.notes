@@ -31,3 +31,5 @@ v2r5 Initial I&T release version.  increased pedestal histogram limits, suppress
 v2r5p1 updated doxygen.  removed runMuonCalibChain.cxx (was not removed before).
 
 v3r0 New calibration types introduced.  MevPerDac/IntegralNonlinearity/New Asymetry.  old types no longer used.  muonCalib completely rewritten.
+
+v3r0p1 Small code modifcations to get Linux build w/ no warnings
