@@ -36,7 +36,7 @@ class MuonCalib : public RootFileAnalysis {
   void fillPedHists(int nEvt); ///< Fill pedhist histograms w/ nEvt event data
   void fitPedHists(); ///< Fit 4-range pedestals pedhist[], assign means to m_calPed
   void readCalPeds(const string &filename); ///< read 4-range pedestals in from .txt file created in previous run w/ WritePedsTXT
-  void writePedsXML(const string &filename, const string &dtdFilename); ///< write 4-range pedestals out to .xml file, using official .dtd format
+  void writePedsXML(const string &filename, const string &dtdPath); ///< write 4-range pedestals out to .xml file, using official .dtd format
   void writePedsTXT(const string &filename); ///< write 4-range pedestals to simple columnar .txt file 
 
   void readIntNonlin(const string &filename); ///< read in TXT table of integral nonlinearity values (adc2dac) from ciFit.exe
@@ -47,7 +47,7 @@ class MuonCalib : public RootFileAnalysis {
                     const string &filenameLS,
                     const string &filenameSL,
                     const string &filenameSS); ///< write asymmetry tables out to text file.
-  void writeAsymXML(const string &filename, const string &dtdFilename); ///< write asymmetry data to official XML file
+  void writeAsymXML(const string &filename, const string &dtdPath); ///< write asymmetry data to official XML file
   void readAsymTXT(const string &filenameLL,
                    const string &filenameLS,
                    const string &filenameSL,
@@ -56,7 +56,7 @@ class MuonCalib : public RootFileAnalysis {
   void fillMPDHists(int nEvt); ///< Fill MevPerDAC histograms w/ nEvt worth of event data.
   void fitMPDHists(); ///< Fit MevPerDAC calibration group
   void writeMPDTXT(const string &filenameL, const string &filenameS); ///< write out both MPD calibrations to text file
-  void writeMPDXML(const string &filename, const string &dtdFilename); ///< write asymmetry file to official XML file
+  void writeMPDXML(const string &filename, const string &dtdPath); ///< write asymmetry file to official XML file
 
   void flushHists(); ///< writes histograms to file & closes file if m_histFile is open.  deletes all open histograms
   void openHistFile(const string &filename); ///< opens new histogram file.  closes current m_histFile if it is open

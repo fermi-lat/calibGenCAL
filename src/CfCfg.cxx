@@ -44,8 +44,11 @@ void CfCfg::readCfgFile(const string& path) {
   outputDir = ifile.getString(PATHS.c_str(), "OUTPUT_FOLDER");
   Util::expandEnvVar(&outputDir);
 
-  dtdFile       = ifile.getString(PATHS.c_str(), "DTD_FILE");
-  Util::expandEnvVar(&dtdFile);
+  dtdPath       = ifile.getString(PATHS.c_str(), "DTD_FILE");
+  Util::expandEnvVar(&dtdPath);
+  dtdFilename   = dtdPath;
+  path_remove_dir(dtdFilename);
+
   outputXMLPath = ifile.getString(PATHS.c_str(), "XMLPATH");
   Util::expandEnvVar(&outputXMLPath);
   outputTXTPath = ifile.getString(PATHS.c_str(), "TXTPATH");

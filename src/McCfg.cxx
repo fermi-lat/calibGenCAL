@@ -38,8 +38,8 @@ void McCfg::readCfgFile(const string& cfgPath) {
  
   intNonlinFile   = ifile.getString(PATHS.c_str(), "INTNONLINFILE_TXT");
   Util::expandEnvVar(&intNonlinFile);
-  dtdFile         = ifile.getString(PATHS.c_str(), "DTD_FILE");
-  Util::expandEnvVar(&dtdFile);
+  dtdPath         = ifile.getString(PATHS.c_str(), "DTD_FILE");
+  Util::expandEnvVar(&dtdPath);
 
   outputDir       = ifile.getString(PATHS.c_str(), "OUTPUT_FOLDER");
   Util::expandEnvVar(&outputDir);

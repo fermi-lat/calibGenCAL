@@ -45,19 +45,20 @@ class McCfg : ICfg {
   string rootFileListStr; ///< list of input root files
 
   string intNonlinFile; ///< input txt filename for integral non-linearity
-  string dtdFile; ///< Data descriptoin file for .xml output
+  string dtdPath;       ///< Data descriptoin file for .xml output
+  string dtdFilename;   ///< 
 
   string outputDir; ///< folder for autonamed output files
 
-  string pedFileXML; ///< output xml filename for pedestals
+  string pedFileXML;  ///< output xml filename for pedestals
   string asymFileXML; ///< output xml filename for asymmetry calibrations
-  string mpdFileXML; ///< output xml filename for MevPerDAC calibrations
+  string mpdFileXML;  ///< output xml filename for MevPerDAC calibrations
 
-  string pedHistFile; ///< output ROOT histogram file - pedestal phase
+  string pedHistFile;  ///< output ROOT histogram file - pedestal phase
   string asymHistFile; ///< output ROOT histogram file - asymmetry phase
-  string mpdHistFile; ///< output ROOT histogram file - MevPerDAC phase
+  string mpdHistFile;  ///< output ROOT histogram file - MevPerDAC phase
 
-  string pedFileTXT; ///< output txt filename for pedestals
+  string pedFileTXT;    ///< output txt filename for pedestals
   string asymFileLLTXT; ///< output txt filename for asymmetry Large Diode Pos face 2 Large Diode Neg face 
   string asymFileLSTXT; ///< output txt filename for asymmetry Large Diode Pos face 2 Small Diode Neg face 
   string asymFileSLTXT; ///< output txt filename for asymmetry Small Diode Pos face 2 Large Diode Neg face 
@@ -66,14 +67,13 @@ class McCfg : ICfg {
   string smallMPDFileTXT; ///< output txt filename for Mev per DAC Small Diode
 
   string logfile; ///< duplicate of stdout log
-  
-  
+    
   // SECTION: CONSTANTS //
   double hitThresh;  ///< threshold to count a hit 
   
-  double cellHorPitch; ///< horizontal pitch between 2 cal xtals
+  double cellHorPitch;  ///< horizontal pitch between 2 cal xtals
   double cellVertPitch; ///< vertical pitch between 2 cal xtals
-  double csiLength; ///< length of one cal CsI crystal
+  double csiLength;     ///< length of one cal CsI crystal
 
   double maxAsymLL; ///< used in omission of events w/ bad asymmetry logratio
   double maxAsymLS; ///< used in omission of events w/ bad asymmetry logratio
@@ -86,18 +86,18 @@ class McCfg : ICfg {
   
   // SECTION: GENERAL //
   int nEvtRoughPed; ///< number of events for rough pedestal calibration
-  int nEvtPed; ///< number of events for Pedestal calibration
-  int nEvtAsym; ///< number of events for Asymmetry calibration
-  int nEvtMPD; ///< number of events for MevPerDAC calibration
+  int nEvtPed;      ///< number of events for Pedestal calibration
+  int nEvtAsym;     ///< number of events for Asymmetry calibration
+  int nEvtMPD;      ///< number of events for MevPerDAC calibration
 
   bool readInPeds; ///< skip pedestal calibration and read in previous results from .txt file
   bool readInAsym; ///< skip Asymmetry calibration and read in previous results from .txt file
-  bool skipMPD;  ///< smip MevPerDAC calibration
+  bool skipMPD;    ///< smip MevPerDAC calibration
 
   bool genXML; ///< generate xml output
   bool genTXT; ///< generate text output
   bool genHistfiles; ///< generate histogram output
-  bool genLogfile; ///< clone stdout stream to a logfile
+  bool genLogfile;   ///< clone stdout stream to a logfile
 
   bool genOptAsymHists; ///< generate optional asymmetry histograms
 
@@ -117,9 +117,9 @@ class McCfg : ICfg {
 
   // Section decription strings
   static const string TEST_INFO; ///< TEST_INFO xml IFile section name
-  static const string PATHS; ///< PATHS xml IFile section name
+  static const string PATHS;     ///< PATHS xml IFile section name
   static const string CONSTANTS; ///< CONSTANTS xml IFile section name
-  static const string GENERAL; ///< GENERAL xml IFile section name
+  static const string GENERAL;   ///< GENERAL xml IFile section name
 
   bool valid;   // set to false member data is incomplete/invalid.
 };

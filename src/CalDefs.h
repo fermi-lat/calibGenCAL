@@ -416,7 +416,7 @@ namespace CalDefs {
 
     DiodeIdx(XtalIdx xtal, XtalDiode xDiode) :
       LATWideIndex(calc(xtal.getTwr(), xtal.getLyr(), xtal.getCol(),
-			xDiode.getFace(), xDiode.getDiode())) {}
+                        xDiode.getFace(), xDiode.getDiode())) {}
 
     DiodeIdx(FaceIdx face, short diode) :
       LATWideIndex(calc(face.getTwr(),face.getLyr(),face.getCol(),face.getFace(),diode)) {}
@@ -472,7 +472,7 @@ namespace CalDefs {
 
     RngIdx(XtalIdx xtal, XtalRng xRng) :
       LATWideIndex(calc(xtal.getTwr(), xtal.getLyr(), xtal.getCol(),
-			xRng.getFace(),xRng.getRng())) {}
+                        xRng.getFace(),xRng.getRng())) {}
 
     RngIdx(FaceIdx faceIdx, short rng) :
       LATWideIndex(calc(faceIdx.getTwr(),faceIdx.getLyr(),faceIdx.getCol(),faceIdx.getFace(),rng)) {}
