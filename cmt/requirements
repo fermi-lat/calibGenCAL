@@ -30,6 +30,8 @@ application runMuonCalibChain runMuonCalibChain.cxx
 
 application getMuSlopesXML getMuSlopesXML.cxx
 
+application getLightAsymXML getLightAsymXML.cxx
+
 application getPedestalsXML getPedestalsXML.cxx
 
 application getGainsXML getGainsXML.cxx

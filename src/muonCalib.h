@@ -7,6 +7,7 @@
 #include "TCanvas.h"
 #include "TGraph.h"
 #include "TGraphErrors.h"
+#include "TSpline.h"
 #include "TFile.h"
 #include "TTree.h"
 #include "TChain.h"
@@ -85,6 +86,8 @@ public :
   TObjArray* reshist;
   TObjArray* ratntup;
   TObjArray* asycalib;
+  TObjArray* asymCorr;
+
   TCanvas* c1;
 
   // Graph of column(y axis) vs. layer(x axis) for a measure X layer
@@ -117,6 +120,11 @@ public :
   enum GO_TYPE { FILLPEDHIST, FILLMUHIST, FILLRATHIST, FILLPEDHIST4RANGES,
 					  FILLCORRPEDHIST, FILLCORRPEDHIST2RANGES };
   GO_TYPE go_type;
+  enum ASYM_CORR_TYPE { NONE, SLOPE, SPLINE };
+  ASYM_CORR_TYPE asym_corr_type;
+  void SetAsymCorrNone() {asym_corr_type = NONE;}
+  void SetAsymCorrSlope() {asym_corr_type = SLOPE;}
+  void SetAsymCorrSpline() {asym_corr_type = SPLINE;}
   void SetFillPedHist() { go_type = FILLPEDHIST;}
   void SetFillPedHist4Ranges() { go_type = FILLPEDHIST4RANGES;}
   void SetFillCorrPedHist() { go_type = FILLCORRPEDHIST;}
@@ -176,13 +184,19 @@ public :
   void FitMuHist();
   /// find peak position for Gaus convoluted Landau functions
   void GetMPV( TF1* function, Double_t precision, Double_t min, Double_t max );
-  ///Write mu peak positions for all log ends into the file mupeaks.txt
+  ///Write mu peak positions for all log ends into an ascii file
   void WriteMuPeaks(const char* fileName);
   void ReadMuPeaks(const char* fileName);
   ///Write mu slopes for all log ends into the file muslopes.txt
   void WriteMuSlopes(const char* fileName);
   void ReadMuSlopes(const char* fileName);
   /// Retrieve a pointer to an object stored in our output ROOT file
+
+  ///Write light asymmetry table from bin content of ratfull histograms to an ascii file
+  void WriteAsymTable(const char* fileName);
+  ///Read light asymmetry table from an ascii file and create a cubic spline for each crystal
+  void ReadAsymTable(const char* fileName);
+
   TObject* GetObjectPtr(const char *tag) { return (m_histList->FindObject(tag)); };
   /// process events
   void Go(Int_t numEvents=100000);
@@ -586,6 +600,7 @@ inline void muonCalib::Clear() {
   chainArr = 0;
   ZeroPeds();
   go_type = FILLPEDHIST;
+  asym_corr_type = NONE;
 }
 
 #endif

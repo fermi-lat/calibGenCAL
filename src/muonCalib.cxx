@@ -51,6 +51,7 @@ void muonCalib::DigiHistDefine() {
   poshist = new TObjArray(96);
   rathist = new TObjArray(96);
   ratfull = new TObjArray(96);
+  asymCorr = new TObjArray(96);
   asyhist = new TObjArray(96);
   reshist = new TObjArray(96);
   ratntup = new TObjArray(192);
@@ -204,10 +205,8 @@ void muonCalib::DigiCal()
       }
 
       if (go_type == FILLCORRPEDHIST) {
-		  ((TH2F*)corrpedhist->At(histid))->Fill(adcM-
-															  m_calPed[0][layer][col][0]);
-		  ((TH2F*)corrpedhist->At(histid+1))->Fill(adcP-
-																 m_calPed[0][layer][col][1]);
+		  ((TH2F*)corrpedhist->At(histid))  ->Fill(adcM-m_calPed[0][layer][col][0]);
+		  ((TH2F*)corrpedhist->At(histid+1))->Fill(adcP-m_calPed[0][layer][col][1]);
       }
 
       int numRo = cdig->getNumReadouts();
@@ -249,11 +248,11 @@ void muonCalib::DigiCal()
 		  if (go_type == FILLCORRPEDHIST2RANGES)
 			 for (int iRo=0;iRo<numRo;iRo+=2){
 				((TH2F*)corrpdahist->At(iRo/2+col*4+layer*48))->Fill(
-																					  aadcM[iRo]-m_calPed[iRo][layer][col][0],
-																					  aadcM[iRo+1]-m_calPed[iRo+1][layer][col][0] );
+								aadcM[iRo]-m_calPed[iRo][layer][col][0],
+								aadcM[iRo+1]-m_calPed[iRo+1][layer][col][0] );
 				((TH2F*)corrpdahist->At(iRo/2+2+col*4+layer*48 ))->Fill(
-																						  aadcP[iRo]-m_calPed[iRo][layer][col][1],
-																						  aadcP[iRo+1]-m_calPed[iRo+1][layer][col][1] );
+								aadcP[iRo]-m_calPed[iRo][layer][col][1],
+							    aadcP[iRo+1]-m_calPed[iRo+1][layer][col][1] );
 			 }
       }
     }
@@ -330,9 +329,6 @@ void muonCalib::DigiCal()
 				  gx->Set(nx); gx->SetPoint(nx-1,l,c);
 				}
 
-				if(go_type == FILLMUHIST && ratio > 0){
-				  float longpos = 5.5 - (log(ratio)/m_calSlopes[l][c]);
-				}
 
 				if(nl[l]>maxnlx) maxnlx=nl[l];
 
@@ -344,9 +340,6 @@ void muonCalib::DigiCal()
 				  gy->Set(ny); gy->SetPoint(ny-1,l,c);
 				}
 
-				if(go_type == FILLMUHIST && ratio > 0){
-				  float longpos = 5.5-(log(ratio)/m_calSlopes[l][c]);
-				}
 
 				if(nl[l]>maxnly) maxnly=nl[l];
 
@@ -365,8 +358,8 @@ void muonCalib::DigiCal()
 
     for(lfirst=0; lfirst<8 && nl[lfirst]==0;lfirst++);
     for(llast=7; llast>=0 && nl[llast]==0;llast--);
-
-    ((TH1F*)GetObjectPtr("LTOT"))->Fill(ltot);
+	TH1F* ptLTOT = ((TH1F*)GetObjectPtr("LTOT"));
+    ptLTOT->Fill(ltot);
     if(ltot>0)((TH1F*)GetObjectPtr("LHOLES"))->Fill(llast-lfirst+1-ltot);
 
     ((TH1F*)GetObjectPtr("MAXNL"))->Fill(maxnl);
@@ -406,21 +399,6 @@ void muonCalib::DigiCal()
     for(int l=0; l<8; l++){
       for(int c=0; c<12; c++){
 
-		  /*
-			 int ltest = l<7 ? l+1 : l-1;
-
-			 for (int side=0;side<2;side++){
-
-			 // codes for other tests, not used in muon calibration
-			 int csel = 2+side*7;
-			 int sel = (ar[ltest][csel][0]+ar[ltest][csel][1])>thrsel;
-			 int noleft = (ar[ltest][csel-1][0]+ar[ltest][csel-1][1])<thrsel;
-			 int noright = (ar[ltest][csel+1][0]+ar[ltest][csel+1][1])<thrsel;
-			 if( sel && noleft && noright && ar[l][c][1]+ar[l][c][0]>thrsel)
-			 ((TH1F*)asycalib->At((12*l+c)*2+side))->Fill((ar[l][c][1]-ar[l][c][0])/(ar[l][c][1]+ar[l][c][0]));
-
-			 }
-		  */
 
 		  digi_select[l][c]=0;
 
@@ -462,7 +440,20 @@ void muonCalib::DigiCal()
 
 				// 2.7844 is width of a log, used to translate from log number to
 				// actual position
-				((TProfile*)ratfull->At(12*l+c))->Fill((pos-5.5)*2.7844,log(ratio)+m_calSlopes[l][c]*(pos-5.5));
+
+				if( asym_corr_type == ASYM_CORR_TYPE::SLOPE){
+					((TProfile*)ratfull->At(12*l+c))->Fill((pos-5.5)*2.7844,log(ratio)+m_calSlopes[l][c]*(pos-5.5));
+				}else if(asym_corr_type == ASYM_CORR_TYPE::SPLINE){
+					TSpline3* spl = (TSpline3*) (asymCorr->At(12*l+c));
+					double pos_eval = spl->Eval(log(ratio));
+/*
+					cout << " l="<< l<< " c=" << c 
+						 << " pos=" << pos-5.5 << " pos_eval=" << pos_eval << endl;
+*/
+					((TProfile*)ratfull->At(12*l+c))->Fill((pos-5.5)*2.7844,pos_eval-(pos-5.5));
+				}else{
+					((TProfile*)ratfull->At(12*l+c))->Fill((pos-5.5)*2.7844,log(ratio));
+				}
 
 			 if(pos > 1.5 && pos < 9.5){
 				digi_select[l][c] = 1;
@@ -477,13 +468,6 @@ void muonCalib::DigiCal()
 				float asym = (a[l][c][1]-a[l][c][0])/(a[l][c][1]+a[l][c][1]);
 				((TProfile*)asyhist->At(12*l+c))->Fill(pos-5.5,asym);
 				if(ratio > 0){
-
-				  // measure resolution
-				  if(go_type == FILLMUHIST) {
-					 float longpos = 5.5 - (log(ratio)/m_calSlopes[l][c]);
-					 ((TH1F*)reshist->At(12*l+c))->Fill(2.7844*(longpos-posl));
-				  }
-
 				  ((TProfile*)rathist->At(12*l+c))->Fill(pos-5.5,log(ratio));
 				}
 
@@ -656,7 +640,7 @@ void muonCalib::FitCorrPedHist(){
 										 pdl->GetMean(1)+pdl->GetRMS(1)/2);
 			 gauss->SetParLimits( 5, pdl->GetMean(2)-pdl->GetRMS(2)/2,
 										 pdl->GetMean(2)+pdl->GetRMS(2)/2 );
-			 pdl->Fit( gauss, "Q" );
+			 pdl->Fit( gauss );
 
 			 //save results
 			 m_calCorrPed[rg][lr][col][fc]= m_calPed[rg][lr][col][fc];
@@ -692,6 +676,72 @@ void muonCalib::PrintCalPed(const char* fileName){
     }
   }
 }
+void muonCalib::WriteAsymTable(const char* fileName){
+  std::ofstream asym_table_out(fileName);
+  for (int layer=0;layer < 8;layer++)
+	  for(int col=0;col<12;col++){
+
+			char ratfulname[]="raf000";
+            int  histid= layer*12+col;
+			sprintf(ratfulname,"raf%1d%02d",layer,col);
+			TProfile* raf = (TProfile*)ratfull->At(histid);
+            char scol[]="00";
+            sprintf(scol," %2d",col);
+            asym_table_out << " " << layer << " " << scol;
+                       
+            for (int ibin=2;ibin<12;ibin++){
+                     float bin = (raf->GetBinContent(ibin));
+                     char sbin[]="  0.00000  ";
+                     sprintf(sbin," %8.5f",bin);
+                    asym_table_out << " " << sbin;
+             }
+                 asym_table_out << endl;
+
+	  }
+}
+void muonCalib::ReadAsymTable(const char* fileName){
+
+
+
+    std::ifstream asymin(fileName);
+    while(1){
+    double x[14];
+    for(int i=0;i<14;i++)x[i]=i-6.5;
+    double asym[10],y[14];
+    int layer,col;
+                asymin >> layer
+                        >> col;                        
+                for (int i=0;i<10;i++) asymin >> asym[i];
+    if(!asymin.good()) break;
+                       
+    
+                for(int i=0;i<10;i++)y[i+2]=asym[i];   // -x[i+2]*m_calSlopes[layer][col];
+                cout <<" " << layer 
+                       <<" " << col
+                       << endl;
+//                for ( i=0;i<10;i++) cout << " " << asym[i]; cout << endl;
+//                for ( i=0;i<10;i++) cout << " " << y[i+2]; cout << endl;
+    
+                
+    y[1]=2*y[2]-y[3];
+    y[0]=2*y[1]-y[2];
+    y[12]=2*y[11]-y[10];
+    y[13]=2*y[12]-y[11];
+
+    if(y[11]<y[2]) for (int i=0;i<7;i++)
+    {double xx=x[i];x[i]=x[13-i];x[13-i]=xx;
+    double yy=y[i];y[i]=y[13-i];y[13-i]=yy;}
+    char splname[]="spl000";
+    sprintf(splname,"spl%1d%02d",layer,col);
+   
+    asymCorr->AddAt(new TSpline3(splname,y,x,14),12*layer+col);  
+
+    }            
+
+
+
+}
+
 
 void muonCalib::PrintCalCorrPed(const char* fileName){
   std::ofstream muped(fileName);
