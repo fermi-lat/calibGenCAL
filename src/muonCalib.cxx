@@ -849,14 +849,11 @@ void muonCalib::fillAsymHists(int nEvts, bool genOptHists) {
       nGoodDirs++;
 
       // use references to avoid -> notation
-      vector<int> &hitList = *pHitList;
       vector<int> &hitListLong = *pHitListLong; 
 
       // loop through each longitudinal hit
       for (unsigned i = 0; i < hitListLong.size(); i++) {
         int nXtal = hitListLong[i];
-
-        int lyr = nXtal2lyr(nXtal);
 
         // calculate the 4 dac vals
         float dacPosLarge = adc2dac(nXtal, hs.adc_ped[getNDiode(nXtal,POS_FACE,LARGE_DIODE)]);
@@ -1439,6 +1436,7 @@ void muonCalib::fitMPDHists() {
 
     // get slope
     float large2small = lineFunc.GetParameter(1);
+    // TODO: this should be propogated to m_calMPDSmallErr
     float lineErr = lineFunc.GetParError(1);
 
     m_calMPDSmall[nXtal] = m_calMPDLarge[nXtal]*large2small;
