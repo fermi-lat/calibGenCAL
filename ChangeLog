@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Feb 11 11:35:25 PST 2005
+calibGenCAL/output
+
+Removed Files:
+	ci_intnonlin.041111143546_FM101_PSHP_CALU_COLLECT_CI_SINGLEX16.txt 
+	ci_intnonlin.041111143546_FM101_PSHP_CALU_COLLECT_CI_SINGLEX16.xml 
+Log Message:
+added LEX8 adc2nrg (energy) output in muonCalib
+fixed bad fits of HEX1 pedestals when sigma is very small
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Feb 10 11:34:31 PST 2005
 calibGenCAL/src
 
