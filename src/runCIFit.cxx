@@ -1,6 +1,6 @@
 // LOCAL INCLUDES
 #include "RootFileAnalysis.h"
-#include "cfCfg.h"
+#include "CfCfg.h"
 #include "CalDefs.h"
 
 // GLAST INCLUDES
@@ -289,7 +289,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdFilename) 
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit.cxx,v 1.17 2005/01/13 04:03:17 fewtrell Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.1 2005/01/31 14:01:58 fewtrell Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
