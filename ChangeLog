@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Feb 10 11:34:31 PST 2005
+calibGenCAL/src
+
+Modified Files:
+	CalDefs.h CfCfg.cxx CfCfg.h McCfg.cxx McCfg.h MuonCalib.cxx 
+	MuonCalib.h genTholdCI_XML.cxx runCIFit.cxx runMuonCalib.cxx 
+Log Message:
+removed 'creator' field for now.
+added range checking to detect files w/ unexpected trigger mode setting.
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r2p4, operation: add
 Package: calibGenCAL
