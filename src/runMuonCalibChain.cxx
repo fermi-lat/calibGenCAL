@@ -46,7 +46,7 @@ int main(int argn, char** argc) {
   TChain* digiChain = new TChain("Digi");
   for(std::vector<std::string>::const_iterator itr = digiFileNames.begin();
       itr != digiFileNames.end(); ++itr) {
-    std::cout << "digi file: " << *itr << endl;
+    std::cout << "digi file: " << *itr << std::endl;
     digiChain->Add(itr->c_str());
   }
 
