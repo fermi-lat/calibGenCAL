@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Sat Feb  5 03:09:42 PST 2005
+calibGenCAL/src
+
+Modified Files:
+	CfCfg.cxx McCfg.cxx 
+Log Message:
+made it build on linux
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r2p2, operation: add
 Package: calibGenCAL
