@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Feb 16 14:42:51 PST 2005
+calibGenCAL/src
+
+Modified Files:
+	CGCUtil.cxx 
+Log Message:
+had to remove the environment variables which are not guaranteed to be available.
+will have to find some other method of obtaining this information
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Feb 16 12:09:11 PST 2005
 calibGenCAL/src
 
