@@ -1,4 +1,26 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Jan 31 06:01:58 PST 2005
+calibGenCAL/output
+
+Modified Files:
+	ci_intnonlin.041111143546_FM101_PSHP_CALU_COLLECT_CI_SINGLEX16.xml 
+	ci_logfile.041111143546_FM101_PSHP_CALU_COLLECT_CI_SINGLEX16.txt 
+	mc_asym.041022230030_FM101_Pshp_calu_collect_ext.xml 
+	mc_asymLL.041022230030_FM101_Pshp_calu_collect_ext.txt 
+	mc_asymLS.041022230030_FM101_Pshp_calu_collect_ext.txt 
+	mc_asymSL.041022230030_FM101_Pshp_calu_collect_ext.txt 
+	mc_asymSS.041022230030_FM101_Pshp_calu_collect_ext.txt 
+	mc_logfile.041022230030_FM101_Pshp_calu_collect_ext.txt 
+	mc_mevperdac.041022230030_FM101_Pshp_calu_collect_ext.xml 
+	mc_mpdLarge.041022230030_FM101_Pshp_calu_collect_ext.txt 
+	mc_mpdSmall.041022230030_FM101_Pshp_calu_collect_ext.txt 
+	mc_peds.041022230030_FM101_Pshp_calu_collect_ext.xml 
+Log Message:
+added genTholdCI_XML.
+fixed bad bug where i mixed up all the int-nonlin splines in muon calib
+update CalDefs to object oriented code.
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Jan 31 06:01:57 PST 2005
 calibGenCAL/doc
 
