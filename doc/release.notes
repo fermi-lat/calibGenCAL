@@ -53,3 +53,5 @@ v3r2p1 fixed BIG bug where the small diode MevPerDac values were all INVERTED!  
 v3r2p2 fixed bad format of in 'creator' field in xml file.  adc & dac were switched twice in muonCalib::intNonlin splines (output is same, but names are now correct).  runMuonCalib was looking for option filename w/ wrong case (ok in windows, but not in linux).
 
 v3r2p3 just added quick fix to get it to build w/ gcc
+
+v3r2p4 updated .cvsignore file

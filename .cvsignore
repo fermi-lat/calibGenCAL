@@ -1,6 +1,9 @@
-Visual
-Win32*
-i386*
-Linux*
+Linux-i686
+i386_linux*
+rh*
 sun4x_*
-rh72_*
+msdev
+Win32*
+Visual
+VC7*
+VC8*
