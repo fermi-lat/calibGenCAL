@@ -1,0 +1,34 @@
+package calibGenCAL
+version v0
+
+branches src xml output
+
+use GlastPolicy v*
+use mcRootData v*
+use digiRootData v*
+use reconRootData v*
+use RootPolicy v*
+
+#the following prepend makes the includes folder available locally: avoid the package_include
+macro_prepend includes "-I $(CALIBGENCALROOT) " WIN32 "/I $(CALIBGENCALROOT) "
+
+macro calibgencal_headers   "" WIN32 
+
+macro source "*.cxx" WIN32 "*.h *.cxx"
+
+macro calibgencal_linkopts "$(ROOT_linkopts) $(mcRootData_linkopts) $(digiRootData_linkopts) $(reconRootData_linkopts)" 
+
+application runMuonCalib muonCalib.cxx runMuonCalib.cxx 
+
+application runMuonCalibChain muonCalib.cxx runMuonCalibChain.cxx 
+
+application getMuSlopesXML getMuSlopesXML.cxx
+
+application getPedestalsXML getPedestalsXML.cxx
+
+application getGainsXML getGainsXML.cxx
+
+application genNtuple genNtuple.cxx
+
+application compare_constants compare_constants.cxx
+
