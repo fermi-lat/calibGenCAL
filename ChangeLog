@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Aug 24 11:40:17 PDT 2004
+calibGenCAL/src
+
+Modified Files:
+	ciFit.cxx 
+Log Message:
+made some typecasts to keep gcc warning level ALAP (as low as possble).
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Aug 24 11:27:38 PDT 2004
 calibGenCAL/src
 
