@@ -1,11 +1,10 @@
 // TODO:
 // currently ignoring tower information & run information, perhaps i should put in a check?
 // why are we returning calXTalID not as a pointer? cuz only data point is one int?
-// put in capability for varying #'s of settings and/or trials.  probably can't use multi-dimensional 'c' arrays if i do this. yip, gonna have to switch to hard-core STL vectors.  not on this version though!
+// put in capability for varying #'s of settings and/or trials.
 // some kind of config file 
-// how to get instrument config ?
-// merge openhist/histdefine/makehistlist file into one new public function, RTA::NewHistListForDummies()
-// bjarne says not to use friends.  so that could change.  multiple in
+// how to get instrument/test config ?
+// bjarne says friends are bad.  so that could change.  multiple inheritance would probably be better
 
 #include "RootFileAnalysis.h"
 
@@ -291,7 +290,7 @@ int ciFitData::WriteSplinesXML(const char *fileName) {
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << std::endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit.cxx,v 1.3 2004/06/03 16:07:45 heather Exp $  -->" << std::endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit.cxx,v 1.4 2004/06/29 15:38:26 fewtrell Exp $  -->" << std::endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << std::endl;
   xmlFile << std::endl;
   xmlFile << "<!DOCTYPE calCalib SYSTEM \"" << DTD_PATH << "\" [] >" << std::endl;

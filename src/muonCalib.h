@@ -1,3 +1,14 @@
+/*
+  muonCalib contains the following features.
+
+  1) event loop.
+  2) muon calibration constant generation
+  3) related constant storage
+  4) related ASCII/XML/ROOT FILE IO
+  5) related ROOT histograms
+
+ */
+
 #ifndef muonCalib_h
 #define muonCalib_h 1
 
