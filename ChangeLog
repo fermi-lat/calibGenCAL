@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Jun  2 14:53:22 PDT 2004
+calibGenCAL/src
+
+Modified Files:
+	muonCalib.cxx muonCalib.h runMuonCalibChain.cxx 
+Log Message:
+added std:: namespace stuff to help compile on linux.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Jun  2 14:52:27 PDT 2004
 calibGenCAL/cmt
 
