@@ -58,6 +58,10 @@ int main(int argn, char** argc) {
   inputFile >> pedFile;
   std::cout << "ped text file: " << pedFile << std::endl;
 
+  std::string corrpedFile;
+  inputFile >> corrpedFile;
+  std::cout << "correlated ped text file: " << corrpedFile << std::endl;
+
   std::string slopeFile;
   inputFile >> slopeFile;
   std::cout << "slope text file: " << slopeFile << std::endl;
@@ -93,7 +97,7 @@ int main(int argn, char** argc) {
     r.SetFillCorrPedHist2Ranges();
     r.Go(10000);    
     r.FitCorrPedHist();
-    r.PrintCalCorrPed("mucorrped.txt");
+    r.PrintCalCorrPed(corrpedFile.c_str());
 
     r.Rewind();
     r.SetFillRatHist();

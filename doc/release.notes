@@ -2,5 +2,4 @@ v0  creation of calibGenCAL package, add codes to generate calibration constants
 
 v1 add codes to do the light taper study
 
-v1r0p0 In getGainsXML.cxx, change muon peak from 12.3 MeV to 11.2 MeV, 11.2 MeV is obtained by fitting MC energy spectrum deposited in a single crystal with a landau function, 11.2 MeV is the fit peak position while 12.3 MeV is the average value obtained from PDG.
-
+v2 change calibration constants code: Change muon distribution fit function from landau to log normal. Add correlated pedestal finding method
