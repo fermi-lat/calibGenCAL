@@ -3,16 +3,16 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLROOT)/xmldata/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit_option.xml,v 1.1 2004/08/24 18:27:38 fewtrell Exp $"
-       cvs_Revision="$Revision: 1.1 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit_option.xml,v 1.2 2004/10/28 23:58:59 chehtman Exp $"
+       cvs_Revision="$Revision: 1.2 $" >
 
   <section name="TEST_INFO"> Test configuration info.
-    <item name="TIMESTAMP"      value="2004-07-31-06:50"> Timestamp for test run.</item>
-    <item name="STARTTIME"      value="2004-07-31-00:50:00"> Start of test run</item>
-    <item name="STOPTIME"       value="2004-07-31-06:48:00"> Stop of test run</item>
+    <item name="TIMESTAMP"      value="2004-11-11-14:39"> Timestamp for test run.</item>
+    <item name="STARTTIME"      value="2004-11-11-14:39"> Start of test run</item>
+    <item name="STOPTIME"       value="2004-11-11-14:52"> Stop of test run</item>
 
-    <item name="INSTRUMENT"     value="EM"> Instrument name</item>
-    <item name="TOWER_LIST"     value="1"> Number of towers currently installed. </item>
+    <item name="INSTRUMENT"     value="FM101"> Instrument name</item>
+    <item name="TOWER_LIST"     value="1"> List of towers currently installed. </item>
 
     <item name="TRIGGER_MODE"     value="FORCED_TRIGGER"> Trigger mode.</item>
     <item name="INST_MODE"        value="ONBOARD_CAL"> Instrument mode</item>
@@ -24,17 +24,18 @@
   </section>
 
   <section name="PATHS"> Intput/Output file paths
-    <item name="XMLPATH"     value="../xml/CalIntNonlin_EM1_040731_uncorr.xml"> main output .xml file </item>
-    <item name="DTDFILE"     value="$(CALIBUTILROOT)/xml/calCalib_v2r1.dtd"> description file for output .xml file </item>
-    <item name="DTD_VERSION" value="v2r1"> version of output .dtd file </item>
-    <item name="TXTPATH"     value="../output/CalIntNonlin_EM1_040731_uncorr.txt"> text output file </item>
+    <item name="OUTPUT_FOLDER" value="..\output\"> Folder for auto-named output files </item>
+    
+    <item name="DTD_FILE"     value="../xml/calCalib_v2r2.dtd"> description file for output .xml file </item>
+    <item name="XMLPATH"     value=""> Optional path for output .xml file (default "" autogenerates filename from input filename)</item>
+    <item name="TXTPATH"     value=""> Optoinal path for output .txt file (default "" autogenerates filename from input filename)</item>
 
     <item name="INFILE_TYPE" value="ROOT">Input file type (ROOT,CSV)</item>
 
-    <item name="ROOTFILE_LE1"   value="C:\EM_data\CTS\040731064018_EM_calu_collect_ci_singlex16.root"> input DIGIROOT file #_LE1 </item>
-    <item name="ROOTFILE_HE1"   value="C:\EM_data\CTS\040731064714_EM_calu_collect_ci_singlex16.root"> input DIGIROOT file #_HE1 </item>
-    <item name="ROOTFILE_LE2"   value="C:\EM_data\CTS\040731005004_EM_calu_collect_ci_singlex16.root"> input DIGIROOT file #_LE2 </item>
-    <item name="ROOTFILE_HE2"   value="C:\EM_data\CTS\040731064714_EM_calu_collect_ci_singlex16.root"> input DIGIROOT file #_HE2 </item>
+    <item name="ROOTFILE_LE1"   value="D:\GLAST\DATA\FM101\041111143922_FM101_PSHP_CALU_COLLECT_CI_SINGLEX16.root"> input DIGIROOT file #_LE1 </item>
+    <item name="ROOTFILE_HE1"   value="D:\GLAST\DATA\FM101\041111145340_FM101_PSHP_CALU_COLLECT_CI_SINGLEX16.root"> input DIGIROOT file #_HE1 </item>
+    <item name="ROOTFILE_LE2"   value=""> input DIGIROOT file #_LE2 </item>
+    <item name="ROOTFILE_HE2"   value=""> input DIGIROOT file #_HE2 </item>
     <item name="ROOTFILE_LE3"   value="input_LE3.root"> input DIGIROOT file #_LE3 </item>
     <item name="ROOTFILE_HE3"   value="input_HE3.root"> input DIGIROOT file #_HE3 </item>
 

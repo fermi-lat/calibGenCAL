@@ -1,0 +1,1623 @@
+<?xml version="1.0"?>
+<!DOCTYPE calCalib [<!--
+   $Header: /nfs/slac/g/glast/ground/cvs/calibUtil/xml/calCalib_v2r2.dtd,v 1.4 2004/12/08 20:09:44 jrb Exp $
+
+   /**  @file       calCalib_v2r2.dtd
+        @authors    J. Bogart
+
+        dtd for CAL calibration data types
+
+    */
+
+ -->
+
+<!-- 
+   Overall structure is some header information followed by
+   a sequence of tower data.  Tower data is made up
+   of layer data, in turn made up of data for individual
+   crystals, which consists of data for (1 or 2, depending
+   on calibration type) faces.  
+
+   The header information comes in two parts:
+     "generic" is relevant to any sort of calibration data,
+               not just that from the CAL, such as the
+               name of the instrument being calibrated.
+               See further comments above the generic element
+               declaration
+     "dimension" contains all the parameters necessary to figure 
+               out which data goes with which hardware entity.
+               See further comments above the dimension element
+               declaration
+  -->  
+
+<!ELEMENT calCalib (generic, dimension, dac*, xpos?, tower* ) >
+       
+<!-- Container for all the header/metadata type information to be
+     included here.  Complete metadata will be found in the calibration
+     MySQL database. 
+
+     Description of attributes:
+
+            instrument    - one of "flight", "EM", etc.  Could also
+                            be implemented as enumeration rather than
+                            NMTOKEN
+            timestamp     - when the file was written (date and time)
+            calType       - one of "TKRBadStrips", "CALLightAttenuation",
+                            etc.
+            formatVersion - sufficient versioning information so that
+                            software attempting to read the file can
+                            determine if it supports this version. 
+                            [Might get rid of this here and just keep
+                            it in the MySQL metadata table]
+            creator       - script or program creating calibration data
+ -->
+<!ELEMENT  generic  (inputSample?) >
+<!ATTLIST generic  
+   instrument  (LAT | BFEM | BTEM | EM | EM2 | CU) #REQUIRED
+   timestamp   NMTOKEN #REQUIRED
+   calibType (CAL_LightAtt | CAL_LightAsym | CAL_LightYield |
+              CAL_Ped | CAL_ElecGain | CAL_IntNonlin | CAL_DiffNonlin |
+              CAL_MuSlope | CAL_Asym | CAL_MevPerDac | CAL_TholdCI |
+              CAL_TholdMuon)    #REQUIRED
+   DTDVersion  NMTOKEN "v2r2p1"       
+   fmtVersion  NMTOKEN #REQUIRED
+   creator     NMTOKEN #IMPLIED >
+
+<!-- Description of events used as input to the procedure 
+     Start- and stop-times should be timestamps of earliest and
+     latest events included in sample.
+     inputSample is (for now) optional.
+-->
+<!ELEMENT inputSample (#PCDATA) >
+<!ATTLIST inputSample  startTime NMTOKEN #REQUIRED
+                       stopTime  NMTOKEN #REQUIRED
+                       triggers  NMTOKENS #REQUIRED 
+                       source    NMTOKENS #REQUIRED
+                       mode      NMTOKEN  #REQUIRED>
+
+<!-- In many cases calibration is done per range: LEX8 is low-energy 
+   (= large) diode, x8 amplification; LEX1 is low-energy, low amplification.
+   Similarly have HEX8, HEX1 for high-energy (small) diode.
+   Unfortunately can't use parameter entities since they aren't allowed
+   when the dtd is literally included in an xml file, something
+   we'd like to support.
+  -->
+
+<!-- For light asymmetry may lump together amplifications (and by
+  definition one set of constants applies to both crystal ends, since
+  constants quantify *asymmetry*), so have a set of constants per
+  diode-type -->
+
+<!-- Describe how the data is dimensioned:
+        number of tower rows
+        number of tower columns
+        number of calorimeter layers
+        number of crystals in a layer ("columns")
+        number of faces      (mostly 2; 1 for light asymmetry data)
+        number of ranges     (fixed at 4? for now just default to 4) 
+        number of sets of dac settings (mostly 0)
+        number of xpos elements.  Can only be 0 or 1
+        exact    may be "true" or "false".  If "true", above information
+                 may be mutliplied to compute total number of innermost
+                 elements (e.g., calPed)
+
+   Use the following conventions to determine which data element 
+   corresponds to a particular physical crystal, optional face and
+   gain range:
+       * Tower number is computed from row and column as
+                 tower = column + (nCol)*row
+       * The data can be viewed as a 5-dimensional array where
+         the indices from most- to least-significant are
+              tower
+              layer
+              xtal   (often called "column" in calorimeter code)
+              face
+              range
+         So the first two data elements will correspond to 
+           (tower=0,layer=0, xtal=0, face=0, range=0)
+           (tower=0,layer=0, xtal=0, face=0, range=1)
+ 
+         The total number of data elements (for the default
+         case, with exact = "true") is just
+                nRow*nCol*nLayer*nXtal*nFace*nRange
+
+ -->
+<!ELEMENT dimension EMPTY>
+<!ATTLIST dimension nRow NMTOKEN  #REQUIRED
+                    nCol NMTOKEN  #REQUIRED
+                    nLayer NMTOKEN #REQUIRED
+                    nXtal  NMTOKEN #REQUIRED
+                    nFace  NMTOKEN #REQUIRED
+                    nRange NMTOKEN "4"      
+                    nDacCol NMTOKEN "0" 
+                    nXpos  (0 | 1) "0"
+                    exact  (true | false) "true" >
+
+<!-- For those calibrations involving setting a dac, keep track of
+    settings.  Expect one set per range where used; else 0. Number 
+    should match value of dimension attribute nDacCol  -->
+<!ELEMENT dac EMPTY>
+<!ATTLIST dac range (LEX8 | LEX1 | HEX8 | HEX1) #REQUIRED
+          values NMTOKENS #REQUIRED
+          error  NMTOKEN  #IMPLIED >   <!-- for now.  May want default -->
+
+<!ELEMENT xpos EMPTY>
+<!ATTLIST xpos values NMTOKENS #REQUIRED>
+
+<!ELEMENT tower (layer*) >
+<!ATTLIST tower iRow NMTOKEN #REQUIRED
+                iCol NMTOKEN #REQUIRED 
+                hwserial NMTOKEN "-1" >
+
+<!ELEMENT layer (xtal*) >
+<!ATTLIST layer iLayer NMTOKEN #REQUIRED>
+
+<!ELEMENT xtal (face, face?) >
+<!ATTLIST xtal iXtal NMTOKEN #REQUIRED>
+
+<!-- each face has data for all four ranges, ordered by range number -->
+<!ELEMENT face (calPed* | calGain* | muSlope* | lightAsym* | intNonlin*
+                        | mevPerDac* | tholdCI* | tholdMuon*
+                        | asym* ) >
+<!ATTLIST face end (NEG | POS | NA) #REQUIRED >
+
+
+<!ELEMENT calPed  EMPTY>
+<!ATTLIST calPed  range (LEX8 | LEX1 | HEX8 | HEX1) #REQUIRED
+                  avg NMTOKEN #REQUIRED
+                  sig NMTOKEN #REQUIRED
+                  cos NMTOKEN "2" >
+
+<!ELEMENT calGain EMPTY>
+<!ATTLIST calGain range (LEX8 | LEX1 | HEX8 | HEX1) #REQUIRED
+                  avg NMTOKEN #REQUIRED
+                  sig NMTOKEN #REQUIRED>
+
+<!ELEMENT muSlope EMPTY>
+<!ATTLIST muSlope range (LEX8 | LEX1 | HEX8 | HEX1) #REQUIRED
+                  slope NMTOKEN #REQUIRED
+                  error NMTOKEN "0.0" >
+
+<!ELEMENT lightAsym EMPTY>
+<!ATTLIST lightAsym diode (LE | HE) #REQUIRED
+                    values NMTOKENS #REQUIRED
+                    error NMTOKEN #REQUIRED >
+
+<!ELEMENT intNonlin EMPTY>
+<!ATTLIST intNonlin range (LEX8 | LEX1 | HEX8 | HEX1) #REQUIRED
+                    values NMTOKENS #REQUIRED
+                    error NMTOKEN   #REQUIRED >
+
+<!-- Some of mevPerDac information is per-crystal, some is per face.  So
+     <mevPerDac> is identified by tower/layer/crystal and contains two
+     <bigSmall> elements for the per-face information. 
+ -->
+<!ELEMENT mevPerDac (bigSmall, bigSmall) >
+<!ATTLIST mevPerDac bigVal NMTOKEN #REQUIRED
+                    bigSig NMTOKEN #REQUIRED
+                    smallVal NMTOKEN #REQUIRED
+                    smallSig NMTOKEN #REQUIRED
+>
+<!ELEMENT bigSmall EMPTY>
+<!ATTLIST bigSmall  end (NEG | POS) #REQUIRED
+                    bigSmallRatioVals NMTOKENS #REQUIRED
+                    bigSmallRatioSigs NMTOKENS #REQUIRED
+>
+
+<!ELEMENT asym EMPTY>
+<!ATTLIST asym bigVals NMTOKENS #REQUIRED
+               bigSigs NMTOKENS #REQUIRED
+               smallVals  NMTOKENS #REQUIRED
+               smallSigs  NMTOKENS #REQUIRED
+               NsmallPbigVals NMTOKENS #REQUIRED
+               NsmallPbigSigs NMTOKENS #REQUIRED
+               PsmallNbigVals NMTOKENS #REQUIRED
+               PsmallNbigSigs NMTOKENS #REQUIRED
+>
+
+<!-- Some of tholdCI information is per-crystal-face, some is per range.  So
+     <tholdCI> is identified by tower/layer/crystal/face and contains up
+       to 4 tholdCIRange elements for per-range information
+ -->
+<!ELEMENT tholdCI (tholdCIRange, tholdCIRange?, tholdCIRange?, tholdCIRange?) >
+<!ATTLIST tholdCI FLEVal NMTOKEN #REQUIRED
+                  FLESig NMTOKEN #REQUIRED
+                  FHEVal NMTOKEN #REQUIRED
+                  FHESig NMTOKEN #REQUIRED
+                  LACVal NMTOKEN #REQUIRED
+                  LACSig NMTOKEN #REQUIRED
+>
+
+<!ELEMENT tholdCIRange EMPTY>
+<!ATTLIST tholdCIRange range (LEX8 | LEX1 | HEX8 | HEX1) #REQUIRED
+                       pedVal NMTOKEN #REQUIRED
+                       pedSig NMTOKEN #REQUIRED
+                       ULDVal NMTOKEN #REQUIRED
+                       ULDSig NMTOKEN #REQUIRED
+>
+
+<!-- Some of tholdMuon information is per-crystal-face, some is per range.  So
+     <tholdMuon> is identified by tower/layer/crystal/face and contains up
+       to 4 tholdMuonRange elements for per-range information
+ -->
+<!ELEMENT tholdMuon (tholdMuonRange, tholdMuonRange?, tholdMuonRange?, 
+                     tholdMuonRange?) >
+<!ATTLIST tholdMuon FLEVal NMTOKEN #REQUIRED
+                    FLESig NMTOKEN #REQUIRED
+                    FHEVal NMTOKEN #REQUIRED
+                    FHESig NMTOKEN #REQUIRED >
+
+<!ELEMENT tholdMuonRange EMPTY>
+<!ATTLIST tholdMuonRange range (LEX8 | LEX1 | HEX8 | HEX1) #REQUIRED
+                         pedVal NMTOKEN #REQUIRED
+                         pedSig NMTOKEN #REQUIRED
+>
+
+]>
+<calCalib>
+ <generic instrument="FM101" timestamp="2004-07-31-06:50" calibType="CAL_Ped" fmtVersion="v2r2">
+ </generic>
+ <dimension nRow="1" nCol="1" nLayer="8" nXtal="12" nFace="2" nRange="4"/>
+ <tower iRow="0" iCol="0">
+  <layer iLayer="0">
+   <xtal iXtal="0">
+    <face end="POS">
+     <calPed avg="634.621" sig="5.80922" range="LEX8"/>
+     <calPed avg="203.72" sig="0.859742" range="LEX1"/>
+     <calPed avg="618.369" sig="4.38384" range="HEX8"/>
+     <calPed avg="238.365" sig="0.724878" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="419.113" sig="5.73681" range="LEX8"/>
+     <calPed avg="225.506" sig="0.867359" range="LEX1"/>
+     <calPed avg="514.761" sig="4.36158" range="HEX8"/>
+     <calPed avg="257.83" sig="1.07284" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="1">
+    <face end="POS">
+     <calPed avg="551.955" sig="5.8208" range="LEX8"/>
+     <calPed avg="219.701" sig="0.858616" range="LEX1"/>
+     <calPed avg="610.17" sig="4.38969" range="HEX8"/>
+     <calPed avg="217.475" sig="0.686978" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="576.909" sig="5.70945" range="LEX8"/>
+     <calPed avg="223.803" sig="0.842729" range="LEX1"/>
+     <calPed avg="645.69" sig="4.36241" range="HEX8"/>
+     <calPed avg="224.608" sig="0.485693" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="2">
+    <face end="POS">
+     <calPed avg="592.133" sig="5.6449" range="LEX8"/>
+     <calPed avg="209.65" sig="0.849921" range="LEX1"/>
+     <calPed avg="368.151" sig="4.17005" range="HEX8"/>
+     <calPed avg="220.005" sig="1.11081" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="556.425" sig="5.78854" range="LEX8"/>
+     <calPed avg="219.31" sig="0.878386" range="LEX1"/>
+     <calPed avg="658.119" sig="4.28808" range="HEX8"/>
+     <calPed avg="205.805" sig="0.667288" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="3">
+    <face end="POS">
+     <calPed avg="536.676" sig="5.83162" range="LEX8"/>
+     <calPed avg="235.091" sig="0.889386" range="LEX1"/>
+     <calPed avg="371.273" sig="4.20617" range="HEX8"/>
+     <calPed avg="213.373" sig="0.478703" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="603.044" sig="5.79031" range="LEX8"/>
+     <calPed avg="233.956" sig="0.834639" range="LEX1"/>
+     <calPed avg="319.615" sig="4.25874" range="HEX8"/>
+     <calPed avg="235.497" sig="0.726366" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="4">
+    <face end="POS">
+     <calPed avg="620.755" sig="5.86085" range="LEX8"/>
+     <calPed avg="206.945" sig="0.920616" range="LEX1"/>
+     <calPed avg="250.381" sig="4.14372" range="HEX8"/>
+     <calPed avg="200.628" sig="0.457263" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="538.33" sig="5.9714" range="LEX8"/>
+     <calPed avg="211.407" sig="0.888896" range="LEX1"/>
+     <calPed avg="593.81" sig="4.50087" range="HEX8"/>
+     <calPed avg="221.635" sig="0.736941" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="5">
+    <face end="POS">
+     <calPed avg="699.159" sig="6.06802" range="LEX8"/>
+     <calPed avg="206.824" sig="0.929685" range="LEX1"/>
+     <calPed avg="658.622" sig="4.38323" range="HEX8"/>
+     <calPed avg="208.096" sig="0.725808" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="501.604" sig="5.71189" range="LEX8"/>
+     <calPed avg="206.656" sig="0.899142" range="LEX1"/>
+     <calPed avg="375.659" sig="4.50512" range="HEX8"/>
+     <calPed avg="217.316" sig="0.864464" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="6">
+    <face end="POS">
+     <calPed avg="451.493" sig="5.79418" range="LEX8"/>
+     <calPed avg="220.3" sig="0.885928" range="LEX1"/>
+     <calPed avg="296.306" sig="4.01728" range="HEX8"/>
+     <calPed avg="223.916" sig="0.666773" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="442.079" sig="5.87618" range="LEX8"/>
+     <calPed avg="207.807" sig="0.904794" range="LEX1"/>
+     <calPed avg="276.897" sig="4.11476" range="HEX8"/>
+     <calPed avg="200.351" sig="0.729695" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="7">
+    <face end="POS">
+     <calPed avg="307.442" sig="5.72017" range="LEX8"/>
+     <calPed avg="200.109" sig="0.915237" range="LEX1"/>
+     <calPed avg="365.627" sig="4.29411" range="HEX8"/>
+     <calPed avg="216.61" sig="0.597439" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="331.837" sig="5.90943" range="LEX8"/>
+     <calPed avg="219.138" sig="0.903358" range="LEX1"/>
+     <calPed avg="354.697" sig="4.21444" range="HEX8"/>
+     <calPed avg="213.662" sig="0.697506" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="8">
+    <face end="POS">
+     <calPed avg="560.197" sig="5.87217" range="LEX8"/>
+     <calPed avg="218.93" sig="0.896297" range="LEX1"/>
+     <calPed avg="594.768" sig="4.4307" range="HEX8"/>
+     <calPed avg="211.397" sig="0.50052" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="461.877" sig="5.76724" range="LEX8"/>
+     <calPed avg="203.437" sig="0.887048" range="LEX1"/>
+     <calPed avg="412.293" sig="4.41926" range="HEX8"/>
+     <calPed avg="209.377" sig="0.487627" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="9">
+    <face end="POS">
+     <calPed avg="462.156" sig="5.95563" range="LEX8"/>
+     <calPed avg="223.183" sig="0.923446" range="LEX1"/>
+     <calPed avg="416.959" sig="4.23463" range="HEX8"/>
+     <calPed avg="205.771" sig="0.690094" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="549.218" sig="5.69077" range="LEX8"/>
+     <calPed avg="227.088" sig="0.884667" range="LEX1"/>
+     <calPed avg="659.538" sig="4.2937" range="HEX8"/>
+     <calPed avg="225.394" sig="0.551771" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="10">
+    <face end="POS">
+     <calPed avg="350.358" sig="5.62322" range="LEX8"/>
+     <calPed avg="232.525" sig="0.893055" range="LEX1"/>
+     <calPed avg="583.634" sig="4.40096" range="HEX8"/>
+     <calPed avg="208.125" sig="0.70351" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="438.101" sig="5.99994" range="LEX8"/>
+     <calPed avg="223.864" sig="0.867915" range="LEX1"/>
+     <calPed avg="345.845" sig="4.22309" range="HEX8"/>
+     <calPed avg="236.137" sig="1.08221" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="11">
+    <face end="POS">
+     <calPed avg="478.792" sig="5.57763" range="LEX8"/>
+     <calPed avg="220.775" sig="0.875075" range="LEX1"/>
+     <calPed avg="471.724" sig="4.26188" range="HEX8"/>
+     <calPed avg="204.092" sig="0.664295" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="560.359" sig="5.67228" range="LEX8"/>
+     <calPed avg="221.21" sig="0.882101" range="LEX1"/>
+     <calPed avg="636.822" sig="4.25908" range="HEX8"/>
+     <calPed avg="226.064" sig="0.671368" range="HEX1"/>
+    </face>
+   </xtal>
+  </layer>
+  <layer iLayer="1">
+   <xtal iXtal="0">
+    <face end="POS">
+     <calPed avg="442.422" sig="5.83598" range="LEX8"/>
+     <calPed avg="221.456" sig="0.875809" range="LEX1"/>
+     <calPed avg="619.191" sig="4.39475" range="HEX8"/>
+     <calPed avg="210.319" sig="0.713993" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="445.78" sig="5.76154" range="LEX8"/>
+     <calPed avg="208.494" sig="0.886575" range="LEX1"/>
+     <calPed avg="608.661" sig="4.3401" range="HEX8"/>
+     <calPed avg="216.632" sig="0.468211" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="1">
+    <face end="POS">
+     <calPed avg="430.294" sig="5.94048" range="LEX8"/>
+     <calPed avg="217.106" sig="0.900488" range="LEX1"/>
+     <calPed avg="435.523" sig="4.39494" range="HEX8"/>
+     <calPed avg="224.146" sig="0.679874" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="417.64" sig="5.6743" range="LEX8"/>
+     <calPed avg="202.371" sig="0.877501" range="LEX1"/>
+     <calPed avg="491.519" sig="4.33565" range="HEX8"/>
+     <calPed avg="204.174" sig="0.672859" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="2">
+    <face end="POS">
+     <calPed avg="366.532" sig="5.61" range="LEX8"/>
+     <calPed avg="208.066" sig="0.8998" range="LEX1"/>
+     <calPed avg="467.672" sig="4.31425" range="HEX8"/>
+     <calPed avg="230.364" sig="0.7305" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="380.117" sig="5.49871" range="LEX8"/>
+     <calPed avg="197.948" sig="0.803656" range="LEX1"/>
+     <calPed avg="410.443" sig="4.14768" range="HEX8"/>
+     <calPed avg="210.277" sig="0.698315" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="3">
+    <face end="POS">
+     <calPed avg="522.653" sig="5.78634" range="LEX8"/>
+     <calPed avg="226.95" sig="0.886495" range="LEX1"/>
+     <calPed avg="470.976" sig="4.31232" range="HEX8"/>
+     <calPed avg="230.538" sig="0.857595" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="389.268" sig="5.51914" range="LEX8"/>
+     <calPed avg="215.683" sig="0.847929" range="LEX1"/>
+     <calPed avg="502.141" sig="4.24188" range="HEX8"/>
+     <calPed avg="215.438" sig="0.811886" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="4">
+    <face end="POS">
+     <calPed avg="457.716" sig="5.66318" range="LEX8"/>
+     <calPed avg="224.702" sig="0.891896" range="LEX1"/>
+     <calPed avg="374.053" sig="4.27329" range="HEX8"/>
+     <calPed avg="208.102" sig="0.662479" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="494.019" sig="5.93579" range="LEX8"/>
+     <calPed avg="211.453" sig="0.878275" range="LEX1"/>
+     <calPed avg="347.211" sig="4.32787" range="HEX8"/>
+     <calPed avg="193.857" sig="0.699297" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="5">
+    <face end="POS">
+     <calPed avg="441.411" sig="5.7993" range="LEX8"/>
+     <calPed avg="197.976" sig="0.86609" range="LEX1"/>
+     <calPed avg="467.776" sig="4.33154" range="HEX8"/>
+     <calPed avg="202.234" sig="0.717687" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="449.102" sig="5.70405" range="LEX8"/>
+     <calPed avg="203.324" sig="0.865109" range="LEX1"/>
+     <calPed avg="523.713" sig="4.26346" range="HEX8"/>
+     <calPed avg="194.042" sig="0.677236" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="6">
+    <face end="POS">
+     <calPed avg="774.452" sig="5.89052" range="LEX8"/>
+     <calPed avg="210.922" sig="0.894654" range="LEX1"/>
+     <calPed avg="460.503" sig="4.29097" range="HEX8"/>
+     <calPed avg="193.971" sig="0.680614" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="581.985" sig="5.9017" range="LEX8"/>
+     <calPed avg="215.749" sig="0.868319" range="LEX1"/>
+     <calPed avg="744.994" sig="4.4163" range="HEX8"/>
+     <calPed avg="213.38" sig="0.468517" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="7">
+    <face end="POS">
+     <calPed avg="428.221" sig="5.70191" range="LEX8"/>
+     <calPed avg="207.773" sig="0.862312" range="LEX1"/>
+     <calPed avg="335.377" sig="4.24815" range="HEX8"/>
+     <calPed avg="227.751" sig="0.733837" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="578.426" sig="5.67071" range="LEX8"/>
+     <calPed avg="216.176" sig="0.892713" range="LEX1"/>
+     <calPed avg="573.966" sig="4.41553" range="HEX8"/>
+     <calPed avg="196.615" sig="0.557162" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="8">
+    <face end="POS">
+     <calPed avg="489.406" sig="5.78502" range="LEX8"/>
+     <calPed avg="212.607" sig="0.901227" range="LEX1"/>
+     <calPed avg="507.576" sig="4.32985" range="HEX8"/>
+     <calPed avg="209.76" sig="1.04682" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="496.292" sig="5.75665" range="LEX8"/>
+     <calPed avg="195.29" sig="0.877159" range="LEX1"/>
+     <calPed avg="361.343" sig="4.3752" range="HEX8"/>
+     <calPed avg="227.758" sig="0.686918" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="9">
+    <face end="POS">
+     <calPed avg="414.972" sig="5.54947" range="LEX8"/>
+     <calPed avg="198.544" sig="0.89023" range="LEX1"/>
+     <calPed avg="328.634" sig="4.13459" range="HEX8"/>
+     <calPed avg="191.374" sig="0.46623" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="536.54" sig="5.75643" range="LEX8"/>
+     <calPed avg="204.123" sig="0.905729" range="LEX1"/>
+     <calPed avg="284.852" sig="4.16709" range="HEX8"/>
+     <calPed avg="197.383" sig="0.521859" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="10">
+    <face end="POS">
+     <calPed avg="694.231" sig="5.84938" range="LEX8"/>
+     <calPed avg="220.745" sig="0.900421" range="LEX1"/>
+     <calPed avg="557.242" sig="4.35863" range="HEX8"/>
+     <calPed avg="207.432" sig="0.55628" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="390.172" sig="5.71083" range="LEX8"/>
+     <calPed avg="222.635" sig="0.921918" range="LEX1"/>
+     <calPed avg="325.376" sig="4.18058" range="HEX8"/>
+     <calPed avg="224.213" sig="0.680784" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="11">
+    <face end="POS">
+     <calPed avg="337.668" sig="5.64123" range="LEX8"/>
+     <calPed avg="218.715" sig="0.88511" range="LEX1"/>
+     <calPed avg="555.271" sig="4.34435" range="HEX8"/>
+     <calPed avg="221.896" sig="0.689952" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="590.532" sig="5.88197" range="LEX8"/>
+     <calPed avg="220.075" sig="0.894806" range="LEX1"/>
+     <calPed avg="562.934" sig="4.51133" range="HEX8"/>
+     <calPed avg="211.482" sig="0.696157" range="HEX1"/>
+    </face>
+   </xtal>
+  </layer>
+  <layer iLayer="2">
+   <xtal iXtal="0">
+    <face end="POS">
+     <calPed avg="603.116" sig="5.68105" range="LEX8"/>
+     <calPed avg="229.768" sig="0.825088" range="LEX1"/>
+     <calPed avg="512.22" sig="4.14341" range="HEX8"/>
+     <calPed avg="214.058" sig="1.10191" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="396.483" sig="5.61301" range="LEX8"/>
+     <calPed avg="218.753" sig="0.881522" range="LEX1"/>
+     <calPed avg="313.793" sig="4.2868" range="HEX8"/>
+     <calPed avg="228.214" sig="0.722029" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="1">
+    <face end="POS">
+     <calPed avg="382.006" sig="5.81053" range="LEX8"/>
+     <calPed avg="177.221" sig="0.887095" range="LEX1"/>
+     <calPed avg="305.571" sig="4.21022" range="HEX8"/>
+     <calPed avg="168.177" sig="0.689807" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="398.521" sig="5.68147" range="LEX8"/>
+     <calPed avg="209.726" sig="0.838071" range="LEX1"/>
+     <calPed avg="697.622" sig="4.32525" range="HEX8"/>
+     <calPed avg="208.127" sig="0.684384" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="2">
+    <face end="POS">
+     <calPed avg="584.568" sig="6.08813" range="LEX8"/>
+     <calPed avg="190.66" sig="0.929333" range="LEX1"/>
+     <calPed avg="578.912" sig="4.51138" range="HEX8"/>
+     <calPed avg="183.423" sig="0.813836" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="463.956" sig="6.2073" range="LEX8"/>
+     <calPed avg="215.33" sig="0.933154" range="LEX1"/>
+     <calPed avg="562.174" sig="4.4352" range="HEX8"/>
+     <calPed avg="215.433" sig="0.809069" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="3">
+    <face end="POS">
+     <calPed avg="484.053" sig="5.74737" range="LEX8"/>
+     <calPed avg="234.228" sig="0.904462" range="LEX1"/>
+     <calPed avg="623.766" sig="4.32849" range="HEX8"/>
+     <calPed avg="207.862" sig="0.682144" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="407.2" sig="5.76965" range="LEX8"/>
+     <calPed avg="216.714" sig="0.895527" range="LEX1"/>
+     <calPed avg="710.871" sig="4.50306" range="HEX8"/>
+     <calPed avg="199.977" sig="0.682395" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="4">
+    <face end="POS">
+     <calPed avg="423.384" sig="5.74643" range="LEX8"/>
+     <calPed avg="211.761" sig="0.849121" range="LEX1"/>
+     <calPed avg="497.803" sig="4.27682" range="HEX8"/>
+     <calPed avg="187.501" sig="0.712759" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="619.461" sig="5.75178" range="LEX8"/>
+     <calPed avg="185.015" sig="0.884875" range="LEX1"/>
+     <calPed avg="595.227" sig="4.25481" range="HEX8"/>
+     <calPed avg="187.684" sig="0.709566" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="5">
+    <face end="POS">
+     <calPed avg="489.176" sig="5.83311" range="LEX8"/>
+     <calPed avg="211.182" sig="0.881558" range="LEX1"/>
+     <calPed avg="660.004" sig="4.28513" range="HEX8"/>
+     <calPed avg="220.184" sig="0.642703" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="549.855" sig="5.92433" range="LEX8"/>
+     <calPed avg="210.739" sig="0.905395" range="LEX1"/>
+     <calPed avg="772.283" sig="4.43966" range="HEX8"/>
+     <calPed avg="202.62" sig="0.494834" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="6">
+    <face end="POS">
+     <calPed avg="435.798" sig="5.93044" range="LEX8"/>
+     <calPed avg="182.325" sig="0.928686" range="LEX1"/>
+     <calPed avg="348.022" sig="4.24974" range="HEX8"/>
+     <calPed avg="195.713" sig="0.710948" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="551.299" sig="5.84943" range="LEX8"/>
+     <calPed avg="227.663" sig="0.859776" range="LEX1"/>
+     <calPed avg="654.374" sig="4.40247" range="HEX8"/>
+     <calPed avg="219.726" sig="0.721017" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="7">
+    <face end="POS">
+     <calPed avg="546.704" sig="5.72176" range="LEX8"/>
+     <calPed avg="201.608" sig="0.845538" range="LEX1"/>
+     <calPed avg="496.866" sig="4.38823" range="HEX8"/>
+     <calPed avg="195.637" sig="0.722834" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="363.764" sig="5.85862" range="LEX8"/>
+     <calPed avg="216.018" sig="0.873585" range="LEX1"/>
+     <calPed avg="732.893" sig="4.39097" range="HEX8"/>
+     <calPed avg="224.547" sig="0.838533" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="8">
+    <face end="POS">
+     <calPed avg="472.461" sig="5.72379" range="LEX8"/>
+     <calPed avg="173.046" sig="0.893122" range="LEX1"/>
+     <calPed avg="476.457" sig="4.3193" range="HEX8"/>
+     <calPed avg="205.395" sig="0.48458" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="482.303" sig="5.73135" range="LEX8"/>
+     <calPed avg="203.869" sig="0.822805" range="LEX1"/>
+     <calPed avg="466.882" sig="4.32817" range="HEX8"/>
+     <calPed avg="214.016" sig="0.684333" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="9">
+    <face end="POS">
+     <calPed avg="498.423" sig="5.79097" range="LEX8"/>
+     <calPed avg="225.723" sig="0.837674" range="LEX1"/>
+     <calPed avg="395.063" sig="4.19503" range="HEX8"/>
+     <calPed avg="207.483" sig="0.687224" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="544.156" sig="5.89839" range="LEX8"/>
+     <calPed avg="197.672" sig="0.872137" range="LEX1"/>
+     <calPed avg="365.473" sig="4.23147" range="HEX8"/>
+     <calPed avg="175.826" sig="0.691037" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="10">
+    <face end="POS">
+     <calPed avg="425.867" sig="5.84614" range="LEX8"/>
+     <calPed avg="216.221" sig="0.912022" range="LEX1"/>
+     <calPed avg="538.926" sig="4.26113" range="HEX8"/>
+     <calPed avg="220.622" sig="0.499798" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="395.195" sig="5.77062" range="LEX8"/>
+     <calPed avg="179.5" sig="0.865724" range="LEX1"/>
+     <calPed avg="412.176" sig="4.309" range="HEX8"/>
+     <calPed avg="181.938" sig="0.701545" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="11">
+    <face end="POS">
+     <calPed avg="547.301" sig="5.81462" range="LEX8"/>
+     <calPed avg="225.507" sig="0.871059" range="LEX1"/>
+     <calPed avg="705.363" sig="4.33792" range="HEX8"/>
+     <calPed avg="216.628" sig="0.479058" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="587.053" sig="5.92459" range="LEX8"/>
+     <calPed avg="214.016" sig="0.846456" range="LEX1"/>
+     <calPed avg="626.157" sig="4.34928" range="HEX8"/>
+     <calPed avg="208.616" sig="0.53465" range="HEX1"/>
+    </face>
+   </xtal>
+  </layer>
+  <layer iLayer="3">
+   <xtal iXtal="0">
+    <face end="POS">
+     <calPed avg="492.253" sig="5.86674" range="LEX8"/>
+     <calPed avg="242.387" sig="0.896386" range="LEX1"/>
+     <calPed avg="554.937" sig="4.37368" range="HEX8"/>
+     <calPed avg="207.808" sig="0.742967" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="734.857" sig="5.73242" range="LEX8"/>
+     <calPed avg="217.428" sig="0.857639" range="LEX1"/>
+     <calPed avg="552.584" sig="4.31598" range="HEX8"/>
+     <calPed avg="219.483" sig="0.705933" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="1">
+    <face end="POS">
+     <calPed avg="530.608" sig="5.76167" range="LEX8"/>
+     <calPed avg="217.535" sig="0.860237" range="LEX1"/>
+     <calPed avg="622.01" sig="4.38307" range="HEX8"/>
+     <calPed avg="214.31" sig="0.705011" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="490.125" sig="5.81304" range="LEX8"/>
+     <calPed avg="188.344" sig="0.911514" range="LEX1"/>
+     <calPed avg="378.242" sig="4.15142" range="HEX8"/>
+     <calPed avg="178.552" sig="0.473276" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="2">
+    <face end="POS">
+     <calPed avg="397.271" sig="5.88326" range="LEX8"/>
+     <calPed avg="236.154" sig="0.907141" range="LEX1"/>
+     <calPed avg="504.66" sig="4.37607" range="HEX8"/>
+     <calPed avg="222.61" sig="0.518882" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="397.202" sig="5.73061" range="LEX8"/>
+     <calPed avg="189.347" sig="0.878343" range="LEX1"/>
+     <calPed avg="633.369" sig="4.31328" range="HEX8"/>
+     <calPed avg="180.227" sig="0.678165" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="3">
+    <face end="POS">
+     <calPed avg="476.39" sig="5.76747" range="LEX8"/>
+     <calPed avg="213.066" sig="0.899367" range="LEX1"/>
+     <calPed avg="609.948" sig="4.36686" range="HEX8"/>
+     <calPed avg="208.614" sig="0.577983" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="572.855" sig="5.88207" range="LEX8"/>
+     <calPed avg="240.91" sig="0.896977" range="LEX1"/>
+     <calPed avg="494.953" sig="4.28492" range="HEX8"/>
+     <calPed avg="228.293" sig="0.709587" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="4">
+    <face end="POS">
+     <calPed avg="514.381" sig="6.03252" range="LEX8"/>
+     <calPed avg="205.636" sig="0.885824" range="LEX1"/>
+     <calPed avg="317.655" sig="4.31459" range="HEX8"/>
+     <calPed avg="187.387" sig="0.493613" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="690.275" sig="5.86148" range="LEX8"/>
+     <calPed avg="235.889" sig="0.85483" range="LEX1"/>
+     <calPed avg="304.769" sig="4.14193" range="HEX8"/>
+     <calPed avg="206.611" sig="0.500651" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="5">
+    <face end="POS">
+     <calPed avg="605.344" sig="5.81708" range="LEX8"/>
+     <calPed avg="200.335" sig="0.900805" range="LEX1"/>
+     <calPed avg="505.771" sig="4.41009" range="HEX8"/>
+     <calPed avg="199.627" sig="0.731767" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="341.167" sig="5.64762" range="LEX8"/>
+     <calPed avg="224.062" sig="0.924751" range="LEX1"/>
+     <calPed avg="558.186" sig="4.42323" range="HEX8"/>
+     <calPed avg="202.569" sig="0.552093" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="6">
+    <face end="POS">
+     <calPed avg="523.35" sig="5.8354" range="LEX8"/>
+     <calPed avg="219.671" sig="0.861924" range="LEX1"/>
+     <calPed avg="565.691" sig="4.45851" range="HEX8"/>
+     <calPed avg="216.602" sig="0.532993" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="642.43" sig="5.75796" range="LEX8"/>
+     <calPed avg="200.517" sig="0.898646" range="LEX1"/>
+     <calPed avg="538.497" sig="4.37809" range="HEX8"/>
+     <calPed avg="196.608" sig="0.494573" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="7">
+    <face end="POS">
+     <calPed avg="562.015" sig="5.88827" range="LEX8"/>
+     <calPed avg="206.253" sig="0.924525" range="LEX1"/>
+     <calPed avg="299.65" sig="4.23243" range="HEX8"/>
+     <calPed avg="204.617" sig="0.514733" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="542.289" sig="5.83747" range="LEX8"/>
+     <calPed avg="195.243" sig="0.88836" range="LEX1"/>
+     <calPed avg="685.078" sig="4.32572" range="HEX8"/>
+     <calPed avg="203.998" sig="0.687936" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="8">
+    <face end="POS">
+     <calPed avg="537.221" sig="5.84003" range="LEX8"/>
+     <calPed avg="213.814" sig="0.856488" range="LEX1"/>
+     <calPed avg="434.226" sig="4.23634" range="HEX8"/>
+     <calPed avg="205.49" sig="0.705954" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="434.416" sig="5.6824" range="LEX8"/>
+     <calPed avg="213.005" sig="0.876835" range="LEX1"/>
+     <calPed avg="481.126" sig="4.41445" range="HEX8"/>
+     <calPed avg="220.045" sig="0.676747" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="9">
+    <face end="POS">
+     <calPed avg="495.365" sig="5.73769" range="LEX8"/>
+     <calPed avg="211.668" sig="0.846461" range="LEX1"/>
+     <calPed avg="491.987" sig="4.32876" range="HEX8"/>
+     <calPed avg="189.989" sig="1.11089" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="663.232" sig="5.6874" range="LEX8"/>
+     <calPed avg="219.531" sig="0.862334" range="LEX1"/>
+     <calPed avg="614.338" sig="4.29754" range="HEX8"/>
+     <calPed avg="226.209" sig="0.716174" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="10">
+    <face end="POS">
+     <calPed avg="450.023" sig="5.91094" range="LEX8"/>
+     <calPed avg="171.53" sig="0.881103" range="LEX1"/>
+     <calPed avg="378.814" sig="4.44215" range="HEX8"/>
+     <calPed avg="169.959" sig="0.677282" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="650.396" sig="6.08711" range="LEX8"/>
+     <calPed avg="223.294" sig="0.921394" range="LEX1"/>
+     <calPed avg="704.813" sig="4.31684" range="HEX8"/>
+     <calPed avg="209.89" sig="0.721853" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="11">
+    <face end="POS">
+     <calPed avg="553.659" sig="5.75092" range="LEX8"/>
+     <calPed avg="231.002" sig="0.885258" range="LEX1"/>
+     <calPed avg="400.104" sig="4.29957" range="HEX8"/>
+     <calPed avg="224.237" sig="0.673942" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="405.728" sig="5.62509" range="LEX8"/>
+     <calPed avg="220.902" sig="0.884402" range="LEX1"/>
+     <calPed avg="346.826" sig="4.11339" range="HEX8"/>
+     <calPed avg="218.614" sig="0.57395" range="HEX1"/>
+    </face>
+   </xtal>
+  </layer>
+  <layer iLayer="4">
+   <xtal iXtal="0">
+    <face end="POS">
+     <calPed avg="493.509" sig="5.72052" range="LEX8"/>
+     <calPed avg="203.414" sig="0.868907" range="LEX1"/>
+     <calPed avg="444.469" sig="4.28342" range="HEX8"/>
+     <calPed avg="206.618" sig="0.521617" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="576.191" sig="5.90275" range="LEX8"/>
+     <calPed avg="199.902" sig="0.85606" range="LEX1"/>
+     <calPed avg="550.898" sig="4.26589" range="HEX8"/>
+     <calPed avg="194.263" sig="0.691271" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="1">
+    <face end="POS">
+     <calPed avg="548.115" sig="6.09586" range="LEX8"/>
+     <calPed avg="214.139" sig="0.923456" range="LEX1"/>
+     <calPed avg="469.783" sig="4.2951" range="HEX8"/>
+     <calPed avg="213.879" sig="1.08789" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="454.062" sig="5.62949" range="LEX8"/>
+     <calPed avg="217.28" sig="0.869047" range="LEX1"/>
+     <calPed avg="693.84" sig="4.23086" range="HEX8"/>
+     <calPed avg="206.609" sig="0.578423" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="2">
+    <face end="POS">
+     <calPed avg="560.249" sig="5.74484" range="LEX8"/>
+     <calPed avg="227.358" sig="0.876739" range="LEX1"/>
+     <calPed avg="528.103" sig="4.27482" range="HEX8"/>
+     <calPed avg="225.385" sig="0.518902" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="573.045" sig="5.68388" range="LEX8"/>
+     <calPed avg="254.808" sig="0.916714" range="LEX1"/>
+     <calPed avg="446.78" sig="4.33715" range="HEX8"/>
+     <calPed avg="235.388" sig="0.589427" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="3">
+    <face end="POS">
+     <calPed avg="356.029" sig="5.61384" range="LEX8"/>
+     <calPed avg="222.147" sig="0.933304" range="LEX1"/>
+     <calPed avg="513.977" sig="4.26003" range="HEX8"/>
+     <calPed avg="206.019" sig="0.68364" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="535.452" sig="5.75508" range="LEX8"/>
+     <calPed avg="225.25" sig="0.879313" range="LEX1"/>
+     <calPed avg="613.066" sig="4.38799" range="HEX8"/>
+     <calPed avg="224.583" sig="0.80616" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="4">
+    <face end="POS">
+     <calPed avg="400.265" sig="5.70374" range="LEX8"/>
+     <calPed avg="197.596" sig="0.869183" range="LEX1"/>
+     <calPed avg="713.65" sig="4.31864" range="HEX8"/>
+     <calPed avg="209.451" sig="0.836748" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="519.004" sig="5.86664" range="LEX8"/>
+     <calPed avg="213.784" sig="0.874749" range="LEX1"/>
+     <calPed avg="701.84" sig="4.3086" range="HEX8"/>
+     <calPed avg="233.958" sig="0.707577" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="5">
+    <face end="POS">
+     <calPed avg="678.497" sig="5.99478" range="LEX8"/>
+     <calPed avg="224.499" sig="0.915582" range="LEX1"/>
+     <calPed avg="420.963" sig="4.41143" range="HEX8"/>
+     <calPed avg="208.027" sig="0.681517" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="640.908" sig="5.9037" range="LEX8"/>
+     <calPed avg="237.738" sig="0.856827" range="LEX1"/>
+     <calPed avg="351.763" sig="4.19719" range="HEX8"/>
+     <calPed avg="205.944" sig="0.703806" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="6">
+    <face end="POS">
+     <calPed avg="597.159" sig="5.75756" range="LEX8"/>
+     <calPed avg="234.797" sig="0.893728" range="LEX1"/>
+     <calPed avg="410.124" sig="4.24758" range="HEX8"/>
+     <calPed avg="227.392" sig="0.470052" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="589.364" sig="5.86543" range="LEX8"/>
+     <calPed avg="199.814" sig="0.850578" range="LEX1"/>
+     <calPed avg="438.13" sig="4.30266" range="HEX8"/>
+     <calPed avg="195.488" sig="0.6748" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="7">
+    <face end="POS">
+     <calPed avg="452.46" sig="5.7417" range="LEX8"/>
+     <calPed avg="225.811" sig="0.871397" range="LEX1"/>
+     <calPed avg="526.967" sig="4.2714" range="HEX8"/>
+     <calPed avg="240.119" sig="0.706165" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="452.627" sig="5.85402" range="LEX8"/>
+     <calPed avg="218.257" sig="0.911675" range="LEX1"/>
+     <calPed avg="671.031" sig="4.40549" range="HEX8"/>
+     <calPed avg="204.173" sig="0.673752" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="8">
+    <face end="POS">
+     <calPed avg="305.245" sig="5.65577" range="LEX8"/>
+     <calPed avg="198.089" sig="0.925243" range="LEX1"/>
+     <calPed avg="559.269" sig="4.38309" range="HEX8"/>
+     <calPed avg="197.922" sig="0.66887" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="323.238" sig="5.84161" range="LEX8"/>
+     <calPed avg="208.819" sig="0.909058" range="LEX1"/>
+     <calPed avg="572.154" sig="4.3812" range="HEX8"/>
+     <calPed avg="205.482" sig="0.683329" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="9">
+    <face end="POS">
+     <calPed avg="707.95" sig="5.86988" range="LEX8"/>
+     <calPed avg="219.91" sig="0.82487" range="LEX1"/>
+     <calPed avg="406.821" sig="4.31088" range="HEX8"/>
+     <calPed avg="227.484" sig="0.713041" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="473.373" sig="5.80684" range="LEX8"/>
+     <calPed avg="204.834" sig="0.891252" range="LEX1"/>
+     <calPed avg="675.296" sig="4.39372" range="HEX8"/>
+     <calPed avg="195.418" sig="0.564094" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="10">
+    <face end="POS">
+     <calPed avg="432.849" sig="5.8752" range="LEX8"/>
+     <calPed avg="200.424" sig="0.903446" range="LEX1"/>
+     <calPed avg="611.508" sig="4.35919" range="HEX8"/>
+     <calPed avg="212.547" sig="0.837722" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="722.325" sig="5.84124" range="LEX8"/>
+     <calPed avg="230.009" sig="0.87759" range="LEX1"/>
+     <calPed avg="698.302" sig="4.32991" range="HEX8"/>
+     <calPed avg="220.622" sig="0.455741" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="11">
+    <face end="POS">
+     <calPed avg="409.784" sig="5.51386" range="LEX8"/>
+     <calPed avg="221.415" sig="0.863503" range="LEX1"/>
+     <calPed avg="491.97" sig="4.29" range="HEX8"/>
+     <calPed avg="206.034" sig="0.727936" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="639.931" sig="5.68246" range="LEX8"/>
+     <calPed avg="232.36" sig="0.873196" range="LEX1"/>
+     <calPed avg="463.933" sig="4.35347" range="HEX8"/>
+     <calPed avg="197.904" sig="0.69242" range="HEX1"/>
+    </face>
+   </xtal>
+  </layer>
+  <layer iLayer="5">
+   <xtal iXtal="0">
+    <face end="POS">
+     <calPed avg="645.75" sig="5.66332" range="LEX8"/>
+     <calPed avg="215.374" sig="0.876826" range="LEX1"/>
+     <calPed avg="316.411" sig="4.28987" range="HEX8"/>
+     <calPed avg="232.621" sig="0.514313" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="540.299" sig="5.78609" range="LEX8"/>
+     <calPed avg="212.771" sig="0.895005" range="LEX1"/>
+     <calPed avg="419.804" sig="4.24826" range="HEX8"/>
+     <calPed avg="188.157" sig="1.07635" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="1">
+    <face end="POS">
+     <calPed avg="393.293" sig="5.85728" range="LEX8"/>
+     <calPed avg="208.153" sig="0.920009" range="LEX1"/>
+     <calPed avg="603.291" sig="4.32107" range="HEX8"/>
+     <calPed avg="216.514" sig="0.709238" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="483.146" sig="5.81955" range="LEX8"/>
+     <calPed avg="229.382" sig="0.887419" range="LEX1"/>
+     <calPed avg="775.681" sig="4.38145" range="HEX8"/>
+     <calPed avg="244.212" sig="0.724163" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="2">
+    <face end="POS">
+     <calPed avg="626.423" sig="5.96183" range="LEX8"/>
+     <calPed avg="227.45" sig="0.891185" range="LEX1"/>
+     <calPed avg="611.414" sig="4.40908" range="HEX8"/>
+     <calPed avg="227.468" sig="0.859101" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="652.442" sig="5.83345" range="LEX8"/>
+     <calPed avg="195.586" sig="0.865646" range="LEX1"/>
+     <calPed avg="534.389" sig="4.65054" range="HEX8"/>
+     <calPed avg="218.52" sig="0.725394" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="3">
+    <face end="POS">
+     <calPed avg="508.111" sig="5.93028" range="LEX8"/>
+     <calPed avg="230.837" sig="0.926271" range="LEX1"/>
+     <calPed avg="546.93" sig="4.41048" range="HEX8"/>
+     <calPed avg="226.629" sig="0.473131" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="550.998" sig="5.77401" range="LEX8"/>
+     <calPed avg="216.84" sig="0.897365" range="LEX1"/>
+     <calPed avg="463.248" sig="4.32333" range="HEX8"/>
+     <calPed avg="219.926" sig="1.09894" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="4">
+    <face end="POS">
+     <calPed avg="560.949" sig="5.83663" range="LEX8"/>
+     <calPed avg="206.725" sig="0.938639" range="LEX1"/>
+     <calPed avg="623.063" sig="4.34507" range="HEX8"/>
+     <calPed avg="219.855" sig="0.713162" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="659.513" sig="6.09657" range="LEX8"/>
+     <calPed avg="228.637" sig="0.927777" range="LEX1"/>
+     <calPed avg="551.19" sig="4.48091" range="HEX8"/>
+     <calPed avg="212.512" sig="0.729582" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="5">
+    <face end="POS">
+     <calPed avg="619.214" sig="5.7784" range="LEX8"/>
+     <calPed avg="210.344" sig="0.899675" range="LEX1"/>
+     <calPed avg="471.113" sig="4.33361" range="HEX8"/>
+     <calPed avg="217.484" sig="0.700213" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="445.864" sig="5.69989" range="LEX8"/>
+     <calPed avg="199.694" sig="0.864984" range="LEX1"/>
+     <calPed avg="628.339" sig="4.29987" range="HEX8"/>
+     <calPed avg="203.726" sig="0.666493" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="6">
+    <face end="POS">
+     <calPed avg="766.084" sig="5.7244" range="LEX8"/>
+     <calPed avg="221.055" sig="0.882811" range="LEX1"/>
+     <calPed avg="450.953" sig="4.17407" range="HEX8"/>
+     <calPed avg="214.57" sig="0.798461" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="546.3" sig="5.84537" range="LEX8"/>
+     <calPed avg="218.876" sig="0.895587" range="LEX1"/>
+     <calPed avg="428.605" sig="4.36345" range="HEX8"/>
+     <calPed avg="203.389" sig="0.479315" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="7">
+    <face end="POS">
+     <calPed avg="441.469" sig="5.72176" range="LEX8"/>
+     <calPed avg="210.285" sig="0.90051" range="LEX1"/>
+     <calPed avg="612.772" sig="4.28001" range="HEX8"/>
+     <calPed avg="207.379" sig="0.506942" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="668.621" sig="5.81132" range="LEX8"/>
+     <calPed avg="201.121" sig="0.888969" range="LEX1"/>
+     <calPed avg="569.63" sig="4.32312" range="HEX8"/>
+     <calPed avg="201.82" sig="0.671807" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="8">
+    <face end="POS">
+     <calPed avg="586.036" sig="5.75306" range="LEX8"/>
+     <calPed avg="207.278" sig="0.879451" range="LEX1"/>
+     <calPed avg="504.521" sig="4.32063" range="HEX8"/>
+     <calPed avg="209.872" sig="0.684952" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="611.353" sig="5.73674" range="LEX8"/>
+     <calPed avg="216.048" sig="0.869564" range="LEX1"/>
+     <calPed avg="405.172" sig="4.18986" range="HEX8"/>
+     <calPed avg="239.89" sig="0.722573" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="9">
+    <face end="POS">
+     <calPed avg="404.781" sig="5.69324" range="LEX8"/>
+     <calPed avg="206.443" sig="0.901907" range="LEX1"/>
+     <calPed avg="679.026" sig="4.27021" range="HEX8"/>
+     <calPed avg="198.616" sig="0.566189" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="487.748" sig="5.86484" range="LEX8"/>
+     <calPed avg="223.901" sig="0.854746" range="LEX1"/>
+     <calPed avg="808.721" sig="4.24614" range="HEX8"/>
+     <calPed avg="241.512" sig="0.705626" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="10">
+    <face end="POS">
+     <calPed avg="467.522" sig="6.02482" range="LEX8"/>
+     <calPed avg="201.38" sig="0.895558" range="LEX1"/>
+     <calPed avg="548.073" sig="4.33269" range="HEX8"/>
+     <calPed avg="208.268" sig="1.03366" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="474.608" sig="5.80079" range="LEX8"/>
+     <calPed avg="213.496" sig="0.865952" range="LEX1"/>
+     <calPed avg="389.146" sig="4.1973" range="HEX8"/>
+     <calPed avg="218.519" sig="0.700875" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="11">
+    <face end="POS">
+     <calPed avg="342.221" sig="5.45284" range="LEX8"/>
+     <calPed avg="187.546" sig="0.84177" range="LEX1"/>
+     <calPed avg="260.15" sig="4.09917" range="HEX8"/>
+     <calPed avg="175.857" sig="0.679723" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="423.393" sig="5.67421" range="LEX8"/>
+     <calPed avg="205.698" sig="0.851494" range="LEX1"/>
+     <calPed avg="699.642" sig="4.29686" range="HEX8"/>
+     <calPed avg="211.957" sig="0.724736" range="HEX1"/>
+    </face>
+   </xtal>
+  </layer>
+  <layer iLayer="6">
+   <xtal iXtal="0">
+    <face end="POS">
+     <calPed avg="446.302" sig="5.74228" range="LEX8"/>
+     <calPed avg="240.054" sig="0.891253" range="LEX1"/>
+     <calPed avg="432.596" sig="4.24799" range="HEX8"/>
+     <calPed avg="213.764" sig="1.04839" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="585.286" sig="6.29697" range="LEX8"/>
+     <calPed avg="215.799" sig="0.90036" range="LEX1"/>
+     <calPed avg="660.028" sig="4.2919" range="HEX8"/>
+     <calPed avg="201.456" sig="0.84123" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="1">
+    <face end="POS">
+     <calPed avg="460.154" sig="6.0597" range="LEX8"/>
+     <calPed avg="171.316" sig="0.898016" range="LEX1"/>
+     <calPed avg="340.556" sig="4.30641" range="HEX8"/>
+     <calPed avg="156.617" sig="0.518764" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="536.46" sig="5.77085" range="LEX8"/>
+     <calPed avg="219.957" sig="0.805098" range="LEX1"/>
+     <calPed avg="685.449" sig="4.31448" range="HEX8"/>
+     <calPed avg="219.64" sig="0.730191" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="2">
+    <face end="POS">
+     <calPed avg="377.572" sig="5.59521" range="LEX8"/>
+     <calPed avg="206.984" sig="0.895389" range="LEX1"/>
+     <calPed avg="412.942" sig="4.26752" range="HEX8"/>
+     <calPed avg="198.116" sig="1.08883" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="748.458" sig="6.01211" range="LEX8"/>
+     <calPed avg="238.662" sig="0.927482" range="LEX1"/>
+     <calPed avg="609.459" sig="4.44632" range="HEX8"/>
+     <calPed avg="240.559" sig="0.813095" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="3">
+    <face end="POS">
+     <calPed avg="661.015" sig="5.73578" range="LEX8"/>
+     <calPed avg="230.24" sig="0.909264" range="LEX1"/>
+     <calPed avg="555.398" sig="4.36057" range="HEX8"/>
+     <calPed avg="212.613" sig="0.501617" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="520.822" sig="5.85831" range="LEX8"/>
+     <calPed avg="199.279" sig="0.896028" range="LEX1"/>
+     <calPed avg="573.536" sig="4.24789" range="HEX8"/>
+     <calPed avg="202.629" sig="0.451156" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="4">
+    <face end="POS">
+     <calPed avg="549.152" sig="5.82228" range="LEX8"/>
+     <calPed avg="195.952" sig="0.816196" range="LEX1"/>
+     <calPed avg="432.853" sig="4.52089" range="HEX8"/>
+     <calPed avg="199.821" sig="0.690475" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="385.805" sig="5.76844" range="LEX8"/>
+     <calPed avg="193.672" sig="0.845925" range="LEX1"/>
+     <calPed avg="356.832" sig="4.25582" range="HEX8"/>
+     <calPed avg="180.373" sig="0.724279" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="5">
+    <face end="POS">
+     <calPed avg="393.197" sig="5.63492" range="LEX8"/>
+     <calPed avg="214.019" sig="0.864314" range="LEX1"/>
+     <calPed avg="387.388" sig="4.31254" range="HEX8"/>
+     <calPed avg="221.714" sig="0.724521" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="713.574" sig="6.04559" range="LEX8"/>
+     <calPed avg="203.605" sig="0.874194" range="LEX1"/>
+     <calPed avg="628.505" sig="4.44278" range="HEX8"/>
+     <calPed avg="199.39" sig="0.517908" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="6">
+    <face end="POS">
+     <calPed avg="504.791" sig="5.63683" range="LEX8"/>
+     <calPed avg="210.889" sig="0.88368" range="LEX1"/>
+     <calPed avg="386.715" sig="4.1561" range="HEX8"/>
+     <calPed avg="193.715" sig="0.663984" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="437.497" sig="5.89806" range="LEX8"/>
+     <calPed avg="208.658" sig="0.904704" range="LEX1"/>
+     <calPed avg="403.366" sig="4.25532" range="HEX8"/>
+     <calPed avg="209.374" sig="0.474762" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="7">
+    <face end="POS">
+     <calPed avg="541.747" sig="5.82269" range="LEX8"/>
+     <calPed avg="190.896" sig="0.895839" range="LEX1"/>
+     <calPed avg="306.741" sig="4.14779" range="HEX8"/>
+     <calPed avg="181.495" sig="0.722505" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="352.976" sig="5.80768" range="LEX8"/>
+     <calPed avg="207.294" sig="0.903981" range="LEX1"/>
+     <calPed avg="401.219" sig="4.41607" range="HEX8"/>
+     <calPed avg="211.941" sig="0.703222" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="8">
+    <face end="POS">
+     <calPed avg="470.526" sig="5.8566" range="LEX8"/>
+     <calPed avg="196.94" sig="0.890587" range="LEX1"/>
+     <calPed avg="538.222" sig="4.30687" range="HEX8"/>
+     <calPed avg="212.066" sig="1.1001" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="600.708" sig="5.90685" range="LEX8"/>
+     <calPed avg="220.909" sig="0.89733" range="LEX1"/>
+     <calPed avg="545.099" sig="4.35709" range="HEX8"/>
+     <calPed avg="192.622" sig="0.478835" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="9">
+    <face end="POS">
+     <calPed avg="644.082" sig="5.8193" range="LEX8"/>
+     <calPed avg="230.361" sig="0.899743" range="LEX1"/>
+     <calPed avg="477.606" sig="4.33901" range="HEX8"/>
+     <calPed avg="219.39" sig="0.473358" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="512.855" sig="5.88753" range="LEX8"/>
+     <calPed avg="196.145" sig="0.937081" range="LEX1"/>
+     <calPed avg="364.672" sig="4.32459" range="HEX8"/>
+     <calPed avg="199.454" sig="0.84074" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="10">
+    <face end="POS">
+     <calPed avg="403.138" sig="5.81684" range="LEX8"/>
+     <calPed avg="230.355" sig="0.892047" range="LEX1"/>
+     <calPed avg="514.745" sig="4.31707" range="HEX8"/>
+     <calPed avg="231.38" sig="0.512843" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="455.686" sig="5.87497" range="LEX8"/>
+     <calPed avg="175.728" sig="0.86539" range="LEX1"/>
+     <calPed avg="443.23" sig="4.34725" range="HEX8"/>
+     <calPed avg="156.572" sig="0.811122" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="11">
+    <face end="POS">
+     <calPed avg="605.766" sig="5.94728" range="LEX8"/>
+     <calPed avg="212.665" sig="0.903191" range="LEX1"/>
+     <calPed avg="653.237" sig="4.29632" range="HEX8"/>
+     <calPed avg="228.196" sig="0.719155" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="359.13" sig="5.80339" range="LEX8"/>
+     <calPed avg="200.821" sig="0.899905" range="LEX1"/>
+     <calPed avg="581.369" sig="4.39258" range="HEX8"/>
+     <calPed avg="215.389" sig="0.506711" range="HEX1"/>
+    </face>
+   </xtal>
+  </layer>
+  <layer iLayer="7">
+   <xtal iXtal="0">
+    <face end="POS">
+     <calPed avg="504.717" sig="5.72202" range="LEX8"/>
+     <calPed avg="195.833" sig="0.839887" range="LEX1"/>
+     <calPed avg="478.008" sig="4.35638" range="HEX8"/>
+     <calPed avg="213.956" sig="0.705797" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="502.935" sig="5.97474" range="LEX8"/>
+     <calPed avg="204.933" sig="0.907328" range="LEX1"/>
+     <calPed avg="538.192" sig="4.29771" range="HEX8"/>
+     <calPed avg="214.617" sig="0.547095" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="1">
+    <face end="POS">
+     <calPed avg="420.301" sig="5.52077" range="LEX8"/>
+     <calPed avg="198.386" sig="0.893496" range="LEX1"/>
+     <calPed avg="481.185" sig="4.27181" range="HEX8"/>
+     <calPed avg="212.619" sig="0.495688" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="459.006" sig="5.86572" range="LEX8"/>
+     <calPed avg="174.337" sig="0.926581" range="LEX1"/>
+     <calPed avg="715.79" sig="4.34834" range="HEX8"/>
+     <calPed avg="168.49" sig="0.682357" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="2">
+    <face end="POS">
+     <calPed avg="614" sig="5.79876" range="LEX8"/>
+     <calPed avg="219.869" sig="0.803903" range="LEX1"/>
+     <calPed avg="441.641" sig="4.29551" range="HEX8"/>
+     <calPed avg="200.19" sig="0.669279" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="449.027" sig="5.64554" range="LEX8"/>
+     <calPed avg="177.07" sig="0.877548" range="LEX1"/>
+     <calPed avg="319.303" sig="4.29453" range="HEX8"/>
+     <calPed avg="170.278" sig="0.720254" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="3">
+    <face end="POS">
+     <calPed avg="540.593" sig="5.80368" range="LEX8"/>
+     <calPed avg="207.58" sig="0.875834" range="LEX1"/>
+     <calPed avg="576.776" sig="4.32467" range="HEX8"/>
+     <calPed avg="204.249" sig="0.706501" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="579.864" sig="5.89554" range="LEX8"/>
+     <calPed avg="195.613" sig="0.866814" range="LEX1"/>
+     <calPed avg="627.357" sig="4.33383" range="HEX8"/>
+     <calPed avg="214.556" sig="0.820303" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="4">
+    <face end="POS">
+     <calPed avg="323.817" sig="5.42157" range="LEX8"/>
+     <calPed avg="176.963" sig="0.879691" range="LEX1"/>
+     <calPed avg="481.307" sig="4.17448" range="HEX8"/>
+     <calPed avg="194.505" sig="0.695431" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="490.864" sig="5.80233" range="LEX8"/>
+     <calPed avg="222.355" sig="0.927121" range="LEX1"/>
+     <calPed avg="394.687" sig="4.39646" range="HEX8"/>
+     <calPed avg="209.639" sig="0.728183" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="5">
+    <face end="POS">
+     <calPed avg="466.581" sig="5.73907" range="LEX8"/>
+     <calPed avg="225.873" sig="0.821689" range="LEX1"/>
+     <calPed avg="607.777" sig="4.34488" range="HEX8"/>
+     <calPed avg="207.379" sig="0.501809" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="686.447" sig="5.89032" range="LEX8"/>
+     <calPed avg="223.975" sig="0.882831" range="LEX1"/>
+     <calPed avg="610.187" sig="4.30573" range="HEX8"/>
+     <calPed avg="201.385" sig="0.438636" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="6">
+    <face end="POS">
+     <calPed avg="501.935" sig="5.78423" range="LEX8"/>
+     <calPed avg="234.912" sig="0.883065" range="LEX1"/>
+     <calPed avg="487.358" sig="4.20739" range="HEX8"/>
+     <calPed avg="228.621" sig="0.509188" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="403.694" sig="5.70565" range="LEX8"/>
+     <calPed avg="208.956" sig="0.894607" range="LEX1"/>
+     <calPed avg="570.594" sig="4.17507" range="HEX8"/>
+     <calPed avg="203.868" sig="0.684674" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="7">
+    <face end="POS">
+     <calPed avg="546.266" sig="5.64461" range="LEX8"/>
+     <calPed avg="216.851" sig="0.870313" range="LEX1"/>
+     <calPed avg="291.57" sig="4.04989" range="HEX8"/>
+     <calPed avg="204.205" sig="0.683731" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="626.831" sig="5.84589" range="LEX8"/>
+     <calPed avg="193.094" sig="0.885612" range="LEX1"/>
+     <calPed avg="486.27" sig="4.22004" range="HEX8"/>
+     <calPed avg="177.378" sig="0.47611" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="8">
+    <face end="POS">
+     <calPed avg="714.837" sig="5.81457" range="LEX8"/>
+     <calPed avg="214.427" sig="0.902166" range="LEX1"/>
+     <calPed avg="498.492" sig="4.20793" range="HEX8"/>
+     <calPed avg="226.673" sig="0.864124" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="496.991" sig="5.82928" range="LEX8"/>
+     <calPed avg="202.171" sig="0.916585" range="LEX1"/>
+     <calPed avg="658.284" sig="4.32638" range="HEX8"/>
+     <calPed avg="197.446" sig="0.512019" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="9">
+    <face end="POS">
+     <calPed avg="488.378" sig="5.89773" range="LEX8"/>
+     <calPed avg="196.358" sig="0.918576" range="LEX1"/>
+     <calPed avg="690.824" sig="4.39492" range="HEX8"/>
+     <calPed avg="187.412" sig="0.613648" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="482.456" sig="5.96161" range="LEX8"/>
+     <calPed avg="211.943" sig="0.882086" range="LEX1"/>
+     <calPed avg="459.844" sig="4.35231" range="HEX8"/>
+     <calPed avg="223.389" sig="0.512447" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="10">
+    <face end="POS">
+     <calPed avg="303.392" sig="6.02178" range="LEX8"/>
+     <calPed avg="160.103" sig="0.944074" range="LEX1"/>
+     <calPed avg="294.487" sig="4.1801" range="HEX8"/>
+     <calPed avg="159.394" sig="0.510006" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="380.07" sig="5.64023" range="LEX8"/>
+     <calPed avg="199.233" sig="0.89466" range="LEX1"/>
+     <calPed avg="717.298" sig="4.34101" range="HEX8"/>
+     <calPed avg="200.68" sig="0.865608" range="HEX1"/>
+    </face>
+   </xtal>
+   <xtal iXtal="11">
+    <face end="POS">
+     <calPed avg="772.773" sig="5.68232" range="LEX8"/>
+     <calPed avg="225.991" sig="0.800635" range="LEX1"/>
+     <calPed avg="638.54" sig="4.2798" range="HEX8"/>
+     <calPed avg="215.389" sig="0.455768" range="HEX1"/>
+    </face>
+    <face end="NEG">
+     <calPed avg="501.763" sig="5.93904" range="LEX8"/>
+     <calPed avg="230.543" sig="0.914474" range="LEX1"/>
+     <calPed avg="345.835" sig="4.14625" range="HEX8"/>
+     <calPed avg="240.616" sig="0.492625" range="HEX1"/>
+    </face>
+   </xtal>
+  </layer>
+ </tower>
+</calCalib>

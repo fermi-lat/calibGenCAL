@@ -8,17 +8,16 @@ use mcRootData v*
 use digiRootData v*
 use reconRootData v*
 use RootPolicy v*
-use xml
+use xml v*
+use Event v*
 
 #because the latter package unfortunately exposes RootcintPolicy, the following macros have to be defined
 # to protect windows builds. this really needs fixing!
 macro rootcint_begin "" vsnet "<!--"
 macro rootcint_end   "" vsnet "-->"
 
-#the following prepend makes the includes folder available locally: avoid the package_include
-macro_prepend includes "-I $(CALIBGENCALROOT) " WIN32 "/I $(CALIBGENCALROOT) "
-
 # make sure we have all graphical root libraries linked (stolen from rootanalysis)
+# used for line fitting in muonCalib
 macro_append ROOT_libs " -lHist -lGraf -lGpad " \
              WIN32 " ${ROOT_PATH}/lib/libHist.lib ${ROOT_PATH}/lib/libGraf.lib ${ROOT_PATH}/lib/libGpad.lib "
 
@@ -26,27 +25,17 @@ macro calibgencal_headers   "" WIN32  ""
 
 macro source "*.cxx" WIN32 "*.h *.cxx"
 
-apply_pattern library_Llinkopts library="muonCalib"
+#apply_pattern library_Llinkopts library="muonCalib"
 apply_pattern library_Llinkopts library="RootFileAnalysis"
 
 library RootFileAnalysis -no_share RootFileAnalysis.cxx
-library muonCalib -no_share muonCalib.cxx 
+#library muonCalib -no_share muonCalib.cxx 
 
-application runMuonCalib runMuonCalib.cxx 
-
-application getMuSlopesXML getMuSlopesXML.cxx
-
-application getLightAsymXML getLightAsymXML.cxx
-
-application getPedestalsXML getPedestalsXML.cxx
-
-application getCorrPedestalsXML getCorrPedestalsXML.cxx
-
-application getGainsXML getGainsXML.cxx
-
-application genNtuple genNtuple.cxx
+application runMuonCalib runMuonCalib.cxx mcOptions.cxx muonCalib.cxx
 
 application compare_constants compare_constants.cxx
+
+application genNtuple genNtuple.cxx
 
 application ciFit ciFit.cxx
 

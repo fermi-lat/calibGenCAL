@@ -6,18 +6,13 @@ This package contains codes to generate and study calibration constants for CAL 
 
 calibGenCAL v2r5 performs a variety of muon calibrations.  These include:
  - Pedestals – Noise pedestal position and width are measured.
- - Mu Peaks (Gains) – Mu Peak is the position of the muon peak in ADC units, pedestal subtracted and corrected for path length.  Gain, which is stored in the output xml file, is 11.2 MeV/Mu Peak (note that this is not a proper “gain”, but rather an ADC bin width).
- - Mu Slopes – Conversion from asymmetry to position, measured as the slope of the linear portion of the asymmetry curve (central half of the curve).  Based on (L1-L2)/(L1+L2) definition of asymmetry.
  - Light Asymmetry – Light asymmetry vs position represented by a table of 12 spline points.
-
-
+ - Integral Nonlinearity - adc2dac conversion in all 4 ranges.  Corrects for nonlinearity in adc scale.
+ - MevPerDac - Relastionship of total energy deposited to the sum of the DAC values at both ends of the xtal.  Onboard DAC scale units are used for calculation b/c it is more linear than ADC scale.
+ 
 \b Applications:
- -  \b runMuonCalib.exe. It reads data from one or more digi root files and produce 4 calibration constant files in both ascii and XML format (ped,gain,asym,muon_slope). It also produces two root files for studying quality of the calibration constants. The executable takes inputs from muonCalib_option.dat
- -  \b getPedestalsXML.exe converts calibration constants for pedestals from ascii table to xml format. Usage: getPedestalsXML.exe ../output/pedestal.txt ../xml/pedestals.xml 
- -  \b getCorrelatedPedestalsXML.exe converts calibration constants for pedestals, using correlations betwen diodes, from ascii to xml format. Usage: getCorrelatedPedestalsXML.exe ../output/correlatedpedestal.txt ../xml/correlatedpedestals.xml 
- -  \b getMuSlopesXML.exe converts calibration constants for muon slope from ascii to xml format. Usage: getMuSlopesXML.exe ../output/muslopes.txt ../xml/muslopes.xml 
- -  \b getGainsXML.exe converts calibration constants for gain from ascii to xml format. Usage: getGainsXML.exe ../output/gains.txt ../xml/pedestals.xml 
- - genNtuple.exe</b>, compare_constants.exe utility executables used to inspect calibration constants
+ -  \b runMuonCalib.exe. It reads data from one or more digi root files and produces calibration constant files in both ascii and XML format (pedestals,asymetry and MevPerDac). It also produces root histogram files for studying the quality of the calibration constants. The executable takes input from muonCalib_option.xml.
+ -  \b genNtuple.exe</b>, compare_constants.exe utility executables used to inspect calibration constants
  -  \b runLightTaperCalib.exe. It reads data from a digi root file and a recon root file. The executable takes inputs from lightTaperCalib_option.dat
  -  \b runLightTaperCalibChain.exe. Its function is similar to the function of runLightTaperCalib.exe. The only differenece is that it can read data from a chain of digi root files and recon root files. The executable takes inputs from lightTaperCalibChain_option.dat
  -  \b ciFit.exe.  Generates spline functions with integral nonlinearity constants.  Reads digi root files containing internal DAC calibration data.  Expected test configuration is described in code.   Reads options in from xml/IFile based config file ciFit_option.xml
