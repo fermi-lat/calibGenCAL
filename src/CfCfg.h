@@ -59,7 +59,8 @@ class CfCfg : ICfg {
   string outputXMLPath;   
   string outputTXTPath;
 
-  string dtdFile; ///< Data descriptoin file for .xml output
+  string dtdPath; ///< Data descriptoin file for .xml output
+  string dtdFilename; ///< filename only
 
   string rootFileLE1;
   string rootFileHE1;

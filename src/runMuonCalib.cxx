@@ -27,13 +27,13 @@ int main(int argc, char** argv) {
 
     // insert quoted config file into log stream //
     { 
-      string temp;
+      string tmp;
       ifstream cfgFile(cfgPath.c_str());
       cfg.ostrm << "--- Begin cfg_file: " << cfgPath << " ---" << endl;
       while (cfgFile.good()) {
-        getline(cfgFile, temp);
+        getline(cfgFile, tmp);
         if (cfgFile.fail()) continue; // bad get
-        cfg.ostrm << "> " << temp << endl;
+        cfg.ostrm << "> " << tmp <<endl;
       }
       cfg.ostrm << "--- End " << cfgPath << " ---" << endl;
     }
@@ -73,7 +73,7 @@ int main(int argc, char** argv) {
       if (cfg.genTXT) appData.writePedsTXT(cfg.pedFileTXT);
       
       // output pedestal XML file
-      if (cfg.genXML) appData.writePedsXML(cfg.pedFileXML,cfg.dtdFile);
+      if (cfg.genXML) appData.writePedsXML(cfg.pedFileXML,cfg.dtdPath);
       
       // output pedestal histogram ROOT file
       if (cfg.genHistfiles) appData.flushHists();
@@ -114,17 +114,17 @@ int main(int argc, char** argv) {
                                            cfg.asymFileSSTXT);
       
       // output asymmetry XML file
-      if (cfg.genXML) appData.writeAsymXML(cfg.asymFileXML,cfg.dtdFile);
+      if (cfg.genXML) appData.writeAsymXML(cfg.asymFileXML,cfg.dtdPath);
       
       // save asymmetry histogram file.
       if (cfg.genHistfiles) appData.flushHists();
     } else {
       // ALTERNATE SHORTCUT TO CALCULATING ASYM
       cfg.ostrm << "Reading asymmetry from " << cfg.asymFileLLTXT << " "
-               << cfg.asymFileLSTXT << " "
-               << cfg.asymFileSLTXT << " "
-               << cfg.asymFileSSTXT << " "
-               << endl;
+                << cfg.asymFileLSTXT << " "
+                << cfg.asymFileSLTXT << " "
+                << cfg.asymFileSSTXT << " "
+                << endl;
       appData.readAsymTXT(cfg.asymFileLLTXT,
                           cfg.asymFileLSTXT,
                           cfg.asymFileSLTXT,
@@ -153,7 +153,7 @@ int main(int argc, char** argv) {
       if (cfg.genTXT) appData.writeMPDTXT(cfg.largeMPDFileTXT, cfg.smallMPDFileTXT);
       
       // write MPD XML file
-      if (cfg.genXML) appData.writeMPDXML(cfg.mpdFileXML,cfg.dtdFile);
+      if (cfg.genXML) appData.writeMPDXML(cfg.mpdFileXML, cfg.dtdPath);
       
       // save MPD histograms
       if (cfg.genHistfiles) appData.flushHists();

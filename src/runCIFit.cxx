@@ -36,14 +36,16 @@ public:
 
   void FitData();
   void corr_FLE_Thresh(CfData& data_high_thresh);
-  void WriteSplinesXML(const string &filename, const string &dtdFilename);
+  void WriteSplinesXML(const string &filename, const string &dtdPath);
   void WriteSplinesTXT(const string &filename);
   void ReadSplinesTXT (const string &filename);
 
   const vector<int>& getSplineDAC(RngNum rng) const {return m_splineDAC[rng];}
+
   const vector<float>& getSplineADC(RngIdx rngIdx) const {
     return m_splineADC[rngIdx];
   }
+
   int getNSplineADC(RngIdx rngIdx) const {
     return m_splineADC[rngIdx].size();
   }
@@ -218,9 +220,9 @@ void CfData::corr_FLE_Thresh(CfData& data_high_thresh){
 void CfData::WriteSplinesTXT(const string &filename) {
   ofstream outFile(filename.c_str());
   if (!outFile.is_open()) {
-    ostringstream temp;
-    temp << "ERROR! unable to open txtFile='" << filename << "'";
-    throw temp.str();
+    ostringstream tmp;
+    tmp <<"ERROR! unable to open txtFile='" << filename << "'";
+    throw tmp.str();
   }
   outFile.precision(2);
   outFile.setf(ios_base::fixed);
@@ -241,9 +243,9 @@ void CfData::WriteSplinesTXT(const string &filename) {
 void CfData::ReadSplinesTXT (const string &filename) {
   ifstream inFile(filename.c_str());
   if (!inFile.is_open()) {
-    ostringstream temp;
-    temp << "ERROR! unable to open txtFile='" << filename << "'";
-    throw temp.str();
+    ostringstream tmp;
+    tmp <<"ERROR! unable to open txtFile='" << filename << "'";
+    throw tmp.str();
   }
 
   short twr=0;
@@ -270,26 +272,28 @@ void CfData::ReadSplinesTXT (const string &filename) {
   }
 }
 
-void CfData::WriteSplinesXML(const string &filename, const string &dtdFilename) {
+void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   // setup output file
   ofstream xmlFile(filename.c_str());
   if (!xmlFile.is_open()) {
-    ostringstream temp;
-    temp << "ERROR! unable to open xmlFile='" << filename << "'";
-    throw temp.str();
+    ostringstream tmp;
+    tmp <<"ERROR! unable to open xmlFile='" << filename << "'";
+    throw tmp.str();
   }
-  ifstream dtdFile(dtdFilename.c_str());
+
+  // input file
+  ifstream dtdFile(dtdPath.c_str());
   if (!dtdFile.is_open()) {
-    ostringstream temp;
-    temp << "ERROR! unable to open dtdFile='" << dtdFilename << "'";
-    throw temp.str();
+    ostringstream tmp;
+    tmp <<"ERROR! unable to open dtdPath='" << dtdPath << "'";
+    throw tmp.str();
   }
 
   //
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.3 2005/02/03 04:11:06 fewtrell Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.4 2005/02/05 09:12:20 fewtrell Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
@@ -304,8 +308,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdFilename) 
   xmlFile << "<calCalib>" << endl;
   xmlFile << "  <generic instrument=\"" << m_cfg.instrument
           << "\" timestamp=\"" << m_cfg.startTime << "\"" << endl;
-  xmlFile << "           calibType=\"CAL_IntNonlin\" fmtVersion=\"v2r2p1\"" << endl;
-  xmlFile << "           creator=\"" << m_cfg.creator << "\">" << endl;
+  xmlFile << "           calibType=\"CAL_IntNonlin\" fmtVersion=\"v2r2\" >" << endl;
 
   xmlFile << endl;
   xmlFile << "    <inputSample startTime=\"" << m_cfg.startTime
@@ -457,9 +460,9 @@ void RootCI::DigiCal() {
 
   const TObjArray* calDigiCol = m_digiEvt->getCalDigiCol();
   if (!calDigiCol) {
-    ostringstream temp;
-    temp << "Empty calDigiCol event #" << m_evtId;
-    throw temp.str();
+    ostringstream tmp;
+    tmp <<"Empty calDigiCol event #" << m_evtId;
+    throw tmp.str();
   }
   TIter calDigiIter(calDigiCol);
 
@@ -484,7 +487,7 @@ void RootCI::DigiCal() {
         // only interested in current diode!
         if (!isRngEnabled(rng)) continue;
 
-        int adc    = acRo.getAdc((CalXtalId::XtalFace)(short)face);
+        int adc = acRo.getAdc((CalXtalId::XtalFace)(short)face);
  
         RngIdx rngIdx(twr,lyr,col,face,rng);
         
@@ -519,9 +522,9 @@ void RootCI::Go(Int_t nEvtAsked)
   Int_t nMax = min(nEvtAsked+m_startEvt,nEvts);
 
   if (nEvtAsked+m_startEvt >  nEvts) {
-    ostringstream temp;
-    temp << " not enough entries in file to proceed, we need " << nEvtAsked;
-    throw temp.str();
+    ostringstream tmp;
+    tmp <<" not enough entries in file to proceed, we need " << nEvtAsked;
+    throw tmp.str();
   }
 
   // BEGINNING OF EVENT LOOP
@@ -557,13 +560,13 @@ int main(int argc, char **argv) {
     
     // insert quoted config file into log stream //
     { 
-      string temp;
+      string tmp;
       ifstream cfgFile(cfgPath.c_str());
       cfg.ostrm << "--- Begin cfg_file: " << cfgPath << " ---" << endl;
       while (cfgFile.good()) {
-        getline(cfgFile, temp);
+        getline(cfgFile, tmp);
         if (cfgFile.fail()) continue; // bad get
-        cfg.ostrm << "> " << temp << endl;
+        cfg.ostrm << "> " << tmp <<endl;
       }
       cfg.ostrm << "--- End " << cfgPath << " ---" << endl << endl;
     }
@@ -617,7 +620,7 @@ int main(int argc, char **argv) {
     // data.corr_FLE_Thresh(data_high_thresh);
     //data.ReadSplinesTXT("../output/ciSplines.txt");
     if (cfg.genTXT) data.WriteSplinesTXT(cfg.outputTXTPath);
-    if (cfg.genXML) data.WriteSplinesXML(cfg.outputXMLPath, cfg.dtdFile);
+    if (cfg.genXML) data.WriteSplinesXML(cfg.outputXMLPath, cfg.dtdPath);
   } catch (string s) {
     // generic exception handler...  all my exceptions are simple C++ strings
     cfg.ostrm << "ciFit:  exception thrown: " << s << endl;
