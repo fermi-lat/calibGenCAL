@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: xchen  Mon Feb 23 11:54:11 PST 2004
+calibGenCAL/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+change energy scale in getMuSlopesXML.cxx
+    *
+------------------------------------------------------------
 User: xchen  Thu Feb  5 14:57:22 PST 2004
 calibGenCAL/doc
 
