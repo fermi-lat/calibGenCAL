@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Dec 22 19:25:18 PST 2004
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+made small code changes so that it would build in Linux w/out warning
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r0, operation: add
 Package: calibGenCAL
