@@ -95,8 +95,8 @@ int ciFitData::FitData(void) {
 	 int nPtsMin = SPL_NPTSMIN[rng];
 
 	 // configure output stream format for rest of function
-	 cout.setf(ios_base::fixed);
-	 cout.precision(2);
+	 std::cout.setf(ios_base::fixed);
+	 std::cout.precision(2);
 
 	 for (int xtal = 0; xtal < N_XTALS; xtal++)
 		for (int lyr = 0; lyr < N_LYRS; lyr++)
@@ -129,13 +129,13 @@ int ciFitData::FitData(void) {
 			 for (int i = 0; i < skpLo; i++,spl_idx++) {
 				m_SplineDAC[rng][spl_idx] = m_DAC[i];
 				m_SplineADC[xtal][lyr][face][rng][spl_idx] = curADC[i];
-				//				cout << setw(2) << setfill('0') << xtal << setfill(' ')
+				//				std::cout << setw(2) << setfill('0') << xtal << setfill(' ')
 				//					  << " " << lyr
 				//					  << " " << face
 				//					  << " " << rng
 				//					  << " " << setw(4) << setfill('0') << (int)m_DAC[i] << setfill(' ')
 				//					  << " " << setw(7) << curADC[i]
-				//					  << endl;
+				//					  << std::endl;
 			 }
 
 			 //
@@ -160,13 +160,13 @@ int ciFitData::FitData(void) {
 				m_SplineDAC[rng][spl_idx] = fitDAC;
 				m_SplineADC[xtal][lyr][face][rng][spl_idx] = fitADC;
 
-				//				cout << setw(2) << setfill('0') << xtal << setfill(' ')
+				//				std::cout << setw(2) << setfill('0') << xtal << setfill(' ')
 				//					  << " " << lyr
 				//					  << " " << face
 				//					  << " " << rng
 				//					  << " " << setw(4) << setfill('0') << (int)fitDAC << setfill(' ')
 				//					  << " " << setw(7) << fitADC
-				//					  << endl;
+				//					  << std::endl;
 			 }
 
 			 delete myGraph;
@@ -177,13 +177,13 @@ int ciFitData::FitData(void) {
 					i++,spl_idx++) {
 				m_SplineDAC[rng][spl_idx] = m_DAC[i];
 				m_SplineADC[xtal][lyr][face][rng][spl_idx] = curADC[i];
-				//				cout << setw(2) << setfill('0') << xtal << setfill(' ')
+				//				std::cout << setw(2) << setfill('0') << xtal << setfill(' ')
 				//					  << " " << lyr
 				//					  << " " << face
 				//					  << " " << rng
 				//					  << " " << setw(4) << setfill('0') << (int)m_DAC[i] << setfill(' ')
 				//					  << " " << setw(7) << curADC[i]
-				//					  << endl;
+				//					  << std::endl;
 			 }
 
 			 //
@@ -200,7 +200,7 @@ int ciFitData::FitData(void) {
 int ciFitData::WriteSplinesTXT(const char *fileName) {
   ofstream outFile(fileName);
   if (!outFile.is_open()) {
-	 cout << "ERROR! unable to open txtFile='" << fileName << "'" << endl;
+	 std::cout << "ERROR! unable to open txtFile='" << fileName << "'" << std::endl;
 	 return -1;
   }
   outFile.precision(2);
@@ -217,7 +217,7 @@ int ciFitData::WriteSplinesTXT(const char *fileName) {
 						  << rng  << " "
 						  << m_SplineDAC[rng][n] << " "
 						  << m_SplineADC[xtal][lyr][face][rng][n]
-						  << endl;
+						  << std::endl;
   
   return 0;
 }
@@ -225,7 +225,7 @@ int ciFitData::WriteSplinesTXT(const char *fileName) {
 int ciFitData::ReadSplinesTXT (const char *fileName) {
   ifstream inFile(fileName);
   if (!inFile.is_open()) {
-	 cout << "ERROR! unable to open txtFile='" << fileName << "'" << endl;
+	 std::cout << "ERROR! unable to open txtFile='" << fileName << "'" << std::endl;
 	 return -1;
   }
 
@@ -264,51 +264,51 @@ int ciFitData::WriteSplinesXML(const char *fileName) {
   // setup output file
   ofstream xmlFile(fileName);
   if (!xmlFile.is_open()) {
-	 cout << "ERROR! unable to open xmlFile='" << fileName << "'" << endl;
+	 std::cout << "ERROR! unable to open xmlFile='" << fileName << "'" << std::endl;
 	 return -1;
   }
 
   //
   // XML file header
   //
-  xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: $  -->" << endl;
-  xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
-  xmlFile << endl;
-  xmlFile << "<!DOCTYPE calCalib SYSTEM \"../calCalib_v2r1.dtd\" [] >" << endl;
-  xmlFile << endl;
-  xmlFile << "<calCalib>" << endl;
-  xmlFile << "  <generic instrument=\"EM\" timestamp=\"2003-11-2-12:56\"" << endl;
-  xmlFile << "           calibType=\"CAL_IntNonlin\" fmtVersion=\"v2r0\">" << endl;
-  xmlFile << endl;
-  xmlFile << "    <inputSample startTime=\"2003-2-21-05:49:12\" stopTime=\"2003-2-24-07:07:02\"" << endl;
-  xmlFile << "		triggers=\"random\" mode=\"normal\" source=\"stuff\" >" << endl;
-  xmlFile << endl;
-  xmlFile << "		Times are start and stop time of calibration run." << endl;
-  xmlFile << "		Other attributes are just made up for code testing." << endl;
-  xmlFile << "    </inputSample>" << endl;
-  xmlFile << "  </generic>" << endl;
-  xmlFile << endl;
-  xmlFile << "<!-- EM instrument: 8 layers, 12 columns -->" << endl;
-  xmlFile << endl;
-  xmlFile << "<!-- number of collections of dac settings should normally be" << endl;
-  xmlFile << "     0 (the default), if dacs aren't used to acquire data, or " << endl;
-  xmlFile << "     equal to nRange -->" << endl;
+  xmlFile << "<?xml version=\"1.0\" ?>" << std::endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit.cxx,v 1.1 2004/05/29 01:49:21 fewtrell Exp $  -->" << std::endl;
+  xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << std::endl;
+  xmlFile << std::endl;
+  xmlFile << "<!DOCTYPE calCalib SYSTEM \"../calCalib_v2r1.dtd\" [] >" << std::endl;
+  xmlFile << std::endl;
+  xmlFile << "<calCalib>" << std::endl;
+  xmlFile << "  <generic instrument=\"EM\" timestamp=\"2003-11-2-12:56\"" << std::endl;
+  xmlFile << "           calibType=\"CAL_IntNonlin\" fmtVersion=\"v2r0\">" << std::endl;
+  xmlFile << std::endl;
+  xmlFile << "    <inputSample startTime=\"2003-2-21-05:49:12\" stopTime=\"2003-2-24-07:07:02\"" << std::endl;
+  xmlFile << "		triggers=\"random\" mode=\"normal\" source=\"stuff\" >" << std::endl;
+  xmlFile << std::endl;
+  xmlFile << "		Times are start and stop time of calibration run." << std::endl;
+  xmlFile << "		Other attributes are just made up for code testing." << std::endl;
+  xmlFile << "    </inputSample>" << std::endl;
+  xmlFile << "  </generic>" << std::endl;
+  xmlFile << std::endl;
+  xmlFile << "<!-- EM instrument: 8 layers, 12 columns -->" << std::endl;
+  xmlFile << std::endl;
+  xmlFile << "<!-- number of collections of dac settings should normally be" << std::endl;
+  xmlFile << "     0 (the default), if dacs aren't used to acquire data, or " << std::endl;
+  xmlFile << "     equal to nRange -->" << std::endl;
   xmlFile << " <dimension nRow=\"" << 1 << "\" nCol=\"" << 1 << "\" nLayer=\"" << N_LYRS << "\" nXtal=\"" 
-			 << N_XTALS << "\" nFace=\"" << N_FACES << "\" nRange=\"" << N_RNGS << "\"" << endl;
-  xmlFile << "           nDacCol=\"" << N_RNGS << "\" />" << endl;
+			 << N_XTALS << "\" nFace=\"" << N_FACES << "\" nRange=\"" << N_RNGS << "\"" << std::endl;
+  xmlFile << "           nDacCol=\"" << N_RNGS << "\" />" << std::endl;
 
   //
   // DAC values for rest of file.
   //
-  xmlFile << endl;
+  xmlFile << std::endl;
   for (int rng = 0; rng < N_RNGS; rng++) {
-	 xmlFile << " <dac range=\"" << RNG_MNEM[rng] << "\"" << endl;
+	 xmlFile << " <dac range=\"" << RNG_MNEM[rng] << "\"" << std::endl;
 	 xmlFile << "     values=\"";
 	 for (int i = 0; i < m_numSplineDAC[rng]; i++) 
 		xmlFile << m_SplineDAC[rng][i] << " ";
-	 xmlFile << "\"" << endl;
-	 xmlFile << "     error=\"" << 0.1 << "\" />" << endl;
+	 xmlFile << "\"" << std::endl;
+	 xmlFile << "     error=\"" << 0.1 << "\" />" << std::endl;
   }
   
   //
@@ -318,37 +318,37 @@ int ciFitData::WriteSplinesXML(const char *fileName) {
   xmlFile.setf(ios_base::fixed);
   xmlFile.precision(2);
   // TOWER // currently only using 1 tower.
-  xmlFile << endl;
-  xmlFile << " <tower iRow=\"" << 0 << "\" iCol=\"" << 0 << "\">" << endl;
+  xmlFile << std::endl;
+  xmlFile << " <tower iRow=\"" << 0 << "\" iCol=\"" << 0 << "\">" << std::endl;
   // LAYER //
   for (int lyr = 0; lyr < N_LYRS; lyr++) {
-	 xmlFile << "  <layer iLayer=\"" << lyr << "\">" << endl;
+	 xmlFile << "  <layer iLayer=\"" << lyr << "\">" << std::endl;
 	 // XTAL //
 	 for (int xtal = 0; xtal < N_XTALS; xtal++) {
-		xmlFile << "   <xtal iXtal=\"" << xtal << "\">" << endl;
+		xmlFile << "   <xtal iXtal=\"" << xtal << "\">" << std::endl;
 		// FACE //
 		for (int face = 0; face < N_FACES; face++) {
 		  char *facestr = (face == CalXtalId::NEG) ? "NEG" : "POS";
-		  xmlFile << "    <face end=\"" << facestr << "\">" << endl;
+		  xmlFile << "    <face end=\"" << facestr << "\">" << std::endl;
 		  // RANGE //
 		  for (int rng = 0; rng < N_RNGS; rng++) {
-			 xmlFile << "     <intNonlin range=\"" << RNG_MNEM[rng] << "\"" << endl;
+			 xmlFile << "     <intNonlin range=\"" << RNG_MNEM[rng] << "\"" << std::endl;
 			 // ADC VALS //
 			 xmlFile << "             values=\"";
 			 for (int i = 0; i < m_numSplineADC[xtal][lyr][face][rng]; i++) {
 				xmlFile << m_SplineADC[xtal][lyr][face][rng][i] << " ";
 			 }
-			 xmlFile << "\"" << endl;
-		    xmlFile << "             error=\"" << 0.1 << "\" />" << endl;
+			 xmlFile << "\"" << std::endl;
+		    xmlFile << "             error=\"" << 0.1 << "\" />" << std::endl;
 		  }
-		  xmlFile << "    </face>" << endl;
+		  xmlFile << "    </face>" << std::endl;
 		}
-		xmlFile << "   </xtal>" << endl;
+		xmlFile << "   </xtal>" << std::endl;
 	 }
-	 xmlFile << "  </layer>" << endl;
+	 xmlFile << "  </layer>" << std::endl;
   }
-  xmlFile << " </tower>" << endl;
-  xmlFile << "</calCalib>" << endl;
+  xmlFile << " </tower>" << std::endl;
+  xmlFile << "</calCalib>" << std::endl;
   return 0;
 }
 
@@ -415,7 +415,7 @@ int ciFitData::fill_DAC(void) {
   for (int i = 543; i <= 4095; i+=32, n++) m_DAC[n] = i;
 
   if (n != N_DACS) {
-	 cout << "ERROR! bad DAC array!" << n << " " << N_DACS << endl;
+	 std::cout << "ERROR! bad DAC array!" << n << " " << N_DACS << std::endl;
 	 return -1;
   }
   return 0;
@@ -520,7 +520,7 @@ void RootCI::Go(Int_t numEvents)
 		digiEventId = evt->getEventId();
 		//digiRunNum = evt->getRunId();
       if(digiEventId%1000 == 0)
-		  std::cout << " event " << digiEventId << endl;
+		  std::cout << " event " << digiEventId << std::endl;
 
 		DigiCal();
 	 }
@@ -538,13 +538,13 @@ int main(int argc, char **argv) {
   ciFitData *cfData = new ciFitData;
 
   // Hello/Usage/config message.
-  cout << "RootCI.exe: GLAST CAL Charge injection fitting routine." << endl;
-  cout << " NOTE    : Assuming SINGLEx16 test mode,  " << N_TRIALS << " trials at " << N_DACS << " DAC settings." << endl;
-  cout << " NOTE    : Assuming each diode tested separately." << endl;
-  cout << " LE_FILE : " << inputPath1 << endl;
-  cout << " HE_FILE : " << inputPath2 << endl;
-  cout << " XML_FILE: " << xmlPath    << endl;
-  cout << endl;
+  std::cout << "RootCI.exe: GLAST CAL Charge injection fitting routine." << std::endl;
+  std::cout << " NOTE    : Assuming SINGLEx16 test mode,  " << N_TRIALS << " trials at " << N_DACS << " DAC settings." << std::endl;
+  std::cout << " NOTE    : Assuming each diode tested separately." << std::endl;
+  std::cout << " LE_FILE : " << inputPath1 << std::endl;
+  std::cout << " HE_FILE : " << inputPath2 << std::endl;
+  std::cout << " XML_FILE: " << xmlPath    << std::endl;
+  std::cout << std::endl;
 
   // LE PASS
   {

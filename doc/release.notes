@@ -9,3 +9,5 @@ v2r1 returned muon distribution fit from lognormal to landau.  made changes to g
 v2r2 added ciFit app.  made sure that muonCalib could run w/ out specifying any histogram file.
 
 v2r2p1 slight alterations to requirements file to aid compilation on linux (provided by heather).  also added std:: namespace in some places.
+
+v2r2p2 updated more namespace specifiers in ciFit.cxx
