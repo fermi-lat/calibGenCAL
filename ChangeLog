@@ -1,5 +1,17 @@
 ------------------------------------------------------------
 User: fewtrell  Wed Jun 16 06:20:32 PDT 2004
+calibGenCAL/xml
+
+Added Files:
+	.cvsignore 
+Log Message:
+added two .cvsignore files to trick VCMT into downloading empty 'output' and 'xml' folders.
+
+
+
+    *
+------------------------------------------------------------
+User: fewtrell  Wed Jun 16 06:20:32 PDT 2004
 calibGenCAL/output
 
 Added Files:
