@@ -62,6 +62,11 @@ private:
   CalVec<FaceIdx,float> m_ciThresh;
   CalVec<FaceIdx,float> m_ciThreshWidth;
 
+  CalVec<FaceIdx,float> m_muThreshErr;
+  CalVec<FaceIdx,float> m_muThreshWidthErr;
+  CalVec<FaceIdx,float> m_ciThreshErr;
+  CalVec<FaceIdx,float> m_ciThreshWidthErr;
+
   CalVec<RngIdx, vector<float> >  m_adcSum;
   CalVec<RngIdx, vector<float> >  m_adcN;
   CalVec<RngIdx, vector<float> >  m_adcMean;
@@ -69,12 +74,14 @@ private:
 
 
   CalVec<RngIdx, float> m_calPed; ///< final pedestal values, all 4 ranges, indexed by ADC getNRng()
+  CalVec<FaceIdx,float> m_delPed;
 
   auto_ptr<TFile> m_histFile;  ///< Current histogram file
   string m_histFilename;  ///< name of the current output histogram ROOT file
 };
 void MtData::readCalPeds(const string &filename) {
   m_calPed.resize(RngIdx::N_VALS);
+  m_delPed.resize(FaceIdx::N_VALS);
 
   ifstream infile(filename.c_str());
   if (!infile.is_open())
@@ -221,6 +228,10 @@ void MtData::FitData() {
 	if (m_muThreshWidth.size() == 0)m_muThreshWidth.resize(FaceIdx::N_VALS);
 	if (m_ciThresh.size() == 0)m_ciThresh.resize(FaceIdx::N_VALS);
 	if (m_ciThreshWidth.size() == 0)m_ciThreshWidth.resize(FaceIdx::N_VALS);
+	if (m_muThreshErr.size() == 0)m_muThreshErr.resize(FaceIdx::N_VALS);
+	if (m_muThreshWidthErr.size() == 0)m_muThreshWidthErr.resize(FaceIdx::N_VALS);
+	if (m_ciThreshErr.size() == 0)m_ciThreshErr.resize(FaceIdx::N_VALS);
+	if (m_ciThreshWidthErr.size() == 0)m_ciThreshWidthErr.resize(FaceIdx::N_VALS);
 
 	RngNum rng = LEX8;
 	for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
@@ -232,8 +243,10 @@ void MtData::FitData() {
 
 // calculation of trigger efficiency for charge injection
       // get pedestal
-//      float ped     = m_adcSum[rngIdx][0] /
-//        m_adcN[rngIdx][0];
+      float ciPed     = m_adcSum[rngIdx][0] /
+        m_adcN[rngIdx][0];
+
+	  m_delPed[faceIdx] = ciPed - m_calPed[rngIdx];
 
       //calculate ped-subtracted means.
 	  for (int i = 0; i < m_cfg.nDACs; i++){
@@ -245,9 +258,9 @@ void MtData::FitData() {
 	    float trig = m_trigSum[faceIdx][i];
 		float ntot = m_adcN[rngIdx][i];
 		float notrig = ntot - trig;
-			float strig=sqrt((trig>0.9) ? trig : 1);
-			float snotrig=sqrt((notrig>0.9) ? notrig : 1);
-			ey[i]=(strig*notrig + snotrig*trig)/(ntot*ntot+0.1);
+			float strig=(trig>0.9) ? trig : 1;
+			float snotrig=(notrig>0.9) ? notrig : 1;
+			ey[i]=sqrt(strig*notrig*notrig + snotrig*trig*trig)/(ntot*ntot+0.1);
 			eff[i] = trig/(ntot+0.01);
 			(m_ciEffHists[faceIdx])->SetBinContent(i,eff[i]);
 			(m_ciEffHists[faceIdx])->SetBinError(i,ey[i]);
@@ -258,9 +271,11 @@ void MtData::FitData() {
 		TGraphErrors* geff = new TGraphErrors(m_cfg.nDACs,x,eff,ex,ey);
 		TF1* step = new TF1("step","1.0/(1.0+exp(-[1]*(x-[0])))",0,1000);
 		step->SetParameters(a0,0.1);
-		geff->Fit(step,"WQN");
+		geff->Fit(step,"QN");
 		m_ciThresh[faceIdx] = step->GetParameter(0);
 		m_ciThreshWidth[faceIdx] = step->GetParameter(1);
+		m_ciThreshErr[faceIdx] = step->GetParError(0);
+		m_ciThreshWidthErr[faceIdx] = step->GetParError(1);
 		delete step;
 		delete geff;
 
@@ -275,18 +290,20 @@ void MtData::FitData() {
 			float trig=ytrig[i+1];
 			float mu=ymu[i+1];
 			float notrig=mu-trig;
-			float strig=sqrt((trig>0.9) ? trig : 1);
-			float snotrig=sqrt((notrig>0.9) ? notrig : 1);
-			ey[i]=(strig*notrig + snotrig*trig)/(mu*mu+0.1);
+			float strig=(trig>0.9) ? trig : 1;
+			float snotrig=(notrig>0.9) ? notrig : 1;
+			ey[i]=sqrt(strig*notrig*notrig + snotrig*trig*trig)/(mu*mu+0.1);
 			eff[i] = trig/(mu+0.01);
 		}
 		for(int i=0;i<100;i++) if(eff[i] > 0.5) {a0=x[i]; break;}
 		geff = new TGraphErrors(100,x,eff,ex,ey);
 		step = new TF1("step","1.0/(1.0+exp(-[1]*(x-[0])))",0,1000);
 		step->SetParameters(a0,0.1);
-		geff->Fit(step,"WQN");
+		geff->Fit(step,"QN");
 		m_muThresh[faceIdx] = step->GetParameter(0);
 		m_muThreshWidth[faceIdx] = step->GetParameter(1);
+		m_muThreshErr[faceIdx] = step->GetParError(0);
+		m_muThreshWidthErr[faceIdx] = step->GetParError(1);
 		delete step;
 		delete geff;
 	}
@@ -298,14 +315,15 @@ void MtData::writeThreshTXT(const string &filename) {
   if (!outfile.is_open())
     throw string("Unable to open " + filename);
 
-  TNtuple* ntp = new TNtuple("ci_mu_thresh_ntp","ci_mu_thresh_ntp","lyr:col:face:muThresh:muThreshWidth:ciThresh:ciThreshWidth");
-  float xntp[7];
+//  TNtuple* ntp = new TNtuple("ci_mu_thresh_ntp","ci_mu_thresh_ntp","lyr:col:face:muThresh:muThreshWidth:ciThresh:ciThreshWidth");
+//  float xntp[7];
 
   for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
     LyrNum lyr = faceIdx.getLyr();
     ColNum col = faceIdx.getCol();
     FaceNum face = faceIdx.getFace();
-    xntp[0]= lyr;
+/*
+	xntp[0]= lyr;
     xntp[1]= col;
     xntp[2]= face;
     xntp[3]= m_muThresh[faceIdx];
@@ -314,18 +332,23 @@ void MtData::writeThreshTXT(const string &filename) {
     xntp[6]= m_ciThreshWidth[faceIdx];
 
 	ntp->Fill(xntp);
-
+*/
     outfile  << " " << lyr
              << " " << col
              << " " << face
              << " " << m_muThresh[faceIdx]
+             << " " << m_muThreshErr[faceIdx]
              << " " << m_muThreshWidth[faceIdx]
+             << " " << m_muThreshWidthErr[faceIdx]
              << " " << m_ciThresh[faceIdx]
+             << " " << m_ciThreshErr[faceIdx]
              << " " << m_ciThreshWidth[faceIdx]
+             << " " << m_ciThreshWidthErr[faceIdx]
              << " " << m_muThresh[faceIdx]/m_ciThresh[faceIdx]
+             << " " << m_delPed[faceIdx]
              << endl;
   }
-   ntp->Write();
+//   ntp->Write();
 
 }
 
