@@ -1,4 +1,18 @@
 ------------------------------------------------------------
+User: davezac  Mon Mar  8 09:38:43 PST 2004
+calibGenCAL/src
+
+Added Files:
+	getCorrPedestalsXML.cxx 
+Log Message:
+
+Added pedestal fits with correlations between ranges. 
+Added getCorrPedestalsXML for the correlated  pedestals xml format
+Changed gain fit function from Landau to LogNormal
+   
+
+    *
+------------------------------------------------------------
 User: davezac  Mon Mar  8 09:07:08 PST 2004
 calibGenCAL/src
 
