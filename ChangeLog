@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Feb  7 16:55:11 PST 2005
+calibGenCAL
+
+Modified Files:
+	.cvsignore 
+Log Message:
+updated .cvsignore file
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r2p3, operation: add
 Package: calibGenCAL
