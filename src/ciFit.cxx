@@ -28,21 +28,21 @@ const double mu2ci_thr_rat = 1.7;
 
 /// finds position of last directory delimeter ('/' || '\\')
 /// in path, returns -1 if no delim is found
-int path_find_last_delim(string &path) {
+string::size_type path_find_last_delim(string &path) {
   // find last directory delimeter.
-  int fwdslash_pos = path.find_last_of('/');
-  int bckslash_pos = path.find_last_of('\\');
+  string::size_type fwdslash_pos = path.find_last_of('/');
+  string::size_type bckslash_pos = path.find_last_of('\\');
 
   // check for 'not found' case
-  if (fwdslash_pos == path.npos) fwdslash_pos = -1;
-  if (bckslash_pos == path.npos) bckslash_pos = -1;
+  if (fwdslash_pos == path.npos) fwdslash_pos = path.npos;
+  if (bckslash_pos == path.npos) bckslash_pos = path.npos;
 
   return max(fwdslash_pos,bckslash_pos);
 
 }
 
 string &path_remove_dir(string &path) {
-  int slash_pos;
+  string::size_type slash_pos;
   
   // if there was no delimeter, return path unaltered
   if ((slash_pos = path_find_last_delim(path)) == path.npos) 
@@ -57,20 +57,19 @@ string &path_remove_dir(string &path) {
 /// removes filename extension from end of path string.
 string &path_remove_ext(string &path) {
   // return path unaltered if there is no '.'
-  int dot_pos;
+  string::size_type dot_pos;
   if ((dot_pos = path.find_last_of('.')) == path.npos)
     return path;
 
   // find last delim (extension must be after this point)
-  int slash_pos = path_find_last_delim(path);
+  string::size_type slash_pos = path_find_last_delim(path);
 
-  // if ',' is before slash then there is
-  // no extension in the filename itself
-  if (slash_pos > dot_pos) return path;
+  // if there is no '/' then just erase everything from '.' onward
+  // or if slash is before the '.'
+  if (slash_pos == path.npos || slash_pos < dot_pos)
+    path.erase(dot_pos, path.size());
 
-  // erase everything from '.' onward.
-  path.erase(dot_pos, path.size());
-
+  // otherwise return the string as is
   return path;
 }
 
@@ -81,6 +80,7 @@ class cfCfg : ICfg {
 public:
   // basic ctor
   cfCfg() : valid(false) {};
+  virtual ~cfCfg() {};
 
   // clear all values, delete all pointers
   void clear();
@@ -89,10 +89,10 @@ public:
   int readCfgFile(const string& path);
 
   // return data valid flag.
-  bool isValid() {return isValid;}
+  bool isValid() {return valid;}
 
   // print summary to ostream
-  void summarize(ostream &ostr);
+  void summarize();
 public:  // i know, don't make members public, but it's just easier this way!
   // CONFIGURABLE PARAMETERS //
 
@@ -215,7 +215,7 @@ int cfCfg::readCfgFile(const string& path) {
 void cfCfg::clear() {  
 }
 
-void cfCfg::summarize(ostream &ostr) {
+void cfCfg::summarize() {
 }
 
 
@@ -265,8 +265,9 @@ const string cfData::RNG_MNEM[] = {"LEX8",
                                    "HEX1"};
 
 cfData::cfData(cfCfg &cfg) :
-  m_cfg(cfg),
-  splineFunc("spline_fitter","pol2",0,4095) {
+  splineFunc("spline_fitter","pol2",0,4095),
+  m_cfg(cfg)
+{
 
   // need a c-style array of floats for DAC values.
   m_dacArr = new float[m_cfg.nDacs];
@@ -505,7 +506,7 @@ int cfData::WriteSplinesXML(const string &filename, const string &dtdFilename) {
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit.cxx,v 1.9 2004/10/28 23:58:59 chehtman Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit.cxx,v 1.10 2004/12/23 02:13:29 fewtrell Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
@@ -644,9 +645,9 @@ private:
 
 RootCI::RootCI(vector<string> &digiFileNames, cfData  &data, cfCfg &cfg) :
   RootFileAnalysis(digiFileNames, vector<string>(0), vector<string>(0)),
+  m_curDiode(BOTH_DIODES),
   m_cfData(data),
-  m_cfg(cfg),
-  m_curDiode(BOTH_DIODES) {}
+  m_cfg(cfg) {}
 
 // default dstor
 RootCI::~RootCI() {

@@ -57,6 +57,7 @@ class mcCfg : ICfg {
 public:
   /// basic ctor
   mcCfg() {valid = false;}
+  virtual ~mcCfg() {};
 
   /// clear all values, delete all pointers
   void clear();
@@ -68,7 +69,7 @@ public:
   bool isValid() {return valid;}
 
   /// print summary to ostream
-  void summarize(ostream &ostr);
+  void summarize();
 public:  // i know I'm not supposed to make data members public, but it's just easier this way!
   // CONFIGURABLE PARAMETERS //
 

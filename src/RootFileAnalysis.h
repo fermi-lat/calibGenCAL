@@ -24,10 +24,11 @@ using namespace std;
 class RootFileAnalysis {
 public :
   /// Special ctor which accepts TChains for input files
-  RootFileAnalysis(const vector<string> &digiFilenames,
+  RootFileAnalysis(const vector<string> &mcFilenames,
+		   const vector<string> &digiFilenames,
 		   const vector<string> &recFilenames,
-		   const vector<string> &mcFilenames,
                    ostream &ostr = cout);
+ ~RootFileAnalysis();
 
   /// start next Go with this event
   void startWithEvent(Int_t event) { m_startEvent = event; };
@@ -41,13 +42,14 @@ public :
 
 protected:
   /// Optional TChain input
-  TChain      m_digiChain, m_recChain, m_mcChain;
+  TChain      m_mcChain, m_digiChain, m_recChain;
+
+  /// Pointer to a McEvent
+  McEvent     *m_mc;
   /// pointer to a DigiEvent, w/ each get event, ROOT will
   DigiEvent   *m_evt;
   /// pointer to a ReconEvent
   ReconEvent  *m_rec;
-  /// Pointer to a McEvent
-  McEvent     *m_mc;
 
   /// pointers to TChains
   TObjArray   m_chainArr;
@@ -60,9 +62,9 @@ protected:
   /// Zeros out all member vars, does NOT free memory,for use in constructor
   void zeroMembers();
 
+  vector<string> m_mcFilenames;
   vector<string> m_digiFilenames;
   vector<string> m_recFilenames;
-  vector<string> m_mcFilenames;
 
   ostream &m_ostr;
 

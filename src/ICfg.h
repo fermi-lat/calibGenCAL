@@ -14,5 +14,5 @@ public:
   /// returns if config value set is valid/complete
   virtual bool isValid() = 0;
   /// lists summary of config vars to ostream
-  virtual void summarize(ostream &ostr) = 0;
+  virtual void summarize() = 0;
 };
