@@ -1,4 +1,24 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Jan 10 16:11:36 PST 2005
+calibGenCAL/output
+
+Modified Files:
+	ci_intnonlin.041111143546_FM101_PSHP_CALU_COLLECT_CI_SINGLEX16.xml 
+	mc_asym.041022230030_FM101_Pshp_calu_collect_ext.xml 
+	mc_logfile.041022230030_FM101_Pshp_calu_collect_ext.txt 
+	mc_mevperdac.041022230030_FM101_Pshp_calu_collect_ext.xml 
+	mc_peds.041022230030_FM101_Pshp_calu_collect_ext.xml 
+Added Files:
+	ci_logfile.041111143546_FM101_PSHP_CALU_COLLECT_CI_SINGLEX16.txt 
+Log Message:
+added logfile to ciFit
+added CVS Tag & config file contents to top of logfiles for both ciFit & muonCalib
+made all functions in CalDefs staitc.
+
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Jan 10 16:11:35 PST 2005
 calibGenCAL/doc
 
