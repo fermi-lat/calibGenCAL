@@ -63,7 +63,10 @@ int main(int argc, char** argv)
             for(int side = 0;side<2;side++){
                 face = (side==1) ? posface : negface;
                 gainout << "        <face end=" << q << face << q <<">" << endl;
-                float av = 12.3/mupeaks[layer][col][side];
+
+		// change muon peak from 12.3 MeV to 11.2 MeV, 11.2 MeV is obtained by fitting MC energy spectrum deposited in a single crystal with a landau function, 11.2 MeV is the fit peak position while 12.3 MeV is the average value obtained from PDG.
+
+                float av = 11.2/mupeaks[layer][col][side];
                 float rms = mupeaksig[layer][col][side];
                 char* lex8 = "LEX8";
                 char* lex1 = "LEX1";
