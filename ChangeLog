@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Sat Jan  1 15:22:55 PST 2005
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+getting previous commits to build properly.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Dec 30 16:09:39 PST 2004
 calibGenCAL/src
 
