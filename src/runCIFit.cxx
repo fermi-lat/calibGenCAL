@@ -297,7 +297,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.6 2005/02/11 19:56:10 fewtrell Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.7 2005/02/16 20:09:11 fewtrell Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
@@ -561,9 +561,6 @@ int main(int argc, char **argv) {
   try {
     cfg.readCfgFile(cfgPath);
 
-    // ID calibGenCAL package version
-    cfg.ostrm << "calibGenCAL CVS Tag: " << CGCUtil::CVS_TAG << endl << endl;
-    
     // insert quoted config file into log stream //
     { 
       string tmp;
