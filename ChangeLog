@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: heather  Thu Jun  3 09:08:48 PDT 2004
+calibGenCAL/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+Minor fixes for Linux - use of std, removed dtor for base class, use of enums
+    *
+------------------------------------------------------------
 User: heather  Thu Jun  3 09:07:45 PDT 2004
 calibGenCAL/src
 
