@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: fewtrell  Mon May 17 08:05:24 PDT 2004
+calibGenCAL/src
+
+Modified Files:
+	runMuonCalibChain.cxx runMuonCalib.cxx 
+	muonCalibChain_option.dat muonCalib_option.dat muonCalib.h 
+	muonCalib.cxx getPedestalsXML.cxx getMuSlopesXML.cxx 
+	getGainsXML.cxx genNtuple.cxx compare_constants.cxx 
+Log Message:
+bug fixes, got software to run properly under windows/vc7.1
+    *
+------------------------------------------------------------
 User: davezac  Tue Mar 23 06:31:29 PST 2004
 calibGenCAL/src
 
