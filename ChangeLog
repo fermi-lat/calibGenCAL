@@ -1,5 +1,16 @@
 ------------------------------------------------------------
 User: fewtrell  Fri Feb 11 11:35:25 PST 2005
+calibGenCAL/src
+
+Modified Files:
+	McCfg.cxx McCfg.h MuonCalib.cxx MuonCalib.h genTholdCI_XML.cxx 
+	muonCalib_option.xml runMuonCalib.cxx 
+Log Message:
+added LEX8 adc2nrg (energy) output in muonCalib
+fixed bad fits of HEX1 pedestals when sigma is very small
+    *
+------------------------------------------------------------
+User: fewtrell  Fri Feb 11 11:35:25 PST 2005
 calibGenCAL/output
 
 Removed Files:
