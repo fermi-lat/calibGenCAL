@@ -23,3 +23,5 @@ v2r3p2 basically forgot to update this file in previous tags.
 v2r3p3 ignore me
 
 v2r3p4 changed .dtd path for nonlin file in ciFit application.
+
+v2r4   updated ciFit application to use IFile .xml config file
