@@ -441,8 +441,8 @@ void muonCalib::DigiCal()
 					TSpline3* spl = (TSpline3*) (asymCorr->At(12*l+c));
 					double pos_eval = spl->Eval(log(ratio));
 /*
-					cout << " l="<< l<< " c=" << c 
-						 << " pos=" << pos-5.5 << " pos_eval=" << pos_eval << endl;
+					std::cout << " l="<< l<< " c=" << c 
+						 << " pos=" << pos-5.5 << " pos_eval=" << pos_eval << std::endl;
 */
 					((TProfile*)ratfull->At(12*l+c))->Fill((pos-5.5)*2.7844,pos_eval-(pos-5.5));
 				}else{
@@ -489,7 +489,7 @@ void muonCalib::FitRatHist(){
 		double* par = (h->GetFunction("pol1"))->GetParameters();
 		float logratio = *par; float slope = *(par+1);
 		std::cout << " layer=" << layer << " col=" << col <<
-		  " logratio =" <<logratio << " slope=" << slope << endl;
+		  " logratio =" <<logratio << " slope=" << slope << std::endl;
 		m_calCorr[layer][col][0] *= exp(logratio/2);
 		m_calCorr[layer][col][1] *= exp(-logratio/2);
 		m_calSlopes[layer][col] = -slope;
@@ -509,7 +509,7 @@ void muonCalib::FitMuHist(){
 		  h->Fit("landau", "", "", ave-2*rms, ave+3*rms);
 		  double* par = (h->GetFunction("landau"))->GetParameters();
 		  float mean = *(par+1); float sigma=*(par+2);
-		  std::cout << " mean=" << mean << "  sigma=" << sigma << endl;
+		  std::cout << " mean=" << mean << "  sigma=" << sigma << std::endl;
 
 		  // note *= here, gain correction applied
 		  m_calCorr[layer][col][side] *=1000/mean;
@@ -534,7 +534,7 @@ void muonCalib::WriteMuPeaks(const char* fileName){
 			 // note compared to fitMuHist, gain corection is removed here
 				  << 1000/m_calCorr[layer][col][side] << " "
 				  << m_muRelSigma[layer][col][side]
-				  << endl;
+				  << std::endl;
 
 		}
 	 }
@@ -546,7 +546,7 @@ void muonCalib::WriteMuSlopes(const char* fileName){
   for (int layer=0;layer < 8;layer++){
 	 for(int col=0;col<12;col++){
 		mslout << " " << col << " " << layer <<" "
-				 << 2*2.7844/m_calSlopes[layer][col] << endl;
+				 << 2*2.7844/m_calSlopes[layer][col] << std::endl;
 	 }
   }
 }
@@ -571,7 +571,7 @@ void muonCalib::FitPedHist(){
 				av = h->GetMean(); rms = h->GetRMS();
 			 }
 			 int fitresult= h->Fit("gaus", "Q","", av-3*rms, av+3*rms );  // run gaussian fit
-			 cout<<h->GetName()<<"  "<<fitresult<<endl;
+			 std::cout<<h->GetName()<<"  "<<fitresult<<std::endl;
 			 h->SetAxisRange(av-150,av+150);
 
 			 m_calPed[rng][layer][col][side] =
@@ -689,7 +689,7 @@ void muonCalib::WriteAsymTable(const char* fileName){
                      sprintf(sbin," %8.5f",bin);
                     asym_table_out << " " << sbin;
              }
-                 asym_table_out << endl;
+                 asym_table_out << std::endl;
 
 	  }
 }
@@ -710,11 +710,11 @@ void muonCalib::ReadAsymTable(const char* fileName){
                        
     
                 for(int i=0;i<10;i++)y[i+2]=asym[i];   // -x[i+2]*m_calSlopes[layer][col];
-                cout <<" " << layer 
+                std::cout <<" " << layer 
                        <<" " << col
-                       << endl;
-//                for ( i=0;i<10;i++) cout << " " << asym[i]; cout << endl;
-//                for ( i=0;i<10;i++) cout << " " << y[i+2]; cout << endl;
+                       << std::endl;
+//                for ( i=0;i<10;i++) std::cout << " " << asym[i]; std::cout << std::endl;
+//                for ( i=0;i<10;i++) std::cout << " " << y[i+2]; std::cout << std::endl;
     
                 
     y[1]=2*y[2]-y[3];
@@ -777,7 +777,7 @@ void muonCalib::ReadCalPed(const char* fileName){
 				  << " " << rng
 				  <<" " << av
 				  <<" " << rms
-				  << endl;
+				  << std::endl;
 	 m_calPed[rng][layer][col][side] = av;
 	 m_calPedRms[rng][layer][col][side] = rms;
   }
@@ -796,7 +796,7 @@ void muonCalib::ReadMuSlopes(const char* fileName){
 	 std::cout <<" " << layer
 				  <<" " << col
 				  <<" " << slope
-				  << endl;
+				  << std::endl;
 
 	 m_calSlopes[layer][col] = 2*2.7844/slope;
   }
@@ -820,7 +820,7 @@ void muonCalib::ReadMuPeaks(const char* fileName){
 				  <<" " << col
 				  <<" " << side
 				  <<" " << mupeak
-				  << endl;
+				  << std::endl;
 
 	 m_calCorr[layer][col][side] = 1000.0/mupeak;
   }
@@ -987,7 +987,7 @@ void muonCalib::Go(Int_t numEvents)
 		digiEventId = evt->getEventId();
 		digiRunNum = evt->getRunId();
       if(digiEventId%1000 == 0)
-		  std::cout <<" run " << digiRunNum << " event " << digiEventId << endl;
+		  std::cout <<" run " << digiRunNum << " event " << digiEventId << std::endl;
 
 		//            DigiTkr();
 		DigiCal();
