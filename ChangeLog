@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Dec 22 19:28:16 PST 2004
+calibGenCAL/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+small changes in order get Linux build w/ no warnings
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Dec 22 19:25:18 PST 2004
 calibGenCAL/cmt
 
