@@ -1,5 +1,5 @@
 package calibGenCAL
-version v3r2
+version v3r2p1
 
 private 
 
@@ -9,7 +9,6 @@ use GlastPolicy   v*
 use reconRootData v*
 use digiRootData  v*
 use mcRootData    v*
-use RootPolicy    v*
 use xml           v*
 use Event         v*
 use facilities    v*
@@ -17,8 +16,8 @@ use calibUtil     v*
 
 #because the latter package unfortunately exposes RootcintPolicy, the following macros have to be defined
 # to protect windows builds. this really needs fixing!
-macro rootcint_begin "" vsnet "<!--"
-macro rootcint_end   "" vsnet "-->"
+#macro rootcint_begin "" vsnet "<!--"
+#macro rootcint_end   "" vsnet "-->"
 
 # make sure we have all graphical root libraries linked (stolen from rootanalysis)
 # used for line fitting in muonCalib

@@ -289,7 +289,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdFilename) 
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.1 2005/01/31 14:01:58 fewtrell Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.2 2005/01/31 18:18:36 fewtrell Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
@@ -304,7 +304,9 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdFilename) 
   xmlFile << "<calCalib>" << endl;
   xmlFile << "  <generic instrument=\"" << m_cfg.instrument
           << "\" timestamp=\"" << m_cfg.startTime << "\"" << endl;
-  xmlFile << "           calibType=\"CAL_IntNonlin\" fmtVersion=\"v2r1\">" << endl;
+  xmlFile << "           calibType=\"CAL_IntNonlin\" fmtVersion=\"v2r1\"" << endl;
+  xmlFile << "           creator=\"" << CGCUtil::CVS_TAG << "\">" << endl;
+
   xmlFile << endl;
   xmlFile << "    <inputSample startTime=\"" << m_cfg.startTime
           << "\" stopTime=\"" << m_cfg.stopTime << "\"" << endl;
