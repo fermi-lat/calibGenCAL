@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: xchen  Mon Feb 23 11:55:06 PST 2004
+calibGenCAL/src
+
+Modified Files:
+	getGainsXML.cxx 
+Log Message:
+change energy scale
+    *
+------------------------------------------------------------
 User: xchen  Mon Feb 23 11:54:11 PST 2004
 calibGenCAL/doc
 
