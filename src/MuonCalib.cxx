@@ -180,11 +180,11 @@ void MuonCalib::fillRoughPedHists(int nEvts) {
 
     for( int cde_nb=0; (pCalDigi=(CalDigi*) calDigiCol->At(cde_nb)); cde_nb++ ) { //loop through each 'hit' in one event
       CalDigi &calDigi = *pCalDigi; // use reference to avoid -> syntax
-      const CalXtalReadout& cRo=*calDigi.getXtalReadout(LEX8); // get LEX8 data
+      const CalXtalReadout& readout=*calDigi.getXtalReadout(LEX8); // get LEX8 data
 
       // check that we are in the expected readout mode
-      RngNum rngP = cRo.getRange(CalXtalId::POS);
-      RngNum rngN = cRo.getRange(CalXtalId::NEG);
+      RngNum rngP = readout.getRange(CalXtalId::POS);
+      RngNum rngN = readout.getRange(CalXtalId::NEG);
       if (rngP != LEX8 || rngN != LEX8) {
         ostringstream tmp;
         tmp << "Event# " << m_evtId << " 1st range shold be LEX8, unexpected trigger mode!";
@@ -196,8 +196,8 @@ void MuonCalib::fillRoughPedHists(int nEvts) {
       //int tower = id.getTower();
       ColNum col = id.getColumn();
 
-      float adcP = cRo.getAdc(CalXtalId::POS);
-      float adcN = cRo.getAdc(CalXtalId::NEG);
+      float adcP = readout.getAdc(CalXtalId::POS);
+      float adcN = readout.getAdc(CalXtalId::NEG);
 
       FaceIdx faceIdx(0,lyr,col,POS_FACE);
       m_roughPedHists[faceIdx]->Fill(adcP);
@@ -223,7 +223,7 @@ void MuonCalib::fitRoughPedHists() {
       h.SetAxisRange(av-3*err,av+3*err);
       av = h.GetMean(); err= h.GetRMS();
     }
-
+    
     // gaussian fit
     h.Fit("gaus", "Q","", av-3*err, av+3*err );
     h.SetAxisRange(av-150,av+150);
@@ -304,19 +304,19 @@ void MuonCalib::fillPedHists(int nEvts) {
         throw tmp.str();
       }
       
-      const CalXtalReadout& cRo=*calDigi.getXtalReadout(LEX8); // 1st look at LEX8 vals
+      const CalXtalReadout& readout=*calDigi.getXtalReadout(LEX8); // 1st look at LEX8 vals
 
       // check that we are in the expected readout mode
-      RngNum rngP = cRo.getRange(CalXtalId::POS);
-      RngNum rngN = cRo.getRange(CalXtalId::NEG);
+      RngNum rngP = readout.getRange(CalXtalId::POS);
+      RngNum rngN = readout.getRange(CalXtalId::NEG);
       if (rngP != LEX8 || rngN != LEX8) {
         ostringstream tmp;
         tmp << "Event# " << m_evtId << " 1st range shold be LEX8, unexpected trigger mode!";
         throw tmp.str(); 
       }
       
-      float adcP = cRo.getAdc(CalXtalId::POS);
-      float adcN = cRo.getAdc(CalXtalId::NEG);
+      float adcP = readout.getAdc(CalXtalId::POS);
+      float adcN = readout.getAdc(CalXtalId::NEG);
 
       // skip outliers (outside of 5 sigma.
       if (fabs(adcN - m_calRoughPed[FaceIdx(xtalIdx,NEG_FACE)]) < 5*m_calRoughPedErr[FaceIdx(xtalIdx,NEG_FACE)] &&
@@ -326,8 +326,8 @@ void MuonCalib::fillPedHists(int nEvts) {
           const CalXtalReadout &readout = *calDigi.getXtalReadout(n);
 
           // check that we are in the expected readout mode
-          RngNum rngP = cRo.getRange(CalXtalId::POS);
-          RngNum rngN = cRo.getRange(CalXtalId::NEG);
+          RngNum rngP = readout.getRange(CalXtalId::POS);
+          RngNum rngN = readout.getRange(CalXtalId::NEG);
           if (rngP != n || rngN != n) {
             ostringstream tmp;
             tmp << "Event# " << m_evtId << " 4-Range readouts out of order.  Expecting 0,1,2,3";
@@ -363,10 +363,20 @@ void MuonCalib::fitPedHists() {
     float av = h.GetMean();float err =h.GetRMS();
     for( int iter=0; iter<3;iter++ ) {
       h.SetAxisRange(av-3*err,av+3*err);
-      av = h.GetMean(); err= h.GetRMS();
+      av  = h.GetMean(); 
+      err = h.GetRMS();
     }
     
-    // reset initial f1 parameters
+    // Gaussian fit doesn't seem to do well w/ 
+    // small # of  populated bins.  if RMS is 
+    // low, it's good enough to return mean & RMS
+    if (err < 0.7) {
+      m_calPed[rngIdx]    = av;
+      m_calPedErr[rngIdx] = err;
+      continue;
+    }
+
+    // reset initial fit parameters
     mygaus.SetParameter(0,h.GetEntries()/err); // ballpark for height.
     mygaus.SetParameter(1,av);
     mygaus.SetParameter(2,err);
@@ -487,6 +497,7 @@ void MuonCalib::readIntNonlin(const string &filename) {
 
 void MuonCalib::loadInlSplines() {
   m_inlSplines.resize(DiodeIdx::N_VALS);
+  m_inlSplinesInv.resize(DiodeIdx::N_VALS);
 
   // ROOT functions take double arrays, not vectors so we need to copy each vector into an array
   // before loading it into a ROOT spline
@@ -533,6 +544,8 @@ void MuonCalib::loadInlSplines() {
     // generate splinename
     ostringstream name;
     name << "intNonlin_" << diodeIdx;
+    ostringstream nameInv;
+    nameInv << "intNonlinInv_" << diodeIdx;
 
     //m_ostrm << "inlspline=" << diodeIdx.getInt()
     //   << " adc=";
@@ -546,10 +559,14 @@ void MuonCalib::loadInlSplines() {
     //m_ostrm << endl;
 
     // create spline object.
-    TSpline3 *mySpline= new TSpline3(name.str().c_str(), adcs, dacs, nADC);
+    TSpline3 *mySpline    = new TSpline3(name.str().c_str(), adcs, dacs, nADC);
+    TSpline3 *mySplineInv = new TSpline3(name.str().c_str(), adcs, dacs, nADC);
 
     mySpline->SetName(name.str().c_str());
     m_inlSplines[diodeIdx] = mySpline;
+
+    mySplineInv->SetName(name.str().c_str());
+    m_inlSplinesInv[diodeIdx] = mySplineInv;
   }
 
   // cleanup
@@ -625,7 +642,7 @@ void MuonCalib::summarizeHits(HitSummary &hs) {
       DiodeIdx diodeIdx(xtalIdx, face, diode);
 
       const CalXtalReadout& readout = *calDigi.getXtalReadout(rng);
-      RngNum tmpRng = readout.getRange(face);
+      RngNum tmpRng = readout.getRange((CalXtalId::XtalFace)(int)face);
       // check that we are in the proper readout mode
       if (tmpRng != rng) {
         ostringstream tmp;
@@ -1089,6 +1106,10 @@ double MuonCalib::adc2dac(DiodeIdx diodeIdx, double adc) {
   return m_inlSplines[diodeIdx]->Eval(adc);
 }
 
+double MuonCalib::dac2adc(DiodeIdx diodeIdx, double dac) {
+  return m_inlSplinesInv[diodeIdx]->Eval(dac);
+}
+
 void MuonCalib::writeAsymTXT(const string &filenameLL,
                              const string &filenameLS,
                              const string &filenameSL,
@@ -1455,6 +1476,8 @@ void MuonCalib::fitMPDHists() {
   m_calMPDSmall.resize(XtalIdx::N_VALS);
   m_calMPDLargeErr.resize(XtalIdx::N_VALS);
   m_calMPDSmallErr.resize(XtalIdx::N_VALS);
+  m_adc2nrg.resize(DiodeIdx::N_VALS);
+
 
   ////////////////////////////////////////////////////
   // INITIALIZE ROOT PLOTTING OBJECTS FOR LINE FITS //
@@ -1517,7 +1540,7 @@ void MuonCalib::fitMPDHists() {
     if (!nPts) {
       ostringstream tmp;
       tmp << "Event# " << m_evtId << "Unable to find small diode MPD for xtal=" << xtalIdx
-                     << " due to empty histogram." << endl;
+          << " due to empty histogram." << endl;
       throw tmp.str();
     }
 
@@ -1795,4 +1818,67 @@ void MuonCalib::writeMPDXML(const string &filename, const string &dtdPath) {
     outfile << " </tower>"<< endl;
   }
   outfile << "</calCalib>" << endl;
+}
+
+void MuonCalib::writeADC2NRGXML(const string &filename) {
+  ofstream outfile(filename.c_str());
+  const float enemu = (float)11.2;
+  for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
+    float mpdL = m_calMPDLarge[xtalIdx];
+    float mpdS = m_calMPDSmall[xtalIdx];
+    int ic = N_ASYM_PTS/2;
+    float asym_center_L = 0.25*(m_calAsymLL[xtalIdx][ic]+m_calAsymLL[xtalIdx][ic-1]);
+    float asym_center_S = 0.25*(m_calAsymSS[xtalIdx][ic]+m_calAsymSS[xtalIdx][ic-1]);
+
+    DiodeIdx diodeIdxPS(xtalIdx, POS_FACE, SMALL_DIODE);
+    DiodeIdx diodeIdxPL(xtalIdx, POS_FACE, LARGE_DIODE);
+    DiodeIdx diodeIdxNS(xtalIdx, NEG_FACE, SMALL_DIODE);
+    DiodeIdx diodeIdxNL(xtalIdx, NEG_FACE, LARGE_DIODE);
+
+    m_adc2nrg[diodeIdxPL] = enemu/dac2adc(diodeIdxPL,(enemu/mpdL)*exp(asym_center_L));
+    m_adc2nrg[diodeIdxNL] = enemu/dac2adc(diodeIdxNL,(enemu/mpdL)*exp(-asym_center_L));
+    m_adc2nrg[diodeIdxPS] = enemu/dac2adc(diodeIdxPS,(enemu/mpdS)*exp(asym_center_S));
+    m_adc2nrg[diodeIdxNS] = enemu/dac2adc(diodeIdxNS,(enemu/mpdS)*exp(-asym_center_S));
+  }
+
+  int tower = 0;
+  outfile << "<?xml version=\'1.0\' encoding=\'UTF-8\'?>" << endl;
+  outfile << "<LATdoc name=\'\'>"<< endl;
+  outfile << "  <declarations>"<< endl;
+  outfile << "    <options>"<< endl;
+  outfile << "      <explicitBroadcastNodes>0</explicitBroadcastNodes>"<< endl;
+  outfile << "    </options>"<< endl;
+  outfile << "  </declarations>"<< endl;
+  outfile << "  <configuration hierarchy=\"[\'low_hi_nrg\', \'GCCC\', \'GCRC\', \'GCFE\', \'adc2nrg\']\" shape=\'(2, 8, 2, 12)\' version=\'NA\' type=\'d\' name=\'\'>"<< endl;
+  outfile << "    <GLAT>"<< endl;
+  outfile << "      <GTEM ID=\'0\'>"<< endl;
+  for (int diode=0; diode<2; diode++){
+    outfile << "        <low_hi_nrg ID=\'" << diode << "\'>" << endl;
+    for (int xy = 0; xy<2; xy++){
+      for (int side =0; side < 2; side++){
+        int gccc = (1-side)+2*xy;
+        outfile << "          <GCCC ID=\'" << gccc << "\'>" << endl;
+        for (int gcrc = 0; gcrc <4; gcrc++){
+          outfile << "            <GCRC ID=\'" << gcrc << "\'>" << endl;
+          int layer = xy+gcrc*2;
+          for (int gcfe = 0; gcfe<12; gcfe++){
+            outfile << "              <GCFE ID=\'" << gcfe << "\'>" << endl;
+            int col = gcfe;
+            DiodeIdx diodeIdx(tower,layer,col,side,diode);
+            float adc2nrg = m_adc2nrg[diodeIdx];
+            outfile <<"                <adc2nrg>" << adc2nrg <<"</adc2nrg>" << endl;
+            outfile << "              </GCFE>"<< endl;
+          }
+          outfile << "            </GCRC>"<< endl;
+        }
+        outfile << "          </GCCC>"<< endl;
+      }
+    }
+    outfile << "        </low_hi_nrg>"<< endl;
+  }
+  outfile << "      </GTEM>"<< endl;
+  outfile << "    </GLAT>"<< endl;
+  outfile << "  </configuration>"<< endl;
+  outfile << "</LATdoc>"<< endl;
+
 }

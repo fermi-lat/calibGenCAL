@@ -50,6 +50,8 @@ void McCfg::readCfgFile(const string& cfgPath) {
   Util::expandEnvVar(&asymFileXML);
   mpdFileXML      = ifile.getString(PATHS.c_str(), "MPDFILE_XML");
   Util::expandEnvVar(&mpdFileXML);
+  adc2nrgFileXML      = ifile.getString(PATHS.c_str(), "ADC2NRGFILE_XML");
+  Util::expandEnvVar(&adc2nrgFileXML);
 
   pedHistFile     = ifile.getString(PATHS.c_str(), "PED_HISTFILE");
   Util::expandEnvVar(&pedHistFile);
@@ -112,7 +114,7 @@ void McCfg::readCfgFile(const string& cfgPath) {
   // only asign genOptAsymHists is genHistfiles is also enabled.
   genOptAsymHists = false;
   if (genHistfiles) genOptAsymHists 
-     = ifile.getBool(GENERAL.c_str(), "GEN_OPT_ASYM_HISTS") != 0;
+                      = ifile.getBool(GENERAL.c_str(), "GEN_OPT_ASYM_HISTS") != 0;
 
   // *** POST PROCESS *** //
   // parse list of ROOT input files
@@ -135,6 +137,13 @@ void McCfg::readCfgFile(const string& cfgPath) {
 
   if (mpdFileXML.length() == 0)
     mpdFileXML = outputDir + "mc_mevperdac." + baseFilename + ".xml";
+
+  if (adc2nrgFileXML.length() == 0){
+    vector<string> baseFilenameElem;
+    tokenize_str(baseFilename,baseFilenameElem,"_");
+    adc2nrgFileXML = outputDir + baseFilenameElem[0]+"_" + baseFilenameElem[1] + "_cal_adc2nrg" + ".xml";
+  }
+  
 
   
   if (pedHistFile.length() == 0)

@@ -154,6 +154,9 @@ int main(int argc, char** argv) {
       
       // write MPD XML file
       if (cfg.genXML) appData.writeMPDXML(cfg.mpdFileXML, cfg.dtdPath);
+
+      //write adc2nrg XML file
+      appData.writeADC2NRGXML(cfg.adc2nrgFileXML);
       
       // save MPD histograms
       if (cfg.genHistfiles) appData.flushHists();
