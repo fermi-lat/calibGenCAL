@@ -3,8 +3,8 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLROOT)/xmldata/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/muonCalib_option.xml,v 1.5 2005/01/31 14:01:58 fewtrell Exp $"
- cvs_Revision="$Revision: 1.5 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/muonCalib_option.xml,v 1.6 2005/02/03 04:11:05 fewtrell Exp $"
+ cvs_Revision="$Revision: 1.6 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP"    value="2004-07-31-06:50"> Timestamp for test run.</item>
@@ -15,26 +15,28 @@
 
   <section name="PATHS"> Intput/Output file paths
     NOTE: All environment variables will be expanded with facilities::Util::expandEnvVar()
-    <item name="INPUTFILE_LIST"    value="D:/GLAST/RELEASE/FM101/041022230030_FM101_Pshp_calu_collect_ext.root"> Space delimited list of input ROOT digi files </item>
+    <item name="INPUTFILE_LIST"    value="\\xeus.nrl.navy.mil\GLASTCAL\FM\Module\FM102\FM102_calibGenCAL_analysis\041110145500_FM102_Pshp_calu_collect_ext.root"> Space delimited list of input ROOT digi files </item>
     
-    <item name="INTNONLINFILE_TXT" value="../output/ci_intnonlin.041111143546_FM101_PSHP_CALU_COLLECT_CI_SINGLEX16.txt"> Input integral non-linearity text file</item>
+    <item name="INTNONLINFILE_TXT" value="\\xeus.nrl.navy.mil\GLASTCAL\FM\Module\FM102\FM102_calibGenCAL_analysis\ci_intnonlin.041112122650_FM102_PSHP_CALU_COLLECT_CI_SINGLEX16.txt"> Input integral non-linearity text file</item>
     <item name="DTD_FILE"          value="$(CALIBUTILROOT)/xml/calCalib_v2r2.dtd"> Data description file for XML ouptut ).</item>
 
     <item name="OUTPUT_FOLDER"     value="../output/"> Folder for auto-named output files </item>
  
-    <item name="PEDFILE_XML"       value=""> Optional path for output ADC pedestal xml file (default "" autogenerates filename from input filename)</item>
-    <item name="ASYMFILE_XML"      value=""> Optional path for output asymmetry xml file (default "" autogenerates filename from input filename)</item>
-    <item name="MPDFILE_XML"       value=""> Optional path for output MevPerDac  xml  file (default "" autogenerates filename from input filename)</item>
+    <item name="PEDFILE_XML"       value=""> Optional path for output ADC pedestal xml file (default "" autogenerates filename from input filename) </item>
+    <item name="ASYMFILE_XML"      value=""> Optional path for output asymmetry xml file (default "" autogenerates filename from input filename)    </item>
+    <item name="MPDFILE_XML"       value=""> Optional path for output MevPerDac  xml  file (default "" autogenerates filename from input filename)  </item>
+    <item name="ADC2NRGFILE_XML"   value=""> Optional path for output adc2nrg  xml  file (default "" autogenerates filename from input filename)    </item>
+
 
     <item name="PED_HISTFILE"      value=""> Optional path for ROOT histogram filename for pedestal calibration phase. (default "" autogenerates filename from input filename)</item>
     <item name="ASYM_HISTFILE"     value=""> Optional path for ROOT histogram filename (default "" autogenerates filename from input filename)</item>
     <item name="MPD_HISTFILE"      value=""> Optional path for ROOT histogram filename (default "" autogenerates filename from input filename)</item>
     
-    <item name="PEDFILE_TXT"       value=""> Optional path for output ADC pedestal text file (default "" autogenerates filename from input filename)</item>
-    <item name="ASYMFILELL_TXT"    value=""> Optional path for output LL asymmetry text file  (default "" autogenerates filename from input filename)</item>
-    <item name="ASYMFILELS_TXT"    value=""> Optional path for output LS asymmetry text file (default "" autogenerates filename from input filename)</item>
-    <item name="ASYMFILESL_TXT"    value=""> Optional path for output SL asymmetry text file (default "" autogenerates filename from input filename)</item>
-    <item name="ASYMFILESS_TXT"    value=""> Optional path for output SS asymmetry text file (default "" autogenerates filename from input filename)</item>
+    <item name="PEDFILE_TXT"       value=""> Optional path for output ADC pedestal text file (default "" autogenerates filename from input filename)  </item>
+    <item name="ASYMFILELL_TXT"    value=""> Optional path for output LL asymmetry text file  (default "" autogenerates filename from input filename) </item>
+    <item name="ASYMFILELS_TXT"    value=""> Optional path for output LS asymmetry text file (default "" autogenerates filename from input filename)  </item>
+    <item name="ASYMFILESL_TXT"    value=""> Optional path for output SL asymmetry text file (default "" autogenerates filename from input filename)  </item>
+    <item name="ASYMFILESS_TXT"    value=""> Optional path for output SS asymmetry text file (default "" autogenerates filename from input filename)  </item>
     <item name="LARGEMPD_TXT"      value=""> Optional path for output mev/dac conversion text file (Large diodes)  (default "" autogenerates filename from input filename)</item>
     <item name="SMALLMPD_TXT"      value=""> Optional path for output mev/dac conversion text file (Small diodes)  (default "" autogenerates filename from input filename)</item>
 
