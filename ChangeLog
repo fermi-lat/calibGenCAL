@@ -1,4 +1,44 @@
 ------------------------------------------------------------
+TAG
+Tag name: v3r2p1, operation: add
+Package: calibGenCAL
+User: fewtrell  Wed Feb  2 20:16:10 2005
+Files:
+  calibGenCAL/.cvsignore  1.1.1.1
+  calibGenCAL/ChangeLog  1.107
+  calibGenCAL/cmt/.cvsignore  1.1
+  calibGenCAL/cmt/requirements  1.20
+  calibGenCAL/doc/release.notes  1.24
+  calibGenCAL/output/fake_tholdci_perrange.txt  1.1
+  calibGenCAL/output/.cvsignore  1.1
+  calibGenCAL/output/fake_tholdci.xml  1.3
+  calibGenCAL/output/fake_tholdci_perface.txt  1.1
+  calibGenCAL/output/ci_intnonlin.041111143546_FM101_PSHP_CALU_COLLECT_CI_SINGLEX16.xml  1.4
+  calibGenCAL/output/ci_intnonlin.041111143546_FM101_PSHP_CALU_COLLECT_CI_SINGLEX16.txt  1.2
+  calibGenCAL/src/McCfg.cxx  1.1
+  calibGenCAL/src/runCIFit.cxx  1.3
+  calibGenCAL/src/ciFit_option.xml  1.6
+  calibGenCAL/src/CalDefs.h  1.5
+  calibGenCAL/src/CGCUtil.cxx  1.2
+  calibGenCAL/src/MuonCalib.cxx  1.2
+  calibGenCAL/src/McCfg.h  1.1
+  calibGenCAL/src/mainpage.h  1.9
+  calibGenCAL/src/CalDefs.cxx  1.3
+  calibGenCAL/src/RootFileAnalysis.h  1.6
+  calibGenCAL/src/CGCUtil.h  1.4
+  calibGenCAL/src/MuonCalib.h  1.1
+  calibGenCAL/src/genTholdCI_XML.cxx  1.2
+  calibGenCAL/src/CfCfg.cxx  1.1
+  calibGenCAL/src/CfCfg.h  1.1
+  calibGenCAL/src/runMuonCalib.cxx  1.15
+  calibGenCAL/src/ICfg.h  1.5
+  calibGenCAL/src/muonCalib_option.xml  1.6
+  calibGenCAL/src/genTholdCI_XML_option.xml  1.1
+  calibGenCAL/src/RootFileAnalysis.cxx  1.7
+  calibGenCAL/xml/.cvsignore  1.1
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Feb  2 20:15:30 PST 2005
 calibGenCAL/output
 
