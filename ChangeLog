@@ -1,4 +1,42 @@
 ------------------------------------------------------------
+TAG
+Tag name: v3r3p1, operation: add
+Package: calibGenCAL
+User: fewtrell  Fri Feb 11 11:41:10 2005
+Files:
+  calibGenCAL/.cvsignore  1.2
+  calibGenCAL/ChangeLog  1.124
+  calibGenCAL/cmt/.cvsignore  1.1
+  calibGenCAL/cmt/requirements  1.22
+  calibGenCAL/doc/release.notes  1.28
+  calibGenCAL/output/fake_tholdci_perrange.txt  1.1
+  calibGenCAL/output/.cvsignore  1.1
+  calibGenCAL/output/fake_tholdci.xml  1.3
+  calibGenCAL/output/fake_tholdci_perface.txt  1.1
+  calibGenCAL/src/McCfg.cxx  1.5
+  calibGenCAL/src/runCIFit.cxx  1.5
+  calibGenCAL/src/ciFit_option.xml  1.6
+  calibGenCAL/src/CalDefs.h  1.6
+  calibGenCAL/src/CGCUtil.cxx  1.2
+  calibGenCAL/src/MuonCalib.cxx  1.5
+  calibGenCAL/src/McCfg.h  1.4
+  calibGenCAL/src/mainpage.h  1.9
+  calibGenCAL/src/CalDefs.cxx  1.3
+  calibGenCAL/src/RootFileAnalysis.h  1.6
+  calibGenCAL/src/CGCUtil.h  1.4
+  calibGenCAL/src/MuonCalib.h  1.4
+  calibGenCAL/src/genTholdCI_XML.cxx  1.5
+  calibGenCAL/src/CfCfg.cxx  1.4
+  calibGenCAL/src/CfCfg.h  1.3
+  calibGenCAL/src/runMuonCalib.cxx  1.18
+  calibGenCAL/src/ICfg.h  1.5
+  calibGenCAL/src/muonCalib_option.xml  1.7
+  calibGenCAL/src/genTholdCI_XML_option.xml  1.1
+  calibGenCAL/src/RootFileAnalysis.cxx  1.7
+  calibGenCAL/xml/.cvsignore  1.1
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Feb 11 11:40:32 PST 2005
 calibGenCAL/doc
 
