@@ -326,7 +326,7 @@ int cfData::FitData() {
 			 // copy SKPLO points directly from beginning of array.
 			 int spl_idx = 0;
 			 for (int i = 0; i < skpLo; i++,spl_idx++) {
-				m_splineDac[range][spl_idx] = m_dacArr[i];
+				m_splineDac[range][spl_idx] = (int)m_dacArr[i];
 				m_splineADC[xtal][layer][face][range][spl_idx] = curADC[i];
 			 }
 
@@ -345,7 +345,7 @@ int cfData::FitData() {
 				float myPar2 = splineFunc.GetParameter(1);
 				float myPar3 = splineFunc.GetParameter(2);
 
-				int   fitDac = m_dacArr[cp];
+				int   fitDac = (int)m_dacArr[cp];
             float fitADC = myPar1 + fitDac*(myPar2 + fitDac*myPar3);
 
 				// output result
@@ -359,7 +359,7 @@ int cfData::FitData() {
 			 for (int i = (nPtsMin-skpLo-skpHi)*grpWid + skpLo;
 					i <= last_idx;
 					i++,spl_idx++) {
-				m_splineDac[range][spl_idx] = m_dacArr[i];
+				m_splineDac[range][spl_idx] = (int)m_dacArr[i];
 				m_splineADC[xtal][layer][face][range][spl_idx] = curADC[i];
 			 }
 
@@ -442,7 +442,7 @@ int cfData::WriteSplinesXML(const std::string &fileName) {
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << std::endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit.cxx,v 1.6 2004/07/07 18:57:49 fewtrell Exp $  -->" << std::endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit.cxx,v 1.7 2004/08/24 18:27:37 fewtrell Exp $  -->" << std::endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << std::endl;
   xmlFile << std::endl;
   xmlFile << "<!DOCTYPE calCalib SYSTEM \"" << m_cfg->m_outputDTDPath << "\" [] >" << std::endl;
