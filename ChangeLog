@@ -1,4 +1,21 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Dec 30 16:09:39 PST 2004
+calibGenCAL/output
+
+Modified Files:
+	mc_asym.041022230030_FM101_Pshp_calu_collect_ext.xml 
+	mc_mevperdac.041022230030_FM101_Pshp_calu_collect_ext.xml 
+	mc_peds.041022230030_FM101_Pshp_calu_collect_ext.xml 
+Log Message:
+preparing for v3r0p2
+
+fixed bad xtal pitch in mc options file.
+slight modifications to event & hit selection in muon calib gain & asym.
+modularized some generic code.
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Dec 30 16:09:38 PST 2004
 calibGenCAL/doc
 
