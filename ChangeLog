@@ -1,4 +1,31 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Jan  5 21:32:15 PST 2005
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+calibGenCAL v3r1 changelog
+	package - removed some older executables from package which now appear to be obsolete.
+	        - if someone (most likely Xin) wants to put these back in or requests updated versions
+	        - which work with the new constants than that is no problem.  I have a bad habit
+	        - of trying to keep things as trimmed down as possible.
+	package - now depends on calibUtil & I expect in the future it will depend on CalUtil as well.
+	        - while calibGenCAL is still not a gaudi package, it can't avoid requiring some utilities from gaudi-based pacakages any more.
+	
+	ciFit && muonCalib - path values in config files now use facilities::Util::expandEnvVar()
+		- default dtd paths in particular make use of this & save user unneeded headache.
+		- I have included in the package one full set of config & output files from a complete FM101 calibration run.
+	
+	ciFit - David Smith's 'no mcTree found' bug fixed.  - my fault, sorry!
+	ciFit - Sasha noted that the spline values were going too high in the ADC range.  I found out why (the user entered nPointsMin was evidently not 'min' enough).
+	      - and i put in my own quick workaround (export < nPointsMin points if I pass the ADC limit for given range.)
+	      - This patch was implemented w/out conferring w/ Sasha who is the official guru, so if he want's to do a better fix tomorrow, then there will likely be a new revision shortly!
+
+	
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r0p2, operation: add
 Package: calibGenCAL
