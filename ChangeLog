@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Jun 30 08:03:51 PDT 2004
+calibGenCAL/src
+
+Modified Files:
+	RootFileAnalysis.h ciFit.cxx mainpage.h muonCalib.h 
+	muonCalib_option.dat runMuonCalib.cxx runMuonCalibChain.cxx 
+Log Message:
+updated comments
+
+added xml output to runMuonCalib,just like runMuonCalibChain
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Jun 29 08:38:26 PDT 2004
 calibGenCAL/src
 
