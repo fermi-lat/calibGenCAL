@@ -11,3 +11,6 @@ v2r2 added ciFit app.  made sure that muonCalib could run w/ out specifying any 
 v2r2p1 slight alterations to requirements file to aid compilation on linux (provided by heather).  also added std:: namespace in some places.
 
 v2r2p2 updated more namespace specifiers in ciFit.cxx
+
+v2r2p3 small bug fixes for Linux - use std where needed, removed dtor for base class, and modified enum usage
+

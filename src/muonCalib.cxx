@@ -435,9 +435,9 @@ void muonCalib::DigiCal()
 				// 2.7844 is width of a log, used to translate from log number to
 				// actual position
 
-				if( asym_corr_type == ASYM_CORR_TYPE::SLOPE){
+				if( asym_corr_type == SLOPE){
 					((TProfile*)ratfull->At(12*l+c))->Fill((pos-5.5)*2.7844,log(ratio)+m_calSlopes[l][c]*(pos-5.5));
-				}else if(asym_corr_type == ASYM_CORR_TYPE::SPLINE){
+				}else if(asym_corr_type == SPLINE){
 					TSpline3* spl = (TSpline3*) (asymCorr->At(12*l+c));
 					double pos_eval = spl->Eval(log(ratio));
 /*
@@ -903,7 +903,7 @@ void muonCalib::HistDefine() {
 
   gStyle->SetOptStat(111111);
 
-  if (string(m_histFileName) == "") return;
+  if (std::string(m_histFileName) == "") return;
 
   histFile = new TFile(m_histFileName,"RECREATE");
   McHistDefine();
