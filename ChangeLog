@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: chehtman  Fri May 28 14:30:16 PDT 2004
+calibGenCAL/src
+
+Modified Files:
+	runMuonCalibChain.cxx muonCalibChain_option.dat muonCalib.h 
+	muonCalib.cxx 
+Log Message:
+Light Asymmetry nonlinearity calibration added
+    *
+------------------------------------------------------------
 User: fewtrell  Mon May 17 08:08:20 PDT 2004
 calibGenCAL/doc
 
