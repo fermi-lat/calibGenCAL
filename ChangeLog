@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Aug 24 11:27:38 PDT 2004
+calibGenCAL/src
+
+Modified Files:
+	ciFit.cxx mainpage.h runMuonCalib.cxx 
+Added Files:
+	ciFit_option.xml 
+Log Message:
+added xml/IFile config file support to ciFit
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Aug 24 11:27:37 PDT 2004
 calibGenCAL/doc
 
