@@ -12,14 +12,11 @@ int main(int argc, char** argv) {
   string cfgPath;
   if(argc > 1) cfgPath = argv[1];
   else cfgPath = "../src/muonCalib_option.xml";
-
+    
   mcCfg cfg;
-  if (cfg.readCfgFile(cfgPath) != 0) {
-    cout << "Error reading config file: " << cfgPath << endl;
-    return -1;
-  }
-
   try {
+    cfg.readCfgFile(cfgPath);
+  
     muonCalib appData(cfg.rootFileList, 
                       cfg.instrument, 
                       cfg.towerList, 
@@ -36,7 +33,6 @@ int main(int argc, char** argv) {
                       cfg.minAsymLS,
                       cfg.minAsymSL,
                       cfg.minAsymSS);
-
     
     ////////////////////////////////
     // *** PHASE 1: PEDESTALS *** //
@@ -131,7 +127,6 @@ int main(int argc, char** argv) {
                           cfg.asymFileSSTXT);
     }
 
-    
     //////////////////////////////////
     // *** PHASE 3: MEV_PER_DAC *** //
     //////////////////////////////////
@@ -139,12 +134,12 @@ int main(int argc, char** argv) {
     if (!cfg.skipMPD) {
       // rewind input file
       appData.rewind();
-      cfg.ostr << "Calculating MevPerDac - " << cfg.nEvtMPD << " events" << endl;
+      cfg.ostr << "Calculating MevPerDAC - " << cfg.nEvtMPD << " events" << endl;
       
       // open new histogram file
       if (cfg.genHistfiles) appData.openHistFile(cfg.mpdHistFile);      
       
-      // retrieve MevPerDac data from events.
+      // retrieve MevPerDAC data from events.
       appData.fillMPDHists(cfg.nEvtMPD); // otherwise it's too many zeros
       
       // fit for MPD results

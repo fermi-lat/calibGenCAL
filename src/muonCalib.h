@@ -63,8 +63,8 @@ public:
                    const string &filenameSL,
                    const string &filenameSS); ///< read asymmetry tables in from text file(s)
 
-  void fillMPDHists(int nEvents); ///< Fill MevPerDac histograms w/ nEvents worth of event data.
-  void fitMPDHists(); ///< Fit MevPerDac calibration group
+  void fillMPDHists(int nEvents); ///< Fill MevPerDAC histograms w/ nEvents worth of event data.
+  void fitMPDHists(); ///< Fit MevPerDAC calibration group
   void writeMPDTXT(const string &filenameL, const string &filenameS); ///< write out both MPD calibrations to text file
   void writeMPDXML(const string &filename, const string &dtdFilename); ///< write asymmetry file to official XML file
 
@@ -81,7 +81,7 @@ private:
   void initRoughPedHists(); ///< allocate & create rough pedestal histograms & pointer array
   void initPedHists(); ///< allocate & create final pedestal histograms & pointer array
   void initAsymHists(bool genOptHists);///< allocate & create asymmetry histograms & pointer arrays
-  void initMPDHists(); ///< allocate & create MevPerDac histograms & pointer arrays
+  void initMPDHists(); ///< allocate & create MevPerDAC histograms & pointer arrays
 
 
 
@@ -193,7 +193,7 @@ private:
 
   vector<TH1F*> m_dacLLHists; ///< list of histograms of geometric mean(large diode dacs) for both ends on each xtal.
 
-  vector<TH1F*> m_asymDacHists; ///< optional histograms of all dac values used in asymmetry calculations
+  vector<TH1F*> m_asymDACHists; ///< optional histograms of all dac values used in asymmetry calculations
   vector<TH2F*> m_logratHistsLL; ///< optional histograms of all LL loratios used in asymmetry calculations
   vector<TH2F*> m_logratHistsLS; ///< optional histograms of all LS loratios used in asymmetry calculations
   vector<TH2F*> m_logratHistsSL; ///< optional histograms of all SL loratios used in asymmetry calculations
@@ -222,8 +222,8 @@ private:
   vector<vector<float> > m_calAsymSLErr; ///< corresponding error value
   vector<vector<float> > m_calAsymSSErr; ///< corresponding error value
 
-  vector<float> m_calMPDLarge; ///< final mevPerDac values for Large Diodes (1 per xtal)
-  vector<float> m_calMPDSmall; ///< final mevPerDac values for Small Diodes (1 per xtal)
+  vector<float> m_calMPDLarge; ///< final mevPerDAC values for Large Diodes (1 per xtal)
+  vector<float> m_calMPDSmall; ///< final mevPerDAC values for Small Diodes (1 per xtal)
 
   vector<float> m_calMPDLargeErr; ///< corresponding error value
   vector<float> m_calMPDSmallErr; ///< corresponding error value

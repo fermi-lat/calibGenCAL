@@ -61,7 +61,7 @@ void muonCalib::flushHists() {
   m_asymProfsSS.clear();
   m_dacL2SProfs.clear();
   m_dacLLHists.clear();
-  m_asymDacHists.clear();
+  m_asymDACHists.clear();
   m_logratHistsLL.clear();
   m_logratHistsLS.clear();
   m_logratHistsSL.clear();
@@ -423,10 +423,10 @@ void muonCalib::readCalPeds(const string &filename) {
   }
 
   if (nRead != m_calPed.size()) {
-    ostringstream tmpStr;
-    tmpStr << "CalPed file '" << filename << "' is incomplete: " << nRead
+    ostringstream temp;
+    temp << "CalPed file '" << filename << "' is incomplete: " << nRead
            << " pedestal values read, " << m_calPed.size() << " vals required.";
-    throw tmpStr.str();
+    throw temp.str();
   }
 }
 
@@ -685,7 +685,7 @@ void muonCalib::initAsymHists(bool genOptHists) {
     m_asymProfsSL.resize(MAX_XTAL_IDX);
     m_asymProfsSS.resize(MAX_XTAL_IDX);
     if (genOptHists) {
-      m_asymDacHists.resize(MAX_DIODE_IDX);
+      m_asymDACHists.resize(MAX_DIODE_IDX);
       m_logratHistsLL.resize(MAX_XTAL_IDX);
       m_logratHistsLS.resize(MAX_XTAL_IDX);
       m_logratHistsSL.resize(MAX_XTAL_IDX);
@@ -772,7 +772,7 @@ void muonCalib::initAsymHists(bool genOptHists) {
 
             tmp = "asymdac_";
             appendDiodeStr(nDiode,tmp); // append diode# to string
-            m_asymDacHists[nDiode] = new TH1F(tmp.c_str(),
+            m_asymDACHists[nDiode] = new TH1F(tmp.c_str(),
                                               tmp.c_str(),
                                               100,0,0);
 
@@ -792,7 +792,7 @@ void muonCalib::initAsymHists(bool genOptHists) {
         m_logratHistsSS[nXtal]->Reset();
         for (int face = 0; face < N_FACES; face++) {
           for (int diode = 0; diode < N_DIODES; diode++)
-            m_asymDacHists[getNDiode(nXtal,face,diode)]->Reset();
+            m_asymDACHists[getNDiode(nXtal,face,diode)]->Reset();
         }
       }
     }
@@ -816,7 +816,7 @@ void muonCalib::fillAsymHists(int nEvts, bool genOptHists) {
   int nBadAsymLL = 0;
   int nBadAsymSL = 0;
   int nBadAsymLS = 0;
-  int nBadDacs = 0;
+  int nBadDACs = 0;
 
   // Basic digi-event loop
   for (Int_t iEvt = m_startEvent; iEvt < lastEvent; iEvt++) {
@@ -866,17 +866,17 @@ void muonCalib::fillAsymHists(int nEvts, bool genOptHists) {
 
         // fill optional dacVal histograms
         if (genOptHists) {
-          m_asymDacHists[getNDiode(nXtal,POS_FACE,LARGE_DIODE)]->Fill(dacPosLarge);
-          m_asymDacHists[getNDiode(nXtal,POS_FACE,SMALL_DIODE)]->Fill(dacPosSmall);
-          m_asymDacHists[getNDiode(nXtal,NEG_FACE,LARGE_DIODE)]->Fill(dacNegLarge);
-          m_asymDacHists[getNDiode(nXtal,NEG_FACE,SMALL_DIODE)]->Fill(dacNegSmall);
+          m_asymDACHists[getNDiode(nXtal,POS_FACE,LARGE_DIODE)]->Fill(dacPosLarge);
+          m_asymDACHists[getNDiode(nXtal,POS_FACE,SMALL_DIODE)]->Fill(dacPosSmall);
+          m_asymDACHists[getNDiode(nXtal,NEG_FACE,LARGE_DIODE)]->Fill(dacNegLarge);
+          m_asymDACHists[getNDiode(nXtal,NEG_FACE,SMALL_DIODE)]->Fill(dacNegSmall);
         }
 
         // CHECK INVALID VALUES //
         if (dacPosSmall <= 0 || dacPosLarge <= 0 ||
             dacNegSmall <= 0 || dacNegLarge <= 0) {
           nBadHits++;
-          nBadDacs++;
+          nBadDACs++;
           continue;
         }
 
@@ -1145,10 +1145,10 @@ void muonCalib::readAsymTXT(const string &filenameLL,
 
     // check that we got all the values
     if (nRead != (*calVec).size()) {
-      ostringstream tmpStr;
-      tmpStr << "File '" << filename << "' is incomplete: " << nRead
+      ostringstream temp;
+      temp << "File '" << filename << "' is incomplete: " << nRead
              << " vals read, " << m_calAsymLL.size() << " vals expected.";
-      throw tmpStr.str();
+      throw temp.str();
     }
   } //for (nFile 0 to 4)
 }
@@ -1356,14 +1356,14 @@ void muonCalib::fillMPDHists(int nEvts) {
         dacsPosSmall[i] /= sec;
         dacsNegSmall[i] /= sec;
 
-        float meanDacLarge = sqrt(dacsPosLarge[i]*dacsNegLarge[i]);
-        float meanDacSmall = sqrt(dacsPosSmall[i]*dacsNegSmall[i]);
+        float meanDACLarge = sqrt(dacsPosLarge[i]*dacsNegLarge[i]);
+        float meanDACSmall = sqrt(dacsPosSmall[i]*dacsNegSmall[i]);
 
-        // Load meanDac Histogram
-        m_dacLLHists[nXtal]->Fill(meanDacLarge);
+        // Load meanDAC Histogram
+        m_dacLLHists[nXtal]->Fill(meanDACLarge);
 
         // load dacL2S profile
-        m_dacL2SProfs[nXtal]->Fill(meanDacLarge,meanDacSmall);
+        m_dacL2SProfs[nXtal]->Fill(meanDACLarge,meanDACSmall);
 
         nXtals++;
       } // populate histograms
@@ -1484,11 +1484,11 @@ void muonCalib::writePedsXML(const string &filename, const string &dtdFilename) 
   
   // INSERT ENTIRE .DTD FILE //
   outfile << "<!DOCTYPE calCalib [";
-  string tmpStr;
+  string temp;
   while (dtdFile.good()) {
-    getline(dtdFile, tmpStr);
+    getline(dtdFile, temp);
     if (dtdFile.fail()) continue; // bad get
-    outfile << tmpStr << endl;
+    outfile << temp << endl;
   }
   outfile << "]>" << endl;
 
@@ -1541,11 +1541,11 @@ void muonCalib::writeAsymXML(const string &filename, const string &dtdFilename) 
   
   // INSERT ENTIRE .DTD FILE //
   outfile << "<!DOCTYPE calCalib [";
-  string tmpStr;
+  string temp;
   while (dtdFile.good()) {
-    getline(dtdFile, tmpStr);
+    getline(dtdFile, temp);
     if (dtdFile.fail()) continue; // bad get
-    outfile << tmpStr << endl;
+    outfile << temp << endl;
   }
   outfile << "]>" << endl;
 
@@ -1634,16 +1634,16 @@ void muonCalib::writeMPDXML(const string &filename, const string &dtdFilename) {
   
   // INSERT ENTIRE .DTD FILE //
   outfile << "<!DOCTYPE calCalib [";
-  string tmpStr;
+  string temp;
   while (dtdFile.good()) {
-    getline(dtdFile, tmpStr);
+    getline(dtdFile, temp);
     if (dtdFile.fail()) continue; // bat get()
-    outfile << tmpStr << endl;;
+    outfile << temp << endl;;
   }
   outfile << "]>" << endl;
 
   outfile << "<calCalib>" << endl;
-  outfile << " <generic instrument=\"" << m_instrument <<"\" timestamp=\""<< m_timestamp <<"\" calibType=\"CAL_MevPerDac\" fmtVersion=\"v2r2\">" << endl;
+  outfile << " <generic instrument=\"" << m_instrument <<"\" timestamp=\""<< m_timestamp <<"\" calibType=\"CAL_MevPerDAC\" fmtVersion=\"v2r2\">" << endl;
   outfile << " </generic>" << endl;
   outfile << " <dimension nRow=\"1\" nCol=\"1\" nLayer=\"" << N_LYRS 
           << "\" nXtal=\"" << N_COLS 
@@ -1659,7 +1659,7 @@ void muonCalib::writeMPDXML(const string &filename, const string &dtdFilename) {
       outfile << "   <xtal iXtal=\"" << col << "\">" << endl;
       outfile << "    <face end=\"" << "NA" << "\">" << endl;
 
-      outfile << "     <mevPerDac bigVal=\"" << m_calMPDLarge[nXtal] 
+      outfile << "     <mevPerDAC bigVal=\"" << m_calMPDLarge[nXtal] 
               << "\" bigSig=\"" << m_calMPDLargeErr[nXtal]
               << "\" smallVal=\"" << m_calMPDSmall[nXtal]
               << "\" smallSig=\"" << m_calMPDSmallErr[nXtal]

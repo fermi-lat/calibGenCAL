@@ -128,7 +128,7 @@ UInt_t RootFileAnalysis::getEntries() const {
   UInt_t nEntries = 0;
   nEntries = (int)(((TChain*)m_chainArr.At(0))->GetEntries());
   for (Int_t i = 1; i < m_chainArr.GetEntries(); i++)
-    nEntries = TMath::Min(nEntries, (UInt_t)((TChain*)m_chainArr.At(i))->GetEntries());
+    nEntries = min(nEntries, (UInt_t)((TChain*)m_chainArr.At(i))->GetEntries());
   return nEntries;
 }
 

@@ -35,3 +35,5 @@ v3r0 New calibration types introduced.  MevPerDac/IntegralNonlinearity/New Asyme
 v3r0p1 Small code modifcations to get Linux build w/ no warnings
 
 v3r0p2 Made slight changes to event & hit selection.  Separated some generic code into individual units.  Fixed xtal pitch error in config file.
+
+v3r1 removed obsolete exes.  added env var expand to paths in config file.  dtd files are found automatically now.  fixed 'no mcTree found' bug d.smith.  ciFit no longer outputs spline points w/ adc vals which are too high.

@@ -1,3 +1,5 @@
+#include "facilities/Util.h"
+
 #include "cfCfg.h"
 #include "CalDefs.h"
 #include "CGCUtil.h"
@@ -8,7 +10,7 @@ const string cfCfg::testInfo("TEST_INFO");
 const string cfCfg::paths("PATHS");
 const string cfCfg::splineCfg("SPLINE_CFG");
 
-int cfCfg::readCfgFile(const string& path) {
+void cfCfg::readCfgFile(const string& path) {
   clear();
 
   xml::IFile ifile(path.c_str());
@@ -25,16 +27,20 @@ int cfCfg::readCfgFile(const string& path) {
   instrumentMode = ifile.getString(testInfo.c_str(), "INST_MODE");
   source         = ifile.getString(testInfo.c_str(), "TEST_SOURCE");
   
-  dacSettings        = ifile.getIntVector(testInfo.c_str(), "DAC_SETTINGS");
-  nPulsesPerDac      = ifile.getInt(testInfo.c_str(), "N_PULSES_PER_DAC");
+  dacSettings    = ifile.getIntVector(testInfo.c_str(), "DAC_SETTINGS");
+  nPulsesPerDAC  = ifile.getInt(testInfo.c_str(), "N_PULSES_PER_DAC");
 
   // PATHS
+  using facilities::Util;  
   outputDir = ifile.getString(paths.c_str(), "OUTPUT_FOLDER");
+  Util::expandEnvVar(&outputDir);
 
-  dtdFile = ifile.getString(paths.c_str(), "DTD_FILE");
-
-  outputXMLPath      = ifile.getString(paths.c_str(), "XMLPATH");
-  outputTXTPath      = ifile.getString(paths.c_str(), "TXTPATH");
+  dtdFile   = ifile.getString(paths.c_str(), "DTD_FILE");
+  Util::expandEnvVar(&dtdFile);
+  outputXMLPath = ifile.getString(paths.c_str(), "XMLPATH");
+  Util::expandEnvVar(&outputXMLPath);
+  outputTXTPath = ifile.getString(paths.c_str(), "TXTPATH");
+  Util::expandEnvVar(&outputTXTPath);
   
   rootFileLE1 = ifile.getString(paths.c_str(), "ROOTFILE_LE1");
   rootFileHE1 = ifile.getString(paths.c_str(), "ROOTFILE_HE1");
@@ -50,8 +56,8 @@ int cfCfg::readCfgFile(const string& path) {
   splineNPtsMin    = ifile.getIntVector(splineCfg.c_str(), "N_PTS_MIN" );
   
   // Geneate derived config quantities.
-  nDacs          = dacSettings.size();
-  nPulsesPerXtal = nPulsesPerDac * nDacs;
+  nDACs          = dacSettings.size();
+  nPulsesPerXtal = nPulsesPerDAC * nDACs;
   nPulsesPerRun  = N_COLS*nPulsesPerXtal;
 
   baseFilename = rootFileLE1;
@@ -60,11 +66,9 @@ int cfCfg::readCfgFile(const string& path) {
 
   // Auto-generate output filenames
   if (outputXMLPath.length() == 0)
-    outputXMLPath = outputDir + "ciFit." + baseFilename + ".xml";
+    outputXMLPath = outputDir + "ci_intnonlin." + baseFilename + ".xml";
   if (outputTXTPath.length() == 0)
-    outputTXTPath = outputDir + "ciFit." + baseFilename + ".txt";
-
-  return 0;
+    outputTXTPath = outputDir + "ci_intnonlin." + baseFilename + ".txt";
 }
 
 void cfCfg::clear() {  

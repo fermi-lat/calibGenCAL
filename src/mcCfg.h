@@ -66,7 +66,7 @@ public:
   void clear();
 
   /// read in config data from config file, calculate dependent vars
-  int readCfgFile(const string& cfgPath);
+  void readCfgFile(const string& cfgPath);
 
   /// return data valid flag.
   bool isValid() {return valid;}
@@ -92,19 +92,19 @@ public:  // i know I'm not supposed to make data members public, but it's just e
 
   string pedFileXML; ///< output xml filename for pedestals
   string asymFileXML; ///< output xml filename for asymmetry calibrations
-  string mpdFileXML; ///< output xml filename for MevPerDac calibrations
+  string mpdFileXML; ///< output xml filename for MevPerDAC calibrations
 
   string pedHistFile; ///< output ROOT histogram file - pedestal phase
   string asymHistFile; ///< output ROOT histogram file - asymmetry phase
-  string mpdHistFile; ///< output ROOT histogram file - MevPerDac phase
+  string mpdHistFile; ///< output ROOT histogram file - MevPerDAC phase
 
   string pedFileTXT; ///< output txt filename for pedestals
   string asymFileLLTXT; ///< output txt filename for asymmetry Large Diode Pos face 2 Large Diode Neg face 
   string asymFileLSTXT; ///< output txt filename for asymmetry Large Diode Pos face 2 Small Diode Neg face 
   string asymFileSLTXT; ///< output txt filename for asymmetry Small Diode Pos face 2 Large Diode Neg face 
   string asymFileSSTXT; ///< output txt filename for asymmetry Small Diode Pos face 2 Small Diode Neg face 
-  string largeMPDFileTXT; ///< output txt filename for Mev per Dac Large Diode
-  string smallMPDFileTXT; ///< output txt filename for Mev per Dac Small Diode
+  string largeMPDFileTXT; ///< output txt filename for Mev per DAC Large Diode
+  string smallMPDFileTXT; ///< output txt filename for Mev per DAC Small Diode
 
   string logfile; ///< duplicate of stdout log
   
@@ -128,11 +128,11 @@ public:  // i know I'm not supposed to make data members public, but it's just e
   int nEvtRoughPed; ///< number of events for rough pedestal calibration
   int nEvtPed; ///< number of events for Pedestal calibration
   int nEvtAsym; ///< number of events for Asymmetry calibration
-  int nEvtMPD; ///< number of events for MevPerDac calibration
+  int nEvtMPD; ///< number of events for MevPerDAC calibration
 
   bool readInPeds; ///< skip pedestal calibration and read in previous results from .txt file
   bool readInAsym; ///< skip Asymmetry calibration and read in previous results from .txt file
-  bool skipMPD;  ///< smip MevPerDac calibration
+  bool skipMPD;  ///< smip MevPerDAC calibration
 
   bool genXML; ///< generate xml output
   bool genTXT; ///< generate text output
