@@ -22,14 +22,14 @@ int main(int argn, char** argc) {
   std::string::size_type pos = 0;
   for( ; ; ) {
 
-    string::size_type i = temp.find(' ', pos);
-    if(i != string::npos) {
+    std::string::size_type i = temp.find(' ', pos);
+    if(i != std::string::npos) {
       digiFileNames.push_back(temp.substr(pos, i-pos));
     }
     else {
 
       std::string lastFile = temp.substr(pos);
-      if(lastFile.find("digi") != string::npos) {
+      if(lastFile.find("digi") != std::string::npos) {
 		  digiFileNames.push_back(lastFile);
 		  break;
       }

@@ -327,12 +327,12 @@ inline muonCalib::muonCalib(TChain *digiChain,
       int fileDigiEventVer = ((TStreamerInfo *)curFile.GetStreamerInfoList()->FindObject("DigiEvent"))->GetClassVersion();
 
       if (fileDigiEventVer != codeDigiEventVer) {
-		  cout << "WARNING: digFile=" << curFileName << " created with DigiEvent version"
+		  std::cout << "WARNING: digFile=" << curFileName << " created with DigiEvent version"
 				 << fileDigiEventVer << " code is linked to DigiEvent version"
-				 << codeDigiEventVer << endl;
+				 << codeDigiEventVer << std::endl;
 		} else {
-		  cout << "DigiEvent version" << fileDigiEventVer << " in " << curFileName
-				 << " matches code, should be ok." << endl;
+		  std::cout << "DigiEvent version" << fileDigiEventVer << " in " << curFileName
+				 << " matches code, should be ok." << std::endl;
 		}
 	 }
   }
@@ -430,11 +430,11 @@ inline void muonCalib::Init(const char* digiFileName, const char* reconFileName,
 		((TStreamerInfo *)digiFile->GetStreamerInfoList()->FindObject("DigiEvent"))->GetClassVersion();
 	 int codeDigiEventVer = DigiEvent::Class()->GetClassVersion();
 	 if (fileDigiEventVer != codeDigiEventVer) {
-		cout << "WARNING: digFile=" << digiFileName << " created with DigiEvent version" << fileDigiEventVer
-			  << " code is linked to DigiEvent version" << codeDigiEventVer << endl;
+		std::cout << "WARNING: digFile=" << digiFileName << " created with DigiEvent version" << fileDigiEventVer
+			  << " code is linked to DigiEvent version" << codeDigiEventVer << std::endl;
 	 } else {
-		cout << "DigiEvent version" << fileDigiEventVer << " in " << digiFileName <<
-		  " matches code, should be ok." << endl;
+		std::cout << "DigiEvent version" << fileDigiEventVer << " in " << digiFileName <<
+		  " matches code, should be ok." << std::endl;
 	 }
 
 	 if (digiFile->IsOpen() == kTRUE) {
