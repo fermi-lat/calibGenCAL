@@ -63,3 +63,7 @@ v3r3p2 forced floating point output to xml files to be fixed point.
 v3r4 added new muTrigEff executable to find FLE thresholds for muons and charge injection
 
 v3r4p1 made it build on linux
+
+v3r4p2 added output of fit errors in runMuTrigEff
+
+v3r4p3 added histogramming and excluding of outliers from charge injection peaks in runCIFit

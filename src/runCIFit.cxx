@@ -99,14 +99,11 @@ void CfData::FitData() {
 
       vector<float> &curADC = m_adcMean[rngIdx];
       // get pedestal
-      float ped     = m_adcSum[rngIdx][0] /
-        m_adcN[rngIdx][0];
+      float ped     = curADC[0];
 
       //calculate ped-subtracted means.
       for (int dac = 0; dac < m_cfg.nDACs; dac++)
-        curADC[dac] =
-          m_adcSum[rngIdx][dac] /
-          m_adcN[rngIdx][dac] - ped;
+        curADC[dac] -= ped;
 
       // get upper adc boundary
       float adc_max = curADC[m_cfg.nDACs-1];
@@ -297,7 +294,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.7 2005/02/16 20:09:11 fewtrell Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.8 2005/02/16 23:29:50 fewtrell Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
@@ -426,6 +423,8 @@ public:
 
   void SetDiode(RootCI::Diode d) {m_curDiode = d;}
 
+  void initCiHists();
+
 private:
   bool   isRngEnabled(RngNum rng);          // checks rng against m_curDiode setting
   Diode m_curDiode;
@@ -434,6 +433,9 @@ private:
   CfCfg  &m_cfg;
 
   int m_evtId;
+
+  CalVec<RngIdx,  TH1F*> m_ciHists; 
+
 };
 
 
@@ -441,10 +443,31 @@ RootCI::RootCI(vector<string> &digiFileNames, CfData  &data, CfCfg &cfg) :
   RootFileAnalysis(vector<string>(0), digiFileNames, vector<string>(0)),
   m_curDiode(BOTH_DIODES),
   m_CfData(data),
-  m_cfg(cfg) {}
+  m_cfg(cfg) {
+    
+  }
 
 // default dstor
 RootCI::~RootCI() {
+}
+
+
+void RootCI::initCiHists() {
+  // DEJA VU?
+  if (m_ciHists.size() == 0) {
+    m_ciHists.resize(RngIdx::N_VALS);
+
+    for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
+      ostringstream tmp;
+      tmp << "ci_" << rngIdx;
+      m_ciHists[rngIdx] = new TH1F(tmp.str().c_str(),
+                                    tmp.str().c_str(),
+                                    4100,0,4100);
+    }
+  }
+  else // clear existing histsograms
+    for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++)
+      m_ciHists[rngIdx]->Reset();
 }
 
 
@@ -459,8 +482,10 @@ bool  RootCI::isRngEnabled(RngNum rng) {
 // compiles stats for each test type.
 void RootCI::DigiCal() {
   // Determine test config for this event (which xtal?, which dac?)
-  int testCol   = m_evtId/m_cfg.nPulsesPerXtal;
-  int testDAC   = (m_evtId%m_cfg.nPulsesPerXtal)/m_cfg.nPulsesPerDAC;
+  int ievt = m_evtId-1;
+  int testCol   = ievt/m_cfg.nPulsesPerXtal;
+  int testDAC   = (ievt%m_cfg.nPulsesPerXtal)/m_cfg.nPulsesPerDAC;
+  int iSamp   = (ievt%m_cfg.nPulsesPerXtal)%m_cfg.nPulsesPerDAC;
 
   const TObjArray* calDigiCol = m_digiEvt->getCalDigiCol();
   if (!calDigiCol) {
@@ -493,12 +518,31 @@ void RootCI::DigiCal() {
         if (!isRngEnabled(rng)) continue;
 
         int adc = acRo.getAdc((CalXtalId::XtalFace)(short)face);
- 
         RngIdx rngIdx(twr,lyr,col,face,rng);
-        
+		TH1F& h = *m_ciHists[rngIdx];
+		if(iSamp == 0){
+		  h.Reset();
+		  h.SetAxisRange(0,4100);
+		}
+
+		h.Fill(adc);
+		
+
+		if(iSamp == (m_cfg.nPulsesPerDAC - 1)){
+			float av,err;
+			    // trim outliers
+			av = h.GetMean();
+			err =h.GetRMS();
+			for( int iter=0; iter<3;iter++ ) {
+			   h.SetAxisRange(av-3*err,av+3*err);
+			   av  = h.GetMean(); 
+			   err = h.GetRMS();
+			}
         // assign to table
-        m_CfData.m_adcSum[rngIdx][testDAC] += adc;
-        m_CfData.m_adcN[rngIdx][testDAC]++;     
+			m_CfData.m_adcMean[rngIdx][testDAC] = av;
+	        m_CfData.m_adcN[rngIdx][testDAC] = h.Integral();     
+
+		}
       } // foreach face
     } // foreach readout
   } // foreach xtal
@@ -588,6 +632,7 @@ int main(int argc, char **argv) {
       RootCI rd(digiFileNames,data,cfg);  
       // set HE/LE rng
       rd.SetDiode(RootCI::LE);
+	  rd.initCiHists();
       rd.Go(cfg.nPulsesPerRun);
     }
 
@@ -597,6 +642,7 @@ int main(int argc, char **argv) {
       digiFileNames.push_back(cfg.rootFileHE1);
       RootCI rd(digiFileNames, data,cfg);
       rd.SetDiode(RootCI::HE);
+	  rd.initCiHists();
       rd.Go(cfg.nPulsesPerRun);
     }
 
