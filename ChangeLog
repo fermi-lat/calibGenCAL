@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: heather  Thu Jun  3 09:07:45 PDT 2004
+calibGenCAL/src
+
+Modified Files:
+	ciFit.cxx muonCalib.cxx runMuonCalibChain.cxx 
+Log Message:
+Minor fixes for Linux - use of std, removed dtor for base class, use of enums
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Jun  2 16:02:41 PDT 2004
 calibGenCAL/src
 
