@@ -2,11 +2,13 @@
 #define cfCfg_H 1
 
 #include <string>
+#include <fstream>
 
 #include "xml/IFile.h"
 
 #include "ICfg.h"
 #include "CalDefs.h"
+#include "CGCUtil.h"
 
 using namespace std;
 
@@ -60,6 +62,9 @@ public:  // i know, don't make members public, but it's just easier this way!
   string rootFileLE3;
   string rootFileHE3;
   
+  string logfile; ///< duplicate of stdout log
+
+
   // SECTION: SPLINE CONFIG //
   vector<int> splineGroupWidth;
   vector<int> splineSkipLow;
@@ -71,15 +76,26 @@ public:  // i know, don't make members public, but it's just easier this way!
   int nPulsesPerRun;
   int nDACs;
 
+  // SECTION: GENERAL //
+  bool genXML; ///< generate xml output
+  bool genTXT; ///< generate text output
+  bool genLogfile; ///< clone stdout stream to a logfile
+
+  /// multiplexing output stream will contain at least cout, but
+  /// may also contain a logfile stream if the user requests it.
+  CGCUtil::multiplexor_ostream ostr;
+  ofstream logstr;
+
 private:
   bool valid;   // set to false member data is incomplete/invalid.
 
   string baseFilename; ///< used as the base for auto-generating output filenames.  derived from input root filename.
 
   // Section decription strings
-  static const string testInfo;
-  static const string paths;
-  static const string splineCfg;
+  static const string TEST_INFO;
+  static const string PATHS;
+  static const string SPLINE_CFG;
+  static const string GENERAL;
 };
 
 

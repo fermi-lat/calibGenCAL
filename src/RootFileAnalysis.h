@@ -31,9 +31,9 @@ public :
  ~RootFileAnalysis();
 
   /// start next Go with this event
-  void startWithEvent(Int_t event) { m_startEvent = event; };
+  void startWithEvt(Int_t nEvt) { m_startEvt = nEvt; };
   /// reset for next Go to start at beginning of file
-  void rewind() { m_startEvent = 0; };
+  void rewind() { m_startEvt = 0; };
 
   /// returns number of events in all open files
   UInt_t getEntries() const;
@@ -45,11 +45,11 @@ protected:
   TChain      m_mcChain, m_digiChain, m_recChain;
 
   /// Pointer to a McEvent
-  McEvent     *m_mc;
+  McEvent     *m_mcEvt;
   /// pointer to a DigiEvent, w/ each get event, ROOT will
-  DigiEvent   *m_evt;
+  DigiEvent   *m_digiEvt;
   /// pointer to a ReconEvent
-  ReconEvent  *m_rec;
+  ReconEvent  *m_recEvt;
 
   /// pointers to TChains
   TObjArray   m_chainArr;
@@ -57,7 +57,7 @@ protected:
   bool m_mcEnabled, m_digiEnabled, m_recEnabled;
 
   /// starting event number
-  Int_t m_startEvent;
+  Int_t m_startEvt;
 
   /// Zeros out all member vars, does NOT free memory,for use in constructor
   void zeroMembers();

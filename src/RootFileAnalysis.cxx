@@ -6,9 +6,9 @@
 #include <string>
 
 //ROOT INCLUDES
-#include <TFile.h>
-#include <TChainElement.h>
-#include <TStreamerInfo.h>
+#include "TFile.h"
+#include "TChainElement.h"
+#include "TStreamerInfo.h"
 
 #include "RootFileAnalysis.h"
 
@@ -38,7 +38,7 @@ RootFileAnalysis::RootFileAnalysis(const vector<string> &mcFilenames,
       m_ostr << "mc file added to chain: " << *itr << endl;
       m_mcChain.Add(itr->c_str());
     }
-    m_mcChain.SetBranchAddress("McEvent",&m_mc);
+    m_mcChain.SetBranchAddress("McEvent",&m_mcEvt);
     m_chainArr.Add(&m_mcChain);
   }
 
@@ -51,23 +51,23 @@ RootFileAnalysis::RootFileAnalysis(const vector<string> &mcFilenames,
       m_ostr << "digi file added to chain: " << *itr << endl;
       m_digiChain.Add(itr->c_str());
     }
-    m_digiChain.SetBranchAddress("DigiEvent",&m_evt);
+    m_digiChain.SetBranchAddress("DigiEvent",&m_digiEvt);
     m_chainArr.Add(&m_digiChain);
  
-    // Check DigiEvent structure Ver
+    // Check DigiEvt structure Ver
     TIter fileListIter(m_digiChain.GetListOfFiles());
-    int   codeDigiEventVer =
+    int   codeDigiEvtVer =
       DigiEvent::Class()->GetClassVersion();
 
     while (TChainElement *curElement = (TChainElement*)fileListIter.Next()) {
       const char *curFilenames = curElement->GetTitle();
       TFile       curFile(curFilenames);
-      int fileDigiEventVer = ((TStreamerInfo*)curFile.GetStreamerInfoList()->FindObject("DigiEvent"))->GetClassVersion();
+      int fileDigiEvtVer = ((TStreamerInfo*)curFile.GetStreamerInfoList()->FindObject("DigiEvent"))->GetClassVersion();
 
-      if (fileDigiEventVer != codeDigiEventVer) {
+      if (fileDigiEvtVer != codeDigiEvtVer) {
 	m_ostr << "WARNING: digFile=" << curFilenames << " created with DigiEvent version"
-	     << fileDigiEventVer << " code is linked to DigiEvent version"
-	     << codeDigiEventVer << endl;
+	     << fileDigiEvtVer << " code is linked to DigiEvent version"
+	     << codeDigiEvtVer << endl;
       }
     }
   }
@@ -81,42 +81,42 @@ RootFileAnalysis::RootFileAnalysis(const vector<string> &mcFilenames,
       m_ostr << "rec file added to chain: " << *itr << endl;
       m_recChain.Add(itr->c_str());
     }
-    m_recChain.SetBranchAddress("RecEvent",&m_rec);
+    m_recChain.SetBranchAddress("RecEvent",&m_recEvt);
     m_chainArr.Add(&m_recChain);
   }
 }
 
 RootFileAnalysis::~RootFileAnalysis() {
-  if (m_mc) {
-    m_mc->Clear();
-    delete m_mc;
-    m_mc = 0;
+  if (m_mcEvt) {
+    m_mcEvt->Clear();
+    delete m_mcEvt;
+    m_mcEvt = 0;
   }
 
-  if (m_evt) {
-    m_evt->Clear();
-    delete m_evt;
-    m_evt = 0;
+  if (m_digiEvt) {
+    m_digiEvt->Clear();
+    delete m_digiEvt;
+    m_digiEvt = 0;
   }
    
-  if (m_rec) {
-    m_rec->Clear();
-    delete m_rec;
-    m_rec = 0;
+  if (m_recEvt) {
+    m_recEvt->Clear();
+    delete m_recEvt;
+    m_recEvt = 0;
   }
 }
 
-UInt_t RootFileAnalysis::getEvent(UInt_t ievt) {
-  // Purpose and Method:  Get the event, ievt, for all trees
+UInt_t RootFileAnalysis::getEvent(UInt_t iEvt) {
+  // Purpose and Method:  Get the event, iEvt, for all trees
 
   UInt_t nBytes = 0;
   // if using chains, check the array of chains and move
   // the event pointer to the requested event
   for (Int_t i = 0; i < m_chainArr.GetEntries(); i++) {
-    nBytes += ((TChain*)m_chainArr.At(i))->GetEvent(ievt);
+    nBytes += ((TChain*)m_chainArr.At(i))->GetEvent(iEvt);
   }
 
-  m_startEvent++;
+  m_startEvt++;
   return nBytes;
 }
 
@@ -135,8 +135,8 @@ UInt_t RootFileAnalysis::getEntries() const {
 // Initializes all members to zero, does NOT free memory, for use in constructor.
 void RootFileAnalysis::zeroMembers() {
   m_mcEnabled    = m_digiEnabled = m_recEnabled = false;
-  m_startEvent   = 0;
-  m_evt = 0;
-  m_mc = 0;
-  m_rec = 0;
+  m_startEvt   = 0;
+  m_digiEvt = 0;
+  m_mcEvt = 0;
+  m_recEvt = 0;
 }

@@ -3,8 +3,8 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLROOT)/xmldata/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit_option.xml,v 1.3 2004/12/23 02:13:29 fewtrell Exp $"
-       cvs_Revision="$Revision: 1.3 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit_option.xml,v 1.4 2005/01/06 05:32:16 fewtrell Exp $"
+       cvs_Revision="$Revision: 1.4 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP"      value="2004-11-11-14:39"> Timestamp for test run.</item>
@@ -33,6 +33,8 @@
 
     <item name="INFILE_TYPE" value="ROOT">Input file type (ROOT,CSV)</item>
 
+    <item name="LOGFILE"           value=""> application log file duplicates stdout (default "" autogenerates filename from input filename)</item>
+    
     <item name="ROOTFILE_LE1"   value="D:\GLAST\DATA\FM101\041111143546_FM101_PSHP_CALU_COLLECT_CI_SINGLEX16.root"> input DIGIROOT file LE #1 </item>
     <item name="ROOTFILE_HE1"   value="D:\GLAST\DATA\FM101\041111145340_FM101_PSHP_CALU_COLLECT_CI_SINGLEX16.root"> input DIGIROOT file HE #1 </item>
     
@@ -47,6 +49,12 @@
     <item name="SKIP_LOW"      value="3,1,3,1"> # of points at beggining of array to copy verbatim and skip smoothing step </item>
     <item name="SKIP_HIGH"     value="6,10,6,10"> # of points at end of array to copy verbatim and skip smoothing step </item>
     <item name="N_PTS_MIN"     value="23,45,23,48"> minimum # of spline points to output per range </item>
+  </section>
+  
+  <section name="GENERAL"> General program options
+    <item name="GENERATE_XML" value="true"> (boolean) generate xml output</item>
+    <item name="GENERATE_TXT" value="true"> (boolean) generate text output</item>
+    <item name="GENERATE_LOGFILE"         value="true"> (boolean) generate logfile which duplicates stdout </item>
   </section>  
 </ifile>
 

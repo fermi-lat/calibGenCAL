@@ -134,31 +134,31 @@ muonCalib::muonCalib(const vector<string> &digiFilenames,
 void muonCalib::freeChildren() {
 }
 
-int muonCalib::checkForEvents(int nEvts) {
+int muonCalib::chkForEvts(int nEvts) {
   Int_t nEntries = getEntries();
   m_ostr << "\nTotal num Events in File is: " << nEntries << endl;
 
-  if (nEntries <= 0 || m_startEvent == nEntries) // have already reached end of chain.
+  if (nEntries <= 0 || m_startEvt == nEntries) // have already reached end of chain.
     throw string("No more events available for processing");
 
-  int lastRequested = nEvts + m_startEvent;
+  int lastRequested = nEvts + m_startEvt;
 
   // CASE A: we have enough events
   if (lastRequested <= nEntries) return lastRequested;
 
   // CASE B: we don't have enough
-  int eventsLeft = nEntries - m_startEvent;
+  int evtsLeft = nEntries - m_startEvt;
   m_ostr << " EOF before " << nEvts << ". Will process remaining " <<
-    eventsLeft<< " events." << endl;
-  return eventsLeft;
+    evtsLeft<< " events." << endl;
+  return evtsLeft;
 }
 
 UInt_t muonCalib::getEvent(UInt_t ievt) {
-  if (m_evt) m_evt->Clear();
+  if (m_digiEvt) m_digiEvt->Clear();
 
   int nb = RootFileAnalysis::getEvent(ievt);
-  if (m_evt && nb) { //make sure that m_evt is valid b/c we will assume so after this
-    m_evtId = m_evt->getEventId();
+  if (m_digiEvt && nb) { //make sure that m_digiEvt is valid b/c we will assume so after this
+    m_evtId = m_digiEvt->getEventId();
     if(m_evtId%1000 == 0)
       m_ostr << " event " << m_evtId << endl;
   }
@@ -187,16 +187,16 @@ void muonCalib::initRoughPedHists() {
 void muonCalib::fillRoughPedHists(int nEvts) {
   initRoughPedHists();
 
-  int lastEvent = checkForEvents(nEvts);
+  int lastEvt = chkForEvts(nEvts);
 
   // Basic digi-event loop
-  for (Int_t iEvt = m_startEvent; iEvt < lastEvent; iEvt++) {
+  for (Int_t iEvt = m_startEvt; iEvt < lastEvt; iEvt++) {
     if (!getEvent(iEvt)) {
       m_ostr << "Warning, event " << iEvt << " not read." << endl;
       continue;
     }
 
-    const TObjArray* calDigiCol = m_evt->getCalDigiCol();
+    const TObjArray* calDigiCol = m_digiEvt->getCalDigiCol();
     if (!calDigiCol) {
       cerr << "no calDigiCol found for event#" << iEvt << endl;
       continue;
@@ -295,16 +295,16 @@ void muonCalib::initPedHists() {
 void muonCalib::fillPedHists(int nEvts) {
   initPedHists();
 
-  int lastEvent = checkForEvents(nEvts);
+  int lastEvt = chkForEvts(nEvts);
 
   // Basic digi-event loop
-  for (Int_t iEvt = m_startEvent; iEvt < lastEvent; iEvt++) {
+  for (Int_t iEvt = m_startEvt; iEvt < lastEvt; iEvt++) {
     if (!getEvent(iEvt)) {
       m_ostr << "Warning, event " << iEvt << " not read." << endl;
       continue;
     }
 
-    const TObjArray* calDigiCol = m_evt->getCalDigiCol();
+    const TObjArray* calDigiCol = m_digiEvt->getCalDigiCol();
     if (!calDigiCol) {
       cerr << "no calDigiCol found for event#" << iEvt << endl;
       continue;
@@ -560,9 +560,9 @@ void muonCalib::hitSummary::clear() {
 void muonCalib::summarizeHits(hitSummary &hs) {
   hs.clear();
 
-  const TObjArray* calDigiCol = m_evt->getCalDigiCol();
+  const TObjArray* calDigiCol = m_digiEvt->getCalDigiCol();
   if (!calDigiCol) {
-    cerr << "no calDigiCol found for event" << m_evt << endl;
+    cerr << "no calDigiCol found for event" << m_digiEvt << endl;
     return;
   }
 
@@ -804,7 +804,7 @@ void muonCalib::initAsymHists(bool genOptHists) {
 void muonCalib::fillAsymHists(int nEvts, bool genOptHists) {
   initAsymHists(genOptHists);
 
-  int lastEvent = checkForEvents(nEvts);
+  int lastEvt = chkForEvts(nEvts);
   hitSummary hs;
 
   int nGoodDirs = 0; // count total # of events used
@@ -819,7 +819,7 @@ void muonCalib::fillAsymHists(int nEvts, bool genOptHists) {
   int nBadDACs = 0;
 
   // Basic digi-event loop
-  for (Int_t iEvt = m_startEvent; iEvt < lastEvent; iEvt++) {
+  for (Int_t iEvt = m_startEvt; iEvt < lastEvt; iEvt++) {
     if (!getEvent(iEvt)) {
       m_ostr << "Warning, event " << iEvt << " not read." << endl;
       continue;
@@ -1213,7 +1213,7 @@ void muonCalib::initMPDHists() {
 void muonCalib::fillMPDHists(int nEvts) {
   initMPDHists();
 
-  int lastEvent = checkForEvents(nEvts);
+  int lastEvt = chkForEvts(nEvts);
   hitSummary hs;
 
   ////////////////////////////////////////////////////
@@ -1233,8 +1233,8 @@ void muonCalib::fillMPDHists(int nEvts) {
   loadA2PSplines();
 
   // SUMMARY COUNTERS //
-  int nXEvents = 0; // count total # of X events used
-  int nYEvents = 0; // count total # of Y events used
+  int nXEvts = 0; // count total # of X events used
+  int nYEvts = 0; // count total # of Y events used
   long nXtals = 0; // count total # of xtals measured
 
   // NUMERIC CONSTANTS
@@ -1243,7 +1243,7 @@ void muonCalib::fillMPDHists(int nEvts) {
   double slopeFactor = m_cellHorPitch/m_cellVertPitch;
 
   // Basic digi-event loop
-  for (Int_t iEvt = m_startEvent; iEvt < lastEvent; iEvt++) {
+  for (Int_t iEvt = m_startEvt; iEvt < lastEvt; iEvt++) {
     if (!getEvent(iEvt)) {
       m_ostr << "Warning, event " << iEvt << " not read." << endl;
       continue;
@@ -1258,8 +1258,8 @@ void muonCalib::fillMPDHists(int nEvts) {
       if (dir == X_DIR && !hs.goodXTrack) continue;
       else if (dir == Y_DIR && !hs.goodYTrack) continue;
 
-      if (dir == X_DIR) nXEvents++;
-      else nYEvents++;
+      if (dir == X_DIR) nXEvts++;
+      else nYEvts++;
 
       // set up proper hitLists for processing based on direction
       vector<int> &hitList = // hit list in current direction for gain calib
@@ -1367,7 +1367,7 @@ void muonCalib::fillMPDHists(int nEvts) {
     } // direction loop
   } // event loop
 
-  m_ostr << "MPD histograms filled nXEvents=" << nXEvents << " nYEvenvts=" << nYEvents << " nXtals measured " << nXtals << endl;
+  m_ostr << "MPD histograms filled nXEvts=" << nXEvts << " nYEvenvts=" << nYEvts << " nXtals measured " << nXtals << endl;
 }
 
 void muonCalib::fitMPDHists() {

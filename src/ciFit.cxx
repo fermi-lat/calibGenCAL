@@ -40,7 +40,6 @@ public:
   const vector<int>& getSplineDAC(int rng) const {return m_splineDAC[rng];}
   const vector<float>& getSplineADC(const int lyr, const int col, const int face, const int rng) const {return m_splineADC[lyr][col][face][rng];}
 
-
 private:
   TF1 splineFunc;
 
@@ -297,7 +296,7 @@ void cfData::WriteSplinesXML(const string &filename, const string &dtdFilename) 
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit.cxx,v 1.13 2005/01/06 05:32:16 fewtrell Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit.cxx,v 1.14 2005/01/06 23:33:11 fewtrell Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
@@ -417,7 +416,7 @@ public:
   void DigiCal();
 
   // loops through all events in file
-  void Go(Int_t numEvents);
+  void Go(Int_t nEvtAsked);
 
   void SetDiode(RootCI::Diode d) {m_curDiode = d;}
 
@@ -457,7 +456,7 @@ void RootCI::DigiCal() {
   int testCol   = m_evtId/m_cfg.nPulsesPerXtal;
   int testDAC   = (m_evtId%m_cfg.nPulsesPerXtal)/m_cfg.nPulsesPerDAC;
 
-  const TObjArray* calDigiCol = m_evt->getCalDigiCol();
+  const TObjArray* calDigiCol = m_digiEvt->getCalDigiCol();
   if (!calDigiCol) {
     ostringstream temp;
     temp << "Empty calDigiCol event #" << m_evtId;
@@ -504,7 +503,7 @@ void RootCI::DigiCal() {
   } // foreach xtal
 }
 
-void RootCI::Go(Int_t numEvents)
+void RootCI::Go(Int_t nEvtAsked)
 {
   // Purpose and Method:  Event Loop
 
@@ -521,33 +520,33 @@ void RootCI::Go(Int_t numEvents)
   //
   // DO WE HAVE ENOUGH EVENTS IN FILE?
   //
-  Int_t nentries = getEntries();
-  cout << "\nNum Events in File is: " << nentries << endl;
+  Int_t nEvts = getEntries();
+  m_cfg.ostr << "\nNum Events in File is: " << nEvts << endl;
   Int_t curI;
-  Int_t nMax = min(numEvents+m_startEvent,nentries);
+  Int_t nMax = min(nEvtAsked+m_startEvt,nEvts);
 
-  if (numEvents+m_startEvent >  nentries) {
+  if (nEvtAsked+m_startEvt >  nEvts) {
     ostringstream temp;
-    temp << " not enough entries in file to proceed, we need " << numEvents;
+    temp << " not enough entries in file to proceed, we need " << nEvtAsked;
     throw temp.str();
   }
 
   // BEGINNING OF EVENT LOOP
-  for (Int_t ievent=m_startEvent; ievent<nMax; ievent++, curI=ievent) {
-    if (m_evt) m_evt->Clear();
+  for (Int_t iEvt=m_startEvt; iEvt<nMax; iEvt++, curI=iEvt) {
+    if (m_digiEvt) m_digiEvt->Clear();
 
-    getEvent(ievent);
+    getEvent(iEvt);
     // Digi ONLY analysis
-    if (m_evt) {
-      m_evtId = m_evt->getEventId();
+    if (m_digiEvt) {
+      m_evtId = m_digiEvt->getEventId();
       if(m_evtId%1000 == 0)
-        cout << " event " << m_evtId << endl;
+        m_cfg.ostr << " event " << m_evtId << endl;
 
       DigiCal();
     }
   }  // end analysis code in event loop
 
-  m_startEvent = curI;
+  m_startEvt = curI;
 }
 
 int main(int argc, char **argv) {
@@ -556,10 +555,25 @@ int main(int argc, char **argv) {
   if(argc > 1) cfgPath = argv[1];
   else cfgPath = "../src/ciFit_option.xml";
 
+  cfCfg cfg;
   try {
-
-    cfCfg cfg;
     cfg.readCfgFile(cfgPath);
+
+    cfg.ostr << "CVS Tag: " << CGCUtil::CVS_TAG << endl << endl;
+    
+    // insert quoted config file into log stream //
+    { 
+      string temp;
+      ifstream cfgFile(cfgPath.c_str());
+      cfg.ostr << "--- Begin cfg_file: " << cfgPath << " ---" << endl;
+      while (cfgFile.good()) {
+        getline(cfgFile, temp);
+        if (cfgFile.fail()) continue; // bad get
+        cfg.ostr << "> " << temp << endl;
+      }
+      cfg.ostr << "--- End " << cfgPath << " ---" << endl << endl;
+    }
+    
     cfData data(cfg);
 
     // LE PASS
@@ -580,7 +594,9 @@ int main(int argc, char **argv) {
       rd.SetDiode(RootCI::HE);
       rd.Go(cfg.nPulsesPerRun);
     }
-#if 0 
+
+
+#if 0 // Not currently using extra passes for FLE threshold correction.
     cfData data_high_thresh(&cfg);
 
     // LE PASS
@@ -606,11 +622,11 @@ int main(int argc, char **argv) {
     // data_high_thresh.FitData();
     // data.corr_FLE_Thresh(data_high_thresh);
     //data.ReadSplinesTXT("../output/ciSplines.txt");
-    data.WriteSplinesTXT(cfg.outputTXTPath);
-    data.WriteSplinesXML(cfg.outputXMLPath, cfg.dtdFile);
+    if (cfg.genTXT) data.WriteSplinesTXT(cfg.outputTXTPath);
+    if (cfg.genXML) data.WriteSplinesXML(cfg.outputXMLPath, cfg.dtdFile);
   } catch (string s) {
     // generic exception handler...  all my exceptions are simple C++ strings
-    cout << "ciFit:  exception thrown: " << s << endl;
+    cfg.ostr << "ciFit:  exception thrown: " << s << endl;
     return -1;
   }
 
