@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: chehtman  Thu Mar 10 22:33:03 PST 2005
+calibGenCAL/src
+
+Modified Files:
+	MuonCalib.cxx 
+Log Message:
+Fixed a bug in adc2nrg table indexing
+    *
+------------------------------------------------------------
 User: chehtman  Thu Mar 10 22:28:36 PST 2005
 calibGenCAL/src
 
