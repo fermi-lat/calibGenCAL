@@ -20,7 +20,7 @@ int main(int argc, char** argv)
     mupedIn >> layer >> col >> side >> rng >> av >> rms;
                        
     if(!mupedIn.good()) break;
-    std::cout <<" " << layer <<" " << col <<" " << av << " " << rms << endl;
+    std::cout <<" " << layer <<" " << col <<" " << av << " " << rms << std::endl;
 
     muped[layer][col][side][rng] = av;
     mupedRms[layer][col][side][rng] = rms;
@@ -33,27 +33,27 @@ int main(int argc, char** argv)
   std::ofstream pedout("../xml/pedestals.xml"); 
   char  q= '"';
 
-  pedout << "<?xml version=\"1.0\" ?>" << endl;
+  pedout << "<?xml version=\"1.0\" ?>" << std::endl;
 
-  pedout << "<!DOCTYPE calCalib SYSTEM \"calCalib_v2.dtd\" [] >" << endl;
+  pedout << "<!DOCTYPE calCalib SYSTEM \"calCalib_v2.dtd\" [] >" << std::endl;
 
-  pedout << "<calCalib>" << endl;
+  pedout << "<calCalib>" << std::endl;
 
-  pedout << "<generic instrument=\"EM\" timestamp=\"2003-10-1-12:56\" calibType=\"CAL_Ped\" fmtVersion=\"v3r3p2\">" << endl;
+  pedout << "<generic instrument=\"EM\" timestamp=\"2003-10-1-12:56\" calibType=\"CAL_Ped\" fmtVersion=\"v3r3p2\">" << std::endl;
 
-  pedout << "</generic>" << endl;
+  pedout << "</generic>" << std::endl;
 
-  pedout << "<dimension nRow=\"1\" nCol=\"1\" nLayer=\"8\" nXtal=\"12\" nFace=\"2\" />" << endl;
+  pedout << "<dimension nRow=\"1\" nCol=\"1\" nLayer=\"8\" nXtal=\"12\" nFace=\"2\" />" << std::endl;
 
-  pedout << "<tower iRow=\"0\" iCol=\"0\">" << endl;
+  pedout << "<tower iRow=\"0\" iCol=\"0\">" << std::endl;
 
   for (int layer=0;layer <8;layer++){
-    pedout << "    <layer iLayer=" << q << layer << q << ">" << endl;
+    pedout << "    <layer iLayer=" << q << layer << q << ">" << std::endl;
     for(int col=0;col<12;col++){
-      pedout << "      <xtal iXtal=" << q << col << q <<">" << endl;
+      pedout << "      <xtal iXtal=" << q << col << q <<">" << std::endl;
       for(int side = 0;side<2;side++){
 	face = (side==1) ? posface : negface;
-	pedout << "        <face end=" << q << face << q <<">" << endl;
+	pedout << "        <face end=" << q << face << q <<">" << std::endl;
 
 	// only use first range for now
 	int rng = 0;
@@ -69,17 +69,17 @@ int main(int argc, char** argv)
 	  pedout <<"            <calPed avg=" << q << av
 		 <<q <<" sig=" << q << rms
 		 << q <<" range=" << q << r[range] << q <<" />"
-		 << endl;
-	pedout << "        </face>" << endl;
+		 << std::endl;
+	pedout << "        </face>" << std::endl;
 
       }
-      pedout << "       </xtal>" << endl;
+      pedout << "       </xtal>" << std::endl;
 
     }
-    pedout << "     </layer>" << endl;
+    pedout << "     </layer>" << std::endl;
 
   }
 
-  pedout << "</tower>" << endl << "</calCalib>" << endl;
+  pedout << "</tower>" << std::endl << "</calCalib>" << std::endl;
 
 }

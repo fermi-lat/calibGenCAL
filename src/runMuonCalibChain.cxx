@@ -4,7 +4,6 @@
 #include <string>
 #include <fstream>
 
-
 int main(int argn, char** argc) {
 
   std::ifstream inputFile;
@@ -31,11 +30,11 @@ int main(int argn, char** argc) {
 
       std::string lastFile = temp.substr(pos);
       if(lastFile.find("digi") != string::npos) {
-	digiFileNames.push_back(lastFile);
-	break;
+		  digiFileNames.push_back(lastFile);
+		  break;
       }
       else {
-	break;
+		  break;
       }
 
     }
@@ -43,17 +42,14 @@ int main(int argn, char** argc) {
     pos = i + 1;
   }
 
+  // Build chain of input filenames
   TChain* digiChain = new TChain("Digi");
-
   for(std::vector<std::string>::const_iterator itr = digiFileNames.begin();
       itr != digiFileNames.end(); ++itr) {
-
     std::cout << "digi file: " << *itr << endl;
-
     digiChain->Add(itr->c_str());
-
   }
- 
+
   std::string pedFile;
   inputFile >> pedFile;
   std::cout << "ped text file: " << pedFile << std::endl;
@@ -81,28 +77,29 @@ int main(int argn, char** argc) {
   // first pass
   {
     muonCalib r(digiChain, 0, 0, pedHist.c_str());
-        
+
+    // Default settings are FILLPEDHIST, basically fills up the pedestal histograms w/ all data points
     r.Go(10000);
     r.Rewind();
-    r.FitPedHist();
-    
+    r.FitPedHist();   //loops through & finds mean & rms pedestal for every layer/xtal/end, store results in m_calPed*
+
     r.PrintCalPed(pedFile.c_str());
     r.Rewind();
 
-    r.SetFillPedHist4Ranges();
-    r.Go(10000);    
-    r.FitPedHist();
+    r.SetFillPedHist4Ranges();  //LOAD up rawAdcHist, pdahist
+    r.Go(10000);
+    r.FitPedHist();             // fit pdaHist for pedestals.  store data in m_calPed*
     r.PrintCalPed(pedFile.c_str());
-       
+
     r.SetFillCorrPedHist2Ranges();
-    r.Go(10000);    
-    r.FitCorrPedHist();
+    r.Go(10000);                // fill rawadchist,fill corrpdahist MINUS pedestal
+    r.FitCorrPedHist();         // run gaussian fit on corrpdahist, fill m_calCorr*
     r.PrintCalCorrPed(corrpedFile.c_str());
 
     r.Rewind();
     r.SetFillRatHist();
-    r.Go(1000000);
-    
+    r.Go(1000000);               // fill rawadchist, fill ratntup w/ pedestal corrected data fill a,ar,fill gx,gy
+	 // fill LTOT array, MAXNL &NTOT,call some graph functions,fill TX,TY, more
     r.FitRatHist();
 
     r.WriteMuSlopes(slopeFile.c_str());
@@ -110,49 +107,42 @@ int main(int argn, char** argc) {
     r.WriteHist();
 
   }
-  
+
   // second pass to calibrate muon peak
 
   {
     muonCalib r(digiChain, 0, 0, peakHist.c_str());
 
-    r.ReadCalPed(pedFile.c_str());
-    r.ReadMuSlopes(slopeFile.c_str());
+    r.ReadCalPed(pedFile.c_str());     //load up m_calPed*
+    r.ReadMuSlopes(slopeFile.c_str()); //load up m_calSlopes
 
     // read in m_calCorr, correct difference in gain between two ends of a crystal
-    r.ReadMuPeaks(peakFile.c_str()); 
-             
+    r.ReadMuPeaks(peakFile.c_str());   //load up m_calCorr
+
     // has to fit muon peak twice, first time to correct gains for event
     // selection
-    r.Rewind();              
-    r.HistClear();            
-    
-    r.SetFillMuHist();
+    r.Rewind();
+    r.HistClear();
+
+    r.SetFillMuHist(); //fills thrhist,reshist,rawhist
     r.Go(1000000);
 
-    r.FitMuHist(); 
+    r.FitMuHist();  //uses thrhist, , created m_cal_Corr, m_muRelSigma
 
     // after fitting, event selection may change, so need to refit it
     r.Rewind();
     r.HistClear();
-    
+
     r.SetFillMuHist();
     r.Go(1000000);
 
-    r.FitMuHist(); 
-   
+    r.FitMuHist();
+
     r.WriteMuPeaks(peakFile.c_str());
 
     r.WriteHist();
 
-  } 
+  }
 
   return 0;
 }
-
-
-
-
-
-
-
