@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Jan  6 15:33:04 PST 2005
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+fixed error in cifit error msg
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r1p1, operation: add
 Package: calibGenCAL
