@@ -23,7 +23,7 @@ using namespace std;
 void McCfg::readCfgFile(const string& cfgPath) {
   clear();
 
-  xml::IFile ifile(cfgPath.c_str());
+  xmlBase::IFile ifile(cfgPath.c_str());
   
   // SECTION: TEST INFO
   timestamp = ifile.getString(TEST_INFO.c_str(), "TIMESTAMP");

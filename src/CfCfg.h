@@ -7,7 +7,7 @@
 #include "CGCUtil.h"
 
 // GLAST INCLUDES
-#include "xml/IFile.h"
+#include "xmlBase/IFile.h"
 
 // EXTLIB INCLUDES
 
