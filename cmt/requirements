@@ -16,11 +16,12 @@ macro_prepend includes "-I $(CALIBGENCALROOT) " WIN32 "/I $(CALIBGENCALROOT) "
 macro_append ROOT_libs " -lHist -lGraf -lGpad " \
              WIN32 " ${ROOT_PATH}/lib/libHist.lib ${ROOT_PATH}/lib/libGraf.lib ${ROOT_PATH}/lib/libGpad.lib "
 
-macro calibgencal_headers   "" WIN32 
+macro calibgencal_headers   "" WIN32  ""
 
 macro source "*.cxx" WIN32 "*.h *.cxx"
 
-macro calibgencal_linkopts "$(ROOT_linkopts) $(mcRootData_linkopts) $(digiRootData_linkopts) $(reconRootData_linkopts)" 
+apply_pattern library_Llinkopts library="muonCalib"
+#macro calibgencal_linkopts "$(ROOT_linkopts) $(mcRootData_linkopts) $(digiRootData_linkopts) $(reconRootData_linkopts)" 
 
 library muonCalib -no_share muonCalib.cxx
 
