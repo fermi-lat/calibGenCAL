@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Feb  2 20:11:06 PST 2005
+calibGenCAL/src
+
+Modified Files:
+	MuonCalib.cxx genTholdCI_XML.cxx muonCalib_option.xml 
+	runCIFit.cxx 
+Log Message:
+fixed bug whrere all small diode MevPerDac values were INVERTED!!!!
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Feb  2 20:11:05 PST 2005
 calibGenCAL/output
 
