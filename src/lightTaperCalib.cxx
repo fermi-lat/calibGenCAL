@@ -315,7 +315,7 @@ void lightTaperCalib::fitTaper()
 	
 	  float ave = m_taper[iLayer][iCol][iFace][iDiv]->GetMean();
 	  float rms = m_taper[iLayer][iCol][iFace][iDiv]->GetRMS();
-	  m_taper[iLayer][iCol][iFace][iDiv]->Fit("landau", "", "", ave-2*rms, ave+3*rms);
+	  m_taper[iLayer][iCol][iFace][iDiv]->Fit("landau", "Q", "", ave-2*rms, ave+3*rms);
 
 	  double* par = (m_taper[iLayer][iCol][iFace][iDiv]->GetFunction("landau"))->GetParameters();
 
@@ -346,7 +346,7 @@ void lightTaperCalib::fitTaper()
 	//it is better to fit it with user defined function: a*exp(b*x)
 	// "expo" function defined in root is: exp(a+b*x)
 	// using default may lead to misfitting 
-	// m_taperPos[iLayer][iCol][iFace]->Fit("expo", "", "", 50., 280.);
+	// m_taperPos[iLayer][iCol][iFace]->Fit("expo", "Q", "", 50., 280.);
 
       }
     }

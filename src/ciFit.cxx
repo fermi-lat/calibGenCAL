@@ -2,24 +2,46 @@
 // currently ignoring tower information & run information, perhaps i should put in a check?
 // why are we returning calXTalID not as a pointer? cuz only data point is one int?
 // put in capability for varying #'s of settings and/or trials.  probably can't use multi-dimensional 'c' arrays if i do this. yip, gonna have to switch to hard-core STL vectors.  not on this version though!
-// does 'new' initialize all data to 0?
 // some kind of config file 
 // how to get instrument config ?
 // merge openhist/histdefine/makehistlist file into one new public function, RTA::NewHistListForDummies()
-// bjarne says not to use friends.  so that could change.  particularly when i move away from c multidimensional arrays.
-// not sure exactly which values to fill in for some of the xml header stuff.
+// bjarne says not to use friends.  so that could change.  multiple in
 
-#include "muonCalib.h"
+#include "RootFileAnalysis.h"
+
 #include <cstring>
-#include <strstream>
+#include <sstream>
 #include <iomanip>
 #include <fstream>
+#include <iostream>
+#include <string>
+#include <vector>
+
+//ROOT INCLUDES
+#include "TF1.h"
+#include "TGraph.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////// GLOBAL CONFIGURATION PARAMETERS /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-////////// TEST INFORMATION ////////////////////////////////////////////////////
+////////// TEST INSTANCE PARAMETERS ////////////////////////////////////////////
+const std::string TEST_TIMESTAMP("2004-04-08-11:20");
+const std::string TEST_STARTTIME("2004-04-08-10:58:00");
+const std::string TEST_STOPTIME("2004-04-08-11:18:00");
+const std::string TEST_INSTRUMENT("EM");
+
+const std::string DEFAULT_XMLPATH("CalIntNonlin_EM1_040804.xml");
+const std::string DTD_PATH("../calCalib_v2r1.dtd");
+const std::string DTD_VERSION("v2r1");
+
+////////// FIT PROPERTIES //////////////////////////////////////////////////////
+const int SPL_GRPWID[]  = {3,4,3,4};     // # of points to group for quadratic spline fits.
+const int SPL_SKPLO[]   = {3,1,3,1};     // # of points to copy directly from beg of array (no splin)
+const int SPL_SKPHI[]   = {6,10,6,10};   // # of points to copy directly from end of array (no splin)
+const int SPL_NPTSMIN[] = {23,45,23,48}; // total # of points in result splines.
+
+////////// TEST TYPE PARAMETERS ////////////////////////////////////////////////
 const int N_TRIALS       = 50;
 const int N_XTALS        = 12;
 const int N_DACS         = 173;
@@ -28,12 +50,9 @@ const int N_RNGS         = 4;
 const int N_FACES        = 2;
 const int EVTS_PER_XTAL  = N_TRIALS*N_DACS;
 
-////////// FIT PROPERTIES //////////////////////////////////////////////////////
-
-const int SPL_GRPWID[]  = {3,4,3,4};     // # of points to group for quadratic spline fits.
-const int SPL_SKPLO[]   = {3,1,3,1};     // # of points to copy directly from beg of array (no splin)
-const int SPL_SKPHI[]   = {6,10,6,10};   // # of points to copy directly from end of array (no splin)
-const int SPL_NPTSMIN[] = {23,45,23,48}; // total # of points in result splines.
+const std::string TRIGGER_MODE("FORCED_TRIGGER");
+const std::string INST_MODE("ONBOARD_CAL");
+const std::string TEST_SOURCE("ONBOARD_CAL_DAC");
 
 ////////////////////////////////////////////////////////////////////////////////
 /// class ciFitData - represents all output data for ciFit appliation //////////
@@ -43,12 +62,14 @@ class ciFitData {
 
 public:
 
-  ciFitData(void);
+  ciFitData();
 
-  int FitData(void);
+  int FitData();
   int WriteSplinesXML(const char *fileName);
   int WriteSplinesTXT(const char *fileName);
   int ReadSplinesTXT (const char *fileName);
+
+  static const std::string RNG_MNEM[];
 
 private:
   TF1 splineFunc;
@@ -63,10 +84,10 @@ private:
   int      m_SplineDAC[N_RNGS][N_DACS];
   int      m_numSplineDAC[N_RNGS];
 
-  int fill_DAC(void);
+  int fill_DAC();
 };
 
-ciFitData::ciFitData(void) :
+ciFitData::ciFitData() :
   splineFunc("spline_fitter","pol2",0,4095) {
 
   // Initialize DAC vals
@@ -79,17 +100,22 @@ ciFitData::ciFitData(void) :
   memset(m_SplineDAC,    0, sizeof(m_SplineDAC));
   memset(m_numSplineDAC, 0, sizeof(m_numSplineDAC));
 
-  int FitData(void);
+  int FitData();
 }
 
+const std::string ciFitData::RNG_MNEM[] = {"LEX8",
+														 "LEX1",
+														 "HEX8",
+														 "HEX1"};
+
 // smooth test lines & print output.
-int ciFitData::FitData(void) {
+int ciFitData::FitData() {
   // 2 dimensional poly line f() to use for spline fitting.
 
   for (int rng = 0; rng < N_RNGS; rng++) {
 	 // following vals only change w/ range, so i'm getting them outside the other loops.
 	 int grpWid  = SPL_GRPWID[rng];
-	 int splLen  = grpWid*2 + 1;
+	 //int splLen  = grpWid*2 + 1;
 	 int skpLo   = SPL_SKPLO[rng];
 	 int skpHi   = SPL_SKPHI[rng];
 	 int nPtsMin = SPL_NPTSMIN[rng];
@@ -127,7 +153,7 @@ int ciFitData::FitData(void) {
 			 // copy SKPLO points directly from beginning of array.
 			 int spl_idx = 0;
 			 for (int i = 0; i < skpLo; i++,spl_idx++) {
-				m_SplineDAC[rng][spl_idx] = m_DAC[i];
+				m_SplineDAC[rng][spl_idx] = (int)m_DAC[i];
 				m_SplineADC[xtal][lyr][face][rng][spl_idx] = curADC[i];
 				//				std::cout << setw(2) << setfill('0') << xtal << setfill(' ')
 				//					  << " " << lyr
@@ -153,7 +179,7 @@ int ciFitData::FitData(void) {
 				float myPar2 = splineFunc.GetParameter(1);
 				float myPar3 = splineFunc.GetParameter(2);
 
-				int   fitDAC = m_DAC[cp];
+				int   fitDAC = (int)m_DAC[cp];
             float fitADC = myPar1 + fitDAC*(myPar2 + fitDAC*myPar3);
 
 				// output result
@@ -175,7 +201,7 @@ int ciFitData::FitData(void) {
 			 for (int i = (nPtsMin-skpLo-skpHi)*grpWid + skpLo;
 					i <= last_idx;
 					i++,spl_idx++) {
-				m_SplineDAC[rng][spl_idx] = m_DAC[i];
+				m_SplineDAC[rng][spl_idx] =(int) m_DAC[i];
 				m_SplineADC[xtal][lyr][face][rng][spl_idx] = curADC[i];
 				//				std::cout << setw(2) << setfill('0') << xtal << setfill(' ')
 				//					  << " " << lyr
@@ -254,13 +280,6 @@ int ciFitData::ReadSplinesTXT (const char *fileName) {
 }
 
 int ciFitData::WriteSplinesXML(const char *fileName) {
-  // RANGE menmonic strings
-  char *RNG_MNEM[N_RNGS];
-  RNG_MNEM[CalXtalId::LEX8] = "LEX8";
-  RNG_MNEM[CalXtalId::LEX1] = "LEX1";
-  RNG_MNEM[CalXtalId::HEX8] = "HEX8";
-  RNG_MNEM[CalXtalId::HEX1] = "HEX1";
-
   // setup output file
   ofstream xmlFile(fileName);
   if (!xmlFile.is_open()) {
@@ -272,17 +291,21 @@ int ciFitData::WriteSplinesXML(const char *fileName) {
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << std::endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit.cxx,v 1.2 2004/06/02 23:02:41 fewtrell Exp $  -->" << std::endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit.cxx,v 1.3 2004/06/03 16:07:45 heather Exp $  -->" << std::endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << std::endl;
   xmlFile << std::endl;
-  xmlFile << "<!DOCTYPE calCalib SYSTEM \"../calCalib_v2r1.dtd\" [] >" << std::endl;
+  xmlFile << "<!DOCTYPE calCalib SYSTEM \"" << DTD_PATH << "\" [] >" << std::endl;
   xmlFile << std::endl;
   xmlFile << "<calCalib>" << std::endl;
-  xmlFile << "  <generic instrument=\"EM\" timestamp=\"2003-11-2-12:56\"" << std::endl;
-  xmlFile << "           calibType=\"CAL_IntNonlin\" fmtVersion=\"v2r0\">" << std::endl;
+  xmlFile << "  <generic instrument=\"" << TEST_INSTRUMENT 
+			 << "\" timestamp=\"" << TEST_TIMESTAMP << "\"" << std::endl;
+  xmlFile << "           calibType=\"CAL_IntNonlin\" fmtVersion=\"" << DTD_VERSION << "\">" << std::endl;
   xmlFile << std::endl;
-  xmlFile << "    <inputSample startTime=\"2003-2-21-05:49:12\" stopTime=\"2003-2-24-07:07:02\"" << std::endl;
-  xmlFile << "		triggers=\"random\" mode=\"normal\" source=\"stuff\" >" << std::endl;
+  xmlFile << "    <inputSample startTime=\"" << TEST_STARTTIME 
+			 << "\" stopTime=\"" << TEST_STOPTIME << "\"" << std::endl;
+  xmlFile << "		triggers=\"" << TRIGGER_MODE 
+			 << "\" mode=\"" << INST_MODE
+			 << "\" source=\"" << TEST_SOURCE << "\" >" << std::endl;
   xmlFile << std::endl;
   xmlFile << "		Times are start and stop time of calibration run." << std::endl;
   xmlFile << "		Other attributes are just made up for code testing." << std::endl;
@@ -294,8 +317,12 @@ int ciFitData::WriteSplinesXML(const char *fileName) {
   xmlFile << "<!-- number of collections of dac settings should normally be" << std::endl;
   xmlFile << "     0 (the default), if dacs aren't used to acquire data, or " << std::endl;
   xmlFile << "     equal to nRange -->" << std::endl;
-  xmlFile << " <dimension nRow=\"" << 1 << "\" nCol=\"" << 1 << "\" nLayer=\"" << N_LYRS << "\" nXtal=\"" 
-			 << N_XTALS << "\" nFace=\"" << N_FACES << "\" nRange=\"" << N_RNGS << "\"" << std::endl;
+  xmlFile << " <dimension nRow=\"" << 1 
+			 << "\" nCol=\"" << 1 
+			 << "\" nLayer=\"" << N_LYRS 
+			 << "\" nXtal=\"" << N_XTALS 
+			 << "\" nFace=\"" << N_FACES 
+			 << "\" nRange=\"" << N_RNGS << "\"" << std::endl;
   xmlFile << "           nDacCol=\"" << N_RNGS << "\" />" << std::endl;
 
   //
@@ -303,7 +330,7 @@ int ciFitData::WriteSplinesXML(const char *fileName) {
   //
   xmlFile << std::endl;
   for (int rng = 0; rng < N_RNGS; rng++) {
-	 xmlFile << " <dac range=\"" << RNG_MNEM[rng] << "\"" << std::endl;
+     xmlFile << " <dac range=\"" << RNG_MNEM[rng] << "\"" << std::endl;
 	 xmlFile << "     values=\"";
 	 for (int i = 0; i < m_numSplineDAC[rng]; i++) 
 		xmlFile << m_SplineDAC[rng][i] << " ";
@@ -332,7 +359,7 @@ int ciFitData::WriteSplinesXML(const char *fileName) {
 		  xmlFile << "    <face end=\"" << facestr << "\">" << std::endl;
 		  // RANGE //
 		  for (int rng = 0; rng < N_RNGS; rng++) {
-			 xmlFile << "     <intNonlin range=\"" << RNG_MNEM[rng] << "\"" << std::endl;
+           xmlFile << "     <intNonlin range=\"" << RNG_MNEM[rng] << "\"" << std::endl;
 			 // ADC VALS //
 			 xmlFile << "             values=\"";
 			 for (int i = 0; i < m_numSplineADC[xtal][lyr][face][rng]; i++) {
@@ -353,10 +380,10 @@ int ciFitData::WriteSplinesXML(const char *fileName) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/// class RootCI - derived from muonCalib - represents all Root input data /////
+/// class RootCI - derived from RootFileAnalysis - represents all Root input data /////
 ////////////////////////////////////////////////////////////////////////////////
 
-class RootCI : public muonCalib {
+class RootCI : public RootFileAnalysis {
 public:
   /// @enum Diode Specify LE, HE, BOTH_DIODES
   typedef enum Diode {
@@ -366,15 +393,15 @@ public:
 
   /// Standard ctor, where user provides the names of the input root files
   /// and optionally the name of the output ROOT histogram file
-  RootCI(const char *digiFileName,
+  RootCI(std::vector<std::string> *digiFileNames,
 			ciFitData  *cfData);
 
   // standard dtor
-  ~RootCI(void);
+  ~RootCI();
 
   // processes one 'event', as a collection of interactions.
   // loads up histograms.
-  void DigiCal(void);
+  void DigiCal();
 
   // loops through all events in file
   void Go(Int_t numEvents);
@@ -389,20 +416,20 @@ private:
 
 };
 
-RootCI::RootCI(const char *digiFileName, ciFitData  *cfData) :
-  muonCalib(digiFileName, "", "","")
+RootCI::RootCI(std::vector<std::string> *digiFileNames, ciFitData  *cfData) :
+  RootFileAnalysis(digiFileNames, 0, 0)
 {
   m_cfData = cfData;
   m_curDiode = BOTH_DIODES;
 }
 
 // default dstor
-RootCI::~RootCI(void) {
+RootCI::~RootCI() {
 }
 
 // right now we're presuming we know the DAC settings
 // eventually we will read them from input file.
-int ciFitData::fill_DAC(void) {
+int ciFitData::fill_DAC() {
   //dac=[findgen(33)*2,80+findgen(28)*16,543+findgen(112)*32] ; array of dac settings
 
   int n = 0;
@@ -429,7 +456,7 @@ bool  RootCI::isRngEnabled(enum CalXtalId::AdcRange rng) {
 }
 
 // compiles stats for each test type.
-void RootCI::DigiCal(void) {
+void RootCI::DigiCal() {
   // Determine test config for this event
   int testXtal   = digiEventId/EVTS_PER_XTAL;
   int testDAC   = (digiEventId%EVTS_PER_XTAL)/N_TRIALS;
@@ -440,7 +467,7 @@ void RootCI::DigiCal(void) {
 
   // Loop through each xtal interaction
   CalDigi *cdig = 0;
-  while (cdig = (CalDigi *)calDigiIter.Next()) {  //loop through each 'hit' in one event
+  while ((cdig = (CalDigi *)calDigiIter.Next())) {  //loop through each 'hit' in one event
 	 CalXtalId id = cdig->getPackedId();  // get interaction information
     int xtal = id.getColumn();
 	 if (xtal != testXtal) continue;
@@ -482,18 +509,14 @@ void RootCI::Go(Int_t numEvents)
   //
   //  COMMENT OUT ANY BRANCHES YOU ARE NOT INTERESTED IN.
   //
-  if (mcTree) mcTree->SetBranchStatus("*", 0);    // disable all branches
-
-  if (digiTree) {
-	 digiTree->SetBranchStatus("*",0);  // disable all branches
+  if (m_digiChain) {
+	 m_digiChain->SetBranchStatus("*",0);  // disable all branches
 	 // activate desired brances
-	 digiTree->SetBranchStatus("m_cal*",1);
-	 digiTree->SetBranchStatus("m_eventId", 1);
-	 //digiTree->SetBranchStatus("m_runId", 1);
-	 //digiTree->SetBranchStatus("m_timeStamp", 1);
+	 m_digiChain->SetBranchStatus("m_cal*",1);
+	 m_digiChain->SetBranchStatus("m_eventId", 1);
+	 //digiChain->SetBranchStatus("m_runId", 1);
+	 //digiChain->SetBranchStatus("m_timeStamp", 1);
   }
-
-  if (reconTree) reconTree->SetBranchStatus("*",0);  // disable all branches
 
   //
   // DO WE HAVE ENOUGH EVENTS IN FILE?
@@ -528,10 +551,10 @@ void RootCI::Go(Int_t numEvents)
   m_StartEvent = curI;
 }
 
-int main(int argc, char **argv) {
+int main() {
   char inputPath1[] = "D:\\GLAST_DATA\\040408110806_calu_collect_ci_singlex16.root";
   char inputPath2[] = "D:\\GLAST_DATA\\040408105812_calu_collect_ci_singlex16.root";
-  char xmlPath[]    = "../xml/ciFit.xml";
+  std::string xmlPath = "../xml/" + DEFAULT_XMLPATH;
   int numEvents     = N_TRIALS*N_DACS*N_XTALS;
 
   ciFitData *cfData = new ciFitData;
@@ -547,27 +570,27 @@ int main(int argc, char **argv) {
 
   // LE PASS
   {
-	 RootCI *rd = new RootCI(inputPath1,cfData);  // too big for stack
+	 std::vector<std::string> digiFileNames;
+	 digiFileNames.push_back(std::string(inputPath1));
+	 RootCI rd(&digiFileNames,cfData);  // too big for stack
 	 // set HE/LE range
-	 rd->SetDiode(RootCI::LE);
-	 rd->Go(numEvents);
-
-	 delete rd;
+	 rd.SetDiode(RootCI::LE);
+	 rd.Go(numEvents);
   }
 
   // HE PASS
   {
-	 RootCI *rd = new RootCI(inputPath2, cfData);
-    rd->SetDiode(RootCI::HE);
-	 rd->Go(numEvents);
-
-	 delete rd;
+	 std::vector<std::string> digiFileNames;
+	 digiFileNames.push_back(std::string(inputPath2));
+	 RootCI rd(&digiFileNames, cfData);
+    rd.SetDiode(RootCI::HE);
+	 rd.Go(numEvents);
   }
 
   cfData->FitData();
   //cfData->ReadSplinesTXT("../output/ciSplines.txt");
   cfData->WriteSplinesTXT("../output/ciSplines.txt");
-  cfData->WriteSplinesXML(xmlPath);
+  cfData->WriteSplinesXML(xmlPath.c_str());
 
   delete cfData;
 
