@@ -1,5 +1,21 @@
 ------------------------------------------------------------
 User: fewtrell  Mon Jan 10 16:11:36 PST 2005
+calibGenCAL/src
+
+Modified Files:
+	CGCUtil.h CalDefs.h RootFileAnalysis.cxx RootFileAnalysis.h 
+	cfCfg.cxx cfCfg.h ciFit.cxx ciFit_option.xml mcCfg.h 
+	muonCalib.cxx muonCalib.h runMuonCalib.cxx 
+Log Message:
+added logfile to ciFit
+added CVS Tag & config file contents to top of logfiles for both ciFit & muonCalib
+made all functions in CalDefs staitc.
+
+
+
+    *
+------------------------------------------------------------
+User: fewtrell  Mon Jan 10 16:11:36 PST 2005
 calibGenCAL/output
 
 Modified Files:
