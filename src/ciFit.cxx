@@ -10,6 +10,7 @@
 //ROOT INCLUDES
 #include "TF1.h"
 #include "TGraph.h"
+#include "TSpline.h"
 
 // CONSTANTS //
 const int N_FACES  = 2;
@@ -17,6 +18,7 @@ const int N_LAYERS = 8;
 const int N_RANGES = 4;
 const int N_XTALS  = 12;
 const int N_RANGES_PER_TOWER = N_FACES * N_LAYERS * N_RANGES * N_XTALS;
+const double mu2ci_thr_rat = 1.7;
 
 class cfCfg {
 public:
@@ -224,9 +226,14 @@ public:
   ~cfData() {delete m_dacArr;}
 
   int FitData();
+  int corr_FLE_Thresh(cfData& data_high_thresh);
   int WriteSplinesXML(const std::string &fileName);
   int WriteSplinesTXT(const std::string &fileName);
   int ReadSplinesTXT (const std::string &fileName);
+
+  const int getNumSplineADC(const int xtal, const int layer, const int face, const int range) const {return m_numSplineADC[xtal][layer][face][range];}
+  const std::vector<int>& getSplineDAC(int range) const {return m_splineDac[range];}
+  const std::vector<float>& getSplineADC(const int xtal, const int layer, const int face, const int range) const {return m_splineADC[xtal][layer][face][range];}
 
   static const std::string RANGE_MNEM[];
 
@@ -374,6 +381,52 @@ int cfData::FitData() {
   return 0;
 }
 
+int cfData::corr_FLE_Thresh(cfData& data_high_thresh){
+
+	int range = 0;  // we correct LEX8 range only
+	
+	 for (int xtal = 0; xtal < N_XTALS; xtal++)
+		for (int layer = 0; layer < N_LAYERS; layer++)
+		  for (int face = 0; face < N_FACES; face++) {
+
+				int numSpline = m_numSplineADC[xtal][layer][face][range];
+			    double* arrADC = new double(numSpline);
+				double* arrDAC = new double(numSpline);
+				for (int i = 0; i<numSpline; i++){
+					arrADC[i] = m_splineADC[xtal][layer][face][range][i];
+					arrDAC[i] = m_splineDac[range][i];
+				}
+				int numSpline_hi_thr = data_high_thresh.getNumSplineADC(xtal,layer,face,range);
+			    double* arrADC_hi_thr = new double(numSpline_hi_thr);
+				double* arrDAC_hi_thr = new double(numSpline_hi_thr);
+				const std::vector<float>& splineADC = data_high_thresh.getSplineADC(xtal,layer,face,range);
+				const std::vector<int>& splineDAC = data_high_thresh.getSplineDAC(range);
+
+					
+				for (int i = 0; i<numSpline_hi_thr; i++){
+					arrADC_hi_thr[i] = splineADC[i];
+					arrDAC_hi_thr[i] = splineDAC[i];
+				}
+
+				TSpline3* spl = new TSpline3("spl",arrDAC,arrADC,numSpline); 
+				TSpline3* spl_hi_thr = new TSpline3("spl_hi_thr",arrDAC_hi_thr,arrADC_hi_thr,numSpline_hi_thr); 
+
+				for (int i = 0; i<numSpline;i++){
+					float dac_corr = arrDAC[i]/mu2ci_thr_rat;
+					m_splineADC[xtal][layer][face][range][i] = arrADC_hi_thr[i] + spl->Eval(dac_corr)-spl_hi_thr->Eval(dac_corr);
+				}
+
+				delete spl;
+				delete spl_hi_thr;
+				delete arrADC;
+				delete arrDAC;
+				delete arrADC_hi_thr;
+				delete arrDAC_hi_thr;
+
+		  }
+	return 0;
+}
+
 int cfData::WriteSplinesTXT(const std::string &fileName) {
   ofstream outFile(fileName.c_str());
   if (!outFile.is_open()) {
@@ -442,7 +495,7 @@ int cfData::WriteSplinesXML(const std::string &fileName) {
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << std::endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit.cxx,v 1.7 2004/08/24 18:27:37 fewtrell Exp $  -->" << std::endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit.cxx,v 1.8 2004/08/24 18:40:17 fewtrell Exp $  -->" << std::endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << std::endl;
   xmlFile << std::endl;
   xmlFile << "<!DOCTYPE calCalib SYSTEM \"" << m_cfg->m_outputDTDPath << "\" [] >" << std::endl;
@@ -719,8 +772,32 @@ int main(int argc, char **argv) {
     rd.SetDiode(RootCI::HE);
     rd.Go(cfg.m_nPulsesPerRun);
   }
+ 
+  cfData data_high_thresh(&cfg);
+
+  // LE PASS
+  {
+    std::vector<std::string> digiFileNames;
+    digiFileNames.push_back(cfg.m_rootFileLE2);
+    RootCI rd(&digiFileNames,&data_high_thresh,&cfg);  
+    // set HE/LE range
+    rd.SetDiode(RootCI::LE);
+    rd.Go(cfg.m_nPulsesPerRun);
+  }
+
+  // HE PASS
+  {
+    std::vector<std::string> digiFileNames;
+    digiFileNames.push_back(cfg.m_rootFileHE2);
+    RootCI rd(&digiFileNames, &data_high_thresh, &cfg);
+    rd.SetDiode(RootCI::HE);
+    rd.Go(cfg.m_nPulsesPerRun);
+  }
+
 
   data.FitData();
+  // data_high_thresh.FitData();
+  // data.corr_FLE_Thresh(data_high_thresh);
   //data->ReadSplinesTXT("../output/ciSplines.txt");
   data.WriteSplinesTXT(cfg.m_outputTXTPath);
   data.WriteSplinesXML(cfg.m_outputXMLPath);

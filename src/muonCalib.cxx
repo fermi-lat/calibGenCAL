@@ -135,7 +135,7 @@ void muonCalib::DigiHistDefine() {
 		  sprintf(ratntpname,"rtp%1d%02d%1d",layer,col,side);
 		  //     sprintf(adjhisname,"adj%1d%02d%1d",layer,col,side);
 		  //     sprintf(midhisname,"mid%1d%02d%1d",layer,col,side);
-		  pedhist->AddAt(new TH1F(pedhisname,pedhisname,300,0,600),histid);
+		  pedhist->AddAt(new TH1F(pedhisname,pedhisname,500,0,1000),histid);
 		  corrpedhist->AddAt(new TH2F(corrpedhisname,corrpedhisname,
 												61, -20.5, 40.5, 21, -10.5, 10.5 ),histid);
 
@@ -155,7 +155,7 @@ void muonCalib::DigiHistDefine() {
 
 			 char pdahisname[]="pda00000";
 			 sprintf(pdahisname,"pda%1d%02d%1d%1d",layer,col,side,rng);
-			 pdahist->AddAt(new TH1F(pdahisname,pdahisname,300,0,600),histid*4+rng);
+			 pdahist->AddAt(new TH1F(pdahisname,pdahisname,1000,0,1000),histid*4+rng);
 		  }
 
 		  for(int rng=0;rng<4;rng+=2){
@@ -255,8 +255,8 @@ void muonCalib::DigiCal()
 			 aarP[iRo]=aadcP[iRo]-m_calPed[iRo][layer][col][1];
 		  }
 
-		  ((TNtuple*)ratntup->At((12*layer+col)*2))->Fill(aarM);
-		  ((TNtuple*)ratntup->At((12*layer+col)*2+1))->Fill(aarP);
+//		  ((TNtuple*)ratntup->At((12*layer+col)*2))->Fill(aarM);
+//		  ((TNtuple*)ratntup->At((12*layer+col)*2+1))->Fill(aarP);
       }
       if ( (go_type == FILLPEDHIST4RANGES || go_type == FILLCORRPEDHIST2RANGES) &&
 			  fabs(adcM - m_calPed[0][layer][col][0])<5*m_calPedRms[0][layer][col][0] &&
@@ -282,7 +282,7 @@ void muonCalib::DigiCal()
 
     if ( go_type == FILLMUHIST || go_type == FILLRATHIST ) {
 
-      // m_calCorr are initially set as 1
+      // m_calCorr are initially set as 3
       // during FILLRATHIST (light asymmetry calibration), m_calCorr
 
       a[layer][col][0] = (adcM - m_calPed[range][layer][col][0])*m_calCorr[layer][col][0];
@@ -574,6 +574,8 @@ int muonCalib::WriteMuPeaksXML(const char *fileName) {
   outFile << "<dimension nRow=\"1\" nCol=\"1\" nLayer=\"8\" nXtal=\"12\" nFace=\"2\" />" << std::endl;
   outFile << "<tower iRow=\"0\" iCol=\"0\">" << std::endl;
 
+  float range_ratios[] = {9.0, 0.6, 9.0};
+
   for (int layer=0;layer <8;layer++){
 	 outFile << "    <layer iLayer=\"" << layer << "\">" << std::endl;
 	 for(int col=0;col<12;col++){
@@ -588,7 +590,7 @@ int muonCalib::WriteMuPeaksXML(const char *fileName) {
 			 outFile <<"            <calGain avg=\"" << av
 						<< "\" sig=\"" << rms << "\" range=\"" << RNG_MNEM[range] << "\" />"
 						<< std::endl;
-			 av *= 8;
+			 if(range < 3) av *= range_ratios[range];
 		  }
 		  outFile << "        </face>" << std::endl;
 		}
@@ -1198,7 +1200,7 @@ void muonCalib::ZeroPeds() {
 	 for (int col = 0; col < 12; col++) {
 		m_calSlopes[lyr][col] = 0.0;
 		for (int side = 0; side < 2; side++) {
-		  m_calCorr[lyr][col][side]=1.0;
+		  m_calCorr[lyr][col][side]=3.0;
 		  m_muRelSigma[lyr][col][side]=0.0;
 		  for (int i = 0; i < 4; i++) {
 			 m_calPed[i][lyr][col][side]=0.0;
@@ -1236,11 +1238,15 @@ int muonCalib::WritePedXML(const char* fileName) {
 		  const std::string face(FACE_MNEM[side]);
 		  outFile << "        <face end=\"" << face <<"\">" << std::endl;
 
-		  // only use first range for now
-		  int rng = 0;
+		  for(int range=0; range <4; range++) {
+
+			  // if only first range pedestals are available,
+			  // they are used to fill pedestals for higher ranges
+
+		  int rng = (go_type == FILLPEDHIST4RANGES) ? range : 0;			  
 		  float av = m_calPed[rng][layer][col][side];
 		  float rms = m_calPedRms[rng][layer][col][side];
-		  for(int range=0; range <4; range++) {
+
 			 outFile <<"            <calPed avg=\"" <<av
 						<< "\" sig=\"" <<rms
 						<< "\" range=\"" << RNG_MNEM[range] << "\" />"
