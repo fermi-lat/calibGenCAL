@@ -1,4 +1,26 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Feb  2 20:15:30 PST 2005
+calibGenCAL/output
+
+Modified Files:
+	fake_tholdci.xml 
+Removed Files:
+	ci_logfile.041111143546_FM101_PSHP_CALU_COLLECT_CI_SINGLEX16.txt 
+	mc_asym.041022230030_FM101_Pshp_calu_collect_ext.xml 
+	mc_asymLL.041022230030_FM101_Pshp_calu_collect_ext.txt 
+	mc_asymLS.041022230030_FM101_Pshp_calu_collect_ext.txt 
+	mc_asymSL.041022230030_FM101_Pshp_calu_collect_ext.txt 
+	mc_asymSS.041022230030_FM101_Pshp_calu_collect_ext.txt 
+	mc_logfile.041022230030_FM101_Pshp_calu_collect_ext.txt 
+	mc_mevperdac.041022230030_FM101_Pshp_calu_collect_ext.xml 
+	mc_mpdLarge.041022230030_FM101_Pshp_calu_collect_ext.txt 
+	mc_mpdSmall.041022230030_FM101_Pshp_calu_collect_ext.txt 
+	mc_peds.041022230030_FM101_Pshp_calu_collect_ext.txt 
+	mc_peds.041022230030_FM101_Pshp_calu_collect_ext.xml 
+Log Message:
+removed some big output files that we don't need
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Feb  2 20:11:06 PST 2005
 calibGenCAL/src
 
