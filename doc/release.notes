@@ -14,3 +14,10 @@ v2r2p2 updated more namespace specifiers in ciFit.cxx
 
 v2r2p3 small bug fixes for Linux - use std where needed, removed dtor for base class, and modified enum usage
 
+v2r3   created RootFileAnalysis class.  moved xml output code into muonCalib class.  updated xml output for better integration into the database
+
+v2r3p1 minor updates.  mostly documentation.
+
+v2r3p2 basically forgot to update this file in previous tags.
+
+v2r3p3 ignore me
