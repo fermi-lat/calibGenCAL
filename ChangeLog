@@ -1,4 +1,20 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Jan 31 10:18:36 PST 2005
+calibGenCAL/src
+
+Modified Files:
+	CalDefs.h runCIFit.cxx 
+Added Files:
+	CfCfg.cxx CfCfg.h McCfg.cxx McCfg.h MuonCalib.cxx MuonCalib.h 
+Removed Files:
+	cfCfg.cxx cfCfg.h mcCfg.cxx mcCfg.h muonCalib.cxx muonCalib.h 
+Log Message:
+1) got files to compile on linux
+2) renamed files with capital first names to better match glast 
+   customs
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Jan 31 10:15:29 PST 2005
 calibGenCAL/output
 
