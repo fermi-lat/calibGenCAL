@@ -22,9 +22,6 @@ int main(int argc, char** argv) {
   try {
     cfg.readCfgFile(cfgPath);
 
-    // identify calibGenCAL package version
-    cfg.ostrm << "calibGenCAL CVS Tag: " << CGCUtil::CVS_TAG << endl;
-
     // insert quoted config file into log stream //
     { 
       string tmp;
@@ -33,11 +30,15 @@ int main(int argc, char** argv) {
       while (cfgFile.good()) {
         getline(cfgFile, tmp);
         if (cfgFile.fail()) continue; // bad get
-        cfg.ostrm << "> " << tmp <<endl;
+        cfg.ostrm << "> " << tmp << endl;
       }
       cfg.ostrm << "--- End " << cfgPath << " ---" << endl;
     }
-  
+
+    cfg.ostrm << endl;
+    output_env_banner(cfg.ostrm);
+    cfg.ostrm << endl;
+    
     MuonCalib appData(cfg);
     
     ////////////////////////////////

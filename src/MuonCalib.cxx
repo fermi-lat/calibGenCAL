@@ -187,7 +187,8 @@ void MuonCalib::fillRoughPedHists(int nEvts) {
       RngNum rngN = readout.getRange(CalXtalId::NEG);
       if (rngP != LEX8 || rngN != LEX8) {
         ostringstream tmp;
-        tmp << "Event# " << m_evtId << " 1st range shold be LEX8, unexpected trigger mode!";
+        tmp << __FILE__  << ":" << __LINE__ << " " 
+            << "Event# " << m_evtId << " 1st range shold be LEX8, unexpected trigger mode!";
         throw tmp.str();
       }
       
@@ -300,7 +301,8 @@ void MuonCalib::fillPedHists(int nEvts) {
 
       if (nRO != 4) {
         ostringstream tmp;
-        tmp << "Event# " << m_evtId << " Invalid nReadouts, expecting 4";
+        tmp << __FILE__  << ":"     << __LINE__ << " " 
+            << "Event# " << m_evtId << " Invalid nReadouts, expecting 4";
         throw tmp.str();
       }
       
@@ -311,7 +313,8 @@ void MuonCalib::fillPedHists(int nEvts) {
       RngNum rngN = readout.getRange(CalXtalId::NEG);
       if (rngP != LEX8 || rngN != LEX8) {
         ostringstream tmp;
-        tmp << "Event# " << m_evtId << " 1st range shold be LEX8, unexpected trigger mode!";
+        tmp << __FILE__  << ":"     << __LINE__ << " " 
+            << "Event# " << m_evtId << " 1st range shold be LEX8, unexpected trigger mode!";
         throw tmp.str(); 
       }
       
@@ -330,7 +333,8 @@ void MuonCalib::fillPedHists(int nEvts) {
           RngNum rngN = readout.getRange(CalXtalId::NEG);
           if (rngP != n || rngN != n) {
             ostringstream tmp;
-            tmp << "Event# " << m_evtId << " 4-Range readouts out of order.  Expecting 0,1,2,3";
+            tmp << __FILE__  << ":"     << __LINE__ << " " 
+                << "Event# " << m_evtId << " 4-Range readouts out of order.  Expecting 0,1,2,3";
             throw tmp.str();
           }
           RngNum rng = rngP;
@@ -442,8 +446,9 @@ void MuonCalib::readCalPeds(const string &filename) {
 
   if (nRead != m_calPed.size()) {
     ostringstream tmp;
-    tmp <<"CalPed file '" << filename << "' is incomplete: " << nRead
-        << " pedestal values read, " << m_calPed.size() << " vals required.";
+    tmp << __FILE__ << ":" << __LINE__ << " " 
+        << "CalPed file '" << filename << "' is incomplete: " << nRead
+        << " pedestal values read, "   << m_calPed.size() << " vals required.";
     throw tmp.str();
   }
 }
@@ -516,13 +521,15 @@ void MuonCalib::loadInlSplines() {
 
     if (nADC == 0 || nDAC == 0) {
       ostringstream tmp;
-      tmp << "Event# " << m_evtId << "Zero elements for diodeIdx = " << diodeIdx;
+      tmp << __FILE__  << ":"     << __LINE__ << " " 
+          << "Event# " << m_evtId << "Zero elements for diodeIdx = " << diodeIdx;
       throw tmp.str();
     }
 
     if (nADC != nDAC) {
       ostringstream tmp;
-      tmp << "Event# " << m_evtId << "nDAC != nADC for diodeIdx = " << diodeIdx;
+      tmp << __FILE__  << ":"     << __LINE__ << " " 
+          << "Event# " << m_evtId << "nDAC != nADC for diodeIdx = " << diodeIdx;
       throw tmp.str();
     }
       
@@ -560,7 +567,7 @@ void MuonCalib::loadInlSplines() {
 
     // create spline object.
     TSpline3 *mySpline    = new TSpline3(name.str().c_str(), adcs, dacs, nADC);
-    TSpline3 *mySplineInv = new TSpline3(name.str().c_str(), adcs, dacs, nADC);
+    TSpline3 *mySplineInv = new TSpline3(name.str().c_str(), dacs, adcs, nADC);
 
     mySpline->SetName(name.str().c_str());
     m_inlSplines[diodeIdx] = mySpline;
@@ -587,16 +594,16 @@ void MuonCalib::HitSummary::clear() {
   hitListY.clear();
 
   // zero out primitives
-  count = 0;
-  nLyrsX = 0;
-  nLyrsY = 0;
-  nColsX = 0;
-  nColsY = 0;
-  maxPerLyr = 0;
+  count      = 0;
+  nLyrsX     = 0;
+  nLyrsY     = 0;
+  nColsX     = 0;
+  nColsY     = 0;
+  maxPerLyr  = 0;
   maxPerLyrX = 0;
   maxPerLyrY = 0;
-  firstColX = 0;
-  firstColY = 0;
+  firstColX  = 0;
+  firstColY  = 0;
 
   goodXTrack = false;
   goodYTrack = false;
@@ -628,7 +635,8 @@ void MuonCalib::summarizeHits(HitSummary &hs) {
     int nRO = calDigi.getNumReadouts();
     if (nRO != 4) {
       ostringstream tmp;
-      tmp << "Event# " << m_evtId << "Not in 4-range readout mode";
+      tmp << __FILE__  << ":"     << __LINE__ << " " 
+          << "Event# " << m_evtId << "Not in 4-range readout mode";
       throw tmp.str();
     }
 
@@ -646,7 +654,8 @@ void MuonCalib::summarizeHits(HitSummary &hs) {
       // check that we are in the proper readout mode
       if (tmpRng != rng) {
         ostringstream tmp;
-        tmp << "Event# " << m_evtId << " 4-Range readouts out of order.  Expecting 0,1,2,3";
+        tmp << __FILE__ << ":" << __LINE__ << " " 
+            << "Event# " << m_evtId << " 4-Range readouts out of order.  Expecting 0,1,2,3";
         throw tmp.str();
       }
 
@@ -864,16 +873,16 @@ void MuonCalib::fillAsymHists(int nEvts, bool genOptHists) {
   int lastEvt = chkForEvts(nEvts);
   HitSummary hs;
 
-  int nGoodDirs = 0; // count total # of events used
-  int nXDirs = 0;
-  int nYDirs = 0;
-  long nHits = 0; // count total # of xtals measured
-  int nBadHits = 0;
-  int nBadAsymSS = 0;
-  int nBadAsymLL = 0;
-  int nBadAsymSL = 0;
-  int nBadAsymLS = 0;
-  int nBadDACs = 0;
+  int  nGoodDirs  = 0; // count total # of events used
+  int  nXDirs     = 0;
+  int  nYDirs     = 0;
+  long nHits      = 0; // count total # of xtals measured
+  int  nBadHits   = 0;
+  int  nBadAsymSS = 0;
+  int  nBadAsymLL = 0;
+  int  nBadAsymSL = 0;
+  int  nBadAsymLS = 0;
+  int  nBadDACs   = 0;
 
   // Basic digi-event loop
   for (Int_t iEvt = m_startEvt; iEvt < lastEvt; iEvt++) {
@@ -1036,10 +1045,10 @@ void MuonCalib::fillAsymHists(int nEvts, bool genOptHists) {
   } // per event loop
   
   m_ostrm << "Asymmetry histograms filled nEvents=" << nGoodDirs
-          << " nXDirs=" << nXDirs
-          << " nYDirs=" << nYDirs << endl;
-  m_ostrm << " nHits measured=" << nHits
-          << " Bad hits=" << nBadHits
+          << " nXDirs="               << nXDirs
+          << " nYDirs="               << nYDirs << endl;
+  m_ostrm << " nHits measured="       << nHits
+          << " Bad hits="             << nBadHits
           << " asym out-of-range LL=" << nBadAsymLL
           << " SS=" << nBadAsymSS
           << " SL=" << nBadAsymSL
@@ -1234,8 +1243,9 @@ void MuonCalib::readAsymTXT(const string &filenameLL,
     // check that we got all the values
     if (nRead != (*calVec).size()) {
       ostringstream tmp;
-      tmp <<"File '" << filename << "' is incomplete: " << nRead
-          << " vals read, " << m_calAsymLL.size() << " vals expected.";
+      tmp << __FILE__ << ":" << __LINE__ << " " 
+          << "File '" << filename << "' is incomplete: " << nRead
+          << " vals read, "       << m_calAsymLL.size() << " vals expected.";
       throw tmp.str();
     }
   } //for (nFile 0 to 4)
@@ -1253,10 +1263,10 @@ void MuonCalib::loadA2PSplines() {
   for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
     // copy asym vector into middle of array
     vector<float> &asymVec = m_calAsymLL[xtalIdx];
-    copy(asymVec.begin(),asymVec.end(),asym+1);
+    copy(asymVec.begin(), asymVec.end(), asym+1);
 
     // interpolate 1st & last points
-    asym[0] = 2*asym[1]-asym[2];
+    asym[0] = 2*asym[1] - asym[2];
     asym[N_ASYM_PTS+1] = 2*asym[N_ASYM_PTS]-asym[N_ASYM_PTS-1];
 
     //generate splinename
@@ -1302,7 +1312,6 @@ void MuonCalib::initMPDHists() {
       m_dacLLHists[xtalIdx]->Reset();
       m_dacL2SProfs[xtalIdx]->Reset();
     }
-
 }
 
 void MuonCalib::fillMPDHists(int nEvts) {
@@ -1328,8 +1337,8 @@ void MuonCalib::fillMPDHists(int nEvts) {
   loadA2PSplines();
 
   // SUMMARY COUNTERS //
-  int nXEvts = 0; // count total # of X events used
-  int nYEvts = 0; // count total # of Y events used
+  int nXEvts    = 0; // count total # of X events used
+  int nYEvts    = 0; // count total # of Y events used
   long xtalIdxs = 0; // count total # of xtals measured
 
   // NUMERIC CONSTANTS
@@ -1505,7 +1514,7 @@ void MuonCalib::fitMPDHists() {
     float ave = h.GetMean();
     float err = h.GetRMS();
     h.Fit("landau", "Q", "", ave-2*err, ave+3*err);
-    float mean = (h.GetFunction("landau"))->GetParameter(1);
+    float mean  = (h.GetFunction("landau"))->GetParameter(1);
     float sigma = (h.GetFunction("landau"))->GetParameter(2);
 
     m_calMPDLarge[xtalIdx] = 11.2/mean;
@@ -1539,7 +1548,8 @@ void MuonCalib::fitMPDHists() {
     // bail if for some reason we didn't get any points
     if (!nPts) {
       ostringstream tmp;
-      tmp << "Event# " << m_evtId << "Unable to find small diode MPD for xtal=" << xtalIdx
+      tmp << __FILE__  << ":"     << __LINE__ << " " 
+          << "Event# " << m_evtId << "Unable to find small diode MPD for xtal=" << xtalIdx
           << " due to empty histogram." << endl;
       throw tmp.str();
     }
@@ -1611,22 +1621,22 @@ void MuonCalib::writePedsXML(const string &filename, const string &dtdPath) {
   while (dtdFile.good()) {
     getline(dtdFile, tmp);
     if (dtdFile.fail()) continue; // bad get
-    outfile << tmp <<endl;
+    outfile << tmp << endl;
   }
   outfile << "]>" << endl;
 
   outfile << "<calCalib>" << endl;
-  outfile << " <generic instrument=\"" << m_cfg.instrument <<"\" timestamp=\""<< m_cfg.timestamp <<"\"";
+  outfile << " <generic instrument=\"" << m_cfg.instrument << "\" timestamp=\"" << m_cfg.timestamp << "\"";
     
   outfile << " calibType=\"CAL_Ped\" fmtVersion=\"v2r2\" >" << endl;
   outfile << " </generic>" << endl;
   outfile << " <dimension nRow=\"1\" nCol=\"1\" nLayer=\"" << LyrNum::N_VALS 
-          << "\" nXtal=\"" << ColNum::N_VALS 
-          <<"\" nFace=\"" << FaceNum::N_VALS 
+          << "\" nXtal=\""  << ColNum::N_VALS 
+          << "\" nFace=\""   << FaceNum::N_VALS 
           << "\" nRange=\"" << RngNum::N_VALS 
           << "\"/>" << endl;
   for (TwrNum twr; twr.isValid(); twr++) {
-    outfile << " <tower iRow=\"0\" iCol=\"0\">"<< endl;
+    outfile << " <tower iRow=\"0\" iCol=\"0\">" << endl;
 
     for (LyrNum lyr; lyr.isValid(); lyr++) {
       outfile << "  <layer iLayer=\"" << lyr << "\">" << endl;
@@ -1650,9 +1660,9 @@ void MuonCalib::writePedsXML(const string &filename, const string &dtdPath) {
         }
         outfile << "   </xtal>" << endl;
       }
-      outfile<<"  </layer>" << endl;
+      outfile<< "  </layer>" << endl;
     }
-    outfile << " </tower>"<< endl;
+    outfile << " </tower>" << endl;
   }
   outfile << "</calCalib>" << endl;
 }
@@ -1673,20 +1683,20 @@ void MuonCalib::writeAsymXML(const string &filename, const string &dtdPath) {
   while (dtdFile.good()) {
     getline(dtdFile, tmp);
     if (dtdFile.fail()) continue; // bad get
-    outfile << tmp <<endl;
+    outfile << tmp << endl;
   }
   outfile << "]>" << endl;
 
   outfile << "<calCalib>" << endl;
-  outfile << " <generic instrument=\"" << m_cfg.instrument <<"\" timestamp=\""<< m_cfg.timestamp <<"\"";
+  outfile << " <generic instrument=\"" << m_cfg.instrument << "\" timestamp=\"" << m_cfg.timestamp << "\"";
   
   outfile << " calibType=\"CAL_Asym\" fmtVersion=\"v2r2\" >" << endl;
-  outfile << " </generic>" << endl;
+  outfile << " </generic>"  << endl;
   outfile << " <dimension nRow=\"1\" nCol=\"1\" nLayer=\"" << LyrNum::N_VALS 
-          << "\" nXtal=\"" << ColNum::N_VALS 
-          <<"\" nFace=\"" << 1
+          << "\" nXtal=\""  << ColNum::N_VALS 
+          << "\" nFace=\""   << 1
           << "\" nRange=\"" << 1
-          << "\" nXpos=\"" << 1
+          << "\" nXpos=\""  << 1
           << "\"/>" << endl;
   
   // -- GENERATE xpos VALUES -- //
@@ -1697,7 +1707,7 @@ void MuonCalib::writeAsymXML(const string &filename, const string &dtdPath) {
   
   // -- OUTPUT ASYMETRY DATA -- //
   for (TwrNum twr; twr.isValid() ; twr++) { // only using 1 tower right now
-    outfile << " <tower iRow=\"0\" iCol=\"0\">"<< endl;
+    outfile << " <tower iRow=\"0\" iCol=\"0\">" << endl;
     for (LyrNum lyr; lyr.isValid(); lyr++) {
       outfile << "  <layer iLayer=\"" << lyr << "\">" << endl;
       for (ColNum col; col.isValid(); col++) {
@@ -1753,9 +1763,9 @@ void MuonCalib::writeAsymXML(const string &filename, const string &dtdPath) {
         outfile << "    </face>" << endl;
         outfile << "   </xtal>" << endl;
       }
-      outfile<<"  </layer>" << endl;
+      outfile<< "  </layer>" << endl;
     }
-    outfile << " </tower>"<< endl;
+    outfile << " </tower>" << endl;
   }
   outfile << "</calCalib>" << endl;
 }
@@ -1777,23 +1787,23 @@ void MuonCalib::writeMPDXML(const string &filename, const string &dtdPath) {
   while (dtdFile.good()) {
     getline(dtdFile, tmp);
     if (dtdFile.fail()) continue; // bat get()
-    outfile << tmp <<endl;;
+    outfile << tmp << endl;;
   }
   outfile << "]>" << endl;
 
   outfile << "<calCalib>" << endl;
-  outfile << " <generic instrument=\"" << m_cfg.instrument <<"\" timestamp=\""<< m_cfg.timestamp <<"\"";
+  outfile << " <generic instrument=\"" << m_cfg.instrument << "\" timestamp=\"" << m_cfg.timestamp << "\"";
   outfile << " calibType=\"CAL_MevPerDac\" fmtVersion=\"v2r2\" >" << endl;
   outfile << " </generic>" << endl;
   outfile << " <dimension nRow=\"1\" nCol=\"1\" nLayer=\"" << LyrNum::N_VALS 
-          << "\" nXtal=\"" << ColNum::N_VALS 
-          << "\" nFace=\"" << 1 
+          << "\" nXtal=\""  << ColNum::N_VALS 
+          << "\" nFace=\""  << 1 
           << "\" nRange=\"" << 1 
-          << "\" nXpos=\"" << 1 
+          << "\" nXpos=\""  << 1 
           << "\"/>" << endl;
 
   for (TwrNum twr; twr.isValid(); twr++) { // only using one tower right now
-    outfile << " <tower iRow=\"0\" iCol=\"0\">"<< endl;
+    outfile << " <tower iRow=\"0\" iCol=\"0\">" << endl;
     for (LyrNum lyr; lyr.isValid(); lyr++) {
       outfile << "  <layer iLayer=\"" << lyr << "\">" << endl;
       for (ColNum col; col.isValid(); col++) {
@@ -1813,9 +1823,9 @@ void MuonCalib::writeMPDXML(const string &filename, const string &dtdPath) {
         outfile << "    </face>" << endl;
         outfile << "   </xtal>" << endl;
       }
-      outfile<<"  </layer>" << endl;
+      outfile<< "  </layer>" << endl;
     }
-    outfile << " </tower>"<< endl;
+    outfile << " </tower>" << endl;
   }
   outfile << "</calCalib>" << endl;
 }
@@ -1843,15 +1853,15 @@ void MuonCalib::writeADC2NRGXML(const string &filename) {
 
   int tower = 0;
   outfile << "<?xml version=\'1.0\' encoding=\'UTF-8\'?>" << endl;
-  outfile << "<LATdoc name=\'\'>"<< endl;
-  outfile << "  <declarations>"<< endl;
-  outfile << "    <options>"<< endl;
-  outfile << "      <explicitBroadcastNodes>0</explicitBroadcastNodes>"<< endl;
-  outfile << "    </options>"<< endl;
-  outfile << "  </declarations>"<< endl;
-  outfile << "  <configuration hierarchy=\"[\'low_hi_nrg\', \'GCCC\', \'GCRC\', \'GCFE\', \'adc2nrg\']\" shape=\'(2, 8, 2, 12)\' version=\'NA\' type=\'d\' name=\'\'>"<< endl;
-  outfile << "    <GLAT>"<< endl;
-  outfile << "      <GTEM ID=\'0\'>"<< endl;
+  outfile << "<LATdoc name=\'\'>" << endl;
+  outfile << "  <declarations>"   << endl;
+  outfile << "    <options>"      << endl;
+  outfile << "      <explicitBroadcastNodes>0</explicitBroadcastNodes>" << endl;
+  outfile << "    </options>"     << endl;
+  outfile << "  </declarations>"  << endl;
+  outfile << "  <configuration hierarchy=\"[\'low_hi_nrg\', \'GCCC\', \'GCRC\', \'GCFE\', \'adc2nrg\']\" shape=\'(2, 8, 2, 12)\' version=\'NA\' type=\'d\' name=\'\'>" << endl;
+  outfile << "    <GLAT>"         << endl;
+  outfile << "      <GTEM ID=\'0\'>" << endl;
   for (int diode=0; diode<2; diode++){
     outfile << "        <low_hi_nrg ID=\'" << diode << "\'>" << endl;
     for (int xy = 0; xy<2; xy++){
@@ -1866,19 +1876,19 @@ void MuonCalib::writeADC2NRGXML(const string &filename) {
             int col = gcfe;
             DiodeIdx diodeIdx(tower,layer,col,side,diode);
             float adc2nrg = m_adc2nrg[diodeIdx];
-            outfile <<"                <adc2nrg>" << fixed << adc2nrg <<"</adc2nrg>" << endl;
-            outfile << "              </GCFE>"<< endl;
+            outfile << "                <adc2nrg>" << fixed << adc2nrg << "</adc2nrg>" << endl;
+            outfile << "              </GCFE>" << endl;
           }
-          outfile << "            </GCRC>"<< endl;
+          outfile << "            </GCRC>" << endl;
         }
-        outfile << "          </GCCC>"<< endl;
+        outfile << "          </GCCC>" << endl;
       }
     }
-    outfile << "        </low_hi_nrg>"<< endl;
+    outfile << "        </low_hi_nrg>" << endl;
   }
-  outfile << "      </GTEM>"<< endl;
-  outfile << "    </GLAT>"<< endl;
-  outfile << "  </configuration>"<< endl;
-  outfile << "</LATdoc>"<< endl;
+  outfile << "      </GTEM>" << endl;
+  outfile << "    </GLAT>" << endl;
+  outfile << "  </configuration>" << endl;
+  outfile << "</LATdoc>" << endl;
 
 }

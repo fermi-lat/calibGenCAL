@@ -221,7 +221,8 @@ void CfData::WriteSplinesTXT(const string &filename) {
   ofstream outFile(filename.c_str());
   if (!outFile.is_open()) {
     ostringstream tmp;
-    tmp <<"ERROR! unable to open txtFile='" << filename << "'";
+    tmp << __FILE__ << ":" << __LINE__ << " " 
+        << "ERROR! unable to open txtFile='" << filename << "'";
     throw tmp.str();
   }
   outFile.precision(2);
@@ -244,7 +245,8 @@ void CfData::ReadSplinesTXT (const string &filename) {
   ifstream inFile(filename.c_str());
   if (!inFile.is_open()) {
     ostringstream tmp;
-    tmp <<"ERROR! unable to open txtFile='" << filename << "'";
+    tmp << __FILE__ << ":" << __LINE__ << " " 
+        << "ERROR! unable to open txtFile='" << filename << "'";
     throw tmp.str();
   }
 
@@ -277,7 +279,8 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   ofstream xmlFile(filename.c_str());
   if (!xmlFile.is_open()) {
     ostringstream tmp;
-    tmp <<"ERROR! unable to open xmlFile='" << filename << "'";
+    tmp << __FILE__ << ":" << __LINE__ << " " 
+        << "ERROR! unable to open xmlFile='" << filename << "'";
     throw tmp.str();
   }
 
@@ -285,7 +288,8 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   ifstream dtdFile(dtdPath.c_str());
   if (!dtdFile.is_open()) {
     ostringstream tmp;
-    tmp <<"ERROR! unable to open dtdPath='" << dtdPath << "'";
+    tmp << __FILE__ << ":" << __LINE__ << " " 
+        << "ERROR! unable to open dtdPath='" << dtdPath << "'";
     throw tmp.str();
   }
 
@@ -293,7 +297,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.5 2005/02/10 19:34:31 fewtrell Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.6 2005/02/11 19:56:10 fewtrell Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
@@ -461,7 +465,8 @@ void RootCI::DigiCal() {
   const TObjArray* calDigiCol = m_digiEvt->getCalDigiCol();
   if (!calDigiCol) {
     ostringstream tmp;
-    tmp <<"Empty calDigiCol event #" << m_evtId;
+    tmp << __FILE__ << ":" << __LINE__ << " " 
+        << "Empty calDigiCol event #" << m_evtId;
     throw tmp.str();
   }
   TIter calDigiIter(calDigiCol);
@@ -523,7 +528,8 @@ void RootCI::Go(Int_t nEvtAsked)
 
   if (nEvtAsked+m_startEvt >  nEvts) {
     ostringstream tmp;
-    tmp <<" not enough entries in file to proceed, we need " << nEvtAsked;
+    tmp << __FILE__ << ":" << __LINE__ << " " 
+        << "not enough entries in file to proceed, we need " << nEvtAsked;
     throw tmp.str();
   }
 
@@ -566,10 +572,15 @@ int main(int argc, char **argv) {
       while (cfgFile.good()) {
         getline(cfgFile, tmp);
         if (cfgFile.fail()) continue; // bad get
-        cfg.ostrm << "> " << tmp <<endl;
+        cfg.ostrm << "> " << tmp << endl;
       }
       cfg.ostrm << "--- End " << cfgPath << " ---" << endl << endl;
     }
+
+    cfg.ostrm << endl;
+    output_env_banner(cfg.ostrm);
+    cfg.ostrm << endl;
+    
     
     CfData data(cfg);
 
