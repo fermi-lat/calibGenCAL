@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: fewtrell  Fri May 28 18:49:21 PDT 2004
+calibGenCAL/src
+
+Modified Files:
+	muonCalib.cxx muonCalib.h 
+Added Files:
+	ciFit.cxx 
+Log Message:
+added ciFit - charge injection calibration applition which outputs XML as well as text table.
+modified slightly muonCalib.  basically put some 'global' vars in class & put in some checks so that it will run w/ out a histogram file defined.
+
+    *
+------------------------------------------------------------
 User: chehtman  Fri May 28 14:34:20 PDT 2004
 calibGenCAL/cmt
 
