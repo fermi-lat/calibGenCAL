@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: fewtrell  Sat Feb  5 01:12:20 PST 2005
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+fixed invalid 'creator' field in output xml files
+fixed name mix up of adc & dac intnonlni vals in muonCalib (output has not changed)
+fixed bad default muonCalib_option filename
+
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r2p1, operation: add
 Package: calibGenCAL
