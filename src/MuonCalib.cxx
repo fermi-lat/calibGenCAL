@@ -1866,7 +1866,8 @@ void MuonCalib::writeADC2NRGXML(const string &filename) {
     outfile << "        <low_hi_nrg ID=\'" << diode << "\'>" << endl;
     for (int xy = 0; xy<2; xy++){
       for (int side =0; side < 2; side++){
-        int gccc = (1-side)+2*xy;
+ //       int gccc = (1-side)+2*xy;  bug - correction in the next line - 8 march 2005
+        int gccc = side*2+xy;
         outfile << "          <GCCC ID=\'" << gccc << "\'>" << endl;
         for (int gcrc = 0; gcrc <4; gcrc++){
           outfile << "            <GCRC ID=\'" << gcrc << "\'>" << endl;
