@@ -1,5 +1,18 @@
 ------------------------------------------------------------
 User: fewtrell  Wed Jan  5 22:11:42 PST 2005
+calibGenCAL/src
+
+Removed Files:
+	Analyze.cxx compare_constants.cxx genNtuple.cxx 
+	lightTaperCalib.cxx lightTaperCalib.h 
+	lightTaperCalibChain_option.dat lightTaperCalib_option.dat 
+	runLightTaperCalib.cxx runLightTaperCalibChain.cxx 
+Log Message:
+2nd attempt at removing old files
+
+    *
+------------------------------------------------------------
+User: fewtrell  Wed Jan  5 22:11:42 PST 2005
 calibGenCAL/doc
 
 Modified Files:
