@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Jan 12 20:07:35 PST 2005
+calibGenCAL/src
+
+Removed Files:
+	mcOptions.cxx mcOptions.h 
+Log Message:
+these files have become mcCfg.*
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Jan 12 20:03:17 PST 2005
 calibGenCAL/src
 
