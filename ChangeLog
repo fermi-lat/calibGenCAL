@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Jan  5 21:45:25 PST 2005
+calibGenCAL/output
+
+Removed Files:
+	ciFit.041111143922_FM101_PSHP_CALU_COLLECT_CI_SINGLEX16.xml 
+Log Message:
+builds on linux w/ alost no warnings (1 warning for unused var that I left b/c/ I plan on using that var soon)
+removed old output file that should have been removed already
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Jan  5 21:32:16 PST 2005
 calibGenCAL/src
 
