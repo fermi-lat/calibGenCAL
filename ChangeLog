@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Mon May 17 08:06:27 PDT 2004
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+bug fixes, got software to run properly under windows/vc7.1
+    *
+------------------------------------------------------------
 User: fewtrell  Mon May 17 08:05:24 PDT 2004
 calibGenCAL/src
 
