@@ -1,10 +1,6 @@
 #include "TF2.h"
 #include "muonCalib.h"
 
-TObjArray tkrLayerHistArr;
-UInt_t digiEventId, reconEventId, mcEventId;
-UInt_t digiRunNum, reconRunNum, mcRunNum;
-
 void muonCalib::McHistDefine() {
 
 }
@@ -83,8 +79,6 @@ void muonCalib::DigiHistDefine() {
       rawhist->AddAt(new TH1F(rawhisname,rawhisname,200,-300,6700),layer*12+col);
 
       for(int side = 0;side<2;side++){
-		  std::cout << " " << layer <<" " << col
-						<<" "<<side  << " " << std::endl;
 		  char pedhisname[]="ped0000";
 		  char corrpedhisname[]="corrped0000";
 		  char thrhisname[]="thr0000";
@@ -909,8 +903,9 @@ void muonCalib::HistDefine() {
 
   gStyle->SetOptStat(111111);
 
-  histFile = new TFile(m_histFileName,"RECREATE");
+  if (string(m_histFileName) == "") return;
 
+  histFile = new TFile(m_histFileName,"RECREATE");
   McHistDefine();
   DigiHistDefine();
   ReconHistDefine();
