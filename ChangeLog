@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: xchen  Thu Dec 11 11:59:30 PST 2003
+calibGenCAL/src
+
+Modified Files:
+	mainpage.h 
+Added Files:
+	lightTaperCalib.cxx lightTaperCalib.h 
+	lightTaperCalibChain_option.dat lightTaperCalib_option.dat 
+	runLightTaperCalib.cxx runLightTaperCalibChain.cxx 
+Log Message:
+codes for light taper study
+    *
+------------------------------------------------------------
 User: xchen  Wed Nov 19 17:33:46 PST 2003
 calibGenCAL/cmt
 
