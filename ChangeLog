@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Feb 16 12:09:11 PST 2005
+calibGenCAL/src
+
+Modified Files:
+	CGCUtil.cxx CGCUtil.h MuonCalib.cxx ciFit_option.xml 
+	genTholdCI_XML.cxx muonCalib_option.xml runCIFit.cxx 
+	runMuonCalib.cxx 
+Log Message:
+fixed bug in adc2nrg output
+added run & build environment summary in logfiles
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r3p2, operation: add
 Package: calibGenCAL
