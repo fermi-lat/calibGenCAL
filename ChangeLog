@@ -1,4 +1,44 @@
 ------------------------------------------------------------
+TAG
+Tag name: v3r0, operation: add
+Package: calibGenCAL
+User: fewtrell  Wed Dec 22 18:14:28 2004
+Files:
+  calibGenCAL/.cvsignore  1.1.1.1
+  calibGenCAL/ChangeLog  1.48
+  calibGenCAL/cmt/.cvsignore  1.1
+  calibGenCAL/cmt/requirements  1.10
+  calibGenCAL/doc/release.notes  1.14
+  calibGenCAL/output/.cvsignore  1.1
+  calibGenCAL/output/mc_mevperdac.041022230030_FM101_Pshp_calu_collect_ext.xml  1.1
+  calibGenCAL/output/mc_asym.041022230030_FM101_Pshp_calu_collect_ext.xml  1.1
+  calibGenCAL/output/ciFit.041111143922_FM101_PSHP_CALU_COLLECT_CI_SINGLEX16.xml  1.1
+  calibGenCAL/output/mc_peds.041022230030_FM101_Pshp_calu_collect_ext.xml  1.1
+  calibGenCAL/src/compare_constants.cxx  1.2
+  calibGenCAL/src/ciFit_option.xml  1.3
+  calibGenCAL/src/muonCalib.h  1.12
+  calibGenCAL/src/mcOptions.cxx  1.1
+  calibGenCAL/src/mainpage.h  1.7
+  calibGenCAL/src/mcOptions.h  1.1
+  calibGenCAL/src/RootFileAnalysis.h  1.3
+  calibGenCAL/src/muonCalib.cxx  1.11
+  calibGenCAL/src/ciFit.cxx  1.10
+  calibGenCAL/src/lightTaperCalib.cxx  1.2
+  calibGenCAL/src/runLightTaperCalib.cxx  1.1
+  calibGenCAL/src/lightTaperCalib.h  1.1
+  calibGenCAL/src/runMuonCalib.cxx  1.10
+  calibGenCAL/src/Analyze.cxx  1.1.1.1
+  calibGenCAL/src/lightTaperCalibChain_option.dat  1.1
+  calibGenCAL/src/ICfg.h  1.1
+  calibGenCAL/src/lightTaperCalib_option.dat  1.1
+  calibGenCAL/src/runLightTaperCalibChain.cxx  1.1
+  calibGenCAL/src/muonCalib_option.xml  1.1
+  calibGenCAL/src/genNtuple.cxx  1.2
+  calibGenCAL/src/RootFileAnalysis.cxx  1.2
+  calibGenCAL/xml/.cvsignore  1.1
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Dec 22 18:13:29 PST 2004
 calibGenCAL/src
 
