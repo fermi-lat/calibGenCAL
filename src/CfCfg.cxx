@@ -9,6 +9,8 @@
 // EXTLIB INCLUDES
 
 // STD INCLUDES
+#include <algorithm>
+#include <cctype>
 
 using namespace CGCUtil;
 
@@ -34,7 +36,7 @@ void CfCfg::readCfgFile(const string& path) {
   instrumentMode = ifile.getString(TEST_INFO.c_str(), "INST_MODE");
   source         = ifile.getString(TEST_INFO.c_str(), "TEST_SOURCE");
   
-  dacVals    = ifile.getIntVector(TEST_INFO.c_str(), "DAC_SETTINGS");
+  dacVals        = ifile.getIntVector(TEST_INFO.c_str(), "DAC_SETTINGS");
   nPulsesPerDAC  = ifile.getInt(TEST_INFO.c_str(), "N_PULSES_PER_DAC");
 
   // PATHS
@@ -42,7 +44,7 @@ void CfCfg::readCfgFile(const string& path) {
   outputDir = ifile.getString(PATHS.c_str(), "OUTPUT_FOLDER");
   Util::expandEnvVar(&outputDir);
 
-  dtdFile   = ifile.getString(PATHS.c_str(), "DTD_FILE");
+  dtdFile       = ifile.getString(PATHS.c_str(), "DTD_FILE");
   Util::expandEnvVar(&dtdFile);
   outputXMLPath = ifile.getString(PATHS.c_str(), "XMLPATH");
   Util::expandEnvVar(&outputXMLPath);
@@ -65,9 +67,10 @@ void CfCfg::readCfgFile(const string& path) {
   logfile = ifile.getString(PATHS.c_str(), "LOGFILE");
   Util::expandEnvVar(&logfile);
 
-  genXML = ifile.getBool(GENERAL.c_str(), "GENERATE_XML");
-  genTXT = ifile.getBool(GENERAL.c_str(), "GENERATE_TXT");
-  genLogfile = ifile.getBool(GENERAL.c_str(), "GENERATE_LOGFILE");
+  // ridiculous comparison elminates cast warning in msvc
+  genXML = ifile.getBool(GENERAL.c_str(), "GENERATE_XML") != 0;
+  genTXT = ifile.getBool(GENERAL.c_str(), "GENERATE_TXT") != 0;
+  genLogfile = ifile.getBool(GENERAL.c_str(), "GENERATE_LOGFILE") != 0;
 
   // SPLINE CFG
   splineGroupWidth = ifile.getIntVector(SPLINE_CFG.c_str(), "GROUP_WIDTH");
@@ -94,12 +97,28 @@ void CfCfg::readCfgFile(const string& path) {
 
   // setup output stream
   // add cout by default
-  ostr.getostreams().push_back(&cout);
+  ostrm.getostreams().push_back(&cout);
   // add user Req logfile
   if (genLogfile) {
-    logstr.open(logfile.c_str());
-    ostr.getostreams().push_back(&logstr);
+    logStrm.open(logfile.c_str());
+    ostrm.getostreams().push_back(&logStrm);
   }
+
+  // create CVS_Tag string w/out illegal characters
+  // xml does not allow '$' char which is used in CVS TAG replacment, also
+  // xml counts spaces as delimeters & 'creator' is specified as a single value
+  creator = CGCUtil::CVS_TAG;
+  // NO idea why this works, but it does.
+  // Newsgroups: comp.lang.c++
+  // From: "John Harrison" <jah...@dtn.ntl.com> - Find messages by this author
+  // Date: 2000/07/27
+  // Subject: Re: remove characters from a string*/
+  creator.erase(remove_if(creator.begin(), 
+                          creator.end(), 
+                          ispunct), 
+                creator.end());
+  replace(creator.begin(),creator.end(),' ','_');
+
 }
 
 void CfCfg::clear() {  

@@ -289,7 +289,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdFilename) 
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.2 2005/01/31 18:18:36 fewtrell Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.3 2005/02/03 04:11:06 fewtrell Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
@@ -304,8 +304,8 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdFilename) 
   xmlFile << "<calCalib>" << endl;
   xmlFile << "  <generic instrument=\"" << m_cfg.instrument
           << "\" timestamp=\"" << m_cfg.startTime << "\"" << endl;
-  xmlFile << "           calibType=\"CAL_IntNonlin\" fmtVersion=\"v2r1\"" << endl;
-  xmlFile << "           creator=\"" << CGCUtil::CVS_TAG << "\">" << endl;
+  xmlFile << "           calibType=\"CAL_IntNonlin\" fmtVersion=\"v2r2p1\"" << endl;
+  xmlFile << "           creator=\"" << m_cfg.creator << "\">" << endl;
 
   xmlFile << endl;
   xmlFile << "    <inputSample startTime=\"" << m_cfg.startTime
@@ -514,7 +514,7 @@ void RootCI::Go(Int_t nEvtAsked)
   // DO WE HAVE ENOUGH EVENTS IN FILE?
   //
   Int_t nEvts = getEntries();
-  m_cfg.ostr << "\nNum Events in File is: " << nEvts << endl;
+  m_cfg.ostrm << "\nNum Events in File is: " << nEvts << endl;
   Int_t curI;
   Int_t nMax = min(nEvtAsked+m_startEvt,nEvts);
 
@@ -533,7 +533,7 @@ void RootCI::Go(Int_t nEvtAsked)
     if (m_digiEvt) {
       m_evtId = m_digiEvt->getEventId();
       if(m_evtId%1000 == 0)
-        m_cfg.ostr << " event " << m_evtId << endl;
+        m_cfg.ostrm << " event " << m_evtId << endl;
 
       DigiCal();
     }
@@ -553,19 +553,19 @@ int main(int argc, char **argv) {
     cfg.readCfgFile(cfgPath);
 
     // ID calibGenCAL package version
-    cfg.ostr << "calibGenCAL CVS Tag: " << CGCUtil::CVS_TAG << endl << endl;
+    cfg.ostrm << "calibGenCAL CVS Tag: " << CGCUtil::CVS_TAG << endl << endl;
     
     // insert quoted config file into log stream //
     { 
       string temp;
       ifstream cfgFile(cfgPath.c_str());
-      cfg.ostr << "--- Begin cfg_file: " << cfgPath << " ---" << endl;
+      cfg.ostrm << "--- Begin cfg_file: " << cfgPath << " ---" << endl;
       while (cfgFile.good()) {
         getline(cfgFile, temp);
         if (cfgFile.fail()) continue; // bad get
-        cfg.ostr << "> " << temp << endl;
+        cfg.ostrm << "> " << temp << endl;
       }
-      cfg.ostr << "--- End " << cfgPath << " ---" << endl << endl;
+      cfg.ostrm << "--- End " << cfgPath << " ---" << endl << endl;
     }
     
     CfData data(cfg);
@@ -620,7 +620,7 @@ int main(int argc, char **argv) {
     if (cfg.genXML) data.WriteSplinesXML(cfg.outputXMLPath, cfg.dtdFile);
   } catch (string s) {
     // generic exception handler...  all my exceptions are simple C++ strings
-    cfg.ostr << "ciFit:  exception thrown: " << s << endl;
+    cfg.ostrm << "ciFit:  exception thrown: " << s << endl;
     return -1;
   }
 

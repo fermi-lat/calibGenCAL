@@ -16,45 +16,29 @@ using namespace std;
 int main(int argc, char** argv) {
   string cfgPath;
   if(argc > 1) cfgPath = argv[1];
-  else cfgPath = "../src/MuonCalib_option.xml";
+  else cfgPath = "../src/muonCalib_option.xml";
     
   McCfg cfg;
   try {
     cfg.readCfgFile(cfgPath);
 
     // identify calibGenCAL package version
-    cfg.ostr << "calibGenCAL CVS Tag: " << CGCUtil::CVS_TAG << endl;
+    cfg.ostrm << "calibGenCAL CVS Tag: " << CGCUtil::CVS_TAG << endl;
 
     // insert quoted config file into log stream //
     { 
       string temp;
       ifstream cfgFile(cfgPath.c_str());
-      cfg.ostr << "--- Begin cfg_file: " << cfgPath << " ---" << endl;
+      cfg.ostrm << "--- Begin cfg_file: " << cfgPath << " ---" << endl;
       while (cfgFile.good()) {
         getline(cfgFile, temp);
         if (cfgFile.fail()) continue; // bad get
-        cfg.ostr << "> " << temp << endl;
+        cfg.ostrm << "> " << temp << endl;
       }
-      cfg.ostr << "--- End " << cfgPath << " ---" << endl;
+      cfg.ostrm << "--- End " << cfgPath << " ---" << endl;
     }
   
-    MuonCalib appData(cfg.rootFileList, 
-                      cfg.instrument, 
-                      cfg.towerList, 
-                      cfg.ostr, 
-                      cfg.timestamp,
-                      cfg.hitThresh,
-                      cfg.cellHorPitch,
-                      cfg.cellVertPitch,
-                      cfg.csiLength,
-                      cfg.maxAsymLL,
-                      cfg.maxAsymLS,
-                      cfg.maxAsymSL,
-                      cfg.maxAsymSS,
-                      cfg.minAsymLL,
-                      cfg.minAsymLS,
-                      cfg.minAsymSL,
-                      cfg.minAsymSS);
+    MuonCalib appData(cfg);
     
     ////////////////////////////////
     // *** PHASE 1: PEDESTALS *** //
@@ -62,7 +46,7 @@ int main(int argc, char** argv) {
 
     if (!cfg.readInPeds) {
       // PASS 1 - Rough Peds
-      cfg.ostr << "Calculating rough pedestals (LEX8) - " << cfg.nEvtRoughPed << " events" << endl;
+      cfg.ostrm << "Calculating rough pedestals (LEX8) - " << cfg.nEvtRoughPed << " events" << endl;
       
       // open new histogram file
       if (cfg.genHistfiles) appData.openHistFile(cfg.pedHistFile);
@@ -74,7 +58,7 @@ int main(int argc, char** argv) {
       appData.fitRoughPedHists();
 
       // PASS 2 - Final Peds
-      cfg.ostr << "Calculating 4 range pedestals - " << cfg.nEvtPed << " events" << endl;
+      cfg.ostrm << "Calculating 4 range pedestals - " << cfg.nEvtPed << " events" << endl;
       
       // rewind input file to beginning
       appData.rewind();
@@ -95,12 +79,12 @@ int main(int argc, char** argv) {
       if (cfg.genHistfiles) appData.flushHists();
     } else {
       // ALTERNATE SHORTCUT TO CALCULATING PEDS
-      cfg.ostr << "Reading pedestals from " << cfg.pedFileTXT << endl;
+      cfg.ostrm << "Reading pedestals from " << cfg.pedFileTXT << endl;
       appData.readCalPeds(cfg.pedFileTXT);
     }
 
     // LOAD INTNONLIN
-    cfg.ostr << "Reading integral nonlinearity from " << cfg.intNonlinFile << endl;
+    cfg.ostrm << "Reading integral nonlinearity from " << cfg.intNonlinFile << endl;
     appData.readIntNonlin(cfg.intNonlinFile);
     
     ///////////////////////////////
@@ -109,7 +93,7 @@ int main(int argc, char** argv) {
 
     if (!cfg.readInAsym) {
       // PASS 3 - Asymmetry
-      cfg.ostr << "Calculating asymmetry - " << cfg.nEvtAsym << " events" << endl;
+      cfg.ostrm << "Calculating asymmetry - " << cfg.nEvtAsym << " events" << endl;
       
       // rewind input file
       appData.rewind();
@@ -136,7 +120,7 @@ int main(int argc, char** argv) {
       if (cfg.genHistfiles) appData.flushHists();
     } else {
       // ALTERNATE SHORTCUT TO CALCULATING ASYM
-      cfg.ostr << "Reading asymmetry from " << cfg.asymFileLLTXT << " "
+      cfg.ostrm << "Reading asymmetry from " << cfg.asymFileLLTXT << " "
                << cfg.asymFileLSTXT << " "
                << cfg.asymFileSLTXT << " "
                << cfg.asymFileSSTXT << " "
@@ -154,7 +138,7 @@ int main(int argc, char** argv) {
     if (!cfg.skipMPD) {
       // rewind input file
       appData.rewind();
-      cfg.ostr << "Calculating MevPerDAC - " << cfg.nEvtMPD << " events" << endl;
+      cfg.ostrm << "Calculating MevPerDAC - " << cfg.nEvtMPD << " events" << endl;
       
       // open new histogram file
       if (cfg.genHistfiles) appData.openHistFile(cfg.mpdHistFile);      
@@ -177,7 +161,7 @@ int main(int argc, char** argv) {
     
   } catch (string s) {
     // generic exception handler...  all my exceptions are simple C++ strings
-    cfg.ostr << "MuonCalib:  exception thrown: " << s << endl;
+    cfg.ostrm << "MuonCalib:  exception thrown: " << s << endl;
     return -1;
   }
     
