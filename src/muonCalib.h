@@ -214,7 +214,6 @@ private:
 
   static const std::string FACE_MNEM[];
   static const std::string RNG_MNEM[];
-
 };
 
 #endif

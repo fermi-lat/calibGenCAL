@@ -24,4 +24,6 @@ v2r3p3 ignore me
 
 v2r3p4 changed .dtd path for nonlin file in ciFit application.
 
-v2r4   updated ciFit application to use IFile .xml config file
+v2r4 updated ciFit application to use IFile .xml config file
+
+v2r5 Initial I&T release version.  increased pedestal histogram limits, suppressed corrped, improved initial guess for muon peak, suppressed 2nd pass FITMUHIST, replace runMuonCalib w/ runMuonCalibChain

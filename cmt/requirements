@@ -34,8 +34,6 @@ library muonCalib -no_share muonCalib.cxx
 
 application runMuonCalib runMuonCalib.cxx 
 
-application runMuonCalibChain runMuonCalibChain.cxx 
-
 application getMuSlopesXML getMuSlopesXML.cxx
 
 application getLightAsymXML getLightAsymXML.cxx
