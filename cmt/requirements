@@ -24,6 +24,8 @@ application runMuonCalib runMuonCalib.cxx MuonCalib.cxx McCfg.cxx RootFileAnalys
 
 application runCIFit runCIFit.cxx CfCfg.cxx RootFileAnalysis.cxx CGCUtil.cxx CalDefs.cxx
 
+application runMuTrigEff runMuTrigEff.cxx MtCfg.cxx RootFileAnalysis.cxx CGCUtil.cxx CalDefs.cxx
+
 application genTholdCI_XML genTholdCI_XML.cxx CalDefs.cxx CGCUtil.cxx
 
 
