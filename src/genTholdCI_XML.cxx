@@ -4,7 +4,7 @@
 #include "CGCUtil.h"
 
 // GLAST INCLUDES
-#include "xml/IFile.h"
+#include "xmlBase/IFile.h"
 #include "facilities/Util.h"
 
 // EXTLIB INCLUDES
@@ -68,7 +68,7 @@ const string TholdCICfg::PATHS("PATHS");
 void TholdCICfg::readCfgFile(const string& cfgPath) {
   clear();
 
-  xml::IFile ifile(cfgPath.c_str());
+  xmlBase::IFile ifile(cfgPath.c_str());
   
   using facilities::Util;
 

@@ -67,3 +67,5 @@ v3r4p1 made it build on linux
 v3r4p2 added output of fit errors in runMuTrigEff
 
 v3r4p3 added histogramming and excluding of outliers from charge injection peaks in runCIFit
+
+v3r4p4 moved obsolete xml package dependency to xmlBase, updated some documentation

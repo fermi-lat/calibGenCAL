@@ -4,14 +4,14 @@ private
 
 branches src doc xml output 
 
-use GlastPolicy   v*
-use reconRootData v*
-use digiRootData  v*
-use mcRootData    v*
-use xml           v*
-use Event         v*
-use facilities    v*
-use calibUtil     v*
+use GlastPolicy   
+use reconRootData 
+use digiRootData  
+use mcRootData    
+use xmlBase       
+use Event         
+use facilities    
+use calibUtil     
 
 # make sure we have all graphical root libraries linked (stolen from rootanalysis)
 # used for line fitting in muonCalib

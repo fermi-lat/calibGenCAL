@@ -19,7 +19,7 @@ const string MtCfg::GENERAL("GENERAL");
 void MtCfg::readCfgFile(const string& path) {
   clear();
 
-  xml::IFile ifile(path.c_str());
+  xmlBase::IFile ifile(path.c_str());
   
   // TEST INFO
   timestamp = ifile.getString(TEST_INFO.c_str(), "TIMESTAMP");
@@ -65,10 +65,11 @@ void MtCfg::readCfgFile(const string& path) {
   logfile = ifile.getString(PATHS.c_str(), "LOGFILE");
   Util::expandEnvVar(&logfile);
 
-  genXML = ifile.getBool(GENERAL.c_str(), "GENERATE_XML");
-  genTXT = ifile.getBool(GENERAL.c_str(), "GENERATE_TXT");
-  genLogfile = ifile.getBool(GENERAL.c_str(), "GENERATE_LOGFILE");
-  genHistfile = ifile.getBool(GENERAL.c_str(), "GENERATE_HISTFILE");
+  // ridiculous comparison elminates cast warning in msvc
+  genXML      = ifile.getBool(GENERAL.c_str(), "GENERATE_XML") != 0;
+  genTXT      = ifile.getBool(GENERAL.c_str(), "GENERATE_TXT") != 0;
+  genLogfile  = ifile.getBool(GENERAL.c_str(), "GENERATE_LOGFILE") != 0;
+  genHistfile = ifile.getBool(GENERAL.c_str(), "GENERATE_HISTFILE") != 0;
 
   // Geneate derived config quantities.
   nDACs          = dacVals.size();

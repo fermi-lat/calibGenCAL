@@ -22,7 +22,7 @@ const string CfCfg::GENERAL("GENERAL");
 void CfCfg::readCfgFile(const string& path) {
   clear();
 
-  xml::IFile ifile(path.c_str());
+  xmlBase::IFile ifile(path.c_str());
   
   // TEST INFO
   timestamp = ifile.getString(TEST_INFO.c_str(), "TIMESTAMP");
