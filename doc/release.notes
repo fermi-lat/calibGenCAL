@@ -44,4 +44,4 @@ v3r1p2 fixed single error msg in ciFit
 
 v3r1p3 added logfile output to ciFit.  added CVS TAG & config file contents to top of logs. made all functions in CalDefs static.
 
-v3r1p4 edited printouts
+v3r1p4 xml file format tweaked after testing against Gleam imports.  Improved pedestal fits.  default ciFit_options spline parms now matched to FM101 & not EM.

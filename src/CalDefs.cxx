@@ -51,10 +51,10 @@ string &CalDefs::appendRngStr(int nRng, string &str) {
       nRng2nFace(nRng),str);
 
    ostringstream tmpStrm;
-   tmpStrm << "D" << setw(1) << nRng2rng(nRng);
+   tmpStrm << "R" << setw(1) << nRng2rng(nRng);
 
    return str += tmpStrm.str();
    }
 
-bool  CalDefs::isXlyr(short lyr) {return lyr%2==0;} ///< returns true if layer is an X-layer
+
 
