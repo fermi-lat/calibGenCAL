@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Feb 11 11:40:32 PST 2005
+calibGenCAL/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+forgot to update release notes for v3r3
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r3, operation: add
 Package: calibGenCAL
