@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+TAG
+Tag name: v3r1p4, operation: add
+Package: calibGenCAL
+User: fewtrell  Wed Jan 12 20:16:05 2005
+Files:
+  calibGenCAL/output/mc_mpdSmall.041022230030_FM101_Pshp_calu_collect_ext.txt  1.1
+  calibGenCAL/output/mc_mpdLarge.041022230030_FM101_Pshp_calu_collect_ext.txt  1.1
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Jan 12 20:07:35 PST 2005
 calibGenCAL/src
 
