@@ -40,8 +40,8 @@ public:
   void openHistFile(const string &filename); ///< opens new histogram file.  closes current m_histFile if it is open
   void flushHists(); ///< writes histograms to file & closes file if m_histFile is open.  deletes all open histograms
 
-  void fillMuHist(FaceIdx face, int adc){ (m_muHists[face])->Fill(adc);}
-  void fillTrigHist(FaceIdx face, int adc){ (m_trigHists[face])->Fill(adc);}
+  void fillMuHist(FaceIdx face, float adc){ (m_muHists[face])->Fill(adc);}
+  void fillTrigHist(FaceIdx face, float adc){ (m_trigHists[face])->Fill(adc);}
   float getPed(RngIdx rng){return m_calPed[rng];}
   void readCalPeds(const string &filename); ///< read 4-range pedestals from .txt file created in muonCalib w/ WritePedsTXT
   void initHists();
@@ -703,7 +703,7 @@ int main(int argc, char **argv) {
     {
       vector<string> digiFileNames;
       digiFileNames.push_back(cfg.rootFileA);
-	  RootMuTrig rd(digiFileNames,data,cfg,RootMuTrig::TRIGCONFIG::EvenRowsEvenColumns);  
+	  RootMuTrig rd(digiFileNames,data,cfg,RootMuTrig::EvenRowsEvenColumns);  
       rd.Go();
     }
 
@@ -711,7 +711,7 @@ int main(int argc, char **argv) {
     {
       vector<string> digiFileNames;
       digiFileNames.push_back(cfg.rootFileB);
-      RootMuTrig rd(digiFileNames, data,cfg,RootMuTrig::TRIGCONFIG::OddRowsEvenColumns);
+      RootMuTrig rd(digiFileNames, data,cfg,RootMuTrig::OddRowsEvenColumns);
       rd.Go();
     }
 
