@@ -1,4 +1,19 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Dec 30 16:09:38 PST 2004
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+preparing for v3r0p2
+
+fixed bad xtal pitch in mc options file.
+slight modifications to event & hit selection in muon calib gain & asym.
+modularized some generic code.
+
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r0p1, operation: add
 Package: calibGenCAL
