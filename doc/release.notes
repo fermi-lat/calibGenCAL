@@ -61,3 +61,5 @@ v3r3p1 added LEX8 adc2nrg (energy) output.  fixed bad pedestal fits in LEX1.  to
 v3r3p2 forced floating point output to xml files to be fixed point.
 
 v3r4 added new muTrigEff executable to find FLE thresholds for muons and charge injection
+
+v3r4p1 made it build on linux
