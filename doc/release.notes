@@ -1,0 +1,4 @@
+v0  creation of calibGenCAL package, add codes to generate calibration constants for CAL pedestal, slope and muon peak
+
+v1 add codes to do the light taper study
+
