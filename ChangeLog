@@ -1,4 +1,21 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Jan 12 20:03:16 PST 2005
+calibGenCAL/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+muonCalib & ciFit: updated xml output format so that CalibSvc can now successfully read everything, many changes including:
+	changed instrument name in xml format to "LAT" since "FM101" does not work
+
+ciFit: tweaked spline settings to work better w/ FM101.  future version will have a better (smarter?) method of doing this.
+
+muonCalib: improved pedestal fits in high energy ranges where we are fitting to a very small # of non zero bins.
+muonCalib: linearly interpereted 1st & 12th asymetry points in asym2pos splines used in pathlength correction during MevPerDac calibration.
+muonCalib: better calculation of error on small MevPerDac values.
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r1p4, operation: add
 Package: calibGenCAL
