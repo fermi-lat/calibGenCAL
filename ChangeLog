@@ -1,5 +1,52 @@
 ------------------------------------------------------------
 TAG
+Tag name: v3r1p5, operation: add
+Package: calibGenCAL
+User: fewtrell  Wed Jan 12 20:17:21 2005
+Files:
+  calibGenCAL/.cvsignore  1.1.1.1
+  calibGenCAL/ChangeLog  1.94
+  calibGenCAL/cmt/.cvsignore  1.1
+  calibGenCAL/cmt/requirements  1.18
+  calibGenCAL/doc/release.notes  1.22
+  calibGenCAL/output/mc_mevperdac.041022230030_FM101_Pshp_calu_collect_ext.xml  1.5
+  calibGenCAL/output/mc_asym.041022230030_FM101_Pshp_calu_collect_ext.xml  1.5
+  calibGenCAL/output/ci_logfile.041111143546_FM101_PSHP_CALU_COLLECT_CI_SINGLEX16.txt  1.2
+  calibGenCAL/output/ci_intnonlin.041111143546_FM101_PSHP_CALU_COLLECT_CI_SINGLEX16.xml  1.3
+  calibGenCAL/output/ci_intnonlin.041111143546_FM101_PSHP_CALU_COLLECT_CI_SINGLEX16.txt  1.2
+  calibGenCAL/output/mc_peds.041022230030_FM101_Pshp_calu_collect_ext.txt  1.2
+  calibGenCAL/output/.cvsignore  1.1
+  calibGenCAL/output/mc_logfile.041022230030_FM101_Pshp_calu_collect_ext.txt  1.3
+  calibGenCAL/output/mc_mpdSmall.041022230030_FM101_Pshp_calu_collect_ext.txt  1.1
+  calibGenCAL/output/mc_asymLL.041022230030_FM101_Pshp_calu_collect_ext.txt  1.2
+  calibGenCAL/output/mc_asymSS.041022230030_FM101_Pshp_calu_collect_ext.txt  1.2
+  calibGenCAL/output/mc_peds.041022230030_FM101_Pshp_calu_collect_ext.xml  1.5
+  calibGenCAL/output/mc_asymLS.041022230030_FM101_Pshp_calu_collect_ext.txt  1.2
+  calibGenCAL/output/mc_mpdLarge.041022230030_FM101_Pshp_calu_collect_ext.txt  1.1
+  calibGenCAL/output/mc_asymSL.041022230030_FM101_Pshp_calu_collect_ext.txt  1.2
+  calibGenCAL/src/ciFit_option.xml  1.6
+  calibGenCAL/src/CalDefs.h  1.3
+  calibGenCAL/src/CGCUtil.cxx  1.1
+  calibGenCAL/src/muonCalib.h  1.16
+  calibGenCAL/src/mcCfg.cxx  1.2
+  calibGenCAL/src/mainpage.h  1.8
+  calibGenCAL/src/cfCfg.h  1.3
+  calibGenCAL/src/CalDefs.cxx  1.2
+  calibGenCAL/src/RootFileAnalysis.h  1.5
+  calibGenCAL/src/CGCUtil.h  1.3
+  calibGenCAL/src/muonCalib.cxx  1.17
+  calibGenCAL/src/ciFit.cxx  1.17
+  calibGenCAL/src/runMuonCalib.cxx  1.14
+  calibGenCAL/src/mcCfg.h  1.3
+  calibGenCAL/src/cfCfg.cxx  1.3
+  calibGenCAL/src/ICfg.h  1.4
+  calibGenCAL/src/muonCalib_option.xml  1.4
+  calibGenCAL/src/RootFileAnalysis.cxx  1.6
+  calibGenCAL/xml/.cvsignore  1.1
+
+    *
+------------------------------------------------------------
+TAG
 Tag name: v3r1p4, operation: add
 Package: calibGenCAL
 User: fewtrell  Wed Jan 12 20:16:05 2005
