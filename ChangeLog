@@ -1,5 +1,21 @@
 ------------------------------------------------------------
 User: fewtrell  Wed Dec 22 18:13:29 PST 2004
+calibGenCAL/src
+
+Modified Files:
+	RootFileAnalysis.cxx RootFileAnalysis.h ciFit.cxx 
+	ciFit_option.xml mainpage.h muonCalib.cxx muonCalib.h 
+	runMuonCalib.cxx 
+Added Files:
+	ICfg.h mcOptions.cxx mcOptions.h muonCalib_option.xml 
+Removed Files:
+	getCorrPedestalsXML.cxx getGainsXML.cxx getLightAsymXML.cxx 
+	getMuSlopesXML.cxx getPedestalsXML.cxx muonCalib_option.dat 
+Log Message:
+All new muon calibration.  New constants are Pedestals, MevPerDac & improved Asymetry.
+    *
+------------------------------------------------------------
+User: fewtrell  Wed Dec 22 18:13:29 PST 2004
 calibGenCAL/output
 
 Added Files:
