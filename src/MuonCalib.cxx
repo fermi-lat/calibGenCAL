@@ -1463,6 +1463,10 @@ void MuonCalib::fitMPDHists() {
     // retrieve Large diode DAC histogram
     TH1F& h = *m_dacLLHists[xtalIdx];
 
+    ///////////////////////////////////
+    //-- MeV Per Dac (Large Diode) --//
+    ///////////////////////////////////
+    
     // LANDAU fit for muon peak (limit outliers by n*err)
     float ave = h.GetMean();
     float err = h.GetRMS();
@@ -1473,9 +1477,15 @@ void MuonCalib::fitMPDHists() {
     m_calMPDLarge[xtalIdx] = 11.2/mean;
     m_calMPDLargeErr[xtalIdx] = m_calMPDLarge[xtalIdx] * sigma/mean; // keeps sigma proportional
 
+    
+    ///////////////////////
+    //-- (Small Diode) --//
+    ///////////////////////
+        
     // LARGE 2 SMALL Ratio
     TProfile& p = *m_dacL2SProfs[xtalIdx]; // get profile
 
+    // Fill scatter graph w/ smallDAC vs largeDAC points
     int nPts = 0;
     graph.Set(nPts); // start w/ empty graph
     for (int i = 0; i < N_L2S_PTS; i++) {
@@ -1500,18 +1510,25 @@ void MuonCalib::fitMPDHists() {
       throw temp.str();
     }
 
-    // fit straight line
+    // fit straight line to get mean ratio
     graph.Fit(&lineFunc,"WQN");
-
-    // get slope
-    float large2small = lineFunc.GetParameter(1);
+    // get slope = mean ratio of smallDac/largeDac
+    float small2large = lineFunc.GetParameter(1);
     
+    //-- NOTES:
+    // MPDLarge     = MeV/LargeDAC
+    // small2large  = SmallDAC/LargeDAC
+    // MPDSmall     = MeV/SmallDAC = (MeV/LargeDAC)*(LargeDAC/SmallDAC) 
+    //              = MPDLarge/small2large
+    
+    m_calMPDSmall[xtalIdx] = m_calMPDLarge[xtalIdx]/small2large;
+    
+    //-- Propogate errors
     // in order to combine slope & MPD error for final error
     // I need the relative error for both values - so sayeth sasha
-    float relLineErr = lineFunc.GetParError(1)/large2small;
-    float relMPDErr = m_calMPDLargeErr[xtalIdx]/m_calMPDLarge[xtalIdx];
+    float relLineErr = lineFunc.GetParError(1)/small2large;
+    float relMPDErr  = m_calMPDLargeErr[xtalIdx]/m_calMPDLarge[xtalIdx];
 
-    m_calMPDSmall[xtalIdx] = m_calMPDLarge[xtalIdx]*large2small;
     m_calMPDSmallErr[xtalIdx] = m_calMPDSmall[xtalIdx]*
       sqrt(relLineErr*relLineErr + relMPDErr*relMPDErr);
   }
@@ -1565,7 +1582,8 @@ void MuonCalib::writePedsXML(const string &filename, const string &dtdFilename) 
   outfile << "]>" << endl;
 
   outfile << "<calCalib>" << endl;
-  outfile << " <generic instrument=\"" << m_instrument <<"\" timestamp=\""<< m_timestamp <<"\" calibType=\"CAL_Ped\" fmtVersion=\"v2r2\">" << endl;
+  outfile << " <generic instrument=\"" << m_instrument <<"\" timestamp=\""<< m_timestamp <<"\"";
+  outfile << " calibType=\"CAL_Ped\" fmtVersion=\"v2r2\" creator=\"" << CGCUtil::CVS_TAG << "\">" << endl;
   outfile << " </generic>" << endl;
   outfile << " <dimension nRow=\"1\" nCol=\"1\" nLayer=\"" << LyrNum::N_VALS 
           << "\" nXtal=\"" << ColNum::N_VALS 
@@ -1624,7 +1642,8 @@ void MuonCalib::writeAsymXML(const string &filename, const string &dtdFilename) 
   outfile << "]>" << endl;
 
   outfile << "<calCalib>" << endl;
-  outfile << " <generic instrument=\"" << m_instrument <<"\" timestamp=\""<< m_timestamp <<"\" calibType=\"CAL_Asym\" fmtVersion=\"v2r2\">" << endl;
+  outfile << " <generic instrument=\"" << m_instrument <<"\" timestamp=\""<< m_timestamp <<"\"";
+  outfile << " calibType=\"CAL_Asym\" fmtVersion=\"v2r2\" creator=\"" << CGCUtil::CVS_TAG << "\">" << endl;
   outfile << " </generic>" << endl;
   outfile << " <dimension nRow=\"1\" nCol=\"1\" nLayer=\"" << LyrNum::N_VALS 
           << "\" nXtal=\"" << ColNum::N_VALS 
@@ -1725,7 +1744,8 @@ void MuonCalib::writeMPDXML(const string &filename, const string &dtdFilename) {
   outfile << "]>" << endl;
 
   outfile << "<calCalib>" << endl;
-  outfile << " <generic instrument=\"" << m_instrument <<"\" timestamp=\""<< m_timestamp <<"\" calibType=\"CAL_MevPerDac\" fmtVersion=\"v2r2\">" << endl;
+  outfile << " <generic instrument=\"" << m_instrument <<"\" timestamp=\""<< m_timestamp <<"\"";
+  outfile << " calibType=\"CAL_MevPerDac\" fmtVersion=\"v2r2\" creator=\"" << CGCUtil::CVS_TAG << "\">" << endl;
   outfile << " </generic>" << endl;
   outfile << " <dimension nRow=\"1\" nCol=\"1\" nLayer=\"" << LyrNum::N_VALS 
           << "\" nXtal=\"" << ColNum::N_VALS 

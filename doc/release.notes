@@ -47,3 +47,5 @@ v3r1p3 added logfile output to ciFit.  added CVS TAG & config file contents to t
 v3r1p4 xml file format tweaked after testing against Gleam imports.  Improved pedestal fits.  default ciFit_options spline parms now matched to FM101 & not EM.
 
 v3r2 genThodCI_XML added. Bad bug which mixed up all the int-nonlin splines fixed.  CalDefs upgraded from a group of simple functions to C++ classes.
+
+v3r2p1 fixed BIG bug where the small diode MevPerDac values were all INVERTED!  added 'creator' field to xml output to go along w/ calCalib v2r2p1 update
