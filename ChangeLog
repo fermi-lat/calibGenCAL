@@ -1,4 +1,19 @@
 ------------------------------------------------------------
+User: chehtman  Thu Oct 28 16:58:59 PDT 2004
+calibGenCAL/src
+
+Modified Files:
+	runMuonCalib.cxx muonCalib_option.dat muonCalib.h 
+	muonCalib.cxx getPedestalsXML.cxx ciFit_option.xml ciFit.cxx 
+Removed Files:
+      Tag: v2r4
+	runMuonCalibChain.cxx 
+      No tag
+	muonCalibChain_option.dat 
+Log Message:
+First release for I&T
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Aug 24 11:40:17 PDT 2004
 calibGenCAL/src
 
