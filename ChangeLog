@@ -1,4 +1,49 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Jun 29 08:38:26 PDT 2004
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+split muonCalib Class into RootFileAnalysis & muonCalib:
+
+RootFileAnalysis is a generic class containing:
+	digi/recon/mc root file input.
+	the event collection.
+	chain structure only.  dropped the single file interface as it is a subset of the chain interface.
+	RFA is actually quite a generic class (not CAL specific at all & probably is a candidate to be moved into RootAnalysis)
+
+muonCalib class contians:
+	histograms
+	muonCalib data arrays
+	muonCalib text/xml file output.
+
+here is the new dependency tree
+
+     RootFileAnalysis
+           |
+  ___________________
+ |                  |
+ciFit            muonCalib------
+                 |             |
+         runMuonCalib          get*XML.cxx
+         runMuonCalibChain
+
+
+updated xml output format for ciFit and muonCalib.
+
+xml output is now in muonCalib class, shared by muoncalib & separate applications
+
+muonCalibChain now generates xml files automatically
+
+made it build w/out warnings on linux & windows
+
+fixed a couple of bugs in constructors & destructors
+
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Jun 18 13:23:32 PDT 2004
 calibGenCAL/src
 
