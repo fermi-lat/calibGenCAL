@@ -10,6 +10,7 @@
 // STD INCLUDES
 #include <algorithm>
 #include <cctype>
+#include <functional>
 
 const string McCfg::TEST_INFO("TEST_INFO");
 const string McCfg::PATHS("PATHS");
@@ -17,6 +18,7 @@ const string McCfg::GENERAL("GENERAL");
 const string McCfg::CONSTANTS("CONSTANTS");
 
 using namespace CGCUtil;
+using namespace std;
 
 void McCfg::readCfgFile(const string& cfgPath) {
   clear();
@@ -182,15 +184,10 @@ void McCfg::readCfgFile(const string& cfgPath) {
   // xml does not allow '$' char which is used in CVS TAG replacment, also
   // xml counts spaces as delimeters & 'creator' is specified as a single value
   creator = CGCUtil::CVS_TAG;
-  // NO idea why this works, but it does.
-  // Newsgroups: comp.lang.c++
-  // From: "John Harrison" <jah...@dtn.ntl.com> - Find messages by this author
-  // Date: 2000/07/27
-  // Subject: Re: remove characters from a string*/
-  creator.erase(remove_if(creator.begin(), 
-                          creator.end(), 
-                          ispunct), 
-                creator.end());
+
+  // this bizarre pattern is actually clearly described at this website
+  // http://www.tempest-sw.com/cpp/draft/ch10-containers.html
+  creator.erase(remove(creator.begin(), creator.end(), '$'),creator.end());
   replace(creator.begin(),creator.end(),' ','_');
 }
 
