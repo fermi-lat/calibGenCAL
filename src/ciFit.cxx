@@ -1,216 +1,221 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <string>
 #include <vector>
-
-#include "RootFileAnalysis.h"
-#include "xml/IFile.h"
 
 //ROOT INCLUDES
 #include "TF1.h"
 #include "TGraph.h"
 #include "TSpline.h"
 
+#include "xml/IFile.h"
+#include "idents/CalXtalId.h"
+
+#include "RootFileAnalysis.h"
+#include "ICfg.h"
+
+using namespace std;
+
 // CONSTANTS //
 const int N_FACES  = 2;
-const int N_LAYERS = 8;
-const int N_RANGES = 4;
-const int N_XTALS  = 12;
-const int N_RANGES_PER_TOWER = N_FACES * N_LAYERS * N_RANGES * N_XTALS;
+const int N_LYRS = 8;
+const int N_RNGS = 4;
+const int N_COLS  = 12;
+const int N_RNGS_PER_TOWER = N_FACES * N_LYRS * N_RNGS * N_COLS;
 const double mu2ci_thr_rat = 1.7;
 
-class cfCfg {
+////////////////////////// GENERAL UTILITIES //////////////////////////////////////////
+
+/// finds position of last directory delimeter ('/' || '\\')
+/// in path, returns -1 if no delim is found
+int path_find_last_delim(string &path) {
+  // find last directory delimeter.
+  int fwdslash_pos = path.find_last_of('/');
+  int bckslash_pos = path.find_last_of('\\');
+
+  // check for 'not found' case
+  if (fwdslash_pos == path.npos) fwdslash_pos = -1;
+  if (bckslash_pos == path.npos) bckslash_pos = -1;
+
+  return max(fwdslash_pos,bckslash_pos);
+
+}
+
+string &path_remove_dir(string &path) {
+  int slash_pos;
+  
+  // if there was no delimeter, return path unaltered
+  if ((slash_pos = path_find_last_delim(path)) == path.npos) 
+    return path;
+
+  // else remove everything up to & including the delimeter
+  path.erase(0,slash_pos+1);
+
+  return path;
+}
+
+/// removes filename extension from end of path string.
+string &path_remove_ext(string &path) {
+  // return path unaltered if there is no '.'
+  int dot_pos;
+  if ((dot_pos = path.find_last_of('.')) == path.npos)
+    return path;
+
+  // find last delim (extension must be after this point)
+  int slash_pos = path_find_last_delim(path);
+
+  // if ',' is before slash then there is
+  // no extension in the filename itself
+  if (slash_pos > dot_pos) return path;
+
+  // erase everything from '.' onward.
+  path.erase(dot_pos, path.size());
+
+  return path;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+
+class cfCfg : ICfg {
 public:
   // basic ctor
-  cfCfg() {m_isValid = false;}
+  cfCfg() : valid(false) {};
 
   // clear all values, delete all pointers
   void clear();
 
   // read in config data from config file, calculate dependent vars
-  int readCfgFile(const std::string& path);
+  int readCfgFile(const string& path);
 
   // return data valid flag.
-  bool isValid() {return m_isValid;}
+  bool isValid() {return isValid;}
 
   // print summary to ostream
-  void summarize(std::ostream &ostr);
+  void summarize(ostream &ostr);
 public:  // i know, don't make members public, but it's just easier this way!
   // CONFIGURABLE PARAMETERS //
 
   // SECTION: TEST_INFO //
-  std::string m_timestamp;
-  std::string m_startTime;
-  std::string m_stopTime; 
+  string timestamp;
+  string startTime;
+  string stopTime; 
 
-  std::string m_instrument;    
-  std::vector<int> m_towerList;
+  string instrument;    
+  vector<int> towerList;
 
-  std::string m_triggerMode;   
-  std::string m_instrumentMode;
-  std::string m_source;
+  string triggerMode;   
+  string instrumentMode;
+  string source;
 
-  std::vector<int> m_dacSettings;
-  int m_nPulsesPerDac;
+  vector<int> dacSettings;
+  int nPulsesPerDac;
 
   // SECTION: PATHS //
-  // current setup has us reading in 6 input files 2 ranges each and 3 different FLE settings
-  std::string m_outputXMLPath;   
-  std::string m_outputDTDPath;   
-  std::string m_outputDTDVersion;
-  std::string m_outputTXTPath;
+  // current setup has us reading in 6 input files 2 rngs each and 3 different FLE settings
+  string outputDir; ///< folder for autonamed output files
+  string outputXMLPath;   
+  string outputTXTPath;
 
-  std::string m_infileType;
+  string dtdFile; ///< Data descriptoin file for .xml output
 
-  std::string m_rootFileLE1;
-  std::string m_rootFileHE1;
-  std::string m_rootFileLE2;
-  std::string m_rootFileHE2;
-  std::string m_rootFileLE3;
-  std::string m_rootFileHE3;
-
-  std::string m_csvFileLE1;
-  std::string m_csvFileHE1;
-  std::string m_csvFileLE2;
-  std::string m_csvFileHE2;
-  std::string m_csvFileLE3;
-  std::string m_csvFileHE3;
+  string rootFileLE1;
+  string rootFileHE1;
+  string rootFileLE2;
+  string rootFileHE2;
+  string rootFileLE3;
+  string rootFileHE3;
   
   // SECTION: SPLINE CONFIG //
-  std::vector<int> m_splineGroupWidth;
-  std::vector<int> m_splineSkipLow;
-  std::vector<int> m_splineSkipHigh;
-  std::vector<int> m_splineNPtsMin;
+  vector<int> splineGroupWidth;
+  vector<int> splineSkipLow;
+  vector<int> splineSkipHigh;
+  vector<int> splineNPtsMin;
 
   // DERIVED FROM CONFIG PARMS //
-  int m_nPulsesPerXtal;
-  int m_nPulsesPerRun;
-  int m_nDacs;
+  int nPulsesPerXtal;
+  int nPulsesPerRun;
+  int nDacs;
 
 private:
-  bool m_isValid;   // set to false member data is incomplete/invalid.
+  bool valid;   // set to false member data is incomplete/invalid.
+
+  string baseFilename; ///< used as the base for auto-generating output filenames.  derived from input root filename.
 
   // Section decription strings
-  static const std::string m_testInfo;
-  static const std::string m_paths;
-  static const std::string m_splineCfg;
+  static const string testInfo;
+  static const string paths;
+  static const string splineCfg;
 
 };
 
-const std::string cfCfg::m_testInfo("TEST_INFO");
-const std::string cfCfg::m_paths("PATHS");
-const std::string cfCfg::m_splineCfg("SPLINE_CFG");
+const string cfCfg::testInfo("TEST_INFO");
+const string cfCfg::paths("PATHS");
+const string cfCfg::splineCfg("SPLINE_CFG");
 
-int cfCfg::readCfgFile(const std::string& path) {
+int cfCfg::readCfgFile(const string& path) {
   clear();
 
   xml::IFile ifile(path.c_str());
   
   // TEST INFO
-  m_timestamp = ifile.getString(m_testInfo.c_str(), "TIMESTAMP");
-  m_startTime = ifile.getString(m_testInfo.c_str(), "STARTTIME");
-  m_stopTime  = ifile.getString(m_testInfo.c_str(), "STOPTIME");
+  timestamp = ifile.getString(testInfo.c_str(), "TIMESTAMP");
+  startTime = ifile.getString(testInfo.c_str(), "STARTTIME");
+  stopTime  = ifile.getString(testInfo.c_str(), "STOPTIME");
 
-  m_instrument    = ifile.getString(m_testInfo.c_str(), "INSTRUMENT");
-  m_towerList     = ifile.getIntVector(m_testInfo.c_str(), "TOWER_LIST");
+  instrument    = ifile.getString(testInfo.c_str(), "INSTRUMENT");
+  towerList     = ifile.getIntVector(testInfo.c_str(), "TOWER_LIST");
 
-  m_triggerMode    = ifile.getString(m_testInfo.c_str(), "TRIGGER_MODE");
-  m_instrumentMode = ifile.getString(m_testInfo.c_str(), "INST_MODE");
-  m_source         = ifile.getString(m_testInfo.c_str(), "TEST_SOURCE");
+  triggerMode    = ifile.getString(testInfo.c_str(), "TRIGGER_MODE");
+  instrumentMode = ifile.getString(testInfo.c_str(), "INST_MODE");
+  source         = ifile.getString(testInfo.c_str(), "TEST_SOURCE");
   
-  m_dacSettings        = ifile.getIntVector(m_testInfo.c_str(), "DAC_SETTINGS");
-  m_nPulsesPerDac      = ifile.getInt(m_testInfo.c_str(), "N_PULSES_PER_DAC");
+  dacSettings        = ifile.getIntVector(testInfo.c_str(), "DAC_SETTINGS");
+  nPulsesPerDac      = ifile.getInt(testInfo.c_str(), "N_PULSES_PER_DAC");
 
   // PATHS
-  m_outputXMLPath      = ifile.getString(m_paths.c_str(), "XMLPATH");
-  m_outputDTDPath      = ifile.getString(m_paths.c_str(), "DTDFILE");
-  m_outputDTDVersion   = ifile.getString(m_paths.c_str(), "DTD_VERSION");
-  m_outputTXTPath      = ifile.getString(m_paths.c_str(), "TXTPATH");
+  outputDir = ifile.getString(paths.c_str(), "OUTPUT_FOLDER");
 
-  m_infileType         = ifile.getString(m_paths.c_str(), "INFILE_TYPE");
-  
-  m_rootFileLE1 = ifile.getString(m_paths.c_str(), "ROOTFILE_LE1");
-  m_rootFileHE1 = ifile.getString(m_paths.c_str(), "ROOTFILE_HE1");
-  m_rootFileLE2 = ifile.getString(m_paths.c_str(), "ROOTFILE_LE2");
-  m_rootFileHE2 = ifile.getString(m_paths.c_str(), "ROOTFILE_HE2");
-  m_rootFileLE3 = ifile.getString(m_paths.c_str(), "ROOTFILE_LE3");
-  m_rootFileHE3 = ifile.getString(m_paths.c_str(), "ROOTFILE_HE3");
+  dtdFile = ifile.getString(paths.c_str(), "DTD_FILE");
 
-  m_csvFileLE1 = ifile.getString(m_paths.c_str(), "CSVFILE_LE1");
-  m_csvFileHE1 = ifile.getString(m_paths.c_str(), "CSVFILE_HE1");
-  m_csvFileLE2 = ifile.getString(m_paths.c_str(), "CSVFILE_LE2");
-  m_csvFileHE2 = ifile.getString(m_paths.c_str(), "CSVFILE_HE2");
-  m_csvFileLE3 = ifile.getString(m_paths.c_str(), "CSVFILE_LE3");
-  m_csvFileHE3 = ifile.getString(m_paths.c_str(), "CSVFILE_HE3");
+  outputXMLPath      = ifile.getString(paths.c_str(), "XMLPATH");
+  outputTXTPath      = ifile.getString(paths.c_str(), "TXTPATH");
   
+  rootFileLE1 = ifile.getString(paths.c_str(), "ROOTFILE_LE1");
+  rootFileHE1 = ifile.getString(paths.c_str(), "ROOTFILE_HE1");
+  rootFileLE2 = ifile.getString(paths.c_str(), "ROOTFILE_LE2");
+  rootFileHE2 = ifile.getString(paths.c_str(), "ROOTFILE_HE2");
+  rootFileLE3 = ifile.getString(paths.c_str(), "ROOTFILE_LE3");
+  rootFileHE3 = ifile.getString(paths.c_str(), "ROOTFILE_HE3");
+
   // SPLINE CFG
-  m_splineGroupWidth = ifile.getIntVector(m_splineCfg.c_str(), "GROUP_WIDTH");
-  m_splineSkipLow    = ifile.getIntVector(m_splineCfg.c_str(), "SKIP_LOW"  );
-  m_splineSkipHigh   = ifile.getIntVector(m_splineCfg.c_str(), "SKIP_HIGH" );
-  m_splineNPtsMin    = ifile.getIntVector(m_splineCfg.c_str(), "N_PTS_MIN" );
+  splineGroupWidth = ifile.getIntVector(splineCfg.c_str(), "GROUP_WIDTH");
+  splineSkipLow    = ifile.getIntVector(splineCfg.c_str(), "SKIP_LOW"  );
+  splineSkipHigh   = ifile.getIntVector(splineCfg.c_str(), "SKIP_HIGH" );
+  splineNPtsMin    = ifile.getIntVector(splineCfg.c_str(), "N_PTS_MIN" );
   
   // Geneate derived config quantities.
-  m_nDacs          = m_dacSettings.size();
-  m_nPulsesPerXtal = m_nPulsesPerDac * m_nDacs;
-  m_nPulsesPerRun  = N_XTALS*m_nPulsesPerXtal;
+  nDacs          = dacSettings.size();
+  nPulsesPerXtal = nPulsesPerDac * nDacs;
+  nPulsesPerRun  = N_COLS*nPulsesPerXtal;
+
+  baseFilename = rootFileLE1;
+  path_remove_dir(baseFilename);
+  path_remove_ext(baseFilename);
+
+  // Auto-generate output filenames
+  if (outputXMLPath.length() == 0)
+    outputXMLPath = outputDir + "ciFit." + baseFilename + ".xml";
+  if (outputTXTPath.length() == 0)
+    outputTXTPath = outputDir + "ciFit." + baseFilename + ".txt";
 
   return 0;
 }
 
-void cfCfg::clear() {
-  // SECTION: TEST_INFO //
-  m_timestamp.clear();
-  m_startTime.clear();
-  m_stopTime.clear(); 
-
-  m_instrument.clear();    
-  m_towerList.clear();
-
-  m_triggerMode.clear();   
-  m_instrumentMode.clear();
-  m_source.clear();
-
-  m_dacSettings.clear();
-  m_nPulsesPerDac = 0;
-
-  // SECTION: PATHS //
-  m_outputXMLPath.clear();   
-  m_outputDTDPath.clear();   
-  m_outputDTDVersion.clear();
-  m_outputTXTPath.clear();
-
-  m_infileType.clear();
-
-  m_rootFileLE1.clear();
-  m_rootFileHE1.clear();
-  m_rootFileLE2.clear();
-  m_rootFileHE2.clear();
-  m_rootFileLE3.clear();
-  m_rootFileHE3.clear();
-
-  m_csvFileLE1.clear();
-  m_csvFileHE1.clear();
-  m_csvFileLE2.clear();
-  m_csvFileHE2.clear();
-  m_csvFileLE3.clear();
-  m_csvFileHE3.clear();
-  
-  // SECTION: SPLINE CONFIG //
-  m_splineGroupWidth.clear();
-  m_splineSkipLow.clear();
-  m_splineSkipHigh.clear();
-  m_splineNPtsMin.clear();
-
-  // DERIVED FROM CONFIG PARMS //
-  m_nPulsesPerXtal = 0;
-  m_nPulsesPerRun = 0;
-  m_nDacs = 0;
-
-  m_isValid = false;
+void cfCfg::clear() {  
 }
 
-void cfCfg::summarize(std::ostream &ostr) {
+void cfCfg::summarize(ostream &ostr) {
 }
 
 
@@ -222,66 +227,66 @@ class cfData {
 
 public:
 
-  cfData(cfCfg *cfg);
+  cfData(cfCfg &cfg);
   ~cfData() {delete m_dacArr;}
 
   int FitData();
   int corr_FLE_Thresh(cfData& data_high_thresh);
-  int WriteSplinesXML(const std::string &fileName);
-  int WriteSplinesTXT(const std::string &fileName);
-  int ReadSplinesTXT (const std::string &fileName);
+  int WriteSplinesXML(const string &filename, const string &dtdFilename);
+  int WriteSplinesTXT(const string &filename);
+  int ReadSplinesTXT (const string &filename);
 
-  const int getNumSplineADC(const int xtal, const int layer, const int face, const int range) const {return m_numSplineADC[xtal][layer][face][range];}
-  const std::vector<int>& getSplineDAC(int range) const {return m_splineDac[range];}
-  const std::vector<float>& getSplineADC(const int xtal, const int layer, const int face, const int range) const {return m_splineADC[xtal][layer][face][range];}
+  const int getNumSplineADC(const int lyr, const int col, const int face, const int rng) const {return m_numSplineADC[lyr][col][face][rng];}
+  const vector<int>& getSplineDAC(int rng) const {return m_splineDac[rng];}
+  const vector<float>& getSplineADC(const int lyr, const int col, const int face, const int rng) const {return m_splineADC[lyr][col][face][rng];}
 
-  static const std::string RANGE_MNEM[];
+  static const string RNG_MNEM[];
 
 private:
   TF1 splineFunc;
 
-  std::vector<float>  m_adcSum[N_XTALS][N_LAYERS][N_FACES][N_RANGES];
-  std::vector<int>    m_adcN[N_XTALS][N_LAYERS][N_FACES][N_RANGES];
-  std::vector<float>  m_adcMean[N_XTALS][N_LAYERS][N_FACES][N_RANGES];
+  vector<float>  m_adcSum[N_LYRS][N_COLS][N_FACES][N_RNGS];
+  vector<int>    m_adcN[N_LYRS][N_COLS][N_FACES][N_RNGS];
+  vector<float>  m_adcMean[N_LYRS][N_COLS][N_FACES][N_RNGS];
 
-  std::vector<float>  m_splineADC[N_XTALS][N_LAYERS][N_FACES][N_RANGES];
-  int                 m_numSplineADC[N_XTALS][N_LAYERS][N_FACES][N_RANGES];
-  std::vector<int>    m_splineDac[N_RANGES];
-  std::vector<int>    m_numSplineDac;
+  vector<float>  m_splineADC[N_LYRS][N_COLS][N_FACES][N_RNGS];
+  int                 m_numSplineADC[N_LYRS][N_COLS][N_FACES][N_RNGS];
+  vector<int>    m_splineDac[N_RNGS];
+  vector<int>    m_numSplineDac;
 
-  cfCfg *m_cfg;
+  cfCfg &m_cfg;
   // int c-style array copy of cfCfg::m_dacSettings needed by some fit routines
   float *m_dacArr;
 };
 
-const std::string cfData::RANGE_MNEM[] = {"LEX8",
-                                        "LEX1",
-                                        "HEX8",
-                                        "HEX1"};
+const string cfData::RNG_MNEM[] = {"LEX8",
+                                   "LEX1",
+                                   "HEX8",
+                                   "HEX1"};
 
-cfData::cfData(cfCfg *cfg) :
+cfData::cfData(cfCfg &cfg) :
+  m_cfg(cfg),
   splineFunc("spline_fitter","pol2",0,4095) {
-  m_cfg = cfg;
-  
+
   // need a c-style array of floats for DAC values.
-  m_dacArr = new float[m_cfg->m_nDacs];
-  for (int i = 0; i < m_cfg->m_nDacs; i++)
-    m_dacArr[i] = m_cfg->m_dacSettings[i]; 
+  m_dacArr = new float[m_cfg.nDacs];
+  for (int i = 0; i < m_cfg.nDacs; i++)
+    m_dacArr[i] = m_cfg.dacSettings[i]; 
 
   // init vector arrays. c++ doesn't auto construct multidim vectors
-  for (int xtal = 0; xtal < N_XTALS; xtal++)
-    for (int layer = 0; layer < N_LAYERS; layer++)
+  for (int lyr = 0; lyr < N_LYRS; lyr++)
+    for (int col = 0; col < N_COLS; col++)
       for (int face = 0; face < N_FACES; face++)
-        for (int range = 0; range < N_RANGES; range++) {
-          m_adcSum[xtal][layer][face][range] = std::vector<float>(m_cfg->m_nDacs);
-          m_adcN[xtal][layer][face][range] = std::vector<int>(m_cfg->m_nDacs);
-          m_adcMean[xtal][layer][face][range] = std::vector<float>(m_cfg->m_nDacs);
-          m_splineADC[xtal][layer][face][range] = std::vector<float>(m_cfg->m_nDacs);
+        for (int rng = 0; rng < N_RNGS; rng++) {
+          m_adcSum[lyr][col][face][rng] = vector<float>(m_cfg.nDacs);
+          m_adcN[lyr][col][face][rng] = vector<int>(m_cfg.nDacs);
+          m_adcMean[lyr][col][face][rng] = vector<float>(m_cfg.nDacs);
+          m_splineADC[lyr][col][face][rng] = vector<float>(m_cfg.nDacs);
         }
-  for (int range = 0; range < N_RANGES; range++)
-    m_splineDac[range] = std::vector<int>(m_cfg->m_nDacs);
+  for (int rng = 0; rng < N_RNGS; rng++)
+    m_splineDac[rng] = vector<int>(m_cfg.nDacs);
   
-  m_numSplineDac = std::vector<int>(N_RANGES);
+  m_numSplineDac = vector<int>(N_RNGS);
   
 }
 
@@ -289,93 +294,93 @@ cfData::cfData(cfCfg *cfg) :
 int cfData::FitData() {
   // 2 dimensional poly line f() to use for spline fitting.
 
-  for (int range = 0; range < N_RANGES; range++) {
-	 // following vals only change w/ range, so i'm getting them outside the other loops.
-    int grpWid  = m_cfg->m_splineGroupWidth[range];
-	 //int splLen  = grpWid*2 + 1;
-    int skpLo   = m_cfg->m_splineSkipLow[range];
-    int skpHi   = m_cfg->m_splineSkipHigh[range];
-    int nPtsMin = m_cfg->m_splineNPtsMin[range];
+  for (int rng = 0; rng < N_RNGS; rng++) {
+    // following vals only change w/ rng, so i'm getting them outside the other loops.
+    int grpWid  = m_cfg.splineGroupWidth[rng];
+    //int splLen  = grpWid*2 + 1;
+    int skpLo   = m_cfg.splineSkipLow[rng];
+    int skpHi   = m_cfg.splineSkipHigh[rng];
+    int nPtsMin = m_cfg.splineNPtsMin[rng];
 
-	 // configure output stream format for rest of function
-	 std::cout.setf(std::ios_base::fixed);
-	 std::cout.precision(2);
+    // configure output stream format for rest of function
+    cout.setf(ios_base::fixed);
+    cout.precision(2);
 
-	 for (int xtal = 0; xtal < N_XTALS; xtal++)
-		for (int layer = 0; layer < N_LAYERS; layer++)
-		  for (int face = 0; face < N_FACES; face++) {
-           std::vector<float> &curADC = m_adcMean[xtal][layer][face][range];
-			 // get pedestal
-			 float ped     = m_adcSum[xtal][layer][face][range][0] /
-				m_adcN[xtal][layer][face][range][0];
+    for (int lyr = 0; lyr < N_LYRS; lyr++)
+      for (int col = 0; col < N_COLS; col++)
+        for (int face = 0; face < N_FACES; face++) {
+          vector<float> &curADC = m_adcMean[lyr][col][face][rng];
+          // get pedestal
+          float ped     = m_adcSum[lyr][col][face][rng][0] /
+            m_adcN[lyr][col][face][rng][0];
 
-			 //calculate ped-subtracted means.
-			 for (int dac = 0; dac < m_cfg->m_nDacs; dac++)
-				curADC[dac] =
-				  m_adcSum[xtal][layer][face][range][dac] /
-				  m_adcN[xtal][layer][face][range][dac] - ped;
+          //calculate ped-subtracted means.
+          for (int dac = 0; dac < m_cfg.nDacs; dac++)
+            curADC[dac] =
+              m_adcSum[lyr][col][face][rng][dac] /
+              m_adcN[lyr][col][face][rng][dac] - ped;
 
-			 // get upper adc boundary
-			 float adc_max = curADC[m_cfg->m_nDacs-1];
-			 int last_idx = 0; // last idx will be 1st index that is > .99*adc_max
-			 while (curADC[last_idx] < .99*adc_max)
-				last_idx++;
-			 adc_max = curADC[last_idx];
+          // get upper adc boundary
+          float adc_max = curADC[m_cfg.nDacs-1];
+          int last_idx = 0; // last idx will be 1st index that is > .99*adc_max
+          while (curADC[last_idx] < .99*adc_max)
+            last_idx++;
+          adc_max = curADC[last_idx];
 
-			 // set up new graph object for fitting.
+          // set up new graph object for fitting.
           float *tmpADC = new float[curADC.size()];
           for (unsigned i = 0; i < curADC.size(); i++) tmpADC[i] = curADC[i];
-			 TGraph *myGraph = new TGraph(last_idx+1,
-													m_dacArr,
-													tmpADC);
+          TGraph *myGraph = new TGraph(last_idx+1,
+                                       m_dacArr,
+                                       tmpADC);
           delete (tmpADC);
 
-			 // copy SKPLO points directly from beginning of array.
-			 int spl_idx = 0;
-			 for (int i = 0; i < skpLo; i++,spl_idx++) {
-				m_splineDac[range][spl_idx] = (int)m_dacArr[i];
-				m_splineADC[xtal][layer][face][range][spl_idx] = curADC[i];
-			 }
+          // copy SKPLO points directly from beginning of array.
+          int spl_idx = 0;
+          for (int i = 0; i < skpLo; i++,spl_idx++) {
+            m_splineDac[rng][spl_idx] = (int)m_dacArr[i];
+            m_splineADC[lyr][col][face][rng][spl_idx] = curADC[i];
+          }
 
-			 //
-			 // RUN SPLINE FITS
-			 //
-			 // start one grp above skiplo & go as high as you can w/out entering skpHi
-			 for (int cp = skpLo + grpWid - 1; // cp = 'center point'
-					cp < (nPtsMin-skpLo-skpHi)*grpWid + skpLo;
-					cp += grpWid, spl_idx++) {
-				int lp = cp - grpWid;
-				int hp  = cp + grpWid;
+          //
+          // RUN SPLINE FITS
+          //
+          // start one grp above skiplo & go as high as you can w/out entering skpHi
+          for (int cp = skpLo + grpWid - 1; // cp = 'center point'
+               cp < (nPtsMin-skpLo-skpHi)*grpWid + skpLo;
+               cp += grpWid, spl_idx++) {
+            int lp = cp - grpWid;
+            int hp  = cp + grpWid;
 
-				myGraph->Fit(&splineFunc,"QN","",m_dacArr[lp],m_dacArr[hp]);
-				float myPar1 = splineFunc.GetParameter(0);
-				float myPar2 = splineFunc.GetParameter(1);
-				float myPar3 = splineFunc.GetParameter(2);
+            myGraph->Fit(&splineFunc,"QN","",m_dacArr[lp],m_dacArr[hp]);
+            float myPar1 = splineFunc.GetParameter(0);
+            float myPar2 = splineFunc.GetParameter(1);
+            float myPar3 = splineFunc.GetParameter(2);
 
-				int   fitDac = (int)m_dacArr[cp];
+            int   fitDac = (int)m_dacArr[cp];
             float fitADC = myPar1 + fitDac*(myPar2 + fitDac*myPar3);
 
-				// output result
-				m_splineDac[range][spl_idx] = fitDac;
-				m_splineADC[xtal][layer][face][range][spl_idx] = fitADC;
-			 }
+            // output result
+            m_splineDac[rng][spl_idx] = fitDac;
+            m_splineADC[lyr][col][face][rng][spl_idx] = fitADC;
+          }
 
-			 delete myGraph;
+          delete myGraph;
 
-			 // copy SKPHI points directly from face of array.
-			 for (int i = (nPtsMin-skpLo-skpHi)*grpWid + skpLo;
-					i <= last_idx;
-					i++,spl_idx++) {
-				m_splineDac[range][spl_idx] = (int)m_dacArr[i];
-				m_splineADC[xtal][layer][face][range][spl_idx] = curADC[i];
-			 }
+          // copy SKPHI points directly from face of array.
+          for (int i = (nPtsMin-skpLo-skpHi)*grpWid + skpLo;
+               i <= last_idx;
+               i++,spl_idx++) {
+            m_splineDac[rng][spl_idx] = (int)m_dacArr[i];
+            m_splineADC[lyr][col][face][rng][spl_idx] = curADC[i];
+          }
 
-			 //
-			 // UPDATE COUNTS
-			 //
-			 m_numSplineADC[xtal][layer][face][range] = spl_idx;
-			 m_numSplineDac[range] = TMath::Max(m_numSplineDac[range],spl_idx);  // ensure we have just enough Dac points for largest spline
-		  }
+          //
+          // UPDATE COUNTS
+          //
+          m_numSplineADC[lyr][col][face][rng] = spl_idx;
+          m_numSplineDac[rng] = TMath::Max(m_numSplineDac[rng],spl_idx);  // ensure we have just enough Dac points for largest spline
+        }
   }
 
   return 0;
@@ -383,203 +388,215 @@ int cfData::FitData() {
 
 int cfData::corr_FLE_Thresh(cfData& data_high_thresh){
 
-	int range = 0;  // we correct LEX8 range only
-	
-	 for (int xtal = 0; xtal < N_XTALS; xtal++)
-		for (int layer = 0; layer < N_LAYERS; layer++)
-		  for (int face = 0; face < N_FACES; face++) {
+  int rng = 0;  // we correct LEX8 rng only
 
-				int numSpline = m_numSplineADC[xtal][layer][face][range];
-			    double* arrADC = new double(numSpline);
-				double* arrDAC = new double(numSpline);
-				for (int i = 0; i<numSpline; i++){
-					arrADC[i] = m_splineADC[xtal][layer][face][range][i];
-					arrDAC[i] = m_splineDac[range][i];
-				}
-				int numSpline_hi_thr = data_high_thresh.getNumSplineADC(xtal,layer,face,range);
-			    double* arrADC_hi_thr = new double(numSpline_hi_thr);
-				double* arrDAC_hi_thr = new double(numSpline_hi_thr);
-				const std::vector<float>& splineADC = data_high_thresh.getSplineADC(xtal,layer,face,range);
-				const std::vector<int>& splineDAC = data_high_thresh.getSplineDAC(range);
+  for (int lyr = 0; lyr < N_LYRS; lyr++)
+    for (int col = 0; col < N_COLS; col++)
+      for (int face = 0; face < N_FACES; face++) {
 
-					
-				for (int i = 0; i<numSpline_hi_thr; i++){
-					arrADC_hi_thr[i] = splineADC[i];
-					arrDAC_hi_thr[i] = splineDAC[i];
-				}
+        int numSpline = m_numSplineADC[lyr][col][face][rng];
+        double* arrADC = new double(numSpline);
+        double* arrDAC = new double(numSpline);
+        for (int i = 0; i<numSpline; i++){
+          arrADC[i] = m_splineADC[lyr][col][face][rng][i];
+          arrDAC[i] = m_splineDac[rng][i];
+        }
+        int numSpline_hi_thr = data_high_thresh.getNumSplineADC(lyr,col,face,rng);
+        double* arrADC_hi_thr = new double(numSpline_hi_thr);
+        double* arrDAC_hi_thr = new double(numSpline_hi_thr);
+        const vector<float>& splineADC = data_high_thresh.getSplineADC(lyr,col,face,rng);
+        const vector<int>& splineDAC = data_high_thresh.getSplineDAC(rng);
 
-				TSpline3* spl = new TSpline3("spl",arrDAC,arrADC,numSpline); 
-				TSpline3* spl_hi_thr = new TSpline3("spl_hi_thr",arrDAC_hi_thr,arrADC_hi_thr,numSpline_hi_thr); 
 
-				for (int i = 0; i<numSpline;i++){
-					float dac_corr = arrDAC[i]/mu2ci_thr_rat;
-					m_splineADC[xtal][layer][face][range][i] = arrADC_hi_thr[i] + spl->Eval(dac_corr)-spl_hi_thr->Eval(dac_corr);
-				}
+        for (int i = 0; i<numSpline_hi_thr; i++){
+          arrADC_hi_thr[i] = splineADC[i];
+          arrDAC_hi_thr[i] = splineDAC[i];
+        }
 
-				delete spl;
-				delete spl_hi_thr;
-				delete arrADC;
-				delete arrDAC;
-				delete arrADC_hi_thr;
-				delete arrDAC_hi_thr;
+        TSpline3* spl = new TSpline3("spl",arrDAC,arrADC,numSpline); 
+        TSpline3* spl_hi_thr = new TSpline3("spl_hi_thr",arrDAC_hi_thr,arrADC_hi_thr,numSpline_hi_thr); 
 
-		  }
-	return 0;
+        for (int i = 0; i<numSpline;i++){
+          float dac_corr = arrDAC[i]/mu2ci_thr_rat;
+          m_splineADC[lyr][col][face][rng][i] = arrADC_hi_thr[i] + spl->Eval(dac_corr)-spl_hi_thr->Eval(dac_corr);
+        }
+
+        delete spl;
+        delete spl_hi_thr;
+        delete arrADC;
+        delete arrDAC;
+        delete arrADC_hi_thr;
+        delete arrDAC_hi_thr;
+
+      }
+  return 0;
 }
 
-int cfData::WriteSplinesTXT(const std::string &fileName) {
-  ofstream outFile(fileName.c_str());
+int cfData::WriteSplinesTXT(const string &filename) {
+  ofstream outFile(filename.c_str());
   if (!outFile.is_open()) {
-	 std::cout << "ERROR! unable to open txtFile='" << fileName << "'" << std::endl;
-	 return -1;
+    cout << "ERROR! unable to open txtFile='" << filename << "'" << endl;
+    return -1;
   }
   outFile.precision(2);
-  outFile.setf(std::ios_base::fixed);
+  outFile.setf(ios_base::fixed);
 
-  for (int xtal = 0; xtal < N_XTALS; xtal++) 
-	 for (int layer = 0; layer < N_LAYERS; layer++)
-		for (int face = 0; face < N_FACES; face++)
-		  for (int range = 0; range < N_RANGES; range++)
-			 for (int n = 0; n < m_numSplineADC[xtal][layer][face][range]; n++)
-				outFile << xtal << " "
-						  << layer  << " "
-						  << face << " "
-						  << range  << " "
-						  << m_splineDac[range][n] << " "
-						  << m_splineADC[xtal][layer][face][range][n]
-						  << std::endl;
+  for (int lyr = 0; lyr < N_LYRS; lyr++) 
+    for (int col = 0; col < N_COLS; col++)
+      for (int face = 0; face < N_FACES; face++)
+        for (int rng = 0; rng < N_RNGS; rng++)
+          for (int n = 0; n < m_numSplineADC[lyr][col][face][rng]; n++)
+            outFile << lyr << " "
+                    << col  << " "
+                    << face << " "
+                    << rng  << " "
+                    << m_splineDac[rng][n] << " "
+                    << m_splineADC[lyr][col][face][rng][n]
+                    << endl;
   
   return 0;
 }
 
-int cfData::ReadSplinesTXT (const std::string &fileName) {
-  ifstream inFile(fileName.c_str());
+int cfData::ReadSplinesTXT (const string &filename) {
+  ifstream inFile(filename.c_str());
   if (!inFile.is_open()) {
-	 std::cout << "ERROR! unable to open txtFile='" << fileName << "'" << std::endl;
-	 return -1;
+    cout << "ERROR! unable to open txtFile='" << filename << "'" << endl;
+    return -1;
   }
 
-  int xtal, layer, face, range;
+  int lyr, col, face, rng;
   int tmpDac;
   float tmpADC;
   while (inFile.good()) {
-	 // load in one spline val w/ coords
-	 inFile >> xtal 
-			  >> layer
-			  >> face
-			  >> range
-			  >> tmpDac
-			  >> tmpADC;
-	 
-	 int cur_idx = m_numSplineADC[xtal][layer][face][range];
-	 m_splineADC[xtal][layer][face][range][cur_idx] = tmpADC;
-	 m_splineDac[range][cur_idx]                  = tmpDac;
-	 
-	 // update counters
-	 m_numSplineADC[xtal][layer][face][range]++;
-	 m_numSplineDac[range] = TMath::Max(m_numSplineDac[range],cur_idx+1);
+    // load in one spline val w/ coords
+    inFile >> lyr 
+           >> col
+           >> face
+           >> rng
+           >> tmpDac
+           >> tmpADC;
+ 
+    int cur_idx = m_numSplineADC[lyr][col][face][rng];
+    m_splineADC[lyr][col][face][rng][cur_idx] = tmpADC;
+    m_splineDac[rng][cur_idx]                  = tmpDac;
+ 
+    // update counters
+    m_numSplineADC[lyr][col][face][rng]++;
+    m_numSplineDac[rng] = TMath::Max(m_numSplineDac[rng],cur_idx+1);
   }
 
   return 0;
 }
 
-int cfData::WriteSplinesXML(const std::string &fileName) {
+int cfData::WriteSplinesXML(const string &filename, const string &dtdFilename) {
   // setup output file
-  ofstream xmlFile(fileName.c_str());
+  ofstream xmlFile(filename.c_str());
   if (!xmlFile.is_open()) {
-	 std::cout << "ERROR! unable to open xmlFile='" << fileName << "'" << std::endl;
-	 return -1;
+    cout << "ERROR! unable to open xmlFile='" << filename << "'" << endl;
+    return -1;
+  }
+  ifstream dtdFile(dtdFilename.c_str());
+  if (!dtdFile.is_open()) {
+     cout << "ERROR! unable to open dtdFile='" << dtdFilename << "'" << endl;
+     return -1;
   }
 
   //
   // XML file header
   //
-  xmlFile << "<?xml version=\"1.0\" ?>" << std::endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit.cxx,v 1.8 2004/08/24 18:40:17 fewtrell Exp $  -->" << std::endl;
-  xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << std::endl;
-  xmlFile << std::endl;
-  xmlFile << "<!DOCTYPE calCalib SYSTEM \"" << m_cfg->m_outputDTDPath << "\" [] >" << std::endl;
-  xmlFile << std::endl;
-  xmlFile << "<calCalib>" << std::endl;
-  xmlFile << "  <generic instrument=\"" << m_cfg->m_instrument
-			 << "\" timestamp=\"" << m_cfg->m_startTime << "\"" << std::endl;
-  xmlFile << "           calibType=\"CAL_IntNonlin\" fmtVersion=\"" << m_cfg->m_outputDTDVersion << "\">" << std::endl;
-  xmlFile << std::endl;
-  xmlFile << "    <inputSample startTime=\"" << m_cfg->m_startTime
-			 << "\" stopTime=\"" << m_cfg->m_stopTime << "\"" << std::endl;
-  xmlFile << "		triggers=\"" << m_cfg->m_triggerMode
-			 << "\" mode=\"" << m_cfg->m_instrumentMode
-			 << "\" source=\"" << m_cfg->m_source << "\" >" << std::endl;
-  xmlFile << std::endl;
-  xmlFile << "		Times are start and stop time of calibration run." << std::endl;
-  xmlFile << "		Other attributes are just made up for code testing." << std::endl;
-  xmlFile << "    </inputSample>" << std::endl;
-  xmlFile << "  </generic>" << std::endl;
-  xmlFile << std::endl;
-  xmlFile << "<!-- EM instrument: 8 layers, 12 columns -->" << std::endl;
-  xmlFile << std::endl;
-  xmlFile << "<!-- number of collections of dac settings should normally be" << std::endl;
-  xmlFile << "     0 (the default), if dacs aren't used to acquire data, or " << std::endl;
-  xmlFile << "     equal to nRange -->" << std::endl;
+  xmlFile << "<?xml version=\"1.0\" ?>" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit.cxx,v 1.9 2004/10/28 23:58:59 chehtman Exp $  -->" << endl;
+  xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
+  xmlFile << endl;
+  xmlFile << "<!DOCTYPE calCalib [" << endl;
+  string tmpStr;
+  while (dtdFile.good()) {
+     getline(dtdFile, tmpStr);
+     if (dtdFile.fail()) continue; // bat get()
+     xmlFile << tmpStr << endl;;
+  }
+  xmlFile << "] >" << endl;
+  xmlFile << endl;
+  xmlFile << "<calCalib>" << endl;
+  xmlFile << "  <generic instrument=\"" << m_cfg.instrument
+          << "\" timestamp=\"" << m_cfg.startTime << "\"" << endl;
+  xmlFile << "           calibType=\"CAL_IntNonlin\" fmtVersion=\"v2r2\">" << endl;
+  xmlFile << endl;
+  xmlFile << "    <inputSample startTime=\"" << m_cfg.startTime
+          << "\" stopTime=\"" << m_cfg.stopTime << "\"" << endl;
+  xmlFile << "triggers=\"" << m_cfg.triggerMode
+          << "\" mode=\"" << m_cfg.instrumentMode
+          << "\" source=\"" << m_cfg.source << "\" >" << endl;
+  xmlFile << endl;
+  xmlFile << "Times are start and stop time of calibration run." << endl;
+  xmlFile << "Other attributes are just made up for code testing." << endl;
+  xmlFile << "    </inputSample>" << endl;
+  xmlFile << "  </generic>" << endl;
+  xmlFile << endl;
+  xmlFile << "<!-- EM instrument: 8 layers, 12 columns -->" << endl;
+  xmlFile << endl;
+  xmlFile << "<!-- number of collections of dac settings should normally be" << endl;
+  xmlFile << "     0 (the default), if dacs aren't used to acquire data, or " << endl;
+  xmlFile << "     equal to nRange -->" << endl;
   xmlFile << " <dimension nRow=\"" << 1 
-			 << "\" nCol=\"" << 1 
-			 << "\" nLayer=\"" << N_LAYERS 
-			 << "\" nXtal=\"" << N_XTALS 
-			 << "\" nFace=\"" << N_FACES 
-			 << "\" nRange=\"" << N_RANGES << "\"" << std::endl;
-  xmlFile << "           nDacCol=\"" << N_RANGES << "\" />" << std::endl;
+          << "\" nCol=\"" << 1 
+          << "\" nLayer=\"" << N_LYRS 
+          << "\" nXtal=\"" << N_COLS 
+          << "\" nFace=\"" << N_FACES 
+          << "\" nRange=\"" << N_RNGS << "\"" << endl;
+  xmlFile << "           nDacCol=\"" << N_RNGS << "\" />" << endl;
 
   //
   // Dac values for rest of file.
   //
-  xmlFile << std::endl;
-  for (int range = 0; range < N_RANGES; range++) {
-    xmlFile << " <dac range=\"" << RANGE_MNEM[range] << "\"" << std::endl;
-	 xmlFile << "     values=\"";
-	 for (int i = 0; i < m_numSplineDac[range]; i++) 
-		xmlFile << m_splineDac[range][i] << " ";
-	 xmlFile << "\"" << std::endl;
-	 xmlFile << "     error=\"" << 0.1 << "\" />" << std::endl;
+  xmlFile << endl;
+  for (int rng = 0; rng < N_RNGS; rng++) {
+    xmlFile << " <dac range=\"" << RNG_MNEM[rng] << "\"" << endl;
+    xmlFile << "     values=\"";
+    for (int i = 0; i < m_numSplineDac[rng]; i++) 
+      xmlFile << m_splineDac[rng][i] << " ";
+    xmlFile << "\"" << endl;
+    xmlFile << "     error=\"" << 0.1 << "\" />" << endl;
   }
   
   //
   // main data loop
   //
   
-  xmlFile.setf(std::ios_base::fixed);
+  xmlFile.setf(ios_base::fixed);
   xmlFile.precision(2);
   // TOWER // currently only using 1 tower.
-  xmlFile << std::endl;
-  xmlFile << " <tower iRow=\"" << 0 << "\" iCol=\"" << 0 << "\">" << std::endl;
+  xmlFile << endl;
+  xmlFile << " <tower iRow=\"" << 0 << "\" iCol=\"" << 0 << "\">" << endl;
   // LAYER //
-  for (int layer = 0; layer < N_LAYERS; layer++) {
-	 xmlFile << "  <layer iLayer=\"" << layer << "\">" << std::endl;
-	 // XTAL //
-	 for (int xtal = 0; xtal < N_XTALS; xtal++) {
-		xmlFile << "   <xtal iXtal=\"" << xtal << "\">" << std::endl;
-		// FACE //
-		for (int face = 0; face < N_FACES; face++) {
-		  const std::string facestr = (face == CalXtalId::NEG) ? "NEG" : "POS";
-		  xmlFile << "    <face end=\"" << facestr << "\">" << std::endl;
-		  // RANGE //
-		  for (int range = 0; range < N_RANGES; range++) {
-          xmlFile << "     <intNonlin range=\"" << RANGE_MNEM[range] << "\"" << std::endl;
-			 // ADC VALS //
-			 xmlFile << "             values=\"";
-			 for (int i = 0; i < m_numSplineADC[xtal][layer][face][range]; i++) {
-				xmlFile << m_splineADC[xtal][layer][face][range][i] << " ";
-			 }
-			 xmlFile << "\"" << std::endl;
-		    xmlFile << "             error=\"" << 0.1 << "\" />" << std::endl;
-		  }
-		  xmlFile << "    </face>" << std::endl;
-		}
-		xmlFile << "   </xtal>" << std::endl;
-	 }
-	 xmlFile << "  </layer>" << std::endl;
+  for (int lyr = 0; lyr < N_LYRS; lyr++) {
+    xmlFile << "  <layer iLayer=\"" << lyr << "\">" << endl;
+    // COL //
+    for (int col = 0; col < N_COLS; col++) {
+      xmlFile << "   <xtal iXtal=\"" << col << "\">" << endl;
+      // FACE //
+      for (int face = 0; face < N_FACES; face++) {
+        const string facestr = (face == CalXtalId::NEG) ? "NEG" : "POS";
+        xmlFile << "    <face end=\"" << facestr << "\">" << endl;
+        // RNG //
+        for (int rng = 0; rng < N_RNGS; rng++) {
+          xmlFile << "     <intNonlin range=\"" << RNG_MNEM[rng] << "\"" << endl;
+          // ADC VALS //
+          xmlFile << "             values=\"";
+          for (int i = 0; i < m_numSplineADC[lyr][col][face][rng]; i++) {
+            xmlFile << m_splineADC[lyr][col][face][rng][i] << " ";
+          }
+          xmlFile << "\"" << endl;
+          xmlFile << "             error=\"" << 0.1 << "\" />" << endl;
+        }
+        xmlFile << "    </face>" << endl;
+      }
+      xmlFile << "   </xtal>" << endl;
+    }
+    xmlFile << "  </layer>" << endl;
   }
-  xmlFile << " </tower>" << std::endl;
-  xmlFile << "</calCalib>" << std::endl;
+  xmlFile << " </tower>" << endl;
+  xmlFile << "</calCalib>" << endl;
   return 0;
 }
 
@@ -592,14 +609,14 @@ class RootCI : public RootFileAnalysis {
 public:
   // @enum Diode Specify LE, HE, BOTH_DIODES
   typedef enum Diode {
-	 LE,
+    LE,
     HE,
     BOTH_DIODES};
 
   // Standard ctor, where user provides the names of the input root files
   // and optionally the name of the output ROOT histogram file
-  RootCI(std::vector<std::string> *digiFileNames,
-			cfData  *data, cfCfg *cfg);
+  RootCI(vector<string> &digiFileNames,
+         cfData  &data, cfCfg &cfg);
 
   // standard dtor
   ~RootCI();
@@ -614,80 +631,80 @@ public:
   void SetDiode(RootCI::Diode d) {m_curDiode = d;}
 
 private:
-  bool   isRangeEnabled(enum CalXtalId::AdcRange range);          // checks range against m_curDiode setting
+  bool   isRngEnabled(CalXtalId::AdcRange rng);          // checks rng against m_curDiode setting
   Diode m_curDiode;
 
-  cfData *m_cfData;
-  cfCfg  *m_cfg;
+  cfData &m_cfData;
+  cfCfg  &m_cfg;
+
+  int m_evtId;
 
 };
 
 
-RootCI::RootCI(std::vector<std::string> *digiFileNames, cfData  *data, cfCfg *cfg) :
-  RootFileAnalysis(digiFileNames, 0, 0)
-{
-  m_cfData   = data;
-  m_cfg      = cfg;
-  m_curDiode = BOTH_DIODES;
-}
+RootCI::RootCI(vector<string> &digiFileNames, cfData  &data, cfCfg &cfg) :
+  RootFileAnalysis(digiFileNames, vector<string>(0), vector<string>(0)),
+  m_cfData(data),
+  m_cfg(cfg),
+  m_curDiode(BOTH_DIODES) {}
 
 // default dstor
 RootCI::~RootCI() {
 }
 
 
-// checks range against m_curDiode setting
-bool  RootCI::isRangeEnabled(enum CalXtalId::AdcRange range) {
+// checks rng against m_curDiode setting
+bool  RootCI::isRngEnabled(enum CalXtalId::AdcRange rng) {
   if (m_curDiode == BOTH_DIODES) return true;
-  if (m_curDiode == LE && (range == CalXtalId::LEX8 || range == CalXtalId::LEX1)) return true;
-  if (m_curDiode == HE && (range == CalXtalId::HEX8 || range == CalXtalId::HEX1)) return true;
+  if (m_curDiode == LE && (rng == CalXtalId::LEX8 || rng == CalXtalId::LEX1)) return true;
+  if (m_curDiode == HE && (rng == CalXtalId::HEX8 || rng == CalXtalId::HEX1)) return true;
   return false;
 }
 
 // compiles stats for each test type.
 void RootCI::DigiCal() {
   // Determine test config for this event (which xtal?, which dac?)
-  int testXtal   = digiEventId/m_cfg->m_nPulsesPerXtal;
-  int testDac   = (digiEventId%m_cfg->m_nPulsesPerXtal)/m_cfg->m_nPulsesPerDac;
+  int testCol   = m_evtId/m_cfg.nPulsesPerXtal;
+  int testDac   = (m_evtId%m_cfg.nPulsesPerXtal)/m_cfg.nPulsesPerDac;
 
-  const TObjArray* calDigiCol = evt->getCalDigiCol();
+  const TObjArray* calDigiCol = m_evt->getCalDigiCol();
   if (!calDigiCol) return;
   TIter calDigiIter(calDigiCol);
 
   // Loop through each xtal interaction
   CalDigi *cdig = 0;
-  while ((cdig = (CalDigi *)calDigiIter.Next())) {  //loop through each 'hit' in one event
-	 CalXtalId id = cdig->getPackedId();  // get interaction information
-    int xtal = id.getColumn();
-	 if (xtal != testXtal) continue;
+  while ((cdig = (CalDigi*)calDigiIter.Next())) {  //loop through each 'hit' in one event
+    CalXtalId id = cdig->getPackedId();  // get interaction information
+    int col = id.getColumn();
+    if (col != testCol) continue;
 
-    int layer = id.getLayer();
+    int lyr = id.getLayer();
 
-	 // Loop through each readout on current xtal
-	 int numRo = cdig->getNumReadouts();
-	 for (int iRo=0; iRo<numRo; iRo++){
-		const CalXtalReadout* acRo=cdig->getXtalReadout(iRo);
+    // Loop through each readout on current xtal
+    int numRo = cdig->getNumReadouts();
+    for (int iRo=0; iRo<numRo; iRo++){
+      const CalXtalReadout &acRo = *(cdig->getXtalReadout(iRo));
 
       // POS FACE
       CalXtalId::XtalFace face  = CalXtalId::POS;
-      CalXtalId::AdcRange range = (CalXtalId::AdcRange)acRo->getRange(face);
-		int adc                 = acRo->getAdc(face);
-		// only interested in current diode!
-		if (!isRangeEnabled(range)) continue;
-		// assign to table
-      m_cfData->m_adcSum[xtal][layer][face][range][testDac]   += adc;
-      m_cfData->m_adcN[xtal][layer][face][range][testDac]++;
+      CalXtalId::AdcRange rng = (CalXtalId::AdcRange)acRo.getRange(face);
+      int adc                 = acRo.getAdc(face);
+      // only interested in current diode!
+      if (!isRngEnabled(rng)) continue;
+      // assign to table
+      m_cfData.m_adcSum[lyr][col][face][rng][testDac]   += adc;
+      m_cfData.m_adcN[lyr][col][face][rng][testDac]++;
 
-		// NEG FACE
-		face = CalXtalId::NEG;
-		range = (CalXtalId::AdcRange)acRo->getRange(face);
-		adc = acRo->getAdc(face);
-		// insanity check
-		// assign to table
-      m_cfData->m_adcSum[xtal][layer][face][range][testDac]   += adc;
-      m_cfData->m_adcN[xtal][layer][face][range][testDac]++;
+      // NEG FACE
+      face = CalXtalId::NEG;
+      rng = (CalXtalId::AdcRange)acRo.getRange(face);
+      adc = acRo.getAdc(face);
+      // insanity check
+      // assign to table
+      m_cfData.m_adcSum[lyr][col][face][rng][testDac]   += adc;
+      m_cfData.m_adcN[lyr][col][face][rng][testDac]++;
 
-	 } // foreach readout
+    } // foreach readout
   } // foreach xtal
 }
 
@@ -698,109 +715,106 @@ void RootCI::Go(Int_t numEvents)
   //
   //  COMMENT OUT ANY BRANCHES YOU ARE NOT INTERESTED IN.
   //
-  if (m_digiChain) {
-	 m_digiChain->SetBranchStatus("*",0);  // disable all branches
-	 // activate desired brances
-	 m_digiChain->SetBranchStatus("m_cal*",1);
-	 m_digiChain->SetBranchStatus("m_eventId", 1);
-	 //digiChain->SetBranchStatus("m_runId", 1);
-	 //digiChain->SetBranchStatus("m_timeStamp", 1);
+  if (m_digiEnabled) {
+    m_digiChain.SetBranchStatus("*",0);  // disable all branches
+    // activate desired brances
+    m_digiChain.SetBranchStatus("m_cal*",1);
+    m_digiChain.SetBranchStatus("m_eventId", 1);
+    //digiChain->SetBranchStatus("m_timeStamp", 1);
   }
 
   //
   // DO WE HAVE ENOUGH EVENTS IN FILE?
   //
-  Int_t nentries = GetEntries();
-  std::cout << "\nNum Events in File is: " << nentries << std::endl;
+  Int_t nentries = getEntries();
+  cout << "\nNum Events in File is: " << nentries << endl;
   Int_t curI;
-  Int_t nMax = TMath::Min(numEvents+m_StartEvent,nentries);
+  Int_t nMax = TMath::Min(numEvents+m_startEvent,nentries);
 
-  if (numEvents+m_StartEvent >  nentries) {
-	 std::cout << " not enough entries in file to proceed, we need " << nentries << std::endl;
-	 return;
+  if (numEvents+m_startEvent >  nentries) {
+    cout << " not enough entries in file to proceed, we need " << nentries << endl;
+    return;
   }
 
   // BEGINNING OF EVENT LOOP
-  for (Int_t ievent=m_StartEvent; ievent<nMax; ievent++, curI=ievent) {
-	 if (evt) evt->Clear();
-	 if (rec) rec->Clear();
+  for (Int_t ievent=m_startEvent; ievent<nMax; ievent++, curI=ievent) {
+    if (m_evt) m_evt->Clear();
+    if (m_rec) m_rec->Clear();
 
-	 GetEvent(ievent);
-	 // Digi ONLY analysis
-	 if (evt) {
-		digiEventId = evt->getEventId();
-		//digiRunNum = evt->getRunId();
-      if(digiEventId%1000 == 0)
-		  std::cout << " event " << digiEventId << std::endl;
+    getEvent(ievent);
+    // Digi ONLY analysis
+    if (m_evt) {
+      m_evtId = m_evt->getEventId();
+      if(m_evtId%1000 == 0)
+        cout << " event " << m_evtId << endl;
 
-		DigiCal();
-	 }
+      DigiCal();
+    }
   }  // end analysis code in event loop
 
-  m_StartEvent = curI;
+  m_startEvent = curI;
 }
 
 int main(int argc, char **argv) {
   // Load xml config file
-  std::string cfgPath;
+  string cfgPath;
   if(argc > 1) cfgPath = argv[1];
   else cfgPath = "../src/ciFit_option.xml";
 
   cfCfg cfg;
   if (cfg.readCfgFile(cfgPath) != 0) {
-    std::cout << "Error reading config file: " << cfgPath << std::endl;
+    cout << "Error reading config file: " << cfgPath << endl;
     return -1;
   }
 
-  cfData data(&cfg);
+  cfData data(cfg);
 
   // LE PASS
   {
-    std::vector<std::string> digiFileNames;
-    digiFileNames.push_back(cfg.m_rootFileLE1);
-    RootCI rd(&digiFileNames,&data,&cfg);  
-    // set HE/LE range
+    vector<string> digiFileNames;
+    digiFileNames.push_back(cfg.rootFileLE1);
+    RootCI rd(digiFileNames,data,cfg);  
+    // set HE/LE rng
     rd.SetDiode(RootCI::LE);
-    rd.Go(cfg.m_nPulsesPerRun);
+    rd.Go(cfg.nPulsesPerRun);
   }
 
   // HE PASS
   {
-    std::vector<std::string> digiFileNames;
-    digiFileNames.push_back(cfg.m_rootFileHE1);
-    RootCI rd(&digiFileNames, &data,&cfg);
+    vector<string> digiFileNames;
+    digiFileNames.push_back(cfg.rootFileHE1);
+    RootCI rd(digiFileNames, data,cfg);
     rd.SetDiode(RootCI::HE);
-    rd.Go(cfg.m_nPulsesPerRun);
+    rd.Go(cfg.nPulsesPerRun);
   }
- 
+#if 0 
   cfData data_high_thresh(&cfg);
 
   // LE PASS
   {
-    std::vector<std::string> digiFileNames;
-    digiFileNames.push_back(cfg.m_rootFileLE2);
-    RootCI rd(&digiFileNames,&data_high_thresh,&cfg);  
-    // set HE/LE range
+    vector<string> digiFileNames;
+    digiFileNames.push_back(cfg.rootFileLE2);
+    RootCI rd(digiFileNames,data_high_thresh,cfg);  
+    // set HE/LE rng
     rd.SetDiode(RootCI::LE);
-    rd.Go(cfg.m_nPulsesPerRun);
+    rd.Go(cfg.nPulsesPerRun);
   }
 
   // HE PASS
   {
-    std::vector<std::string> digiFileNames;
-    digiFileNames.push_back(cfg.m_rootFileHE2);
-    RootCI rd(&digiFileNames, &data_high_thresh, &cfg);
+    vector<string> digiFileNames;
+    digiFileNames.push_back(cfg.rootFileHE2);
+    RootCI rd(digiFileNames, data_high_thresh, cfg);
     rd.SetDiode(RootCI::HE);
-    rd.Go(cfg.m_nPulsesPerRun);
+    rd.Go(cfg.nPulsesPerRun);
   }
-
-
+#endif
   data.FitData();
   // data_high_thresh.FitData();
   // data.corr_FLE_Thresh(data_high_thresh);
   //data->ReadSplinesTXT("../output/ciSplines.txt");
-  data.WriteSplinesTXT(cfg.m_outputTXTPath);
-  data.WriteSplinesXML(cfg.m_outputXMLPath);
+  data.WriteSplinesTXT(cfg.outputTXTPath);
+  data.WriteSplinesXML(cfg.outputXMLPath, cfg.dtdFile);
 
   return 0;
 }

@@ -1,12 +1,16 @@
+#ifndef RootFileAnalysis_h
+#define RootFileAnalysis_h 1
+
+#include <string>
+#include <vector>
+#include <iostream>
+
 /*
   RootFileAnalysis contains the following features...
 
   1) ability to read in one or more GLAST digi, recon and/or mc root files.
   2) ability to step/rewind through events in those files
 */
-
-#ifndef RootFileAnalysis_h
-#define RootFileAnalysis_h 1
 
 #include "digiRootData/DigiEvent.h"
 #include "reconRootData/ReconEvent.h"
@@ -15,50 +19,52 @@
 //ROOT INCLUDES
 #include "TChain.h"
 
-#include <string>
-#include <vector>
+using namespace std;
 
 class RootFileAnalysis {
 public :
   /// Special ctor which accepts TChains for input files
-  RootFileAnalysis(std::vector<std::string> *digiFileNames,
-						 std::vector<std::string> *recFileNames,
-						 std::vector<std::string> *mcFileNames);
-
-  ~RootFileAnalysis();
+  RootFileAnalysis(const vector<string> &digiFilenames,
+		   const vector<string> &recFilenames,
+		   const vector<string> &mcFilenames,
+                   ostream &ostr = cout);
 
   /// start next Go with this event
-  void StartWithEvent(Int_t event) { m_StartEvent = event; };
+  void startWithEvent(Int_t event) { m_startEvent = event; };
   /// reset for next Go to start at beginning of file
-  void Rewind() { m_StartEvent = 0; };
+  void rewind() { m_startEvent = 0; };
 
   /// returns number of events in all open files
-  UInt_t GetEntries() const;
+  UInt_t getEntries() const;
   /// retrieve a pointer to event number.
-  UInt_t GetEvent(UInt_t ievt);
+  UInt_t getEvent(UInt_t ievt);
 
 protected:
   /// Optional TChain input
-  TChain      *m_digiChain, *m_recChain, *m_mcChain;
-  /// pointer to a DigiEvent
-  DigiEvent   *evt;
+  TChain      m_digiChain, m_recChain, m_mcChain;
+  /// pointer to a DigiEvent, w/ each get event, ROOT will
+  DigiEvent   *m_evt;
   /// pointer to a ReconEvent
-  ReconEvent  *rec;
+  ReconEvent  *m_rec;
   /// Pointer to a McEvent
-  McEvent     *mc;
+  McEvent     *m_mc;
 
   /// pointers to TChains
-  TObjArray   *chainArr;
-  double prevTimeStamp;
+  TObjArray   m_chainArr;
 
-  UInt_t digiEventId, reconEventId, mcEventId;
-  UInt_t digiRunNum, reconRunNum, mcRunNum;
+  bool m_mcEnabled, m_digiEnabled, m_recEnabled;
 
   /// starting event number
-  Int_t m_StartEvent;
+  Int_t m_startEvent;
 
   /// Zeros out all member vars, does NOT free memory,for use in constructor
-  void ZeroMembers();
+  void zeroMembers();
+
+  vector<string> m_digiFilenames;
+  vector<string> m_recFilenames;
+  vector<string> m_mcFilenames;
+
+  ostream &m_ostr;
 
 };
 
