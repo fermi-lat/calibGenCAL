@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Dec 22 19:28:28 PST 2004
+calibGenCAL/src
+
+Modified Files:
+	ICfg.h RootFileAnalysis.cxx RootFileAnalysis.h ciFit.cxx 
+	mcOptions.cxx mcOptions.h muonCalib.cxx muonCalib.h 
+Log Message:
+small changes in order get Linux build w/ no warnings
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Dec 22 19:28:16 PST 2004
 calibGenCAL/doc
 
