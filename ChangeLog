@@ -1,5 +1,19 @@
 ------------------------------------------------------------
 User: fewtrell  Mon Jan 10 16:11:35 PST 2005
+calibGenCAL/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+added logfile to ciFit
+added CVS Tag & config file contents to top of logfiles for both ciFit & muonCalib
+made all functions in CalDefs staitc.
+
+
+
+    *
+------------------------------------------------------------
+User: fewtrell  Mon Jan 10 16:11:35 PST 2005
 calibGenCAL/cmt
 
 Modified Files:
