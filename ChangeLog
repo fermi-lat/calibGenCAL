@@ -1,0 +1,38 @@
+------------------------------------------------------------
+User: xchen  Wed Nov 19 16:33:58 PST 2003
+calibGenCAL
+
+Log Message:
+First import
+
+Status:
+
+Vendor Tag:	GLAST
+Release Tags:	v0
+		
+N calibGenCAL/.cvsignore
+I calibGenCAL/rh72_gcc2953
+N calibGenCAL/cmt/Makefile
+N calibGenCAL/cmt/requirements
+N calibGenCAL/cmt/cleanup.csh
+N calibGenCAL/cmt/setup.csh
+N calibGenCAL/cmt/setup.sh
+N calibGenCAL/cmt/cleanup.sh
+N calibGenCAL/cmt/rh72_gcc2953.make
+N calibGenCAL/src/Analyze.cxx
+N calibGenCAL/src/compare_constants.cxx
+N calibGenCAL/src/genNtuple.cxx
+N calibGenCAL/src/getGainsXML.cxx
+N calibGenCAL/src/getMuSlopesXML.cxx
+N calibGenCAL/src/getPedestalsXML.cxx
+N calibGenCAL/src/mainpage.h
+N calibGenCAL/src/muonCalib.cxx
+N calibGenCAL/src/muonCalib.h
+N calibGenCAL/src/muonCalibChain_option.dat
+N calibGenCAL/src/muonCalib_option.dat
+N calibGenCAL/src/runMuonCalib.cxx
+N calibGenCAL/src/runMuonCalibChain.cxx
+
+No conflicts created by this import
+
+    *
