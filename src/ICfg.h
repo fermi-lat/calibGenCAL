@@ -1,8 +1,11 @@
+#ifndef ICfg_H
+#define ICfg_H 1
+
 /*!
    \class ICfg Abastract template class for config classes used in calibGenCAL
  */
 
-#include <iostream>
+
 using namespace std;
 
 class ICfg {
@@ -16,3 +19,6 @@ public:
   /// lists summary of config vars to ostream
   virtual void summarize() = 0;
 };
+
+
+#endif // ICFG_H

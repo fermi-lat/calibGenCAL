@@ -3,8 +3,6 @@
 
 #include <string>
 #include <vector>
-#include <iomanip>
-#include <memory>
 
 //ROOT INCLUDES
 #include "TFile.h"
@@ -12,13 +10,13 @@
 #include "TProfile.h"
 #include "TH2F.h"
 
-#include "idents/CalXtalId.h"
-
 #include "RootFileAnalysis.h"
+
+#include "CalDefs.h"
 
 using namespace std;
 
-class muonCalib : public RootFileAnalysis {
+class muonCalib : public RootFileAnalysis, protected CalDefs {
 public:
 
   /// only one constructor, but it has defaults for many values
@@ -53,22 +51,22 @@ public:
 
   void readIntNonlin(const string &filename); ///< read in TXT table of integral nonlinearity values (adc2dac) from ciFit.exe
 
-  void fillAsymHists(int nEvents, bool genOptHists = false); ///< populate asymetry profiles w/ nEvents worth of data.
-  void populateAsymArrays(); ///< load mean values from asymetry profiles into m_calAsym*** arrays
+  void fillAsymHists(int nEvents, bool genOptHists = false); ///< populate asymmetry profiles w/ nEvents worth of data.
+  void populateAsymArrays(); ///< load mean values from asymmetry profiles into m_calAsym*** arrays
   void writeAsymTXT(const string &filenameLL,
                     const string &filenameLS,
                     const string &filenameSL,
-                    const string &filenameSS); ///< write asymetry tables out to text file.
-  void writeAsymXML(const string &filename, const string &dtdFilename); ///< write asymetry data to official XML file
+                    const string &filenameSS); ///< write asymmetry tables out to text file.
+  void writeAsymXML(const string &filename, const string &dtdFilename); ///< write asymmetry data to official XML file
   void readAsymTXT(const string &filenameLL,
                    const string &filenameLS,
                    const string &filenameSL,
-                   const string &filenameSS); ///< read asymetry tables in from text file(s)
+                   const string &filenameSS); ///< read asymmetry tables in from text file(s)
 
   void fillMPDHists(int nEvents); ///< Fill MevPerDac histograms w/ nEvents worth of event data.
   void fitMPDHists(); ///< Fit MevPerDac calibration group
   void writeMPDTXT(const string &filenameL, const string &filenameS); ///< write out both MPD calibrations to text file
-  void writeMPDXML(const string &filename, const string &dtdFilename); ///< write asymetry file to official XML file
+  void writeMPDXML(const string &filename, const string &dtdFilename); ///< write asymmetry file to official XML file
 
   void flushHists(); ///< writes histograms to file & closes file if m_histFile is open.  deletes all open histograms
   void openHistFile(const string &filename); ///< opens new histogram file.  closes current m_histFile if it is open
@@ -82,105 +80,14 @@ public:
 private:
   void initRoughPedHists(); ///< allocate & create rough pedestal histograms & pointer array
   void initPedHists(); ///< allocate & create final pedestal histograms & pointer array
-  void initAsymHists(bool genOptHists);///< allocate & create asymetry histograms & pointer arrays
+  void initAsymHists(bool genOptHists);///< allocate & create asymmetry histograms & pointer arrays
   void initMPDHists(); ///< allocate & create MevPerDac histograms & pointer arrays
 
-  /////////////////////////////////
-// BASIC CAL GEOMETRY  INFO    //
-/////////////////////////////////
-
-// STATICS / CONSTANTS 
-  static const short N_LYRS = 8; ///< number of layers in one cal tower
-  static const short N_COLS = 12; ///< number of columns in one cal layer
-  static const short N_FACES = 2; ///< number of faces in one cal xtal
-  static const short N_DIODES = 2; ///< number of diodes in one cal face
-  static const short N_RNGS = 4; ///< number of adc ranges on one cal face
-  static const short N_DIRS = 2; ///< number of 'directions' (X & Y axis)
-
-  static short rng2diode(short rng) {return rng/2;} ///< convert adc range # to diode #
-  
-  static short lyr2Xlyr(short lyr) {return lyr/2;} ///< converts a layer #(0-7) to an X-layer # (0-3)
-  static short lyr2Ylyr(short lyr) {return lyr/2;} ///< converts a layer #(0-7) to a Y-layer # (0-3)
-  static bool  isXlyr(short lyr) {return lyr%2==0;} ///< returns true if layer is an X-layer
-  
-  static short diode2X8rng(short diode) {return diode*2;} ///< get the # for the X8 adc range belonging to given diode
-  static short diode2X1rng(short diode) {return diode*2 +1;} ///< get the # for the X1 adc range belonging to given diode
-
-  static const vector<string> FACE_MNEM; ///< static list of string names for xtal faces
-  static const vector<string> RNG_MNEM; ///< statifc list of string names for adc ranges
-  
-  enum XtalDir {
-    X_DIR = 0,
-    Y_DIR
-  }; ///< enumeration for the 2 xtal directions
-
-  //////////////////////////////////
-  // CAL GEOMETRY INDEX FUNCTIONS //
-  //                              //
-  // Allow contiguous array type  //
-  // integer indexes for entire   //
-  // instrument by xtal,diode,rng //
-  // etc                          //
-  //                              //
-  // Used for all internal indexes//
-  //////////////////////////////////
-
-  // INDEX FUNCTIONS - contiguous indeces for arrays/histograms
-  static const int MAX_XTAL_IDX = N_COLS*N_LYRS;   ///< Total # of xtals in current LAT
-  static const int MAX_FACE_IDX = MAX_XTAL_IDX*N_FACES; ///< total # of xtal faces in current lat
-  static const int MAX_DIODE_IDX = MAX_FACE_IDX*N_DIODES; ///< total # of xtal diodes in current lat
-  static const int MAX_RNG_IDX = MAX_FACE_IDX*N_RNGS; ///< total # of possible adc range values in current lat
-  
-  /// generate LAT wide contiguous index value for a specific cal xtal
-  static int getNXtal(short lyr, short col) {return lyr*N_COLS + col;} 
-  /// return layer # from given xtal index
-  static short nXtal2lyr(int nXtal) {return nXtal/N_COLS;}
-  /// return column # from given xtal index
-  static short nXtal2col(int nXtal) {return nXtal%N_COLS;}
-  /// appends unique id string for given xtal index to given string
-  static string &appendXtalStr(int nXtal, string &str);
-
-  /// generate LAT wide contiguous index value for a specific cal face
-  static int getNFace(int nXtal, short face) {return nXtal*N_FACES + face;}
-  /// generate LAT wide contiguous index value for a specific cal face
-  static int getNFace(short lyr, short col, short face) {return getNFace(getNXtal(lyr,col), face);}
-  /// return face # from LAT wide face index
-  static int nFace2face(int nFace) {return nFace % N_FACES;}
-  /// return LAT wide xtal index from LAT wide face index
-  static int nFace2nXtal(int nFace) {return nFace/N_FACES;}
-  /// appends unique id string for given xtal_face index to given string
-  static string &appendFaceStr(int nXtal, string &str);
-
-  /// generate LAT wide contiguous index value for a specific cal diode
-  static int getNDiode(int nFace, short diode) {return nFace*N_DIODES + diode;}
-  /// generate LAT wide contiguous index value for a specific cal diode
-  static int getNDiode(int nXtal, short face, short diode) {return getNDiode(getNFace(nXtal,face),diode);}
-  /// generate LAT wide contiguous index value for a specific cal diode
-  static int getNDiode(short lyr, short col, short face, short diode) {return getNDiode(getNFace(lyr,col,face),diode);}
-  /// get diode # (0-1) from lat wide diode index
-  static int nDiode2diode(int nDiode) {return nDiode % N_DIODES;}
-  /// get LAT wide xtal face index from LAT wide xtal diode index
-  static int nDiode2nFace(int nDiode) {return nDiode/N_DIODES;}
-  /// appends unique id string for given diode index to given string
-  static string &appendDiodeStr(int nDiode, string &str);
-
-  /// generate LAT wide contiguous index value for a specific adc range (including xtal face information)
-  static int getNRng(int nFace, short rng) {return nFace*N_RNGS + rng;}
-  /// generate LAT wide contiguous index value for a specific adc range (including xtal face information)
-  static int getNRng(int nXtal, short face, short rng) {return getNRng(getNFace(nXtal,face),rng);}
-  /// generate LAT wide contiguous index value for a specific adc range (including xtal face information)
-  static int getNRng(short lyr, short col, short face, short rng) {return getNRng(getNFace(lyr,col,face),rng);}
-  /// generate adc range # from LAT wide adc range index
-  static int nRng2rng(int nRng) {return nRng % N_RNGS;}
-  /// generate xtal face # from LAT wide adc range index
-  static int nRng2nFace(int nRng) {return nRng/N_RNGS;}
-  /// appends unique id string for given adc_range index to given string
-  static string &appendRngStr(int nRng, string &str);
 
 
   // HISTOGRAM/PROFILE PARAMETERS - num bins, limits, etc
 
-  /// # of points per xtal for asymetry type data.  
+  /// # of points per xtal for asymmetry type data.  
   /// 1 point for the center of each longitudinal xtal excluding the two outermost xtals
   static const short N_ASYM_PTS = 10;
   static const short N_L2S_PTS = 20; ///< # of bins in dacL2S profiles
@@ -281,16 +188,16 @@ private:
   vector<TProfile*> m_dacL2SProfs;  ///< profile X=bigdioedac Y=smalldioedac 1 per xtal
 
   vector<TSpline3*> m_inlSplines; ///< Collection of integral non-linearity splines, 1 per diode
-  /// collection of spline functions based on LEX8 vs LEX8 asymetry for calculating hit position in gain calibration (1 per xtal)
+  /// collection of spline functions based on LEX8 vs LEX8 asymmetry for calculating hit position in gain calibration (1 per xtal)
   vector<TSpline3*> m_asym2PosSplines; 
 
   vector<TH1F*> m_dacLLHists; ///< list of histograms of geometric mean(large diode dacs) for both ends on each xtal.
 
-  vector<TH1F*> m_asymDacHists; ///< optional histograms of all dac values used in asymetry calculations
-  vector<TH2F*> m_logratHistsLL; ///< optional histograms of all LL loratios used in asymetry calculations
-  vector<TH2F*> m_logratHistsLS; ///< optional histograms of all LS loratios used in asymetry calculations
-  vector<TH2F*> m_logratHistsSL; ///< optional histograms of all SL loratios used in asymetry calculations
-  vector<TH2F*> m_logratHistsSS; ///< optional histograms of all SS loratios used in asymetry calculations
+  vector<TH1F*> m_asymDacHists; ///< optional histograms of all dac values used in asymmetry calculations
+  vector<TH2F*> m_logratHistsLL; ///< optional histograms of all LL loratios used in asymmetry calculations
+  vector<TH2F*> m_logratHistsLS; ///< optional histograms of all LS loratios used in asymmetry calculations
+  vector<TH2F*> m_logratHistsSL; ///< optional histograms of all SL loratios used in asymmetry calculations
+  vector<TH2F*> m_logratHistsSS; ///< optional histograms of all SS loratios used in asymmetry calculations
   
   ///////////////////////////////////////////////////////////
   //            CALIBRATION RESULT VECTORS                 //
@@ -354,22 +261,9 @@ private:
   void loadInlSplines(); ///< creates & populates INL splines from m_calIntNonlin;
   double adc2dac(int nDiode, double adc); ///< uses intNonlin to convert adc 2 dac for specified xtal/adc range
 
-  // Asymetry 2 Pos conversion
+  // Asymmetry 2 Pos conversion
   void loadA2PSplines(); ///< creates & populates INL splines from m_calAsym
-  double asym2pos(int nXtal, double asym); ///< uses asym2pos splines to convert asymetry value to xtal position for energy centroid
-
-  // CalXtalId shorthand
-  static const CalXtalId::XtalFace POS_FACE = CalXtalId::POS;
-  static const CalXtalId::XtalFace NEG_FACE = CalXtalId::NEG;
-
-  static const CalXtalId::AdcRange LEX8 = CalXtalId::LEX8;
-  static const CalXtalId::AdcRange LEX1 = CalXtalId::LEX1;
-  static const CalXtalId::AdcRange HEX8 = CalXtalId::HEX8;
-  static const CalXtalId::AdcRange HEX1 = CalXtalId::HEX1;
-
-  static const idents::CalXtalId::DiodeType LARGE_DIODE = idents::CalXtalId::LARGE;
-  static const idents::CalXtalId::DiodeType SMALL_DIODE = idents::CalXtalId::SMALL;
-
+  double asym2pos(int nXtal, double asym); ///< uses asym2pos splines to convert asymmetry value to xtal position for energy centroid
 };
 
 #endif
