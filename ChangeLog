@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: chehtman  Fri May 28 14:32:59 PDT 2004
+calibGenCAL/src
+
+Added Files:
+	getLightAsymXML.cxx 
+Log Message:
+Light Asymmetry nonlinearity calibration added
+    *
+------------------------------------------------------------
 User: chehtman  Fri May 28 14:30:16 PDT 2004
 calibGenCAL/src
 
