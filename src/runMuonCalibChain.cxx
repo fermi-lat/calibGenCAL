@@ -89,8 +89,12 @@ int main(int argn, char** argc) {
     r.Go(10000);    
     r.FitPedHist();
     r.PrintCalPed(pedFile.c_str());
-    
-        
+       
+    r.SetFillCorrPedHist2Ranges();
+    r.Go(10000);    
+    r.FitCorrPedHist();
+    r.PrintCalCorrPed("mucorrped.txt");
+
     r.Rewind();
     r.SetFillRatHist();
     r.Go(1000000);
