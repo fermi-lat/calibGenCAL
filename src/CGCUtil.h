@@ -16,7 +16,7 @@ using namespace std;
 
 namespace CGCUtil {
 
-  const string CVS_TAG("$Name: v3r1p5 $");
+  const string CVS_TAG("$Name: v3r3p2 $");
 
   /// Template function fills any STL type container with zero values
   template <class T> static void fill_zero(T &container) {
@@ -73,5 +73,10 @@ namespace CGCUtil {
   
       streamvector& getostreams() { return ((multiplexor_streambuf*)rdbuf())->_streams; }
     };
+
+  /// Output string w/ username, hostname, time, relevant CMT package versions & paths
+  /// to ostream
+  /// output is in multi line text format
+  void output_env_banner(ostream &ostr);
 };
 #endif // CGCUtil_H

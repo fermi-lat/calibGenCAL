@@ -192,7 +192,8 @@ void TholdCI::readTXT(const string &perFaceFile,
   
   if (nRead != m_FLEVal.size()) {
     ostringstream tmp;
-    tmp <<"TholdCI file '" << perFaceFile << "' is incomplete: " << nRead
+    tmp << __FILE__ << ":" << __LINE__ << " " 
+        << "TholdCI file '" << perFaceFile << "' is incomplete: " << nRead
         << " values read, " << m_FLEVal.size() << " vals required.";
     throw tmp.str();
   }
@@ -228,7 +229,8 @@ void TholdCI::readTXT(const string &perFaceFile,
   
   if (nRead != m_ULDVal.size()) {
     ostringstream tmp;
-    tmp <<"TholdCI file '" << perRangeFile << "' is incomplete: " << nRead
+    tmp << __FILE__ << ":"  << __LINE__ << " " 
+        << "TholdCI file '" << perRangeFile    << "' is incomplete: " << nRead
         << " values read, " << m_FLEVal.size() << " vals required.";
     throw tmp.str();
   }
@@ -251,22 +253,22 @@ void TholdCI::writeXML(const string &filename) {
   while (dtdFile.good()) {
     getline(dtdFile, tmp);
     if (dtdFile.fail()) continue; // bad get
-    outfile << tmp <<endl;
+    outfile << tmp << endl;
   }
   outfile << "]>" << endl;
 
   outfile << "<calCalib>" << endl;
-  outfile << " <generic instrument=\"" << m_cfg.instrument <<"\" timestamp=\""<< m_cfg.timestamp <<"\"";
+  outfile << " <generic instrument=\"" << m_cfg.instrument << "\" timestamp=\"" << m_cfg.timestamp << "\"";
   outfile << " calibType=\"CAL_TholdCI\" fmtVersion=\"v2r2\" >" << endl;
 
   outfile << " </generic>" << endl;
   outfile << " <dimension nRow=\"1\" nCol=\"1\" nLayer=\"" << LyrNum::N_VALS 
           << "\" nXtal=\"" << ColNum::N_VALS 
-          <<"\" nFace=\"" << FaceNum::N_VALS 
+          << "\" nFace=\"" << FaceNum::N_VALS 
           << "\" nRange=\"" << 1 // there isonly one 'tholdCI' entry per xtal face for this type, not the usual 4. 
           << "\"/>" << endl;
   for (TwrNum twr; twr.isValid(); twr++) {
-    outfile << " <tower iRow=\"0\" iCol=\"0\">"<< endl;
+    outfile << " <tower iRow=\"0\" iCol=\"0\">" << endl;
 
     for (LyrNum lyr; lyr.isValid(); lyr++) {
       outfile << "  <layer iLayer=\"" << lyr << "\">" << endl;
@@ -296,9 +298,9 @@ void TholdCI::writeXML(const string &filename) {
         }
         outfile << "   </xtal>" << endl;
       }
-      outfile<<"  </layer>" << endl;
+      outfile<< "  </layer>" << endl;
     }
-    outfile << " </tower>"<< endl;
+    outfile << " </tower>" << endl;
   }
   outfile << "</calCalib>" << endl;
 }

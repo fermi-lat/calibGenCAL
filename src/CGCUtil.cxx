@@ -6,6 +6,10 @@
 // EXTLIB INCLUDES
 
 // STD INCLUDES
+#include <cstdlib>
+#include <ctime>
+#include <iostream>
+#include <iomanip>
 
 namespace CGCUtil {
 
@@ -80,4 +84,42 @@ namespace CGCUtil {
     return path;
   }
 
+  void output_env_banner(ostream &ostr) {
+    
+    // USERNAME & HOSTNAME ARE DIFFERENT FROM WINDOWS 
+    // TO UNIX (getenv returns NULL on failure)
+    string host = (getenv("HOSTNAME") != 0)
+      ? getenv("HOSTNAME")      // UNIX
+      : getenv("COMPUTERNAME"); // WINDOWS
+
+    string user = (getenv("USER") != 0)
+      ? getenv("USER")          // UNIX
+      : getenv("USERNAME");    // WINDOWS
+
+    // GENERATE TIME STRING
+    char time_str[128];
+    time_t tmt = time(NULL);
+    struct tm *tm_now = localtime(&tmt);
+    if (strftime(time_str, sizeof(time_str), 
+                 "%c %z", tm_now) == 0) {
+      strcpy(time_str,""); // error case
+      cerr << __FILE__  << ":"     << __LINE__ << " " 
+           << "Error generating time string!" << endl;
+    }
+    
+    ostr << "************** ENVIRONMENT SUMMARY *****************" << endl;
+    ostr << " RUNTIME : " << time_str << endl;
+    ostr << " HOSTNAME: " << host     << endl;
+    ostr << " USER    : " << user     << endl;
+    ostr << endl;
+    ostr << " PACKAGE      "  << "PATH" << endl;
+    ostr << " calibGenCAL  "  << getenv("calibGenCALROOT")  << endl;
+    ostr << " ROOT         "  << getenv("ROOTROOT")         << endl;
+    ostr << " digiRootData "  << getenv("digiRootDataROOT") << endl;
+    ostr << " Event        "  << getenv("EventROOT")        << endl;
+    ostr << " idents       "  << getenv("identsROOT")       << endl;
+    ostr << " calibUtil    "  << getenv("calibUtilROOT")    << endl;
+    ostr << "****************************************************" << endl;
+    
+  }
 };

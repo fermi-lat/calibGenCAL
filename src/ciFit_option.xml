@@ -3,8 +3,8 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLROOT)/xmldata/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit_option.xml,v 1.5 2005/01/11 00:11:36 fewtrell Exp $"
-       cvs_Revision="$Revision: 1.5 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit_option.xml,v 1.6 2005/01/13 04:03:17 fewtrell Exp $"
+       cvs_Revision="$Revision: 1.6 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP"      value="2004-11-11-14:39"> Timestamp for test run.</item>
@@ -52,9 +52,9 @@
   </section>
   
   <section name="GENERAL"> General program options
-    <item name="GENERATE_XML" value="true"> (boolean) generate xml output</item>
-    <item name="GENERATE_TXT" value="true"> (boolean) generate text output</item>
-    <item name="GENERATE_LOGFILE"         value="true"> (boolean) generate logfile which duplicates stdout </item>
+    <item name="GENERATE_XML"      value="true"> (boolean) generate xml output</item>
+    <item name="GENERATE_TXT"      value="true"> (boolean) generate text output</item>
+    <item name="GENERATE_LOGFILE"  value="true"> (boolean) generate logfile which duplicates stdout </item>
   </section>  
 </ifile>
 
