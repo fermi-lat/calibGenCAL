@@ -3,8 +3,8 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLROOT)/xmldata/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit_option.xml,v 1.2 2004/10/28 23:58:59 chehtman Exp $"
-       cvs_Revision="$Revision: 1.2 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit_option.xml,v 1.3 2004/12/23 02:13:29 fewtrell Exp $"
+       cvs_Revision="$Revision: 1.3 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP"      value="2004-11-11-14:39"> Timestamp for test run.</item>
@@ -24,27 +24,22 @@
   </section>
 
   <section name="PATHS"> Intput/Output file paths
+    NOTE: All environment variables will be expanded with facilities::Util::expandEnvVar()
     <item name="OUTPUT_FOLDER" value="..\output\"> Folder for auto-named output files </item>
     
-    <item name="DTD_FILE"     value="../xml/calCalib_v2r2.dtd"> description file for output .xml file </item>
+    <item name="DTD_FILE"     value="$(CALIBUTILROOT)/xml/calCalib_v2r1.dtd"> description file for output .xml file </item>
     <item name="XMLPATH"     value=""> Optional path for output .xml file (default "" autogenerates filename from input filename)</item>
     <item name="TXTPATH"     value=""> Optoinal path for output .txt file (default "" autogenerates filename from input filename)</item>
 
     <item name="INFILE_TYPE" value="ROOT">Input file type (ROOT,CSV)</item>
 
-    <item name="ROOTFILE_LE1"   value="D:\GLAST\DATA\FM101\041111143922_FM101_PSHP_CALU_COLLECT_CI_SINGLEX16.root"> input DIGIROOT file #_LE1 </item>
-    <item name="ROOTFILE_HE1"   value="D:\GLAST\DATA\FM101\041111145340_FM101_PSHP_CALU_COLLECT_CI_SINGLEX16.root"> input DIGIROOT file #_HE1 </item>
-    <item name="ROOTFILE_LE2"   value=""> input DIGIROOT file #_LE2 </item>
-    <item name="ROOTFILE_HE2"   value=""> input DIGIROOT file #_HE2 </item>
-    <item name="ROOTFILE_LE3"   value="input_LE3.root"> input DIGIROOT file #_LE3 </item>
-    <item name="ROOTFILE_HE3"   value="input_HE3.root"> input DIGIROOT file #_HE3 </item>
-
-    <item name="CSVFILE_LE1"    value="input_LE1.csv"> csvfile_LE1 </item>
-    <item name="CSVFILE_HE1"    value="input_HE1.csv"> csvfile_HE1 </item>
-    <item name="CSVFILE_LE2"    value="input_LE2.csv"> csvfile_LE2 </item>
-    <item name="CSVFILE_HE2"    value="input_HE2.csv"> csvfile_HE2 </item>
-    <item name="CSVFILE_LE3"    value="input_LE3.csv"> csvfile_LE3 </item>
-    <item name="CSVFILE_HE3"    value="input_HE3.csv"> csvfile_HE3 </item>
+    <item name="ROOTFILE_LE1"   value="D:\GLAST\DATA\FM101\041111143546_FM101_PSHP_CALU_COLLECT_CI_SINGLEX16.root"> input DIGIROOT file LE #1 </item>
+    <item name="ROOTFILE_HE1"   value="D:\GLAST\DATA\FM101\041111145340_FM101_PSHP_CALU_COLLECT_CI_SINGLEX16.root"> input DIGIROOT file HE #1 </item>
+    
+    <item name="ROOTFILE_LE2"   value=""> input DIGIROOT file LE #2 (currently unused)</item>
+    <item name="ROOTFILE_HE2"   value=""> input DIGIROOT file HE #2 (currently unused)</item>
+    <item name="ROOTFILE_LE3"   value=""> input DIGIROOT file LE #3 (currently unused)</item>
+    <item name="ROOTFILE_HE3"   value=""> input DIGIROOT file HE #3 (currently unused)</item>
   </section>
 
   <section name="SPLINE_CFG">

@@ -20,7 +20,7 @@ public:
   void clear();
 
   // read in config data from config file, calculate dependent vars
-  int readCfgFile(const string& path);
+  void readCfgFile(const string& path);
 
   // return data valid flag.
   bool isValid() {return valid;}
@@ -43,7 +43,7 @@ public:  // i know, don't make members public, but it's just easier this way!
   string source;
 
   vector<int> dacSettings;
-  int nPulsesPerDac;
+  int nPulsesPerDAC;
 
   // SECTION: PATHS //
   // current setup has us reading in 6 input files 2 rngs each and 3 different FLE settings
@@ -69,7 +69,7 @@ public:  // i know, don't make members public, but it's just easier this way!
   // DERIVED FROM CONFIG PARMS //
   int nPulsesPerXtal;
   int nPulsesPerRun;
-  int nDacs;
+  int nDACs;
 
 private:
   bool valid;   // set to false member data is incomplete/invalid.
@@ -80,7 +80,6 @@ private:
   static const string testInfo;
   static const string paths;
   static const string splineCfg;
-
 };
 
 

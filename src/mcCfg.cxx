@@ -1,3 +1,5 @@
+#include "facilities/Util.h"
+
 #include "mcCfg.h"
 #include "CGCUtil.h"
 
@@ -8,7 +10,7 @@ const string mcCfg::CONSTANTS("CONSTANTS");
 
 using namespace CGCUtil;
 
-int mcCfg::readCfgFile(const string& cfgPath) {
+void mcCfg::readCfgFile(const string& cfgPath) {
   clear();
 
   xml::IFile ifile(cfgPath.c_str());
@@ -20,30 +22,49 @@ int mcCfg::readCfgFile(const string& cfgPath) {
   towerList     = ifile.getIntVector(TEST_INFO.c_str(), "TOWER_LIST");
 
   // SECTION: PATHS
+  using facilities::Util;
   rootFileListStr = ifile.getString(PATHS.c_str(), "INPUTFILE_LIST");
+  Util::expandEnvVar(&rootFileListStr);
  
-  intNonlinFile = ifile.getString(PATHS.c_str(), "INTNONLINFILE_TXT");
-  dtdFile = ifile.getString(PATHS.c_str(), "DTD_FILE");
+  intNonlinFile   = ifile.getString(PATHS.c_str(), "INTNONLINFILE_TXT");
+  Util::expandEnvVar(&intNonlinFile);
+  dtdFile         = ifile.getString(PATHS.c_str(), "DTD_FILE");
+  Util::expandEnvVar(&dtdFile);
 
-  outputDir = ifile.getString(PATHS.c_str(), "OUTPUT_FOLDER");
+  outputDir       = ifile.getString(PATHS.c_str(), "OUTPUT_FOLDER");
+  Util::expandEnvVar(&outputDir);
 
-  pedFileXML = ifile.getString(PATHS.c_str(), "PEDFILE_XML");
-  asymFileXML = ifile.getString(PATHS.c_str(), "ASYMFILE_XML");
-  mpdFileXML = ifile.getString(PATHS.c_str(), "MPDFILE_XML");
+  pedFileXML      = ifile.getString(PATHS.c_str(), "PEDFILE_XML");
+  Util::expandEnvVar(&pedFileXML);
+  asymFileXML     = ifile.getString(PATHS.c_str(), "ASYMFILE_XML");
+  Util::expandEnvVar(&asymFileXML);
+  mpdFileXML      = ifile.getString(PATHS.c_str(), "MPDFILE_XML");
+  Util::expandEnvVar(&mpdFileXML);
 
-  pedHistFile = ifile.getString(PATHS.c_str(), "PED_HISTFILE");
-  asymHistFile = ifile.getString(PATHS.c_str(), "ASYM_HISTFILE");
-  mpdHistFile = ifile.getString(PATHS.c_str(), "MPD_HISTFILE");
+  pedHistFile     = ifile.getString(PATHS.c_str(), "PED_HISTFILE");
+  Util::expandEnvVar(&pedHistFile);
+  asymHistFile    = ifile.getString(PATHS.c_str(), "ASYM_HISTFILE");
+  Util::expandEnvVar(&asymHistFile);
+  mpdHistFile     = ifile.getString(PATHS.c_str(), "MPD_HISTFILE");
+  Util::expandEnvVar(&mpdHistFile);
  
-  pedFileTXT = ifile.getString(PATHS.c_str(), "PEDFILE_TXT");
-  asymFileLLTXT = ifile.getString(PATHS.c_str(), "ASYMFILELL_TXT");
-  asymFileLSTXT = ifile.getString(PATHS.c_str(), "ASYMFILELS_TXT");
-  asymFileSLTXT = ifile.getString(PATHS.c_str(), "ASYMFILESL_TXT");
-  asymFileSSTXT = ifile.getString(PATHS.c_str(), "ASYMFILESS_TXT");
+  pedFileTXT      = ifile.getString(PATHS.c_str(), "PEDFILE_TXT");
+  Util::expandEnvVar(&pedFileTXT);
+  asymFileLLTXT   = ifile.getString(PATHS.c_str(), "ASYMFILELL_TXT");
+  Util::expandEnvVar(&asymFileLLTXT);
+  asymFileLSTXT   = ifile.getString(PATHS.c_str(), "ASYMFILELS_TXT");
+  Util::expandEnvVar(&asymFileLSTXT);
+  asymFileSLTXT   = ifile.getString(PATHS.c_str(), "ASYMFILESL_TXT");
+  Util::expandEnvVar(&asymFileSLTXT);
+  asymFileSSTXT   = ifile.getString(PATHS.c_str(), "ASYMFILESS_TXT");
+  Util::expandEnvVar(&asymFileSSTXT);
   largeMPDFileTXT = ifile.getString(PATHS.c_str(), "LARGEMPD_TXT");
+  Util::expandEnvVar(&largeMPDFileTXT);
   smallMPDFileTXT = ifile.getString(PATHS.c_str(), "SMALLMPD_TXT");
+  Util::expandEnvVar(&smallMPDFileTXT);
 
   logfile = ifile.getString(PATHS.c_str(), "LOGFILE");
+  Util::expandEnvVar(&logfile);
 
   //  SECTION: CONSTANTS //
   hitThresh = ifile.getDouble(CONSTANTS.c_str(), "HIT_THRESH");
@@ -92,7 +113,6 @@ int mcCfg::readCfgFile(const string& cfgPath) {
   outputDir += '/';
 
   // autogenerate output filenames (only autogen if string is empty)
-  
   if (pedFileXML.length() == 0)
     pedFileXML = outputDir + "mc_peds." + baseFilename + ".xml";
 
@@ -102,7 +122,7 @@ int mcCfg::readCfgFile(const string& cfgPath) {
   if (mpdFileXML.length() == 0)
     mpdFileXML = outputDir + "mc_mevperdac." + baseFilename + ".xml";
 
-
+  
   if (pedHistFile.length() == 0)
     pedHistFile = outputDir + "mc_peds." + baseFilename + ".root";
   
@@ -111,7 +131,7 @@ int mcCfg::readCfgFile(const string& cfgPath) {
 	    
   if (mpdHistFile.length() == 0)
     mpdHistFile = outputDir + "mc_mevperdac." + baseFilename + ".root";
-	      
+
 
   if (pedFileTXT.length() == 0)
     pedFileTXT = outputDir + "mc_peds." + baseFilename + ".txt";
@@ -134,7 +154,6 @@ int mcCfg::readCfgFile(const string& cfgPath) {
   if (smallMPDFileTXT.length() == 0)
     smallMPDFileTXT = outputDir + "mc_mpdSmall." + baseFilename + ".txt";
 
-
   if (logfile.length() == 0)
     logfile = outputDir + "mc_logfile." + baseFilename + ".txt";
 
@@ -146,8 +165,6 @@ int mcCfg::readCfgFile(const string& cfgPath) {
     logstr.open(logfile.c_str());
     ostr.getostreams().push_back(&logstr);
   }
-
-  return 0;
 }
 
 void mcCfg::clear() {

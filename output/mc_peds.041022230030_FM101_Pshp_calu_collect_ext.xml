@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE calCalib [<!--
-   $Header: /nfs/slac/g/glast/ground/cvs/calibUtil/xml/calCalib_v2r2.dtd,v 1.4 2004/12/08 20:09:44 jrb Exp $
+   $Header: /home/cvs/SLAC/calibUtil/xml/calCalib_v2r2.dtd,v 1.4 2004/12/08 20:09:44 jrb Exp $
 
    /**  @file       calCalib_v2r2.dtd
         @authors    J. Bogart

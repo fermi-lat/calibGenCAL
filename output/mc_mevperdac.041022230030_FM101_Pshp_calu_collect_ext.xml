@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!DOCTYPE calCalib [<!--
-   $Header: /nfs/slac/g/glast/ground/cvs/calibUtil/xml/calCalib_v2r2.dtd,v 1.4 2004/12/08 20:09:44 jrb Exp $
+   $Header: /home/cvs/SLAC/calibUtil/xml/calCalib_v2r2.dtd,v 1.4 2004/12/08 20:09:44 jrb Exp $
 
    /**  @file       calCalib_v2r2.dtd
         @authors    J. Bogart
@@ -255,503 +255,503 @@
 
 ]>
 <calCalib>
- <generic instrument="FM101" timestamp="2004-07-31-06:50" calibType="CAL_MevPerDac" fmtVersion="v2r2">
+ <generic instrument="FM101" timestamp="2004-07-31-06:50" calibType="CAL_MevPerDAC" fmtVersion="v2r2">
  </generic>
  <dimension nRow="1" nCol="1" nLayer="8" nXtal="12" nFace="1" nRange="1"/>
  <tower iRow="0" iCol="0">
   <layer iLayer="0">
    <xtal iXtal="0">
     <face end="NA">
-     <mevPerDac bigVal="0.39217" bigSig="0.0278844" smallVal="0.0778472" smallSig="0.00553514">
+     <mevPerDAC bigVal="0.380023" bigSig="0.0265184" smallVal="0.0731938" smallSig="0.00510754">
     </face>
    </xtal>
    <xtal iXtal="1">
     <face end="NA">
-     <mevPerDac bigVal="0.387656" bigSig="0.0266996" smallVal="0.0721244" smallSig="0.00496752">
+     <mevPerDAC bigVal="0.387656" bigSig="0.0266996" smallVal="0.0721244" smallSig="0.00496752">
     </face>
    </xtal>
    <xtal iXtal="2">
     <face end="NA">
-     <mevPerDac bigVal="0.378853" bigSig="0.0261569" smallVal="0.0719987" smallSig="0.00497096">
+     <mevPerDAC bigVal="0.367236" bigSig="0.025293" smallVal="0.0680474" smallSig="0.00468669">
     </face>
    </xtal>
    <xtal iXtal="3">
     <face end="NA">
-     <mevPerDac bigVal="0.374056" bigSig="0.0250086" smallVal="0.0689695" smallSig="0.00461114">
+     <mevPerDAC bigVal="0.374056" bigSig="0.0250083" smallVal="0.0689695" smallSig="0.00461109">
     </face>
    </xtal>
    <xtal iXtal="4">
     <face end="NA">
-     <mevPerDac bigVal="0.379494" bigSig="0.0259969" smallVal="0.071628" smallSig="0.00490682">
+     <mevPerDAC bigVal="0.367276" bigSig="0.0250016" smallVal="0.0691121" smallSig="0.00470468">
     </face>
    </xtal>
    <xtal iXtal="5">
     <face end="NA">
-     <mevPerDac bigVal="0.369719" bigSig="0.0260739" smallVal="0.0708378" smallSig="0.00499574">
+     <mevPerDAC bigVal="0.369718" bigSig="0.026074" smallVal="0.0708376" smallSig="0.00499574">
     </face>
    </xtal>
    <xtal iXtal="6">
     <face end="NA">
-     <mevPerDac bigVal="0.35728" bigSig="0.0247489" smallVal="0.065936" smallSig="0.00456741">
+     <mevPerDAC bigVal="0.345637" bigSig="0.0235667" smallVal="0.063159" smallSig="0.0043064">
     </face>
    </xtal>
    <xtal iXtal="7">
     <face end="NA">
-     <mevPerDac bigVal="0.360034" bigSig="0.0252184" smallVal="0.0678545" smallSig="0.00475283">
+     <mevPerDAC bigVal="0.360034" bigSig="0.0252184" smallVal="0.0678545" smallSig="0.00475283">
     </face>
    </xtal>
    <xtal iXtal="8">
     <face end="NA">
-     <mevPerDac bigVal="0.364578" bigSig="0.0255175" smallVal="0.0694652" smallSig="0.00486201">
+     <mevPerDAC bigVal="0.352122" bigSig="0.0243752" smallVal="0.0660987" smallSig="0.0045756">
     </face>
    </xtal>
    <xtal iXtal="9">
     <face end="NA">
-     <mevPerDac bigVal="0.366951" bigSig="0.0246081" smallVal="0.0694996" smallSig="0.00466072">
+     <mevPerDAC bigVal="0.366951" bigSig="0.0246081" smallVal="0.0694996" smallSig="0.00466072">
     </face>
    </xtal>
    <xtal iXtal="10">
     <face end="NA">
-     <mevPerDac bigVal="0.365251" bigSig="0.0251826" smallVal="0.0691048" smallSig="0.00476451">
+     <mevPerDAC bigVal="0.354512" bigSig="0.024834" smallVal="0.066602" smallSig="0.00466554">
     </face>
    </xtal>
    <xtal iXtal="11">
     <face end="NA">
-     <mevPerDac bigVal="0.363709" bigSig="0.025999" smallVal="0.067672" smallSig="0.0048374">
+     <mevPerDAC bigVal="0.363709" bigSig="0.025999" smallVal="0.067672" smallSig="0.0048374">
     </face>
    </xtal>
   </layer>
   <layer iLayer="1">
    <xtal iXtal="0">
     <face end="NA">
-     <mevPerDac bigVal="0.36036" bigSig="0.0261518" smallVal="0.0679448" smallSig="0.00493084">
+     <mevPerDAC bigVal="0.349549" bigSig="0.0245017" smallVal="0.0664513" smallSig="0.00465792">
     </face>
    </xtal>
    <xtal iXtal="1">
     <face end="NA">
-     <mevPerDac bigVal="0.367962" bigSig="0.0249911" smallVal="0.068314" smallSig="0.00463972">
+     <mevPerDAC bigVal="0.367962" bigSig="0.0249911" smallVal="0.0683139" smallSig="0.00463972">
     </face>
    </xtal>
    <xtal iXtal="2">
     <face end="NA">
-     <mevPerDac bigVal="0.381294" bigSig="0.0270507" smallVal="0.0726298" smallSig="0.00515268">
+     <mevPerDAC bigVal="0.368915" bigSig="0.0251752" smallVal="0.0684435" smallSig="0.00467067">
     </face>
    </xtal>
    <xtal iXtal="3">
     <face end="NA">
-     <mevPerDac bigVal="0.390765" bigSig="0.0276163" smallVal="0.0739926" smallSig="0.00522924">
+     <mevPerDAC bigVal="0.390765" bigSig="0.0276166" smallVal="0.0739925" smallSig="0.00522928">
     </face>
    </xtal>
    <xtal iXtal="4">
     <face end="NA">
-     <mevPerDac bigVal="0.364422" bigSig="0.0254524" smallVal="0.0673998" smallSig="0.00470743">
+     <mevPerDAC bigVal="0.348631" bigSig="0.0237218" smallVal="0.064463" smallSig="0.00438623">
     </face>
    </xtal>
    <xtal iXtal="5">
     <face end="NA">
-     <mevPerDac bigVal="0.36754" bigSig="0.0253801" smallVal="0.0707141" smallSig="0.0048831">
+     <mevPerDAC bigVal="0.367538" bigSig="0.0253805" smallVal="0.0707138" smallSig="0.00488317">
     </face>
    </xtal>
    <xtal iXtal="6">
     <face end="NA">
-     <mevPerDac bigVal="0.385036" bigSig="0.0269574" smallVal="0.0720891" smallSig="0.00504715">
+     <mevPerDAC bigVal="0.374042" bigSig="0.0258421" smallVal="0.0689724" smallSig="0.00476522">
     </face>
    </xtal>
    <xtal iXtal="7">
     <face end="NA">
-     <mevPerDac bigVal="0.360247" bigSig="0.0251372" smallVal="0.0660827" smallSig="0.0046111">
+     <mevPerDAC bigVal="0.360251" bigSig="0.0251339" smallVal="0.0660811" smallSig="0.00461033">
     </face>
    </xtal>
    <xtal iXtal="8">
     <face end="NA">
-     <mevPerDac bigVal="0.360489" bigSig="0.0257368" smallVal="0.0668338" smallSig="0.00477155">
+     <mevPerDAC bigVal="0.347948" bigSig="0.0243901" smallVal="0.0652062" smallSig="0.00457077">
     </face>
    </xtal>
    <xtal iXtal="9">
     <face end="NA">
-     <mevPerDac bigVal="0.371333" bigSig="0.0257388" smallVal="0.0690753" smallSig="0.00478793">
+     <mevPerDAC bigVal="0.371333" bigSig="0.0257388" smallVal="0.0690753" smallSig="0.00478793">
     </face>
    </xtal>
    <xtal iXtal="10">
     <face end="NA">
-     <mevPerDac bigVal="0.36604" bigSig="0.0261228" smallVal="0.0676813" smallSig="0.00483015">
+     <mevPerDAC bigVal="0.356527" bigSig="0.025067" smallVal="0.0662048" smallSig="0.00465479">
     </face>
    </xtal>
    <xtal iXtal="11">
     <face end="NA">
-     <mevPerDac bigVal="0.379999" bigSig="0.0268604" smallVal="0.0713349" smallSig="0.00504234">
+     <mevPerDAC bigVal="0.379999" bigSig="0.0268604" smallVal="0.0713349" smallSig="0.00504234">
     </face>
    </xtal>
   </layer>
   <layer iLayer="2">
    <xtal iXtal="0">
     <face end="NA">
-     <mevPerDac bigVal="0.364216" bigSig="0.0268097" smallVal="0.0704834" smallSig="0.00518824">
+     <mevPerDAC bigVal="0.350248" bigSig="0.0249457" smallVal="0.0671932" smallSig="0.0047857">
     </face>
    </xtal>
    <xtal iXtal="1">
     <face end="NA">
-     <mevPerDac bigVal="0.370313" bigSig="0.0254233" smallVal="0.0715645" smallSig="0.00491315">
+     <mevPerDAC bigVal="0.370313" bigSig="0.0254233" smallVal="0.0715642" smallSig="0.00491314">
     </face>
    </xtal>
    <xtal iXtal="2">
     <face end="NA">
-     <mevPerDac bigVal="0.363064" bigSig="0.0264733" smallVal="0.0681496" smallSig="0.00496921">
+     <mevPerDAC bigVal="0.35214" bigSig="0.0250311" smallVal="0.0668969" smallSig="0.00475521">
     </face>
    </xtal>
    <xtal iXtal="3">
     <face end="NA">
-     <mevPerDac bigVal="0.355714" bigSig="0.0244095" smallVal="0.0686178" smallSig="0.00470864">
+     <mevPerDAC bigVal="0.355714" bigSig="0.0244095" smallVal="0.0686177" smallSig="0.00470863">
     </face>
    </xtal>
    <xtal iXtal="4">
     <face end="NA">
-     <mevPerDac bigVal="0.382805" bigSig="0.0277623" smallVal="0.0717343" smallSig="0.00520242">
+     <mevPerDAC bigVal="0.372666" bigSig="0.0264214" smallVal="0.067331" smallSig="0.00477366">
     </face>
    </xtal>
    <xtal iXtal="5">
     <face end="NA">
-     <mevPerDac bigVal="0.384946" bigSig="0.0268315" smallVal="0.0742488" smallSig="0.00517529">
+     <mevPerDAC bigVal="0.384946" bigSig="0.0268315" smallVal="0.0742488" smallSig="0.00517529">
     </face>
    </xtal>
    <xtal iXtal="6">
     <face end="NA">
-     <mevPerDac bigVal="0.394285" bigSig="0.0284713" smallVal="0.0724577" smallSig="0.00523218">
+     <mevPerDAC bigVal="0.380886" bigSig="0.0260253" smallVal="0.0735603" smallSig="0.00502624">
     </face>
    </xtal>
    <xtal iXtal="7">
     <face end="NA">
-     <mevPerDac bigVal="0.372691" bigSig="0.0257992" smallVal="0.0715501" smallSig="0.00495298">
+     <mevPerDAC bigVal="0.372691" bigSig="0.0257996" smallVal="0.0715496" smallSig="0.00495304">
     </face>
    </xtal>
    <xtal iXtal="8">
     <face end="NA">
-     <mevPerDac bigVal="0.358468" bigSig="0.0252111" smallVal="0.0646103" smallSig="0.00454405">
+     <mevPerDAC bigVal="0.347126" bigSig="0.0241129" smallVal="0.0633645" smallSig="0.00440158">
     </face>
    </xtal>
    <xtal iXtal="9">
     <face end="NA">
-     <mevPerDac bigVal="0.372931" bigSig="0.0258719" smallVal="0.0681263" smallSig="0.00472624">
+     <mevPerDAC bigVal="0.372934" bigSig="0.0258717" smallVal="0.0681269" smallSig="0.0047262">
     </face>
    </xtal>
    <xtal iXtal="10">
     <face end="NA">
-     <mevPerDac bigVal="0.390308" bigSig="0.027927" smallVal="0.0725872" smallSig="0.00519371">
+     <mevPerDAC bigVal="0.379017" bigSig="0.0270992" smallVal="0.0693635" smallSig="0.00495938">
     </face>
    </xtal>
    <xtal iXtal="11">
     <face end="NA">
-     <mevPerDac bigVal="0.392263" bigSig="0.0281962" smallVal="0.0749733" smallSig="0.00538915">
+     <mevPerDAC bigVal="0.392263" bigSig="0.0281962" smallVal="0.0749732" smallSig="0.00538914">
     </face>
    </xtal>
   </layer>
   <layer iLayer="3">
    <xtal iXtal="0">
     <face end="NA">
-     <mevPerDac bigVal="0.374173" bigSig="0.0271966" smallVal="0.0695123" smallSig="0.00505247">
+     <mevPerDAC bigVal="0.36091" bigSig="0.025687" smallVal="0.0678931" smallSig="0.00483214">
     </face>
    </xtal>
    <xtal iXtal="1">
     <face end="NA">
-     <mevPerDac bigVal="0.358926" bigSig="0.0246073" smallVal="0.0674716" smallSig="0.00462573">
+     <mevPerDAC bigVal="0.358926" bigSig="0.0246073" smallVal="0.0674716" smallSig="0.00462573">
     </face>
    </xtal>
    <xtal iXtal="2">
     <face end="NA">
-     <mevPerDac bigVal="0.365916" bigSig="0.0258823" smallVal="0.0647381" smallSig="0.0045791">
+     <mevPerDAC bigVal="0.357448" bigSig="0.0244547" smallVal="0.0658556" smallSig="0.00450549">
     </face>
    </xtal>
    <xtal iXtal="3">
     <face end="NA">
-     <mevPerDac bigVal="0.35916" bigSig="0.0246947" smallVal="0.0662277" smallSig="0.00455359">
+     <mevPerDAC bigVal="0.35916" bigSig="0.0246947" smallVal="0.0662277" smallSig="0.00455359">
     </face>
    </xtal>
    <xtal iXtal="4">
     <face end="NA">
-     <mevPerDac bigVal="0.359409" bigSig="0.0253661" smallVal="0.0631124" smallSig="0.0044543">
+     <mevPerDAC bigVal="0.346814" bigSig="0.0244927" smallVal="0.061629" smallSig="0.00435237">
     </face>
    </xtal>
    <xtal iXtal="5">
     <face end="NA">
-     <mevPerDac bigVal="0.368319" bigSig="0.025047" smallVal="0.0698629" smallSig="0.00475091">
+     <mevPerDAC bigVal="0.368319" bigSig="0.025047" smallVal="0.0698629" smallSig="0.00475091">
     </face>
    </xtal>
    <xtal iXtal="6">
     <face end="NA">
-     <mevPerDac bigVal="0.366371" bigSig="0.0248272" smallVal="0.066912" smallSig="0.00453431">
+     <mevPerDAC bigVal="0.355639" bigSig="0.0236542" smallVal="0.0647837" smallSig="0.00430888">
     </face>
    </xtal>
    <xtal iXtal="7">
     <face end="NA">
-     <mevPerDac bigVal="0.375595" bigSig="0.0261164" smallVal="0.0717322" smallSig="0.00498779">
+     <mevPerDAC bigVal="0.375595" bigSig="0.0261164" smallVal="0.0717322" smallSig="0.00498779">
     </face>
    </xtal>
    <xtal iXtal="8">
     <face end="NA">
-     <mevPerDac bigVal="0.380455" bigSig="0.0265493" smallVal="0.0738741" smallSig="0.00515516">
+     <mevPerDAC bigVal="0.365983" bigSig="0.0251875" smallVal="0.0691857" smallSig="0.00476146">
     </face>
    </xtal>
    <xtal iXtal="9">
     <face end="NA">
-     <mevPerDac bigVal="0.369452" bigSig="0.0252687" smallVal="0.0679418" smallSig="0.00464689">
+     <mevPerDAC bigVal="0.369452" bigSig="0.0252687" smallVal="0.0679418" smallSig="0.00464689">
     </face>
    </xtal>
    <xtal iXtal="10">
     <face end="NA">
-     <mevPerDac bigVal="0.359376" bigSig="0.0247882" smallVal="0.069299" smallSig="0.00477996">
+     <mevPerDAC bigVal="0.348925" bigSig="0.0239445" smallVal="0.0658664" smallSig="0.00451999">
     </face>
    </xtal>
    <xtal iXtal="11">
     <face end="NA">
-     <mevPerDac bigVal="0.363205" bigSig="0.0256389" smallVal="0.0664224" smallSig="0.00468881">
+     <mevPerDAC bigVal="0.363205" bigSig="0.0256389" smallVal="0.0664224" smallSig="0.00468881">
     </face>
    </xtal>
   </layer>
   <layer iLayer="4">
    <xtal iXtal="0">
     <face end="NA">
-     <mevPerDac bigVal="0.373472" bigSig="0.0269111" smallVal="0.0701351" smallSig="0.00505371">
+     <mevPerDAC bigVal="0.359454" bigSig="0.0252735" smallVal="0.0688586" smallSig="0.00484151">
     </face>
    </xtal>
    <xtal iXtal="1">
     <face end="NA">
-     <mevPerDac bigVal="0.384426" bigSig="0.0278619" smallVal="0.0735269" smallSig="0.00532897">
+     <mevPerDAC bigVal="0.384426" bigSig="0.0278619" smallVal="0.0735267" smallSig="0.00532896">
     </face>
    </xtal>
    <xtal iXtal="2">
     <face end="NA">
-     <mevPerDac bigVal="0.367098" bigSig="0.0265257" smallVal="0.0700823" smallSig="0.00506398">
+     <mevPerDAC bigVal="0.354562" bigSig="0.0247334" smallVal="0.0701981" smallSig="0.00489686">
     </face>
    </xtal>
    <xtal iXtal="3">
     <face end="NA">
-     <mevPerDac bigVal="0.383669" bigSig="0.0267302" smallVal="0.0714969" smallSig="0.0049812">
+     <mevPerDAC bigVal="0.383668" bigSig="0.0267306" smallVal="0.0714968" smallSig="0.00498127">
     </face>
    </xtal>
    <xtal iXtal="4">
     <face end="NA">
-     <mevPerDac bigVal="0.36893" bigSig="0.0263374" smallVal="0.0680659" smallSig="0.00485913">
+     <mevPerDAC bigVal="0.356224" bigSig="0.0250116" smallVal="0.069222" smallSig="0.00486029">
     </face>
    </xtal>
    <xtal iXtal="5">
     <face end="NA">
-     <mevPerDac bigVal="0.371131" bigSig="0.0261167" smallVal="0.0710595" smallSig="0.0050005">
+     <mevPerDAC bigVal="0.371131" bigSig="0.0261167" smallVal="0.0710595" smallSig="0.00500051">
     </face>
    </xtal>
    <xtal iXtal="6">
     <face end="NA">
-     <mevPerDac bigVal="0.365975" bigSig="0.0262443" smallVal="0.070818" smallSig="0.0050784">
+     <mevPerDAC bigVal="0.353667" bigSig="0.0247995" smallVal="0.0672358" smallSig="0.00471464">
     </face>
    </xtal>
    <xtal iXtal="7">
     <face end="NA">
-     <mevPerDac bigVal="0.365193" bigSig="0.0256771" smallVal="0.0668059" smallSig="0.00469719">
+     <mevPerDAC bigVal="0.365191" bigSig="0.0256778" smallVal="0.0668055" smallSig="0.00469733">
     </face>
    </xtal>
    <xtal iXtal="8">
     <face end="NA">
-     <mevPerDac bigVal="0.373161" bigSig="0.027424" smallVal="0.0732035" smallSig="0.0053798">
+     <mevPerDAC bigVal="0.361493" bigSig="0.0259604" smallVal="0.0707534" smallSig="0.00508111">
     </face>
    </xtal>
    <xtal iXtal="9">
     <face end="NA">
-     <mevPerDac bigVal="0.367265" bigSig="0.0258204" smallVal="0.0696693" smallSig="0.00489807">
+     <mevPerDAC bigVal="0.367265" bigSig="0.0258204" smallVal="0.0696692" smallSig="0.00489807">
     </face>
    </xtal>
    <xtal iXtal="10">
     <face end="NA">
-     <mevPerDac bigVal="0.385859" bigSig="0.0278045" smallVal="0.0723344" smallSig="0.00521232">
+     <mevPerDAC bigVal="0.374912" bigSig="0.0268689" smallVal="0.0715926" smallSig="0.00513084">
     </face>
    </xtal>
    <xtal iXtal="11">
     <face end="NA">
-     <mevPerDac bigVal="0.379322" bigSig="0.0267661" smallVal="0.0707307" smallSig="0.00499098">
+     <mevPerDAC bigVal="0.379328" bigSig="0.026767" smallVal="0.0707319" smallSig="0.00499115">
     </face>
    </xtal>
   </layer>
   <layer iLayer="5">
    <xtal iXtal="0">
     <face end="NA">
-     <mevPerDac bigVal="0.371552" bigSig="0.0266377" smallVal="0.0711509" smallSig="0.00510102">
+     <mevPerDAC bigVal="0.358798" bigSig="0.0253022" smallVal="0.0678554" smallSig="0.00478511">
     </face>
    </xtal>
    <xtal iXtal="1">
     <face end="NA">
-     <mevPerDac bigVal="0.368799" bigSig="0.0263121" smallVal="0.0694905" smallSig="0.00495783">
+     <mevPerDAC bigVal="0.368799" bigSig="0.0263121" smallVal="0.0694904" smallSig="0.00495782">
     </face>
    </xtal>
    <xtal iXtal="2">
     <face end="NA">
-     <mevPerDac bigVal="0.372627" bigSig="0.0268312" smallVal="0.0640267" smallSig="0.00461028">
+     <mevPerDAC bigVal="0.361094" bigSig="0.0254711" smallVal="0.0599141" smallSig="0.00422626">
     </face>
    </xtal>
    <xtal iXtal="3">
     <face end="NA">
-     <mevPerDac bigVal="0.371744" bigSig="0.0265995" smallVal="0.0650861" smallSig="0.00465713">
+     <mevPerDAC bigVal="0.371744" bigSig="0.0265995" smallVal="0.0650861" smallSig="0.00465713">
     </face>
    </xtal>
    <xtal iXtal="4">
     <face end="NA">
-     <mevPerDac bigVal="0.368022" bigSig="0.0267006" smallVal="0.067485" smallSig="0.00489614">
+     <mevPerDAC bigVal="0.35523" bigSig="0.0251444" smallVal="0.065814" smallSig="0.00465854">
     </face>
    </xtal>
    <xtal iXtal="5">
     <face end="NA">
-     <mevPerDac bigVal="0.359293" bigSig="0.024543" smallVal="0.0666562" smallSig="0.00455324">
+     <mevPerDAC bigVal="0.359293" bigSig="0.024543" smallVal="0.0666559" smallSig="0.00455322">
     </face>
    </xtal>
    <xtal iXtal="6">
     <face end="NA">
-     <mevPerDac bigVal="0.370579" bigSig="0.026053" smallVal="0.0666834" smallSig="0.00468807">
+     <mevPerDAC bigVal="0.357845" bigSig="0.0248234" smallVal="0.063149" smallSig="0.00438059">
     </face>
    </xtal>
    <xtal iXtal="7">
     <face end="NA">
-     <mevPerDac bigVal="0.371548" bigSig="0.0259928" smallVal="0.0705567" smallSig="0.00493601">
+     <mevPerDAC bigVal="0.371548" bigSig="0.0259928" smallVal="0.0705567" smallSig="0.00493601">
     </face>
    </xtal>
    <xtal iXtal="8">
     <face end="NA">
-     <mevPerDac bigVal="0.382201" bigSig="0.0269204" smallVal="0.0701053" smallSig="0.00493788">
+     <mevPerDAC bigVal="0.371209" bigSig="0.0260113" smallVal="0.0683394" smallSig="0.00478867">
     </face>
    </xtal>
    <xtal iXtal="9">
     <face end="NA">
-     <mevPerDac bigVal="0.375692" bigSig="0.0267794" smallVal="0.0736855" smallSig="0.00525232">
+     <mevPerDAC bigVal="0.375692" bigSig="0.0267794" smallVal="0.0736856" smallSig="0.00525232">
     </face>
    </xtal>
    <xtal iXtal="10">
     <face end="NA">
-     <mevPerDac bigVal="0.363989" bigSig="0.026054" smallVal="0.0689257" smallSig="0.00493364">
+     <mevPerDAC bigVal="0.35262" bigSig="0.0247939" smallVal="0.0648802" smallSig="0.00456195">
     </face>
    </xtal>
    <xtal iXtal="11">
     <face end="NA">
-     <mevPerDac bigVal="0.394113" bigSig="0.0277339" smallVal="0.0738118" smallSig="0.00519416">
+     <mevPerDAC bigVal="0.394113" bigSig="0.0277339" smallVal="0.0738118" smallSig="0.00519416">
     </face>
    </xtal>
   </layer>
   <layer iLayer="6">
    <xtal iXtal="0">
     <face end="NA">
-     <mevPerDac bigVal="0.374407" bigSig="0.0276163" smallVal="0.0702066" smallSig="0.00517843">
+     <mevPerDAC bigVal="0.362921" bigSig="0.026372" smallVal="0.0683982" smallSig="0.00497023">
     </face>
    </xtal>
    <xtal iXtal="1">
     <face end="NA">
-     <mevPerDac bigVal="0.372977" bigSig="0.0268788" smallVal="0.0699904" smallSig="0.00504391">
+     <mevPerDAC bigVal="0.372977" bigSig="0.0268788" smallVal="0.0699904" smallSig="0.00504391">
     </face>
    </xtal>
    <xtal iXtal="2">
     <face end="NA">
-     <mevPerDac bigVal="0.382198" bigSig="0.0276871" smallVal="0.0745598" smallSig="0.00540124">
+     <mevPerDAC bigVal="0.368786" bigSig="0.0263757" smallVal="0.0706839" smallSig="0.00505533">
     </face>
    </xtal>
    <xtal iXtal="3">
     <face end="NA">
-     <mevPerDac bigVal="0.380141" bigSig="0.0267791" smallVal="0.071185" smallSig="0.00501463">
+     <mevPerDAC bigVal="0.380141" bigSig="0.0267791" smallVal="0.071185" smallSig="0.00501463">
     </face>
    </xtal>
    <xtal iXtal="4">
     <face end="NA">
-     <mevPerDac bigVal="0.3951" bigSig="0.0290542" smallVal="0.0743894" smallSig="0.00547032">
+     <mevPerDAC bigVal="0.38268" bigSig="0.0274622" smallVal="0.0743745" smallSig="0.00533732">
     </face>
    </xtal>
    <xtal iXtal="5">
     <face end="NA">
-     <mevPerDac bigVal="0.383833" bigSig="0.0275189" smallVal="0.0732671" smallSig="0.00525288">
+     <mevPerDAC bigVal="0.383833" bigSig="0.0275189" smallVal="0.0732671" smallSig="0.00525288">
     </face>
    </xtal>
    <xtal iXtal="6">
     <face end="NA">
-     <mevPerDac bigVal="0.406269" bigSig="0.0289916" smallVal="0.0773731" smallSig="0.00552139">
+     <mevPerDAC bigVal="0.393841" bigSig="0.0276622" smallVal="0.0737231" smallSig="0.00517808">
     </face>
    </xtal>
    <xtal iXtal="7">
     <face end="NA">
-     <mevPerDac bigVal="0.39541" bigSig="0.0288994" smallVal="0.0752661" smallSig="0.00550098">
+     <mevPerDAC bigVal="0.39541" bigSig="0.0288994" smallVal="0.0752661" smallSig="0.00550099">
     </face>
    </xtal>
    <xtal iXtal="8">
     <face end="NA">
-     <mevPerDac bigVal="0.373559" bigSig="0.026467" smallVal="0.0705879" smallSig="0.00500121">
+     <mevPerDAC bigVal="0.361785" bigSig="0.02548" smallVal="0.0678233" smallSig="0.0047767">
     </face>
    </xtal>
    <xtal iXtal="9">
     <face end="NA">
-     <mevPerDac bigVal="0.374074" bigSig="0.0272835" smallVal="0.0702018" smallSig="0.00512024">
+     <mevPerDAC bigVal="0.374074" bigSig="0.0272835" smallVal="0.0702018" smallSig="0.00512024">
     </face>
    </xtal>
    <xtal iXtal="10">
     <face end="NA">
-     <mevPerDac bigVal="0.38884" bigSig="0.0287729" smallVal="0.0733425" smallSig="0.00542711">
+     <mevPerDAC bigVal="0.373435" bigSig="0.0270055" smallVal="0.0693502" smallSig="0.00501517">
     </face>
    </xtal>
    <xtal iXtal="11">
     <face end="NA">
-     <mevPerDac bigVal="0.35455" bigSig="0.0253512" smallVal="0.067954" smallSig="0.00485888">
+     <mevPerDAC bigVal="0.35455" bigSig="0.0253512" smallVal="0.067954" smallSig="0.00485888">
     </face>
    </xtal>
   </layer>
   <layer iLayer="7">
    <xtal iXtal="0">
     <face end="NA">
-     <mevPerDac bigVal="0.370126" bigSig="0.0284054" smallVal="0.0744442" smallSig="0.00571322">
+     <mevPerDAC bigVal="0.359454" bigSig="0.0269798" smallVal="0.0693974" smallSig="0.0052088">
     </face>
    </xtal>
    <xtal iXtal="1">
     <face end="NA">
-     <mevPerDac bigVal="0.37639" bigSig="0.0271763" smallVal="0.072014" smallSig="0.00519959">
+     <mevPerDAC bigVal="0.37639" bigSig="0.0271763" smallVal="0.072014" smallSig="0.00519959">
     </face>
    </xtal>
    <xtal iXtal="2">
     <face end="NA">
-     <mevPerDac bigVal="0.376413" bigSig="0.0272762" smallVal="0.0707329" smallSig="0.00512556">
+     <mevPerDAC bigVal="0.36298" bigSig="0.0258839" smallVal="0.0694297" smallSig="0.004951">
     </face>
    </xtal>
    <xtal iXtal="3">
     <face end="NA">
-     <mevPerDac bigVal="0.387205" bigSig="0.0269224" smallVal="0.0737487" smallSig="0.00512775">
+     <mevPerDAC bigVal="0.387205" bigSig="0.0269228" smallVal="0.0737488" smallSig="0.00512783">
     </face>
    </xtal>
    <xtal iXtal="4">
     <face end="NA">
-     <mevPerDac bigVal="0.380721" bigSig="0.0286179" smallVal="0.0714296" smallSig="0.00536918">
+     <mevPerDAC bigVal="0.369128" bigSig="0.0274229" smallVal="0.0698843" smallSig="0.00519178">
     </face>
    </xtal>
    <xtal iXtal="5">
     <face end="NA">
-     <mevPerDac bigVal="0.372141" bigSig="0.0265339" smallVal="0.0700056" smallSig="0.00499143">
+     <mevPerDAC bigVal="0.372132" bigSig="0.0265277" smallVal="0.0700041" smallSig="0.00499029">
     </face>
    </xtal>
    <xtal iXtal="6">
     <face end="NA">
-     <mevPerDac bigVal="0.373373" bigSig="0.0269137" smallVal="0.0706037" smallSig="0.0050893">
+     <mevPerDAC bigVal="0.36135" bigSig="0.0259856" smallVal="0.0671854" smallSig="0.00483148">
     </face>
    </xtal>
    <xtal iXtal="7">
     <face end="NA">
-     <mevPerDac bigVal="0.376753" bigSig="0.0269878" smallVal="0.0713758" smallSig="0.00511283">
+     <mevPerDAC bigVal="0.376753" bigSig="0.0269878" smallVal="0.0713758" smallSig="0.00511283">
     </face>
    </xtal>
    <xtal iXtal="8">
     <face end="NA">
-     <mevPerDac bigVal="0.391727" bigSig="0.0282664" smallVal="0.0723619" smallSig="0.00522152">
+     <mevPerDAC bigVal="0.376871" bigSig="0.0264861" smallVal="0.0724828" smallSig="0.00509402">
     </face>
    </xtal>
    <xtal iXtal="9">
     <face end="NA">
-     <mevPerDac bigVal="0.386468" bigSig="0.0283433" smallVal="0.0736451" smallSig="0.00540108">
+     <mevPerDAC bigVal="0.386468" bigSig="0.0283433" smallVal="0.0736451" smallSig="0.00540108">
     </face>
    </xtal>
    <xtal iXtal="10">
     <face end="NA">
-     <mevPerDac bigVal="0.36735" bigSig="0.0272672" smallVal="0.0699826" smallSig="0.00519458">
+     <mevPerDAC bigVal="0.354198" bigSig="0.0256811" smallVal="0.0667888" smallSig="0.00484253">
     </face>
    </xtal>
    <xtal iXtal="11">
     <face end="NA">
-     <mevPerDac bigVal="0.367273" bigSig="0.0260483" smallVal="0.0688392" smallSig="0.00488232">
+     <mevPerDAC bigVal="0.367273" bigSig="0.0260483" smallVal="0.0688392" smallSig="0.00488232">
     </face>
    </xtal>
   </layer>
