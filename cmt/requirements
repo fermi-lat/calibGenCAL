@@ -21,9 +21,10 @@ macro calibgencal_headers   "" WIN32  ""
 macro source "*.cxx" WIN32 "*.h *.cxx"
 
 apply_pattern library_Llinkopts library="muonCalib"
-#macro calibgencal_linkopts "$(ROOT_linkopts) $(mcRootData_linkopts) $(digiRootData_linkopts) $(reconRootData_linkopts)" 
+apply_pattern library_Llinkopts library="RootFileAnalysis"
 
-library muonCalib -no_share muonCalib.cxx
+library RootFileAnalysis -no_share RootFileAnalysis.cxx
+library muonCalib -no_share muonCalib.cxx 
 
 application runMuonCalib runMuonCalib.cxx 
 
@@ -35,6 +36,8 @@ application getLightAsymXML getLightAsymXML.cxx
 
 application getPedestalsXML getPedestalsXML.cxx
 
+application getCorrPedestalsXML getCorrPedestalsXML.cxx
+
 application getGainsXML getGainsXML.cxx
 
 application genNtuple genNtuple.cxx
@@ -42,4 +45,5 @@ application genNtuple genNtuple.cxx
 application compare_constants compare_constants.cxx
 
 application ciFit ciFit.cxx
+
 

@@ -20,34 +20,20 @@ int main(int argn, char** argc) {
 
   std::vector<std::string> digiFileNames;
   std::string::size_type pos = 0;
-  for( ; ; ) {
-
+  while (1) {
     std::string::size_type i = temp.find(' ', pos);
-    if(i != std::string::npos) {
-      digiFileNames.push_back(temp.substr(pos, i-pos));
-    }
-    else {
-
-      std::string lastFile = temp.substr(pos);
-      if(lastFile.find("digi") != std::string::npos) {
-		  digiFileNames.push_back(lastFile);
-		  break;
-      }
-      else {
-		  break;
-      }
-
-    }
-
-    pos = i + 1;
-  }
-
-  // Build chain of input filenames
-  TChain* digiChain = new TChain("Digi");
-  for(std::vector<std::string>::const_iterator itr = digiFileNames.begin();
-      itr != digiFileNames.end(); ++itr) {
-    std::cout << "digi file: " << *itr << std::endl;
-    digiChain->Add(itr->c_str());
+    
+	 if(i != std::string::npos) {  //'space' delimiter is found, return previous string.
+		digiFileNames.push_back(temp.substr(pos, i-pos));
+	 } else {                      //delimiter is not found.  if previous string has length, 
+		//then treat as filename.
+		std::string lastFile = temp.substr(pos);
+		if (lastFile.length() > 0) 
+         digiFileNames.push_back(lastFile);
+		break;
+	 }
+  
+	 pos = i + 1;
   }
 
   std::string pedFile;
@@ -78,76 +64,108 @@ int main(int argn, char** argc) {
   inputFile >> asymFile;
   std::cout << "asymmetry file: " << asymFile << std::endl;
 
+  std::string pedFileXML;
+  inputFile >> pedFileXML;
+  std::cout << "ped xml file: " << pedFileXML << std::endl;
+
+  std::string corrpedFileXML;
+  inputFile >> corrpedFileXML;
+  std::cout << "corrped xml file: " << corrpedFileXML << std::endl;
+
+  std::string slopeFileXML;
+  inputFile >> slopeFileXML;
+  std::cout << "slope xml file: " << slopeFileXML << std::endl;
+
+  std::string asymFileXML;
+  inputFile >> asymFileXML;
+  std::cout << "asym xml file: " << asymFileXML << std::endl;
+
+  std::string peakFileXML;
+  inputFile >> peakFileXML;
+  std::cout << "peak xml file: " << peakFileXML << std::endl;
+
   // first pass
   {
-    muonCalib r(digiChain, 0, 0, pedHist.c_str());
+	 muonCalib r(&digiFileNames, 0, 0, pedHist.c_str());
 
-    // Default settings are FILLPEDHIST, basically fills up the pedestal histograms w/ all data points
-    r.Go(10000);
-    r.Rewind();
-    r.FitPedHist();   //loops through & finds mean & rms pedestal for every layer/xtal/end, store results in m_calPed*
+	 // Default settings are FILLPEDHIST, basically fills up the pedestal histograms w/ all data points
+	 r.Go(10000);
+	 r.Rewind();
+	 r.FitPedHist();   //loops through & finds mean & rms pedestal for every layer/xtal/end, store results in m_calPed*
 
+	 
     r.PrintCalPed(pedFile.c_str());
-    r.Rewind();
+	 r.Rewind();
 
-    r.SetFillPedHist4Ranges();  //LOAD up rawAdcHist, pdahist
-    r.Go(10000);
-    r.FitPedHist();             // fit pdaHist for pedestals.  store data in m_calPed*
+	 r.SetFillPedHist4Ranges();  //LOAD up rawAdcHist, pdahist
+	 r.Go(10000);
+	 r.FitPedHist();             // fit pdaHist for pedestals.  store data in m_calPed*
+	 std::cout << std::endl << __FILE__ << "(" << __LINE__ << ")" << " Writing pedestals...\n";
     r.PrintCalPed(pedFile.c_str());
+	 r.WritePedXML(pedFileXML.c_str());
 
-    r.SetFillCorrPedHist2Ranges();
-    r.Go(10000);                // fill rawadchist,fill corrpdahist MINUS pedestal
-    r.FitCorrPedHist();         // run gaussian fit on corrpdahist, fill m_calCorr*
-    r.PrintCalCorrPed(corrpedFile.c_str());
+	 r.SetFillCorrPedHist2Ranges();
+	 r.Go(10000);                // fill rawadchist,fill corrpdahist MINUS pedestal
+	 r.FitCorrPedHist();         // run gaussian fit on corrpdahist, fill m_calCorr*
+	 r.PrintCalCorrPed(corrpedFile.c_str());
+	 std::cout << std::endl << __FILE__ << "(" << __LINE__ << ")" << " Writing corrped...\n";
+    r.WriteCorrPedXML(corrpedFileXML.c_str());
 
-    r.Rewind();
-    r.SetFillRatHist();
-    r.Go(1000000);               // fill rawadchist, fill ratntup w/ pedestal corrected data fill a,ar,fill gx,gy
+	 r.Rewind();
+	 r.SetFillRatHist();
+	 r.Go(1000000);               // fill rawadchist, fill ratntup w/ pedestal corrected data fill a,ar,fill gx,gy
 	 // fill LTOT array, MAXNL &NTOT,call some graph functions,fill TX,TY, more
-    r.FitRatHist();
+	 r.FitRatHist();
 
+	 std::cout << std::endl << __FILE__ << "(" << __LINE__ << ")" << " Writing mu slopes...\n";
     r.WriteMuSlopes(slopeFile.c_str());
-    r.WriteMuPeaks(peakFile.c_str());
+	 r.WriteMuSlopesXML(slopeFileXML.c_str());
+	 r.WriteMuPeaks(peakFile.c_str());
 
-    r.WriteHist();
+	 r.WriteHist();
 
   }
 
   // second pass to calibrate muon peak
 
   {
-    muonCalib r(digiChain, 0, 0, peakHist.c_str());
+	 muonCalib r(&digiFileNames, 0, 0, peakHist.c_str());
 
-    r.ReadCalPed(pedFile.c_str());     //load up m_calPed*
-    r.ReadMuSlopes(slopeFile.c_str()); //load up m_calSlopes
+	 r.ReadCalPed(pedFile.c_str());     //load up m_calPed*
+	 r.ReadMuSlopes(slopeFile.c_str()); //load up m_calSlopes
 
-    // read in m_calCorr, correct difference in gain between two ends of a crystal
-    r.ReadMuPeaks(peakFile.c_str());   //load up m_calCorr
-//	r.ReadAsymTable(asymFile.c_str());  
-    // has to fit muon peak twice, first time to correct gains for event
-    // selection
-    r.Rewind();
-    r.HistClear();
+	 // read in m_calCorr, correct difference in gain between two ends of a crystal
+	 r.ReadMuPeaks(peakFile.c_str());   //load up m_calCorr
+	 //	r.ReadAsymTable(asymFile.c_str());  
+	 // has to fit muon peak twice, first time to correct gains for event
+	 // selection
+	 r.Rewind();
+	 r.HistClear();
 
-    r.SetFillMuHist(); //fills thrhist,rawhist
-	r.SetAsymCorrNone();
-    r.Go(1000000);
-	r.WriteAsymTable(asymFile.c_str());
+	 r.SetFillMuHist(); //fills thrhist,rawhist
+	 r.SetAsymCorrNone();
+	 r.Go(1000000);
+	 std::cout << std::endl << __FILE__ << "(" << __LINE__ << ")" << " Writing light_asym table...\n";
+    r.WriteAsymTable(asymFile.c_str());
+	 r.WriteAsymXML(asymFileXML.c_str());
 
-    r.FitMuHist();  //uses thrhist, , created m_cal_Corr, m_muRelSigma
+	 r.FitMuHist();  //uses thrhist, , created m_cal_Corr, m_muRelSigma
 
-    // after fitting, event selection may change, so need to refit it
-    r.Rewind();
-    r.HistClear();
-	r.ReadAsymTable(asymFile.c_str());
-    r.SetFillMuHist();
-	r.SetAsymCorrSpline();
-    r.Go(1000000);
+	 // after fitting, event selection may change, so need to refit it
+	 r.Rewind();
+	 r.HistClear();
+	 r.ReadAsymTable(asymFile.c_str());
+	 r.SetFillMuHist();
+	 r.SetAsymCorrSpline();
+	 r.Go(1000000);
 
-    r.FitMuHist();
+	 r.FitMuHist();
 
+	 std::cout << std::endl << __FILE__ << "(" << __LINE__ << ")" << " Writing mu peaks...\n";
     r.WriteMuPeaks(peakFile.c_str());
+	 r.WriteMuPeaksXML(peakFileXML.c_str());
 
+    std::cout << std::endl << __FILE__ << "(" << __LINE__ << ")" << " Writing histograms...\n";
     r.WriteHist();
 
   }

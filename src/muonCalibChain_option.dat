@@ -1,4 +1,4 @@
-d:\GLAST_DATA\ebf031005015905_new.root d:\GLAST_DATA\ebf031005040315_new.root 
+D:\GLAST_DATA\ebf031005015905_new.root D:\GLAST_DATA\ebf031005040315_new.root
 ../output/muped.txt
 ../output/mucorrped.txt
 ../output/muslope.txt
@@ -6,3 +6,9 @@ d:\GLAST_DATA\ebf031005015905_new.root d:\GLAST_DATA\ebf031005040315_new.root
 ../output/Histograms_ped_rat.root
 ../output/Histograms_peak.root
 ../output/asym_table.txt
+../xml/pedestals.xml
+../xml/mucorrped.xml
+../xml/muslopes.xml
+../xml/light_asym.xml
+../xml/gains.xml
+

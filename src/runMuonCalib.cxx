@@ -45,7 +45,9 @@ int main(int argn, char** argc) {
 
   // first pass
   {
-    muonCalib r(digiFileName.c_str(), "", "", pedHist.c_str());
+	 std::vector<std::string> digiFileNames;
+	 digiFileNames.push_back(digiFileName);
+	 muonCalib r(&digiFileNames, 0, 0, pedHist.c_str());
 
     r.Go(10000);
     r.Rewind();
@@ -79,7 +81,9 @@ int main(int argn, char** argc) {
   // second pass to calibrate muon peak
 
   {
-    muonCalib r(digiFileName.c_str(), "", "", peakHist.c_str());
+	 std::vector<std::string> digiFileNames;
+	 digiFileNames.push_back(digiFileName);
+    muonCalib r(&digiFileNames, 0, 0, peakHist.c_str());
 
     r.ReadCalPed(pedFile.c_str());
     r.ReadMuSlopes(slopeFile.c_str());
