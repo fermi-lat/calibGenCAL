@@ -12,15 +12,21 @@ use RootPolicy v*
 #the following prepend makes the includes folder available locally: avoid the package_include
 macro_prepend includes "-I $(CALIBGENCALROOT) " WIN32 "/I $(CALIBGENCALROOT) "
 
+# make sure we have all graphical root libraries linked (stolen from rootanalysis)
+macro_append ROOT_libs " -lHist -lGraf -lGpad " \
+             WIN32 " ${ROOT_PATH}/lib/libHist.lib ${ROOT_PATH}/lib/libGraf.lib ${ROOT_PATH}/lib/libGpad.lib "
+
 macro calibgencal_headers   "" WIN32 
 
 macro source "*.cxx" WIN32 "*.h *.cxx"
 
 macro calibgencal_linkopts "$(ROOT_linkopts) $(mcRootData_linkopts) $(digiRootData_linkopts) $(reconRootData_linkopts)" 
 
-application runMuonCalib muonCalib.cxx runMuonCalib.cxx 
+library muonCalib -no_share muonCalib.cxx
 
-application runMuonCalibChain muonCalib.cxx runMuonCalibChain.cxx 
+application runMuonCalib runMuonCalib.cxx 
+
+application runMuonCalibChain runMuonCalibChain.cxx 
 
 application getMuSlopesXML getMuSlopesXML.cxx
 

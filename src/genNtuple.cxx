@@ -21,12 +21,12 @@ TROOT gRoot("root", "root");
 int main(int argc, char** argv)
 {
   if(argc != 5) {
-    cout << "Need 4 arguments! " << endl << "1. output const root file 2. pedestal text file 3. muslope text file 4. mupeak text file" << endl;
+    std::cout << "Need 4 arguments! " << std::endl << "1. output const root file 2. pedestal text file 3. muslope text file 4. mupeak text file" << std::endl;
     exit(1);
   }
 
-  cout << "Processing: " << endl << argv[2] << endl << argv[3] << endl 
-       << argv[4] << endl;
+  std::cout << "Processing: " << std::endl << argv[2] << std::endl << argv[3] << std::endl 
+       << argv[4] << std::endl;
 
   TFile f(argv[1], "RECREATE");
   TNtuple n1("ped", "ped", "Layer:Col:Side:Range:Ped:Rms");
@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 
   ifstream f1(argv[2]);
   if(! f1.is_open()) {
-    cout << "f1 can not be open!" << endl;
+    std::cout << "f1 can not be open!" << std::endl;
     exit(1);
   }
  

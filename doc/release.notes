@@ -3,3 +3,5 @@ v0  creation of calibGenCAL package, add codes to generate calibration constants
 v1 add codes to do the light taper study
 
 v2 change calibration constants code: Change muon distribution fit function from landau to log normal. Add correlated pedestal finding method
+
+v2r1 returned muon distribution fit from lognormal to landau.  made changes to get code to compile & run under windows/vc7.1.

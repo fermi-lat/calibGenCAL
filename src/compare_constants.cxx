@@ -34,7 +34,7 @@ int main()
 
   ifstream f1_1("/nfs/farm/g/glast/u03/EM2003/rootFiles/v3r3p2/muon_ver/calib/muped__030928090737_030928030904.txt");
   if(! f1_1.is_open()) {
-    cout << "f1_1 can not be open! " << endl;
+    std::cout << "f1_1 can not be open! " << std::endl;
     exit(1);
   }
 
@@ -44,7 +44,7 @@ int main()
 
   ifstream f1_2("/nfs/farm/g/glast/u03/EM2003/rootFiles/v3r3p2/muon_ver/calib/muped__031001010239_031001031445.txt");
   if(! f1_2.is_open()) {
-    cout << "f1_2 can not be open! " << endl;
+    std::cout << "f1_2 can not be open! " << std::endl;
     exit(1);
   }
 
@@ -69,7 +69,7 @@ int main()
 
   ifstream f2_1("/nfs/farm/g/glast/u03/EM2003/rootFiles/v3r3p2/muon_ver/calib/muslope__030928090737_030928030904.txt");
   if(! f2_1.is_open()) {
-    cout << "f2_1 can not be open! " << endl;
+    std::cout << "f2_1 can not be open! " << std::endl;
     exit(1);
   }
 
@@ -79,7 +79,7 @@ int main()
 
   ifstream f2_2("/nfs/farm/g/glast/u03/EM2003/rootFiles/v3r3p2/muon_ver/calib/muslope__031001010239_031001031445.txt");
   if(! f2_2.is_open()) {
-    cout << "f2_2 can not be open! " << endl;
+    std::cout << "f2_2 can not be open! " << std::endl;
     exit(1);
   }
 
@@ -99,7 +99,7 @@ int main()
 
   ifstream f3_1("/nfs/farm/g/glast/u03/EM2003/rootFiles/v3r3p2/muon_ver/calib/mupeak__030928090737_030928030904.txt");
   if(! f3_1.is_open()) {
-    cout << "f3_1 can not be open! " << endl;
+    std::cout << "f3_1 can not be open! " << std::endl;
     exit(1);
   }
 
@@ -109,7 +109,7 @@ int main()
 
   ifstream f3_2("/nfs/farm/g/glast/u03/EM2003/rootFiles/v3r3p2/muon_ver/calib/mupeak__030930052646_030930072754.txt");
   if(! f3_2.is_open()) {
-    cout << "f3_2 can not be open! " << endl;
+    std::cout << "f3_2 can not be open! " << std::endl;
     exit(1);
   }
 

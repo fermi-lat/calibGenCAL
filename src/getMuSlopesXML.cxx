@@ -25,7 +25,7 @@ int main(int argc, char** argv)
                 std::cout <<" " << layer 
                        <<" " << col
                        <<" " << av
-                       << endl;
+                       << std::endl;
 
         muslopes[layer][col] = av;
     }
@@ -40,26 +40,26 @@ int main(int argc, char** argv)
     std::ofstream muslopesout("../xml/muslopes.xml"); 
     char  q= '"';
 
-    muslopesout << "<?xml version=\"1.0\" ?>" << endl;
+    muslopesout << "<?xml version=\"1.0\" ?>" << std::endl;
 
-    muslopesout << "<!DOCTYPE calCalib SYSTEM \"calCalib_v2.dtd\" [] >" << endl;
+    muslopesout << "<!DOCTYPE calCalib SYSTEM \"calCalib_v2.dtd\" [] >" << std::endl;
 
-    muslopesout << "<calCalib>" << endl;
+    muslopesout << "<calCalib>" << std::endl;
 
-    muslopesout << "<generic instrument=\"EM\" timestamp=\"2003-10-1-12:56\" calibType=\"CAL_MuSlope\" fmtVersion=\"v3r3p2\">" << endl;
+    muslopesout << "<generic instrument=\"EM\" timestamp=\"2003-10-1-12:56\" calibType=\"CAL_MuSlope\" fmtVersion=\"v3r3p2\">" << std::endl;
 
-  muslopesout << "</generic>" << endl;
+  muslopesout << "</generic>" << std::endl;
 
-  muslopesout << "<dimension nRow=\"1\" nCol=\"1\" nLayer=\"8\" nXtal=\"12\" nFace=\"1\" />" << endl;
+  muslopesout << "<dimension nRow=\"1\" nCol=\"1\" nLayer=\"8\" nXtal=\"12\" nFace=\"1\" />" << std::endl;
 
-  muslopesout << "<tower iRow=\"0\" iCol=\"0\">" << endl;
+  muslopesout << "<tower iRow=\"0\" iCol=\"0\">" << std::endl;
 
     for (int layer=0;layer <8;layer++){
-      muslopesout << "    <layer iLayer=" << q << layer << q << ">" << endl;
+      muslopesout << "    <layer iLayer=" << q << layer << q << ">" << std::endl;
         for(int col=0;col<12;col++){
-            muslopesout << "      <xtal iXtal=" << q << col << q <<">" << endl;
+            muslopesout << "      <xtal iXtal=" << q << col << q <<">" << std::endl;
                 face = naface;
-                muslopesout << "        <face end=" << q << face << q <<">" << endl;
+                muslopesout << "        <face end=" << q << face << q <<">" << std::endl;
                 float av = -10*muslopes[layer][col];
                 char* lex8 = "LEX8";
                 char* lex1 = "LEX1";
@@ -69,17 +69,17 @@ int main(int argc, char** argv)
                 for(int range=0; range <4; range++){
                     muslopesout <<"            <muSlope slope=" << q << av
                        <<q  <<" range=" << q << r[range] << q <<" />"
-                       << endl;
+                       << std::endl;
                 }
-                muslopesout << "        </face>" << endl;
+                muslopesout << "        </face>" << std::endl;
             
-           muslopesout << "       </xtal>" << endl;
+           muslopesout << "       </xtal>" << std::endl;
 
         }
-      muslopesout << "     </layer>" << endl;
+      muslopesout << "     </layer>" << std::endl;
 
    }
 
-  muslopesout << "</tower>" << endl << "</calCalib>" << endl;
+  muslopesout << "</tower>" << std::endl << "</calCalib>" << std::endl;
 
 }
