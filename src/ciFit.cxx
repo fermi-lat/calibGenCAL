@@ -297,7 +297,7 @@ void cfData::WriteSplinesXML(const string &filename, const string &dtdFilename) 
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit.cxx,v 1.12 2004/12/31 00:09:39 fewtrell Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit.cxx,v 1.13 2005/01/06 05:32:16 fewtrell Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
@@ -528,7 +528,7 @@ void RootCI::Go(Int_t numEvents)
 
   if (numEvents+m_startEvent >  nentries) {
     ostringstream temp;
-    temp << " not enough entries in file to proceed, we need " << nentries;
+    temp << " not enough entries in file to proceed, we need " << numEvents;
     throw temp.str();
   }
 
