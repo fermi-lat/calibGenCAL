@@ -255,7 +255,7 @@ void TholdCI::writeXML(const string &filename) {
 
   outfile << "<calCalib>" << endl;
   outfile << " <generic instrument=\"" << m_cfg.instrument <<"\" timestamp=\""<< m_cfg.timestamp <<"\"";
-  outfile << " calibType=\"CAL_TholdCI\" fmtVersion=\"v2r2\" creator=\"" << CGCUtil::CVS_TAG << "\">" << endl;
+  outfile << " calibType=\"CAL_TholdCI\" fmtVersion=\"v2r2p1\" creator=\"" << CGCUtil::CVS_TAG << "\">" << endl;
 
   outfile << " </generic>" << endl;
   outfile << " <dimension nRow=\"1\" nCol=\"1\" nLayer=\"" << LyrNum::N_VALS 

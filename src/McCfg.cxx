@@ -8,6 +8,8 @@
 // EXTLIB INCLUDES
 
 // STD INCLUDES
+#include <algorithm>
+#include <cctype>
 
 const string McCfg::TEST_INFO("TEST_INFO");
 const string McCfg::PATHS("PATHS");
@@ -90,22 +92,25 @@ void McCfg::readCfgFile(const string& cfgPath) {
   
   // SECTION: GENERAL
   nEvtRoughPed = ifile.getInt(GENERAL.c_str(), "NEVENTS_ROUGHPED");
-  nEvtPed = ifile.getInt(GENERAL.c_str(), "NEVENTS_PED");
+  nEvtPed  = ifile.getInt(GENERAL.c_str(), "NEVENTS_PED");
   nEvtAsym = ifile.getInt(GENERAL.c_str(), "NEVENTS_ASYM");
-  nEvtMPD = ifile.getInt(GENERAL.c_str(), "NEVENTS_MPD");
+  nEvtMPD  = ifile.getInt(GENERAL.c_str(), "NEVENTS_MPD");
 
-  readInPeds = ifile.getBool(GENERAL.c_str(), "READ_IN_PEDS");
-  readInAsym = ifile.getBool(GENERAL.c_str(), "READ_IN_ASYM");
-  skipMPD    = ifile.getBool(GENERAL.c_str(), "SKIP_MPD");
+  // ridiculous comparison elminates cast warning in msvc
+  readInPeds = ifile.getBool(GENERAL.c_str(), "READ_IN_PEDS") != 0;
+  readInAsym = ifile.getBool(GENERAL.c_str(), "READ_IN_ASYM") != 0;
+  skipMPD    = ifile.getBool(GENERAL.c_str(), "SKIP_MPD")     != 0;
 
-  genXML = ifile.getBool(GENERAL.c_str(), "GENERATE_XML");
-  genTXT = ifile.getBool(GENERAL.c_str(), "GENERATE_TXT");
-  genHistfiles = ifile.getBool(GENERAL.c_str(), "GENERATE_HISTOGRAM_FILES");
-  genLogfile = ifile.getBool(GENERAL.c_str(), "GENERATE_LOGFILE");
+  // ridiculous comparison elminates cast warning in msvc
+  genXML = ifile.getBool(GENERAL.c_str(), "GENERATE_XML") != 0;
+  genTXT = ifile.getBool(GENERAL.c_str(), "GENERATE_TXT") != 0;
+  genHistfiles = ifile.getBool(GENERAL.c_str(), "GENERATE_HISTOGRAM_FILES") != 0;
+  genLogfile   = ifile.getBool(GENERAL.c_str(), "GENERATE_LOGFILE")         != 0;
 
   // only asign genOptAsymHists is genHistfiles is also enabled.
   genOptAsymHists = false;
-  if (genHistfiles) genOptAsymHists = ifile.getBool(GENERAL.c_str(), "GEN_OPT_ASYM_HISTS");
+  if (genHistfiles) genOptAsymHists 
+     = ifile.getBool(GENERAL.c_str(), "GEN_OPT_ASYM_HISTS") != 0;
 
   // *** POST PROCESS *** //
   // parse list of ROOT input files
@@ -166,12 +171,27 @@ void McCfg::readCfgFile(const string& cfgPath) {
 
   // setup output stream
   // add cout by default
-  ostr.getostreams().push_back(&cout);
+  ostrm.getostreams().push_back(&cout);
   // add user Req logfile
   if (genLogfile) {
-    logstr.open(logfile.c_str());
-    ostr.getostreams().push_back(&logstr);
+    logStrm.open(logfile.c_str());
+    ostrm.getostreams().push_back(&logStrm);
   }
+
+  // create CVS_Tag string w/out illegal characters
+  // xml does not allow '$' char which is used in CVS TAG replacment, also
+  // xml counts spaces as delimeters & 'creator' is specified as a single value
+  creator = CGCUtil::CVS_TAG;
+  // NO idea why this works, but it does.
+  // Newsgroups: comp.lang.c++
+  // From: "John Harrison" <jah...@dtn.ntl.com> - Find messages by this author
+  // Date: 2000/07/27
+  // Subject: Re: remove characters from a string*/
+  creator.erase(remove_if(creator.begin(), 
+                          creator.end(), 
+                          ispunct), 
+                creator.end());
+  replace(creator.begin(),creator.end(),' ','_');
 }
 
 void McCfg::clear() {

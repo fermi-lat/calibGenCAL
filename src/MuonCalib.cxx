@@ -47,6 +47,30 @@ template<class T> void del_all_ptrs(T &container) {
 
 ////////////////////////////////////////////////////////////////////////////////////
 
+MuonCalib::MuonCalib(McCfg &cfg) : 
+  RootFileAnalysis(vector<string>(0),cfg.rootFileList,vector<string>(0),cfg.ostrm),
+  m_cfg(cfg)
+{
+  //open up histogram file if desired
+  if (m_histFilename.length()) {
+    m_histFile.reset(new TFile(m_histFilename.c_str(), "RECREATE","MuonCalibHistograms",9));
+  }
+
+  // configure ROOT Tree - enable only branches we are going to use.
+  if (m_mcEnabled) m_mcChain.SetBranchStatus("*", 0); // disable all branches
+
+  if (m_digiEnabled) {
+    m_digiChain.SetBranchStatus("*",0); // disable all branches
+
+    // activate desired brances
+    m_digiChain.SetBranchStatus("m_cal*",1);
+    m_digiChain.SetBranchStatus("m_eventId", 1);
+  }
+
+  if (m_recEnabled) m_recChain.SetBranchStatus("*",0); // disable all branches
+
+}
+
 void MuonCalib::flushHists() {
   // write current histograms to file & close if we have an open file.
   if (m_histFile.get()) {
@@ -79,62 +103,7 @@ void MuonCalib::openHistFile(const string &filename) {
   m_histFile.reset(new TFile(m_histFilename.c_str(), "RECREATE","MuonCalibHistograms",9));
 }
 
-MuonCalib::MuonCalib(const vector<string> &digiFilenames,
-                     const string &instrument,
-                     const vector<int> &towerList,
-                     ostream &ostr,
-                     const string &timestamp,
-                     double adcThresh,
-                     double cellHorPitch,
-                     double cellVertPitch,
-                     double csiLen,
-                     double maxAsymLL,
-                     double maxAsymLS,
-                     double maxAsymSL,
-                     double maxAsymSS,
-                     double minAsymLL,
-                     double minAsymLS,
-                     double minAsymSL,
-                     double minAsymSS)
-  :
-  // initialize all member objects
-  RootFileAnalysis(vector<string>(0),digiFilenames,vector<string>(0),ostr),
-  m_timestamp(timestamp),
-  m_instrument(instrument),
-  m_towerList(towerList),
-  m_digiFilenames(digiFilenames),
-  m_adcThresh(adcThresh),
-  m_cellHorPitch(cellHorPitch),
-  m_cellVertPitch(cellVertPitch),
-  m_csiLen(csiLen),
-  m_maxAsymLL(maxAsymLL),
-  m_maxAsymLS(maxAsymLS),
-  m_maxAsymSL(maxAsymSL),
-  m_maxAsymSS(maxAsymSS),
-  m_minAsymLL(minAsymLL),
-  m_minAsymLS(minAsymLS),
-  m_minAsymSL(minAsymSL),
-  m_minAsymSS(minAsymSS)
-{
-  //open up histogram file if desired
-  if (m_histFilename.length()) {
-    m_histFile.reset(new TFile(m_histFilename.c_str(), "RECREATE","MuonCalibHistograms",9));
-  }
 
-  // configure ROOT Tree - enable only branches we are going to use.
-  if (m_mcEnabled) m_mcChain.SetBranchStatus("*", 0); // disable all branches
-
-  if (m_digiEnabled) {
-    m_digiChain.SetBranchStatus("*",0); // disable all branches
-
-    // activate desired brances
-    m_digiChain.SetBranchStatus("m_cal*",1);
-    m_digiChain.SetBranchStatus("m_eventId", 1);
-  }
-
-  if (m_recEnabled) m_recChain.SetBranchStatus("*",0); // disable all branches
-
-}
 
 void MuonCalib::freeChildren() {
 }
@@ -465,8 +434,8 @@ void MuonCalib::readIntNonlin(const string &filename) {
                >> col
                >> face
                >> rng
-               >> adc
-               >> dac; // first 4 columns in file id the xtal & adc range
+               >> dac
+               >> adc; // first 4 columns in file id the xtal & adc range
     if (lineStream.fail())
       throw string("Inl file '" + filename + "' is incomplete.");
 
@@ -546,7 +515,7 @@ void MuonCalib::loadInlSplines() {
     //m_ostrm << endl;
 
     // create spline object.
-    TSpline3 *mySpline= new TSpline3(name.str().c_str(), dacs, adcs, nADC);
+    TSpline3 *mySpline= new TSpline3(name.str().c_str(), adcs, dacs, nADC);
 
     mySpline->SetName(name.str().c_str());
     m_inlSplines[diodeIdx] = mySpline;
@@ -633,7 +602,7 @@ void MuonCalib::summarizeHits(HitSummary &hs) {
     
     // DO WE HAVE A HIT? (sum up both ends LEX8 i.e LARGE_DIODE)
     if (hs.adc_ped[DiodeIdx(xtalIdx,POS_FACE,LARGE_DIODE)] +
-        hs.adc_ped[DiodeIdx(xtalIdx,NEG_FACE,LARGE_DIODE)] > m_adcThresh) {
+       hs.adc_ped[DiodeIdx(xtalIdx,NEG_FACE,LARGE_DIODE)] > m_cfg.hitThresh) {
 
       hs.count++; // increment total # hits
 
@@ -953,7 +922,7 @@ void MuonCalib::fillAsymHists(int nEvts, bool genOptHists) {
         // check for asym vals which are way out of range
         
         // test LL first since it is most likely
-        if (asymLL < m_minAsymLL || asymLL > m_maxAsymLL) {
+        if (asymLL < m_cfg.minAsymLL || asymLL > m_cfg.maxAsymLL) {
 //           m_ostrm << " **AsymLL out-of-range evt=" << m_evtId
 //                   << " nXtal=" << xtalIdx.getInt()
 //                   << " pos=" << pos
@@ -965,7 +934,7 @@ void MuonCalib::fillAsymHists(int nEvts, bool genOptHists) {
         }
         // test SS 2nd since bad LL or bad SS should leave  only small #
         // of bad LS & SL's
-        if (asymSS < m_minAsymSS || asymSS > m_maxAsymSS) {
+        if (asymSS < m_cfg.minAsymSS || asymSS > m_cfg.maxAsymSS) {
 //           m_ostrm << " **AsymSS out-of-range evt=" << m_evtId
 //                   << " nXtal=" << xtalIdx.getInt()
 //                   << " pos=" << pos
@@ -975,7 +944,7 @@ void MuonCalib::fillAsymHists(int nEvts, bool genOptHists) {
           nBadAsymSS++;
           continue;
         }
-        if (asymLS < m_minAsymLS || asymLS > m_maxAsymLS) {
+        if (asymLS < m_cfg.minAsymLS || asymLS > m_cfg.maxAsymLS) {
 //           m_ostrm << " **AsymLS out-of-range evt=" << m_evtId
 //                   << " nXtal=" << xtalIdx.getInt()
 //                   << " pos=" << pos
@@ -985,7 +954,7 @@ void MuonCalib::fillAsymHists(int nEvts, bool genOptHists) {
           nBadAsymLS++;
           continue;
         }
-        if (asymSL < m_minAsymSL || asymSL > m_maxAsymSL) {
+        if (asymSL < m_cfg.minAsymSL || asymSL > m_cfg.maxAsymSL) {
 //           m_ostrm << " **AsymSL out-of-range evt=" << m_evtId
 //                   << " nXtal=" << xtalIdx.getInt()
 //                   << " pos=" << pos
@@ -1303,7 +1272,7 @@ void MuonCalib::fillMPDHists(int nEvts) {
   // NUMERIC CONSTANTS
   // converts between lyr/col units & mm
   // real trig is needed for pathlength calculation
-  double slopeFactor = m_cellHorPitch/m_cellVertPitch;
+  double slopeFactor = m_cfg.cellHorPitch/m_cfg.cellVertPitch;
 
   // Basic digi-event loop
   for (Int_t iEvt = m_startEvt; iEvt < lastEvt; iEvt++) {
@@ -1560,7 +1529,6 @@ void MuonCalib::writeMPDTXT(const string &filenameL, const string &filenameS) {
   }
 }
 
-
 void MuonCalib::writePedsXML(const string &filename, const string &dtdFilename) {
   ofstream outfile(filename.c_str());
   ifstream dtdFile(dtdFilename.c_str());
@@ -1582,8 +1550,9 @@ void MuonCalib::writePedsXML(const string &filename, const string &dtdFilename) 
   outfile << "]>" << endl;
 
   outfile << "<calCalib>" << endl;
-  outfile << " <generic instrument=\"" << m_instrument <<"\" timestamp=\""<< m_timestamp <<"\"";
-  outfile << " calibType=\"CAL_Ped\" fmtVersion=\"v2r2\" creator=\"" << CGCUtil::CVS_TAG << "\">" << endl;
+  outfile << " <generic instrument=\"" << m_cfg.instrument <<"\" timestamp=\""<< m_cfg.timestamp <<"\"";
+    
+  outfile << " calibType=\"CAL_Ped\" fmtVersion=\"v2r2p1\" creator=\"" << m_cfg.creator << "\">" << endl;
   outfile << " </generic>" << endl;
   outfile << " <dimension nRow=\"1\" nCol=\"1\" nLayer=\"" << LyrNum::N_VALS 
           << "\" nXtal=\"" << ColNum::N_VALS 
@@ -1642,8 +1611,9 @@ void MuonCalib::writeAsymXML(const string &filename, const string &dtdFilename) 
   outfile << "]>" << endl;
 
   outfile << "<calCalib>" << endl;
-  outfile << " <generic instrument=\"" << m_instrument <<"\" timestamp=\""<< m_timestamp <<"\"";
-  outfile << " calibType=\"CAL_Asym\" fmtVersion=\"v2r2\" creator=\"" << CGCUtil::CVS_TAG << "\">" << endl;
+  outfile << " <generic instrument=\"" << m_cfg.instrument <<"\" timestamp=\""<< m_cfg.timestamp <<"\"";
+  
+  outfile << " calibType=\"CAL_Asym\" fmtVersion=\"v2r2p1\" creator=\"" << m_cfg.creator << "\">" << endl;
   outfile << " </generic>" << endl;
   outfile << " <dimension nRow=\"1\" nCol=\"1\" nLayer=\"" << LyrNum::N_VALS 
           << "\" nXtal=\"" << ColNum::N_VALS 
@@ -1744,8 +1714,8 @@ void MuonCalib::writeMPDXML(const string &filename, const string &dtdFilename) {
   outfile << "]>" << endl;
 
   outfile << "<calCalib>" << endl;
-  outfile << " <generic instrument=\"" << m_instrument <<"\" timestamp=\""<< m_timestamp <<"\"";
-  outfile << " calibType=\"CAL_MevPerDac\" fmtVersion=\"v2r2\" creator=\"" << CGCUtil::CVS_TAG << "\">" << endl;
+  outfile << " <generic instrument=\"" << m_cfg.instrument <<"\" timestamp=\""<< m_cfg.timestamp <<"\"";
+  outfile << " calibType=\"CAL_MevPerDac\" fmtVersion=\"v2r2p1\" creator=\"" << m_cfg.creator << "\">" << endl;
   outfile << " </generic>" << endl;
   outfile << " <dimension nRow=\"1\" nCol=\"1\" nLayer=\"" << LyrNum::N_VALS 
           << "\" nXtal=\"" << ColNum::N_VALS 

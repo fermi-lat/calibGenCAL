@@ -4,6 +4,7 @@
 // LOCAL INCLUDES
 #include "CalDefs.h"
 #include "RootFileAnalysis.h"
+#include "McCfg.h"
 
 // GLAST INCLUDES
 
@@ -24,23 +25,7 @@ class MuonCalib : public RootFileAnalysis {
  public:
 
   /// only one constructor, but it has defaults for many values
-  MuonCalib(const vector<string> &digiFilenames     = vector<string>(0),
-            const string &instrument                = "n/a",
-            const vector<int> &towerList            = vector<int>(1,1),
-            ostream &ostr                           = cout,
-            const string &timestamp                 = "n/a",
-            double adcThresh                        = 100,
-            double cellHorPitch                     = 27.84,
-            double cellVertPitch                    = 21.35,
-            double csiLen                           = 326.0,
-            double maxAsymLL                        = 0.5,
-            double maxAsymLS                        = 2.5,
-            double maxAsymSL                        = -1.0,
-            double maxAsymSS                        = 1.0,
-            double minAsymLL                        = -0.5,
-            double minAsymLS                        = 1.0,
-            double minAsymSL                        = -2.5,
-            double minAsymSS                        = -1.0);
+  MuonCalib(McCfg &cfg);
   
   ~MuonCalib() {freeChildren();}
 
@@ -183,7 +168,7 @@ class MuonCalib : public RootFileAnalysis {
   ///////////////////////////////////////////////////////////
 
   CalVec<FaceIdx, TH1F*> m_roughPedHists; ///< list of histograms for 'rough' pedestals
-  CalVec<RngIdx, TH1F*> m_pedHists; ///< list of histograms for 'final' 4-range pedestals
+  CalVec<RngIdx,  TH1F*> m_pedHists; ///< list of histograms for 'final' 4-range pedestals
 
   CalVec<XtalIdx, TProfile*> m_asymProfsLL; ///< list of profiles for logratio values Large diode vs Large diode over position 1 per xtal
   CalVec<XtalIdx, TProfile*> m_asymProfsLS; ///< list of profiles for logratio values Large diode vs Small diode over position 1 per xtal
@@ -240,29 +225,7 @@ class MuonCalib : public RootFileAnalysis {
   /// Corresponsding DAC values to go with intNonlin spline vals.  2d vector necessary b/c each range has different # of elements
   /// indexed by [diode][n]
   CalVec<DiodeIdx, vector<float> > m_calInlDAC;
-
-  // CONFIG VALUES
-  string m_timestamp; ///< time of muon measurements
-  string m_instrument; ///< current instrument name
-  vector<int> m_towerList; ///< list of mounted LAT towers
-  vector<string> m_digiFilenames; ///< list of input digi-names
-
-  // NUMERIC CONSTANTS
-  double m_adcThresh;
   
-  double m_cellHorPitch;
-  double m_cellVertPitch;
-  double m_csiLen;
-
-  double m_maxAsymLL;
-  double m_maxAsymLS;
-  double m_maxAsymSL;
-  double m_maxAsymSS;
-  double m_minAsymLL;
-  double m_minAsymLS;
-  double m_minAsymSL;
-  double m_minAsymSS;
-
   // Integral Nonlinearity
   void loadInlSplines(); ///< creates & populates INL splines from m_calIntNonlin;
   double adc2dac(DiodeIdx diodeIdx, double adc); ///< uses intNonlin to convert adc 2 dac for specified xtal/adc range
@@ -276,10 +239,12 @@ class MuonCalib : public RootFileAnalysis {
   /// return longitudinal position (in mm) of a crystal center along the length of an 
   /// orthogonal crystal given a cystal column numnber
   double xtalCenterPos(short col) {
-    return (m_csiLen/ColNum::N_VALS)*
+     return (m_cfg.csiLength/ColNum::N_VALS)*
          ((float)col + 0.5)  // calc for middle of segment
-         - 0.5*m_csiLen;     // put 0 in middle of xtal
+         - 0.5*m_cfg.csiLength;     // put 0 in middle of xtal
   }
+
+  const McCfg &m_cfg; ///< contains all application config data.
 };
 
 #endif
