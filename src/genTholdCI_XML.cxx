@@ -276,19 +276,19 @@ void TholdCI::writeXML(const string &filename) {
           FaceIdx faceIdx(twr,lyr,col,face);
           outfile << "    <face end=\"" << FaceNum::MNEM[face] << "\">" << endl;
           outfile << "      <tholdCI FLEVal=\"" << m_FLEVal[faceIdx] 
-                  << "\" FLESig=\"" << m_FLESig[faceIdx]
-                  << "\" FHEVal=\"" << m_FHEVal[faceIdx]
-                  << "\" FHESig=\"" << m_FHESig[faceIdx]
-                  << "\" LACVal=\"" << m_LACVal[faceIdx]
-                  << "\" LACSig=\"" << m_LACSig[faceIdx]
+                  << "\" FLESig=\"" << fixed << m_FLESig[faceIdx]
+                  << "\" FHEVal=\"" << fixed << m_FHEVal[faceIdx]
+                  << "\" FHESig=\"" << fixed << m_FHESig[faceIdx]
+                  << "\" LACVal=\"" << fixed << m_LACVal[faceIdx]
+                  << "\" LACSig=\"" << fixed << m_LACSig[faceIdx]
                   << "\" >" << endl;
           for (RngNum rng; rng.isValid(); rng++) {
             RngIdx rngIdx(faceIdx,rng);
             outfile << "       <tholdCIRange range=\"" << rng.MNEM[rng] 
-                    << "\" pedVal=\"" << m_pedVal[rngIdx]
-                    << "\" pedSig=\"" << m_pedSig[rngIdx]
-                    << "\" ULDVal=\"" << m_ULDVal[rngIdx]
-                    << "\" ULDSig=\"" << m_ULDSig[rngIdx]
+                    << "\" pedVal=\"" << fixed << m_pedVal[rngIdx]
+                    << "\" pedSig=\"" << fixed << m_pedSig[rngIdx]
+                    << "\" ULDVal=\"" << fixed << m_ULDVal[rngIdx]
+                    << "\" ULDSig=\"" << fixed << m_ULDSig[rngIdx]
                     << "\" />" << endl;
           }
           outfile << "      </tholdCI>" << endl;
