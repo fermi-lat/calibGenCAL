@@ -59,3 +59,5 @@ v3r2p4 updated .cvsignore file
 v3r3p1 added LEX8 adc2nrg (energy) output.  fixed bad pedestal fits in LEX1.  took 'creator' field out of xml cuz EM's not ready for it yet.  added better checks for proper trigger mode in data.
 
 v3r3p2 forced floating point output to xml files to be fixed point.
+
+v3r4 added new muTrigEff executable to find FLE thresholds for muons and charge injection
