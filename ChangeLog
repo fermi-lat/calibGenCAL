@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Dec 22 18:13:29 PST 2004
+calibGenCAL/output
+
+Added Files:
+	ciFit.041111143922_FM101_PSHP_CALU_COLLECT_CI_SINGLEX16.xml 
+	mc_asym.041022230030_FM101_Pshp_calu_collect_ext.xml 
+	mc_mevperdac.041022230030_FM101_Pshp_calu_collect_ext.xml 
+	mc_peds.041022230030_FM101_Pshp_calu_collect_ext.xml 
+Log Message:
+All new muon calibration.  New constants are Pedestals, MevPerDac & improved Asymetry.
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Dec 22 18:13:28 PST 2004
 calibGenCAL/doc
 
