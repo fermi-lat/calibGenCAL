@@ -74,6 +74,10 @@ int main(int argn, char** argc) {
   inputFile >> peakHist;
   std::cout << "peak hist file: " << peakHist << std::endl;
 
+  std::string asymFile;
+  inputFile >> asymFile;
+  std::cout << "asymmetry file: " << asymFile << std::endl;
+
   // first pass
   {
     muonCalib r(digiChain, 0, 0, pedHist.c_str());
@@ -104,6 +108,7 @@ int main(int argn, char** argc) {
 
     r.WriteMuSlopes(slopeFile.c_str());
     r.WriteMuPeaks(peakFile.c_str());
+
     r.WriteHist();
 
   }
@@ -118,22 +123,25 @@ int main(int argn, char** argc) {
 
     // read in m_calCorr, correct difference in gain between two ends of a crystal
     r.ReadMuPeaks(peakFile.c_str());   //load up m_calCorr
-
+//	r.ReadAsymTable(asymFile.c_str());  
     // has to fit muon peak twice, first time to correct gains for event
     // selection
     r.Rewind();
     r.HistClear();
 
-    r.SetFillMuHist(); //fills thrhist,reshist,rawhist
+    r.SetFillMuHist(); //fills thrhist,rawhist
+	r.SetAsymCorrNone();
     r.Go(1000000);
+	r.WriteAsymTable(asymFile.c_str());
 
     r.FitMuHist();  //uses thrhist, , created m_cal_Corr, m_muRelSigma
 
     // after fitting, event selection may change, so need to refit it
     r.Rewind();
     r.HistClear();
-
+	r.ReadAsymTable(asymFile.c_str());
     r.SetFillMuHist();
+	r.SetAsymCorrSpline();
     r.Go(1000000);
 
     r.FitMuHist();

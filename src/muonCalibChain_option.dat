@@ -1,7 +1,8 @@
-D:\GLAST_DATA\ebf031005015905_new.root D:\GLAST_DATA\ebf031005040315_new.root 
+C:\GLAST_DATA\ebf031005015905_new.root C:\GLAST_DATA\ebf031005040315_new.root 
 ../output/muped.txt
 ../output/mucorrped.txt
 ../output/muslope.txt
 ../output/mupeak.txt
 ../output/Histograms_ped_rat.root
 ../output/Histograms_peak.root
+../output/asym_table.txt
