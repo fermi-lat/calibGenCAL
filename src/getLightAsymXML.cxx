@@ -4,12 +4,14 @@
 int main(int argc, char** argv)
 {
 
-  if(argc <= 1) {
+  if(argc <= 2) {
+	 std::cout << "Usage: getLightAsymXML infile xmloutfile\n";
     std::cout << "First argument should be an ascii file containing calibration constants for muon slope" << std::endl;
     exit(1);
   }
     
    std::ifstream asymin(argv[1]); 
+	std::ofstream asymout(argv[2]);
   float asym[12][8][10];  
     while(1){
     
@@ -34,7 +36,6 @@ int main(int argc, char** argv)
     char negface[] ="NEG";
     char naface[] = "NA";
     char* face;
-    std::ofstream asymout("../xml/light_asym.xml"); 
     char  q= '"';
 
     asymout << "<?xml version=\"1.0\" ?>" << std::endl;
