@@ -55,3 +55,5 @@ v3r2p2 fixed bad format of in 'creator' field in xml file.  adc & dac were switc
 v3r2p3 just added quick fix to get it to build w/ gcc
 
 v3r2p4 updated .cvsignore file
+
+v3r3p1 added LEX8 adc2nrg (energy) output.  fixed bad pedestal fits in LEX1.  took 'creator' field out of xml cuz EM's not ready for it yet.  added better checks for proper trigger mode in data.
