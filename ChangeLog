@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Jan 10 16:35:19 PST 2005
+calibGenCAL/src
+
+Modified Files:
+	CGCUtil.h 
+Log Message:
+Linux needed an extra include file.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Jan 10 16:11:36 PST 2005
 calibGenCAL/src
 
