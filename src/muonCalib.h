@@ -64,7 +64,9 @@ public :
 
                 
     TObjArray* pedhist;
+    TObjArray* corrpedhist;
     TObjArray* pdahist;
+    TObjArray* corrpdahist;
 
     // raw Histogram actually containing pedestal corrected histograms
     // it is sum of two faces 
@@ -115,27 +117,30 @@ public :
 
          double prevTimeStamp;
 
-        enum GO_TYPE { FILLPEDHIST, FILLMUHIST, FILLRATHIST, FILLPEDHIST4RANGES};
+        enum GO_TYPE { FILLPEDHIST, FILLMUHIST, FILLRATHIST, FILLPEDHIST4RANGES,
+                       FILLCORRPEDHIST, FILLCORRPEDHIST2RANGES };
         GO_TYPE go_type;
         void SetFillPedHist() { go_type = FILLPEDHIST;}
         void SetFillPedHist4Ranges() { go_type = FILLPEDHIST4RANGES;}
+        void SetFillCorrPedHist() { go_type = FILLCORRPEDHIST;}
+        void SetFillCorrPedHist2Ranges() { go_type = FILLCORRPEDHIST2RANGES;}
         void SetFillMuHist() { go_type = FILLMUHIST;}
         void SetFillRatHist() { go_type = FILLRATHIST;}
 
 
-	/// Default ctor, requires that that user calls muonCalib::Init
-	/// to setup access to specific ROOT files.
+  /// Default ctor, requires that that user calls muonCalib::Init
+  /// to setup access to specific ROOT files.
     muonCalib(); 
     
-	/// Standard ctor, where user provides the names of the input root files
-	/// and optionally the name of the output ROOT histogram file
+  /// Standard ctor, where user provides the names of the input root files
+  /// and optionally the name of the output ROOT histogram file
     muonCalib( 
         const char* digiFileName, 
         const char* reconFileName="", 
         const char* mcFileName="", 
         const char *histFileName="Histograms.root"); 
 
-	/// Special ctor which accepts TChains for input files
+  /// Special ctor which accepts TChains for input files
     muonCalib( 
         TChain *digiChain, 
         TChain *recChain = 0, 
@@ -161,21 +166,26 @@ public :
     /// make list of user histograms and all objects created for output
     void MakeHistList(); 
     /// write the existing histograms and ntuples out to file
-    void WriteHist() { if (histFile) histFile->Write(); }; 
+    void WriteHist(){ if (histFile) histFile->Write(); };
     /// Reset() all user histograms
     void HistClear(); 
-	/// Fit calorimeter pedestal histograms
-	void FitPedHist();
-	/// Fit calorimeter log ends ratio vs position histogram
-	void FitRatHist();
-	///Fit log ends signal histograms with landau function
-	void FitMuHist();
-	///Write mu peak positions for all log ends into the file mupeaks.txt
-	void WriteMuPeaks(const char* fileName);
-	void ReadMuPeaks(const char* fileName);
-	///Write mu slopes for all log ends into the file muslopes.txt
-	void WriteMuSlopes(const char* fileName);
-	void ReadMuSlopes(const char* fileName);
+  /// Fit calorimeter pedestal histograms
+  void FitPedHist();
+  /// Fit calorimeter pedestal histograms for both ranges of a same diode
+  void FitCorrPedHist();
+  /// Fit calorimeter log ends ratio vs position histogram
+  void FitRatHist();
+  ///Fit log ends signal histograms with Gaus convoluted Landau functions
+  /// and log normal functions
+  void FitMuHist();
+  /// find peak position for Gaus convoluted Landau functions
+  void GetMPV( TF1* function, Double_t precision, Double_t min, Double_t max );
+  ///Write mu peak positions for all log ends into the file mupeaks.txt
+  void WriteMuPeaks(const char* fileName);
+  void ReadMuPeaks(const char* fileName);
+  ///Write mu slopes for all log ends into the file muslopes.txt
+  void WriteMuSlopes(const char* fileName);
+  void ReadMuSlopes(const char* fileName);
     /// Retrieve a pointer to an object stored in our output ROOT file
     TObject* GetObjectPtr(const char *tag) { return (m_histList->FindObject(tag)); };
     /// process events
@@ -187,6 +197,7 @@ public :
 
     void ReadCalPed(const char* fileName);
     void PrintCalPed(const char* fileName);
+    void PrintCalCorrPed(const char* fileName);
     void ZeroPeds();
 
 private:
@@ -206,6 +217,9 @@ private:
     float m_calSlopes[8][12];
     float m_calPed[4][8][12][2];
     float m_calPedRms[4][8][12][2];
+    float m_calCorrPed[4][8][12][2];
+    float m_calCorrPedRms[4][8][12][2];
+    float m_calCorrPedCos[2][8][12][2];
     
 
     /// reset all member variables
@@ -213,9 +227,9 @@ private:
 
     /// Setup the Monte Calro output histograms
     void McHistDefine();
-	/// Setup the Digitization output histograms
+  /// Setup the Digitization output histograms
     void DigiHistDefine();
-	/// Setup the Reconstruction output histograms
+  /// Setup the Reconstruction output histograms
     void ReconHistDefine();
     
     /// event processing for the monte carlo data
@@ -223,18 +237,17 @@ private:
 
     /// event processing for the digi TKR data
     void DigiTkr();
-	/// event processing for digi CAL data
+  /// event processing for digi CAL data
     void DigiCal();
-	/// event processing for digi ACD data
+  /// event processing for digi ACD data
     void DigiAcd();
     
     /// event processing for the recon TKR data
     void ReconTkr();
-	/// event processing for the recon CAL data
+  /// event processing for the recon CAL data
     void ReconCal();
-	/// event processing for the recon ACD data
+  /// event processing for the recon ACD data
     void ReconAcd();
-    
 };
 
 
@@ -249,11 +262,11 @@ inline muonCalib::muonCalib(const char* digiFileName,
                                    const char* mcFileName, 
                                    const char* histFileName)
 {
-	// Purpose and Method:  Standard constructor where the user provides the 
-	//  names of input ROOT files and optionally the name of the output ROOT
-	//  histogram file.
+  // Purpose and Method:  Standard constructor where the user provides the 
+  //  names of input ROOT files and optionally the name of the output ROOT
+  //  histogram file.
     printf(" opening files:\n\tdigi:\t%s\n\trecon:\t%s\n\tmc:\t%s\n",
-		digiFileName, reconFileName, mcFileName);
+    digiFileName, reconFileName, mcFileName);
     
     Clear();
     
@@ -315,17 +328,17 @@ inline muonCalib::~muonCalib() {
     if (mcFile) delete mcFile;
     
     if (evt) { 
-		evt->Clear(); 
-		delete evt;
-	}
+    evt->Clear(); 
+    delete evt;
+  }
     if (rec) {
-		rec->Clear();
-		delete rec;
-	}
+    rec->Clear();
+    delete rec;
+  }
     if (mc) {
-		mc->Clear();
-		delete mc;
-	}
+    mc->Clear();
+    delete mc;
+  }
     
     digiTree = 0;
     reconTree = 0;
@@ -335,7 +348,7 @@ inline muonCalib::~muonCalib() {
     if (treeArr) delete treeArr;
     if (chainArr) delete chainArr;
 
-	Clear();
+  Clear();
 }
 
 
@@ -343,7 +356,7 @@ inline muonCalib::~muonCalib() {
 inline void muonCalib::Init(const char* digiFileName, const char* reconFileName, const char* mcFileName)
 {
     // Purpose and Method:  Re-initialize file, tree, event pointers, using the 
-	//   input ROOT files.  Histograms are *not* cleared.
+  //   input ROOT files.  Histograms are *not* cleared.
     
     if (fileArr) delete fileArr;
     fileArr = new TObjArray();
@@ -425,7 +438,7 @@ inline void muonCalib::Init(const char* digiFileName, const char* reconFileName,
 inline UInt_t muonCalib::GetEvent(UInt_t ievt) {
     // Purpose and Method:  Get the event, ievt, for all trees
     //    We could be processing single files or chains, 
-	//    This routine handles both casees.
+  //    This routine handles both casees.
 
     // if using regular trees - we check the array of open trees and
     // move the event pointer to the requested event
@@ -509,21 +522,22 @@ inline void muonCalib::HistClear() {
 }
 
 inline void muonCalib::ZeroPeds() {
-
     for (int lyr = 0; lyr < 8; lyr++){
         for (int col = 0; col < 12; col++) {
-            m_calSlopes[lyr][col] = 0.0;
-            for (int side = 0; side < 2; side++) {
-		 m_calCorr[lyr][col][side]=1.0;
-		 m_muRelSigma[lyr][col][side]=0.0;
-
-
-                 for (int i = 0; i < 4; i++) {
-                    m_calPed[i][lyr][col][side]=0.0;
-                    m_calPedRms[i][lyr][col][side]=0.0;
-                }
+          m_calSlopes[lyr][col] = 0.0;
+          for (int side = 0; side < 2; side++) {
+            m_calCorr[lyr][col][side]=1.0;
+            m_muRelSigma[lyr][col][side]=0.0;
+            for (int i = 0; i < 4; i++) {
+              m_calPed[i][lyr][col][side]=0.0;
+              m_calPedRms[i][lyr][col][side]=0.0;
+              m_calCorrPed[i][lyr][col][side]=0.0;
+              m_calCorrPedRms[i][lyr][col][side]=0.0;
             }
-        }
+            m_calCorrPedCos[0][lyr][col][side]=0.0;
+            m_calCorrPedCos[1][lyr][col][side]=0.0;
+          }
+       }
     }
 
 }
