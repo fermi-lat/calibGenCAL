@@ -1,0 +1,56 @@
+<?xml version="1.0" ?>
+<!-- Little test ifile -->
+
+<!DOCTYPE ifile SYSTEM "$(XMLROOT)/xmldata/ifile.dtd" >
+
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/xml/xmldata/myIFile.xml,v 1.1 2003/12/15 23:35:51 jrb Exp $"
+       cvs_Revision="$Revision: 1.1 $" >
+
+  <section name="TEST_INFO"> Test configuration info.
+    <item name="TIMESTAMP"      value="2004-04-08-11:20"> Timestamp for test run.</item>
+    <item name="STARTTIME"      value="2004-04-08-10:58:00"> Start of test run</item>
+    <item name="STOPTIME"       value="2004-04-08-11:18:00"> Stop of test run</item>
+
+    <item name="INSTRUMENT"     value="EM"> Instrument name</item>
+    <item name="TOWER_LIST"     value="1"> Number of towers currently installed. </item>
+
+    <item name="TRIGGER_MODE"     value="FORCED_TRIGGER"> Trigger mode.</item>
+    <item name="INST_MODE"        value="ONBOARD_CAL"> Instrument mode</item>
+    <item name="TEST_SOURCE"      value="ONBOARD_CAL_DAC"> Test source</item>
+
+    <item name="DAC_SETTINGS"     value="0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,80,96,112,128,144,160,176,192,208,224,240,256,272,288,304,320,336,352,368,384,400,416,432,448,464,480,496,512,543,575,607,639,671,703,735,767,799,831,863,895,927,959,991,1023,1055,1087,1119,1151,1183,1215,1247,1279,1311,1343,1375,1407,1439,1471,1503,1535,1567,1599,1631,1663,1695,1727,1759,1791,1823,1855,1887,1919,1951,1983,2015,2047,2079,2111,2143,2175,2207,2239,2271,2303,2335,2367,2399,2431,2463,2495,2527,2559,2591,2623,2655,2687,2719,2751,2783,2815,2847,2879,2911,2943,2975,3007,3039,3071,3103,3135,3167,3199,3231,3263,3295,3327,3359,3391,3423,3455,3487,3519,3551,3583,3615,3647,3679,3711,3743,3775,3807,3839,3871,3903,3935,3967,3999,4031,4063,4095}"> list of dac settings used in test.</item>
+    <item name="N_PULSES_PER_DAC" value="50"> Number of pulses per DAC setting</item>
+
+  </section>
+
+  <section name="PATHS"> Intput/Output file paths
+    <item name="XMLPATH"     value="../xml/CalIntNonlin_EM1_040804.xml"> main output .xml file </item>
+    <item name="DTDFILE"     value="$(CALIBUTILROOT)/xml/calCalib_v2r1.dtd"> description file for output .xml file </item>
+    <item name="DTD_VERSION" value="v2r1"> version of output .dtd file </item>
+    <item name="TXTPATH"     value="../output/CalIntNonlin_EM1_040804.txt"> text output file </item>
+
+    <item name="INFILE_TYPE" value="ROOT">Input file type (ROOT,CSV)</item>
+
+    <item name="ROOTFILE_LE1"   value="D:\GLAST\DATA\040408110806_calu_collect_ci_singlex16.root"> input DIGIROOT file #_LE1 </item>
+    <item name="ROOTFILE_HE1"   value="D:\GLAST\DATA\040408105812_calu_collect_ci_singlex16.root"> input DIGIROOT file #_HE1 </item>
+    <item name="ROOTFILE_LE2"   value="input_LE2.root"> input DIGIROOT file #_LE2 </item>
+    <item name="ROOTFILE_HE2"   value="input_HE2.root"> input DIGIROOT file #_HE2 </item>
+    <item name="ROOTFILE_LE3"   value="input_LE3.root"> input DIGIROOT file #_LE3 </item>
+    <item name="ROOTFILE_HE3"   value="input_HE3.root"> input DIGIROOT file #_HE3 </item>
+
+    <item name="CSVFILE_LE1"    value="input_LE1.csv"> csvfile_LE1 </item>
+    <item name="CSVFILE_HE1"    value="input_HE1.csv"> csvfile_HE1 </item>
+    <item name="CSVFILE_LE2"    value="input_LE2.csv"> csvfile_LE2 </item>
+    <item name="CSVFILE_HE2"    value="input_HE2.csv"> csvfile_HE2 </item>
+    <item name="CSVFILE_LE3"    value="input_LE3.csv"> csvfile_LE3 </item>
+    <item name="CSVFILE_HE3"    value="input_HE3.csv"> csvfile_HE3 </item>
+  </section>
+
+  <section name="SPLINE_CFG">
+    <item name="GROUP_WIDTH"   value="3,4,3,4"> # of points to use for each smoothing step, 1 entry per RANGE </item>
+    <item name="SKIP_LOW"      value="3,1,3,1"> # of points at beggining of array to copy verbatim and skip smoothing step </item>
+    <item name="SKIP_HIGH"     value="6,10,6,10"> # of points at end of array to copy verbatim and skip smoothing step </item>
+    <item name="N_PTS_MIN"     value="23,45,23,48"> minimum # of spline points to output per range </item>
+  </section>  
+</ifile>
+

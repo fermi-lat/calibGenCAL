@@ -1,5 +1,5 @@
 package calibGenCAL
-version v2
+version v2r4
 
 branches src xml output
 
@@ -8,6 +8,12 @@ use mcRootData v*
 use digiRootData v*
 use reconRootData v*
 use RootPolicy v*
+use xml
+
+#because the latter package unfortunately exposes RootcintPolicy, the following macros have to be defined
+# to protect windows builds. this really needs fixing!
+macro rootcint_begin "" vsnet "<!--"
+macro rootcint_end   "" vsnet "-->"
 
 #the following prepend makes the includes folder available locally: avoid the package_include
 macro_prepend includes "-I $(CALIBGENCALROOT) " WIN32 "/I $(CALIBGENCALROOT) "

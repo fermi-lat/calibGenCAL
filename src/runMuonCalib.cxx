@@ -8,12 +8,8 @@ int main(int argn, char** argc) {
 
   std::ifstream inputFile;
 
-  if(argn > 1) {
-    inputFile.open(argc[1]);
-  }
-  else {
-    inputFile.open("../src/muonCalib_option.dat");
-  }
+  if(argn > 1) inputFile.open(argc[1]);
+  else inputFile.open("../src/muonCalib_option.dat");
 
   std::string digiFileName;
   inputFile >> digiFileName;
