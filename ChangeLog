@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Jan 31 10:15:29 PST 2005
+calibGenCAL/output
+
+Added Files:
+	fake_tholdci.xml fake_tholdci_perface.txt 
+	fake_tholdci_perrange.txt 
+Log Message:
+added new test input & output files for Charge injection threshold calibration
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Jan 31 06:01:59 PST 2005
 calibGenCAL/src
 
