@@ -1,11 +1,18 @@
 #ifndef CalDefs_H
 #define CalDefs_H 1
 
+// LOCAL
+
+// GLAST
 #include "idents/CalXtalId.h"
 
+// EXTLIB
+
+// STD
 #include <string>
 #include <vector>
 #include <ostream>
+#include <stdexcept>
 
 using namespace std;
 
@@ -31,25 +38,33 @@ namespace CalDefs {
  
   /// Generic typesafe vector used for fast & simple arrays
   /// based on various Calorimeter geometry idents
-  template <class CalSize, class _Tp >
+  template <typename _Idx, typename _Tp >
     class CalVec : protected vector<_Tp > {
+    protected:
+    typedef vector<_Tp > parent_type;
+    typedef size_t size_type;
+    typedef typename parent_type::value_type value_type;
+    typedef typename parent_type::reference reference;
+    typedef typename parent_type::const_reference const_reference;
+    typedef typename parent_type::iterator iterator;
+    typedef typename parent_type::const_iterator const_iterator;
+
     public:
-
     CalVec() : parent_type() {};
-    CalVec(const size_type &sz) : parent_type(sz){}
-    CalVec(const size_type &sz, const value_type &val) : parent_type(sz,val){}
+    CalVec(size_type sz) : parent_type(sz) {}
+    CalVec(size_type sz, const value_type &val) : parent_type(sz,val) {}
 
-    reference operator[] (const CalSize &idx) {
-      return vector<value_type>::operator[](idx.getInt());
+    reference operator[] (const _Idx &idx) {
+      return parent_type::operator[](idx.getInt());
     }
-    const_reference operator[] (const CalSize &idx) const {
+    const_reference operator[] (const _Idx &idx) const {
       return parent_type::operator[](idx.getInt());
     }
 
-    reference at(const CalSize &idx) {
+    reference at(const _Idx &idx) {
       return parent_type::at(idx.getInt());
     }
-    const_reference at(const CalSize &idx) const {
+    const_reference at(const _Idx &idx) const {
       return parent_type::at(idx.getInt());
     }
 
@@ -75,8 +90,6 @@ namespace CalDefs {
     const_iterator end() const {return parent_type::end();}
     iterator end() {return parent_type::end();}
     
-    private:
-    typedef vector<value_type> parent_type;
   };
 
   ///////////////////////////////////////////
@@ -97,7 +110,7 @@ namespace CalDefs {
     }
 
     /// postfix ++ operator
-    SimpleId& operator++(int tmp) {
+    SimpleId& operator++(int) {
       m_data++; 
       return *this;
     }
@@ -198,7 +211,7 @@ namespace CalDefs {
     }
 
     /// postfix ++ operator
-    XtalWideIndex& operator++(int tmp) {
+    XtalWideIndex& operator++(int) {
       m_data++; 
       return *this;
     }
@@ -273,7 +286,7 @@ namespace CalDefs {
     }
 
     /// postfix ++ operator
-    LATWideIndex& operator++(int tmp) {
+    LATWideIndex& operator++(int) {
       m_data++; 
       return *this;
     }
@@ -288,7 +301,7 @@ namespace CalDefs {
   protected:
     LATWideIndex(int val) : m_data(val) {}
     LATWideIndex() : m_data(0) {}
-    unsigned m_data;
+    int m_data;
   };
 
   class XtalIdx : public LATWideIndex {
@@ -309,7 +322,7 @@ namespace CalDefs {
                                getLyr(),
                                getCol());
     }
-    static const unsigned N_VALS  = LyrNum::N_VALS*ColNum::N_VALS;
+    static const int N_VALS  = LyrNum::N_VALS*ColNum::N_VALS;
 
     short getTwr() const {return m_data/TWR_BASE;}
     short getLyr() const {return (m_data%TWR_BASE)/LYR_BASE;}

@@ -1142,7 +1142,6 @@ void MuonCalib::readAsymTXT(const string &filenameLL,
   // we go through the same exact sequence for each of the the 4 asym files.
   for (int nFile = 0; nFile < 4; nFile++) {
     short lyr, col;
-    XtalIdx xtalIdx;
     unsigned nRead = 0;
     CalVec<XtalIdx,vector<float > > *calVec, *errVec;
     const string *pFilename;

@@ -1,5 +1,5 @@
 // LOCAL INCLUDES
-#include "cfCfg.h"
+#include "CfCfg.h"
 #include "CalDefs.h"
 #include "CGCUtil.h"
 
