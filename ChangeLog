@@ -1,5 +1,20 @@
 ------------------------------------------------------------
 User: fewtrell  Thu Dec 30 16:09:38 PST 2004
+calibGenCAL/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+preparing for v3r0p2
+
+fixed bad xtal pitch in mc options file.
+slight modifications to event & hit selection in muon calib gain & asym.
+modularized some generic code.
+
+
+    *
+------------------------------------------------------------
+User: fewtrell  Thu Dec 30 16:09:38 PST 2004
 calibGenCAL/cmt
 
 Modified Files:
