@@ -1,5 +1,5 @@
 package calibGenCAL
-version v0
+version v2
 
 branches src xml output
 
@@ -39,4 +39,6 @@ application getGainsXML getGainsXML.cxx
 application genNtuple genNtuple.cxx
 
 application compare_constants compare_constants.cxx
+
+application ciFit ciFit.cxx
 
