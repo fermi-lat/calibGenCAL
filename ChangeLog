@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Aug 24 11:27:37 PDT 2004
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+added xml/IFile config file support to ciFit
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Jul  7 11:57:49 PDT 2004
 calibGenCAL/src
 
