@@ -6,9 +6,10 @@
 
 using namespace CGCUtil;
 
-const string cfCfg::testInfo("TEST_INFO");
-const string cfCfg::paths("PATHS");
-const string cfCfg::splineCfg("SPLINE_CFG");
+const string cfCfg::TEST_INFO("TEST_INFO");
+const string cfCfg::PATHS("PATHS");
+const string cfCfg::SPLINE_CFG("SPLINE_CFG");
+const string cfCfg::GENERAL("GENERAL");
 
 void cfCfg::readCfgFile(const string& path) {
   clear();
@@ -16,44 +17,57 @@ void cfCfg::readCfgFile(const string& path) {
   xml::IFile ifile(path.c_str());
   
   // TEST INFO
-  timestamp = ifile.getString(testInfo.c_str(), "TIMESTAMP");
-  startTime = ifile.getString(testInfo.c_str(), "STARTTIME");
-  stopTime  = ifile.getString(testInfo.c_str(), "STOPTIME");
+  timestamp = ifile.getString(TEST_INFO.c_str(), "TIMESTAMP");
+  startTime = ifile.getString(TEST_INFO.c_str(), "STARTTIME");
+  stopTime  = ifile.getString(TEST_INFO.c_str(), "STOPTIME");
 
-  instrument    = ifile.getString(testInfo.c_str(), "INSTRUMENT");
-  towerList     = ifile.getIntVector(testInfo.c_str(), "TOWER_LIST");
+  instrument    = ifile.getString(TEST_INFO.c_str(), "INSTRUMENT");
+  towerList     = ifile.getIntVector(TEST_INFO.c_str(), "TOWER_LIST");
 
-  triggerMode    = ifile.getString(testInfo.c_str(), "TRIGGER_MODE");
-  instrumentMode = ifile.getString(testInfo.c_str(), "INST_MODE");
-  source         = ifile.getString(testInfo.c_str(), "TEST_SOURCE");
+  triggerMode    = ifile.getString(TEST_INFO.c_str(), "TRIGGER_MODE");
+  instrumentMode = ifile.getString(TEST_INFO.c_str(), "INST_MODE");
+  source         = ifile.getString(TEST_INFO.c_str(), "TEST_SOURCE");
   
-  dacSettings    = ifile.getIntVector(testInfo.c_str(), "DAC_SETTINGS");
-  nPulsesPerDAC  = ifile.getInt(testInfo.c_str(), "N_PULSES_PER_DAC");
+  dacSettings    = ifile.getIntVector(TEST_INFO.c_str(), "DAC_SETTINGS");
+  nPulsesPerDAC  = ifile.getInt(TEST_INFO.c_str(), "N_PULSES_PER_DAC");
 
   // PATHS
   using facilities::Util;  
-  outputDir = ifile.getString(paths.c_str(), "OUTPUT_FOLDER");
+  outputDir = ifile.getString(PATHS.c_str(), "OUTPUT_FOLDER");
   Util::expandEnvVar(&outputDir);
 
-  dtdFile   = ifile.getString(paths.c_str(), "DTD_FILE");
+  dtdFile   = ifile.getString(PATHS.c_str(), "DTD_FILE");
   Util::expandEnvVar(&dtdFile);
-  outputXMLPath = ifile.getString(paths.c_str(), "XMLPATH");
+  outputXMLPath = ifile.getString(PATHS.c_str(), "XMLPATH");
   Util::expandEnvVar(&outputXMLPath);
-  outputTXTPath = ifile.getString(paths.c_str(), "TXTPATH");
+  outputTXTPath = ifile.getString(PATHS.c_str(), "TXTPATH");
   Util::expandEnvVar(&outputTXTPath);
   
-  rootFileLE1 = ifile.getString(paths.c_str(), "ROOTFILE_LE1");
-  rootFileHE1 = ifile.getString(paths.c_str(), "ROOTFILE_HE1");
-  rootFileLE2 = ifile.getString(paths.c_str(), "ROOTFILE_LE2");
-  rootFileHE2 = ifile.getString(paths.c_str(), "ROOTFILE_HE2");
-  rootFileLE3 = ifile.getString(paths.c_str(), "ROOTFILE_LE3");
-  rootFileHE3 = ifile.getString(paths.c_str(), "ROOTFILE_HE3");
+  rootFileLE1 = ifile.getString(PATHS.c_str(), "ROOTFILE_LE1");
+  Util::expandEnvVar(&rootFileLE1);
+  rootFileHE1 = ifile.getString(PATHS.c_str(), "ROOTFILE_HE1");
+  Util::expandEnvVar(&rootFileHE1);
+  rootFileLE2 = ifile.getString(PATHS.c_str(), "ROOTFILE_LE2");
+  Util::expandEnvVar(&rootFileLE2);
+  rootFileHE2 = ifile.getString(PATHS.c_str(), "ROOTFILE_HE2");
+  Util::expandEnvVar(&rootFileHE2);
+  rootFileLE3 = ifile.getString(PATHS.c_str(), "ROOTFILE_LE3");
+  Util::expandEnvVar(&rootFileLE3);
+  rootFileHE3 = ifile.getString(PATHS.c_str(), "ROOTFILE_HE3");
+  Util::expandEnvVar(&rootFileHE3);
+
+  logfile = ifile.getString(PATHS.c_str(), "LOGFILE");
+  Util::expandEnvVar(&logfile);
+
+  genXML = ifile.getBool(GENERAL.c_str(), "GENERATE_XML");
+  genTXT = ifile.getBool(GENERAL.c_str(), "GENERATE_TXT");
+  genLogfile = ifile.getBool(GENERAL.c_str(), "GENERATE_LOGFILE");
 
   // SPLINE CFG
-  splineGroupWidth = ifile.getIntVector(splineCfg.c_str(), "GROUP_WIDTH");
-  splineSkipLow    = ifile.getIntVector(splineCfg.c_str(), "SKIP_LOW"  );
-  splineSkipHigh   = ifile.getIntVector(splineCfg.c_str(), "SKIP_HIGH" );
-  splineNPtsMin    = ifile.getIntVector(splineCfg.c_str(), "N_PTS_MIN" );
+  splineGroupWidth = ifile.getIntVector(SPLINE_CFG.c_str(), "GROUP_WIDTH");
+  splineSkipLow    = ifile.getIntVector(SPLINE_CFG.c_str(), "SKIP_LOW"  );
+  splineSkipHigh   = ifile.getIntVector(SPLINE_CFG.c_str(), "SKIP_HIGH" );
+  splineNPtsMin    = ifile.getIntVector(SPLINE_CFG.c_str(), "N_PTS_MIN" );
   
   // Geneate derived config quantities.
   nDACs          = dacSettings.size();
@@ -69,6 +83,17 @@ void cfCfg::readCfgFile(const string& path) {
     outputXMLPath = outputDir + "ci_intnonlin." + baseFilename + ".xml";
   if (outputTXTPath.length() == 0)
     outputTXTPath = outputDir + "ci_intnonlin." + baseFilename + ".txt";
+  if (logfile.length() == 0)
+    logfile = outputDir + "ci_logfile." + baseFilename + ".txt";
+
+  // setup output stream
+  // add cout by default
+  ostr.getostreams().push_back(&cout);
+  // add user requested logfile
+  if (genLogfile) {
+    logstr.open(logfile.c_str());
+    ostr.getostreams().push_back(&logstr);
+  }
 }
 
 void cfCfg::clear() {  

@@ -16,6 +16,21 @@ int main(int argc, char** argv) {
   mcCfg cfg;
   try {
     cfg.readCfgFile(cfgPath);
+
+    cfg.ostr << "CVS Tag: " << CGCUtil::CVS_TAG << endl;
+
+    // insert quoted config file into log stream //
+    { 
+      string temp;
+      ifstream cfgFile(cfgPath.c_str());
+      cfg.ostr << "--- Begin cfg_file: " << cfgPath << " ---" << endl;
+      while (cfgFile.good()) {
+        getline(cfgFile, temp);
+        if (cfgFile.fail()) continue; // bad get
+        cfg.ostr << "> " << temp << endl;
+      }
+      cfg.ostr << "--- End " << cfgPath << " ---" << endl;
+    }
   
     muonCalib appData(cfg.rootFileList, 
                       cfg.instrument, 
@@ -80,8 +95,6 @@ int main(int argc, char** argv) {
     // LOAD INTNONLIN
     cfg.ostr << "Reading integral nonlinearity from " << cfg.intNonlinFile << endl;
     appData.readIntNonlin(cfg.intNonlinFile);
-
-    
     
     ///////////////////////////////
     // *** PHASE 2: ASYMMETRY *** //

@@ -39,11 +39,11 @@ public:
   
   ~muonCalib() {freeChildren();}
 
-  void fillRoughPedHists(int nEvents); ///< Fill roughpedhist histograms w/ nEvents event data
+  void fillRoughPedHists(int nEvt); ///< Fill roughpedhist histograms w/ nEvt event data
   void fitRoughPedHists(); ///< Fit roughpedhist[]'s, assign means to m_calRoughPed
   void writeRoughPedsTXT(const string &filename); ///< write rough LEX8 pedestals to simple columnar .txt file
   
-  void fillPedHists(int nEvents); ///< Fill pedhist histograms w/ nEvents event data
+  void fillPedHists(int nEvt); ///< Fill pedhist histograms w/ nEvt event data
   void fitPedHists(); ///< Fit 4-range pedestals pedhist[], assign means to m_calPed
   void readCalPeds(const string &filename); ///< read 4-range pedestals in from .txt file created in previous run w/ WritePedsTXT
   void writePedsXML(const string &filename, const string &dtdFilename); ///< write 4-range pedestals out to .xml file, using official .dtd format
@@ -51,7 +51,7 @@ public:
 
   void readIntNonlin(const string &filename); ///< read in TXT table of integral nonlinearity values (adc2dac) from ciFit.exe
 
-  void fillAsymHists(int nEvents, bool genOptHists = false); ///< populate asymmetry profiles w/ nEvents worth of data.
+  void fillAsymHists(int nEvt, bool genOptHists = false); ///< populate asymmetry profiles w/ nEvt worth of data.
   void populateAsymArrays(); ///< load mean values from asymmetry profiles into m_calAsym*** arrays
   void writeAsymTXT(const string &filenameLL,
                     const string &filenameLS,
@@ -63,7 +63,7 @@ public:
                    const string &filenameSL,
                    const string &filenameSS); ///< read asymmetry tables in from text file(s)
 
-  void fillMPDHists(int nEvents); ///< Fill MevPerDAC histograms w/ nEvents worth of event data.
+  void fillMPDHists(int nEvt); ///< Fill MevPerDAC histograms w/ nEvt worth of event data.
   void fitMPDHists(); ///< Fit MevPerDAC calibration group
   void writeMPDTXT(const string &filenameL, const string &filenameS); ///< write out both MPD calibrations to text file
   void writeMPDXML(const string &filename, const string &dtdFilename); ///< write asymmetry file to official XML file
@@ -75,7 +75,7 @@ public:
   // DEBUG / SUMMARY PRINT FUNCTIONS //
   /////////////////////////////////////
   void printAsciiHit(int nXtal); ///< prints ASCII art summary of data for one xtal-hit
-  void printAsciiEvent(int nEvent); ///< prints ASCII art summary of data for one full event
+  void printAsciiEvt(int nEvt); ///< prints ASCII art summary of data for one full event
 
 private:
   void initRoughPedHists(); ///< allocate & create rough pedestal histograms & pointer array
@@ -161,11 +161,11 @@ private:
 
   // EVENT RETRIEVAL //
 
-  /// check to see if there are nEvents following the current event.  
+  /// check to see if there are nEvt following the current event.  
   /// return # of events left to process (up to requested amount)
-  int checkForEvents(int nEvents);
+  int chkForEvts(int nEvt);
   /// retrieve new event from digi root file
-  UInt_t getEvent(UInt_t ievt);
+  UInt_t getEvent(UInt_t iEvt);
 
   auto_ptr<TFile> m_histFile;  ///< Current histogram file
   string m_histFilename;  ///< name of the current output histogram ROOT file
