@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: xchen  Wed Nov 19 17:33:46 PST 2003
+calibGenCAL/cmt
+
+Removed Files:
+	Makefile cleanup.csh cleanup.sh rh72_gcc2953.make setup.csh 
+	setup.sh 
+Log Message:
+remove unneeded files
+    *
+------------------------------------------------------------
 User: xchen  Wed Nov 19 17:32:50 PST 2003
 calibGenCAL/cmt
 
