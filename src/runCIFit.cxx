@@ -293,7 +293,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.4 2005/02/05 09:12:20 fewtrell Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.5 2005/02/10 19:34:31 fewtrell Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
@@ -313,9 +313,9 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   xmlFile << endl;
   xmlFile << "    <inputSample startTime=\"" << m_cfg.startTime
           << "\" stopTime=\"" << m_cfg.stopTime << "\"" << endl;
-  xmlFile << "triggers=\"" << m_cfg.triggerMode
-          << "\" mode=\"" << m_cfg.instrumentMode
-          << "\" source=\"" << m_cfg.source << "\" >" << endl;
+  xmlFile << "triggers=\""    << m_cfg.triggerMode
+          << "\" mode=\""     << m_cfg.instrumentMode
+          << "\" source=\""   << m_cfg.source << "\" >" << endl;
   xmlFile << endl;
   xmlFile << "Times are start and stop time of calibration run." << endl;
   xmlFile << "Other attributes are just made up for code testing." << endl;
@@ -330,8 +330,8 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   xmlFile << " <dimension nRow=\"" << 1 
           << "\" nCol=\"" << 1 
           << "\" nLayer=\"" << LyrNum::N_VALS 
-          << "\" nXtal=\"" << ColNum::N_VALS 
-          << "\" nFace=\"" << FaceNum::N_VALS 
+          << "\" nXtal=\""  << ColNum::N_VALS 
+          << "\" nFace=\""  << FaceNum::N_VALS 
           << "\" nRange=\"" << RngNum::N_VALS << "\"" << endl;
   xmlFile << "           nDacCol=\"" << RngNum::N_VALS << "\" />" << endl;
 
@@ -376,7 +376,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
             // ADC VALS //
             xmlFile << "             values=\"";
             for (unsigned i = 0; i < m_splineADC[rngIdx].size(); i++)
-              xmlFile << m_splineADC[rngIdx][i] << " ";
+              xmlFile << fixed << m_splineADC[rngIdx][i] << " ";
 
             xmlFile << "\"" << endl;
             xmlFile << "             error=\"" << 0.1 << "\" />" << endl;

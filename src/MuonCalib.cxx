@@ -1641,9 +1641,9 @@ void MuonCalib::writePedsXML(const string &filename, const string &dtdPath) {
             float av = m_calPed[rngIdx];
             float err= m_calPedErr[rngIdx];
 
-            outfile <<"     <calPed avg=\"" << av
-                    << "\" sig=\"" << err
-                    << "\" range=\"" << RngNum::MNEM[rng] << "\"/>"
+            outfile << "     <calPed avg=\"" << fixed << av
+                    << "\" sig=\""           << fixed << err
+                    << "\" range=\""         << RngNum::MNEM[rng] << "\"/>"
                     << endl;
           }
           outfile << "    </face>" << endl;
@@ -1709,45 +1709,45 @@ void MuonCalib::writeAsymXML(const string &filename, const string &dtdPath) {
         // ASYM LL
         outfile << "           bigVals=\"";
         for (int i = 0; i < N_ASYM_PTS; i++)
-          outfile << " " << m_calAsymLL[xtalIdx][i];
+          outfile << " " << fixed << m_calAsymLL[xtalIdx][i];
         outfile << "\"" << endl;
         // ASYM LL Err
         outfile << "           bigSigs=\"";
         for (int i = 0; i < N_ASYM_PTS; i++)
-          outfile << " " << m_calAsymLLErr[xtalIdx][i];
+          outfile << " " << fixed << m_calAsymLLErr[xtalIdx][i];
         outfile << "\"" << endl;
 
         // ASYM LS
         outfile << "           NsmallPbigVals=\"";
         for (int i = 0; i < N_ASYM_PTS; i++)
-          outfile << " " << m_calAsymLS[xtalIdx][i];
+          outfile << " " << fixed << m_calAsymLS[xtalIdx][i];
         outfile << "\"" << endl;
         // ASYM LS Err
         outfile << "           NsmallPbigSigs=\"";
         for (int i = 0; i < N_ASYM_PTS; i++)
-          outfile << " " << m_calAsymLSErr[xtalIdx][i];
+          outfile << " " << fixed << m_calAsymLSErr[xtalIdx][i];
         outfile << "\"" << endl;
 
         // ASYM SL
         outfile << "           PsmallNbigVals=\"";
         for (int i = 0; i < N_ASYM_PTS; i++)
-          outfile << " " << m_calAsymSL[xtalIdx][i];
+          outfile << " " << fixed << m_calAsymSL[xtalIdx][i];
         outfile << "\"" << endl;
         // ASYM SL Err
         outfile << "           PsmallNbigSigs=\"";
         for (int i = 0; i < N_ASYM_PTS; i++)
-          outfile << " " << m_calAsymSLErr[xtalIdx][i];
+          outfile << " " << fixed << m_calAsymSLErr[xtalIdx][i];
         outfile << "\"" << endl;
 
         // ASYM SS
         outfile << "           smallVals=\"";
         for (int i = 0; i < N_ASYM_PTS; i++)
-          outfile << " " << m_calAsymSS[xtalIdx][i];
+          outfile << " " << fixed << m_calAsymSS[xtalIdx][i];
         outfile << "\"" << endl;
         // ASYM SS Err
         outfile << "           smallSigs=\"";
         for (int i = 0; i < N_ASYM_PTS; i++)
-          outfile << " " << m_calAsymSSErr[xtalIdx][i];
+          outfile << " " << fixed << m_calAsymSSErr[xtalIdx][i];
         outfile << "\" />" << endl;
 
         outfile << "    </face>" << endl;
@@ -1801,10 +1801,10 @@ void MuonCalib::writeMPDXML(const string &filename, const string &dtdPath) {
         outfile << "   <xtal iXtal=\"" << col << "\">" << endl;
         outfile << "    <face end=\"" << "NA" << "\">" << endl;
 
-        outfile << "     <mevPerDac bigVal=\"" << m_calMPDLarge[xtalIdx] 
-                << "\" bigSig=\"" << m_calMPDLargeErr[xtalIdx]
-                << "\" smallVal=\"" << m_calMPDSmall[xtalIdx]
-                << "\" smallSig=\"" << m_calMPDSmallErr[xtalIdx]
+        outfile << "     <mevPerDac bigVal=\"" << fixed << m_calMPDLarge[xtalIdx] 
+                << "\" bigSig=\""              << fixed << m_calMPDLargeErr[xtalIdx]
+                << "\" smallVal=\""            << fixed << m_calMPDSmall[xtalIdx]
+                << "\" smallSig=\""            << fixed << m_calMPDSmallErr[xtalIdx]
                 << "\">" << endl;
         outfile << "      <bigSmall end=\"POS\" bigSmallRatioVals=\"0\" bigSmallRatioSigs=\"0\"/>" << endl;
         outfile << "      <bigSmall end=\"NEG\" bigSmallRatioVals=\"0\" bigSmallRatioSigs=\"0\"/>" << endl;
@@ -1866,7 +1866,7 @@ void MuonCalib::writeADC2NRGXML(const string &filename) {
             int col = gcfe;
             DiodeIdx diodeIdx(tower,layer,col,side,diode);
             float adc2nrg = m_adc2nrg[diodeIdx];
-            outfile <<"                <adc2nrg>" << adc2nrg <<"</adc2nrg>" << endl;
+            outfile <<"                <adc2nrg>" << fixed << adc2nrg <<"</adc2nrg>" << endl;
             outfile << "              </GCFE>"<< endl;
           }
           outfile << "            </GCRC>"<< endl;
