@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Mar 29 09:32:47 PST 2005
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+moved xml package dependency -> xmlBase.
+updated some documentation
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Mar 29 09:10:02 PST 2005
 calibGenCAL/src
 
