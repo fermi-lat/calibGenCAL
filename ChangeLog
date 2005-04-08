@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: dwood  Fri Apr  8 12:11:45 PDT 2005
+calibGenCAL/python
+
+Added Files:
+	.cvsignore calCalibGen.py calCalibXML.py calConstant.py 
+	calDacXML.py calExcept.py calFitsIO.py calFitsXML.py 
+	fits2xml.py 
+Log Message:
+Initial checkin of calibGenCAL python scripts.
+    *
+------------------------------------------------------------
 User: dwood  Fri Apr  8 12:09:01 PDT 2005
 calibGenCAL/python
 
