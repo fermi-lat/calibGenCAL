@@ -69,3 +69,5 @@ v3r4p2 added output of fit errors in runMuTrigEff
 v3r4p3 added histogramming and excluding of outliers from charge injection peaks in runCIFit
 
 v3r4p4 moved obsolete xml package dependency to xmlBase, updated some documentation
+
+v3r5  added the output of fle/fhe bias file to runMuTrigEff, fixed the event numbering problem in runCIFit, added new application runMuThreshEvol to follow the evolution of fle thresholds in a long muon run
