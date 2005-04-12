@@ -1,168 +1,100 @@
 """
-calCalibXML
-\brief Classes to represent CAL calibration XML documents.
+Classes to represent CAL calibration XML documents.
 """
+
+
+__facility__  = "Offline"
+__abstract__  = "Classes to represent CAL calibration XML documents."
+__author__    = "D.L.Wood"
+__date__      = "$Date: 2005/03/31 21:55:42 $"
+__version__   = "$Revision: 1.20 $, $Author: dwood $"
+__release__   = "$Name:  $"
+__credits__   = "NRL code 7650"
+
 
 
 import sys, time
 import logging
+import xml.dom.minidom
 
 import Numeric
 
-import xml.dom.minidom
-import xml.dom.ext
-
+import calXML
 import calConstant
 from calExcept import *
 
 
-MODE_CREATE     = 0
-MODE_READONLY   = 2
+MODE_CREATE     = calXML.MODE_CREATE
+MODE_READONLY   = calXML.MODE_READONLY
 
 
 POSNEG = ('NEG', 'POS')
 
+ERNG_MAP = {'LEX8' : 0, 'LEX1' : 1, 'HEX8' : 2, 'HEX1' : 3}
+POSNEG_MAP = {'NEG' : 0, 'POS' : 1}
 
 
-##########################################################################################
-##
-## \class calCalibXML
-##
-## \brief CAL calibration XML file class.
-##
-## This class provides methods for accessing CAL calibration data stored in XML
-## format.
-##
-##########################################################################################
 
-class calCalibXML:   
+class calCalibXML(calXML.calXML):
+    """
+    CAL calibration XML file class.
+
+    This class provides methods for accessing CAL calibration data stored
+    in XML format.
+    """
   
     def __init__(self, fileName, mode = MODE_READONLY):
         """
-        \brief Open a CAL DAC configuration XML file
+        Open a CAL calibration XML file
 
         \param fileName The XML file name.
-        \param type The type of CAL calibration XML file.
         \param mode The file access mode (MODE_READONLY or MODE_CREATE).
         """
 
-        self.__log = logging.getLogger()    
-
-        self.__doc = None
-        self.__xmlFile = None
-        self.__mode = mode
-
-        if mode == MODE_CREATE:
-
-            # create ouput XML file
-
-            self.__xmlFile = open(fileName, 'w')            
-            
-            # create output XML document
-
-            impl = xml.dom.minidom.getDOMImplementation()
-            self.__doc = impl.createDocument(None, None, None)
-
-        elif mode == MODE_READONLY:
-
-            # open input XML file
-
-            self.__xmlFile = open(fileName, "r")
-
-            # parse into DOM document
-
-            self.__doc = xml.dom.minidom.parse(self.__xmlFile)
-
-        else:
-            raise calFileOpenExcept, "calCalibXML: mode %s not supported" % str(mode)            
-        
-                
-    def close(self):              
-        """
-        \brief Close a CAL calibration XML file
-        """
-        
-        self.__xmlFile.close()
-        self.__doc.unlink()
-    
-
-    def getDoc(self):
-        """
-        \brief Get the XML DOM document object.
-
-        \returns A reference to the DOM document.
-        """
-
-        return self.__doc
-    
-
-    def getFile(self):
-        """
-        \brief Get the XML file object.
-
-        \returns A reference to the XML file handle.
-        """
-
-        return self.__xmlFile    
-    
-
-    def getMode(self):
-        """
-        \brief Get the XML file access mode.
-
-        \returns MODE_CREATE or MODE_READONLY.
-        """
-
-        return self.__mode
+        calXML.calXML.__init__(self, fileName, mode)  
 
 
-    def getLog(self):
-        """
-        \brief Get the CAL calibration logger object.
-
-        \returns A reference to a logging object.
-        """
-
-        return self.__log
-    
-
-
-##########################################################################################
-##
-## \class calTholdCICalibXML
-##
-## \brief CAL Threshold CI calibration XML file class.
-##
-## This class provides methods for accessing CAL threshold charge injection calibration
-## data stored in XML format.
-##
-##########################################################################################
     
 class calTholdCICalibXML(calCalibXML):
+    """
+    CAL TholdCI calibration XML file class.
 
+    This class provides methods for accessing CAL threshold charge
+    injection calibration data stored in XML format.
+    """
 
     def __init__(self, fileName, mode = MODE_READONLY):
-
+        """
+        Open a CAL TholdCI calibration XML file.
+        """
+        
         calCalibXML.__init__(self, fileName, mode)
         
 
-    def write(self, dacData, adcData, pedData, lrefGain, hrefGain):
+    def write(self, dacData, adcData, pedData, lrefGain, hrefGain, tems = (0,)):
         """
-        \brief Write data to a CAL calibration XML file
+        Write data to a CAL TholdCI XML file
 
-        \param dacData A list of Numeric arrays of DAC settings data (16, 8, 2, 12): \n
-            dacData[0] = ULD DAC settings data \n
-            dacData[1] = LAC DAC settings data \n
-            dacData[2] = FLE DAC settings data \n
-            dacData[3] = FHE DAC settings data \n
-        \param adcData A list of Numeric arrays of ADC/DAC characterization data. \n
-            adcData[0] = A Numeric array of ULD ADC/DAC characterization data (3, 16, 8, 2, 12, 128). \n
-            adcData[1] = A Numeric array of LAC ADC/DAC characterization data (16, 8, 2, 12, 128). \n
-            adcData[2] = A Numeric array of FLE ADC/DAC characterization data (16, 8, 2, 12, 128). \n
-            adcData[3] = A Numeric array of FHE ADC/DAC characterization data (16, 8, 2, 12, 128). \n
-        \param pedData A Numeric array of pedestal value data (9, 4, 8, 2, 12).
+        \param dacData A list of Numeric arrays of DAC settings data
+            (16, 8, 2, 12):
+            dacData[0] = ULD DAC settings data
+            dacData[1] = LAC DAC settings data
+            dacData[2] = FLE DAC settings data
+            dacData[3] = FHE DAC settings data
+        \param adcData A list of Numeric arrays of ADC/DAC characterization data.
+            adcData[0] = A Numeric array of ULD ADC/DAC characterization data
+                (3, 16, 8, 2, 12, 128).
+            adcData[1] = A Numeric array of LAC ADC/DAC characterization data
+                (16, 8, 2, 12, 128). \n
+            adcData[2] = A Numeric array of FLE ADC/DAC characterization data
+                (16, 8, 2, 12, 128). \n
+            adcData[3] = A Numeric array of FHE ADC/DAC characterization data
+                (16, 8, 2, 12, 128). \n
+        \param pedData A Numeric array of pedestal value data
+            (16, 9, 4, 8, 2, 12).
         \param lrefGain The LE gain value.
         \param hrefGain The HE gain value.
+        \param tems A list of TEM ID's to write out.
         """
 
         uldDac = dacData[0]
@@ -201,129 +133,127 @@ class calTholdCICalibXML(calCalibXML):
         d.setAttribute('nLayer', '8')
         d.setAttribute('nXtal', '12')
         d.setAttribute('nFace', '2')
-        d.setAttribute('nRange', '1')
+        d.setAttribute('nRange', '4')
+        d.setAttribute('exact', 'true')
         r.appendChild(d)
 
-        # insert <tower> element
+        for tem in tems:
 
-        t = doc.createElement('tower')
-        t.setAttribute('iRow', '0')
-        t.setAttribute('iCol', '0')
-        r.appendChild(t)
-        
-        for layer in range(8):
+            # insert <tower> element
 
-            # translate index
+            t = doc.createElement('tower')
+            t.setAttribute('iRow', '0')
+            t.setAttribute('iCol', '0')
+            r.appendChild(t)
+            
+            for layer in range(8):
 
-            row = (layer / 2)
-            xy = (layer % 2)
-            if xy == 1:
-                row += 4 
+                row = layerToRow(layer) 
 
-            # insert <layer> elements
+                # insert <layer> elements
 
-            l = doc.createElement('layer')
-            l.setAttribute('iLayer', str(layer))
-            t.appendChild(l)
+                l = doc.createElement('layer')
+                l.setAttribute('iLayer', str(layer))
+                t.appendChild(l)
 
-            c = doc.createComment('layer name = %s' % calConstant.CROW[row])
-            l.appendChild(c)
-                
-            for fe in range(12):
-
-                # insert <xtal> elements
-
-                x = doc.createElement('xtal')
-                x.setAttribute('iXtal', str(fe))
-                l.appendChild(x)
+                c = doc.createComment('layer name = %s' % calConstant.CROW[row])
+                l.appendChild(c)
                     
-                for end in range(2):
+                for fe in range(12):
 
-                    # insert <face> elements
+                    # insert <xtal> elements
 
-                    f = doc.createElement('face')
-                    f.setAttribute('end', POSNEG[end])
-                    x.appendChild(f)
+                    x = doc.createElement('xtal')
+                    x.setAttribute('iXtal', str(fe))
+                    l.appendChild(x)
+                        
+                    for end in range(2):
 
-                    # insert <tholdCI> element
+                        # insert <face> elements
 
-                    tc = doc.createElement('tholdCI')
-                    
-                    dac = int(lacDac[0, row, end, fe])
-                    adc = lacAdc[0, row, end, fe, dac]
-                    c = doc.createComment('LAC DAC = %d' % dac)
-                    tc.appendChild(c)
-                    tc.setAttribute('LACVal', "%0.3f" % adc)
-                    tc.setAttribute('LACSig', '1')
-                    
-                    dac = int(fleDac[0, row, end, fe])
-                    adc = fleAdc[0, row, end, fe, dac]
-                    c = doc.createComment('FLE DAC = %d' % dac)
-                    tc.appendChild(c)
-                    tc.setAttribute('FLEVal', "%0.3f" % adc)
-                    tc.setAttribute('FLESig', '1')
+                        f = doc.createElement('face')
+                        f.setAttribute('end', POSNEG[end])
+                        x.appendChild(f)
 
-                    dac = int(fheDac[0, row, end, fe])
-                    adc = fheAdc[0, row, end, fe, dac]
-                    c = doc.createComment('FHE DAC = %d' % dac)
-                    tc.appendChild(c)
-                    tc.setAttribute('FHEVal', "%0.3f" % adc)
-                    tc.setAttribute('FHESig', '1')                     
-                    
-                    f.appendChild(tc)
+                        # insert <tholdCI> element
 
-                    for erng in range(3):
+                        tc = doc.createElement('tholdCI')
+                        
+                        dac = int(lacDac[tem, row, end, fe])
+                        adc = lacAdc[tem, row, end, fe, dac]
+                        c = doc.createComment('LAC DAC = %d' % dac)
+                        tc.appendChild(c)
+                        tc.setAttribute('LACVal', "%0.3f" % adc)
+                        tc.setAttribute('LACSig', '1')
+                        
+                        dac = int(fleDac[tem, row, end, fe])
+                        adc = fleAdc[tem, row, end, fe, dac]
+                        c = doc.createComment('FLE DAC = %d' % dac)
+                        tc.appendChild(c)
+                        tc.setAttribute('FLEVal', "%0.3f" % adc)
+                        tc.setAttribute('FLESig', '1')
 
-                        if erng == 0:
-                            gain = lrefGain
-                        else:
-                            gain = (hrefGain - 8)
+                        dac = int(fheDac[tem, row, end, fe])
+                        adc = fheAdc[tem, row, end, fe, dac]
+                        c = doc.createComment('FHE DAC = %d' % dac)
+                        tc.appendChild(c)
+                        tc.setAttribute('FHEVal', "%0.3f" % adc)
+                        tc.setAttribute('FHESig', '1')                     
+                        
+                        f.appendChild(tc)
 
-                        # insert <tholdCIRange> elements
+                        for erng in range(3):
+
+                            if erng < 2:
+                                gain = lrefGain
+                            else:
+                                gain = (hrefGain - 8)
+
+                            # insert <tholdCIRange> elements
+
+                            tcr = doc.createElement('tholdCIRange')
+                            
+                            tcr.setAttribute('range', calConstant.CRNG[erng])
+                            
+                            dac = int(uldDac[tem, row, end, fe])
+                            adc = uldAdc[erng, tem, row, end, fe, dac]
+                            c = doc.createComment('ULD DAC = %d' % dac)
+                            tcr.appendChild(c)
+                            tcr.setAttribute('ULDVal', "%0.3f" % adc)
+                            tcr.setAttribute('ULDSig', '30')
+
+                            ped = pedData[tem, gain, erng, row, end, fe]                        
+                            tcr.setAttribute('PEDVal', "%0.3f" % ped)
+                            tcr.setAttribute('PEDSig', '1')
+                            
+                            tc.appendChild(tcr)
+
+                        # insert fake <tholdCIRange> element for HEX1 range
 
                         tcr = doc.createElement('tholdCIRange')
                         
-                        tcr.setAttribute('range', calConstant.CRNG[erng])
+                        tcr.setAttribute('range', 'HEX1')
                         
-                        dac = int(uldDac[0, row, end, fe])
-                        adc = uldAdc[erng, 0, row, end, fe, dac]
-                        c = doc.createComment('ULD DAC = %d' % dac)
-                        tcr.appendChild(c)
-                        tcr.setAttribute('ULDVal', "%0.3f" % adc)
+                        tcr.setAttribute('ULDVal', '4095.000')
                         tcr.setAttribute('ULDSig', '30')
-
-                        ped = pedData[gain, erng, row, end, fe]                        
+                        
+                        ped = pedData[tem, (hrefGain - 8), 3, row, end, fe]
                         tcr.setAttribute('PEDVal', "%0.3f" % ped)
                         tcr.setAttribute('PEDSig', '1')
                         
                         tc.appendChild(tcr)
-
-                    # insert fake <tholdCIRange> element for HEX1 range
-
-                    tcr = doc.createElement('tholdCIRange')
                     
-                    tcr.setAttribute('range', 'HEX1')
-                    
-                    tcr.setAttribute('ULDVal', '4095.000')
-                    tcr.setAttribute('ULDSig', '30')
-                    
-                    ped = pedData[lrefGain, 3, row, end, fe]
-                    tcr.setAttribute('PEDVal', "%0.3f" % ped)
-                    tcr.setAttribute('PEDSig', '1')
-                    
-                    tc.appendChild(tcr)
-                    
-
         # write output XML file
 
-        xml.dom.ext.PrettyPrint(doc, self.getFile())
+        self.writeFile()
 
 
     def read(self):
         """
-        \brief Read data from a CAL calibration XML file
+        Read data from a CAL TholdCI XML file
 
-        \returns A tuple of references to Numeric arrays and containing the calibration data: \n
+        Returns: A tuple of references to Numeric arrays and containing the
+        calibration data:
         """
         
         doc = self.getDoc()
@@ -341,8 +271,230 @@ class calTholdCICalibXML(calCalibXML):
 
         
         
+class calIntNonlinCalibXML(calCalibXML):
+    """
+    CAL IntNonlin calibration XML file class.
+
+    This class provides methods for accessing CAL int non-linearity
+    calibration data stored in XML format.
+    """
+
+    def __init__(self, fileName, mode = MODE_READONLY):
+        """
+        Open a CAL IntNonlin calibration XML file.
+        """
+        
+        calCalibXML.__init__(self, fileName, mode)
+        
+
+    def write(self, startTime, stopTime, triggers, mode, source, tems = (0,)):             
+        """
+        Write data to a CAL TholdCI XML file
+        """
+
+        doc = self.getDoc()        
+
+        # insert root document element <calCalib>
+
+        r = doc.createElement('calCalib')
+        doc.appendChild(r)
+
+        # insert <generic> element
+
+        g = doc.createElement('generic')
+        g.setAttribute('instrument', 'LAT')
+        g.setAttribute('calibType', 'CAL_TholdCI')
+        g.setAttribute('fmtVersion', 'v2r2')
+        g.setAttribute('creator', '$Name:    $')
+        ts = time.strftime('%Y-%m-%d-%H:%M', time.gmtime())
+        g.setAttribute('timestamp', ts)
+        r.appendChild(g)
+
+        # insert <inputSample> element
+
+        s = doc.createElement('inputSample')
+        s.setAttribute('startTime', startTime)
+        s.setAttribute('stopTime', stopTime)
+        s.setAttribute('triggers', triggers)
+        s.setAttribute('mode', mode)
+        s.setAttribute('source', source)
+        r.appendChild(s)
+
+        # insert <dimension> element  
             
+        d = doc.createElement('dimension')
+        d.setAttribute('nRow', '1')
+        d.setAttribute('nCol', '1')
+        d.setAttribute('nLayer', '8')
+        d.setAttribute('nXtal', '12')
+        d.setAttribute('nFace', '2')
+        d.setAttribute('nRange', '4')
+        d.setAttribute('exact', 'true')
+        r.appendChild(d)
+
+        # insert <dac> elements
+
+        for erng in range(4):
+
+            dr = doc.createElement('dac')
+            dr.setAttribute('range', calConstant.CRNG[erng])
+            dr.setAttribute('values', '')
+            r.appendChild(dr)
+
+        for tem in tems:
+            
+            # insert <tower> elements
+
+            t = doc.createElement('tower')
+            t.setAttribute('iRow', '0')
+            t.setAttribute('iCol', '0')
+            r.appendChild(t)
+            
+            for layer in range(8):
+
+                # translate index
+
+                row = layerToRow(layer) 
+
+                # insert <layer> elements
+
+                l = doc.createElement('layer')
+                l.setAttribute('iLayer', str(layer))
+                t.appendChild(l)
+
+                c = doc.createComment('layer name = %s' % calConstant.CROW[row])
+                l.appendChild(c)
+                    
+                for fe in range(12):
+
+                    # insert <xtal> elements
+
+                    x = doc.createElement('xtal')
+                    x.setAttribute('iXtal', str(fe))
+                    l.appendChild(x)
+                        
+                    for end in range(2):
+
+                        # insert <face> elements
+
+                        f = doc.createElement('face')
+                        f.setAttribute('end', POSNEG[end])
+                        x.appendChild(f)
+
+                        for erng in range(4):
+
+                            # insert <intNonlin> elements
+
+                            n = doc.createElement('intNonlin')
+                            n.setAttribute('range', calConstant.CRNG[erng])
+                            n.setAttribute('values', '')
+                            f.appendChild(n)
     
+        # write output XML file
+
+        self.writeFile()
+
+
+    def read(self):
+        """
+        Read data from a CAL TholdCI XML file
+
+        Returns: A tuple of references to Numeric arrays and containing the
+        calibration data:
+        """
+        
+        doc = self.getDoc()
+        
+        dacData = Numeric.zeros((4,), Numeric.PyObject)
+        adcData = Numeric.zeros((16, 4, 8, 2, 12), Numeric.PyObject)
+
+        # find <dac> elements
+
+        dList = doc.getElementsByTagName('dac')
+        for d in dList:
+            erngName = d.getAttribute('range')
+            erng = ERNG_MAP[erngName]
+            valueStr = d.getAttribute('values')
+            valueList = valueStr.split()
+            data = []
+            for dac in valueList:
+                data.append(int(dac))
+            dacData[erng] = data
+        print dacData
+
+        # find <tower> elements
+
+        tList = doc.getElementsByTagName('tower')
+        for t in tList:
+
+            tRow = int(t.getAttribute('iRow'))
+            tCol = int(t.getAttribute('iCol'))
+
+            # find <layer> elements
+
+            lList = t.getElementsByTagName('layer')
+            for l in lList:
+
+                layer = int(l.getAttribute('iLayer'))
+                row = layerToRow(layer)
+
+                # find <xtal> elements
+
+                xList = l.getElementsByTagName('xtal')
+                for x in xList:
+
+                    fe = int(x.getAttribute('iXtal'))
+
+                    # find <face> elements
+
+                    fList = x.getElementsByTagName('face')
+                    for f in fList:
+
+                        face = f.getAttribute('end')
+                        end = POSNEG_MAP[face]
+
+                        # find <intNonlin> elements
+
+                        nList = f.getElementsByTagName('intNonlin')
+                        for n in nList:
+
+                            erngName = n.getAttribute('range')
+                            erng = ERNG_MAP[erngName]
+                            valueStr = n.getAttribute('values')
+                            valueList = valueStr.split()
+                            data = []
+                            for adc in valueList:
+                                data.append(float(adc))
+                            print len(data)
+
+        return (dacData, adcData)
     
-    
+
+def layerToRow(layer):
+    """
+    Translate CAL layer number to CAL row number
+
+    Returns: The row number (0 - 7)
+    """
+
+    row = (layer / 2)
+    xy = (layer % 2)
+    if xy == 1:
+        row += 4
+    return row
+
+
+def rowToLayer(row):
+    """
+    Translate CAL row number to CAL layer number
+
+    Returns: The layer number (0 - 7)
+    """
+
+    if row < 4:
+        layer = (row * 2)
+    else:
+        layer = (((row - 4) * 2) + 1)
+    return layer
+
     
