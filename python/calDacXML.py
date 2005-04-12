@@ -1,79 +1,75 @@
 """
-calDacXML
+Classes to represent CAL DAC settings XML documents.
 """
 
-import xml.dom.minidom
-import Numeric
-import logging
 
+__facility__  = "Offline"
+__abstract__  = "Classes to represent CAL DAC settings XML documents"
+__author__    = "D.L.Wood"
+__date__      = "$Date: 2005/03/31 21:55:42 $"
+__version__   = "$Revision: 1.20 $, $Author: dwood $"
+__release__   = "$Name:  $"
+__credits__   = "NRL code 7650"
+
+
+
+import logging
+import xml.dom.minidom
+
+import Numeric
+
+import calXML
 from calExcept import *
 
 
 
-MODE_CREATE     = 0
-MODE_READONLY   = 2
+MODE_CREATE     = calXML.MODE_CREATE
+MODE_READONLY   = calXML.MODE_READONLY
 
 
 FILE_TYPES = ('fle_dac', 'fhe_dac', 'log_acpt', 'rng_uld_dac')
 
 
 
-##########################################################################################
-##
-## \class calDacXML
-##
-## \brief CAL DAC configuration XML data file class.
-##
-## This class provides methods for accessing CAL DAC configuration data stored in XML
-## format.
-##
-## The following file types are supported: \n
-##
-## - fle_dac CAL FLE DAC setttings \n
-## - fhe_dac CAL FHE DAC settings \n
-## - log_acpt CAL LAC DAC settings \n
-## - rng_uld_dac CAL ULD DAC settings \n
-##
-##########################################################################################
+class calDacXML(calXML.calXML):   
+    """
+    CAL DAC configuration XML data file class.
+    
+    This class provides methods for accessing CAL DAC configuration
+    data stored in XML format.
 
-class calDacXML:   
-  
+    The following file types are supported:
+
+        fle_dac - CAL FLE DAC setttings
+        fhe_dac - CAL FHE DAC settings
+        log_acpt - CAL LAC DAC settings
+        rng_uld_dac - CAL ULD DAC settings
+        
+    """
+
+
     def __init__(self, fileName, dacName, mode = MODE_READONLY):
         """
-        \brief Open a CAL DAC configuration XML file
+        Open a CAL DAC configuration XML file
 
         \param fileName The XML file name.
         \param dacName The name of the bottom level XML data element.
         \param mode The file access mode (MODE_READONLY or MODE_CREATE).
         """
 
-        self.__log = logging.getLogger()    
-
-        self.__doc = None
-        self.__xmlFile = None
-        self.__xmlName = fileName
-        self.__mode = mode
+        calXML.calXML.__init__(self, fileName, mode)  
 
         if dacName not in FILE_TYPES:
             raise calFileOpenExcept, "DAC name %s not supported" % str(dacName)
-        self.__dacName = dacName        
-
-        if mode == MODE_READONLY:
-
-            # open and parse DAC configuration XML file
-
-            self.__xmlFile = open(fileName, "r")
-            self.__doc = xml.dom.minidom.parse(self.__xmlFile)
-
-        else:
-            raise calFileOpenExcept, "file access mode %s not supported" % str(mode)
+        self.__dacName = dacName
 
 
     def read(self):
         """
-        \brief Read data from a CAL DAC configuration XML file
+        Read data from a CAL DAC configuration XML file
 
-        \returns A Numeric array of data (16, 8, 2, 12) read from the XML file.
+        Returns: A Numeric array of data (16, 8, 2, 12) read from the
+        XML file.
         """
 
         # create empty DAC data array
@@ -82,7 +78,9 @@ class calDacXML:
 
         # find <fle_dac> elements
 
-        latList = self.__doc.getElementsByTagName('GLAT')
+        doc = self.getDoc()
+
+        latList = doc.getElementsByTagName('GLAT')
         latLen = len(latList)
         if latLen != 1:
             raise calFileReadExcept, "found %d <GLAT> elements, expected 1" % latLen
@@ -137,11 +135,3 @@ class calDacXML:
 
         return dacData                        
 
-
-    def close(self):
-        """
-        \brief Close a CAL DAC configuration XML file.
-        """
-        
-        self.__xmlFile.close()
-        self.__doc.unlink()
