@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Tue Apr 12 11:50:22 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Added calCalibXML.genericInfo() method to read <generic> element attributes; added working info() methods to calTholdCICalibXML and calIntNonlinCalibXML classes
+    *
+------------------------------------------------------------
 User: chehtman  Tue Apr 12 10:53:38 PDT 2005
 calibGenCAL/src
 
