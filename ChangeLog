@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Tue Apr 12 07:02:12 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calConstant.py calExcept.py 
+Log Message:
+Changed facility from CAL to Offline; removed doxygen markers
+    *
+------------------------------------------------------------
 User: dwood  Tue Apr 12 06:58:31 PDT 2005
 calibGenCAL/python
 
