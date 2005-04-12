@@ -1,15 +1,9 @@
 """
-calConstant
-\brief Global calorimeter constant values
+Global calorimeter constant values
 """
 
-##
-## \file calConstant.py
-##
 
-
-
-__facility__      = "CAL"
+__facility__      = "Online"
 __abstract__      = "Global calorimeter constant values"
 __author__        = "D.L. Wood"
 __date__          = "$Date: 2005/03/29 00:32:25 $"
@@ -96,4 +90,5 @@ NOMCLOCKFREQ = 20000000.
 CYESNO = ('YES','NO')
 
 # Temperature region names
-TEMP_REGIONS=['HOT','ROOM','COLD']
+
+TEMP_REGIONS = ('HOT','ROOM','COLD')
