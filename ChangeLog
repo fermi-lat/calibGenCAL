@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: chehtman  Tue Apr 12 12:43:02 PDT 2005
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+Added fle/fhe bias file output to runMuTrigEff, fixed event numbering problem in runCIFIt,
+added new application runMuThreshEvol to follow fle threshold evolution in a long muon run.
+    *
+------------------------------------------------------------
 User: dwood  Tue Apr 12 11:50:22 PDT 2005
 calibGenCAL/python
 
