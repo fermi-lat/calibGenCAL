@@ -294,7 +294,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.8 2005/02/16 23:29:50 fewtrell Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.9 2005/03/26 04:32:02 chehtman Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
@@ -433,6 +433,8 @@ private:
   CfCfg  &m_cfg;
 
   int m_evtId;
+  int m_nMax;
+  int m_iGoodEvt;
 
   CalVec<RngIdx,  TH1F*> m_ciHists; 
 
@@ -444,7 +446,7 @@ RootCI::RootCI(vector<string> &digiFileNames, CfData  &data, CfCfg &cfg) :
   m_curDiode(BOTH_DIODES),
   m_CfData(data),
   m_cfg(cfg) {
-    
+   m_iGoodEvt = 0; 
   }
 
 // default dstor
@@ -456,13 +458,13 @@ void RootCI::initCiHists() {
   // DEJA VU?
   if (m_ciHists.size() == 0) {
     m_ciHists.resize(RngIdx::N_VALS);
-
+	
     for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
       ostringstream tmp;
-      tmp << "ci_" << rngIdx;
-      m_ciHists[rngIdx] = new TH1F(tmp.str().c_str(),
-                                    tmp.str().c_str(),
-                                    4100,0,4100);
+	  if( m_curDiode == RootCI::LE) 
+		tmp << "ciLE_" << rngIdx;
+	  else tmp << "ciHE_" << rngIdx;	   
+      m_ciHists[rngIdx] = new TH1F (tmp.str().c_str(),tmp.str().c_str() ,4100,0,4100);
     }
   }
   else // clear existing histsograms
@@ -482,7 +484,7 @@ bool  RootCI::isRngEnabled(RngNum rng) {
 // compiles stats for each test type.
 void RootCI::DigiCal() {
   // Determine test config for this event (which xtal?, which dac?)
-  int ievt = m_evtId-1;
+  int ievt = m_iGoodEvt;
   int testCol   = ievt/m_cfg.nPulsesPerXtal;
   int testDAC   = (ievt%m_cfg.nPulsesPerXtal)/m_cfg.nPulsesPerDAC;
   int iSamp   = (ievt%m_cfg.nPulsesPerXtal)%m_cfg.nPulsesPerDAC;
@@ -498,8 +500,12 @@ void RootCI::DigiCal() {
 
   // Loop through each xtal interaction
   CalDigi *pdig = 0;
-  while ((pdig = (CalDigi*)calDigiIter.Next())) {  //loop through each 'hit' in one event
+  int nDigis = calDigiCol->GetEntries();
+  if(nDigis == XtalIdx::N_VALS){
+    m_iGoodEvt++;
+ while ((pdig = (CalDigi*)calDigiIter.Next())) {  //loop through each 'hit' in one event
     CalDigi &cdig = *pdig; // use ref to reduce '->'
+	
 
     CalXtalId id = cdig.getPackedId();  // get interaction information
     ColNum col = id.getColumn();
@@ -545,7 +551,12 @@ void RootCI::DigiCal() {
 		}
       } // foreach face
     } // foreach readout
-  } // foreach xtal
+   } // foreach xtal
+  }
+  else {
+	m_cfg.ostrm << " event " << m_evtId << " contains " << nDigis << " digis - skipped" << endl;
+	m_nMax++;
+  }
 }
 
 void RootCI::Go(Int_t nEvtAsked)
@@ -568,7 +579,7 @@ void RootCI::Go(Int_t nEvtAsked)
   Int_t nEvts = getEntries();
   m_cfg.ostrm << "\nNum Events in File is: " << nEvts << endl;
   Int_t curI;
-  Int_t nMax = min(nEvtAsked+m_startEvt,nEvts);
+  m_nMax = min(nEvtAsked+m_startEvt,nEvts);
 
   if (nEvtAsked+m_startEvt >  nEvts) {
     ostringstream tmp;
@@ -578,7 +589,7 @@ void RootCI::Go(Int_t nEvtAsked)
   }
 
   // BEGINNING OF EVENT LOOP
-  for (Int_t iEvt=m_startEvt; iEvt<nMax; iEvt++, curI=iEvt) {
+  for (Int_t iEvt=m_startEvt; iEvt<m_nMax; iEvt++, curI=iEvt) {
     if (m_digiEvt) m_digiEvt->Clear();
 
     getEvent(iEvt);

@@ -1,5 +1,5 @@
 // LOCAL INCLUDES
-#include "MtCfg.h"
+#include "TeCfg.h"
 #include "CalDefs.h"
 #include "CGCUtil.h"
 
@@ -12,11 +12,11 @@
 
 using namespace CGCUtil;
 
-const string MtCfg::TEST_INFO("TEST_INFO");
-const string MtCfg::PATHS("PATHS");
-const string MtCfg::GENERAL("GENERAL");
+const string TeCfg::TEST_INFO("TEST_INFO");
+const string TeCfg::PATHS("PATHS");
+const string TeCfg::GENERAL("GENERAL");
 
-void MtCfg::readCfgFile(const string& path) {
+void TeCfg::readCfgFile(const string& path) {
   clear();
 
   xmlBase::IFile ifile(path.c_str());
@@ -33,8 +33,8 @@ void MtCfg::readCfgFile(const string& path) {
   instrumentMode = ifile.getString(TEST_INFO.c_str(), "INST_MODE");
   source         = ifile.getString(TEST_INFO.c_str(), "TEST_SOURCE");
 
-  dacVals    = ifile.getIntVector(TEST_INFO.c_str(), "DAC_SETTINGS");
-  nPulsesPerDAC  = ifile.getInt(TEST_INFO.c_str(), "N_PULSES_PER_DAC");
+  nTimePoints  = ifile.getInt(TEST_INFO.c_str(), "N_TIME_POINTS");
+  nEvtsPerPoint  = ifile.getInt(TEST_INFO.c_str(), "N_EVENTS_PER_POINT");
 
 
   // PATHS
@@ -49,15 +49,8 @@ void MtCfg::readCfgFile(const string& path) {
   outputTXTPath = ifile.getString(PATHS.c_str(), "TXTPATH");
   Util::expandEnvVar(&outputTXTPath);
   
-  rootFileA = ifile.getString(PATHS.c_str(), "ROOTFILE_A");
-  Util::expandEnvVar(&rootFileA);
-  rootFileB = ifile.getString(PATHS.c_str(), "ROOTFILE_B");
-  Util::expandEnvVar(&rootFileB);
-  rootFileCI = ifile.getString(PATHS.c_str(), "ROOTFILE_CI");
-  Util::expandEnvVar(&rootFileCI);
-
-  pedFileTXT      = ifile.getString(PATHS.c_str(), "PEDFILE_TXT");
-  Util::expandEnvVar(&pedFileTXT);
+  rootFile = ifile.getString(PATHS.c_str(), "ROOTFILE");
+  Util::expandEnvVar(&rootFile);
 
   histFile = ifile.getString(PATHS.c_str(), "HISTFILE");
   Util::expandEnvVar(&histFile);
@@ -71,31 +64,19 @@ void MtCfg::readCfgFile(const string& path) {
   genLogfile  = ifile.getBool(GENERAL.c_str(), "GENERATE_LOGFILE") != 0;
   genHistfile = ifile.getBool(GENERAL.c_str(), "GENERATE_HISTFILE") != 0;
 
-  // Geneate derived config quantities.
-  nDACs          = dacVals.size();
-  nPulsesPerXtal = nPulsesPerDAC * nDACs;
-  nPulsesPerRun  = ColNum::N_VALS*nPulsesPerXtal;
-
-  baseFilename = rootFileA;
+  baseFilename = rootFile;
   path_remove_dir(baseFilename);
   path_remove_ext(baseFilename);
-  vector<string> tokens;
-  string delim("_");
-  tokenize_str(baseFilename,tokens,delim); 
-  string moduleName = ((tokens[1]).size() == 5) ? tokens[1] : tokens[2];
 
   // Auto-generate output filenames
   if (outputXMLPath.length() == 0)
-    outputXMLPath = outputDir + tokens[0]+ "_" + moduleName + "_" + "CAL_flefheBias.xml";
+    outputXMLPath = outputDir + "threshEvol." + baseFilename + ".xml";
   if (outputTXTPath.length() == 0)
-    outputTXTPath = outputDir + "muTrig." + baseFilename + ".txt";
+    outputTXTPath = outputDir + "threshEvol." + baseFilename + ".txt";
   if (logfile.length() == 0)
-    logfile = outputDir + "muTrig_logfile." + baseFilename + ".txt";
+    logfile = outputDir + "threshEvol_logfile." + baseFilename + ".txt";
   if (histFile.length() == 0)
-    histFile = outputDir + "muTrigEff." + baseFilename + ".root";
-
-  if (pedFileTXT.length() == 0)
-    pedFileTXT = outputDir + "mc_peds." + baseFilename + ".txt";
+    histFile = outputDir + "threshEvol." + baseFilename + ".root";
 
   // setup output stream
   // add cout by default
@@ -107,8 +88,8 @@ void MtCfg::readCfgFile(const string& path) {
   }
 }
 
-void MtCfg::clear() {  
+void TeCfg::clear() {  
 }
 
-void MtCfg::summarize() {
+void TeCfg::summarize() {
 }
