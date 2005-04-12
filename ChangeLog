@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Tue Apr 12 07:06:47 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calFitsXML.py calFitsIO.py fits2xml.py 
+Log Message:
+Changed facility from CAL to Offline; removed doxygen markers from comment blocks.
+    *
+------------------------------------------------------------
 User: dwood  Tue Apr 12 07:03:16 PDT 2005
 calibGenCAL/python
 
