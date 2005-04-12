@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Tue Apr 12 10:07:45 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Produced a working calIntNonlinCalibXML.read() method; data is returned as a list of 4 Numeric arrays, each large enough to hold the data points for one energy range.
+    *
+------------------------------------------------------------
 User: dwood  Tue Apr 12 07:09:28 PDT 2005
 calibGenCAL/python
 
