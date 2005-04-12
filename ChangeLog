@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Tue Apr 12 06:58:31 PDT 2005
+calibGenCAL/python
+
+Added Files:
+	calXML.py 
+Log Message:
+Base class for common XML file operations.
+    *
+------------------------------------------------------------
 User: dwood  Fri Apr  8 12:11:45 PDT 2005
 calibGenCAL/python
 
