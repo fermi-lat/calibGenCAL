@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/12 14:09:28 $"
-__version__   = "$Revision: 1.2 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/12 17:07:45 $"
+__version__   = "$Revision: 1.3 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -51,7 +51,46 @@ class calCalibXML(calXML.calXML):
         \param mode The file access mode (MODE_READONLY or MODE_CREATE).
         """
 
-        calXML.calXML.__init__(self, fileName, mode)  
+        calXML.calXML.__init__(self, fileName, mode)
+
+
+    def genericInfo(self, genericNode, infoDict):
+        """
+        Fill in the generic portion of an XML info dictionary.
+
+        Param: genericNode - the XML doc node for the <generic> element
+        Param: infoDict - The dictionary to fill in
+        """
+
+        value = genericNode.getAttribute('instrument')
+        if len(value) == 0:
+            infoDict['instrument'] = None
+        else:
+            infoDict['instrument'] = str(value)
+
+        value = genericNode.getAttribute('calibType')
+        if len(value) == 0:
+            infoDict['calibType'] = None
+        else:
+            infoDict['calibType'] = str(value)
+
+        value = genericNode.getAttribute('timestamp')
+        if len(value) == 0:
+            infoDict['timestamp'] = None
+        else:
+            infoDict['timestamp'] = str(value)
+
+        value = genericNode.getAttribute('fmtVersion')
+        if len(value) == 0:
+            infoDict['fmtVersion'] = None
+        else:
+            infoDict['fmtVersion'] = str(value)
+
+        value = genericNode.getAttribute('DTDVersion')
+        if len(value) == 0:
+            infoDict['DTDVersion'] = None
+        else:
+            infoDict['DTDVersion'] = str(value)         
 
 
     
@@ -269,6 +308,36 @@ class calTholdCICalibXML(calCalibXML):
         
         # find <tholdCI> elements
 
+
+    def info(self):
+        """
+        Return ancillary information from CAL IntNonlin XML file.
+
+        Returns: A dictionary with the following keys and values:
+            'instrument' - from <generic> element
+            'timestamp' - from <generic> element
+            'calibType' - from <generic> element
+            'fmtVersion' - from <generic> element
+            'DTDVersion' - from <generic> element
+        """
+
+        doc = self.getDoc()
+        i = {}
+
+        # find <generic> element
+
+        gList = doc.getElementsByTagName('generic')
+        gLen = len(gList)
+        if gLen != 1:
+            raise calFileReadExcept, "found %d <generic> elements (expected 1)" % gLen
+
+        # get <generic> attribute values        
+            
+        g = gList[0]
+        self.genericInfo(g, i)
+
+        return i        
+
         
         
 class calIntNonlinCalibXML(calCalibXML):
@@ -282,14 +351,36 @@ class calIntNonlinCalibXML(calCalibXML):
     def __init__(self, fileName, mode = MODE_READONLY):
         """
         Open a CAL IntNonlin calibration XML file.
+
+        Param: fileName - The name of the XML file.
+        Param: mode - The XML file access mode (MODE_CREATE or MODE_READONLY).
         """
         
         calCalibXML.__init__(self, fileName, mode)
         
 
-    def write(self, startTime, stopTime, triggers, mode, source, tems = (0,)):             
+    def write(self, dacData, adcData, startTime = None, stopTime = None, \
+              triggers = None, mode = None, source = None, tems = (0,)):             
         """
         Write data to a CAL IntNonlin XML file
+
+        Param: dacData - A list of 4 elements, each a reference to a Numeric
+                         array of DAC values. The length of this array is the
+                         number of data points for that energy range.
+        Param: adcData - A list of 4 elements, each a reference to a Numeric
+                         array of ADC values. The shape of each array is
+                         (16, 8, 2, 12, <size>), where <size> is the length of
+                         the corresponding dacData array for that energy range.
+                         If the ADC data in the array has less points than the
+                         correspoding DAC values array, the extra ADC values at
+                         the end should be set to '-1'.  This will prevent them
+                         from being written to the XML file.
+        Param: startTime - The <inputSample> 'startTime' attribute value.
+        Param: stopTime - The <inputSample> 'stopTime' attribute value.
+        Param: trigger - The <inputSample> 'trigger' attribute value.
+        Param: mode - The <inputSample> 'mode' attribute value.
+        Param: source - The <inputSample> 'source' attribute value.
+        Param: tems - A list of TEM ID values to include in the output data set.
         """
 
         doc = self.getDoc()        
@@ -313,12 +404,17 @@ class calIntNonlinCalibXML(calCalibXML):
         # insert <inputSample> element
 
         s = doc.createElement('inputSample')
-        s.setAttribute('startTime', startTime)
-        s.setAttribute('stopTime', stopTime)
-        s.setAttribute('triggers', triggers)
-        s.setAttribute('mode', mode)
-        s.setAttribute('source', source)
-        r.appendChild(s)
+        if startTime is not None:
+            s.setAttribute('startTime', startTime)
+        if stopTime is not None:
+            s.setAttribute('stopTime', stopTime)
+        if triggers is not None:
+            s.setAttribute('triggers', triggers)
+        if mode is not None:
+            s.setAttribute('mode', mode)
+        if source is not None:
+            s.setAttribute('source', source)
+        g.appendChild(s)
 
         # insert <dimension> element  
             
@@ -338,7 +434,11 @@ class calIntNonlinCalibXML(calCalibXML):
 
             dr = doc.createElement('dac')
             dr.setAttribute('range', calConstant.CRNG[erng])
-            dr.setAttribute('values', '')
+            s = ''
+            data = dacData[erng]
+            for dac in data:
+                s += '%s ' % str(dac)
+            dr.setAttribute('values', s.rstrip(' '))
             r.appendChild(dr)
 
         for tem in tems:
@@ -387,7 +487,13 @@ class calIntNonlinCalibXML(calCalibXML):
 
                             n = doc.createElement('intNonlin')
                             n.setAttribute('range', calConstant.CRNG[erng])
-                            n.setAttribute('values', '')
+                            s = ''
+                            data = adcData[erng]
+                            for adc in data[tem, row, end, fe, :]:
+                                if adc < 0:
+                                    continue
+                                s += '%0.2f ' % float(adc)
+                            n.setAttribute('values', s.rstrip(' '))
                             f.appendChild(n)
     
         # write output XML file
@@ -400,7 +506,17 @@ class calIntNonlinCalibXML(calCalibXML):
         Read data from a CAL IntNonlin XML file
 
         Returns: A tuple of references to Numeric arrays and containing the
-        calibration data:
+        calibration data (dacData, adcData):
+            dacData -   A list of 4 elements, each a reference to a Numeric
+                        array of DAC values. The length of this array is the
+                        number of data points for that energy range.
+            adcData -   A list of 4 elements, each a reference to a Numeric
+                        array of ADC values. The shape of each array is
+                        (16, 8, 2, 12, <size>), where <size> is the length of
+                        the corresponding dacData array for that energy range.
+                        If the ADC data in the XML file has less points than the
+                        correspoding DAC values array, the extra ADC values at
+                        the end are set to '-1'.
         """
         
         doc = self.getDoc()
@@ -483,7 +599,84 @@ class calIntNonlinCalibXML(calCalibXML):
                                 
 
         return (dacData, adcData)
+
+
+    def info(self):
+        """
+        Return ancillary information from CAL IntNonlin XML file.
+
+        Returns: A dictionary with the following keys and values:
+            'instrument' - from <generic> element
+            'timestamp' - from <generic> element
+            'calibType' - from <generic> element
+            'fmtVersion' - from <generic> element
+            'DTDVersion' - from <generic> element
+            'startTime' - from <inputSample> element
+            'stopTime' - from <inputSample> element
+            'triggers' - from <inputSample> element
+            'mode' - from <inputSample> element
+            'source' - from <inputSample> element
+        """
+
+        doc = self.getDoc()
+        i = {}
+
+        # find <generic> element
+
+        gList = doc.getElementsByTagName('generic')
+        gLen = len(gList)
+        if gLen != 1:
+            raise calFileReadExcept, "found %d <generic> elements (expected 1)" % gLen
+
+        # get <generic> attribute values        
+            
+        g = gList[0]
+        self.genericInfo(g, i)       
+
+        # find <inputSample> element
+
+        isList = g.getElementsByTagName('inputSample')
+        isLen = len(isList)
+        if isLen != 1:
+            raise calFileReadExcept, "found %d <inputSample> elements (expected 1)" % isLen
+
+        # get <inputSample> attribute values
+
+        isn = isList[0]
+        
+        value = isn.getAttribute('startTime')
+        if len(value) == 0:
+            i['startTime'] = None
+        else:
+            i['startTime'] = str(value)
+
+        value = isn.getAttribute('stopTime')
+        if len(value) == 0:
+            i['stopTime'] = None
+        else:
+            i['stopTime'] = str(value)
+
+        value = isn.getAttribute('triggers')
+        if len(value) == 0:
+            i['triggers'] = None
+        else:
+            i['triggers'] = str(value)
+
+        value = isn.getAttribute('mode')
+        if len(value) == 0:
+            i['mode'] = None
+        else:
+            i['mode'] = str(value)
+            
+        value = isn.getAttribute('source')
+        if len(value) == 0:
+            i['source'] = None
+        else:
+            i['source'] = str(value)
+
+        return i
     
+            
 
 def layerToRow(layer):
     """
