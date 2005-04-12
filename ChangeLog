@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: chehtman  Tue Apr 12 12:52:54 PDT 2005
+calibGenCAL/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+Added fle/fhe bias file output to runMuTrigEff, fixed event numbering problem in runCIFIt,
+added new application runMuThreshEvol to follow fle threshold evolution in a long muon run.
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r5, operation: add
 Package: calibGenCAL
