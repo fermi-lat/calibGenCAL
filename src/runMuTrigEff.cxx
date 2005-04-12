@@ -47,6 +47,7 @@ public:
   void initHists();
   void FitData();
   void writeThreshTXT(const string &filename);
+  void writeFleFheBiasXML(const string &filename);
 
 private:
   MtCfg &m_cfg;
@@ -352,7 +353,55 @@ void MtData::writeThreshTXT(const string &filename) {
 
 }
 
+void MtData::writeFleFheBiasXML(const string &filename){
+  ofstream outfile(filename.c_str());
+  if (!outfile.is_open())
+    throw string("Unable to open " + filename);
 
+ int tower = 0;
+  outfile << "<?xml version=\'1.0\' encoding=\'UTF-8\'?>" << endl;
+  outfile << "<LATdoc name=\'\'>" << endl;
+  outfile << "  <declarations>"   << endl;
+  outfile << "    <options>"      << endl;
+  outfile << "      <explicitBroadcastNodes>0</explicitBroadcastNodes>" << endl;
+  outfile << "    </options>"     << endl;
+  outfile << "  </declarations>"  << endl;
+  outfile << "  <configuration hierarchy=\"[\'fle_fhe\',\'GCCC\', \'GCRC\', \'GCFE\', \'thrBias\']\" shape=\'(2, 8, 2, 12)\' version=\'NA\' type=\'d\' name=\'\' usage=\'add the constant from this table to the charge injection FLE threshold to get the corresponding FLE threshold for muons\'>" << endl;
+  outfile << "    <GLAT>"         << endl;
+  outfile << "      <GTEM ID=\'0\'>" << endl;
+
+  for (int diode=0; diode<2; diode++){
+    outfile << "        <fle_fhe ID=\'" << diode << "\'>" << endl;
+    for (int xy = 0; xy<2; xy++){
+      for (int side =0; side < 2; side++){
+        int gccc = side*2+xy;
+        outfile << "          <GCCC ID=\'" << gccc << "\'>" << endl;
+        for (int gcrc = 0; gcrc <4; gcrc++){
+          outfile << "            <GCRC ID=\'" << gcrc << "\'>" << endl;
+          int layer = xy+gcrc*2;
+          for (int gcfe = 0; gcfe<12; gcfe++){
+            outfile << "              <GCFE ID=\'" << gcfe << "\'>" << endl;
+            int col = gcfe;
+			FaceIdx faceIdx(tower,layer,col,side);
+
+            float fleBias = m_muThresh[faceIdx] - m_ciThresh[faceIdx];
+            outfile << "                <thrBias>" << fleBias << "</thrBias>" << endl;
+            outfile << "              </GCFE>" << endl;
+          }
+          outfile << "            </GCRC>" << endl;
+        }
+        outfile << "          </GCCC>" << endl;
+      }
+    }
+    outfile << "        </fle_fhe>" << endl;
+  }
+  outfile << "      </GTEM>" << endl;
+  outfile << "    </GLAT>" << endl;
+  outfile << "  </configuration>" << endl;
+  outfile << "</LATdoc>" << endl;
+
+
+}
 class RootCiTrig : public RootFileAnalysis {
 public:
   // @enum Diode Specify LE, HE, BOTH_DIODES
@@ -740,6 +789,7 @@ int main(int argc, char **argv) {
 
     data.FitData();
     if (cfg.genTXT) data.writeThreshTXT(cfg.outputTXTPath);
+    if (cfg.genXML) data.writeFleFheBiasXML(cfg.outputXMLPath);
  
     if (cfg.genHistfile) data.flushHists();
   
