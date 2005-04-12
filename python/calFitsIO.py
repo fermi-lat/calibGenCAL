@@ -1,14 +1,9 @@
 """
-calFitsIO
-\brief CAL FITS ancillary data classes
+CAL FITS ancillary data classes
 """
 
-##
-## \file calFitsIO.py
-##
 
-
-__facility__ = "CAL"
+__facility__ = "Offline"
 __abstract__ = "CAL FITS ancillary data writer class"
 __author__   = "B. Leas"
 __date__     = "$Date: 2005/03/18 14:56:03 $"
@@ -27,6 +22,8 @@ import logging
 from Numeric import size,fromstring
 from calExcept import *
 from calConstant import CFACE
+
+
 CFITSFACE = {'X+':'XP','Y+':'YP','X-':'XM','Y-':'YM'}  #Standard FITs does not support + or - in KEYWORDS so convert to 'P' and 'M'
 
 

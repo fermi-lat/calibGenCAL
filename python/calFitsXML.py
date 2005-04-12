@@ -1,13 +1,9 @@
 """
-calFitsXML
-\brief Class to read and write CAL XML files derived from FITS data sets.
+Class to read and write CAL XML files derived from FITS data sets.
 """
 
-##
-## \file calFitsXML.py
-##
 
-__facility__  = "CAL"
+__facility__  = "Offline"
 __abstract__  = "Class to read and write CAL XML files derived from FITS data sets"
 __author__    = "D.L.Wood"
 __date__      = "$Date: 2005/03/31 21:55:42 $"

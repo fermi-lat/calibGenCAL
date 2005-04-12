@@ -1,13 +1,9 @@
 """
-fits2xml
-\brief Tool to convert CAL FITS files to XML format.
+Tool to convert CAL FITS files to XML format.
 """
 
-##
-## \file fits2xml.py
-##
 
-__facility__  = "CAL"
+__facility__  = "Offline"
 __abstract__  = "Tool to convert CAL FITS files to XML format"
 __author__    = "D.L.Wood"
 __date__      = "$Date: 2005/03/16 16:49:41 $"
