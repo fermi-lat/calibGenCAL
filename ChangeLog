@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Wed Apr 13 09:05:13 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Added capability to set tower indicies in input and output of XML files; added helper functions temToTower() and towerToTem().
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r5, operation: add
 Package: calibGenCAL
