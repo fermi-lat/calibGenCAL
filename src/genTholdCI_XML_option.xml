@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 
-<!DOCTYPE ifile SYSTEM "$(XMLROOT)/xmldata/ifile.dtd" >
+<!DOCTYPE ifile SYSTEM "$(XMLBASEROOT)/xml/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/muonCalib_option.xml,v 1.4 2005/01/13 04:03:17 fewtrell Exp $" cvs_Revision="$Revision: 1.4 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genTholdCI_XML_option.xml,v 1.1 2005/01/31 14:01:58 fewtrell Exp $" cvs_Revision="$Revision: 1.1 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP"    value="2004-07-31-06:50"> Timestamp for test run.</item>

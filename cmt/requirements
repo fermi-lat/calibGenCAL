@@ -28,5 +28,5 @@ application runMuTrigEff runMuTrigEff.cxx MtCfg.cxx RootFileAnalysis.cxx CGCUtil
 
 application genTholdCI_XML genTholdCI_XML.cxx CalDefs.cxx CGCUtil.cxx
 
-application runMuThreshEvol runMuThreshEVol.cxx TeCfg.cxx RootFileAnalysis.cxx CGCUtil.cxx CalDefs.cxx
+application runMuThreshEvol runMuThreshEvol.cxx TeCfg.cxx RootFileAnalysis.cxx CGCUtil.cxx CalDefs.cxx
 
