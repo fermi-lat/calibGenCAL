@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/12 18:50:22 $"
-__version__   = "$Revision: 1.4 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/13 16:05:13 $"
+__version__   = "$Revision: 1.5 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -293,10 +293,30 @@ class calTholdCICalibXML(calCalibXML):
         Read data from a CAL TholdCI XML file
 
         Returns: A tuple of references to Numeric arrays and containing the
-        calibration data:
+        calibration data (adcData, uldData, pedData):
+            adcData - A Numeric array of shape (16, 8, 2, 12, 3).  The last
+            dimension holds the LAC, FLE, and FHE values for the channel:
+                [:, 0] = LAC ADC threshold values
+                [:, 1] = FLE ADC threshold values
+                [:, 2] = FHE ADC threshold values
+            uldData - A Numeric array of shape (16, 8, 2, 12, 4).  The last
+            dimension holds the ULD values for each energy range:
+                [:, 0] = LEX8 ULD ADC threshold values
+                [:, 1] = LEX1 ULD ADC threshold values
+                [:, 2] = HEX8 ULD ADC threshold values
+                [:, 3] = HEX1 ULD ADC threshold values
+            pedData - A Numeric array of shape (16, 8, 2, 12, 4).  The last
+            dimension holds the pedestal values for each energy range:
+                [:, 0] = LEX8 ULD pedestal values
+                [:, 1] = LEX1 ULD pedestal values
+                [:, 2] = HEX8 ULD pedestal values
+                [:, 3] = HEX1 ULD pedestal values      
         """
         
         doc = self.getDoc()
+        adcData = Numeric.zeros((16, 8, 2, 12, 3), Numeric.Float32)
+        uldData = Numeric.zeros((16, 8, 2, 12, 4), Numeric.Float32)
+        pedData = Numeric.zeros((16, 8, 2, 12, 4), Numeric.Float32)
 
         # find <tower> elements
 
@@ -305,8 +325,55 @@ class calTholdCICalibXML(calCalibXML):
 
             tRow = int(t.getAttribute('iRow'))
             tCol = int(t.getAttribute('iCol'))
+            tem = towerToTem(tCol, tRow)
+
+            # find <layer> elements
+
+            lList = t.getElementsByTagName('layer')
+            for l in lList:
+
+                layer = int(l.getAttribute('iLayer'))
+                row = layerToRow(layer)
+
+                # find <xtal> elements
+
+                xList = l.getElementsByTagName('xtal')
+                for x in xList:
+
+                    fe = int(x.getAttribute('iXtal'))
+
+                    # find <face> elements
+
+                    fList = x.getElementsByTagName('face')
+                    for f in fList:
+
+                        face = f.getAttribute('end')
+                        end = POSNEG_MAP[face]
         
-        # find <tholdCI> elements
+                        # find <tholdCI> elements
+
+                        ciList = f.getElementsByTagName('tholdCI')
+                        for ci in ciList:
+
+                            adc = ci.getAttribute('LACVal')
+                            adcData[tem, row, end, fe, 0] = float(adc)
+                            adc = ci.getAttribute('FLEVal')
+                            adcData[tem, row, end, fe, 1] = float(adc)
+                            adc = ci.getAttribute('FHEVal')
+                            adcData[tem, row, end, fe, 2] = float(adc)
+
+                            # find <tholdCIRange> elements
+
+                            cirList = ci.getElementsByTagName('tholdCIRange')
+                            for cir in cirList:
+                                erngName = cir.getAttribute('range')
+                                erng = ERNG_MAP[erngName]
+                                adc = cir.getAttribute('ULDVal')
+                                uldData[tem, row, end, fe, erng] = float(adc)
+                                adc = cir.getAttribute('PEDVal')
+                                pedData[tem, row, end, fe, erng] = float(adc)
+
+        return (adcData, uldData, pedData)                            
 
 
     def info(self):
