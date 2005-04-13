@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Wed Apr 13 09:46:30 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Finished implementation of calIntNonlinCalibXML.read() method.
+    *
+------------------------------------------------------------
 User: dwood  Wed Apr 13 09:05:13 PDT 2005
 calibGenCAL/python
 
