@@ -1,10 +1,10 @@
 <?xml version="1.0" ?>
 <!-- Little test ifile -->
 
-<!DOCTYPE ifile SYSTEM "$(XMLROOT)/xmldata/ifile.dtd" >
+<!DOCTYPE ifile SYSTEM "$(XMLBASEROOT)/xml/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/muonCalib_option.xml,v 1.7 2005/02/11 19:35:25 fewtrell Exp $"
- cvs_Revision="$Revision: 1.7 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/muonCalib_option.xml,v 1.8 2005/02/16 20:09:11 fewtrell Exp $"
+ cvs_Revision="$Revision: 1.8 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP"    value="2004-07-31-06:50"> Timestamp for test run.</item>

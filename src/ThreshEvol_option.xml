@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
 <!-- Little test ifile -->
 
-<!DOCTYPE ifile SYSTEM "$(XMLROOT)/xmldata/ifile.dtd" >
+<!DOCTYPE ifile SYSTEM "$(XMLBASEROOT)/xml/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/MuTrigEff_option.xml,v 1.1 2005/02/25 23:45:38 chehtman Exp $"
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ThreshEvol_option.xml,v 1.1 2005/04/12 17:53:38 chehtman Exp $"
        cvs_Revision="$Revision: 1.1 $" >
 
   <section name="TEST_INFO"> Test configuration info.
