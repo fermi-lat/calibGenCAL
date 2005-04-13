@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/12 17:07:45 $"
-__version__   = "$Revision: 1.3 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/12 18:50:22 $"
+__version__   = "$Revision: 1.4 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -180,9 +180,10 @@ class calTholdCICalibXML(calCalibXML):
 
             # insert <tower> element
 
+            (iCol, iRow) = temToTower(tem)
             t = doc.createElement('tower')
-            t.setAttribute('iRow', '0')
-            t.setAttribute('iCol', '0')
+            t.setAttribute('iRow', str(iRow))
+            t.setAttribute('iCol', str(iCol))
             r.appendChild(t)
             
             for layer in range(8):
@@ -304,7 +305,6 @@ class calTholdCICalibXML(calCalibXML):
 
             tRow = int(t.getAttribute('iRow'))
             tCol = int(t.getAttribute('iCol'))
-            print "tower: %d %d" % (tRow, tCol)
         
         # find <tholdCI> elements
 
@@ -439,15 +439,17 @@ class calIntNonlinCalibXML(calCalibXML):
             for dac in data:
                 s += '%s ' % str(dac)
             dr.setAttribute('values', s.rstrip(' '))
+            dr.setAttribute('error', '0.0')
             r.appendChild(dr)
 
         for tem in tems:
             
             # insert <tower> elements
 
+            (iCol, iRow) = temToTower(tem)
             t = doc.createElement('tower')
-            t.setAttribute('iRow', '0')
-            t.setAttribute('iCol', '0')
+            t.setAttribute('iRow', str(iRow))
+            t.setAttribute('iCol', str(iCol))
             r.appendChild(t)
             
             for layer in range(8):
@@ -494,6 +496,7 @@ class calIntNonlinCalibXML(calCalibXML):
                                     continue
                                 s += '%0.2f ' % float(adc)
                             n.setAttribute('values', s.rstrip(' '))
+                            n.setAttribute('error', '0.00')
                             f.appendChild(n)
     
         # write output XML file
@@ -554,7 +557,7 @@ class calIntNonlinCalibXML(calCalibXML):
 
             tRow = int(t.getAttribute('iRow'))
             tCol = int(t.getAttribute('iCol'))
-            tem = 0
+            tem = towerToTem(tCol, tRow)
 
             # find <layer> elements
 
@@ -597,7 +600,6 @@ class calIntNonlinCalibXML(calCalibXML):
                                 for xi in range(x, dataSize[erng]):
                                     data[tem, row, end, fe, xi] = -1
                                 
-
         return (dacData, adcData)
 
 
@@ -706,3 +708,31 @@ def rowToLayer(row):
     return layer
 
     
+def towerToTem(twrCol, twrRow):
+    """
+    Translate tower row and column indicies to TEM number.
+
+    Param: twrCol - The tower column index (0 - 3)
+    Param: twrRow - The tower row index (0 - 3)
+
+    Returns: The TEM number (0 - 15)
+    """
+
+    return twrCol + (4 * twrRow)
+
+
+def temToTower(temNum):
+    """
+    Translate tower row and column indicies to TEM number.
+
+    Param: temNum - The TEM number (0 - 15)
+
+    Returns: A tuple (twrCol, twrRow):
+        twrCol - The tower column index (0 - 3)
+        twrRow - The tower row index (0 - 3)
+    """
+
+    twrCol = (temNum % 4)
+    twrRow = (temNum / 4)
+    return (twrCol, twrRow)
+
