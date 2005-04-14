@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Apr 14 07:42:06 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Added class calAsymCalibXML for handling light asymmetry calibration XML files.
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r5p3, operation: add
 Package: calibGenCAL
