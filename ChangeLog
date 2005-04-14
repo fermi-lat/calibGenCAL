@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Apr 14 12:07:44 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	intNonlinMerge.py 
+Log Message:
+Fixed bug where longest DAC list from input files was not always selected; output data array shape is now determined by length of DAC list for each energy range.
+    *
+------------------------------------------------------------
 User: dwood  Thu Apr 14 10:40:05 PDT 2005
 calibGenCAL/python
 
