@@ -6,8 +6,8 @@ Classes to represent CAL DAC settings XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL DAC settings XML documents"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/03/31 21:55:42 $"
-__version__   = "$Revision: 1.20 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/12 14:03:16 $"
+__version__   = "$Revision: 1.2 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -31,42 +31,31 @@ FILE_TYPES = ('fle_dac', 'fhe_dac', 'log_acpt', 'rng_uld_dac')
 
 
 
-class calDacXML(calXML.calXML):   
+
+class calSnapshotXML(calXML.calXML):
     """
-    CAL DAC configuration XML data file class.
+    CAL hardware configuration snapshot XML data file class.
     
-    This class provides methods for accessing CAL DAC configuration
-    data stored in XML format.
-
-    The following file types are supported:
-
-        fle_dac - CAL FLE DAC setttings
-        fhe_dac - CAL FHE DAC settings
-        log_acpt - CAL LAC DAC settings
-        rng_uld_dac - CAL ULD DAC settings
-        
+    This class provides methods for accessing CAL HW configuration
+    data stored in XML snapshot file format.
     """
 
+    def __init__(self, fileName, mode = MODE_READONLY):
+    
+        calXML.calXML.__init__(self, fileName, mode)
 
-    def __init__(self, fileName, dacName, mode = MODE_READONLY):
+        
+    def read(self, dacName):
         """
-        Open a CAL DAC configuration XML file
+        Read CAL data from a snapshot XML file
 
-        \param fileName The XML file name.
-        \param dacName The name of the bottom level XML data element.
-        \param mode The file access mode (MODE_READONLY or MODE_CREATE).
-        """
+        Param: dacName - The name of the DAC element to read.  The following
+        HW items are supported:
 
-        calXML.calXML.__init__(self, fileName, mode)  
-
-        if dacName not in FILE_TYPES:
-            raise calFileOpenExcept, "DAC name %s not supported" % str(dacName)
-        self.__dacName = dacName
-
-
-    def read(self):
-        """
-        Read data from a CAL DAC configuration XML file
+            fle_dac - CAL FLE DAC setttings
+            fhe_dac - CAL FHE DAC settings
+            log_acpt - CAL LAC DAC settings
+            rng_uld_dac - CAL ULD DAC settings        
 
         Returns: A Numeric array of data (16, 8, 2, 12) read from the
         XML file.
@@ -116,10 +105,10 @@ class calDacXML(calXML.calXML):
                         fe = int(f.getAttribute('ID'))
                         if fe < 0 or fe > 11:
                             raise calFileReadExcept, "<GCFE> ID attribute value %d, expected (0 - 11)" % fe
-                        dacList = f.getElementsByTagName(self.__dacName)
+                        dacList = f.getElementsByTagName(dacName)
                         dacLen = len(dacList)
                         if dacLen != 1:
-                            raise calFileReadExcept, "found %d %s elements, expected 1" % (dacLen, self.__dacName)
+                            raise calFileReadExcept, "found %d %s elements, expected 1" % (dacLen, dacName)
                         d = dacList[0]
                         dd = d.childNodes[0]
                         dac = int(dd.data.strip(), 16)
@@ -133,5 +122,52 @@ class calDacXML(calXML.calXML):
                             end = 0
                         dacData[tem, row, end, fe] = dac
 
-        return dacData                        
+        return dacData
+
+    
+
+class calDacXML(calSnapshotXML):   
+    """
+    CAL DAC configuration XML data file class.
+    
+    This class provides methods for accessing CAL DAC configuration
+    data stored in XML format.  These files are fragments of
+    full HW snapshot records.
+
+    The following file types are supported:
+
+        fle_dac - CAL FLE DAC setttings
+        fhe_dac - CAL FHE DAC settings
+        log_acpt - CAL LAC DAC settings
+        rng_uld_dac - CAL ULD DAC settings
+        
+    """
+
+    def __init__(self, fileName, dacName, mode = MODE_READONLY):
+        """
+        Open a CAL DAC configuration XML file
+
+        \param fileName The XML file name.
+        \param dacName The name of the bottom level XML data element.
+        \param mode The file access mode (MODE_READONLY or MODE_CREATE).
+        """
+
+        calSnapshotXML.__init__(self, fileName, mode)  
+
+        if dacName not in FILE_TYPES:
+            raise calFileOpenExcept, "DAC name %s not supported" % str(dacName)
+        self.__dacName = dacName
+
+
+    def read(self):
+        """
+        Read data from a CAL DAC configuration XML file
+
+        Returns: A Numeric array of data (16, 8, 2, 12) read from the
+        XML file.
+        """
+
+        return calSnapshotXML.read(self, self.__dacName)
+
+
 
