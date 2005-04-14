@@ -7,8 +7,8 @@ single output file.
 __facility__  = "Offline"
 __abstract__  = "Tool to merge mutilple CAL IntNonlin calibration XML files."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/13 16:05:13 $"
-__version__   = "$Revision: 1.5 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/14 14:44:18 $"
+__version__   = "$Revision: 1.1 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -142,26 +142,25 @@ if __name__ == '__main__':
     # merge tower DAC data
 
     dacDataOut = [None, None, None, None]
+    dacDataLen = [None, None, None, None]
+    
     for erng in range(4):
         maxX = 0
-        s = len(f.dacData[erng])
-        if s > maxX:
-            maxX = s
-            dacDataOut[erng] = f.dacData[erng]
-        log.debug('intNonlinMerge: using ouput DAC values for range %s:\n%s', calConstant.CRNG[erng], \
-                  dacDataOut[erng])
+        for f in inFiles:
+            s = len(f.dacData[erng])
+            if s > maxX:
+                maxX = s
+                dacDataOut[erng] = f.dacData[erng]
+                dacDataLen[erng] = s
+                log.debug('intNonlinMerge: using ouput DAC values for range %s:\n%s', calConstant.CRNG[erng], \
+                          dacDataOut[erng])
             
 
     # create empty output ADC data array
 
     adcDataOut = [None, None, None, None]
     for erng in range(4):
-        maxX = 0
-        for f in inFiles:
-            s = f.adcData[erng].shape
-            if s[-1] > maxX:
-                maxX = s[-1]
-        adcDataOut[erng] = Numeric.zeros((16, 8, 2, 12, maxX), Numeric.Float32)
+        adcDataOut[erng] = Numeric.zeros((16, 8, 2, 12, dacDataLen[erng]), Numeric.Float32)
         log.debug('intNonlinMerge: using output ADC array shape %s for range %s', str(adcDataOut[erng].shape),
                   calConstant.CRNG[erng])
                 
