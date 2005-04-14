@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/14 14:42:05 $"
-__version__   = "$Revision: 1.7 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/14 14:59:45 $"
+__version__   = "$Revision: 1.8 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -65,7 +65,7 @@ class calCalibXML(calXML.calXML):
         g.setAttribute('instrument', 'LAT')
         g.setAttribute('calibType', 'CAL_TholdCI')
         g.setAttribute('fmtVersion', 'v2r2')
-        g.setAttribute('creator', '$Name:  $')
+        g.setAttribute('creator', '')
         ts = time.strftime('%Y-%m-%d-%H:%M', time.gmtime())
         g.setAttribute('timestamp', ts)
 
@@ -303,14 +303,14 @@ class calTholdCICalibXML(calCalibXML):
                             
                             dac = int(uldDac[tem, row, end, fe])
                             adc = uldAdc[erng, tem, row, end, fe, dac]
-                            c = doc.createComment('ULD DAC = %d' % dac)
-                            tcr.appendChild(c)
+                            c = doc.createComment('%s ULD DAC = %d' % (calConstant.CRNG[erng], dac))
+                            tc.appendChild(c)
                             tcr.setAttribute('ULDVal', "%0.3f" % adc)
                             tcr.setAttribute('ULDSig', '30')
 
                             ped = pedData[tem, gain, erng, row, end, fe]                        
-                            tcr.setAttribute('PEDVal', "%0.3f" % ped)
-                            tcr.setAttribute('PEDSig', '1')
+                            tcr.setAttribute('pedVal', "%0.3f" % ped)
+                            tcr.setAttribute('pedSig', '1')
                             
                             tc.appendChild(tcr)
 
@@ -330,8 +330,8 @@ class calTholdCICalibXML(calCalibXML):
                         tcr.setAttribute('ULDSig', '30')
                         
                         ped = pedData[tem, (hrefGain - 8), 3, row, end, fe]
-                        tcr.setAttribute('PEDVal', "%0.3f" % ped)
-                        tcr.setAttribute('PEDSig', '1')
+                        tcr.setAttribute('pedVal', "%0.3f" % ped)
+                        tcr.setAttribute('pedSig', '1')
                         
                         tc.appendChild(tcr)
                     
@@ -366,6 +366,7 @@ class calTholdCICalibXML(calCalibXML):
         """
         
         doc = self.getDoc()
+        
         adcData = Numeric.zeros((16, 8, 2, 12, 3), Numeric.Float32)
         uldData = Numeric.zeros((16, 8, 2, 12, 4), Numeric.Float32)
         pedData = Numeric.zeros((16, 8, 2, 12, 4), Numeric.Float32)
@@ -422,7 +423,7 @@ class calTholdCICalibXML(calCalibXML):
                                 erng = ERNG_MAP[erngName]
                                 adc = cir.getAttribute('ULDVal')
                                 uldData[tem, row, end, fe, erng] = float(adc)
-                                adc = cir.getAttribute('PEDVal')
+                                adc = cir.getAttribute('pedVal')
                                 pedData[tem, row, end, fe, erng] = float(adc)
 
         return (adcData, uldData, pedData)                            
@@ -805,7 +806,7 @@ class calAsymCalibXML(calCalibXML):
 
         # insert <dimension> element  
             
-        d = self.dimensionWrite()
+        d = self.dimensionWrite(nRange = 1, nFace = 1)
         r.appendChild(d)
 
         for tem in tems:
@@ -856,7 +857,7 @@ class calAsymCalibXML(calCalibXML):
 
     def read(self):
         """
-        Read data from a CAL Asym XML file\
+        Read data from a CAL Asym XML file
         
         Returns: A tuple of references to Numeric arrays and containing the
         calibration data (xposData, asymData):
@@ -870,9 +871,9 @@ class calAsymCalibXML(calCalibXML):
                              2 = NsmallPbigVals value
                              3 = PsmallNbigVals value
                              4 = bigSigs value
-                             1 = smallSigs value
-                             2 = NsmallPbigSigs value
-                             3 = PsmallNbigSigs value 
+                             5 = smallSigs value
+                             6 = NsmallPbigSigs value
+                             7 = PsmallNbigSigs value 
         """
         
         doc = self.getDoc()
@@ -1013,8 +1014,208 @@ class calAsymCalibXML(calCalibXML):
             
         self.genericInfo(i)
 
+        return i
+
+
+
+class calMevPerDacCalibXML(calCalibXML):
+    """
+    CAL MevPerDac calibration XML file class.
+
+    This class provides methods for accessing CAL energy conversion
+    calibration data stored in XML format.
+    """
+
+    def __init__(self, fileName, mode = MODE_READONLY):
+        """
+        Open a CAL MevPerDac calibration XML file.
+        """
+        
+        calCalibXML.__init__(self, fileName, mode)
+        
+
+    def write(self, tems = (0,)):
+        """
+        Write data to a CAL MevPerDac XML file
+
+        Param: tems - A list of TEM ID values to include in the output data set.
+        """
+
+        doc = self.getDoc()        
+
+        # insert root document element <calCalib>
+
+        r = doc.createElement('calCalib')
+        doc.appendChild(r)
+
+        # insert <generic> element
+
+        g = self.genericWrite()
+        r.appendChild(g)
+
+        # insert <dimension> element  
+            
+        d = self.dimensionWrite(nRange = 1, nFace = 1)
+        r.appendChild(d)
+
+        for tem in tems:
+            
+            # insert <tower> elements
+
+            (iCol, iRow) = temToTower(tem)
+            t = doc.createElement('tower')
+            t.setAttribute('iRow', str(iRow))
+            t.setAttribute('iCol', str(iCol))
+            r.appendChild(t)
+            
+            for layer in range(8):
+
+                # translate index
+
+                row = layerToRow(layer) 
+
+                # insert <layer> elements
+
+                l = doc.createElement('layer')
+                l.setAttribute('iLayer', str(layer))
+                t.appendChild(l)
+
+                c = doc.createComment('layer name = %s' % calConstant.CROW[row])
+                l.appendChild(c)
+                    
+                for fe in range(12):
+
+                    # insert <xtal> elements
+
+                    x = doc.createElement('xtal')
+                    x.setAttribute('iXtal', str(fe))
+                    l.appendChild(x)
+                        
+                    for end in range(2):
+
+                        # insert <face> elements
+
+                        f = doc.createElement('face')
+                        f.setAttribute('end', 'NA')
+                        l.appendChild(f)
+        
+        # write output XML file
+
+        self.writeFile()
+
+
+    def read(self):
+        """
+        Read data from a CAL MevPerDac XML file\
+        
+        Returns: A Numeric array containing the energy conversion data
+                 of shape (16, 8, 12, 8) The last dimension contains
+                 the following data for each crystal:
+                     0 = bigVal value
+                     1 = smallVal value
+                     2 = bigSig value
+                     3 = smallSig value
+                     4 = NEG end bigSmallRatioVals value
+                     5 = NEG end bigSmallRatioSigs value
+                     6 = POS end bigSmallRatioVals value
+                     7 = POS end bigSmallRatioVals value
+        """
+        
+        doc = self.getDoc()
+
+        energyData = Numeric.zeros((16, 8, 12, 8), Numeric.Float32)
+
+        # find <tower> elements
+
+        tList = doc.getElementsByTagName('tower')
+        for t in tList:
+
+            tRow = int(t.getAttribute('iRow'))
+            tCol = int(t.getAttribute('iCol'))
+            tem = towerToTem(tCol, tRow)
+
+            # find <layer> elements
+
+            lList = t.getElementsByTagName('layer')
+            for l in lList:
+
+                layer = int(l.getAttribute('iLayer'))
+                row = layerToRow(layer)
+
+                # find <xtal> elements
+
+                xList = l.getElementsByTagName('xtal')
+                for x in xList:
+
+                    fe = int(x.getAttribute('iXtal'))
+
+                    # find <face> elements
+
+                    fList = x.getElementsByTagName('face')
+                    fLen = len(fList)
+                    if fLen != 1:
+                        raise calFileReadExcept, "found %d <face> elements (expected 1)" % fLen
+                    f = fList[0]
+                    face = f.getAttribute('end')
+                    
+                    # find <mevPerDac> elements
+
+                    meList = f.getElementsByTagName('mevPerDac')
+                    meLen = len(meList)
+                    if meLen != 1:
+                        raise calFileReadExcept, "found %d <mevPerDac> elements (expected 1)" % meLen
+                    me = meList[0]
+                    eng = me.getAttribute('bigVal')
+                    energyData[tem, row, fe, 0] = float(eng)
+                    eng = me.getAttribute('smallVal')
+                    energyData[tem, row, fe, 1] = float(eng)
+                    eng = me.getAttribute('bigSig')
+                    energyData[tem, row, fe, 2] = float(eng)
+                    eng = me.getAttribute('smallSig')
+                    energyData[tem, row, fe, 3] = float(eng)
+
+                    # find <bigSmall> elements
+
+                    bsList = me.getElementsByTagName('bigSmall')
+                    for bs in bsList:
+
+                        end = f.getAttribute('end')
+                        if end == 'NEG':
+                            eng = bs.getAttribute('bigSmallRatioVals')
+                            energyData[tem, row, fe, 4] = float(eng)
+                            eng = bs.getAttribute('bigSmallRatioSigs')
+                            energyData[tem, row, fe, 5] = float(eng)
+                        else:
+                            eng = bs.getAttribute('bigSmallRatioVals')
+                            energyData[tem, row, fe, 6] = float(eng)
+                            eng = bs.getAttribute('bigSmallRatioSigs')
+                            energyData[tem, row, fe, 7] = float(eng)
+                                    
+        return energyData                        
+                    
+                           
+
+    def info(self):
+        """
+        Return ancillary information from CAL MevPerDac XML file.
+
+        Returns: A dictionary with the following keys and values:
+            'instrument' - from <generic> element
+            'timestamp' - from <generic> element
+            'calibType' - from <generic> element
+            'fmtVersion' - from <generic> element
+            'DTDVersion' - from <generic> element
+        """
+        
+        i = {}
+
+        # get <generic> attribute values        
+            
+        self.genericInfo(i)
+
         return i        
         
+
         
 def layerToRow(layer):
     """
