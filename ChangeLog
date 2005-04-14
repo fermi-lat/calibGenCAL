@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Apr 14 10:40:05 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Added calMevPerDac class to handle energy conversion calibration data XML files; fixed write output for calTholdCICalibXML files.
+    *
+------------------------------------------------------------
 User: dwood  Thu Apr 14 10:37:25 PDT 2005
 calibGenCAL/python
 
