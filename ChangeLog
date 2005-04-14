@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: heather  Wed Apr 13 21:26:06 PDT 2005
+calibGenCAL/src
+
+Modified Files:
+	MuonCalib.cxx runCIFit.cxx runMuThreshEvol.cxx 
+	runMuTrigEff.cxx 
+Log Message:
+use commonRootData namespace.
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r5p2, operation: add
 Package: calibGenCAL
