@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: dwood  Thu Apr 14 07:48:54 PDT 2005
+calibGenCAL/python
+
+Added Files:
+	genTholdCI.py 
+Removed Files:
+	calCalibGen.py 
+Log Message:
+Renamed calCalibGen application to genTholdCI
+    *
+------------------------------------------------------------
 User: dwood  Thu Apr 14 07:44:18 PDT 2005
 calibGenCAL/python
 
