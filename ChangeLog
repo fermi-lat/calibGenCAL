@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Apr 14 07:59:46 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+In method calCalibXML.dimensionWrite(), set <dimension> exact attribute to false.
+    *
+------------------------------------------------------------
 User: dwood  Thu Apr 14 07:48:54 PDT 2005
 calibGenCAL/python
 
