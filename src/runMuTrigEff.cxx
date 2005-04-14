@@ -491,7 +491,7 @@ void RootCiTrig::DigiCal() {
   while ((pdig = (CalDigi*)calDigiIter.Next())) {  //loop through each 'hit' in one event
     CalDigi &cdig = *pdig; // use ref to reduce '->'
 
-    CalXtalId id = cdig.getPackedId();  // get interaction information
+    commonRootData::CalXtalId id = cdig.getPackedId();  // get interaction information
     ColNum col = id.getColumn();
     if (col != testCol) continue;
 
@@ -503,11 +503,11 @@ void RootCiTrig::DigiCal() {
     for (int iRo=0; iRo<numRo; iRo++){
       const CalXtalReadout &acRo = *(cdig.getXtalReadout(iRo));
       for (FaceNum face; face.isValid(); face++) {
-        RngNum rng = acRo.getRange((CalXtalId::XtalFace)(short)face);
+        RngNum rng = acRo.getRange((commonRootData::CalXtalId::XtalFace)(short)face);
         // only interested in current diode!
         if (!isRngEnabled(rng)) continue;
 
-        int adc    = acRo.getAdc((CalXtalId::XtalFace)(short)face);
+        int adc    = acRo.getAdc((commonRootData::CalXtalId::XtalFace)(short)face);
  
         FaceIdx faceIdx(twr,lyr,col,face);
         RngIdx rngIdx(twr,lyr,col,face,rng);
@@ -644,7 +644,7 @@ void RootMuTrig::DigiCal() {
   while ((pdig = (CalDigi*)calDigiIter.Next())) {  //loop through each 'hit' in one event
     CalDigi &cdig = *pdig; // use ref to reduce '->'
 
-    CalXtalId id = cdig.getPackedId();  // get interaction information
+    commonRootData::CalXtalId id = cdig.getPackedId();  // get interaction information
     ColNum col = id.getColumn();
 
     TwrNum twr = id.getTower();
@@ -654,13 +654,13 @@ void RootMuTrig::DigiCal() {
     for (int iRo=0; iRo<numRo; iRo++){
       const CalXtalReadout &acRo = *(cdig.getXtalReadout(iRo));
       for (FaceNum face; face.isValid(); face++) {
-        RngNum rng = acRo.getRange((CalXtalId::XtalFace)(short)face);
+        RngNum rng = acRo.getRange((commonRootData::CalXtalId::XtalFace)(short)face);
         // only interested in LEX8 range
 		if(rng == 0){
 			FaceIdx faceIdx(twr,lyr,col,face);
 			RngIdx rng(faceIdx,rng);
 			float ped = m_mtData.getPed(rng);
-			m_adc[faceIdx]  = acRo.getAdc((CalXtalId::XtalFace)(short)face)-ped;
+			m_adc[faceIdx]  = acRo.getAdc((commonRootData::CalXtalId::XtalFace)(short)face)-ped;
 		}
 
       } // foreach face
