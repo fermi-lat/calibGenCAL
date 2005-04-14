@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Apr 14 10:37:25 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calDacXML.py 
+Log Message:
+Added class calSnapshotXML to module; made calDacXML inherit from this class; more efficient for reading full snapshot files.
+    *
+------------------------------------------------------------
 User: dwood  Thu Apr 14 07:59:46 PDT 2005
 calibGenCAL/python
 
