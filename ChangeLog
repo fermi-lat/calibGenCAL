@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Apr 14 12:17:17 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	intNonlinMerge.py 
+Log Message:
+Further fix for DAC data list length problem
+    *
+------------------------------------------------------------
 User: dwood  Thu Apr 14 12:07:44 PDT 2005
 calibGenCAL/python
 
