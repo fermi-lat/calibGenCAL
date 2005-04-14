@@ -73,3 +73,6 @@ v3r4p4 moved obsolete xml package dependency to xmlBase, updated some documentat
 v3r5  added the output of fle/fhe bias file to runMuTrigEff, fixed the event numbering problem in runCIFit, added new application runMuThreshEvol to follow the evolution of fle thresholds in a long muon run
 
 v3r5p1 requirements file wouldn't build to due to windows letting bad case in filename pass by.  wrong ifile.dtd path in front of xml files.  python files are now inluded in CVS package, but are not yet 'officially supported'.... soon they will be.
+
+v3r5p3 use commonRootData namespace
+

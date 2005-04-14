@@ -294,7 +294,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.9 2005/03/26 04:32:02 chehtman Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.10 2005/04/12 17:53:38 chehtman Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
@@ -507,7 +507,7 @@ void RootCI::DigiCal() {
     CalDigi &cdig = *pdig; // use ref to reduce '->'
 	
 
-    CalXtalId id = cdig.getPackedId();  // get interaction information
+    commonRootData::CalXtalId id = cdig.getPackedId();  // get interaction information
     ColNum col = id.getColumn();
     if (col != testCol) continue;
 
@@ -519,11 +519,11 @@ void RootCI::DigiCal() {
     for (int iRo=0; iRo<numRo; iRo++){
       const CalXtalReadout &acRo = *(cdig.getXtalReadout(iRo));
       for (FaceNum face; face.isValid(); face++) {
-        RngNum rng = acRo.getRange((CalXtalId::XtalFace)(short)face);
+        RngNum rng = acRo.getRange((commonRootData::CalXtalId::XtalFace)(short)face);
         // only interested in current diode!
         if (!isRngEnabled(rng)) continue;
 
-        int adc = acRo.getAdc((CalXtalId::XtalFace)(short)face);
+        int adc = acRo.getAdc((commonRootData::CalXtalId::XtalFace)(short)face);
         RngIdx rngIdx(twr,lyr,col,face,rng);
 		TH1F& h = *m_ciHists[rngIdx];
 		if(iSamp == 0){
