@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/13 16:05:13 $"
-__version__   = "$Revision: 1.5 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/13 16:46:30 $"
+__version__   = "$Revision: 1.6 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -54,43 +54,96 @@ class calCalibXML(calXML.calXML):
         calXML.calXML.__init__(self, fileName, mode)
 
 
-    def genericInfo(self, genericNode, infoDict):
+    def genericWrite(self):
+        """
+        Creates the <generic> element for a calibration XML file
+
+        Returns: A reference to the <generic> Element object.        
+        """
+
+        g = self.getDoc().createElement('generic')
+        g.setAttribute('instrument', 'LAT')
+        g.setAttribute('calibType', 'CAL_TholdCI')
+        g.setAttribute('fmtVersion', 'v2r2')
+        g.setAttribute('creator', '$Name:  $')
+        ts = time.strftime('%Y-%m-%d-%H:%M', time.gmtime())
+        g.setAttribute('timestamp', ts)
+
+        return g
+
+
+    def dimensionWrite(self, nFace = 2, nRange = 4):
+        """
+        Creates the <dimension> element for a calibration XML file
+
+        Param: nFace The value for the 'nFace' attribute.
+        Param: nRange The value for the 'nRange' attribute.
+        
+        Returns: A reference to the <dimension> Element object.
+        """
+
+        d = self.getDoc().createElement('dimension')
+        d.setAttribute('nRow', '4')
+        d.setAttribute('nCol', '4')
+        d.setAttribute('nLayer', '8')
+        d.setAttribute('nXtal', '12')
+        d.setAttribute('nFace', str(nFace))
+        d.setAttribute('nRange', str(nRange))
+        d.setAttribute('exact', 'true')
+
+        return d        
+
+
+    def genericInfo(self, infoDict):
         """
         Fill in the generic portion of an XML info dictionary.
 
-        Param: genericNode - the XML doc node for the <generic> element
         Param: infoDict - The dictionary to fill in
+
+        Returns: The XML doc node for the <generic> element        
         """
 
-        value = genericNode.getAttribute('instrument')
+        # find <generic> element
+
+        gList = self.getDoc().getElementsByTagName('generic')
+        gLen = len(gList)
+        if gLen != 1:
+            raise calFileReadExcept, "found %d <generic> elements (expected 1)" % gLen
+        g = gList[0]
+
+        # fill in dictionary        
+
+        value = g.getAttribute('instrument')
         if len(value) == 0:
             infoDict['instrument'] = None
         else:
             infoDict['instrument'] = str(value)
 
-        value = genericNode.getAttribute('calibType')
+        value = g.getAttribute('calibType')
         if len(value) == 0:
             infoDict['calibType'] = None
         else:
             infoDict['calibType'] = str(value)
 
-        value = genericNode.getAttribute('timestamp')
+        value = g.getAttribute('timestamp')
         if len(value) == 0:
             infoDict['timestamp'] = None
         else:
             infoDict['timestamp'] = str(value)
 
-        value = genericNode.getAttribute('fmtVersion')
+        value = g.getAttribute('fmtVersion')
         if len(value) == 0:
             infoDict['fmtVersion'] = None
         else:
             infoDict['fmtVersion'] = str(value)
 
-        value = genericNode.getAttribute('DTDVersion')
+        value = g.getAttribute('DTDVersion')
         if len(value) == 0:
             infoDict['DTDVersion'] = None
         else:
-            infoDict['DTDVersion'] = str(value)         
+            infoDict['DTDVersion'] = str(value)
+
+        return g            
 
 
     
@@ -110,17 +163,17 @@ class calTholdCICalibXML(calCalibXML):
         calCalibXML.__init__(self, fileName, mode)
         
 
-    def write(self, dacData, adcData, pedData, lrefGain, hrefGain, tems = (0,)):
+    def write(self, dacData, adcData, intNonlinData, pedData, lrefGain, hrefGain, tems = (0,)):
         """
         Write data to a CAL TholdCI XML file
 
-        \param dacData A list of Numeric arrays of DAC settings data
+        Param: dacData - A list of Numeric arrays of DAC settings data
             (16, 8, 2, 12):
             dacData[0] = ULD DAC settings data
             dacData[1] = LAC DAC settings data
             dacData[2] = FLE DAC settings data
             dacData[3] = FHE DAC settings data
-        \param adcData A list of Numeric arrays of ADC/DAC characterization data.
+        Param: adcData - A list of Numeric arrays of ADC/DAC characterization data.
             adcData[0] = A Numeric array of ULD ADC/DAC characterization data
                 (3, 16, 8, 2, 12, 128).
             adcData[1] = A Numeric array of LAC ADC/DAC characterization data
@@ -129,11 +182,13 @@ class calTholdCICalibXML(calCalibXML):
                 (16, 8, 2, 12, 128). \n
             adcData[3] = A Numeric array of FHE ADC/DAC characterization data
                 (16, 8, 2, 12, 128). \n
-        \param pedData A Numeric array of pedestal value data
+        Param: intNonlinData - A Numeric array of ADC non-linearity characterization
+            data for HEX1 energy range (16, 8, 2, 12, <N>).
+        Param: pedData - A Numeric array of pedestal value data
             (16, 9, 4, 8, 2, 12).
-        \param lrefGain The LE gain value.
-        \param hrefGain The HE gain value.
-        \param tems A list of TEM ID's to write out.
+        Param: lrefGain The LE gain value.
+        Param: hrefGain The HE gain value.
+        Param: tems A list of TEM ID's to write out.
         """
 
         uldDac = dacData[0]
@@ -155,25 +210,16 @@ class calTholdCICalibXML(calCalibXML):
 
         # insert <generic> element
 
-        g = doc.createElement('generic')
-        g.setAttribute('instrument', 'LAT')
-        g.setAttribute('calibType', 'CAL_TholdCI')
-        g.setAttribute('fmtVersion', 'v2r2')
-        g.setAttribute('creator', '$Name:  $')
-        ts = time.strftime('%Y-%m-%d-%H:%M', time.gmtime())
-        g.setAttribute('timestamp', ts)
+        g = self.genericWrite()
+        c = doc.createComment('LE gain index = %d' % lrefGain)
+        g.appendChild(c)
+        c = doc.createComment('HE gain index = %d' % hrefGain)
+        g.appendChild(c)
         r.appendChild(g)
 
         # insert <dimension> element  
-            
-        d = doc.createElement('dimension')
-        d.setAttribute('nRow', '1')
-        d.setAttribute('nCol', '1')
-        d.setAttribute('nLayer', '8')
-        d.setAttribute('nXtal', '12')
-        d.setAttribute('nFace', '2')
-        d.setAttribute('nRange', '4')
-        d.setAttribute('exact', 'true')
+
+        d = self.dimensionWrite()            
         r.appendChild(d)
 
         for tem in tems:
@@ -268,13 +314,19 @@ class calTholdCICalibXML(calCalibXML):
                             
                             tc.appendChild(tcr)
 
-                        # insert fake <tholdCIRange> element for HEX1 range
+                        # insert <tholdCIRange> element for HEX1 range
+                        # use top element from intNonlin ADC value list
 
                         tcr = doc.createElement('tholdCIRange')
                         
                         tcr.setAttribute('range', 'HEX1')
-                        
-                        tcr.setAttribute('ULDVal', '4095.000')
+
+                        size = intNonlinData.shape[-1]
+                        adc = intNonlinData[tem, row, end, fe, (size - 1)]
+                        while adc < 0:
+                            size -= 1
+                            adc = intNonlinData[tem, row, end, fe, (size - 1)]
+                        tcr.setAttribute('ULDVal', '%0.3f' % adc)
                         tcr.setAttribute('ULDSig', '30')
                         
                         ped = pedData[tem, (hrefGain - 8), 3, row, end, fe]
@@ -387,21 +439,12 @@ class calTholdCICalibXML(calCalibXML):
             'fmtVersion' - from <generic> element
             'DTDVersion' - from <generic> element
         """
-
-        doc = self.getDoc()
+        
         i = {}
-
-        # find <generic> element
-
-        gList = doc.getElementsByTagName('generic')
-        gLen = len(gList)
-        if gLen != 1:
-            raise calFileReadExcept, "found %d <generic> elements (expected 1)" % gLen
 
         # get <generic> attribute values        
             
-        g = gList[0]
-        self.genericInfo(g, i)
+        self.genericInfo(i)
 
         return i        
 
@@ -431,8 +474,7 @@ class calIntNonlinCalibXML(calCalibXML):
         """
         Write data to a CAL IntNonlin XML file
 
-        Param: dacData - A list of 4 elements, each a reference to a Numeric
-                         array of DAC values. The length of this array is the
+        Param: dacData - A list of DAC values. The length of this array is the
                          number of data points for that energy range.
         Param: adcData - A list of 4 elements, each a reference to a Numeric
                          array of ADC values. The shape of each array is
@@ -459,13 +501,7 @@ class calIntNonlinCalibXML(calCalibXML):
 
         # insert <generic> element
 
-        g = doc.createElement('generic')
-        g.setAttribute('instrument', 'LAT')
-        g.setAttribute('calibType', 'CAL_TholdCI')
-        g.setAttribute('fmtVersion', 'v2r2')
-        g.setAttribute('creator', '$Name:  $')
-        ts = time.strftime('%Y-%m-%d-%H:%M', time.gmtime())
-        g.setAttribute('timestamp', ts)
+        g = self.genericWrite()
         r.appendChild(g)
 
         # insert <inputSample> element
@@ -485,14 +521,7 @@ class calIntNonlinCalibXML(calCalibXML):
 
         # insert <dimension> element  
             
-        d = doc.createElement('dimension')
-        d.setAttribute('nRow', '1')
-        d.setAttribute('nCol', '1')
-        d.setAttribute('nLayer', '8')
-        d.setAttribute('nXtal', '12')
-        d.setAttribute('nFace', '2')
-        d.setAttribute('nRange', '4')
-        d.setAttribute('exact', 'true')
+        d = self.dimensionWrite()
         r.appendChild(d)
 
         # insert <dac> elements
@@ -577,9 +606,8 @@ class calIntNonlinCalibXML(calCalibXML):
 
         Returns: A tuple of references to Numeric arrays and containing the
         calibration data (dacData, adcData):
-            dacData -   A list of 4 elements, each a reference to a Numeric
-                        array of DAC values. The length of this array is the
-                        number of data points for that energy range.
+            dacData -   A list of DAC values. The length of this array
+                        is the number of data points for that energy range.
             adcData -   A list of 4 elements, each a reference to a Numeric
                         array of ADC values. The shape of each array is
                         (16, 8, 2, 12, <size>), where <size> is the length of
@@ -687,20 +715,11 @@ class calIntNonlinCalibXML(calCalibXML):
             'source' - from <inputSample> element
         """
 
-        doc = self.getDoc()
         i = {}
-
-        # find <generic> element
-
-        gList = doc.getElementsByTagName('generic')
-        gLen = len(gList)
-        if gLen != 1:
-            raise calFileReadExcept, "found %d <generic> elements (expected 1)" % gLen
 
         # get <generic> attribute values        
             
-        g = gList[0]
-        self.genericInfo(g, i)       
+        g = self.genericInfo(i)       
 
         # find <inputSample> element
 
@@ -745,8 +764,258 @@ class calIntNonlinCalibXML(calCalibXML):
 
         return i
     
-            
 
+
+class calAsymCalibXML(calCalibXML):
+    """
+    CAL Asym calibration XML file class.
+
+    This class provides methods for accessing CAL light asymmetry
+    calibration data stored in XML format.
+    """
+
+    def __init__(self, fileName, mode = MODE_READONLY):
+        """
+        Open a CAL Asym calibration XML file.
+        """
+        
+        calCalibXML.__init__(self, fileName, mode)
+        
+
+    def write(self, tems = (0,)):
+        """
+        Write data to a CAL Asym XML file
+
+        Param: xposData - A list of position values. The length of this array is the
+                          number of data points for each crystal.
+        Param: tems - A list of TEM ID values to include in the output data set.
+        """
+
+        doc = self.getDoc()        
+
+        # insert root document element <calCalib>
+
+        r = doc.createElement('calCalib')
+        doc.appendChild(r)
+
+        # insert <generic> element
+
+        g = self.genericWrite()
+        r.appendChild(g)
+
+        # insert <dimension> element  
+            
+        d = self.dimensionWrite()
+        r.appendChild(d)
+
+        for tem in tems:
+            
+            # insert <tower> elements
+
+            (iCol, iRow) = temToTower(tem)
+            t = doc.createElement('tower')
+            t.setAttribute('iRow', str(iRow))
+            t.setAttribute('iCol', str(iCol))
+            r.appendChild(t)
+            
+            for layer in range(8):
+
+                # translate index
+
+                row = layerToRow(layer) 
+
+                # insert <layer> elements
+
+                l = doc.createElement('layer')
+                l.setAttribute('iLayer', str(layer))
+                t.appendChild(l)
+
+                c = doc.createComment('layer name = %s' % calConstant.CROW[row])
+                l.appendChild(c)
+                    
+                for fe in range(12):
+
+                    # insert <xtal> elements
+
+                    x = doc.createElement('xtal')
+                    x.setAttribute('iXtal', str(fe))
+                    l.appendChild(x)
+                        
+                    for end in range(2):
+
+                        # insert <face> elements
+
+                        f = doc.createElement('face')
+                        f.setAttribute('end', 'NA')
+                        l.appendChild(f)
+        
+        # write output XML file
+
+        self.writeFile()
+
+
+    def read(self):
+        """
+        Read data from a CAL Asym XML file\
+        
+        Returns: A tuple of references to Numeric arrays and containing the
+        calibration data (xposData, asymData):
+            xposData -   A list of position values. The length of this array
+                         is the number of data points for each crystal.
+            asymData -   A Numeric array of shape (16, 8, 12, 8, <size>), where
+                         <size> is the length of xposData array. The next-to-last
+                         dimension contains the following data:
+                             0 = bigVals value
+                             1 = smallVals value
+                             2 = NsmallPbigVals value
+                             3 = PsmallNbigVals value
+                             4 = bigSigs value
+                             1 = smallSigs value
+                             2 = NsmallPbigSigs value
+                             3 = PsmallNbigSigs value 
+        """
+        
+        doc = self.getDoc()
+
+        # find <xpos> element
+
+        xpList = doc.getElementsByTagName('xpos')
+        xpLen = len(xpList)
+        if xpLen != 1:
+            raise calFileReadExcept, "found %d <xpos> elements (expected 1)" % xpLen
+        xp = xpList[0]
+
+        valueStr = xp.getAttribute('values')
+        values = valueStr.split(' ')
+        xposData = []
+        for pos in values:
+            xposData.append(float(pos))
+
+        # create empty asymmetry data array
+
+        asymData = Numeric.zeros((16, 8, 12, 8, len(xposData)), Numeric.Float32)           
+        
+        # find <tower> elements
+
+        tList = doc.getElementsByTagName('tower')
+        for t in tList:
+
+            tRow = int(t.getAttribute('iRow'))
+            tCol = int(t.getAttribute('iCol'))
+            tem = towerToTem(tCol, tRow)
+
+            # find <layer> elements
+
+            lList = t.getElementsByTagName('layer')
+            for l in lList:
+
+                layer = int(l.getAttribute('iLayer'))
+                row = layerToRow(layer)
+
+                # find <xtal> elements
+
+                xList = l.getElementsByTagName('xtal')
+                for x in xList:
+
+                    fe = int(x.getAttribute('iXtal'))
+
+                    # find <face> elements
+
+                    fList = x.getElementsByTagName('face')
+                    fLen = len(fList)
+                    if fLen != 1:
+                        raise calFileReadExcept, "found %d <face> elements (expected 1)" % fLen
+                    f = fList[0]
+                    face = f.getAttribute('end')
+                    
+                    # find <asym> elements
+
+                    asList = f.getElementsByTagName('asym')
+                    asLen = len(asList)
+                    if asLen != 1:
+                        raise calFileReadExcept, "found %d <asym> elements (expected 1)" % asLen
+                    as = asList[0]
+
+                    valueList = as.getAttribute('bigVals')
+                    values = valueList.split(' ')
+                    v = 0
+                    for asym in values:
+                        asymData[tem, row, fe, 0, v] = float(asym)
+                        v += 1
+
+                    valueList = as.getAttribute('smallVals')
+                    values = valueList.split(' ')
+                    v = 0
+                    for asym in values:
+                        asymData[tem, row, fe, 1, v] = float(asym)
+                        v += 1
+
+                    valueList = as.getAttribute('NsmallPbigVals')
+                    values = valueList.split(' ')
+                    v = 0
+                    for asym in values:
+                        asymData[tem, row, fe, 2, v] = float(asym)
+                        v += 1
+
+                    valueList = as.getAttribute('PsmallNbigVals')
+                    values = valueList.split(' ')
+                    v = 0
+                    for asym in values:
+                        asymData[tem, row, fe, 3, v] = float(asym)
+                        v += 1
+
+                    valueList = as.getAttribute('bigSigs')
+                    values = valueList.split(' ')
+                    v = 0
+                    for asym in values:
+                        asymData[tem, row, fe, 4, v] = float(asym)
+                        v += 1
+
+                    valueList = as.getAttribute('smallSigs')
+                    values = valueList.split(' ')
+                    v = 0
+                    for asym in values:
+                        asymData[tem, row, fe, 5, v] = float(asym)
+                        v += 1
+
+                    valueList = as.getAttribute('NsmallPbigSigs')
+                    values = valueList.split(' ')
+                    v = 0
+                    for asym in values:
+                        asymData[tem, row, fe, 6, v] = float(asym)
+                        v += 1
+
+                    valueList = as.getAttribute('PsmallNbigSigs')
+                    values = valueList.split(' ')
+                    v = 0
+                    for asym in values:
+                        asymData[tem, row, fe, 7, v] = float(asym)
+                        v += 1                        
+
+        return (xposData, asymData)
+
+
+    def info(self):
+        """
+        Return ancillary information from CAL Asym XML file.
+
+        Returns: A dictionary with the following keys and values:
+            'instrument' - from <generic> element
+            'timestamp' - from <generic> element
+            'calibType' - from <generic> element
+            'fmtVersion' - from <generic> element
+            'DTDVersion' - from <generic> element
+        """
+
+        i = {}
+
+        # get <generic> attribute values        
+            
+        self.genericInfo(i)
+
+        return i        
+        
+        
 def layerToRow(layer):
     """
     Translate CAL layer number to CAL row number
