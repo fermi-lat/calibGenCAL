@@ -183,8 +183,8 @@ void MuonCalib::fillRoughPedHists(int nEvts) {
       const CalXtalReadout& readout=*calDigi.getXtalReadout(LEX8); // get LEX8 data
 
       // check that we are in the expected readout mode
-      RngNum rngP = readout.getRange(commonRootData::CalXtalId::POS);
-      RngNum rngN = readout.getRange(commonRootData::CalXtalId::NEG);
+      RngNum rngP = readout.getRange(CalXtalId::POS);
+      RngNum rngN = readout.getRange(CalXtalId::NEG);
       if (rngP != LEX8 || rngN != LEX8) {
         ostringstream tmp;
         tmp << __FILE__  << ":" << __LINE__ << " " 
@@ -192,13 +192,13 @@ void MuonCalib::fillRoughPedHists(int nEvts) {
         throw tmp.str();
       }
       
-      commonRootData::CalXtalId id(calDigi.getPackedId()); // get interaction information
+      CalXtalId id(calDigi.getPackedId()); // get interaction information
       LyrNum lyr = id.getLayer();
       //int tower = id.getTower();
       ColNum col = id.getColumn();
 
-      float adcP = readout.getAdc(commonRootData::CalXtalId::POS);
-      float adcN = readout.getAdc(commonRootData::CalXtalId::NEG);
+      float adcP = readout.getAdc(CalXtalId::POS);
+      float adcN = readout.getAdc(CalXtalId::NEG);
 
       FaceIdx faceIdx(0,lyr,col,POS_FACE);
       m_roughPedHists[faceIdx]->Fill(adcP);
@@ -292,7 +292,7 @@ void MuonCalib::fillPedHists(int nEvts) {
     for( int cde_nb=0; (pCalDigi=(CalDigi*)calDigiCol->At(cde_nb)); cde_nb++ ) { //loop through each 'hit' in one event
       CalDigi &calDigi = *pCalDigi; // use reference to avoid -> syntax
 
-      commonRootData::CalXtalId id(calDigi.getPackedId()); // get interaction information
+      CalXtalId id(calDigi.getPackedId()); // get interaction information
       TwrNum twr = id.getTower();
       LyrNum lyr = id.getLayer();
       ColNum col = id.getColumn();
@@ -309,8 +309,8 @@ void MuonCalib::fillPedHists(int nEvts) {
       const CalXtalReadout& readout=*calDigi.getXtalReadout(LEX8); // 1st look at LEX8 vals
 
       // check that we are in the expected readout mode
-      RngNum rngP = readout.getRange(commonRootData::CalXtalId::POS);
-      RngNum rngN = readout.getRange(commonRootData::CalXtalId::NEG);
+      RngNum rngP = readout.getRange(CalXtalId::POS);
+      RngNum rngN = readout.getRange(CalXtalId::NEG);
       if (rngP != LEX8 || rngN != LEX8) {
         ostringstream tmp;
         tmp << __FILE__  << ":"     << __LINE__ << " " 
@@ -318,8 +318,8 @@ void MuonCalib::fillPedHists(int nEvts) {
         throw tmp.str(); 
       }
       
-      float adcP = readout.getAdc(commonRootData::CalXtalId::POS);
-      float adcN = readout.getAdc(commonRootData::CalXtalId::NEG);
+      float adcP = readout.getAdc(CalXtalId::POS);
+      float adcN = readout.getAdc(CalXtalId::NEG);
 
       // skip outliers (outside of 5 sigma.
       if (fabs(adcN - m_calRoughPed[FaceIdx(xtalIdx,NEG_FACE)]) < 5*m_calRoughPedErr[FaceIdx(xtalIdx,NEG_FACE)] &&
@@ -329,8 +329,8 @@ void MuonCalib::fillPedHists(int nEvts) {
           const CalXtalReadout &readout = *calDigi.getXtalReadout(n);
 
           // check that we are in the expected readout mode
-          RngNum rngP = readout.getRange(commonRootData::CalXtalId::POS);
-          RngNum rngN = readout.getRange(commonRootData::CalXtalId::NEG);
+          RngNum rngP = readout.getRange(CalXtalId::POS);
+          RngNum rngN = readout.getRange(CalXtalId::NEG);
           if (rngP != n || rngN != n) {
             ostringstream tmp;
             tmp << __FILE__  << ":"     << __LINE__ << " " 
@@ -339,11 +339,11 @@ void MuonCalib::fillPedHists(int nEvts) {
           }
           RngNum rng = rngP;
 
-          int adc = readout.getAdc(commonRootData::CalXtalId::POS);
+          int adc = readout.getAdc(CalXtalId::POS);
           RngIdx rngIdx(xtalIdx,POS_FACE, rng);
           m_pedHists[rngIdx]->Fill(adc);
 
-          adc = readout.getAdc(commonRootData::CalXtalId::NEG);
+          adc = readout.getAdc(CalXtalId::NEG);
           rngIdx.setFace(NEG_FACE);
           m_pedHists[rngIdx]->Fill(adc);
         }
@@ -625,7 +625,7 @@ void MuonCalib::summarizeHits(HitSummary &hs) {
   for( int cde_nb=0; (pCalDigi=(CalDigi*) calDigiCol->At(cde_nb)); cde_nb++ ) {
     CalDigi &calDigi = *pCalDigi; // use reference to avoid -> syntax
     // get geometry id for hit.
-    commonRootData::CalXtalId id(calDigi.getPackedId());
+    CalXtalId id(calDigi.getPackedId());
     TwrNum twr = id.getTower();
     LyrNum lyr = id.getLayer();
     ColNum col = id.getColumn();
@@ -650,7 +650,7 @@ void MuonCalib::summarizeHits(HitSummary &hs) {
       DiodeIdx diodeIdx(xtalIdx, face, diode);
 
       const CalXtalReadout& readout = *calDigi.getXtalReadout(rng);
-      RngNum tmpRng = readout.getRange((commonRootData::CalXtalId::XtalFace)(int)face);
+      RngNum tmpRng = readout.getRange((CalXtalId::XtalFace)(int)face);
       // check that we are in the proper readout mode
       if (tmpRng != rng) {
         ostringstream tmp;
@@ -659,7 +659,7 @@ void MuonCalib::summarizeHits(HitSummary &hs) {
         throw tmp.str();
       }
 
-      float adc = readout.getAdc((commonRootData::CalXtalId::XtalFace)(int)face); // raw adc
+      float adc = readout.getAdc((CalXtalId::XtalFace)(int)face); // raw adc
       hs.adc_ped[diodeIdx] = adc - m_calPed[rngIdx];// subtract pedestals
       /* m_ostrm << "nDiode " << diodeIdx.getInt() 
          << " nRng " << rngIdx.getInt() 
