@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: heather  Mon Apr 18 08:53:49 PDT 2005
+calibGenCAL/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+back out commonRootData namespace
+    *
+------------------------------------------------------------
 User: heather  Mon Apr 18 08:53:41 PDT 2005
 calibGenCAL/src
 
