@@ -507,7 +507,7 @@ void RootCI::DigiCal() {
     CalDigi &cdig = *pdig; // use ref to reduce '->'
 	
 
-    commonRootData::CalXtalId id = cdig.getPackedId();  // get interaction information
+    CalXtalId id = cdig.getPackedId();  // get interaction information
     ColNum col = id.getColumn();
     if (col != testCol) continue;
 
@@ -519,11 +519,11 @@ void RootCI::DigiCal() {
     for (int iRo=0; iRo<numRo; iRo++){
       const CalXtalReadout &acRo = *(cdig.getXtalReadout(iRo));
       for (FaceNum face; face.isValid(); face++) {
-        RngNum rng = acRo.getRange((commonRootData::CalXtalId::XtalFace)(short)face);
+        RngNum rng = acRo.getRange((CalXtalId::XtalFace)(short)face);
         // only interested in current diode!
         if (!isRngEnabled(rng)) continue;
 
-        int adc = acRo.getAdc((commonRootData::CalXtalId::XtalFace)(short)face);
+        int adc = acRo.getAdc((CalXtalId::XtalFace)(short)face);
         RngIdx rngIdx(twr,lyr,col,face,rng);
 		TH1F& h = *m_ciHists[rngIdx];
 		if(iSamp == 0){

@@ -76,3 +76,6 @@ v3r5p1 requirements file wouldn't build to due to windows letting bad case in fi
 
 v3r5p3 use commonRootData namespace
 
+v3r5p4 back out commonRootData namespace
+
+

@@ -376,7 +376,7 @@ void RootThreshEvol::fillThreshHists()
         while ((pdig = (CalDigi*)calDigiIter.Next())) {  //loop through each 'hit' in one event
           CalDigi &cdig = *pdig; // use ref to reduce '->'
 
-          commonRootData::CalXtalId id = cdig.getPackedId();  // get interaction information
+          CalXtalId id = cdig.getPackedId();  // get interaction information
           ColNum col = id.getColumn();
 
           TwrNum twr = id.getTower();
@@ -386,12 +386,12 @@ void RootThreshEvol::fillThreshHists()
           for (int iRo=0; iRo<numRo; iRo++){
             const CalXtalReadout &acRo = *(cdig.getXtalReadout(iRo));
             for (FaceNum face; face.isValid(); face++) {
-              RngNum rng = acRo.getRange((commonRootData::CalXtalId::XtalFace)(short)face);
+              RngNum rng = acRo.getRange((CalXtalId::XtalFace)(short)face);
               // only interested in LEX8 range
               if(rng == 0){
                 FaceIdx faceIdx(twr,lyr,col,face);
                 float ped = m_teData.getPed(faceIdx,itp);
-                m_adc[faceIdx]  = acRo.getAdc((commonRootData::CalXtalId::XtalFace)(short)face)-ped;
+                m_adc[faceIdx]  = acRo.getAdc((CalXtalId::XtalFace)(short)face)-ped;
               }
 
             } // foreach face
@@ -450,8 +450,8 @@ void RootThreshEvol::fillPedHists(){
         const CalXtalReadout& readout=*calDigi.getXtalReadout(LEX8); // get LEX8 data
 
         // check that we are in the expected readout mode
-        RngNum rngP = readout.getRange(commonRootData::CalXtalId::POS);
-        RngNum rngN = readout.getRange(commonRootData::CalXtalId::NEG);
+        RngNum rngP = readout.getRange(CalXtalId::POS);
+        RngNum rngN = readout.getRange(CalXtalId::NEG);
         if (rngP != LEX8 || rngN != LEX8) {
           ostringstream tmp;
           tmp << __FILE__  << ":" << __LINE__ << " " 
@@ -459,13 +459,13 @@ void RootThreshEvol::fillPedHists(){
           throw tmp.str();
         }
       
-        commonRootData::CalXtalId id(calDigi.getPackedId()); // get interaction information
+        CalXtalId id(calDigi.getPackedId()); // get interaction information
         LyrNum lyr = id.getLayer();
         //int tower = id.getTower();
         ColNum col = id.getColumn();
 
-        float adcP = readout.getAdc(commonRootData::CalXtalId::POS);
-        float adcN = readout.getAdc(commonRootData::CalXtalId::NEG);
+        float adcP = readout.getAdc(CalXtalId::POS);
+        float adcN = readout.getAdc(CalXtalId::NEG);
 
         FaceIdx faceIdx(0,lyr,col,POS_FACE);
         m_teData.fillPedHist(faceIdx,itp,adcP);
