@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/14 17:40:05 $"
-__version__   = "$Revision: 1.9 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/14 19:23:55 $"
+__version__   = "$Revision: 1.10 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -145,8 +145,30 @@ class calCalibXML(calXML.calXML):
         else:
             infoDict['DTDVersion'] = str(value)
 
-        return g            
+        return g
 
+
+    def getTowers(self):
+        """
+        Get the ID's of towers contributing to the data file.
+
+        Returns: A list of tower ID's.        
+        """
+
+        towers = []        
+
+        # find <tower> elements
+
+        tList = self.getDoc().getElementsByTagName('tower')
+        for t in tList:
+
+            tRow = int(t.getAttribute('iRow'))
+            tCol = int(t.getAttribute('iCol'))
+            tem = towerToTem(tCol, tRow)
+            towers.append(tem)
+
+        return towers
+    
 
     
 class calTholdCICalibXML(calCalibXML):
