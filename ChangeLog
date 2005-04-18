@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon Apr 18 06:53:49 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Added method calCalibXML.getTowers() to return valid tower ID list for interpreting read() data results.
+    *
+------------------------------------------------------------
 User: dwood  Thu Apr 14 12:23:55 PDT 2005
 calibGenCAL/python
 
