@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: heather  Mon Apr 18 08:53:41 PDT 2005
+calibGenCAL/src
+
+Modified Files:
+	MuonCalib.cxx runCIFit.cxx runMuThreshEvol.cxx 
+	runMuTrigEff.cxx 
+Log Message:
+back out commonRootData namespace
+    *
+------------------------------------------------------------
 User: dwood  Mon Apr 18 06:56:47 PDT 2005
 calibGenCAL/python
 
