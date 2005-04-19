@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/14 19:23:55 $"
-__version__   = "$Revision: 1.10 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/18 13:53:49 $"
+__version__   = "$Revision: 1.11 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -52,6 +52,27 @@ class calCalibXML(calXML.calXML):
         """
 
         calXML.calXML.__init__(self, fileName, mode)
+
+
+    def info(self):
+        """
+        Return ancillary information from a CAL calibration XML file.
+
+        Returns: A dictionary with the following keys and values:
+            'instrument' - from <generic> element
+            'timestamp' - from <generic> element
+            'calibType' - from <generic> element
+            'fmtVersion' - from <generic> element
+            'DTDVersion' - from <generic> element
+        """
+        
+        i = {}
+
+        # get <generic> attribute values        
+            
+        self.genericInfo(i)
+
+        return i             
 
 
     def genericWrite(self):
@@ -450,28 +471,7 @@ class calTholdCICalibXML(calCalibXML):
                                 adc = cir.getAttribute('pedVal')
                                 pedData[tem, row, end, fe, erng] = float(adc)
 
-        return (adcData, uldData, pedData)                            
-
-
-    def info(self):
-        """
-        Return ancillary information from CAL IntNonlin XML file.
-
-        Returns: A dictionary with the following keys and values:
-            'instrument' - from <generic> element
-            'timestamp' - from <generic> element
-            'calibType' - from <generic> element
-            'fmtVersion' - from <generic> element
-            'DTDVersion' - from <generic> element
-        """
-        
-        i = {}
-
-        # get <generic> attribute values        
-            
-        self.genericInfo(i)
-
-        return i        
+        return (adcData, uldData, pedData)   
 
         
         
@@ -1020,27 +1020,6 @@ class calAsymCalibXML(calCalibXML):
         return (xposData, asymData)
 
 
-    def info(self):
-        """
-        Return ancillary information from CAL Asym XML file.
-
-        Returns: A dictionary with the following keys and values:
-            'instrument' - from <generic> element
-            'timestamp' - from <generic> element
-            'calibType' - from <generic> element
-            'fmtVersion' - from <generic> element
-            'DTDVersion' - from <generic> element
-        """
-
-        i = {}
-
-        # get <generic> attribute values        
-            
-        self.genericInfo(i)
-
-        return i
-
-
 
 class calMevPerDacCalibXML(calCalibXML):
     """
@@ -1216,27 +1195,7 @@ class calMevPerDacCalibXML(calCalibXML):
                             energyData[tem, row, fe, 7] = float(eng)
                                     
         return energyData                        
-                                            
-
-    def info(self):
-        """
-        Return ancillary information from CAL MevPerDac XML file.
-
-        Returns: A dictionary with the following keys and values:
-            'instrument' - from <generic> element
-            'timestamp' - from <generic> element
-            'calibType' - from <generic> element
-            'fmtVersion' - from <generic> element
-            'DTDVersion' - from <generic> element
-        """
-        
-        i = {}
-
-        # get <generic> attribute values        
-            
-        self.genericInfo(i)
-
-        return i        
+      
         
 
         
