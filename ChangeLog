@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Tue Apr 19 13:48:32 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Consolidated common info() methods in calCalibXML.info()
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r5p4, operation: add
 Package: calibGenCAL
