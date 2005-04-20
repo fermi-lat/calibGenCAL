@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Wed Apr 20 09:37:02 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	intNonlinVal.py 
+Log Message:
+Use ROOT.TLegend() class to provide legends for graph markers.
+    *
+------------------------------------------------------------
 User: dwood  Wed Apr 20 08:56:29 PDT 2005
 calibGenCAL/python
 
