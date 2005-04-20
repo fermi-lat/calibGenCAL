@@ -19,8 +19,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL IntNonlin calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/20 14:57:34 $"
-__version__   = "$Revision: 1.1 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/20 15:56:29 $"
+__version__   = "$Revision: 1.2 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -57,11 +57,13 @@ def rootGraphs(dacData, adcData):
                     x8Graph = []
                     x1Graph = []
                     x8Hist = None
-                    x1Hist = None                        
+                    x1Hist = None
 
                     # create X8 plots                        
 
                     c.cd(1)
+
+                    x8Leg = ROOT.TLegend(0.91, 0.50, 0.98, 0.60)                    
                         
                     for erng in range(0, 4, 2):                
 
@@ -89,17 +91,17 @@ def rootGraphs(dacData, adcData):
                         g.SetTitle('%s_X8' % title)
 
                         x8Graph.append(g)
-
+                        x8Leg.AddEntry(g, calConstant.CRNG[erng], 'P')
+                        
                     x8Hist = g.GetHistogram()
-                    t8l = ROOT.TPaveLabel(0.91, 0.50, 0.96, 0.55, 'LEX8', 'NDCT')
-                    t8l.SetTextColor(2)
-                    t8h = ROOT.TPaveLabel(0.91, 0.60, 0.96, 0.65, 'HEX8', 'NDCT')
-                    t8h.SetTextColor(4)
-
+                    x8Hist.GetXaxis().SetTitle('CI DAC')
+                    x8Hist.GetYaxis().SetTitle('ADC')
+                    
                     # create X1 plots                        
 
                     c.cd(2)
-                    graphs = []
+                    
+                    x1Leg = ROOT.TLegend(0.91, 0.50, 0.98, 0.60)
                         
                     for erng in range(1, 4, 2):                
 
@@ -127,35 +129,29 @@ def rootGraphs(dacData, adcData):
                         g.SetTitle('%s_X1' % title)
 
                         x1Graph.append(g)
+                        x1Leg.AddEntry(g, calConstant.CRNG[erng], 'P')
 
                     x1Hist = g.GetHistogram()
-                    t1l = ROOT.TPaveLabel(0.91, 0.50, 0.96, 0.55, 'LEX1', 'NDCT')
-                    t1l.SetTextColor(2)
-                    t1h = ROOT.TPaveLabel(0.91, 0.60, 0.96, 0.65, 'HEX1', 'NDCT')
-                    t1h.SetTextColor(4)
+                    x1Hist.GetXaxis().SetTitle('CI DAC')
+                    x1Hist.GetYaxis().SetTitle('ADC')
 
-                    # draw graphs
+                    # draw and write graphs
 
                     c.cd(1)
                     x8Hist.Draw()
+                    x8Leg.Draw()
                     c.Update()
                     for g in x8Graph:
                         g.Draw('P')
-                        c.Update()
-                    t8l.Draw()
-                    t8h.Draw()
-                    c.Update()    
+                        c.Update()    
 
                     c.cd(2)
                     x1Hist.Draw()
+                    x1Leg.Draw()
                     c.Update()
                     for g in x1Graph:
                         g.Draw('P')
                         c.Update()
-
-                    t1l.Draw()
-                    t1h.Draw()
-                    c.Update()
 
                     c.Write()
 
