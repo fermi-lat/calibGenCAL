@@ -19,7 +19,7 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL IntNonlin calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/03/30 17:35:57 $"
+__date__      = "$Date: 2005/04/20 14:57:34 $"
 __version__   = "$Revision: 1.1 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
@@ -175,7 +175,7 @@ def rootHists(errData):
 
         title = "Summary_%s" % calConstant.CRNG[erng]
         hName = "h_%s" % title
-        hs = ROOT.TH1F(hName, title, 100, 0.0, 0.5)
+        hs = ROOT.TH1F(hName, title, 100, 0.0, errLimit)
         hs.SetLineColor(erng + 1)
         sumHists[erng] = hs
         cs.Update()
@@ -198,7 +198,7 @@ def rootHists(errData):
                     for erng in range(4):
                         
                         hName = "h_%s_%s" % (title, calConstant.CRNG[erng])
-                        hc = ROOT.TH1F(hName, title, 100, 0.0, 0.5)
+                        hc = ROOT.TH1F(hName, title, 100, 0.0, errLimit)
                         hs = sumHists[erng]
                         hc.SetLineColor(erng + 1)
 
