@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Apr 21 10:02:52 PDT 2005
+calibGenCAL/python
+
+Added Files:
+	asymVal.py 
+Log Message:
+Application to validate CAL Asym calibration XML data files; initial version just produces ROOT plots of raw data.
+    *
+------------------------------------------------------------
 User: dwood  Thu Apr 21 09:49:15 PDT 2005
 calibGenCAL/python
 
