@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Apr 21 11:47:28 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	asymVal.py intNonlinVal.py 
+Log Message:
+Added report of validation at end; return process code 1 for validation failure, 0 otherwise
+    *
+------------------------------------------------------------
 User: dwood  Thu Apr 21 11:19:38 PDT 2005
 calibGenCAL/python
 
