@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/18 13:53:49 $"
-__version__   = "$Revision: 1.11 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/19 20:48:32 $"
+__version__   = "$Revision: 1.12 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -1093,14 +1093,12 @@ class calMevPerDacCalibXML(calCalibXML):
                     x = doc.createElement('xtal')
                     x.setAttribute('iXtal', str(fe))
                     l.appendChild(x)
-                        
-                    for end in range(2):
 
-                        # insert <face> elements
+                    # insert <face> element
 
-                        f = doc.createElement('face')
-                        f.setAttribute('end', 'NA')
-                        l.appendChild(f)
+                    f = doc.createElement('face')
+                    f.setAttribute('end', 'NA')
+                    x.appendChild(f)
         
         # write output XML file
 
@@ -1195,8 +1193,393 @@ class calMevPerDacCalibXML(calCalibXML):
                             energyData[tem, row, fe, 7] = float(eng)
                                     
         return energyData                        
-      
+
+
+
+class calAsymCalibXML(calCalibXML):
+    """
+    CAL Asym calibration XML file class.
+
+    This class provides methods for accessing CAL light asymmetry
+    calibration data stored in XML format.
+    """
+
+    def __init__(self, fileName, mode = MODE_READONLY):
+        """
+        Open a CAL Asym calibration XML file.
+        """
         
+        calCalibXML.__init__(self, fileName, mode)
+        
+
+    def write(self, tems = (0,)):
+        """
+        Write data to a CAL Asym XML file
+
+        Param: xposData - A list of position values. The length of this array is the
+                          number of data points for each crystal.
+        Param: tems - A list of TEM ID values to include in the output data set.
+        """
+
+        doc = self.getDoc()        
+
+        # insert root document element <calCalib>
+
+        r = doc.createElement('calCalib')
+        doc.appendChild(r)
+
+        # insert <generic> element
+
+        g = self.genericWrite()
+        r.appendChild(g)
+
+        # insert <dimension> element  
+            
+        d = self.dimensionWrite(nRange = 1, nFace = 1)
+        r.appendChild(d)
+
+        for tem in tems:
+            
+            # insert <tower> elements
+
+            (iCol, iRow) = temToTower(tem)
+            t = doc.createElement('tower')
+            t.setAttribute('iRow', str(iRow))
+            t.setAttribute('iCol', str(iCol))
+            r.appendChild(t)
+            
+            for layer in range(8):
+
+                # translate index
+
+                row = layerToRow(layer) 
+
+                # insert <layer> elements
+
+                l = doc.createElement('layer')
+                l.setAttribute('iLayer', str(layer))
+                t.appendChild(l)
+
+                c = doc.createComment('layer name = %s' % calConstant.CROW[row])
+                l.appendChild(c)
+                    
+                for fe in range(12):
+
+                    # insert <xtal> elements
+
+                    x = doc.createElement('xtal')
+                    x.setAttribute('iXtal', str(fe))
+                    l.appendChild(x)
+        
+                    # insert <face> elements
+
+                    f = doc.createElement('face')
+                    f.setAttribute('end', 'NA')
+                    x.appendChild(f)
+        
+        # write output XML file
+
+        self.writeFile()
+
+
+    def read(self):
+        """
+        Read data from a CAL Asym XML file
+        
+        Returns: A tuple of references to Numeric arrays and containing the
+        calibration data (xposData, asymData):
+            xposData -   A list of position values. The length of this array
+                         is the number of data points for each crystal.
+            asymData -   A Numeric array of shape (16, 8, 12, 8, <size>), where
+                         <size> is the length of xposData array. The next-to-last
+                         dimension contains the following data:
+                             0 = bigVals value
+                             1 = smallVals value
+                             2 = NsmallPbigVals value
+                             3 = PsmallNbigVals value
+                             4 = bigSigs value
+                             5 = smallSigs value
+                             6 = NsmallPbigSigs value
+                             7 = PsmallNbigSigs value 
+        """
+        
+        doc = self.getDoc()
+
+        # find <xpos> element
+
+        xpList = doc.getElementsByTagName('xpos')
+        xpLen = len(xpList)
+        if xpLen != 1:
+            raise calFileReadExcept, "found %d <xpos> elements (expected 1)" % xpLen
+        xp = xpList[0]
+
+        valueStr = xp.getAttribute('values')
+        values = valueStr.split(' ')
+        xposData = []
+        for pos in values:
+            xposData.append(float(pos))
+
+        # create empty asymmetry data array
+
+        asymData = Numeric.zeros((16, 8, 12, 8, len(xposData)), Numeric.Float32)           
+        
+        # find <tower> elements
+
+        tList = doc.getElementsByTagName('tower')
+        for t in tList:
+
+            tRow = int(t.getAttribute('iRow'))
+            tCol = int(t.getAttribute('iCol'))
+            tem = towerToTem(tCol, tRow)
+
+            # find <layer> elements
+
+            lList = t.getElementsByTagName('layer')
+            for l in lList:
+
+                layer = int(l.getAttribute('iLayer'))
+                row = layerToRow(layer)
+
+                # find <xtal> elements
+
+                xList = l.getElementsByTagName('xtal')
+                for x in xList:
+
+                    fe = int(x.getAttribute('iXtal'))
+
+                    # find <face> elements
+
+                    fList = x.getElementsByTagName('face')
+                    fLen = len(fList)
+                    if fLen != 1:
+                        raise calFileReadExcept, "found %d <face> elements (expected 1)" % fLen
+                    f = fList[0]
+                    face = f.getAttribute('end')
+                    
+                    # find <asym> elements
+
+                    asList = f.getElementsByTagName('asym')
+                    asLen = len(asList)
+                    if asLen != 1:
+                        raise calFileReadExcept, "found %d <asym> elements (expected 1)" % asLen
+                    as = asList[0]
+
+                    valueList = as.getAttribute('bigVals')
+                    values = valueList.split(' ')
+                    v = 0
+                    for asym in values:
+                        asymData[tem, row, fe, 0, v] = float(asym)
+                        v += 1
+
+                    valueList = as.getAttribute('smallVals')
+                    values = valueList.split(' ')
+                    v = 0
+                    for asym in values:
+                        asymData[tem, row, fe, 1, v] = float(asym)
+                        v += 1
+
+                    valueList = as.getAttribute('NsmallPbigVals')
+                    values = valueList.split(' ')
+                    v = 0
+                    for asym in values:
+                        asymData[tem, row, fe, 2, v] = float(asym)
+                        v += 1
+
+                    valueList = as.getAttribute('PsmallNbigVals')
+                    values = valueList.split(' ')
+                    v = 0
+                    for asym in values:
+                        asymData[tem, row, fe, 3, v] = float(asym)
+                        v += 1
+
+                    valueList = as.getAttribute('bigSigs')
+                    values = valueList.split(' ')
+                    v = 0
+                    for asym in values:
+                        asymData[tem, row, fe, 4, v] = float(asym)
+                        v += 1
+
+                    valueList = as.getAttribute('smallSigs')
+                    values = valueList.split(' ')
+                    v = 0
+                    for asym in values:
+                        asymData[tem, row, fe, 5, v] = float(asym)
+                        v += 1
+
+                    valueList = as.getAttribute('NsmallPbigSigs')
+                    values = valueList.split(' ')
+                    v = 0
+                    for asym in values:
+                        asymData[tem, row, fe, 6, v] = float(asym)
+                        v += 1
+
+                    valueList = as.getAttribute('PsmallNbigSigs')
+                    values = valueList.split(' ')
+                    v = 0
+                    for asym in values:
+                        asymData[tem, row, fe, 7, v] = float(asym)
+                        v += 1                        
+
+        return (xposData, asymData)
+
+
+
+class calPedCalibXML(calCalibXML):
+    """
+    CAL Ped calibration XML file class.
+
+    This class provides methods for accessing CAL pedestal
+    calibration data stored in XML format.
+    """
+
+    def __init__(self, fileName, mode = MODE_READONLY):
+        """
+        Open a CAL Ped calibration XML file.
+
+        Param: fileName - The XML file name.
+        Param: mode - The XML file access mode.
+        """
+        
+        calCalibXML.__init__(self, fileName, mode)
+        
+
+    def write(self, tems = (0,)):
+        """
+        Write data to a CAL Ped XML file
+
+        Param: tems - A list of TEM ID values to include in the output data set.
+        """
+
+        doc = self.getDoc()        
+
+        # insert root document element <calCalib>
+
+        r = doc.createElement('calCalib')
+        doc.appendChild(r)
+
+        # insert <generic> element
+
+        g = self.genericWrite()
+        r.appendChild(g)
+
+        # insert <dimension> element  
+            
+        d = self.dimensionWrite(nRange = 1, nFace = 1)
+        r.appendChild(d)
+
+        for tem in tems:
+            
+            # insert <tower> elements
+
+            (iCol, iRow) = temToTower(tem)
+            t = doc.createElement('tower')
+            t.setAttribute('iRow', str(iRow))
+            t.setAttribute('iCol', str(iCol))
+            r.appendChild(t)
+            
+            for layer in range(8):
+
+                # translate index
+
+                row = layerToRow(layer) 
+
+                # insert <layer> elements
+
+                l = doc.createElement('layer')
+                l.setAttribute('iLayer', str(layer))
+                t.appendChild(l)
+
+                c = doc.createComment('layer name = %s' % calConstant.CROW[row])
+                l.appendChild(c)
+                    
+                for fe in range(12):
+
+                    # insert <xtal> elements
+
+                    x = doc.createElement('xtal')
+                    x.setAttribute('iXtal', str(fe))
+                    l.appendChild(x)
+
+                    # insert <face> element
+
+                    f = doc.createElement('face')
+                    f.setAttribute('end', 'NA')
+                    x.appendChild(f)
+        
+        # write output XML file
+
+        self.writeFile()
+
+
+    def read(self):
+        """
+        Read data from a CAL Ped XML file
+        
+        Returns: A Numeric array containing the pedestal data
+                 of shape (16, 8, 2, 12, 4, 3) The last dimension contains
+                 the following data for each crystal end and energy
+                 range:
+                     0 = avg value
+                     1 = sig value
+                     2 = cos value
+        """
+        
+        doc = self.getDoc()
+
+        pedData = Numeric.zeros((16, 8, 2, 12, 4, 3), Numeric.Float32)
+
+        # find <tower> elements
+
+        tList = doc.getElementsByTagName('tower')
+        for t in tList:
+
+            tRow = int(t.getAttribute('iRow'))
+            tCol = int(t.getAttribute('iCol'))
+            tem = towerToTem(tCol, tRow)
+
+            # find <layer> elements
+
+            lList = t.getElementsByTagName('layer')
+            for l in lList:
+
+                layer = int(l.getAttribute('iLayer'))
+                row = layerToRow(layer)
+
+                # find <xtal> elements
+
+                xList = l.getElementsByTagName('xtal')
+                for x in xList:
+
+                    fe = int(x.getAttribute('iXtal'))
+
+                    # find <face> elements
+
+                    fList = x.getElementsByTagName('face')
+                    for f in fList:
+
+                        face = f.getAttribute('end')
+                        end = POSNEG_MAP[face]
+        
+                        # find <calPed> elements
+
+                        pList = f.getElementsByTagName('calPed')
+                        for p in pList:
+
+                            erngName = p.getAttribute('range')
+                            erng = ERNG_MAP[erngName]
+
+                            avg = float(p.getAttribute('avg'))
+                            pedData[tem, row, end, fe, erng, 0] = avg
+
+                            sig = float(p.getAttribute('sig'))
+                            pedData[tem, row, end, fe, erng, 1] = sig
+
+                            #cos = float(p.getAttribute('cos'))
+                            #pedData[tem, row, end, fe, erng, 2] = cos
+                           
+                                    
+        return pedData           
+
 
         
 def layerToRow(layer):
