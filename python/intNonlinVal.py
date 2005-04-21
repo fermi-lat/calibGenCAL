@@ -19,8 +19,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL IntNonlin calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/20 15:56:29 $"
-__version__   = "$Revision: 1.2 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/20 16:37:02 $"
+__version__   = "$Revision: 1.3 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -88,14 +88,18 @@ def rootGraphs(dacData, adcData):
                             col = 4
                         g.SetMarkerStyle(5)
                         g.SetMarkerColor(col)
-                        g.SetTitle('%s_X8' % title)
+                        g.SetTitle('IntNonlin_%s_x8' % title)
 
                         x8Graph.append(g)
                         x8Leg.AddEntry(g, calConstant.CRNG[erng], 'P')
                         
                     x8Hist = g.GetHistogram()
-                    x8Hist.GetXaxis().SetTitle('CI DAC')
-                    x8Hist.GetYaxis().SetTitle('ADC')
+                    axis = x8Hist.GetXaxis()
+                    axis.SetTitle('CI DAC')
+                    axis.CenterTitle()
+                    axis = x8Hist.GetYaxis()
+                    axis.SetTitle('ADC')
+                    axis.CenterTitle()
                     
                     # create X1 plots                        
 
@@ -126,14 +130,18 @@ def rootGraphs(dacData, adcData):
                             col = 4
                         g.SetMarkerStyle(5)
                         g.SetMarkerColor(col)
-                        g.SetTitle('%s_X1' % title)
+                        g.SetTitle('IntNonlin_%s_x1' % title)
 
                         x1Graph.append(g)
                         x1Leg.AddEntry(g, calConstant.CRNG[erng], 'P')
 
                     x1Hist = g.GetHistogram()
-                    x1Hist.GetXaxis().SetTitle('CI DAC')
-                    x1Hist.GetYaxis().SetTitle('ADC')
+                    axis = x1Hist.GetXaxis()
+                    axis.SetTitle('CI DAC')
+                    axis.CenterTitle()
+                    axis = x1Hist.GetYaxis()
+                    axis.SetTitle('ADC')
+                    axis.CenterTitle()
 
                     # draw and write graphs
 
@@ -157,26 +165,27 @@ def rootGraphs(dacData, adcData):
 
 
 
-
 def rootHists(errData):
 
-    # create summary residual histograms
+    # create summary sec deriv histograms
 
     sumHists = [None, None, None, None]
     cs = ROOT.TCanvas('c_Summary', 'Summary', -1)
     cs.SetGrid()
     cs.SetLogy()
+    sumLeg = ROOT.TLegend(0.88, 0.88, 0.99, 0.99)
 
     for erng in range(4):
 
-        title = "Summary_%s" % calConstant.CRNG[erng]
-        hName = "h_%s" % title
-        hs = ROOT.TH1F(hName, title, 100, 0.0, errLimit)
+        hName = "h_Summary_%s" % calConstant.CRNG[erng]       
+        hs = ROOT.TH1F(hName, 'IntNonlin_Summary', 100, 0.0, errLimit)
         hs.SetLineColor(erng + 1)
+        hs.SetStats(False)
         sumHists[erng] = hs
+        sumLeg.AddEntry(hs, calConstant.CRNG[erng], 'L')
         cs.Update()
         
-    # create ROOT histograms of residuals data per channel
+    # create ROOT histograms of sec deriv data per channel
 
     for tem in towers:
         for row in range(8):
@@ -189,14 +198,16 @@ def rootHists(errData):
                     cc = ROOT.TCanvas(cName, title, -1)
                     cc.SetGrid()
                     cc.SetLogy()
+                    chanLeg = ROOT.TLegend(0.88, 0.88, 0.99, 0.99)
                     hists = [None, None, None, None]
                     
                     for erng in range(4):
                         
                         hName = "h_%s_%s" % (title, calConstant.CRNG[erng])
-                        hc = ROOT.TH1F(hName, title, 100, 0.0, errLimit)
+                        hc = ROOT.TH1F(hName, 'IntNonlin_%s' % title, 100, 0.0, errLimit)
                         hs = sumHists[erng]
                         hc.SetLineColor(erng + 1)
+                        hc.SetStats(False)
 
                         eStr = errData[tem, row, end, fe, erng]
                         err = eval(eStr)
@@ -204,7 +215,8 @@ def rootHists(errData):
                             hc.Fill(e)
                             hs.Fill(e)
                         hists[erng] = hc
-                        cc.Update()
+                        chanLeg.AddEntry(hc, calConstant.CRNG[erng], 'L')
+                        cc.Update()                       
 
                     for erng in range(4):
                         if erng == 0:
@@ -215,7 +227,8 @@ def rootHists(errData):
                         hc.Draw(dopt)
                         cc.Update()
 
-                    cc.RedrawAxis()
+                    chanLeg.Draw()
+                    cc.Update()                    
                     cc.Write()
 
     cs.cd()
@@ -230,7 +243,8 @@ def rootHists(errData):
         hs.Draw(dopt)
         cs.Update()
 
-    cs.RedrawAxis()
+    sumLeg.Draw()
+    cs.Update()
     cs.Write()
 
 
