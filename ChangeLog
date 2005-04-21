@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Apr 21 11:16:47 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	asymVal.py 
+Log Message:
+Added sec deriv error check and ROOT histogram output of sec deriv values
+    *
+------------------------------------------------------------
 User: dwood  Thu Apr 21 10:02:52 PDT 2005
 calibGenCAL/python
 
