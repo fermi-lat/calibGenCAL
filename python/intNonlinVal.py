@@ -19,8 +19,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL IntNonlin calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/20 16:37:02 $"
-__version__   = "$Revision: 1.3 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/21 16:49:15 $"
+__version__   = "$Revision: 1.4 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -255,8 +255,8 @@ def deriv2(d, a):
      y1 = (a[2] - a[1]) / (d[2] - d[1])
      x0 = (d[0] + d[1]) / 2
      x1 = (d[1] + d[2]) / 2
-     d = (y1 - y0) / (x1 - x0)
-     return math.fabs(d)
+     z = (y1 - y0) / (x1 - x0)
+     return math.fabs(z)
 
 
 
