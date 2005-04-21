@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Apr 21 09:47:54 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Added class calPedCalibXML to handle CAL pedestal data calibration XML files.
+    *
+------------------------------------------------------------
 User: dwood  Wed Apr 20 09:37:02 PDT 2005
 calibGenCAL/python
 
