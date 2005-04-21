@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Apr 21 11:19:38 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	intNonlinVal.py 
+Log Message:
+Fixed overlayed varible name in function deriv2().
+    *
+------------------------------------------------------------
 User: dwood  Thu Apr 21 11:16:47 PDT 2005
 calibGenCAL/python
 
