@@ -18,8 +18,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Asym calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/21 17:02:52 $"
-__version__   = "$Revision: 1.1 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/21 18:16:47 $"
+__version__   = "$Revision: 1.2 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -194,6 +194,7 @@ def deriv2(p, a):
 def calcError(xposData, asymData):
 
     errs = Numeric.zeros((16, 8, 12, 4), Numeric.PyObject)
+    status = 0
 
     for tem in towers:
         for row in range(8):
@@ -224,6 +225,7 @@ def calcError(xposData, asymData):
                                         (ex, errLimit, tem, calConstant.CROW[row], fe,
                                         VAL_NAMES[val], p[1], a[1])
                                 log.error(msg)
+                                status = 1
                             else:
                                 msg = 'asymVal: %0.6f > %0.6f for %d,%s,%d,%s (%d,%0.3f)' % \
                                         (ex, warnLimit, tem, calConstant.CROW[row], fe,
@@ -232,7 +234,7 @@ def calcError(xposData, asymData):
 
                     errs[tem, row, fe, val] = repr(err)
 
-    return errs
+    return (status, errs)
 
 
 
@@ -242,7 +244,7 @@ if __name__ == '__main__':
 
     rootOutput = False
     errLimit = 0.00010
-    warnLimit = 0.00005
+    warnLimit = 0.00005    
 
     # setup logger
 
@@ -275,6 +277,10 @@ if __name__ == '__main__':
 
     xmlName = args[0]
 
+    log.debug('asymVal: using input file %s', xmlName)
+    log.debug('asymVal: using sec deriv err limit %0.3f', errLimit)
+    log.debug('asymVal: using sec deriv err limit %0.3f', warnLimit)
+
     # open and read XML Asym file
 
     xmlFile = calCalibXML.calAsymCalibXML(xmlName)
@@ -284,7 +290,7 @@ if __name__ == '__main__':
 
     # validate calibration data
 
-    errData = calcError(xposData, asymData)    
+    (valStatus, errData) = calcError(xposData, asymData)    
 
     # create ROOT output file
     
@@ -306,7 +312,16 @@ if __name__ == '__main__':
         # clean up
 
         rootFile.Close()
+
+    # report results
+
+    if valStatus == 0:
+        statusStr = 'PASSED'
+    else:
+        statusStr = 'FAILED'
+
+    log.info('asymVal: validation %s for file %s', statusStr, xmlName)        
         
-    sys.exit(0)
+    sys.exit(valStatus)
 
     
