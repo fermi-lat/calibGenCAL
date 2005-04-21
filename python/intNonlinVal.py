@@ -19,10 +19,11 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL IntNonlin calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/21 16:49:15 $"
-__version__   = "$Revision: 1.4 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/21 18:19:38 $"
+__version__   = "$Revision: 1.5 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
+
 
 
 import sys, math
@@ -34,7 +35,7 @@ import Numeric
 
 import calCalibXML
 import calConstant
-
+    
 
 
 def rootGraphs(dacData, adcData):
@@ -263,6 +264,7 @@ def deriv2(d, a):
 def calcError(dacData, adcData):
 
     errs = Numeric.zeros((16, 8, 2, 12, 4), Numeric.PyObject)
+    status = 0
 
     for tem in towers:
         for row in range(8):
@@ -298,6 +300,7 @@ def calcError(dacData, adcData):
                                             (ex, errLimit, tem, calConstant.CROW[row], calConstant.CPM[end], fe,
                                             calConstant.CRNG[erng], d[1], a[1])
                                     log.error(msg)
+                                    status = 1
                                 else:
                                     msg = 'intNonlinVal: %0.3f > %0.3f for %d,%s%s,%d,%s (%d,%0.3f)' % \
                                             (ex, warnLimit, tem, calConstant.CROW[row], calConstant.CPM[end], fe,
@@ -305,8 +308,8 @@ def calcError(dacData, adcData):
                                     log.warning(msg)
 
                         errs[tem, row, end, fe, erng] = repr(err)
-
-    return errs                        
+                        
+    return (status, errs)
                             
                                                     
                         
@@ -361,7 +364,7 @@ if __name__ == '__main__':
 
     # calculate deviations from linearity
 
-    errData = calcError(dacData, adcData)    
+    (valStatus, errData) = calcError(dacData, adcData)    
 
     # create ROOT output file
     
@@ -384,8 +387,15 @@ if __name__ == '__main__':
 
         rootFile.Close()
 
-    
-    sys.exit(0)
+    # report results
+
+    if valStatus == 0:
+        statusStr = 'PASSED'
+    else:
+        statusStr = 'FAILED'
+       
+    log.info('intNonlinVal: validation %s for file %s', statusStr, xmlName)
+    sys.exit(valStatus)
 
 
     
