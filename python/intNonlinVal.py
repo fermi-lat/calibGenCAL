@@ -19,8 +19,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL IntNonlin calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/21 18:19:38 $"
-__version__   = "$Revision: 1.5 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/21 18:47:28 $"
+__version__   = "$Revision: 1.6 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -353,6 +353,10 @@ if __name__ == '__main__':
         sys.exit(1)    
 
     xmlName = args[0]
+
+    log.debug('intNonlinVal: using input file %s', xmlName)
+    log.debug('intNonlinVal: using sec deriv err limit %0.3f', errLimit)
+    log.debug('intNonlinVal: using sec deriv warn limit %0.3f', warnLimit)    
 
     # open and read XML IntNonlin file
 

@@ -18,8 +18,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Asym calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/21 18:16:47 $"
-__version__   = "$Revision: 1.2 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/21 18:47:28 $"
+__version__   = "$Revision: 1.3 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -278,8 +278,8 @@ if __name__ == '__main__':
     xmlName = args[0]
 
     log.debug('asymVal: using input file %s', xmlName)
-    log.debug('asymVal: using sec deriv err limit %0.3f', errLimit)
-    log.debug('asymVal: using sec deriv err limit %0.3f', warnLimit)
+    log.debug('asymVal: using sec deriv err limit %0.6f', errLimit)
+    log.debug('asymVal: using sec deriv warn limit %0.6f', warnLimit)
 
     # open and read XML Asym file
 
