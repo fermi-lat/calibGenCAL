@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: dwood  Fri Apr 22 11:34:04 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	asymVal.py intNonlinVal.py 
+Added Files:
+	asymVal.bat fits2xml.bat intNonlinMerge.bat intNonlinVal.bat 
+	pedVal.bat tholdCIGen.bat 
+Log Message:
+Initial versions of windows BAT files for launching python applications.
+    *
+------------------------------------------------------------
 User: dwood  Thu Apr 21 11:47:28 PDT 2005
 calibGenCAL/python
 
