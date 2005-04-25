@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon Apr 25 09:43:54 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Removed duplicate calAsymCalibXML class defintion; added method calCalibXML.getType() to verify file types at start of read() methods; added type paramter to method calCalibXML.genericWrite() to allow proper setting of calibType attribute in <generic> soutput elements.
+    *
+------------------------------------------------------------
 User: dwood  Mon Apr 25 08:27:07 PDT 2005
 calibGenCAL/python
 
