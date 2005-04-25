@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon Apr 25 12:20:59 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	pedVal.py 
+Log Message:
+Cleaned up handling of x8 verses x1 error limits.
+    *
+------------------------------------------------------------
 User: dwood  Mon Apr 25 12:15:01 PDT 2005
 calibGenCAL/python
 
