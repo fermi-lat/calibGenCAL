@@ -2,7 +2,7 @@
 Validate CAL IntNonlin calibration data in XML format.  The command
 line is:
 
-intNonlinVal [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>
+intNonlinVal [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>
 
 where:
 
@@ -11,7 +11,7 @@ where:
     -W <warn_limit> - warning limit for segment second derivative abs value
                     (default is 2.0)
     -R <root_file> - output validation diagnostics in ROOT file
-
+    -V             - verbose; turn on debug output
     <xml_file> The CAL Int_Nonlin calibration XML file to validate.    
 """
 
@@ -19,8 +19,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL IntNonlin calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/21 18:47:28 $"
-__version__   = "$Revision: 1.6 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/22 18:34:04 $"
+__version__   = "$Revision: 1.7 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -317,7 +317,7 @@ def calcError(dacData, adcData):
 
 if __name__ == '__main__':
 
-    usage = "usage: intNonlinVal [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>"
+    usage = "usage: intNonlinVal [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>"
 
     rootOutput = False
     errLimit = 2.0
@@ -327,12 +327,12 @@ if __name__ == '__main__':
 
     logging.basicConfig()
     log = logging.getLogger()
-    log.setLevel(logging.DEBUG)
+    log.setLevel(logging.INFO)
 
     # check command line
 
     try:
-        opts = getopt.getopt(sys.argv[1:], "-R:-E:-W:")
+        opts = getopt.getopt(sys.argv[1:], "-R:-E:-W:-V")
     except getopt.GetoptError:
         log.error(usage)
         sys.exit(1)
@@ -346,6 +346,8 @@ if __name__ == '__main__':
             errLimit = float(o[1])
         elif o[0] == '-W':
             warnLimit = float(o[1])
+        elif o[0] == '-V':
+            log.setLevel(logging.DEBUG)
         
     args = opts[1]
     if len(args) != 1:
