@@ -19,8 +19,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Ped calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/25 19:09:57 $"
-__version__   = "$Revision: 1.1 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/25 19:15:01 $"
+__version__   = "$Revision: 1.2 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -146,11 +146,11 @@ def calcError(pedData):
                             
                             err.append(ex)
                             if erng == 0 or erng == 2:
-                                eLim = errLimit
-                                wLim = warnLimit
+                                eLim = x8ErrLimit
+                                wLim = x8WarnLimit
                             else:
-                                eLim = (errLimit / 5)
-                                wLim = (warnLimit / 5)
+                                eLim = x1ErrLimit
+                                wLim = x1WarnLimit
                     
                             if ex > wLim:
                             
@@ -177,8 +177,8 @@ if __name__ == '__main__':
     usage = "usage: pedVal [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>"
 
     rootOutput = False
-    errLimit = 10.0
-    warnLimit = 8.0
+    x8ErrLimit = 10.0
+    x8WarnLimit = 6.0
 
     # setup logger
 
@@ -200,9 +200,9 @@ if __name__ == '__main__':
             rootName = o[1]
             rootOutput = True
         elif o[0] == '-E':
-            errLimit = float(o[1])
+            x8ErrLimit = float(o[1])
         elif o[0] == '-W':
-            warnLimit = float(o[1])
+            x8WarnLimit = float(o[1])
         elif o[0] == '-V':
             log.setLevel(logging.DEBUG)
         
@@ -212,12 +212,14 @@ if __name__ == '__main__':
         sys.exit(1)    
 
     xmlName = args[0]
+    x1ErrLimit = (x8ErrLimit / 5.0)
+    x1WarnLimit = (x8WarnLimit / 5.0)
 
     log.debug('pedVal: using input file %s', xmlName)
-    log.debug('pedVal: using sig err limit %0.3f for x8 ranges', errLimit)
-    log.debug('pedVal: using sig err limit %0.3f for x1 ranges', (errLimit / 5))
-    log.debug('pedVal: using sig warn limit %0.3f x8 ranges', warnLimit)
-    log.debug('pedVal: using sig warn limit %0.3f x8 ranges', (warnLimit / 5))
+    log.debug('pedVal: using sig err limit %0.3f for x8 ranges', x8ErrLimit)
+    log.debug('pedVal: using sig err limit %0.3f for x1 ranges', x1ErrLimit)
+    log.debug('pedVal: using sig warn limit %0.3f for x8 ranges', x8WarnLimit)
+    log.debug('pedVal: using sig warn limit %0.3f for x1 ranges', x1WarnLimit)
 
     # open and read XML Ped file
 
