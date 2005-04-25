@@ -2,11 +2,15 @@
 Validate CAL Ped calibration data in XML format.  The command
 line is:
 
-pedVal [-V] [-R <root_file>] <xml_file>
+pedVal [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>
 
 where:
 
     -R <root_file> - output validation diagnostics in ROOT file
+    -E <err_limit> - error limit for pedestal sigma value for x8 ranges
+                    (default is 10.0; x1 ranges use this value / 5)
+    -W <warn_limit> - warning limit pedestal sigma value for x8 ranges
+                    (default is 8.0; x1 ranges use this value / 5)
     -V             - verbose; turn on debug output
     <xml_file> The CAL Int_Nonlin calibration XML file to validate.    
 """
@@ -15,8 +19,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Ped calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/20 16:37:02 $"
-__version__   = "$Revision: 1.3 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/25 19:09:57 $"
+__version__   = "$Revision: 1.1 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
