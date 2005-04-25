@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon Apr 25 14:32:48 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	asymVal.py intNonlinVal.py pedVal.py 
+Log Message:
+Added option to send log output to log file with -L command line option.
+    *
+------------------------------------------------------------
 User: dwood  Mon Apr 25 12:20:59 PDT 2005
 calibGenCAL/python
 
