@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/19 20:48:32 $"
-__version__   = "$Revision: 1.12 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/21 16:47:54 $"
+__version__   = "$Revision: 1.13 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -75,7 +75,7 @@ class calCalibXML(calXML.calXML):
         return i             
 
 
-    def genericWrite(self):
+    def genericWrite(self, type):
         """
         Creates the <generic> element for a calibration XML file
 
@@ -84,7 +84,7 @@ class calCalibXML(calXML.calXML):
 
         g = self.getDoc().createElement('generic')
         g.setAttribute('instrument', 'LAT')
-        g.setAttribute('calibType', 'CAL_TholdCI')
+        g.setAttribute('calibType', str(type))
         g.setAttribute('fmtVersion', 'v2r2')
         g.setAttribute('creator', 'myname')
         ts = time.strftime('%Y-%m-%d-%H:%M', time.gmtime())
@@ -114,7 +114,29 @@ class calCalibXML(calXML.calXML):
         if nDacCol > 0:
             d.setAttribute('nDacCol', str(nDacCol))
 
-        return d        
+        return d
+
+
+    def getType(self):
+        """
+        Get CAL calibration XML file type.
+
+        Returns: The <generic> calibType attribute value.        
+        """
+
+        # find <generic> element
+
+        gList = self.getDoc().getElementsByTagName('generic')
+        gLen = len(gList)
+        if gLen != 1:
+            raise calFileReadExcept, "found %d <generic> elements (expected 1)" % gLen
+        g = gList[0]
+
+        value = g.getAttribute('calibType')
+        if len(value) == 0:
+            raise calFileReadExcept, "calibType attribute not found for <generic> element"
+        
+        return str(value)
 
 
     def genericInfo(self, infoDict):
@@ -255,7 +277,7 @@ class calTholdCICalibXML(calCalibXML):
 
         # insert <generic> element
 
-        g = self.genericWrite()
+        g = self.genericWrite('CAL_TholdCI')
         c = doc.createComment('LE gain index = %d' % lrefGain)
         g.appendChild(c)
         c = doc.createComment('HE gain index = %d' % hrefGain)
@@ -410,7 +432,13 @@ class calTholdCICalibXML(calCalibXML):
                 [:, 3] = HEX1 ULD pedestal values      
         """
         
-        doc = self.getDoc()
+        # verify file type
+
+        type =  self.getType()
+        if type != 'CAL_TholdCI':
+            raise calFileReadExcept, "XML file is type %s (expected CAL_TholdCI)" % type
+
+        # create empty data arrays        
         
         adcData = Numeric.zeros((16, 8, 2, 12, 3), Numeric.Float32)
         uldData = Numeric.zeros((16, 8, 2, 12, 4), Numeric.Float32)
@@ -418,7 +446,7 @@ class calTholdCICalibXML(calCalibXML):
 
         # find <tower> elements
 
-        tList = doc.getElementsByTagName('tower')
+        tList = self.getDoc().getElementsByTagName('tower')
         for t in tList:
 
             tRow = int(t.getAttribute('iRow'))
@@ -526,7 +554,7 @@ class calIntNonlinCalibXML(calCalibXML):
 
         # insert <generic> element
 
-        g = self.genericWrite()
+        g = self.genericWrite('CAL_IntNonlin')
         r.appendChild(g)
 
         # insert <inputSample> element
@@ -642,7 +670,13 @@ class calIntNonlinCalibXML(calCalibXML):
                         the end are set to '-1'.
         """
         
-        doc = self.getDoc()
+        # verify file type
+
+        type =  self.getType()
+        if type != 'CAL_IntNonlin':
+            raise calFileReadExcept, "XML file is type %s (expected CAL_IntNonlin)" % type
+
+        # create empty data arrays
         
         dacData = [None, None, None, None]
         adcData = [None, None, None, None]
@@ -651,7 +685,7 @@ class calIntNonlinCalibXML(calCalibXML):
 
         # find <dac> elements
 
-        dList = doc.getElementsByTagName('dac')
+        dList = self.getDoc().getElementsByTagName('dac')
         for d in dList:
             erngName = d.getAttribute('range')
             erng = ERNG_MAP[erngName]
@@ -672,7 +706,7 @@ class calIntNonlinCalibXML(calCalibXML):
 
         # find <tower> elements
 
-        tList = doc.getElementsByTagName('tower')
+        tList = self.getDoc().getElementsByTagName('tower')
         for t in tList:
 
             tRow = int(t.getAttribute('iRow'))
@@ -825,7 +859,7 @@ class calAsymCalibXML(calCalibXML):
 
         # insert <generic> element
 
-        g = self.genericWrite()
+        g = self.genericWrite('CAL_Asym')
         r.appendChild(g)
 
         # insert <dimension> element  
@@ -900,11 +934,15 @@ class calAsymCalibXML(calCalibXML):
                              7 = PsmallNbigSigs value 
         """
         
-        doc = self.getDoc()
+        # verify file type
+
+        type =  self.getType()
+        if type != 'CAL_Asym':
+            raise calFileReadExcept, "XML file is type %s (expected CAL_Asym)" % type
 
         # find <xpos> element
 
-        xpList = doc.getElementsByTagName('xpos')
+        xpList = self.getDoc().getElementsByTagName('xpos')
         xpLen = len(xpList)
         if xpLen != 1:
             raise calFileReadExcept, "found %d <xpos> elements (expected 1)" % xpLen
@@ -922,7 +960,7 @@ class calAsymCalibXML(calCalibXML):
         
         # find <tower> elements
 
-        tList = doc.getElementsByTagName('tower')
+        tList = self.getDoc().getElementsByTagName('tower')
         for t in tList:
 
             tRow = int(t.getAttribute('iRow'))
@@ -1053,7 +1091,7 @@ class calMevPerDacCalibXML(calCalibXML):
 
         # insert <generic> element
 
-        g = self.genericWrite()
+        g = self.genericWrite('CAL_MevPerDac')
         r.appendChild(g)
 
         # insert <dimension> element  
@@ -1122,13 +1160,19 @@ class calMevPerDacCalibXML(calCalibXML):
                      7 = POS end bigSmallRatioVals value
         """
         
-        doc = self.getDoc()
+        # verify file type
+
+        type =  self.getType()
+        if type != 'CAL_MevPerDac':
+            raise calFileReadExcept, "XML file is type %s (expected CAL_MevPerDac)" % type
+
+        # create empty data array        
 
         energyData = Numeric.zeros((16, 8, 12, 8), Numeric.Float32)
 
         # find <tower> elements
 
-        tList = doc.getElementsByTagName('tower')
+        tList = self.getDoc().getElementsByTagName('tower')
         for t in tList:
 
             tRow = int(t.getAttribute('iRow'))
@@ -1192,235 +1236,7 @@ class calMevPerDacCalibXML(calCalibXML):
                             eng = bs.getAttribute('bigSmallRatioSigs')
                             energyData[tem, row, fe, 7] = float(eng)
                                     
-        return energyData                        
-
-
-
-class calAsymCalibXML(calCalibXML):
-    """
-    CAL Asym calibration XML file class.
-
-    This class provides methods for accessing CAL light asymmetry
-    calibration data stored in XML format.
-    """
-
-    def __init__(self, fileName, mode = MODE_READONLY):
-        """
-        Open a CAL Asym calibration XML file.
-        """
-        
-        calCalibXML.__init__(self, fileName, mode)
-        
-
-    def write(self, tems = (0,)):
-        """
-        Write data to a CAL Asym XML file
-
-        Param: xposData - A list of position values. The length of this array is the
-                          number of data points for each crystal.
-        Param: tems - A list of TEM ID values to include in the output data set.
-        """
-
-        doc = self.getDoc()        
-
-        # insert root document element <calCalib>
-
-        r = doc.createElement('calCalib')
-        doc.appendChild(r)
-
-        # insert <generic> element
-
-        g = self.genericWrite()
-        r.appendChild(g)
-
-        # insert <dimension> element  
-            
-        d = self.dimensionWrite(nRange = 1, nFace = 1)
-        r.appendChild(d)
-
-        for tem in tems:
-            
-            # insert <tower> elements
-
-            (iCol, iRow) = temToTower(tem)
-            t = doc.createElement('tower')
-            t.setAttribute('iRow', str(iRow))
-            t.setAttribute('iCol', str(iCol))
-            r.appendChild(t)
-            
-            for layer in range(8):
-
-                # translate index
-
-                row = layerToRow(layer) 
-
-                # insert <layer> elements
-
-                l = doc.createElement('layer')
-                l.setAttribute('iLayer', str(layer))
-                t.appendChild(l)
-
-                c = doc.createComment('layer name = %s' % calConstant.CROW[row])
-                l.appendChild(c)
-                    
-                for fe in range(12):
-
-                    # insert <xtal> elements
-
-                    x = doc.createElement('xtal')
-                    x.setAttribute('iXtal', str(fe))
-                    l.appendChild(x)
-        
-                    # insert <face> elements
-
-                    f = doc.createElement('face')
-                    f.setAttribute('end', 'NA')
-                    x.appendChild(f)
-        
-        # write output XML file
-
-        self.writeFile()
-
-
-    def read(self):
-        """
-        Read data from a CAL Asym XML file
-        
-        Returns: A tuple of references to Numeric arrays and containing the
-        calibration data (xposData, asymData):
-            xposData -   A list of position values. The length of this array
-                         is the number of data points for each crystal.
-            asymData -   A Numeric array of shape (16, 8, 12, 8, <size>), where
-                         <size> is the length of xposData array. The next-to-last
-                         dimension contains the following data:
-                             0 = bigVals value
-                             1 = smallVals value
-                             2 = NsmallPbigVals value
-                             3 = PsmallNbigVals value
-                             4 = bigSigs value
-                             5 = smallSigs value
-                             6 = NsmallPbigSigs value
-                             7 = PsmallNbigSigs value 
-        """
-        
-        doc = self.getDoc()
-
-        # find <xpos> element
-
-        xpList = doc.getElementsByTagName('xpos')
-        xpLen = len(xpList)
-        if xpLen != 1:
-            raise calFileReadExcept, "found %d <xpos> elements (expected 1)" % xpLen
-        xp = xpList[0]
-
-        valueStr = xp.getAttribute('values')
-        values = valueStr.split(' ')
-        xposData = []
-        for pos in values:
-            xposData.append(float(pos))
-
-        # create empty asymmetry data array
-
-        asymData = Numeric.zeros((16, 8, 12, 8, len(xposData)), Numeric.Float32)           
-        
-        # find <tower> elements
-
-        tList = doc.getElementsByTagName('tower')
-        for t in tList:
-
-            tRow = int(t.getAttribute('iRow'))
-            tCol = int(t.getAttribute('iCol'))
-            tem = towerToTem(tCol, tRow)
-
-            # find <layer> elements
-
-            lList = t.getElementsByTagName('layer')
-            for l in lList:
-
-                layer = int(l.getAttribute('iLayer'))
-                row = layerToRow(layer)
-
-                # find <xtal> elements
-
-                xList = l.getElementsByTagName('xtal')
-                for x in xList:
-
-                    fe = int(x.getAttribute('iXtal'))
-
-                    # find <face> elements
-
-                    fList = x.getElementsByTagName('face')
-                    fLen = len(fList)
-                    if fLen != 1:
-                        raise calFileReadExcept, "found %d <face> elements (expected 1)" % fLen
-                    f = fList[0]
-                    face = f.getAttribute('end')
-                    
-                    # find <asym> elements
-
-                    asList = f.getElementsByTagName('asym')
-                    asLen = len(asList)
-                    if asLen != 1:
-                        raise calFileReadExcept, "found %d <asym> elements (expected 1)" % asLen
-                    as = asList[0]
-
-                    valueList = as.getAttribute('bigVals')
-                    values = valueList.split(' ')
-                    v = 0
-                    for asym in values:
-                        asymData[tem, row, fe, 0, v] = float(asym)
-                        v += 1
-
-                    valueList = as.getAttribute('smallVals')
-                    values = valueList.split(' ')
-                    v = 0
-                    for asym in values:
-                        asymData[tem, row, fe, 1, v] = float(asym)
-                        v += 1
-
-                    valueList = as.getAttribute('NsmallPbigVals')
-                    values = valueList.split(' ')
-                    v = 0
-                    for asym in values:
-                        asymData[tem, row, fe, 2, v] = float(asym)
-                        v += 1
-
-                    valueList = as.getAttribute('PsmallNbigVals')
-                    values = valueList.split(' ')
-                    v = 0
-                    for asym in values:
-                        asymData[tem, row, fe, 3, v] = float(asym)
-                        v += 1
-
-                    valueList = as.getAttribute('bigSigs')
-                    values = valueList.split(' ')
-                    v = 0
-                    for asym in values:
-                        asymData[tem, row, fe, 4, v] = float(asym)
-                        v += 1
-
-                    valueList = as.getAttribute('smallSigs')
-                    values = valueList.split(' ')
-                    v = 0
-                    for asym in values:
-                        asymData[tem, row, fe, 5, v] = float(asym)
-                        v += 1
-
-                    valueList = as.getAttribute('NsmallPbigSigs')
-                    values = valueList.split(' ')
-                    v = 0
-                    for asym in values:
-                        asymData[tem, row, fe, 6, v] = float(asym)
-                        v += 1
-
-                    valueList = as.getAttribute('PsmallNbigSigs')
-                    values = valueList.split(' ')
-                    v = 0
-                    for asym in values:
-                        asymData[tem, row, fe, 7, v] = float(asym)
-                        v += 1                        
-
-        return (xposData, asymData)
+        return energyData
 
 
 
@@ -1459,7 +1275,7 @@ class calPedCalibXML(calCalibXML):
 
         # insert <generic> element
 
-        g = self.genericWrite()
+        g = self.genericWrite('CAL_Ped')
         r.appendChild(g)
 
         # insert <dimension> element  
@@ -1524,13 +1340,19 @@ class calPedCalibXML(calCalibXML):
                      2 = cos value
         """
         
-        doc = self.getDoc()
+        # verify file type
+
+        type =  self.getType()
+        if type != 'CAL_Ped':
+            raise calFileReadExcept, "XML file is type %s (expected CAL_Ped)" % type
+
+        # create empty data array
 
         pedData = Numeric.zeros((16, 8, 2, 12, 4, 3), Numeric.Float32)
 
         # find <tower> elements
 
-        tList = doc.getElementsByTagName('tower')
+        tList = self.getDoc().getElementsByTagName('tower')
         for t in tList:
 
             tRow = int(t.getAttribute('iRow'))
