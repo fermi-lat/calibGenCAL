@@ -2,7 +2,7 @@
 Validate CAL Asym calibration data in XML format.  The command
 line is:
 
-asymVal [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>
+asymVal [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>
 
 where:
 
@@ -19,8 +19,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Asym calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/22 18:34:04 $"
-__version__   = "$Revision: 1.4 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/25 16:52:24 $"
+__version__   = "$Revision: 1.5 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
