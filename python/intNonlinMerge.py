@@ -7,8 +7,8 @@ single output file.
 __facility__  = "Offline"
 __abstract__  = "Tool to merge mutilple CAL IntNonlin calibration XML files."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/14 19:07:44 $"
-__version__   = "$Revision: 1.2 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/14 19:17:17 $"
+__version__   = "$Revision: 1.3 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -175,9 +175,15 @@ if __name__ == '__main__':
             for row in range(8):
                 for end in range(2):
                     for fe in range(12):
-                        for dac in range(inData.shape[-1]):
+                        inSize = inData.shape[-1]
+                        outSize = outData.shape[-1]
+                        for dac in range(inSize):
                             x = inData[0, row, end, fe, dac]
                             outData[f.twr, row, end, fe, dac] = x
+                        if outSize > inSize:
+                            for dac in range(inSize, outSize):
+                               outData[f.twr, row, end, fe, dac] = -1.0 
+                            
             
 
     log.info('intNonlinMerge: writing output file %s', outName)
