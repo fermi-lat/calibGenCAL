@@ -2,7 +2,7 @@
 Validate CAL IntNonlin calibration data in XML format.  The command
 line is:
 
-intNonlinVal [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>
+intNonlinVal [-V] [-L <log_file>] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>
 
 where:
 
@@ -11,6 +11,7 @@ where:
     -W <warn_limit> - warning limit for segment second derivative abs value
                     (default is 2.0)
     -R <root_file> - output validation diagnostics in ROOT file
+    -L <log_file>  - save console output to log text file
     -V             - verbose; turn on debug output
     <xml_file> The CAL Int_Nonlin calibration XML file to validate.    
 """
@@ -19,14 +20,14 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL IntNonlin calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/22 18:34:04 $"
-__version__   = "$Revision: 1.7 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/25 16:52:24 $"
+__version__   = "$Revision: 1.8 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 
 
-import sys, math
+import sys, os, math
 import getopt
 import logging
 import array
@@ -317,7 +318,7 @@ def calcError(dacData, adcData):
 
 if __name__ == '__main__':
 
-    usage = "usage: intNonlinVal [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>"
+    usage = "usage: intNonlinVal [-V] [-L <log_file>] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>"
 
     rootOutput = False
     errLimit = 2.0
@@ -332,7 +333,7 @@ if __name__ == '__main__':
     # check command line
 
     try:
-        opts = getopt.getopt(sys.argv[1:], "-R:-E:-W:-V")
+        opts = getopt.getopt(sys.argv[1:], "-R:-E:-W:-L:-V")
     except getopt.GetoptError:
         log.error(usage)
         sys.exit(1)
@@ -346,6 +347,14 @@ if __name__ == '__main__':
             errLimit = float(o[1])
         elif o[0] == '-W':
             warnLimit = float(o[1])
+        elif o[0] == '-L':
+            if os.path.exists(o[1]):
+                log.warning('intNonlinVal: eleting old log file %s', o[1])
+                os.remove(o[1])
+            hdl = logging.FileHandler(o[1])
+            fmt = logging.Formatter('%(levelname)s %(message)s')
+            hdl.setFormatter(fmt)
+            log.addHandler(hdl)
         elif o[0] == '-V':
             log.setLevel(logging.DEBUG)
         
