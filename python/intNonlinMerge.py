@@ -7,8 +7,8 @@ single output file.
 __facility__  = "Offline"
 __abstract__  = "Tool to merge mutilple CAL IntNonlin calibration XML files."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/14 19:17:17 $"
-__version__   = "$Revision: 1.3 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/25 15:20:14 $"
+__version__   = "$Revision: 1.4 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -76,6 +76,15 @@ if __name__ == '__main__':
 
     configName = args[0]
     outName = args[1]
+    
+
+    # get environment settings
+
+    try:
+        calibUtilRoot = os.environ['CALIBUTILROOT']
+    except:
+        log.error('intNonlinMerge: CALIBUTILROOT must be defined')
+        sys.exit(1)
 
 
     # read config file settings
@@ -119,8 +128,8 @@ if __name__ == '__main__':
     if not configFile.has_option('dtdfiles', 'dtdfile'):
         log.error("intNonlinMerge: config file %s missing [dtdfiles]:dtdfile option" % configName)
         sys.exit(1)
-    dtdName = configFile.get('dtdfiles', 'dtdfile')
-
+    dtdName = os.path.join(calibUtilRoot, 'xml', configFile.get('dtdfiles', 'dtdfile'))
+    
 
     # read input files
 
