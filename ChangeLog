@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon Apr 25 08:20:14 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	intNonlinMerge.py 
+Log Message:
+Fixed bug in writing output data array; short ADC list should have -1 values for the missing data points.
+    *
+------------------------------------------------------------
 User: dwood  Fri Apr 22 14:26:10 PDT 2005
 calibGenCAL/python
 
