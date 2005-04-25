@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon Apr 25 12:15:01 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	pedVal.py 
+Log Message:
+Added command line documentation.
+    *
+------------------------------------------------------------
 User: dwood  Mon Apr 25 12:09:57 PDT 2005
 calibGenCAL/python
 
