@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon Apr 25 09:52:24 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	asymVal.py intNonlinVal.py 
+Log Message:
+Added -V command line option to set logging to DEBUG; otherwise default for application is INFO.
+    *
+------------------------------------------------------------
 User: dwood  Mon Apr 25 09:43:54 PDT 2005
 calibGenCAL/python
 
