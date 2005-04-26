@@ -20,14 +20,14 @@
 using namespace std;
 using namespace CGCUtil;
 
-//////////////////////////GENERAL UTILITIES /////////////////////////////////////
+//////////////////////////GENERAL UTILITIES ////////////////////////////////////
 
 /// functional class deletes a pointer
 /// fun to use w/ for_each template
 ///
 /// I got it from here - Z.F.
 /// Newsgroups: comp.lang.c++.moderated
-/// From: Didier Trosset <didier-dot-tros...@acqiris.com> - Find messages by this author
+/// From: Didier Trosset <didier-dot-tros...@acqiris.com>
 /// Date: 21 Oct 2004 15:39:18 -0400
 /// Subject: Re: Standard way to delete container of pointers
 struct delete_ptr
@@ -45,30 +45,37 @@ template<class T> void del_all_ptrs(T &container) {
   for_each(container.begin(),container.end(),delete_ptr());
 }
 
-////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 MuonCalib::MuonCalib(McCfg &cfg) : 
-  RootFileAnalysis(vector<string>(0),cfg.rootFileList,vector<string>(0),cfg.ostrm),
+  RootFileAnalysis(vector<string>(0),  // no mc files
+                   cfg.rootFileList,   // input digi files
+                   vector<string>(0),  // no recon files
+                   cfg.ostrm),
   m_cfg(cfg)
 {
   //open up histogram file if desired
   if (m_histFilename.length()) {
-    m_histFile.reset(new TFile(m_histFilename.c_str(), "RECREATE","MuonCalibHistograms",9));
+    m_histFile.reset(new TFile(m_histFilename.c_str(), 
+                               "RECREATE","MuonCalibHistograms",9));
   }
 
   // configure ROOT Tree - enable only branches we are going to use.
-  if (m_mcEnabled) m_mcChain.SetBranchStatus("*", 0); // disable all branches
+  if (m_mcEnabled) 
+    // disable all branches
+    m_mcChain.SetBranchStatus("*", 0);
 
   if (m_digiEnabled) {
-    m_digiChain.SetBranchStatus("*",0); // disable all branches
+    // disable all branches - opt in
+    m_digiChain.SetBranchStatus("*",0);
 
     // activate desired brances
     m_digiChain.SetBranchStatus("m_cal*",1);
     m_digiChain.SetBranchStatus("m_eventId", 1);
   }
 
-  if (m_recEnabled) m_recChain.SetBranchStatus("*",0); // disable all branches
-
+  // disable all branches
+  if (m_recEnabled) m_recChain.SetBranchStatus("*",0);
 }
 
 void MuonCalib::flushHists() {
@@ -100,7 +107,8 @@ void MuonCalib::openHistFile(const string &filename) {
 
   m_histFilename = filename;
 
-  m_histFile.reset(new TFile(m_histFilename.c_str(), "RECREATE","MuonCalibHistograms",9));
+  m_histFile.reset(new TFile(m_histFilename.c_str(), 
+                             "RECREATE", "MuonCalibHistograms",9));
 }
 
 
@@ -112,7 +120,7 @@ int MuonCalib::chkForEvts(int nEvts) {
   Int_t nEntries = getEntries();
   m_ostrm << "\nTotal num Events in File is: " << nEntries << endl;
 
-  if (nEntries <= 0 || m_startEvt == nEntries) // have already reached end of chain.
+  if (nEntries <= 0 || m_startEvt == nEntries) // already reached end of chain.
     throw string("No more events available for processing");
 
   int lastReq = nEvts + m_startEvt;
@@ -131,7 +139,8 @@ UInt_t MuonCalib::getEvent(UInt_t ievt) {
   if (m_digiEvt) m_digiEvt->Clear();
 
   int nb = RootFileAnalysis::getEvent(ievt);
-  if (m_digiEvt && nb) { //make sure that m_digiEvt is valid b/c we will assume so after this
+  //make sure that m_digiEvt is valid b/c we will assume so after this
+  if (m_digiEvt && nb) { 
     m_evtId = m_digiEvt->getEventId();
     if(m_evtId%1000 == 0)
       m_ostrm << " event " << m_evtId << endl;
@@ -143,9 +152,9 @@ UInt_t MuonCalib::getEvent(UInt_t ievt) {
 void MuonCalib::initRoughPedHists() {
   // DEJA VU?
   if (m_roughPedHists.size() == 0) {
-    m_roughPedHists.resize(FaceIdx::N_VALS);
+    m_roughPedHists.resize(tFaceIdx::N_VALS);
 
-    for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
+    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
       ostringstream tmp;
       tmp << "roughpeds_" << faceIdx;
 
@@ -154,7 +163,7 @@ void MuonCalib::initRoughPedHists() {
                                           500,0,1000);
     }
   }else // clear existing histsograms
-    for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++)
+    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++)
       m_roughPedHists[faceIdx]->Reset();
 }
 
@@ -178,9 +187,21 @@ void MuonCalib::fillRoughPedHists(int nEvts) {
 
     CalDigi *pCalDigi = 0;
 
-    for( int cde_nb=0; (pCalDigi=(CalDigi*) calDigiCol->At(cde_nb)); cde_nb++ ) { //loop through each 'hit' in one event
+    //loop through each 'hit' in one event
+    for( int cde_nb=0; (pCalDigi=(CalDigi*) calDigiCol->At(cde_nb)); cde_nb++ ){ 
       CalDigi &calDigi = *pCalDigi; // use reference to avoid -> syntax
-      const CalXtalReadout& readout=*calDigi.getXtalReadout(LEX8); // get LEX8 data
+
+      //-- XtalId --//
+      CalXtalId id(calDigi.getPackedId()); // get interaction information
+      // skip hits not for current tower.
+      TwrNum twr = id.getTower();
+      if (twr != m_cfg.twrBay) continue; 
+
+      ColNum col = id.getColumn();
+      LyrNum lyr = id.getLayer();
+
+      // get LEX8 data
+      const CalXtalReadout& readout=*calDigi.getXtalReadout(LEX8); 
 
       // check that we are in the expected readout mode
       RngNum rngP = readout.getRange(CalXtalId::POS);
@@ -188,19 +209,16 @@ void MuonCalib::fillRoughPedHists(int nEvts) {
       if (rngP != LEX8 || rngN != LEX8) {
         ostringstream tmp;
         tmp << __FILE__  << ":" << __LINE__ << " " 
-            << "Event# " << m_evtId << " 1st range shold be LEX8, unexpected trigger mode!";
+            << "Event# " << m_evtId << 
+          " 1st range shold be LEX8, unexpected trigger mode!";
         throw tmp.str();
       }
       
-      CalXtalId id(calDigi.getPackedId()); // get interaction information
-      LyrNum lyr = id.getLayer();
-      //int tower = id.getTower();
-      ColNum col = id.getColumn();
 
       float adcP = readout.getAdc(CalXtalId::POS);
       float adcN = readout.getAdc(CalXtalId::NEG);
 
-      FaceIdx faceIdx(0,lyr,col,POS_FACE);
+      tFaceIdx faceIdx(lyr,col,POS_FACE);
       m_roughPedHists[faceIdx]->Fill(adcP);
 
       faceIdx.setFace(NEG_FACE);
@@ -211,10 +229,10 @@ void MuonCalib::fillRoughPedHists(int nEvts) {
 }
 
 void MuonCalib::fitRoughPedHists() {
-  m_calRoughPed.resize(FaceIdx::N_VALS);
-  m_calRoughPedErr.resize(FaceIdx::N_VALS);
+  m_calRoughPed.resize(tFaceIdx::N_VALS);
+  m_calRoughPedErr.resize(tFaceIdx::N_VALS);
 
-  for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
+  for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
     // select histogram from list
     TH1F &h= *m_roughPedHists[faceIdx];
 
@@ -242,7 +260,7 @@ void MuonCalib::writeRoughPedsTXT(const string &filename) {
   if (!outfile.is_open())
     throw string("Unable to open " + filename);
   
-  for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++)
+  for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++)
     outfile << " " << faceIdx.getLyr()
             << " " << faceIdx.getCol()
             << " " << faceIdx.getFace()
@@ -254,9 +272,9 @@ void MuonCalib::writeRoughPedsTXT(const string &filename) {
 void MuonCalib::initPedHists() {
   // DEJA VU?
   if (m_pedHists.size() == 0) {
-    m_pedHists.resize(RngIdx::N_VALS);
+    m_pedHists.resize(tRngIdx::N_VALS);
 
-    for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
+    for (tRngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
       ostringstream tmp;
       tmp << "peds_" << rngIdx;
       m_pedHists[rngIdx] = new TH1F(tmp.str().c_str(),
@@ -265,7 +283,7 @@ void MuonCalib::initPedHists() {
     }
   }
   else // clear existing histsograms
-    for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++)
+    for (tRngIdx rngIdx; rngIdx.isValid(); rngIdx++)
       m_pedHists[rngIdx]->Reset();
 }
 
@@ -289,14 +307,20 @@ void MuonCalib::fillPedHists(int nEvts) {
 
     CalDigi *pCalDigi = 0;
 
-    for( int cde_nb=0; (pCalDigi=(CalDigi*)calDigiCol->At(cde_nb)); cde_nb++ ) { //loop through each 'hit' in one event
+    //loop through each 'hit' in single event
+    for( int cde_nb=0; (pCalDigi=(CalDigi*)calDigiCol->At(cde_nb)); cde_nb++ ) { 
       CalDigi &calDigi = *pCalDigi; // use reference to avoid -> syntax
 
+      //-- XtalId --//
       CalXtalId id(calDigi.getPackedId()); // get interaction information
+      // skip hits not for current tower.
       TwrNum twr = id.getTower();
-      LyrNum lyr = id.getLayer();
+      if (twr != m_cfg.twrBay) continue; 
+
       ColNum col = id.getColumn();
-      XtalIdx xtalIdx(twr,lyr,col);
+      LyrNum lyr = id.getLayer();
+
+      tXtalIdx xtalIdx(lyr,col);
       int nRO = calDigi.getNumReadouts();
 
       if (nRO != 4) {
@@ -306,7 +330,8 @@ void MuonCalib::fillPedHists(int nEvts) {
         throw tmp.str();
       }
       
-      const CalXtalReadout& readout=*calDigi.getXtalReadout(LEX8); // 1st look at LEX8 vals
+      // 1st look at LEX8 vals
+      const CalXtalReadout& readout=*calDigi.getXtalReadout(LEX8); 
 
       // check that we are in the expected readout mode
       RngNum rngP = readout.getRange(CalXtalId::POS);
@@ -314,7 +339,8 @@ void MuonCalib::fillPedHists(int nEvts) {
       if (rngP != LEX8 || rngN != LEX8) {
         ostringstream tmp;
         tmp << __FILE__  << ":"     << __LINE__ << " " 
-            << "Event# " << m_evtId << " 1st range shold be LEX8, unexpected trigger mode!";
+            << "Event# " << m_evtId 
+            << " 1st range shold be LEX8, unexpected trigger mode!";
         throw tmp.str(); 
       }
       
@@ -322,8 +348,10 @@ void MuonCalib::fillPedHists(int nEvts) {
       float adcN = readout.getAdc(CalXtalId::NEG);
 
       // skip outliers (outside of 5 sigma.
-      if (fabs(adcN - m_calRoughPed[FaceIdx(xtalIdx,NEG_FACE)]) < 5*m_calRoughPedErr[FaceIdx(xtalIdx,NEG_FACE)] &&
-          fabs(adcP - m_calRoughPed[FaceIdx(xtalIdx,POS_FACE)]) < 5*m_calRoughPedErr[FaceIdx(xtalIdx,POS_FACE)]) {
+      if (fabs(adcN - m_calRoughPed[tFaceIdx(xtalIdx,NEG_FACE)]) < 
+          5*m_calRoughPedErr[tFaceIdx(xtalIdx,NEG_FACE)] &&
+          fabs(adcP - m_calRoughPed[tFaceIdx(xtalIdx,POS_FACE)]) < 
+          5*m_calRoughPedErr[tFaceIdx(xtalIdx,POS_FACE)]) {
 
         for (short n = 0; n < nRO; n++) {
           const CalXtalReadout &readout = *calDigi.getXtalReadout(n);
@@ -334,13 +362,14 @@ void MuonCalib::fillPedHists(int nEvts) {
           if (rngP != n || rngN != n) {
             ostringstream tmp;
             tmp << __FILE__  << ":"     << __LINE__ << " " 
-                << "Event# " << m_evtId << " 4-Range readouts out of order.  Expecting 0,1,2,3";
+                << "Event# " << m_evtId 
+                << " 4-Range readouts out of order.  Expecting 0,1,2,3";
             throw tmp.str();
           }
           RngNum rng = rngP;
 
           int adc = readout.getAdc(CalXtalId::POS);
-          RngIdx rngIdx(xtalIdx,POS_FACE, rng);
+          tRngIdx rngIdx(xtalIdx,POS_FACE, rng);
           m_pedHists[rngIdx]->Fill(adc);
 
           adc = readout.getAdc(CalXtalId::NEG);
@@ -353,13 +382,13 @@ void MuonCalib::fillPedHists(int nEvts) {
 }
 
 void MuonCalib::fitPedHists() {
-  m_calPed.resize(RngIdx::N_VALS);
-  m_calPedErr.resize(RngIdx::N_VALS);
+  m_calPed.resize(tRngIdx::N_VALS);
+  m_calPedErr.resize(tRngIdx::N_VALS);
 
   TF1 mygaus("mygaus","gaus",0,1000);
   //mygaus.SetParLimits(2,0.5,1000);  // put limit on sigma parameter
   
-  for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
+  for (tRngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
     //select histogram from list
     TH1F &h= *m_pedHists[rngIdx];
     
@@ -403,7 +432,7 @@ void MuonCalib::writePedsTXT(const string &filename) {
   if (!outfile.is_open())
     throw string("Unable to open " + filename);
   
-  for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
+  for (tRngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
     outfile << " " << rngIdx.getLyr()
             << " " << rngIdx.getCol()
             << " " << rngIdx.getFace()
@@ -415,8 +444,8 @@ void MuonCalib::writePedsTXT(const string &filename) {
 }
 
 void MuonCalib::readCalPeds(const string &filename) {
-  m_calPed.resize(RngIdx::N_VALS);
-  m_calPedErr.resize(RngIdx::N_VALS);
+  m_calPed.resize(tRngIdx::N_VALS);
+  m_calPedErr.resize(tRngIdx::N_VALS);
 
   ifstream infile(filename.c_str());
   if (!infile.is_open())
@@ -439,7 +468,7 @@ void MuonCalib::readCalPeds(const string &filename) {
     if (infile.fail()) break; // quit once we can't read any more values
     nRead++;
 
-    RngIdx rngIdx(0,lyr,col,face,rng);
+    tRngIdx rngIdx(lyr,col,face,rng);
     m_calPed[rngIdx]= av;
     m_calPedErr[rngIdx]= err;
   }
@@ -454,8 +483,8 @@ void MuonCalib::readCalPeds(const string &filename) {
 }
 
 void MuonCalib::readIntNonlin(const string &filename) {
-  m_calInlADC.resize(DiodeIdx::N_VALS);
-  m_calInlDAC.resize(DiodeIdx::N_VALS);
+  m_calInlADC.resize(tDiodeIdx::N_VALS);
+  m_calInlDAC.resize(tDiodeIdx::N_VALS);
 
   ifstream infile(filename.c_str());
   if (!infile.is_open())
@@ -487,7 +516,7 @@ void MuonCalib::readIntNonlin(const string &filename) {
 
     // we are only interested in X8 splines for MuonCalibration
     if (rng == LEX8 || rng == HEX8) {
-      DiodeIdx diodeIdx(0,lyr,col,face,RngNum(rng).getDiode());
+      tDiodeIdx diodeIdx(lyr,col,face,RngNum(rng).getDiode());
 
       // load values into vectors
       m_calInlADC[diodeIdx].push_back(adc);
@@ -501,16 +530,17 @@ void MuonCalib::readIntNonlin(const string &filename) {
 }
 
 void MuonCalib::loadInlSplines() {
-  m_inlSplines.resize(DiodeIdx::N_VALS);
-  m_inlSplinesInv.resize(DiodeIdx::N_VALS);
+  m_inlSplines.resize(tDiodeIdx::N_VALS);
+  m_inlSplinesInv.resize(tDiodeIdx::N_VALS);
 
-  // ROOT functions take double arrays, not vectors so we need to copy each vector into an array
+  // ROOT functions take double arrays, not vectors 
+  // so we need to copy each vector into an array
   // before loading it into a ROOT spline
-  int arraySize = 100; // 100 is good first guess for array size, resize later if needbe
+  int arraySize = 100; // first guess for size, can resize later 
   double *dacs = new double[arraySize];
   double *adcs = new double[arraySize];
 
-  for (DiodeIdx diodeIdx; diodeIdx.isValid(); diodeIdx++) {
+  for (tDiodeIdx diodeIdx; diodeIdx.isValid(); diodeIdx++) {
 
     vector<float> &adcVec = m_calInlADC[diodeIdx];
     int nADC = adcVec.size();
@@ -554,16 +584,18 @@ void MuonCalib::loadInlSplines() {
     ostringstream nameInv;
     nameInv << "intNonlinInv_" << diodeIdx;
 
-    //m_ostrm << "inlspline=" << diodeIdx.getInt()
-    //   << " adc=";
-    //for (int i = 0; i < arraySize; i++)
-    //   m_ostrm << adcs[i] << " ";
-    //m_ostrm << endl;
-    //m_ostrm << "inlspline=" << diodeIdx.getInt()
-    //   << " dac=";
-    //for (int i = 0; i < arraySize; i++)
-    //   m_ostrm << dacs[i] << " ";
-    //m_ostrm << endl;
+    if (m_cfg.verbose) {
+      m_ostrm << "inlspline=" << diodeIdx.getInt()
+              << " adc=";
+      for (int i = 0; i < arraySize; i++)
+        m_ostrm << adcs[i] << " ";
+      m_ostrm << endl;
+      m_ostrm << "inlspline=" << diodeIdx.getInt()
+              << " dac=";
+      for (int i = 0; i < arraySize; i++)
+        m_ostrm << dacs[i] << " ";
+      m_ostrm << endl;
+    }
 
     // create spline object.
     TSpline3 *mySpline    = new TSpline3(name.str().c_str(), adcs, dacs, nADC);
@@ -624,12 +656,17 @@ void MuonCalib::summarizeHits(HitSummary &hs) {
   // PER HIT LOOP:
   for( int cde_nb=0; (pCalDigi=(CalDigi*) calDigiCol->At(cde_nb)); cde_nb++ ) {
     CalDigi &calDigi = *pCalDigi; // use reference to avoid -> syntax
-    // get geometry id for hit.
-    CalXtalId id(calDigi.getPackedId());
+
+    //-- XtalId --//
+    CalXtalId id(calDigi.getPackedId()); // get interaction information
+    // skip hits not for current tower.
     TwrNum twr = id.getTower();
-    LyrNum lyr = id.getLayer();
+    if (twr != m_cfg.twrBay) continue; 
+    
     ColNum col = id.getColumn();
-    XtalIdx xtalIdx(twr,lyr,col);
+    LyrNum lyr = id.getLayer();
+
+    tXtalIdx xtalIdx(lyr,col);
 
     // check that we are in 4-range readout mode
     int nRO = calDigi.getNumReadouts();
@@ -646,8 +683,8 @@ void MuonCalib::summarizeHits(HitSummary &hs) {
       DiodeNum diode  = xDiode.getDiode();
       RngNum   rng    = diode.getX8Rng();  // we are only interested in x8 range adc vals for muon calib
       FaceNum  face   = xDiode.getFace();
-      RngIdx   rngIdx  (xtalIdx, face, rng);
-      DiodeIdx diodeIdx(xtalIdx, face, diode);
+      tRngIdx   rngIdx  (xtalIdx, face, rng);
+      tDiodeIdx diodeIdx(xtalIdx, face, diode);
 
       const CalXtalReadout& readout = *calDigi.getXtalReadout(rng);
       RngNum tmpRng = readout.getRange((CalXtalId::XtalFace)(int)face);
@@ -655,41 +692,50 @@ void MuonCalib::summarizeHits(HitSummary &hs) {
       if (tmpRng != rng) {
         ostringstream tmp;
         tmp << __FILE__ << ":" << __LINE__ << " " 
-            << "Event# " << m_evtId << " 4-Range readouts out of order.  Expecting 0,1,2,3";
+            << "Event# " << m_evtId 
+            << " 4-Range readouts out of order.  Expecting 0,1,2,3";
         throw tmp.str();
       }
 
       float adc = readout.getAdc((CalXtalId::XtalFace)(int)face); // raw adc
       hs.adc_ped[diodeIdx] = adc - m_calPed[rngIdx];// subtract pedestals
-      /* m_ostrm << "nDiode " << diodeIdx.getInt() 
-         << " nRng " << rngIdx.getInt() 
-         << " adc " << adc 
-         << " ped " << m_calPed[rngIdx]
-         << " adc_ped " << hs.adc_ped[diodeIdx] << endl;*/
+      if (m_cfg.verbose)
+        m_ostrm << "nDiode " << diodeIdx.getInt() 
+                << " nRng " << rngIdx.getInt() 
+                << " adc " << adc 
+                << " ped " << m_calPed[rngIdx]
+                << " adc_ped " << hs.adc_ped[diodeIdx] << endl;
     }
     
     // DO WE HAVE A HIT? (sum up both ends LEX8 i.e LARGE_DIODE)
-    if (hs.adc_ped[DiodeIdx(xtalIdx,POS_FACE,LARGE_DIODE)] +
-        hs.adc_ped[DiodeIdx(xtalIdx,NEG_FACE,LARGE_DIODE)] > m_cfg.hitThresh) {
+    if (hs.adc_ped[tDiodeIdx(xtalIdx,POS_FACE,LARGE_DIODE)] +
+        hs.adc_ped[tDiodeIdx(xtalIdx,NEG_FACE,LARGE_DIODE)] > m_cfg.hitThresh) {
 
       hs.count++; // increment total # hits
 
       //m_ostrm << "nHits " << hs.count;// << endl;
 
       // used to determine if xtal is x or y layer
-      //m_ostrm << " lyr " << lyr << " col " << col ;//<< " xtal " << xtalIdx << endl;
+      if (m_cfg.verbose)
+        m_ostrm << " lyr " << lyr << " col " << col ;
       if (lyr.getDir() == X_DIR) { // X layer
         short xLyr = lyr.getXLyr();
         hs.perLyrX[xLyr]++;
         hs.perColX[col]++;
         hs.hitListX.push_back(xtalIdx);
-        //m_ostrm << " X" << " xLyrId " << xLyr << " perLyrX " << hs.perLyrX[xLyr] << " perCol " << hs.perColX[col] << endl;
+        if (m_cfg.verbose)
+          m_ostrm << " X" << " xLyrId " << xLyr
+                  << " perLyrX " << hs.perLyrX[xLyr]
+                  << " perCol " << hs.perColX[col] << endl;
       } else { // y layer
         short yLyr = lyr.getYLyr();
         hs.perLyrY[yLyr]++;
         hs.perColY[col]++;
         hs.hitListY.push_back(xtalIdx);
-        //m_ostrm << " Y" << " YLyrId " << yLyr << " perLyrY " << hs.perLyrY[yLyr] << " perCol " << hs.perColY[col] << endl;
+        if (m_cfg.verbose)
+          m_ostrm << " Y" << " YLyrId " << yLyr 
+                  << " perLyrY " << hs.perLyrY[yLyr] 
+                  << " perCol " << hs.perColY[col] << endl;
       }
     }
   }
@@ -717,14 +763,20 @@ void MuonCalib::summarizeHits(HitSummary &hs) {
     hs.nColsY = count_if(hs.perColY.begin(), hs.perColY.end(),
                          bind2nd(greater<short>(), 0));
 
-    // find 1st col hit in each direction (will be only col hit if event is good)
-    // find_if returns iterator to 1st true element, subtract begin() iterator to get distance or index
-    hs.firstColX = find_if(hs.perColX.begin(), hs.perColX.end(), bind2nd(greater<short>(), 0)) - hs.perColX.begin();
-    hs.firstColY = find_if(hs.perColY.begin(), hs.perColY.end(), bind2nd(greater<short>(), 0)) - hs.perColY.begin();
+    // find 1st col hit in each direction (will be only col hit if evt is good)
+    // find_if returns iterator to 1st true element... 
+    // ...subtract begin() iterator to get distance or index
+    hs.firstColX = find_if(hs.perColX.begin(), hs.perColX.end(), 
+                           bind2nd(greater<short>(), 0)) - hs.perColX.begin();
+    hs.firstColY = find_if(hs.perColY.begin(), hs.perColY.end(), 
+                           bind2nd(greater<short>(), 0)) - hs.perColY.begin();
 
-    //     m_ostrm << "mplx " << hs.maxPerLyrX << " y " << hs.maxPerLyrY << " mpl " << hs.maxPerLyr
-    //             << " nlx " << hs.nLyrsX << " y " << hs.nLyrsY << " ncx " << hs.nColsX << " y " << hs.nColsY
-    //             << " fcx " << hs.firstColX << " y " << hs.firstColY << endl;
+    if (m_cfg.verbose) 
+      m_ostrm << "mplx " << hs.maxPerLyrX << " y " << hs.maxPerLyrY 
+              << " mpl " << hs.maxPerLyr
+              << " nlx " << hs.nLyrsX << " y " << hs.nLyrsY << " ncx " 
+              << hs.nColsX << " y " << hs.nColsY
+              << " fcx " << hs.firstColX << " y " << hs.firstColY << endl;
 
 
     // EVENT SELECTION:
@@ -752,24 +804,25 @@ void MuonCalib::summarizeHits(HitSummary &hs) {
 void MuonCalib::initAsymHists(bool genOptHists) {
   // DEJA VU?
   if (m_asymProfsLL.size() == 0) {
-    m_asymProfsLL.resize(XtalIdx::N_VALS);
-    m_asymProfsLS.resize(XtalIdx::N_VALS);
-    m_asymProfsSL.resize(XtalIdx::N_VALS);
-    m_asymProfsSS.resize(XtalIdx::N_VALS);
+    m_asymProfsLL.resize(tXtalIdx::N_VALS);
+    m_asymProfsLS.resize(tXtalIdx::N_VALS);
+    m_asymProfsSL.resize(tXtalIdx::N_VALS);
+    m_asymProfsSS.resize(tXtalIdx::N_VALS);
     if (genOptHists) {
-      m_asymDACHists.resize(DiodeIdx::N_VALS);
-      m_logratHistsLL.resize(XtalIdx::N_VALS);
-      m_logratHistsLS.resize(XtalIdx::N_VALS);
-      m_logratHistsSL.resize(XtalIdx::N_VALS);
-      m_logratHistsSS.resize(XtalIdx::N_VALS);
+      m_asymDACHists.resize(tDiodeIdx::N_VALS);
+      m_logratHistsLL.resize(tXtalIdx::N_VALS);
+      m_logratHistsLS.resize(tXtalIdx::N_VALS);
+      m_logratHistsSL.resize(tXtalIdx::N_VALS);
+      m_logratHistsSS.resize(tXtalIdx::N_VALS);
     }
 
     // PER XTAL LOOP
-    for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
+    for (tXtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
       // LARGE-LARGE ASYM
       ostringstream tmpLL;
       tmpLL <<  "asymLL_" << xtalIdx;
-      // columns are #'d 0-11, hist contains 1-10. .5 & 10.5 limit put 1-10 at center of bins
+      // columns are #'d 0-11, hist contains 1-10. 
+      // .5 & 10.5 limit puts 1-10 at center of bins
       m_asymProfsLL[xtalIdx] = new TProfile(tmpLL.str().c_str(),
                                             tmpLL.str().c_str(),
                                             N_ASYM_PTS,.5,10.5);
@@ -800,7 +853,8 @@ void MuonCalib::initAsymHists(bool genOptHists) {
         // LARGE-LARGE LOGRAT
         ostringstream tmpLL;
         tmpLL << "logratLL_" << xtalIdx;
-        // columns are #'d 0-11, hist contains 1-10. .5 & 10.5 limit put 1-10 at center of bins
+        // columns are #'d 0-11, hist contains 1-10. 
+        // .5 & 10.5 limit puts 1-10 at center of bins
         m_logratHistsLL[xtalIdx] = new TH2F(tmpLL.str().c_str(),
                                             tmpLL.str().c_str(),
                                             N_ASYM_PTS,.5,10.5,
@@ -837,7 +891,7 @@ void MuonCalib::initAsymHists(bool genOptHists) {
 
       if (genOptHists)
         for (XtalDiode xDiode; xDiode.isValid(); xDiode++) {            
-          DiodeIdx diodeIdx(xtalIdx, xDiode);
+          tDiodeIdx diodeIdx(xtalIdx, xDiode);
           
           ostringstream tmp;
           tmp << "asymdac_" << diodeIdx;
@@ -848,7 +902,7 @@ void MuonCalib::initAsymHists(bool genOptHists) {
         }
     }
   } else // clear existing histsograms
-    for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
+    for (tXtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
       m_asymProfsLL[xtalIdx]->Reset();
       m_asymProfsLS[xtalIdx]->Reset();
       m_asymProfsSL[xtalIdx]->Reset();
@@ -859,13 +913,19 @@ void MuonCalib::initAsymHists(bool genOptHists) {
         m_logratHistsSL[xtalIdx]->Reset();
         m_logratHistsSS[xtalIdx]->Reset();
         for (XtalDiode xDiode; xDiode.isValid(); xDiode++)
-          m_asymDACHists[DiodeIdx(xtalIdx,xDiode)]->Reset();
+          m_asymDACHists[tDiodeIdx(xtalIdx,xDiode)]->Reset();
       }
     }
 }
 
-/// \note 'test direction' refers to the direction w/ 4 vertical hits.  In asymetry calibration this direction is used to get position info for the 'orthogonal direction'
-/// \note 'orthogonal direction' refers to the direction with the hits that are actually measured for asymetry.
+/** 
+    \note 'test direction' refers to the direction w/ 4 vertical hits.  
+    In asymetry calibration this direction is used to get position info 
+    for the 'orthogonal direction'
+
+    \note 'orthogonal direction' refers to the direction with the hits that 
+    are actually measured for asymetry.
+*/
 
 void MuonCalib::fillAsymHists(int nEvts, bool genOptHists) {
   initAsymHists(genOptHists);
@@ -895,7 +955,7 @@ void MuonCalib::fillAsymHists(int nEvts, bool genOptHists) {
     
     for (DirNum dir; dir.isValid(); dir++) {
       int pos;
-      vector<XtalIdx> *pHitList, *pHitListOrtho;
+      vector<tXtalIdx> *pHitList, *pHitListOrtho;
 
       // DIRECTION SPECIFIC SETUP //
       if (dir == X_DIR) {
@@ -917,30 +977,32 @@ void MuonCalib::fillAsymHists(int nEvts, bool genOptHists) {
       nGoodDirs++;
 
       // use references to avoid -> notation
-      vector<XtalIdx> &hitListOrtho = *pHitListOrtho; 
+      vector<tXtalIdx> &hitListOrtho = *pHitListOrtho; 
       
       // loop through each orthogonal hit
       for (unsigned i = 0; i < hitListOrtho.size(); i++) {
-        XtalIdx xtalIdx = hitListOrtho[i];
+        tXtalIdx xtalIdx = hitListOrtho[i];
       
         // short hand for each xtal in diode.
-        DiodeIdx diodePL(xtalIdx,POS_FACE,LARGE_DIODE);
-        DiodeIdx diodeNL(xtalIdx,NEG_FACE,LARGE_DIODE);
-        DiodeIdx diodePS(xtalIdx,POS_FACE,SMALL_DIODE);
-        DiodeIdx diodeNS(xtalIdx,NEG_FACE,SMALL_DIODE);
+        tDiodeIdx diodePL(xtalIdx,POS_FACE,LARGE_DIODE);
+        tDiodeIdx diodeNL(xtalIdx,NEG_FACE,LARGE_DIODE);
+        tDiodeIdx diodePS(xtalIdx,POS_FACE,SMALL_DIODE);
+        tDiodeIdx diodeNS(xtalIdx,NEG_FACE,SMALL_DIODE);
 
-        //         m_ostrm << "diodePL=" << diodePL.getInt()
-        //                 << " " << xtalIdx.getInt()
-        //                 << " " << POS_FACE
-        //                 << " " << LARGE_DIODE
-        //                 << endl;
+        if (m_cfg.verbose) {
+          m_ostrm << "diodePL=" << diodePL.getInt()
+                  << " " << xtalIdx.getInt()
+                  << " " << POS_FACE
+                  << " " << LARGE_DIODE
+                  << endl;
 
-        //         m_ostrm << " evt=" << m_evtId << " adc_ped"
-        //         << " " << hs.adc_ped[diodePL]
-        //         << " " << hs.adc_ped[diodePS]
-        //         << " " << hs.adc_ped[diodeNL]
-        //         << " " << hs.adc_ped[diodeNS] 
-        //         << endl;
+          m_ostrm << " evt=" << m_evtId << " adc_ped"
+                  << " " << hs.adc_ped[diodePL]
+                  << " " << hs.adc_ped[diodePS]
+                  << " " << hs.adc_ped[diodeNL]
+                  << " " << hs.adc_ped[diodeNS] 
+                  << endl;
+        }
 
         
         double dacPL = adc2dac(diodePL,hs.adc_ped[diodePL]);
@@ -948,11 +1010,12 @@ void MuonCalib::fillAsymHists(int nEvts, bool genOptHists) {
         double dacNL = adc2dac(diodeNL,hs.adc_ped[diodeNL]);
         double dacNS = adc2dac(diodeNS,hs.adc_ped[diodeNS]);
 
-        //                 m_ostrm << " evt=" << m_evtId
-        //                  << " dacPL=" << dacPL
-        //                  << " PS=" << dacPS
-        //                  << " NL=" << dacNL
-        //                  << " NS=" << dacNS << endl;  
+        if (m_cfg.verbose)
+          m_ostrm << " evt=" << m_evtId
+                  << " dacPL=" << dacPL
+                  << " PS=" << dacPS
+                  << " NL=" << dacNL
+                  << " NS=" << dacNS << endl;  
 
         // fill optional dacVal histograms
         if (genOptHists) {
@@ -974,11 +1037,12 @@ void MuonCalib::fillAsymHists(int nEvts, bool genOptHists) {
         double asymSL = log(dacPS/dacNL);
         double asymSS = log(dacPS/dacNS);
                   
-        //         m_ostrm << " evt=" << m_evtId
-        //                  << " asymLL=" << asymLL
-        //                  << " SS=" << asymSS
-        //                  << " SL=" << asymSL
-        //                  << " LS=" << asymLS << endl;  
+        if (m_cfg.verbose)
+          m_ostrm << " evt=" << m_evtId
+                  << " asymLL=" << asymLL
+                  << " SS=" << asymSS
+                  << " SL=" << asymSL
+                  << " LS=" << asymLS << endl;  
         
         if (genOptHists) {
           m_logratHistsLL[xtalIdx]->Fill(pos, asymLL);
@@ -991,11 +1055,12 @@ void MuonCalib::fillAsymHists(int nEvts, bool genOptHists) {
         
         // test LL first since it is most likely
         if (asymLL < m_cfg.minAsymLL || asymLL > m_cfg.maxAsymLL) {
-          //           m_ostrm << " **AsymLL out-of-range evt=" << m_evtId
-          //                   << " nXtal=" << xtalIdx.getInt()
-          //                   << " pos=" << pos
-          //                   << " dacP=" << dacPL << " dacN=" << dacNL
-          //                   << " asym=" << asymLL << endl;
+          if (m_cfg.verbose)
+            m_ostrm << " **AsymLL out-of-range evt=" << m_evtId
+                    << " nXtal=" << xtalIdx.getInt()
+                    << " pos=" << pos
+                    << " dacP=" << dacPL << " dacN=" << dacNL
+                    << " asym=" << asymLL << endl;
           nBadHits++;
           nBadAsymLL++;
           continue;
@@ -1003,31 +1068,34 @@ void MuonCalib::fillAsymHists(int nEvts, bool genOptHists) {
         // test SS 2nd since bad LL or bad SS should leave  only small #
         // of bad LS & SL's
         if (asymSS < m_cfg.minAsymSS || asymSS > m_cfg.maxAsymSS) {
-          //           m_ostrm << " **AsymSS out-of-range evt=" << m_evtId
-          //                   << " nXtal=" << xtalIdx.getInt()
-          //                   << " pos=" << pos
-          //                   << " dacP=" << dacPS << " dacN=" << dacNS
-          //                   << " asym=" << asymSS << endl;
+          if (m_cfg.verbose)
+            m_ostrm << " **AsymSS out-of-range evt=" << m_evtId
+                    << " nXtal=" << xtalIdx.getInt()
+                    << " pos=" << pos
+                    << " dacP=" << dacPS << " dacN=" << dacNS
+                    << " asym=" << asymSS << endl;
           nBadHits++;
           nBadAsymSS++;
           continue;
         }
         if (asymLS < m_cfg.minAsymLS || asymLS > m_cfg.maxAsymLS) {
-          //           m_ostrm << " **AsymLS out-of-range evt=" << m_evtId
-          //                   << " nXtal=" << xtalIdx.getInt()
-          //                   << " pos=" << pos
-          //                   << " dacP=" << dacPL << " dacN=" << dacNS
-          //                   << " asym=" << asymLS << endl;
+          if (m_cfg.verbose)
+            m_ostrm << " **AsymLS out-of-range evt=" << m_evtId
+                    << " nXtal=" << xtalIdx.getInt()
+                    << " pos=" << pos
+                    << " dacP=" << dacPL << " dacN=" << dacNS
+                    << " asym=" << asymLS << endl;
           nBadHits++;
           nBadAsymLS++;
           continue;
         }
         if (asymSL < m_cfg.minAsymSL || asymSL > m_cfg.maxAsymSL) {
-          //           m_ostrm << " **AsymSL out-of-range evt=" << m_evtId
-          //                   << " nXtal=" << xtalIdx.getInt()
-          //                   << " pos=" << pos
-          //                   << " dacP=" << dacPS << " dacN=" << dacNS
-          //                   << " asym=" << asymSL << endl;
+          if (m_cfg.verbose)
+            m_ostrm << " **AsymSL out-of-range evt=" << m_evtId
+                    << " nXtal=" << xtalIdx.getInt()
+                    << " pos=" << pos
+                    << " dacP=" << dacPS << " dacN=" << dacNS
+                    << " asym=" << asymSL << endl;
           nBadHits++;
           nBadAsymSL++;
           continue;
@@ -1057,18 +1125,18 @@ void MuonCalib::fillAsymHists(int nEvts, bool genOptHists) {
 }
 
 void MuonCalib::populateAsymArrays() {
-  m_calAsymLL.resize(XtalIdx::N_VALS);
-  m_calAsymLS.resize(XtalIdx::N_VALS);
-  m_calAsymSL.resize(XtalIdx::N_VALS);
-  m_calAsymSS.resize(XtalIdx::N_VALS);
+  m_calAsymLL.resize(tXtalIdx::N_VALS);
+  m_calAsymLS.resize(tXtalIdx::N_VALS);
+  m_calAsymSL.resize(tXtalIdx::N_VALS);
+  m_calAsymSS.resize(tXtalIdx::N_VALS);
 
-  m_calAsymLLErr.resize(XtalIdx::N_VALS);
-  m_calAsymLSErr.resize(XtalIdx::N_VALS);
-  m_calAsymSLErr.resize(XtalIdx::N_VALS);
-  m_calAsymSSErr.resize(XtalIdx::N_VALS);
+  m_calAsymLLErr.resize(tXtalIdx::N_VALS);
+  m_calAsymLSErr.resize(tXtalIdx::N_VALS);
+  m_calAsymSLErr.resize(tXtalIdx::N_VALS);
+  m_calAsymSSErr.resize(tXtalIdx::N_VALS);
 
   // PER XTAL LOOP
-  for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
+  for (tXtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
 
     // retrieve profile objects for this xtal
     TProfile &profLL = *m_asymProfsLL[xtalIdx];
@@ -1076,13 +1144,15 @@ void MuonCalib::populateAsymArrays() {
     TProfile &profSL = *m_asymProfsSL[xtalIdx];
     TProfile &profSS = *m_asymProfsSS.at(xtalIdx);
 
-    // LyrNum lyr = xtalIdx2lyr(xtalIdx); ColNum col = xtalIdx2col(xtalIdx);
-    //     m_ostrm << "Asym entries nXtal=" << xtalIdx.getInt()
-    //             << " LL=" << profLL.GetEntries() << endl;
-    //     m_ostrm << " per bin ";
-    //     for (int i = 0; i < N_ASYM_PTS; i++)
-    //       m_ostrm << " " << i << "," << profLL.GetBinEntries(i+1);
-    //     m_ostrm << endl;
+    if (m_cfg.verbose) {
+      LyrNum lyr = xtalIdx.getLyr(); ColNum col = xtalIdx.getCol();
+      m_ostrm << "Asym entries nXtal=" << xtalIdx.getInt()
+              << " LL=" << profLL.GetEntries() << endl;
+      m_ostrm << " per bin ";
+      for (int i = 0; i < N_ASYM_PTS; i++)
+        m_ostrm << " " << i << "," << profLL.GetBinEntries(i+1);
+      m_ostrm << endl;
+    }
 
     // ensure proper vector size
     m_calAsymLL[xtalIdx].resize(N_ASYM_PTS);
@@ -1097,7 +1167,8 @@ void MuonCalib::populateAsymArrays() {
 
     // loop through all N_ASYM_PTS bins in asymmetry profile
     for (int i = 0; i < N_ASYM_PTS; i++) {
-      m_calAsymLL[xtalIdx][i] = profLL.GetBinContent(i+1); // HISTOGRAM BINS START AT 1 NOT ZERO!
+      // HISTOGRAM BINS START AT 1 NOT ZERO! (hence 'i+1')
+      m_calAsymLL[xtalIdx][i] = profLL.GetBinContent(i+1); 
       m_calAsymLS[xtalIdx][i] = profLS.GetBinContent(i+1);
       m_calAsymSL[xtalIdx][i] = profSL.GetBinContent(i+1);
       m_calAsymSS[xtalIdx][i] = profSS.GetBinContent(i+1);
@@ -1110,12 +1181,13 @@ void MuonCalib::populateAsymArrays() {
   }
 }
 
-double MuonCalib::adc2dac(DiodeIdx diodeIdx, double adc) {
-  //m_ostrm << "adc2dac idx=" << diodeIdx.getInt() << " " << adc << endl;
+double MuonCalib::adc2dac(tDiodeIdx diodeIdx, double adc) {
+  if (m_cfg.verbose) 
+    m_ostrm << "adc2dac idx=" << diodeIdx.getInt() << " " << adc << endl;
   return m_inlSplines[diodeIdx]->Eval(adc);
 }
 
-double MuonCalib::dac2adc(DiodeIdx diodeIdx, double dac) {
+double MuonCalib::dac2adc(tDiodeIdx diodeIdx, double dac) {
   return m_inlSplinesInv[diodeIdx]->Eval(dac);
 }
 
@@ -1139,7 +1211,7 @@ void MuonCalib::writeAsymTXT(const string &filenameLL,
     throw string("Unable to open " + filenameSS);
 
   // PER XTAL LOOP
-  for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
+  for (tXtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
     LyrNum lyr = xtalIdx.getLyr();
     ColNum col = xtalIdx.getCol();
 
@@ -1150,10 +1222,14 @@ void MuonCalib::writeAsymTXT(const string &filenameLL,
 
     // loop through all N_ASYM_PTS points in each asymmetry curve
     for (int i = 0; i < N_ASYM_PTS; i++) {
-      outfileLL << " " << m_calAsymLL[xtalIdx][i] << " " << m_calAsymLLErr[xtalIdx][i];
-      outfileLS << " " << m_calAsymLS[xtalIdx][i] << " " << m_calAsymLSErr[xtalIdx][i];
-      outfileSL << " " << m_calAsymSL[xtalIdx][i] << " " << m_calAsymSLErr[xtalIdx][i];
-      outfileSS << " " << m_calAsymSS[xtalIdx][i] << " " << m_calAsymSSErr[xtalIdx][i];
+      outfileLL << " " << m_calAsymLL[xtalIdx][i] 
+                << " " << m_calAsymLLErr[xtalIdx][i];
+      outfileLS << " " << m_calAsymLS[xtalIdx][i] 
+                << " " << m_calAsymLSErr[xtalIdx][i];
+      outfileSL << " " << m_calAsymSL[xtalIdx][i] 
+                << " " << m_calAsymSLErr[xtalIdx][i];
+      outfileSS << " " << m_calAsymSS[xtalIdx][i] 
+                << " " << m_calAsymSSErr[xtalIdx][i];
     }
 
     outfileLL << endl;
@@ -1168,15 +1244,15 @@ void MuonCalib::readAsymTXT(const string &filenameLL,
                             const string &filenameSL,
                             const string &filenameSS) {
 
-  m_calAsymLL.resize(XtalIdx::N_VALS);
-  m_calAsymLS.resize(XtalIdx::N_VALS);
-  m_calAsymSL.resize(XtalIdx::N_VALS);
-  m_calAsymSS.resize(XtalIdx::N_VALS);
+  m_calAsymLL.resize(tXtalIdx::N_VALS);
+  m_calAsymLS.resize(tXtalIdx::N_VALS);
+  m_calAsymSL.resize(tXtalIdx::N_VALS);
+  m_calAsymSS.resize(tXtalIdx::N_VALS);
 
-  m_calAsymLLErr.resize(XtalIdx::N_VALS);
-  m_calAsymLSErr.resize(XtalIdx::N_VALS);
-  m_calAsymSLErr.resize(XtalIdx::N_VALS);
-  m_calAsymSSErr.resize(XtalIdx::N_VALS);
+  m_calAsymLLErr.resize(tXtalIdx::N_VALS);
+  m_calAsymLSErr.resize(tXtalIdx::N_VALS);
+  m_calAsymSLErr.resize(tXtalIdx::N_VALS);
+  m_calAsymSSErr.resize(tXtalIdx::N_VALS);
 
   // ASYM (4-TYPES) //
 
@@ -1184,7 +1260,7 @@ void MuonCalib::readAsymTXT(const string &filenameLL,
   for (int nFile = 0; nFile < 4; nFile++) {
     short lyr, col;
     unsigned nRead = 0;
-    CalVec<XtalIdx,vector<float > > *calVec, *errVec;
+    CalVec<tXtalIdx,vector<float > > *calVec, *errVec;
     const string *pFilename;
 
     // select proper input file & destination vector
@@ -1224,7 +1300,7 @@ void MuonCalib::readAsymTXT(const string &filenameLL,
       // get lyr, col (xtalId)
       infile >> lyr >> col;
       if (infile.fail()) continue; // bad get()
-      XtalIdx xtalIdx(0,lyr,col);
+      tXtalIdx xtalIdx(lyr,col);
 
       // ensure proper vector size
       (*calVec)[xtalIdx].resize(N_ASYM_PTS);
@@ -1252,20 +1328,22 @@ void MuonCalib::readAsymTXT(const string &filenameLL,
 }
 
 void MuonCalib::loadA2PSplines() {
-  m_asym2PosSplines.resize(XtalIdx::N_VALS);
+  m_asym2PosSplines.resize(tXtalIdx::N_VALS);
 
   // create position (Y-axis) array
-  double pos[N_ASYM_PTS+2]; // linearly interpolate for 1st and last points (+2 points)
-  for (int i = 0; i < N_ASYM_PTS+2; i++) pos[i] = i + 0.5; // (center of the column)
+  // linearly extrapolate for 1st and last points (+2 points)
+  double pos[N_ASYM_PTS+2];
+  for (int i = 0; i < N_ASYM_PTS+2; i++) 
+    pos[i] = i + 0.5; // (center of the column)
   double asym[N_ASYM_PTS+2];
 
   // PER XTAL LOOP
-  for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
+  for (tXtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
     // copy asym vector into middle of array
     vector<float> &asymVec = m_calAsymLL[xtalIdx];
     copy(asymVec.begin(), asymVec.end(), asym+1);
 
-    // interpolate 1st & last points
+    // extrapolate 1st & last points
     asym[0] = 2*asym[1] - asym[2];
     asym[N_ASYM_PTS+1] = 2*asym[N_ASYM_PTS]-asym[N_ASYM_PTS-1];
 
@@ -1274,23 +1352,24 @@ void MuonCalib::loadA2PSplines() {
     name << "asym2pos_" << xtalIdx;
 
     // create spline object
-    TSpline3 *mySpline= new TSpline3(name.str().c_str(), asym, pos, N_ASYM_PTS+2);
+    TSpline3 *mySpline= new TSpline3(name.str().c_str(), 
+                                     asym, pos, N_ASYM_PTS+2);
     mySpline->SetName(name.str().c_str());
     m_asym2PosSplines[xtalIdx] = mySpline;
   }
 }
 
-double MuonCalib::asym2pos(XtalIdx xtalIdx, double asym) {
+double MuonCalib::asym2pos(tXtalIdx xtalIdx, double asym) {
   return m_asym2PosSplines[xtalIdx]->Eval(asym);
 }
 
 void MuonCalib::initMPDHists() {
   // DEJA VU?
   if (m_dacLLHists.size() == 0) {
-    m_dacLLHists.resize(XtalIdx::N_VALS);
-    m_dacL2SProfs.resize(XtalIdx::N_VALS);
+    m_dacLLHists.resize(tXtalIdx::N_VALS);
+    m_dacL2SProfs.resize(tXtalIdx::N_VALS);
 
-    for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
+    for (tXtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
 
       // LARGE-LARGE DAC
       ostringstream tmpLL;
@@ -1308,7 +1387,7 @@ void MuonCalib::initMPDHists() {
     }
   }
   else // clear existing histsograms
-    for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
+    for (tXtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
       m_dacLLHists[xtalIdx]->Reset();
       m_dacL2SProfs[xtalIdx]->Reset();
     }
@@ -1366,9 +1445,9 @@ void MuonCalib::fillMPDHists(int nEvts) {
       else nYEvts++;
 
       // set up proper hitLists for processing based on direction
-      vector<XtalIdx> &hitList = // hit list in current direction for gain calib
+      vector<tXtalIdx> &hitList = // hit list in current direction for gain calib
         (dir == X_DIR) ? hs.hitListX : hs.hitListY;
-      vector<XtalIdx> &hitListOrtho = // hit list in orthogonal direction
+      vector<tXtalIdx> &hitListOrtho = // hit list in orthogonal direction
         (dir == X_DIR) ? hs.hitListY : hs.hitListX;
 
       // need at least 2 points to get a orthogonal track
@@ -1378,7 +1457,7 @@ void MuonCalib::fillMPDHists(int nEvts) {
 
       // fill in each point val
       for (unsigned i = 0; i < hitListOrtho.size(); i++) {
-        XtalIdx xtalIdx = hitListOrtho[i];
+        tXtalIdx xtalIdx = hitListOrtho[i];
         LyrNum lyr = xtalIdx.getLyr();
         ColNum col = xtalIdx.getCol();
         graph.SetPoint(i,lyr,col);
@@ -1394,7 +1473,7 @@ void MuonCalib::fillMPDHists(int nEvts) {
       // loop through each hit in X direction, remove bad xtals
       // bad xtals have energy centroid at col 0 or 11 (-5 or +5 since center of xtal is 0)
       for (unsigned i = 0; i < hitList.size(); i++) {
-        XtalIdx xtalIdx = hitList[i];
+        tXtalIdx xtalIdx = hitList[i];
         LyrNum lyr = xtalIdx.getLyr();
 
         float hitPos = lineFunc.Eval(lyr); // find column for given lyr
@@ -1420,14 +1499,14 @@ void MuonCalib::fillMPDHists(int nEvts) {
       // more than once
       graph.Set(hitList.size());
       for (unsigned i = 0; i < hitList.size(); i++) {
-        XtalIdx xtalIdx = hitList[i];
+        tXtalIdx xtalIdx = hitList[i];
         LyrNum lyr = xtalIdx.getLyr();
 
         // short hand for each xtal in diode.
-        DiodeIdx diodePL(xtalIdx,POS_FACE,LARGE_DIODE);
-        DiodeIdx diodeNL(xtalIdx,NEG_FACE,LARGE_DIODE);
-        DiodeIdx diodePS(xtalIdx,POS_FACE,SMALL_DIODE);
-        DiodeIdx diodeNS(xtalIdx,NEG_FACE,SMALL_DIODE);
+        tDiodeIdx diodePL(xtalIdx,POS_FACE,LARGE_DIODE);
+        tDiodeIdx diodeNL(xtalIdx,NEG_FACE,LARGE_DIODE);
+        tDiodeIdx diodePS(xtalIdx,POS_FACE,SMALL_DIODE);
+        tDiodeIdx diodeNS(xtalIdx,NEG_FACE,SMALL_DIODE);
 
         // calculate DAC vals
         dacsPL[i] = adc2dac(diodePL, hs.adc_ped[diodePL]);
@@ -1448,14 +1527,15 @@ void MuonCalib::fillMPDHists(int nEvts) {
       graph.Fit(&lineFunc,"WQN");
       lineSlope = lineFunc.GetParameter(1);
 
-      float tan = lineSlope*slopeFactor; //slope = rise/run = dy/dx = colPos/lyrNum
+      //slope = rise/run = dy/dx = colPos/lyrNum
+      float tan = lineSlope*slopeFactor;
       float sec = sqrt(1 + tan*tan); //sec proportional to hyp which is pathlen.
 
       // poulate histograms & apply pathlen correction
       int nHits = hitList.size();
       for (int i = 0; i < nHits; i++) {
         // calculate dacs
-        XtalIdx xtalIdx = hitList[i];
+        tXtalIdx xtalIdx = hitList[i];
 
         // apply pathlength correction
         dacsPL[i] /= sec;
@@ -1477,15 +1557,17 @@ void MuonCalib::fillMPDHists(int nEvts) {
     } // direction loop
   } // event loop
 
-  m_ostrm << "MPD histograms filled nXEvts=" << nXEvts << " nYEvents=" << nYEvts << " nXtals measured " << xtalIdxs << endl;
+  m_ostrm << "MPD histograms filled nXEvts=" << nXEvts 
+          << " nYEvents=" << nYEvts 
+          << " nXtals measured " << xtalIdxs << endl;
 }
 
 void MuonCalib::fitMPDHists() {
-  m_calMPDLarge.resize(XtalIdx::N_VALS);
-  m_calMPDSmall.resize(XtalIdx::N_VALS);
-  m_calMPDLargeErr.resize(XtalIdx::N_VALS);
-  m_calMPDSmallErr.resize(XtalIdx::N_VALS);
-  m_adc2nrg.resize(DiodeIdx::N_VALS);
+  m_calMPDLarge.resize(tXtalIdx::N_VALS);
+  m_calMPDSmall.resize(tXtalIdx::N_VALS);
+  m_calMPDLargeErr.resize(tXtalIdx::N_VALS);
+  m_calMPDSmallErr.resize(tXtalIdx::N_VALS);
+  m_adc2nrg.resize(tDiodeIdx::N_VALS);
 
 
   ////////////////////////////////////////////////////
@@ -1502,7 +1584,7 @@ void MuonCalib::fitMPDHists() {
   TF1 lineFunc("line","pol1",0,8);
 
   // PER XTAL LOOP
-  for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
+  for (tXtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
     // retrieve Large diode DAC histogram
     TH1F& h = *m_dacLLHists[xtalIdx];
 
@@ -1518,7 +1600,10 @@ void MuonCalib::fitMPDHists() {
     float sigma = (h.GetFunction("landau"))->GetParameter(2);
 
     m_calMPDLarge[xtalIdx] = 11.2/mean;
-    m_calMPDLargeErr[xtalIdx] = m_calMPDLarge[xtalIdx] * sigma/mean; // keeps sigma proportional
+
+    // keep sigma proportional to extrapolated val
+    m_calMPDLargeErr[xtalIdx] = 
+      m_calMPDLarge[xtalIdx] * sigma/mean; 
 
     
     ///////////////////////
@@ -1549,7 +1634,8 @@ void MuonCalib::fitMPDHists() {
     if (!nPts) {
       ostringstream tmp;
       tmp << __FILE__  << ":"     << __LINE__ << " " 
-          << "Event# " << m_evtId << "Unable to find small diode MPD for xtal=" << xtalIdx
+          << "Event# " << m_evtId 
+          << "Unable to find small diode MPD for xtal=" << xtalIdx
           << " due to empty histogram." << endl;
       throw tmp.str();
     }
@@ -1578,16 +1664,17 @@ void MuonCalib::fitMPDHists() {
   }
 }
 
-void MuonCalib::writeMPDTXT(const string &filenameL, const string &filenameS) {
-  ofstream outfileL(filenameL.c_str());
-  ofstream outfileS(filenameS.c_str());
+void MuonCalib::writeMPDTXT(const string &filenameLrg, 
+                            const string &filenameSm) {
+  ofstream outfileL(filenameLrg.c_str());
+  ofstream outfileS(filenameSm.c_str());
   if (!outfileL.is_open())
-    throw string("Unable to open " + filenameL);
+    throw string("Unable to open " + filenameLrg);
   if (!outfileS.is_open())
-    throw string("Unable to open " + filenameS);
+    throw string("Unable to open " + filenameSm);
 
 
-  for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
+  for (tXtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
     LyrNum lyr = xtalIdx.getLyr();
     ColNum col = xtalIdx.getCol();
 
@@ -1626,7 +1713,8 @@ void MuonCalib::writePedsXML(const string &filename, const string &dtdPath) {
   outfile << "]>" << endl;
 
   outfile << "<calCalib>" << endl;
-  outfile << " <generic instrument=\"" << m_cfg.instrument << "\" timestamp=\"" << m_cfg.timestamp << "\"";
+  outfile << " <generic instrument=\"" << m_cfg.instrument 
+          << "\" timestamp=\"" << m_cfg.timestamp << "\"";
     
   outfile << " calibType=\"CAL_Ped\" fmtVersion=\"v2r2\" >" << endl;
   outfile << " </generic>" << endl;
@@ -1635,8 +1723,11 @@ void MuonCalib::writePedsXML(const string &filename, const string &dtdPath) {
           << "\" nFace=\""   << FaceNum::N_VALS 
           << "\" nRange=\"" << RngNum::N_VALS 
           << "\"/>" << endl;
-  for (TwrNum twr; twr.isValid(); twr++) {
-    outfile << " <tower iRow=\"0\" iCol=\"0\">" << endl;
+  
+  // currently only loop through one tower.
+  for (TwrNum twr=m_cfg.twrBay; twr == m_cfg.twrBay; twr++) {
+    outfile << " <tower iRow=\"" << twr.getRow() 
+            << "\" iCol=\"" << twr.getCol() << "\">" << endl;
 
     for (LyrNum lyr; lyr.isValid(); lyr++) {
       outfile << "  <layer iLayer=\"" << lyr << "\">" << endl;
@@ -1646,7 +1737,7 @@ void MuonCalib::writePedsXML(const string &filename, const string &dtdPath) {
           outfile << "    <face end=\"" << FaceNum::MNEM[face] << "\">" << endl;
 
           for (RngNum rng; rng.isValid(); rng++) {
-            RngIdx rngIdx(0,lyr,col,face,rng);
+            tRngIdx rngIdx(lyr,col,face,rng);
 
             float av = m_calPed[rngIdx];
             float err= m_calPedErr[rngIdx];
@@ -1688,7 +1779,8 @@ void MuonCalib::writeAsymXML(const string &filename, const string &dtdPath) {
   outfile << "]>" << endl;
 
   outfile << "<calCalib>" << endl;
-  outfile << " <generic instrument=\"" << m_cfg.instrument << "\" timestamp=\"" << m_cfg.timestamp << "\"";
+  outfile << " <generic instrument=\"" << m_cfg.instrument 
+          << "\" timestamp=\"" << m_cfg.timestamp << "\"";
   
   outfile << " calibType=\"CAL_Asym\" fmtVersion=\"v2r2\" >" << endl;
   outfile << " </generic>"  << endl;
@@ -1706,15 +1798,18 @@ void MuonCalib::writeAsymXML(const string &filename, const string &dtdPath) {
   outfile << "\"/>" << endl;
   
   // -- OUTPUT ASYMETRY DATA -- //
-  for (TwrNum twr; twr.isValid() ; twr++) { // only using 1 tower right now
-    outfile << " <tower iRow=\"0\" iCol=\"0\">" << endl;
+  // currently only loop through one tower.
+  for (TwrNum twr=m_cfg.twrBay; twr == m_cfg.twrBay; twr++) {
+    outfile << " <tower iRow=\"" << twr.getRow() 
+            << "\" iCol=\"" << twr.getCol() << "\">" << endl;
+
     for (LyrNum lyr; lyr.isValid(); lyr++) {
       outfile << "  <layer iLayer=\"" << lyr << "\">" << endl;
       for (ColNum col; col.isValid(); col++) {
         outfile << "   <xtal iXtal=\"" << col << "\">" << endl;
         outfile << "    <face end=\"NA\">" << endl;
        
-        XtalIdx xtalIdx(twr,lyr,col);
+        tXtalIdx xtalIdx(lyr,col);
         outfile << "     <asym " << endl;
         // ASYM LL
         outfile << "           bigVals=\"";
@@ -1792,7 +1887,8 @@ void MuonCalib::writeMPDXML(const string &filename, const string &dtdPath) {
   outfile << "]>" << endl;
 
   outfile << "<calCalib>" << endl;
-  outfile << " <generic instrument=\"" << m_cfg.instrument << "\" timestamp=\"" << m_cfg.timestamp << "\"";
+  outfile << " <generic instrument=\"" << m_cfg.instrument 
+          << "\" timestamp=\"" << m_cfg.timestamp << "\"";
   outfile << " calibType=\"CAL_MevPerDac\" fmtVersion=\"v2r2\" >" << endl;
   outfile << " </generic>" << endl;
   outfile << " <dimension nRow=\"1\" nCol=\"1\" nLayer=\"" << LyrNum::N_VALS 
@@ -1802,19 +1898,23 @@ void MuonCalib::writeMPDXML(const string &filename, const string &dtdPath) {
           << "\" nXpos=\""  << 1 
           << "\"/>" << endl;
 
-  for (TwrNum twr; twr.isValid(); twr++) { // only using one tower right now
-    outfile << " <tower iRow=\"0\" iCol=\"0\">" << endl;
+  // currently only loop through one tower.
+  for (TwrNum twr=m_cfg.twrBay; twr == m_cfg.twrBay; twr++) {
+    outfile << " <tower iRow=\"" << twr.getRow() 
+            << "\" iCol=\"" << twr.getCol() << "\">" << endl;
+
     for (LyrNum lyr; lyr.isValid(); lyr++) {
       outfile << "  <layer iLayer=\"" << lyr << "\">" << endl;
       for (ColNum col; col.isValid(); col++) {
-        XtalIdx xtalIdx(twr,lyr,col);
+        tXtalIdx xtalIdx(lyr,col);
         outfile << "   <xtal iXtal=\"" << col << "\">" << endl;
         outfile << "    <face end=\"" << "NA" << "\">" << endl;
 
-        outfile << "     <mevPerDac bigVal=\"" << fixed << m_calMPDLarge[xtalIdx] 
-                << "\" bigSig=\""              << fixed << m_calMPDLargeErr[xtalIdx]
-                << "\" smallVal=\""            << fixed << m_calMPDSmall[xtalIdx]
-                << "\" smallSig=\""            << fixed << m_calMPDSmallErr[xtalIdx]
+        outfile << "     <mevPerDac bigVal=\"" << fixed 
+                << m_calMPDLarge[xtalIdx] 
+                << "\" bigSig=\""   << fixed << m_calMPDLargeErr[xtalIdx]
+                << "\" smallVal=\"" << fixed << m_calMPDSmall[xtalIdx]
+                << "\" smallSig=\"" << fixed << m_calMPDSmallErr[xtalIdx]
                 << "\">" << endl;
         outfile << "      <bigSmall end=\"POS\" bigSmallRatioVals=\"0\" bigSmallRatioSigs=\"0\"/>" << endl;
         outfile << "      <bigSmall end=\"NEG\" bigSmallRatioVals=\"0\" bigSmallRatioSigs=\"0\"/>" << endl;
@@ -1833,17 +1933,17 @@ void MuonCalib::writeMPDXML(const string &filename, const string &dtdPath) {
 void MuonCalib::writeADC2NRGXML(const string &filename) {
   ofstream outfile(filename.c_str());
   const float enemu = (float)11.2;
-  for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
+  for (tXtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
     float mpdL = m_calMPDLarge[xtalIdx];
     float mpdS = m_calMPDSmall[xtalIdx];
     int ic = N_ASYM_PTS/2;
     float asym_center_L = 0.25*(m_calAsymLL[xtalIdx][ic]+m_calAsymLL[xtalIdx][ic-1]);
     float asym_center_S = 0.25*(m_calAsymSS[xtalIdx][ic]+m_calAsymSS[xtalIdx][ic-1]);
 
-    DiodeIdx diodeIdxPS(xtalIdx, POS_FACE, SMALL_DIODE);
-    DiodeIdx diodeIdxPL(xtalIdx, POS_FACE, LARGE_DIODE);
-    DiodeIdx diodeIdxNS(xtalIdx, NEG_FACE, SMALL_DIODE);
-    DiodeIdx diodeIdxNL(xtalIdx, NEG_FACE, LARGE_DIODE);
+    tDiodeIdx diodeIdxPS(xtalIdx, POS_FACE, SMALL_DIODE);
+    tDiodeIdx diodeIdxPL(xtalIdx, POS_FACE, LARGE_DIODE);
+    tDiodeIdx diodeIdxNS(xtalIdx, NEG_FACE, SMALL_DIODE);
+    tDiodeIdx diodeIdxNL(xtalIdx, NEG_FACE, LARGE_DIODE);
 
     m_adc2nrg[diodeIdxPL] = enemu/dac2adc(diodeIdxPL,(enemu/mpdL)*exp(asym_center_L));
     m_adc2nrg[diodeIdxNL] = enemu/dac2adc(diodeIdxNL,(enemu/mpdL)*exp(-asym_center_L));
@@ -1851,7 +1951,7 @@ void MuonCalib::writeADC2NRGXML(const string &filename) {
     m_adc2nrg[diodeIdxNS] = enemu/dac2adc(diodeIdxNS,(enemu/mpdS)*exp(-asym_center_S));
   }
 
-  int tower = 0;
+  TwrNum twr = 0;
   outfile << "<?xml version=\'1.0\' encoding=\'UTF-8\'?>" << endl;
   outfile << "<LATdoc name=\'\'>" << endl;
   outfile << "  <declarations>"   << endl;
@@ -1866,7 +1966,7 @@ void MuonCalib::writeADC2NRGXML(const string &filename) {
     outfile << "        <low_hi_nrg ID=\'" << diode << "\'>" << endl;
     for (int xy = 0; xy<2; xy++){
       for (int side =0; side < 2; side++){
- //       int gccc = (1-side)+2*xy;  bug - correction in the next line - 8 march 2005
+        //       int gccc = (1-side)+2*xy;  bug - correction in the next line - 8 march 2005
         int gccc = side*2+xy;
         outfile << "          <GCCC ID=\'" << gccc << "\'>" << endl;
         for (int gcrc = 0; gcrc <4; gcrc++){
@@ -1875,9 +1975,10 @@ void MuonCalib::writeADC2NRGXML(const string &filename) {
           for (int gcfe = 0; gcfe<12; gcfe++){
             outfile << "              <GCFE ID=\'" << gcfe << "\'>" << endl;
             int col = gcfe;
-            DiodeIdx diodeIdx(tower,layer,col,side,diode);
+            tDiodeIdx diodeIdx(layer,col,side,diode);
             float adc2nrg = m_adc2nrg[diodeIdx];
-            outfile << "                <adc2nrg>" << fixed << adc2nrg << "</adc2nrg>" << endl;
+            outfile << "                <adc2nrg>" << fixed 
+                    << adc2nrg << "</adc2nrg>" << endl;
             outfile << "              </GCFE>" << endl;
           }
           outfile << "            </GCRC>" << endl;

@@ -39,16 +39,9 @@ class TeCfg : ICfg {
   // CONFIGURABLE PARAMETERS //
 
   // SECTION: TEST_INFO //
-  string timestamp;
-  string startTime;
-  string stopTime; 
-
-  string instrument;    
-  vector<int> towerList;
-
-  string triggerMode;   
-  string instrumentMode;
-  string source;
+  string timestamp;   ///< time of measurement
+  string instrument;  ///< "LAT", "EM", etccc    
+  int twrBay;       ///< work on single tower bay (0-15)
 
   int nTimePoints;
   int nEvtsPerPoint;

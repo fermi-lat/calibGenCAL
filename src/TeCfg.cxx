@@ -22,16 +22,9 @@ void TeCfg::readCfgFile(const string& path) {
   xmlBase::IFile ifile(path.c_str());
   
   // TEST INFO
-  timestamp = ifile.getString(TEST_INFO.c_str(), "TIMESTAMP");
-  startTime = ifile.getString(TEST_INFO.c_str(), "STARTTIME");
-  stopTime  = ifile.getString(TEST_INFO.c_str(), "STOPTIME");
-
-  instrument    = ifile.getString(TEST_INFO.c_str(), "INSTRUMENT");
-  towerList     = ifile.getIntVector(TEST_INFO.c_str(), "TOWER_LIST");
-
-  triggerMode    = ifile.getString(TEST_INFO.c_str(), "TRIGGER_MODE");
-  instrumentMode = ifile.getString(TEST_INFO.c_str(), "INST_MODE");
-  source         = ifile.getString(TEST_INFO.c_str(), "TEST_SOURCE");
+  timestamp  = ifile.getString(TEST_INFO.c_str(), "TIMESTAMP");
+  instrument = ifile.getString(TEST_INFO.c_str(), "INSTRUMENT");
+  twrBay   = ifile.getInt(TEST_INFO.c_str(),    "TOWER_BAY");
 
   nTimePoints  = ifile.getInt(TEST_INFO.c_str(), "N_TIME_POINTS");
   nEvtsPerPoint  = ifile.getInt(TEST_INFO.c_str(), "N_EVENTS_PER_POINT");

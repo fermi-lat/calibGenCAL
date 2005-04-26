@@ -24,7 +24,7 @@ using namespace CalDefs;
 const double mu2ci_thr_rat = 1.7;
 
 //////////////////////////////////////////////////////
-// class CfData - represents one complete set of intNonlin data ////////
+// class CfData - one complete set of intlin data ////
 //////////////////////////////////////////////////////
 class CfData {
   friend class RootCI;
@@ -42,22 +42,22 @@ public:
 
   const vector<int>& getSplineDAC(RngNum rng) const {return m_splineDAC[rng];}
 
-  const vector<float>& getSplineADC(RngIdx rngIdx) const {
+  const vector<float>& getSplineADC(tRngIdx rngIdx) const {
     return m_splineADC[rngIdx];
   }
 
-  int getNSplineADC(RngIdx rngIdx) const {
+  int getNSplineADC(tRngIdx rngIdx) const {
     return m_splineADC[rngIdx].size();
   }
 
 private:
   TF1 splineFunc;
 
-  CalVec<RngIdx, vector<float> >  m_adcSum;
-  CalVec<RngIdx, vector<float> >  m_adcN;
-  CalVec<RngIdx, vector<float> >  m_adcMean;
+  CalVec<tRngIdx, vector<float> >  m_adcSum;
+  CalVec<tRngIdx, vector<float> >  m_adcN;
+  CalVec<tRngIdx, vector<float> >  m_adcMean;
 
-  CalVec<RngIdx, vector<float> >  m_splineADC;
+  CalVec<tRngIdx, vector<float> >  m_splineADC;
   CalVec<RngNum, vector<int> >    m_splineDAC;
 
   CfCfg &m_cfg;
@@ -67,10 +67,10 @@ private:
 
 CfData::CfData(CfCfg &cfg) :
   splineFunc("spline_fitter","pol2",0,4095),
-  m_adcSum(RngIdx::N_VALS, vector<float>(cfg.nDACs,0)),
-  m_adcN(RngIdx::N_VALS, vector<float>(cfg.nDACs,0)),
-  m_adcMean(RngIdx::N_VALS, vector<float>(cfg.nDACs,0)),
-  m_splineADC(RngIdx::N_VALS),
+  m_adcSum(tRngIdx::N_VALS, vector<float>(cfg.nDACs,0)),
+  m_adcN(tRngIdx::N_VALS, vector<float>(cfg.nDACs,0)),
+  m_adcMean(tRngIdx::N_VALS, vector<float>(cfg.nDACs,0)),
+  m_splineADC(tRngIdx::N_VALS),
   m_splineDAC(RngNum::N_VALS),
   m_cfg(cfg),
   m_dacArr(0)
@@ -87,15 +87,15 @@ void CfData::FitData() {
   float *tmpADC(new float[m_cfg.nDACs]);
 
   for (RngNum rng; rng.isValid(); rng++) {
-    // following vals only change w/ rng, so i'm getting them outside the other loops.
+    // following vals only change w/ rng, so i get them outside the other loops.
     int grpWid  = m_cfg.splineGroupWidth[rng];
     //int splLen  = grpWid*2 + 1;
     int skpLo   = m_cfg.splineSkipLow[rng];
     int skpHi   = m_cfg.splineSkipHigh[rng];
     int nPtsMin = m_cfg.splineNPtsMin[rng];
 
-    for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
-      RngIdx rngIdx(faceIdx,rng);
+    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
+      tRngIdx rngIdx(faceIdx,rng);
 
       vector<float> &curADC = m_adcMean[rngIdx];
       // get pedestal
@@ -107,11 +107,15 @@ void CfData::FitData() {
 
       // get upper adc boundary
       float adc_max = curADC[m_cfg.nDACs-1];
-      int last_idx = 0; // last idx will be 1st index that is > 0.99*adc_max, it is the last point we intend on using.
-      while (curADC[last_idx] < 0.99*adc_max) {
+
+      // last idx will be last index that is <= 0.99*adc_max
+      // it is the last point we intend on using.
+      int last_idx = 0; 
+      while (curADC[last_idx] <= 0.99*adc_max) {
         last_idx++;
       }
-          
+      last_idx--;
+      
       adc_max = curADC[last_idx]; 
 
       // set up new graph object for fitting.
@@ -123,7 +127,7 @@ void CfData::FitData() {
       // copy SKPLO points directly from beginning of array.
       int spl_idx = 0;
       for (int i = 0; i < skpLo; i++,spl_idx++) {
-        if (curADC[i] > adc_max) break; // quit if we have past the max_value (unlikely in this loop, but it's here
+        if (curADC[i] > adc_max) break; // quit if past the max_value (unlikely)
         m_splineADC[rngIdx].push_back(curADC[i]);
         if (m_splineADC[rngIdx].size() >  m_splineDAC[rng].size())
           m_splineDAC[rng].push_back((int)m_dacArr[i]);
@@ -159,7 +163,7 @@ void CfData::FitData() {
       for (int i = (nPtsMin-skpLo-skpHi)*grpWid + skpLo;
            i <= last_idx;
            i++,spl_idx++) {
-        if (curADC[i] > adc_max) break; // quit if we have past the max_adc_value
+        if (curADC[i] > adc_max) break; // quit if past the max_adc_value
 
         m_splineADC[rngIdx].push_back(curADC[i]); 
         if (m_splineADC[rngIdx].size() >  m_splineDAC[rng].size())
@@ -174,8 +178,8 @@ void CfData::FitData() {
 void CfData::corr_FLE_Thresh(CfData& data_high_thresh){
   RngNum rng;  // we correct LEX8 rng only
 
-  for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
-    RngIdx rngIdx(faceIdx,rng);
+  for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
+    tRngIdx rngIdx(faceIdx,rng);
 
     int nSpline = m_splineADC[rngIdx].size();
     double* arrADC = new double(nSpline);
@@ -197,11 +201,13 @@ void CfData::corr_FLE_Thresh(CfData& data_high_thresh){
     }
 
     TSpline3* spl = new TSpline3("spl",arrDAC,arrADC,nSpline); 
-    TSpline3* spl_hi_thr = new TSpline3("spl_hi_thr",arrDAC_hi_thr,arrADC_hi_thr,nSpline_hi_thr); 
+    TSpline3* spl_hi_thr = new TSpline3("spl_hi_thr",arrDAC_hi_thr,
+                                        arrADC_hi_thr,nSpline_hi_thr); 
 
     for (int i = 0; i<nSpline;i++){
       float dac_corr = arrDAC[i]/mu2ci_thr_rat;
-      m_splineADC[rngIdx][i] = arrADC_hi_thr[i] + spl->Eval(dac_corr)-spl_hi_thr->Eval(dac_corr);
+      m_splineADC[rngIdx][i] = arrADC_hi_thr[i] + 
+        spl->Eval(dac_corr)-spl_hi_thr->Eval(dac_corr);
     }
 
     delete spl;
@@ -225,7 +231,7 @@ void CfData::WriteSplinesTXT(const string &filename) {
   outFile.precision(2);
   outFile.setf(ios_base::fixed);
 
-  for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++)
+  for (tRngIdx rngIdx; rngIdx.isValid(); rngIdx++)
     for (unsigned n = 0; n < m_splineADC[rngIdx].size(); n++) {
       RngNum rng = rngIdx.getRng();
       outFile << rngIdx.getLyr() << " "
@@ -247,7 +253,7 @@ void CfData::ReadSplinesTXT (const string &filename) {
     throw tmp.str();
   }
 
-  short twr=0;
+  short twr = m_cfg.twrBay;
   short lyr;
   short col;
   short face;
@@ -263,7 +269,7 @@ void CfData::ReadSplinesTXT (const string &filename) {
            >> tmpDAC
            >> tmpADC;
     
-    RngIdx rngIdx(twr,lyr,col,face,rng);
+    tRngIdx rngIdx(lyr,col,face,rng);
 
     m_splineADC[rngIdx].push_back(tmpADC);
     if (m_splineADC[rngIdx].size() > m_splineDAC[rng].size()) 
@@ -294,7 +300,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.10 2005/04/12 17:53:38 chehtman Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.12 2005/04/18 15:53:41 heather Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
@@ -308,19 +314,10 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   xmlFile << endl;
   xmlFile << "<calCalib>" << endl;
   xmlFile << "  <generic instrument=\"" << m_cfg.instrument
-          << "\" timestamp=\"" << m_cfg.startTime << "\"" << endl;
+          << "\" timestamp=\"" << m_cfg.timestamp << "\"" << endl;
   xmlFile << "           calibType=\"CAL_IntNonlin\" fmtVersion=\"v2r2\" >" << endl;
 
   xmlFile << endl;
-  xmlFile << "    <inputSample startTime=\"" << m_cfg.startTime
-          << "\" stopTime=\"" << m_cfg.stopTime << "\"" << endl;
-  xmlFile << "triggers=\""    << m_cfg.triggerMode
-          << "\" mode=\""     << m_cfg.instrumentMode
-          << "\" source=\""   << m_cfg.source << "\" >" << endl;
-  xmlFile << endl;
-  xmlFile << "Times are start and stop time of calibration run." << endl;
-  xmlFile << "Other attributes are just made up for code testing." << endl;
-  xmlFile << "    </inputSample>" << endl;
   xmlFile << "  </generic>" << endl;
   xmlFile << endl;
   xmlFile << "<!-- EM instrument: 8 layers, 12 columns -->" << endl;
@@ -357,8 +354,10 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   xmlFile.precision(2);
   // TOWER // currently only using 1 tower.
   xmlFile << endl;
-  for (TwrNum twr; twr == 0; twr++) { // only using 1 tower right now
-    xmlFile << " <tower iRow=\"" << 0 << "\" iCol=\"" << 0 << "\">" << endl;
+  // only using 1 tower right now
+  for (TwrNum twr = m_cfg.twrBay; twr == m_cfg.twrBay; twr++) {
+    xmlFile << " <tower iRow=\"" << twr.getRow() 
+            << "\" iCol=\"" << twr.getCol() << "\">" << endl;
     // LAYER //
     for (LyrNum lyr; lyr.isValid(); lyr++) {
       xmlFile << "  <layer iLayer=\"" << lyr << "\">" << endl;
@@ -371,7 +370,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
           xmlFile << "    <face end=\"" << facestr << "\">" << endl;
           // RNG //
           for (RngNum rng; rng.isValid(); rng++) {
-            RngIdx rngIdx(twr,lyr,col,face,rng);
+            tRngIdx rngIdx(lyr,col,face,rng);
 
             xmlFile << "     <intNonlin range=\"" << RngNum::MNEM[rng] << "\"" << endl;
             // ADC VALS //
@@ -394,8 +393,8 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
 }
 
 //////////////////////////////////////////////////////
-// class RootCI - derived from RootFileAnalysis - represents all Root input //
-// needed for populating the CfData class                                //
+// class RootCI -                                   //
+// needed for populating the CfData class           //
 //////////////////////////////////////////////////////
 
 class RootCI : public RootFileAnalysis {
@@ -426,7 +425,7 @@ public:
   void initCiHists();
 
 private:
-  bool   isRngEnabled(RngNum rng);          // checks rng against m_curDiode setting
+  bool   isRngEnabled(RngNum rng);  // checks rng against m_curDiode setting
   Diode m_curDiode;
 
   CfData &m_CfData;
@@ -436,7 +435,7 @@ private:
   int m_nMax;
   int m_iGoodEvt;
 
-  CalVec<RngIdx,  TH1F*> m_ciHists; 
+  CalVec<tRngIdx,  TH1F*> m_ciHists; 
 
 };
 
@@ -446,8 +445,8 @@ RootCI::RootCI(vector<string> &digiFileNames, CfData  &data, CfCfg &cfg) :
   m_curDiode(BOTH_DIODES),
   m_CfData(data),
   m_cfg(cfg) {
-   m_iGoodEvt = 0; 
-  }
+  m_iGoodEvt = 0; 
+}
 
 // default dstor
 RootCI::~RootCI() {
@@ -457,18 +456,19 @@ RootCI::~RootCI() {
 void RootCI::initCiHists() {
   // DEJA VU?
   if (m_ciHists.size() == 0) {
-    m_ciHists.resize(RngIdx::N_VALS);
-	
-    for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
+    m_ciHists.resize(tRngIdx::N_VALS);
+        
+    for (tRngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
       ostringstream tmp;
-	  if( m_curDiode == RootCI::LE) 
-		tmp << "ciLE_" << rngIdx;
-	  else tmp << "ciHE_" << rngIdx;	   
-      m_ciHists[rngIdx] = new TH1F (tmp.str().c_str(),tmp.str().c_str() ,4100,0,4100);
+      if( m_curDiode == RootCI::LE) 
+        tmp << "ciLE_" << rngIdx;
+      else tmp << "ciHE_" << rngIdx;       
+      m_ciHists[rngIdx] = new TH1F (tmp.str().c_str(),tmp.str().c_str(),
+                                    4100,0,4100);
     }
   }
   else // clear existing histsograms
-    for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++)
+    for (tRngIdx rngIdx; rngIdx.isValid(); rngIdx++)
       m_ciHists[rngIdx]->Reset();
 }
 
@@ -501,61 +501,68 @@ void RootCI::DigiCal() {
   // Loop through each xtal interaction
   CalDigi *pdig = 0;
   int nDigis = calDigiCol->GetEntries();
-  if(nDigis == XtalIdx::N_VALS){
+  if(nDigis == tXtalIdx::N_VALS){
     m_iGoodEvt++;
- while ((pdig = (CalDigi*)calDigiIter.Next())) {  //loop through each 'hit' in one event
-    CalDigi &cdig = *pdig; // use ref to reduce '->'
-	
 
-    CalXtalId id = cdig.getPackedId();  // get interaction information
-    ColNum col = id.getColumn();
-    if (col != testCol) continue;
+    //loop through each 'hit' in one event
+    while ((pdig = (CalDigi*)calDigiIter.Next())) {  
+      CalDigi &cdig = *pdig; // use ref to reduce '->'
 
-    TwrNum twr = id.getTower();
-    LyrNum lyr = id.getLayer();
+      CalXtalId id = cdig.getPackedId();  // get interaction information
 
-    // Loop through each readout on current xtal
-    int numRo = cdig.getNumReadouts();
-    for (int iRo=0; iRo<numRo; iRo++){
-      const CalXtalReadout &acRo = *(cdig.getXtalReadout(iRo));
-      for (FaceNum face; face.isValid(); face++) {
-        RngNum rng = acRo.getRange((CalXtalId::XtalFace)(short)face);
-        // only interested in current diode!
-        if (!isRngEnabled(rng)) continue;
+      // skip if not for current column
+      ColNum col = id.getColumn();
+      if (col != testCol) continue;
 
-        int adc = acRo.getAdc((CalXtalId::XtalFace)(short)face);
-        RngIdx rngIdx(twr,lyr,col,face,rng);
-		TH1F& h = *m_ciHists[rngIdx];
-		if(iSamp == 0){
-		  h.Reset();
-		  h.SetAxisRange(0,4100);
-		}
+      // skip if not for current tower
+      TwrNum twr = id.getTower();
+      if (twr != m_cfg.twrBay) continue;
 
-		h.Fill(adc);
-		
+      LyrNum lyr = id.getLayer();
 
-		if(iSamp == (m_cfg.nPulsesPerDAC - 1)){
-			float av,err;
-			    // trim outliers
-			av = h.GetMean();
-			err =h.GetRMS();
-			for( int iter=0; iter<3;iter++ ) {
-			   h.SetAxisRange(av-3*err,av+3*err);
-			   av  = h.GetMean(); 
-			   err = h.GetRMS();
-			}
-        // assign to table
-			m_CfData.m_adcMean[rngIdx][testDAC] = av;
-	        m_CfData.m_adcN[rngIdx][testDAC] = h.Integral();     
+      // Loop through each readout on current xtal
+      int numRo = cdig.getNumReadouts();
+      for (int iRo=0; iRo<numRo; iRo++){
+        const CalXtalReadout &acRo = *(cdig.getXtalReadout(iRo));
+        for (FaceNum face; face.isValid(); face++) {
+          RngNum rng = acRo.getRange((CalXtalId::XtalFace)(short)face);
+          // only interested in current diode!
+          if (!isRngEnabled(rng)) continue;
 
-		}
-      } // foreach face
-    } // foreach readout
-   } // foreach xtal
+          int adc = acRo.getAdc((CalXtalId::XtalFace)(short)face);
+          tRngIdx rngIdx(lyr,col,face,rng);
+          TH1F& h = *m_ciHists[rngIdx];
+          if(iSamp == 0){
+            h.Reset();
+            h.SetAxisRange(0,4100);
+          }
+
+          h.Fill(adc);
+                
+
+          if(iSamp == (m_cfg.nPulsesPerDAC - 1)){
+            float av,err;
+            // trim outliers
+            av = h.GetMean();
+            err =h.GetRMS();
+            for( int iter=0; iter<3;iter++ ) {
+              h.SetAxisRange(av-3*err,av+3*err);
+              av  = h.GetMean(); 
+              err = h.GetRMS();
+            }
+            // assign to table
+            m_CfData.m_adcMean[rngIdx][testDAC] = av;
+            m_CfData.m_adcN[rngIdx][testDAC] = h.Integral();     
+
+          }
+        } // foreach face
+      } // foreach readout
+    } // foreach xtal
   }
   else {
-	m_cfg.ostrm << " event " << m_evtId << " contains " << nDigis << " digis - skipped" << endl;
-	m_nMax++;
+    m_cfg.ostrm << " event " << m_evtId << " contains " 
+                << nDigis << " digis - skipped" << endl;
+    m_nMax++;
   }
 }
 
@@ -643,7 +650,7 @@ int main(int argc, char **argv) {
       RootCI rd(digiFileNames,data,cfg);  
       // set HE/LE rng
       rd.SetDiode(RootCI::LE);
-	  rd.initCiHists();
+      rd.initCiHists();
       rd.Go(cfg.nPulsesPerRun);
     }
 
@@ -653,33 +660,10 @@ int main(int argc, char **argv) {
       digiFileNames.push_back(cfg.rootFileHE1);
       RootCI rd(digiFileNames, data,cfg);
       rd.SetDiode(RootCI::HE);
-	  rd.initCiHists();
+      rd.initCiHists();
       rd.Go(cfg.nPulsesPerRun);
     }
 
-
-#if 0 // Not currently using extra passes for FLE threshold correction.
-    CfData data_high_thresh(&cfg);
-
-    // LE PASS
-    {
-      vector<string> digiFileNames;
-      digiFileNames.push_back(cfg.rootFileLE2);
-      RootCI rd(digiFileNames,data_high_thresh,cfg);  
-      // set HE/LE rng
-      rd.SetDiode(RootCI::LE);
-      rd.Go(cfg.nPulsesPerRun);
-    }
-
-    // HE PASS
-    {
-      vector<string> digiFileNames;
-      digiFileNames.push_back(cfg.rootFileHE2);
-      RootCI rd(digiFileNames, data_high_thresh, cfg);
-      rd.SetDiode(RootCI::HE);
-      rd.Go(cfg.nPulsesPerRun);
-    }
-#endif
     data.FitData();
     // data_high_thresh.FitData();
     // data.corr_FLE_Thresh(data_high_thresh);

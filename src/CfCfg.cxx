@@ -11,6 +11,8 @@
 // STD INCLUDES
 #include <algorithm>
 #include <cctype>
+#include <iomanip>
+#include <sstream>
 
 using namespace CGCUtil;
 
@@ -25,17 +27,10 @@ void CfCfg::readCfgFile(const string& path) {
   xmlBase::IFile ifile(path.c_str());
   
   // TEST INFO
-  timestamp = ifile.getString(TEST_INFO.c_str(), "TIMESTAMP");
-  startTime = ifile.getString(TEST_INFO.c_str(), "STARTTIME");
-  stopTime  = ifile.getString(TEST_INFO.c_str(), "STOPTIME");
+  timestamp  = ifile.getString(TEST_INFO.c_str(), "TIMESTAMP");
+  instrument = ifile.getString(TEST_INFO.c_str(), "INSTRUMENT");
+  twrBay   = ifile.getInt(TEST_INFO.c_str(),    "TOWER_BAY"); 
 
-  instrument    = ifile.getString(TEST_INFO.c_str(), "INSTRUMENT");
-  towerList     = ifile.getIntVector(TEST_INFO.c_str(), "TOWER_LIST");
-
-  triggerMode    = ifile.getString(TEST_INFO.c_str(), "TRIGGER_MODE");
-  instrumentMode = ifile.getString(TEST_INFO.c_str(), "INST_MODE");
-  source         = ifile.getString(TEST_INFO.c_str(), "TEST_SOURCE");
-  
   dacVals        = ifile.getIntVector(TEST_INFO.c_str(), "DAC_SETTINGS");
   nPulsesPerDAC  = ifile.getInt(TEST_INFO.c_str(), "N_PULSES_PER_DAC");
 
@@ -58,14 +53,6 @@ void CfCfg::readCfgFile(const string& path) {
   Util::expandEnvVar(&rootFileLE1);
   rootFileHE1 = ifile.getString(PATHS.c_str(), "ROOTFILE_HE1");
   Util::expandEnvVar(&rootFileHE1);
-  rootFileLE2 = ifile.getString(PATHS.c_str(), "ROOTFILE_LE2");
-  Util::expandEnvVar(&rootFileLE2);
-  rootFileHE2 = ifile.getString(PATHS.c_str(), "ROOTFILE_HE2");
-  Util::expandEnvVar(&rootFileHE2);
-  rootFileLE3 = ifile.getString(PATHS.c_str(), "ROOTFILE_LE3");
-  Util::expandEnvVar(&rootFileLE3);
-  rootFileHE3 = ifile.getString(PATHS.c_str(), "ROOTFILE_HE3");
-  Util::expandEnvVar(&rootFileHE3);
 
   logfile = ifile.getString(PATHS.c_str(), "LOGFILE");
   Util::expandEnvVar(&logfile);
@@ -91,12 +78,22 @@ void CfCfg::readCfgFile(const string& path) {
   path_remove_ext(baseFilename);
 
   // Auto-generate output filenames
+
+  string twrBayStr; // shared by all output filenames
+  {
+    ostringstream tmp;
+    tmp << 'T' << setw(2) << setfill('0') << twrBay;
+    twrBayStr = tmp.str();
+  }
   if (outputXMLPath.length() == 0)
-    outputXMLPath = outputDir + "ci_intnonlin." + baseFilename + ".xml";
+    outputXMLPath = outputDir + "ci_intnonlin." + baseFilename
+      + '.' + twrBayStr + ".xml";
   if (outputTXTPath.length() == 0)
-    outputTXTPath = outputDir + "ci_intnonlin." + baseFilename + ".txt";
+    outputTXTPath = outputDir + "ci_intnonlin." + baseFilename
+      + '.' + twrBayStr + ".txt";
   if (logfile.length() == 0)
-    logfile = outputDir + "ci_logfile." + baseFilename + ".txt";
+    logfile = outputDir + "ci_logfile." + baseFilename
+      + '.' + twrBayStr + ".txt";
 
   // setup output stream
   // add cout by default

@@ -37,9 +37,8 @@ class McCfg : ICfg {
 
   // SECTION: TEST_INFO //
   string timestamp;     ///< time of observation/measurement
-
   string instrument;    ///< instrument name "EM", "FM101", etc...
-  vector<int> towerList; ///< list of installed towers in lat.
+  int    twrBay;      ///< work on any single tower bay # 
 
   // SECTION: PATHS //
   string rootFileListStr; ///< list of input root files
@@ -51,20 +50,20 @@ class McCfg : ICfg {
   string outputDir;     ///< folder for autonamed output files
 
   string pedFileXML;    ///< output xml filename for pedestals
-  string asymFileXML;   ///< output xml filename for asymmetry calibrations
+  string asymFileXML;   ///< output xml filename for asym calibrations
   string mpdFileXML;    ///< output xml filename for MevPerDAC calibrations
   string adc2nrgFileXML; ///< output xml filename for adc2nrg table
 
 
   string pedHistFile;   ///< output ROOT histogram file - pedestal phase
-  string asymHistFile;  ///< output ROOT histogram file - asymmetry phase
+  string asymHistFile;  ///< output ROOT histogram file - asym phase
   string mpdHistFile;   ///< output ROOT histogram file - MevPerDAC phase
 
   string pedFileTXT;    ///< output txt filename for pedestals
-  string asymFileLLTXT; ///< output txt filename for asymmetry Large Diode Pos face 2 Large Diode Neg face 
-  string asymFileLSTXT; ///< output txt filename for asymmetry Large Diode Pos face 2 Small Diode Neg face 
-  string asymFileSLTXT; ///< output txt filename for asymmetry Small Diode Pos face 2 Large Diode Neg face 
-  string asymFileSSTXT; ///< output txt filename for asymmetry Small Diode Pos face 2 Small Diode Neg face 
+  string asymFileLLTXT; ///< output txt filename for asym Large Diode Pos face 2 Large Diode Neg face
+  string asymFileLSTXT; ///< output txt filename for asym Large Diode Pos face 2 Small Diode Neg face 
+  string asymFileSLTXT; ///< output txt filename for asym Small Diode Pos face 2 Large Diode Neg face 
+  string asymFileSSTXT; ///< output txt filename for asym Small Diode Pos face 2 Small Diode Neg face 
   string largeMPDFileTXT; ///< output txt filename for Mev per DAC Large Diode
   string smallMPDFileTXT; ///< output txt filename for Mev per DAC Small Diode
 
@@ -77,23 +76,23 @@ class McCfg : ICfg {
   double cellVertPitch; ///< vertical pitch between 2 cal xtals
   double csiLength;     ///< length of one cal CsI crystal
 
-  double maxAsymLL;     ///< used in omission of events w/ bad asymmetry logratio
-  double maxAsymLS;     ///< used in omission of events w/ bad asymmetry logratio
-  double maxAsymSL;     ///< used in omission of events w/ bad asymmetry logratio
-  double maxAsymSS;     ///< used in omission of events w/ bad asymmetry logratio
-  double minAsymLL;     ///< used in omission of events w/ bad asymmetry logratio
-  double minAsymLS;     ///< used in omission of events w/ bad asymmetry logratio
-  double minAsymSL;     ///< used in omission of events w/ bad asymmetry logratio
-  double minAsymSS;     ///< used in omission of events w/ bad asymmetry logratio
+  double maxAsymLL;     ///< used in omission of events w/ bad asym logratio
+  double maxAsymLS;     ///< used in omission of events w/ bad asym logratio
+  double maxAsymSL;     ///< used in omission of events w/ bad asym logratio
+  double maxAsymSS;     ///< used in omission of events w/ bad asym logratio
+  double minAsymLL;     ///< used in omission of events w/ bad asym logratio
+  double minAsymLS;     ///< used in omission of events w/ bad asym logratio
+  double minAsymSL;     ///< used in omission of events w/ bad asym logratio
+  double minAsymSS;     ///< used in omission of events w/ bad asym logratio
   
   // SECTION: GENERAL //
   int nEvtRoughPed;     ///< number of events for rough pedestal calibration
   int nEvtPed;          ///< number of events for Pedestal calibration
-  int nEvtAsym;         ///< number of events for Asymmetry calibration
+  int nEvtAsym;         ///< number of events for Asym calibration
   int nEvtMPD;          ///< number of events for MevPerDAC calibration
 
-  bool readInPeds;      ///< skip pedestal calibration and read in previous results from .txt file
-  bool readInAsym;      ///< skip Asymmetry calibration and read in previous results from .txt file
+  bool readInPeds;      ///< skip ped calib and read in prev results from .txt
+  bool readInAsym;      ///< skip Asym calib and read in prev results from .txt
   bool skipMPD;         ///< smip MevPerDAC calibration
 
   bool genXML;          ///< generate xml output
@@ -101,7 +100,9 @@ class McCfg : ICfg {
   bool genHistfiles;    ///< generate histogram output
   bool genLogfile;      ///< clone stdout stream to a logfile
 
-  bool genOptAsymHists; ///< generate optional asymmetry histograms
+  bool genOptAsymHists; ///< generate optional asym histograms
+
+  bool verbose;         ///< verbose debugging output to log.
 
   // DERIVED FROM CFG PARAMES //
   vector<string> rootFileList;

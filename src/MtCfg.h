@@ -39,16 +39,9 @@ class MtCfg : ICfg {
   // CONFIGURABLE PARAMETERS //
 
   // SECTION: TEST_INFO //
-  string timestamp;
-  string startTime;
-  string stopTime; 
-
-  string instrument;    
-  vector<int> towerList;
-
-  string triggerMode;   
-  string instrumentMode;
-  string source;
+  string timestamp;    ///< time of measurement
+  string instrument;   ///< instrument name "LAT", "EM", etc...
+  int    twrBay;     ///< work on any single tower bay #(0-15)
 
   vector<int> dacVals;
   int nPulsesPerDAC;
