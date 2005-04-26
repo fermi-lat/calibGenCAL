@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Apr 26 08:28:15 PDT 2005
+calibGenCAL/src
+
+Modified Files:
+	CalDefs.h MuonCalib.cxx runCIFit.cxx runMuThreshEvol.cxx 
+	runMuTrigEff.cxx 
+Removed Files:
+	genTholdCI_XML.cxx genTholdCI_XML_option.xml 
+Log Message:
+removing uneeded files
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Apr 26 08:28:11 PDT 2005
 calibGenCAL/output
 
