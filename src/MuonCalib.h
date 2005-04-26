@@ -88,7 +88,7 @@ class MuonCalib : public RootFileAnalysis {
   // DEBUG / SUMMARY PRINT FUNCTIONS //
   /////////////////////////////////////
   /// prints ASCII art summary of data for one xtal-hit
-  void printAsciiHit(XtalIdx xtalIdx); 
+  void printAsciiHit(tXtalIdx xtalIdx); 
   /// prints ASCII art summary of data for one full event
   void printAsciiEvt(int nEvt); 
 
@@ -123,7 +123,7 @@ class MuonCalib : public RootFileAnalysis {
   public:
     /// default ctor
     HitSummary() :      
-      adc_ped(DiodeIdx::N_VALS),
+      adc_ped(tDiodeIdx::N_VALS),
       perLyrX(4),
       perLyrY(4),
       perColX(12),
@@ -134,7 +134,7 @@ class MuonCalib : public RootFileAnalysis {
 
     void clear();       ///< 'zero-out' all members
 
-    CalVec<DiodeIdx, float> adc_ped; ///< pedestal subtracted adc values 1 per diode
+    CalVec<tDiodeIdx, float> adc_ped; ///< pedestal subtracted adc values 1 per diode
 
     // Hit summary histograms
     vector<short> perLyrX; ///< number of hits per layer
@@ -143,8 +143,8 @@ class MuonCalib : public RootFileAnalysis {
     CalVec<ColNum, short> perColY; ///< # of hits per Y column
 
     // Hit lists
-    vector<XtalIdx> hitListX; ///< list of X direction xtalId's which were hit 
-    vector<XtalIdx> hitListY; ///< list of Y direction xtalId's which were hit
+    vector<tXtalIdx> hitListX; ///< list of X direction xtalId's which were hit 
+    vector<tXtalIdx> hitListY; ///< list of Y direction xtalId's which were hit
 
     // His summary 
     int count;          ///< total # of hit xtals 
@@ -199,42 +199,42 @@ class MuonCalib : public RootFileAnalysis {
   ///////////////////////////////////////////////////////////
 
   /// list of histograms for 'rough' pedestals
-  CalVec<FaceIdx, TH1F*> m_roughPedHists; 
+  CalVec<tFaceIdx, TH1F*> m_roughPedHists; 
   /// list of histograms for 'final' 4-range pedestals
-  CalVec<RngIdx,  TH1F*> m_pedHists; 
+  CalVec<tRngIdx,  TH1F*> m_pedHists; 
 
   /// list of profiles for logratio values Large diode vs Large diode over position 1 per xtal
-  CalVec<XtalIdx, TProfile*> m_asymProfsLL; 
+  CalVec<tXtalIdx, TProfile*> m_asymProfsLL; 
   /// list of profiles for logratio values Large diode vs Small diode over position 1 per xtal
-  CalVec<XtalIdx, TProfile*> m_asymProfsLS; 
+  CalVec<tXtalIdx, TProfile*> m_asymProfsLS; 
   /// list of profiles for logratio values Small diode vs Large diode over position 1 per xtal
-  CalVec<XtalIdx, TProfile*> m_asymProfsSL; 
+  CalVec<tXtalIdx, TProfile*> m_asymProfsSL; 
   /// list of profiles for logratio values Small diode vs Small diode over position 1 per xtal
-  CalVec<XtalIdx, TProfile*> m_asymProfsSS; 
+  CalVec<tXtalIdx, TProfile*> m_asymProfsSS; 
   
   /// profile X=bigdioedac Y=smalldioedac 1 per xtal
-  CalVec<XtalIdx, TProfile*> m_dacL2SProfs;  
+  CalVec<tXtalIdx, TProfile*> m_dacL2SProfs;  
 
   /// Collection of integral non-linearity splines, 1 per diode
-  CalVec<DiodeIdx, TSpline3*> m_inlSplines; 
+  CalVec<tDiodeIdx, TSpline3*> m_inlSplines; 
   /// Collection of integral non-linearity splines, 1 per diode
-  CalVec<DiodeIdx, TSpline3*> m_inlSplinesInv; 
+  CalVec<tDiodeIdx, TSpline3*> m_inlSplinesInv; 
   /// collection of spline functions based on LEX8 vs LEX8 asymmetry for calculating hit position in muon gain calibration (1 per xtal)
-  CalVec<XtalIdx, TSpline3*> m_asym2PosSplines; 
+  CalVec<tXtalIdx, TSpline3*> m_asym2PosSplines; 
 
   /// list of histograms of geometric mean(large diode dacs) for both ends on each xtal.
-  CalVec<XtalIdx, TH1F*> m_dacLLHists; 
+  CalVec<tXtalIdx, TH1F*> m_dacLLHists; 
 
   /// optional histograms of all dac values used in asymmetry calculations
-  CalVec<DiodeIdx, TH1F*> m_asymDACHists; 
+  CalVec<tDiodeIdx, TH1F*> m_asymDACHists; 
   /// optional histograms of all LL loratios used in asymmetry calculations
-  CalVec<XtalIdx, TH2F*> m_logratHistsLL; 
+  CalVec<tXtalIdx, TH2F*> m_logratHistsLL; 
   /// optional histograms of all LS loratios used in asymmetry calculations
-  CalVec<XtalIdx, TH2F*> m_logratHistsLS; 
+  CalVec<tXtalIdx, TH2F*> m_logratHistsLS; 
   /// optional histograms of all SL loratios used in asymmetry calculations
-  CalVec<XtalIdx, TH2F*> m_logratHistsSL; 
+  CalVec<tXtalIdx, TH2F*> m_logratHistsSL; 
   /// optional histograms of all SS loratios used in asymmetry calculations
-  CalVec<XtalIdx, TH2F*> m_logratHistsSS; 
+  CalVec<tXtalIdx, TH2F*> m_logratHistsSS; 
   
   ///////////////////////////////////////////////////////////
   //            CALIBRATION RESULT VECTORS                 //
@@ -243,53 +243,53 @@ class MuonCalib : public RootFileAnalysis {
   // JUST BEFORE POPULATION                                //
   ///////////////////////////////////////////////////////////
 
-  /// 'rough' first pass cal pedestals, all signals used (i.e. 'hits' and 'misses'), indexed by FaceIdx()
-  CalVec<FaceIdx, float> m_calRoughPed; 
+  /// 'rough' first pass cal pedestals, all signals used (i.e. 'hits' and 'misses'), indexed by tFaceIdx()
+  CalVec<tFaceIdx, float> m_calRoughPed; 
   /// corresponding err values for m_calRoughPed
-  CalVec<FaceIdx, float> m_calRoughPedErr; 
+  CalVec<tFaceIdx, float> m_calRoughPedErr; 
   
   /// final pedestal values, all 4 ranges, indexed by ADC getNRng()
-  CalVec<RngIdx, float> m_calPed; 
+  CalVec<tRngIdx, float> m_calPed; 
   /// corresponding err values for m_calPed
-  CalVec<RngIdx, float> m_calPedErr; 
+  CalVec<tRngIdx, float> m_calPedErr; 
 
   /// 2d vector N_ASYM_PTS lograt asymvals per xtal. large pos vs large neg: idx is [xtal][pos(1-N_ASYM_PTS)]
-  CalVec<XtalIdx, vector<float> > m_calAsymLL; 
+  CalVec<tXtalIdx, vector<float> > m_calAsymLL; 
   /// 2d vector N_ASYM_PTS lograt asymvals per xtal. large pos vs small neg: idx is [xtal][pos(1-N_ASYM_PTS)]
-  CalVec<XtalIdx, vector<float> > m_calAsymLS; 
+  CalVec<tXtalIdx, vector<float> > m_calAsymLS; 
   /// 2d vector N_ASYM_PTS lograt asymvals per xtal. small pos vs large neg: idx is [xtal][pos(1-N_ASYM_PTS)]
-  CalVec<XtalIdx, vector<float> > m_calAsymSL; 
+  CalVec<tXtalIdx, vector<float> > m_calAsymSL; 
   /// 2d vector N_ASYM_PTS lograt asymvals per xtal. small pos vs small neg: idx is [xtal][pos(1-N_ASYM_PTS)]
-  CalVec<XtalIdx, vector<float> > m_calAsymSS; 
+  CalVec<tXtalIdx, vector<float> > m_calAsymSS; 
   
   /// corresponding error value
-  CalVec<XtalIdx, vector<float> > m_calAsymLLErr; 
+  CalVec<tXtalIdx, vector<float> > m_calAsymLLErr; 
   /// corresponding error value
-  CalVec<XtalIdx, vector<float> > m_calAsymLSErr; 
+  CalVec<tXtalIdx, vector<float> > m_calAsymLSErr; 
   /// corresponding error value
-  CalVec<XtalIdx, vector<float> > m_calAsymSLErr; 
+  CalVec<tXtalIdx, vector<float> > m_calAsymSLErr; 
   /// corresponding error value
-  CalVec<XtalIdx, vector<float> > m_calAsymSSErr; 
+  CalVec<tXtalIdx, vector<float> > m_calAsymSSErr; 
 
   /// final mevPerDAC values for Large Diodes (1 per xtal)
-  CalVec<XtalIdx, float> m_calMPDLarge; 
+  CalVec<tXtalIdx, float> m_calMPDLarge; 
   /// final mevPerDAC values for Small Diodes (1 per xtal)
-  CalVec<XtalIdx, float> m_calMPDSmall; 
+  CalVec<tXtalIdx, float> m_calMPDSmall; 
   /// adc to energy conversion factors for LEX8/HEX8 ranges to be used in online software
-  CalVec<DiodeIdx, float> m_adc2nrg;
+  CalVec<tDiodeIdx, float> m_adc2nrg;
 
   /// corresponding error value
-  CalVec<XtalIdx, float> m_calMPDLargeErr; 
+  CalVec<tXtalIdx, float> m_calMPDLargeErr; 
   /// corresponding error value
-  CalVec<XtalIdx, float> m_calMPDSmallErr; 
+  CalVec<tXtalIdx, float> m_calMPDSmallErr; 
 
   /// Integral Nonlinearity spline values (adc2dac), 2d vector necessary b/c each range has different # of elements.  
-  /// indexed by [DiodeIdx()][n].  since we have 4 range output we only need to use the X8 adc values for each diode
+  /// indexed by [tDiodeIdx()][n].  since we have 4 range output we only need to use the X8 adc values for each diode
   /// 2nd dimension is initialized empty, so use push_back() to add values.
-  CalVec<DiodeIdx, vector<float> > m_calInlADC;
+  CalVec<tDiodeIdx, vector<float> > m_calInlADC;
   /// Corresponsding DAC values to go with intNonlin spline vals.  2d vector necessary b/c each range has different # of elements
   /// indexed by [diode][n]
-  CalVec<DiodeIdx, vector<float> > m_calInlDAC;
+  CalVec<tDiodeIdx, vector<float> > m_calInlDAC;
   
 
   //-- Integral Nonlinearity --//
@@ -297,9 +297,9 @@ class MuonCalib : public RootFileAnalysis {
   /// creates & populates INL splines from m_calIntNonlin;
   void loadInlSplines(); 
   /// uses intNonlin to convert adc 2 dac for specified xtal/adc range
-  double adc2dac(DiodeIdx diodeIdx, double adc); 
+  double adc2dac(tDiodeIdx diodeIdx, double adc); 
   /// uses intNonlin to convert dac 2 adc for specified xtal/adc range
-  double dac2adc(DiodeIdx diodeIdx, double dac); 
+  double dac2adc(tDiodeIdx diodeIdx, double dac); 
 
 
   //-- Asymmetry 2 Pos conversion --//
@@ -308,7 +308,7 @@ class MuonCalib : public RootFileAnalysis {
   void loadA2PSplines(); 
   /// uses asym2pos splines to convert asymmetry value to xtal position for energy centroid
   /// \note uses calibGenCAL internal xtal-pitch units w/ origin at negative face.
-  double asym2pos(XtalIdx xtalIdx, double asym); 
+  double asym2pos(tXtalIdx xtalIdx, double asym); 
 
   /// return longitudinal position (in mm) of a crystal center along the length of an 
   /// orthogonal crystal given a cystal column numnber

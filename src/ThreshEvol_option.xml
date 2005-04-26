@@ -3,20 +3,13 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLBASEROOT)/xml/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ThreshEvol_option.xml,v 1.1 2005/04/12 17:53:38 chehtman Exp $"
-       cvs_Revision="$Revision: 1.1 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ThreshEvol_option.xml,v 1.2 2005/04/13 17:56:43 fewtrell Exp $"
+       cvs_Revision="$Revision: 1.2 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP"      value="2004-11-11-14:39"> Timestamp for test run.</item>
-    <item name="STARTTIME"      value="2004-11-11-14:39"> Start of test run</item>
-    <item name="STOPTIME"       value="2004-11-11-14:52"> Stop of test run</item>
-
     <item name="INSTRUMENT"     value="LAT"> Instrument name</item>
-    <item name="TOWER_LIST"     value="1"> List of towers currently installed. </item>
-
-    <item name="TRIGGER_MODE"     value="FORCED_TRIGGER"> Trigger mode.</item>
-    <item name="INST_MODE"        value="ONBOARD_CAL"> Instrument mode</item>
-    <item name="TEST_SOURCE"      value="ONBOARD_CAL_DAC"> Test source</item>
+    <item name="TOWER_BAY"      value="0"> Work on single tower bay #(0-15)</item>
 
     <item name="N_TIME_POINTS"     value="3"> Number of time points </item>
     <item name="N_EVENTS_PER_POINT" value="60000"> Number of events per time point</item>

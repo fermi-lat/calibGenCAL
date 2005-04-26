@@ -39,10 +39,10 @@ public:
   void openHistFile(const string &filename); ///< opens new histogram file.  closes current m_histFile if it is open
   void flushHists(); ///< writes histograms to file & closes file if m_histFile is open.  deletes all open histograms
 
-  void fillMuHist(FaceIdx face,int itp, float adc){ (m_muHists[face][itp])->Fill(adc);}
-  void fillTrigHist(FaceIdx face,int itp, float adc){ (m_trigHists[face][itp])->Fill(adc);}
-  void fillPedHist(FaceIdx face,int itp, float adc){ (m_pedHists[face][itp])->Fill(adc);}
-  float getPed(FaceIdx face,int itp){return m_calPed[face][itp];}
+  void fillMuHist(tFaceIdx face,int itp, float adc){ (m_muHists[face][itp])->Fill(adc);}
+  void fillTrigHist(tFaceIdx face,int itp, float adc){ (m_trigHists[face][itp])->Fill(adc);}
+  void fillPedHist(tFaceIdx face,int itp, float adc){ (m_pedHists[face][itp])->Fill(adc);}
+  float getPed(tFaceIdx face,int itp){return m_calPed[face][itp];}
   void initHists();
   void FitData();
   void fitPedHists(); 
@@ -50,18 +50,18 @@ public:
 
 private:
   TeCfg &m_cfg;
-  CalVec<FaceIdx, vector<TH1F*> > m_muHists;
-  CalVec<FaceIdx, vector<TH1F*> > m_trigHists;
+  CalVec<tFaceIdx, vector<TH1F*> > m_muHists;
+  CalVec<tFaceIdx, vector<TH1F*> > m_trigHists;
 
-  CalVec<FaceIdx,vector<float> > m_muThresh;
-  CalVec<FaceIdx,vector<float> > m_muThreshWidth;
+  CalVec<tFaceIdx,vector<float> > m_muThresh;
+  CalVec<tFaceIdx,vector<float> > m_muThreshWidth;
 
-  CalVec<FaceIdx,vector<float> > m_muThreshErr;
-  CalVec<FaceIdx,vector<float> > m_muThreshWidthErr;
+  CalVec<tFaceIdx,vector<float> > m_muThreshErr;
+  CalVec<tFaceIdx,vector<float> > m_muThreshWidthErr;
 
-  CalVec<FaceIdx,vector<TH1F*> > m_pedHists;
+  CalVec<tFaceIdx,vector<TH1F*> > m_pedHists;
 
-  CalVec<FaceIdx, vector<float> > m_calPed; ///< pedestal values
+  CalVec<tFaceIdx, vector<float> > m_calPed; ///< pedestal values
 
   auto_ptr<TFile> m_histFile;  ///< Current histogram file
   string m_histFilename;  ///< name of the current output histogram ROOT file
@@ -92,9 +92,9 @@ void TeData::openHistFile(const string &filename) {
 void TeData::initHists() {
   // DEJA VU?
   if (m_muHists.size() == 0){ 
-    m_muHists.resize(FaceIdx::N_VALS);
+    m_muHists.resize(tFaceIdx::N_VALS);
 
-    for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
+    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
       (m_muHists[faceIdx]).resize(m_cfg.nTimePoints);
       for(int itp = 0; itp<m_cfg.nTimePoints; itp++){
         ostringstream muHistName;
@@ -106,15 +106,15 @@ void TeData::initHists() {
       }
     }
   }else // clear existing histsograms
-    for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++)
+    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++)
       for(int itp = 0; itp<m_cfg.nTimePoints; itp++)
         m_muHists[faceIdx][itp]->Reset();
           
 
   if (m_trigHists.size() == 0){ 
-    m_trigHists.resize(FaceIdx::N_VALS);
+    m_trigHists.resize(tFaceIdx::N_VALS);
 
-    for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
+    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
       (m_trigHists[faceIdx]).resize(m_cfg.nTimePoints);
       for(int itp = 0; itp<m_cfg.nTimePoints; itp++){
         ostringstream trigHistName;
@@ -126,15 +126,15 @@ void TeData::initHists() {
       }
     }
   }else // clear existing histsograms
-    for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++)
+    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++)
       for(int itp = 0; itp<m_cfg.nTimePoints; itp++)
         m_trigHists[faceIdx][itp]->Reset();
                         
 
   if (m_pedHists.size() == 0) {
-    m_pedHists.resize(FaceIdx::N_VALS);
+    m_pedHists.resize(tFaceIdx::N_VALS);
 
-    for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
+    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
       (m_pedHists[faceIdx]).resize(m_cfg.nTimePoints);
       for(int itp = 0; itp<m_cfg.nTimePoints; itp++){
         ostringstream tmp;
@@ -147,7 +147,7 @@ void TeData::initHists() {
       }
     }
   }else // clear existing histsograms
-    for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++)
+    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++)
       for(int itp = 0; itp<m_cfg.nTimePoints; itp++)
         m_pedHists[faceIdx][itp]->Reset();
 
@@ -161,9 +161,9 @@ TeData::TeData(TeCfg &cfg) :
 }
 
 void TeData::fitPedHists() {
-  m_calPed.resize(FaceIdx::N_VALS);
+  m_calPed.resize(tFaceIdx::N_VALS);
 
-  for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++){
+  for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++){
     m_calPed[faceIdx].resize(m_cfg.nEvtsPerPoint);
     for (int itp=0;itp<m_cfg.nTimePoints; itp++){
       // select histogram from list
@@ -189,12 +189,12 @@ void TeData::fitPedHists() {
 }
 
 void TeData::FitData() {
-  if (m_muThresh.size() == 0)m_muThresh.resize(FaceIdx::N_VALS);
-  if (m_muThreshWidth.size() == 0)m_muThreshWidth.resize(FaceIdx::N_VALS);
-  if (m_muThreshErr.size() == 0)m_muThreshErr.resize(FaceIdx::N_VALS);
-  if (m_muThreshWidthErr.size() == 0)m_muThreshWidthErr.resize(FaceIdx::N_VALS);
+  if (m_muThresh.size() == 0)m_muThresh.resize(tFaceIdx::N_VALS);
+  if (m_muThreshWidth.size() == 0)m_muThreshWidth.resize(tFaceIdx::N_VALS);
+  if (m_muThreshErr.size() == 0)m_muThreshErr.resize(tFaceIdx::N_VALS);
+  if (m_muThreshWidthErr.size() == 0)m_muThreshWidthErr.resize(tFaceIdx::N_VALS);
 
-  for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
+  for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
                 
     float a0=0.0;
     float x[400],ex[400],ey[400],eff[400];
@@ -245,7 +245,7 @@ void TeData::writeThreshTXT(const string &filename) {
   //  TNtuple* ntp = new TNtuple("ci_mu_thresh_ntp","ci_mu_thresh_ntp","lyr:col:face:muThresh:muThreshWidth:ciThresh:ciThreshWidth");
   //  float xntp[7];
 
-  for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
+  for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
     LyrNum lyr = faceIdx.getLyr();
     ColNum col = faceIdx.getCol();
     FaceNum face = faceIdx.getFace();
@@ -302,7 +302,7 @@ private:
   TeData &m_teData;
   TeCfg  &m_cfg;
   int m_evtId;
-  CalVec<FaceIdx,float> m_adc;
+  CalVec<tFaceIdx,float> m_adc;
   bool m_fle[2][8];
 };
 
@@ -358,7 +358,7 @@ void RootThreshEvol::fillThreshHists()
           CalDiagnosticData &cdiag = *pdiag; // use ref to reduce '->'
   
           int layer = cdiag.layer();
-          for (int side=0;side<2;side++)m_fle[side][layer] = cdiag.low(side);  
+          for (int side=0;side<2;side++) m_fle[side][layer] = cdiag.low(side);  
   
         }
         const TObjArray* calDigiCol = m_digiEvt->getCalDigiCol();
@@ -369,7 +369,7 @@ void RootThreshEvol::fillThreshHists()
         }
         TIter calDigiIter(calDigiCol);
         if (m_adc.size() == 0) 
-          m_adc.resize(FaceIdx::N_VALS);
+          m_adc.resize(tFaceIdx::N_VALS);
 
         // Loop through each xtal interaction
         CalDigi *pdig = 0;
@@ -389,7 +389,7 @@ void RootThreshEvol::fillThreshHists()
               RngNum rng = acRo.getRange((CalXtalId::XtalFace)(short)face);
               // only interested in LEX8 range
               if(rng == 0){
-                FaceIdx faceIdx(twr,lyr,col,face);
+                tFaceIdx faceIdx(lyr,col,face);
                 float ped = m_teData.getPed(faceIdx,itp);
                 m_adc[faceIdx]  = acRo.getAdc((CalXtalId::XtalFace)(short)face)-ped;
               }
@@ -408,11 +408,11 @@ void RootThreshEvol::fillThreshHists()
               bool no_trg_layer = trg_other_layers;
               for (int cc = 0;cc<12;cc++){
                 if (cc != c){
-                  FaceIdx face(0,l,cc,s);
+                  tFaceIdx face(l,cc,s);
                   no_trg_layer = no_trg_layer && (m_adc[face] < 50);
                 }
               }
-              FaceIdx faceIdx(0,l,c,s);
+              tFaceIdx faceIdx(l,c,s);
               if(no_trg_layer){
                 m_teData.fillMuHist(faceIdx,itp,m_adc[faceIdx]);
                 if(m_fle[s][l])m_teData.fillTrigHist(faceIdx,itp,m_adc[faceIdx]);
@@ -467,7 +467,7 @@ void RootThreshEvol::fillPedHists(){
         float adcP = readout.getAdc(CalXtalId::POS);
         float adcN = readout.getAdc(CalXtalId::NEG);
 
-        FaceIdx faceIdx(0,lyr,col,POS_FACE);
+        tFaceIdx faceIdx(lyr,col,POS_FACE);
         m_teData.fillPedHist(faceIdx,itp,adcP);
 
         faceIdx.setFace(NEG_FACE);

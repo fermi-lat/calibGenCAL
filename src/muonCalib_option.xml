@@ -3,21 +3,20 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLBASEROOT)/xml/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/muonCalib_option.xml,v 1.8 2005/02/16 20:09:11 fewtrell Exp $"
- cvs_Revision="$Revision: 1.8 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/muonCalib_option.xml,v 1.9 2005/04/13 17:56:43 fewtrell Exp $"
+ cvs_Revision="$Revision: 1.9 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP"    value="2004-07-31-06:50"> Timestamp for test run.</item>
-
-    <item name="INSTRUMENT"   value="LAT"> Instrument name</item>
-    <item name="TOWER_LIST"   value="1"> Listof towers currently installed. </item>
+    <item name="INSTRUMENT"   value="LAT"> Instrument name </item>
+    <item name="TOWER_BAY"    value="0"> Currently supports single tower calibration on arbitrary tower </item>
   </section>
 
   <section name="PATHS"> Intput/Output file paths
     NOTE: All environment variables will be expanded with facilities::Util::expandEnvVar()
-    <item name="INPUTFILE_LIST"    value="D:\GLAST\RELEASE\FM101\041022230030_FM101_Pshp_calu_collect_ext.root"> Space delimited list of input ROOT digi files </item>
+    <item name="INPUTFILE_LIST"    value="D:\GLAST\DATA\050322042818_0_FM115_Init_calu_collect_mu.root D:\GLAST\DATA\050322052834_0_FM115_Init_calu_collect_mu.root D:\GLAST\DATA\050322063227_0_FM115_Init_calu_collect_mu.root "> Space delimited list of input ROOT digi files </item>
     
-    <item name="INTNONLINFILE_TXT" value="../output/ci_intnonlin.041111143546_FM101_PSHP_CALU_COLLECT_CI_SINGLEX16.txt"> Input integral non-linearity text file</item>
+    <item name="INTNONLINFILE_TXT" value="D:\GLAST\DEV\TEMP\calibGenCAL\v3r5p5\output\ci_intnonlin.050414193500_FM115_TVAC_calu_collect_ci_singlex16.T00.txt"> Input integral non-linearity text file</item>
     <item name="DTD_FILE"          value="$(CALIBUTILROOT)/xml/calCalib_v2r2.dtd"> Data description file for XML ouptut ).</item>
 
     <item name="OUTPUT_FOLDER"     value="../output/"> Folder for auto-named output files </item>
@@ -77,6 +76,8 @@
     <item name="GENERATE_LOGFILE"         value="true"> (boolean) generate logfile which duplicates stdout </item>
     
     <item name="GEN_OPT_ASYM_HISTS"       value ="false"> (boolean) generate optional asymmetry histograms</item>
+
+    <item name="VERBOSE"                  value ="false"> (boolean) verbose debugging output to log </item>
 
   </section>
 

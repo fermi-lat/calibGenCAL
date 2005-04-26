@@ -9,6 +9,8 @@
 // EXTLIB INCLUDES
 
 // STD INCLUDES
+#include <sstream>
+#include <iomanip>
 
 using namespace CGCUtil;
 
@@ -22,16 +24,9 @@ void MtCfg::readCfgFile(const string& path) {
   xmlBase::IFile ifile(path.c_str());
   
   // TEST INFO
-  timestamp = ifile.getString(TEST_INFO.c_str(), "TIMESTAMP");
-  startTime = ifile.getString(TEST_INFO.c_str(), "STARTTIME");
-  stopTime  = ifile.getString(TEST_INFO.c_str(), "STOPTIME");
-
-  instrument    = ifile.getString(TEST_INFO.c_str(), "INSTRUMENT");
-  towerList     = ifile.getIntVector(TEST_INFO.c_str(), "TOWER_LIST");
-
-  triggerMode    = ifile.getString(TEST_INFO.c_str(), "TRIGGER_MODE");
-  instrumentMode = ifile.getString(TEST_INFO.c_str(), "INST_MODE");
-  source         = ifile.getString(TEST_INFO.c_str(), "TEST_SOURCE");
+  timestamp  = ifile.getString(TEST_INFO.c_str(), "TIMESTAMP");
+  instrument = ifile.getString(TEST_INFO.c_str(), "INSTRUMENT");
+  twrBay   = ifile.getInt(TEST_INFO.c_str(),    "TOWER_BAY"); 
 
   dacVals    = ifile.getIntVector(TEST_INFO.c_str(), "DAC_SETTINGS");
   nPulsesPerDAC  = ifile.getInt(TEST_INFO.c_str(), "N_PULSES_PER_DAC");
@@ -85,17 +80,24 @@ void MtCfg::readCfgFile(const string& path) {
   string moduleName = ((tokens[1]).size() == 5) ? tokens[1] : tokens[2];
 
   // Auto-generate output filenames
+  string twrBayStr; //shared by all output filenames
+  {
+    ostringstream tmp;
+    tmp << 'T' << setw(2) << setfill('0') << twrBay;
+    twrBayStr = tmp.str();
+  }
   if (outputXMLPath.length() == 0)
-    outputXMLPath = outputDir + tokens[0]+ "_" + moduleName + "_" + "CAL_flefheBias.xml";
+    outputXMLPath = outputDir + tokens[0]+ "_" + moduleName + "_" + "CAL_flefheBias"
+    + '.' + twrBayStr + ".xml";
   if (outputTXTPath.length() == 0)
-    outputTXTPath = outputDir + "muTrig." + baseFilename + ".txt";
+    outputTXTPath = outputDir + "muTrig." + baseFilename +'.' + twrBayStr + ".txt";
   if (logfile.length() == 0)
-    logfile = outputDir + "muTrig_logfile." + baseFilename + ".txt";
+    logfile = outputDir + "muTrig_logfile." + baseFilename + '.' + twrBayStr + ".txt";
   if (histFile.length() == 0)
-    histFile = outputDir + "muTrigEff." + baseFilename + ".root";
+    histFile = outputDir + "muTrigEff." + baseFilename + '.' + twrBayStr + ".root";
 
   if (pedFileTXT.length() == 0)
-    pedFileTXT = outputDir + "mc_peds." + baseFilename + ".txt";
+    pedFileTXT = outputDir + "mc_peds." + baseFilename + '.' + twrBayStr + ".txt";
 
   // setup output stream
   // add cout by default

@@ -11,6 +11,7 @@
 // STD
 #include <string>
 #include <vector>
+#include <set>
 #include <ostream>
 #include <stdexcept>
 
@@ -124,10 +125,20 @@ namespace CalDefs {
 
   class TwrNum : public SimpleId {
   public:
-    TwrNum() : SimpleId() {}
-    TwrNum(short val) : SimpleId(val) {}
-    static const short N_VALS=1; // only supportinjg 1 tower currently
+    TwrNum() : 
+      SimpleId() {}
+
+    TwrNum(short val) : 
+      SimpleId(val) {}
+    
+    short getRow() const {return m_data/N_TWR_COLS;}
+    short getCol() const {return m_data%N_TWR_COLS;}
+    
+    const static short N_VALS=16;
     bool isValid() const {return m_data < N_VALS;}
+    
+  private:
+    static const short N_TWR_COLS = 4;
   };
 
   class LyrNum : public SimpleId {
@@ -269,13 +280,263 @@ namespace CalDefs {
   };
 
   /////////////////////////////////////////////
+  /// Tower Wide Cal Indexes                ///
+  /// Id all components of same type within ///
+  /// single tower.
+  /// internal integer storage is contiguous///
+  /// and can be used as an array Index     ///
+  /////////////////////////////////////////////
+
+  /** \brief Abstract root class for indexing Cal 
+      components w/in single tower
+
+      any interfaces w/ CalXtalId always work w/ tower bay 
+      # 0.
+  */
+  class TwrWideIndex {
+  public:  
+    /// prefix ++ operator
+    TwrWideIndex operator++() {
+      TwrWideIndex tmp(*this);
+      m_data++;
+      return tmp;
+    }
+
+    /// postfix ++ operator
+    TwrWideIndex& operator++(int) {
+      m_data++; 
+      return *this;
+    }
+    
+    int getInt() const {return m_data;}
+    
+    bool operator==(const TwrWideIndex &that) const {return m_data == that.m_data;}
+    bool operator<=(const TwrWideIndex &that) const {return m_data <= that.m_data;}
+    bool operator!=(const TwrWideIndex &that) const {return m_data != that.m_data;}
+    bool operator< (const TwrWideIndex &that) const {return m_data <  that.m_data;}
+    //TwrWideIndex& operator= (const TwrWideIndex &that) {m_data = that.m_data;}
+  protected:
+    TwrWideIndex(int val) : m_data(val) {}
+    TwrWideIndex() : m_data(0) {}
+    int m_data;
+  };
+
+  class tXtalIdx : public TwrWideIndex {
+  public:
+    tXtalIdx(const idents::CalXtalId &xtal) :
+      TwrWideIndex(calc(xtal.getLayer(),
+                        xtal.getColumn())) {}
+
+    tXtalIdx(short lyr, short col) :
+      TwrWideIndex(calc(lyr,col)) {}
+
+    tXtalIdx() : TwrWideIndex() {}
+
+    idents::CalXtalId getCalXtalId() const {
+      return idents::CalXtalId(0,//twr
+                               getLyr(),
+                               getCol());
+    }
+    static const int N_VALS  = LyrNum::N_VALS*ColNum::N_VALS;
+
+    short getLyr() const {return (m_data)/LYR_BASE;}
+    short getCol() const {return m_data%LYR_BASE;}
+
+    /// operator to put tXtalIdx to output stream
+    friend ostream& operator<< (ostream &stream, const tXtalIdx &idx);
+    bool isValid() const {return m_data < N_VALS;}
+    
+  private:
+    static int calc(short lyr, short col) {
+      return lyr*LYR_BASE + col;
+    }
+    static const int LYR_BASE  = ColNum::N_VALS;
+  };
+  
+  class tFaceIdx : public TwrWideIndex {
+  public:
+    tFaceIdx() : TwrWideIndex() {}
+
+    tFaceIdx(const idents::CalXtalId &xtalId) {
+      if (!xtalId.validFace())
+        throw invalid_argument("tFaceIdx requires valid face info in xtalId."
+                               "  Programmer error");
+
+      m_data = calc(xtalId.getLayer(),
+                    xtalId.getColumn(),
+                    xtalId.getFace());
+    }
+
+    tFaceIdx(short lyr, short col, short face) :
+      TwrWideIndex(calc(lyr,col,face)) {}
+
+    tFaceIdx(tXtalIdx xtal, short face) :
+      TwrWideIndex(calc(xtal.getLyr(), xtal.getCol(), face)) {}
+
+    idents::CalXtalId getCalXtalId() const {
+      return idents::CalXtalId(0,//twr
+                               getLyr(),
+                               getCol(),
+                               getFace());
+    }
+
+    static const int N_VALS = tXtalIdx::N_VALS*FaceNum::N_VALS;
+
+    tXtalIdx getTXtalIdx() const {return tXtalIdx(getLyr(),
+                                                 getCol());}
+
+    short getLyr()  const {return (m_data)/LYR_BASE;}
+    short getCol()  const {return (m_data%LYR_BASE)/COL_BASE;}
+    short getFace() const {return m_data%COL_BASE;}
+
+    void setFace(short face) {
+      m_data = calc(getLyr(),getCol(),face);
+    }
+
+    /// operator to put tFaceIdx to output stream
+    friend ostream& operator<< (ostream &stream, const tFaceIdx &idx);
+    
+    bool isValid() const {return m_data < N_VALS;}
+  private:
+    static int calc(short lyr, short col, short face) {
+      return lyr*LYR_BASE + col*COL_BASE + face;
+    }
+    static const short COL_BASE  = FaceNum::N_VALS;
+    static const short LYR_BASE  = COL_BASE*ColNum::N_VALS;
+  };
+
+  class tDiodeIdx : public TwrWideIndex {
+  public:
+    tDiodeIdx(const idents::CalXtalId &xtalId, short diode) {
+      if (!xtalId.validFace())
+        throw invalid_argument("tDiodeIdx requires valid face info in xtalId.  Programmer error");
+
+      m_data = calc(xtalId.getLayer(),
+                    xtalId.getColumn(),
+                    xtalId.getFace(), 
+                    diode);
+    }
+
+    tDiodeIdx(short lyr, short col, short face, short diode) :
+      TwrWideIndex(calc(lyr,col,face,diode)) {}
+
+    tDiodeIdx(tXtalIdx xtal, short face, short diode) :
+      TwrWideIndex(calc(xtal.getLyr(),xtal.getCol(),face,diode)) {}
+
+    tDiodeIdx(tXtalIdx xtal, XtalDiode xDiode) :
+      TwrWideIndex(calc(xtal.getLyr(), xtal.getCol(),
+                        xDiode.getFace(), xDiode.getDiode())) {}
+
+    tDiodeIdx(tFaceIdx face, short diode) :
+      TwrWideIndex(calc(face.getLyr(),face.getCol(),face.getFace(),diode)) {}
+    
+    tDiodeIdx() : TwrWideIndex() {}
+
+    static const int N_VALS = tFaceIdx::N_VALS*DiodeNum::N_VALS;
+
+    short getLyr()   const {return (m_data)/LYR_BASE;}
+    short getCol()   const {return (m_data%LYR_BASE)/COL_BASE;}
+    short getFace()  const {return (m_data%COL_BASE)/FACE_BASE;}
+    short getDiode() const {return m_data%FACE_BASE;}
+
+    /// operator to put tDiodeIdx to output stream
+    friend ostream& operator<< (ostream &stream, const tDiodeIdx &idx);
+
+    tXtalIdx getTXtalIdx() const {return tXtalIdx(getLyr(),
+                                                 getCol());}
+
+    tFaceIdx getTFaceIdx() const {return tFaceIdx(getLyr(),
+                                                 getCol(),
+                                                 getFace());}
+
+    
+    bool isValid() const {return m_data < N_VALS;}
+  private:
+    static int calc(short lyr, short col, short face, short diode) {
+      return lyr*LYR_BASE + col*COL_BASE + face*FACE_BASE + diode;
+    }
+    static const int FACE_BASE = DiodeNum::N_VALS;
+    static const int COL_BASE  = FACE_BASE*FaceNum::N_VALS;
+    static const int LYR_BASE  = COL_BASE*ColNum::N_VALS;
+  };
+
+  class tRngIdx : public TwrWideIndex {
+  public:
+    tRngIdx(const idents::CalXtalId &xtalId) {
+      if (!xtalId.validFace() || ! xtalId.validRange())
+        throw invalid_argument("tRngIdx requires valid face and range info in xtalId.  Programmer error");
+      m_data = calc(xtalId.getLayer(),xtalId.getColumn(),xtalId.getFace(), xtalId.getRange());
+    }
+
+    tRngIdx(short lyr, short col, short face, short rng) :
+      TwrWideIndex(calc(lyr,col,face,rng)) 
+      {}
+    
+    tRngIdx(tXtalIdx xtal, short face, short rng) :
+      TwrWideIndex(calc(xtal.getLyr(),xtal.getCol(),face,rng)) {}
+
+    tRngIdx(tXtalIdx xtal, XtalRng xRng) :
+      TwrWideIndex(calc(xtal.getLyr(), xtal.getCol(),
+                        xRng.getFace(),xRng.getRng())) {}
+
+    tRngIdx(tFaceIdx faceIdx, short rng) :
+      TwrWideIndex(calc(faceIdx.getLyr(),faceIdx.getCol(),faceIdx.getFace(),rng)) {}
+    
+    tRngIdx() : TwrWideIndex() {}
+
+    idents::CalXtalId getCalXtalId() const {
+      return idents::CalXtalId(getLyr(),
+                               getCol(),
+                               getFace(),
+                               getRng());
+    }
+    
+    short getLyr()  const {return (m_data)/LYR_BASE;}
+    short getCol()  const {return (m_data%LYR_BASE)/COL_BASE;}
+    short getFace() const {return (m_data%COL_BASE)/FACE_BASE;}
+    short getRng()  const {return m_data%FACE_BASE;}
+
+    void setFace(short face) {
+      m_data = calc(getLyr(),getCol(),face,getRng());
+    }
+    void setRng(short rng) {
+      m_data = calc(getLyr(),getCol(),getFace(),rng);
+    }
+    
+    static const int N_VALS = tFaceIdx::N_VALS*RngNum::N_VALS;
+
+    /// operator to put tDiodeIdx to output stream
+    friend ostream& operator<< (ostream &stream, const tRngIdx &idx);
+    
+    tXtalIdx getTXtalIdx() const {return tXtalIdx(getLyr(),
+                                                 getCol());}
+
+    tFaceIdx getTFaceIdx() const {return tFaceIdx(getLyr(),
+                                                 getCol(),
+                                                 getFace());}
+
+    bool isValid() const {return m_data < N_VALS;}
+  private:
+    static int calc(short lyr, short col, short face, short rng) {
+      return lyr*LYR_BASE + col*COL_BASE + face*FACE_BASE + rng;
+    }
+    static const int FACE_BASE = RngNum::N_VALS;
+    static const int COL_BASE  = FACE_BASE*FaceNum::N_VALS;
+    static const int LYR_BASE  = COL_BASE*ColNum::N_VALS;
+  };
+
+
+  /////////////////////////////////////////////
   ///   LAT Wide Cal Indexes                ///
   /// Id all components of same type within ///
   /// currently configured lat.             ///
   /// internal integer storage is contiguous///
   /// and can be used as an array Index     ///
   /////////////////////////////////////////////
-
+ 
+  /** \brief Abstract root class for indexing all Cal
+      components w/in full LAT
+  */
   class LATWideIndex {
   public:  
     /// prefix ++ operator
@@ -346,7 +607,8 @@ namespace CalDefs {
 
     FaceIdx(const idents::CalXtalId &xtalId) {
       if (!xtalId.validFace())
-        throw invalid_argument("FaceIdx requires valid face info in xtalId.  Programmer error");
+        throw invalid_argument("FaceIdx requires valid face info in xtalId."
+                               "  Programmer error");
 
       m_data = calc(xtalId.getTower(),
                     xtalId.getLayer(),

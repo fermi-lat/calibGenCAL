@@ -11,6 +11,8 @@
 #include <algorithm>
 #include <cctype>
 #include <functional>
+#include <sstream>
+#include <iomanip>
 
 const string McCfg::TEST_INFO("TEST_INFO");
 const string McCfg::PATHS("PATHS");
@@ -26,10 +28,9 @@ void McCfg::readCfgFile(const string& cfgPath) {
   xmlBase::IFile ifile(cfgPath.c_str());
   
   // SECTION: TEST INFO
-  timestamp = ifile.getString(TEST_INFO.c_str(), "TIMESTAMP");
-
-  instrument    = ifile.getString(TEST_INFO.c_str(), "INSTRUMENT");
-  towerList     = ifile.getIntVector(TEST_INFO.c_str(), "TOWER_LIST");
+  timestamp       = ifile.getString(TEST_INFO.c_str(), "TIMESTAMP");
+  instrument      = ifile.getString(TEST_INFO.c_str(), "INSTRUMENT");
+  twrBay        = ifile.getInt(TEST_INFO.c_str(),    "TOWER_BAY");
 
   // SECTION: PATHS
   using facilities::Util;
@@ -108,13 +109,14 @@ void McCfg::readCfgFile(const string& cfgPath) {
   // ridiculous comparison elminates cast warning in msvc
   genXML = ifile.getBool(GENERAL.c_str(), "GENERATE_XML") != 0;
   genTXT = ifile.getBool(GENERAL.c_str(), "GENERATE_TXT") != 0;
-  genHistfiles = ifile.getBool(GENERAL.c_str(), "GENERATE_HISTOGRAM_FILES") != 0;
-  genLogfile   = ifile.getBool(GENERAL.c_str(), "GENERATE_LOGFILE")         != 0;
+  genHistfiles = ifile.getBool(GENERAL.c_str(), "GENERATE_HISTOGRAM_FILES")!=0;
+  genLogfile   = ifile.getBool(GENERAL.c_str(), "GENERATE_LOGFILE")        !=0;
+  verbose      = ifile.getBool(GENERAL.c_str(), "VERBOSE") != 0;
 
   // only asign genOptAsymHists is genHistfiles is also enabled.
   genOptAsymHists = false;
   if (genHistfiles) genOptAsymHists 
-                      = ifile.getBool(GENERAL.c_str(), "GEN_OPT_ASYM_HISTS") != 0;
+                      = ifile.getBool(GENERAL.c_str(), "GEN_OPT_ASYM_HISTS")!=0;
 
   // *** POST PROCESS *** //
   // parse list of ROOT input files
@@ -129,56 +131,72 @@ void McCfg::readCfgFile(const string& cfgPath) {
   outputDir += '/';
 
   // autogenerate output filenames (only autogen if string is empty)
+
+  string twrBayStr; //shared by all output filenames
+  {
+    ostringstream tmp;
+    tmp << 'T' << setw(2) << setfill('0') << twrBay;
+    twrBayStr = tmp.str();
+  }
   if (pedFileXML.length() == 0)
-    pedFileXML = outputDir + "mc_peds." + baseFilename + ".xml";
-
+    pedFileXML = outputDir + "mc_peds." + baseFilename 
+      + '.' + twrBayStr + ".xml";
   if (asymFileXML.length() == 0)
-    asymFileXML = outputDir + "mc_asym." + baseFilename + ".xml";
-
+    asymFileXML = outputDir + "mc_asym." + baseFilename
+      + '.' + twrBayStr + ".xml";
   if (mpdFileXML.length() == 0)
-    mpdFileXML = outputDir + "mc_mevperdac." + baseFilename + ".xml";
+    mpdFileXML = outputDir + "mc_mevperdac." + baseFilename
+      + '.' + twrBayStr + ".xml";
+  if (pedHistFile.length() == 0)
+    pedHistFile = outputDir + "mc_peds." + baseFilename
+      + '.' + twrBayStr + ".root";
+  if (asymHistFile.length() == 0)
+    asymHistFile = outputDir + "mc_asym." + baseFilename
+      + '.' + twrBayStr + ".root";
+  if (mpdHistFile.length() == 0)
+    mpdHistFile = outputDir + "mc_mevperdac." + baseFilename
+      + '.' + twrBayStr + ".root";
+  if (pedFileTXT.length() == 0)
+    pedFileTXT = outputDir + "mc_peds." + baseFilename 
+      + '.' + twrBayStr + ".txt";
+  if (asymFileLLTXT.length() == 0)
+    asymFileLLTXT = outputDir + "mc_asymLL." + baseFilename 
+      + '.' + twrBayStr + ".txt";
+  if (asymFileLSTXT.length() == 0)
+    asymFileLSTXT = outputDir + "mc_asymLS." + baseFilename 
+      + '.' + twrBayStr + ".txt";
+  if (asymFileSLTXT.length() == 0)
+    asymFileSLTXT = outputDir + "mc_asymSL." + baseFilename 
+      + '.' + twrBayStr + ".txt";
+  if (asymFileSSTXT.length() == 0)
+    asymFileSSTXT = outputDir + "mc_asymSS." + baseFilename 
+      + '.' + twrBayStr + ".txt";
+  if (largeMPDFileTXT.length() == 0)
+    largeMPDFileTXT = outputDir + "mc_mpdLarge." + baseFilename 
+      + '.' + twrBayStr + ".txt";
+  if (smallMPDFileTXT.length() == 0)
+    smallMPDFileTXT = outputDir + "mc_mpdSmall." + baseFilename 
+      + '.' + twrBayStr + ".txt";
+  if (logfile.length() == 0)
+    logfile = outputDir + "mc_logfile." + baseFilename 
+      + '.' + twrBayStr + ".txt";
 
+  // generate adc2nrg output filename
   if (adc2nrgFileXML.length() == 0){
     vector<string> baseFilenameElem;
+
+    // expected basefilename format has '_' delimited fields.
     tokenize_str(baseFilename,baseFilenameElem,"_");
-    adc2nrgFileXML = outputDir + baseFilenameElem[0]+"_" + baseFilenameElem[1] + "_cal_adc2nrg" + ".xml";
+
+    if (baseFilenameElem.size() < 2) // unexpected filename format.
+      adc2nrgFileXML = outputDir + "cal_adc2nrg." + baseFilename
+        + '.' + twrBayStr + ".xml";
+    else // default filename format
+      adc2nrgFileXML = outputDir + baseFilenameElem[0] + "_"
+        + baseFilenameElem[1] + "_cal_adc2nrg" 
+        + '.' + twrBayStr + ".xml";
   }
   
-
-  
-  if (pedHistFile.length() == 0)
-    pedHistFile = outputDir + "mc_peds." + baseFilename + ".root";
-  
-  if (asymHistFile.length() == 0)
-    asymHistFile = outputDir + "mc_asym." + baseFilename + ".root";
-            
-  if (mpdHistFile.length() == 0)
-    mpdHistFile = outputDir + "mc_mevperdac." + baseFilename + ".root";
-
-
-  if (pedFileTXT.length() == 0)
-    pedFileTXT = outputDir + "mc_peds." + baseFilename + ".txt";
-                
-  if (asymFileLLTXT.length() == 0)
-    asymFileLLTXT = outputDir + "mc_asymLL." + baseFilename + ".txt";
-                  
-  if (asymFileLSTXT.length() == 0)
-    asymFileLSTXT = outputDir + "mc_asymLS." + baseFilename + ".txt";
-                    
-  if (asymFileSLTXT.length() == 0)
-    asymFileSLTXT = outputDir + "mc_asymSL." + baseFilename + ".txt";
-                      
-  if (asymFileSSTXT.length() == 0)
-    asymFileSSTXT = outputDir + "mc_asymSS." + baseFilename + ".txt";
-                        
-  if (largeMPDFileTXT.length() == 0)
-    largeMPDFileTXT = outputDir + "mc_mpdLarge." + baseFilename + ".txt";
-                            
-  if (smallMPDFileTXT.length() == 0)
-    smallMPDFileTXT = outputDir + "mc_mpdSmall." + baseFilename + ".txt";
-
-  if (logfile.length() == 0)
-    logfile = outputDir + "mc_logfile." + baseFilename + ".txt";
 
   // setup output stream
   // add cout by default
