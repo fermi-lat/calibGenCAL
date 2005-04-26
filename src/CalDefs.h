@@ -134,7 +134,7 @@ namespace CalDefs {
     short getRow() const {return m_data/N_TWR_COLS;}
     short getCol() const {return m_data%N_TWR_COLS;}
     
-    const static short N_VALS=16;
+    static const short N_VALS=16;
     bool isValid() const {return m_data < N_VALS;}
     
   private:

@@ -380,6 +380,8 @@ void RootThreshEvol::fillThreshHists()
           ColNum col = id.getColumn();
 
           TwrNum twr = id.getTower();
+          if (twr != m_cfg.twrBay) continue; // skip events not for current tower.
+
           LyrNum lyr = id.getLayer();
           // Loop through each readout on current xtal
           int numRo = cdig.getNumReadouts();

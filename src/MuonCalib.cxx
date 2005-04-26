@@ -1145,7 +1145,6 @@ void MuonCalib::populateAsymArrays() {
     TProfile &profSS = *m_asymProfsSS.at(xtalIdx);
 
     if (m_cfg.verbose) {
-      LyrNum lyr = xtalIdx.getLyr(); ColNum col = xtalIdx.getCol();
       m_ostrm << "Asym entries nXtal=" << xtalIdx.getInt()
               << " LL=" << profLL.GetEntries() << endl;
       m_ostrm << " per bin ";
@@ -1951,7 +1950,7 @@ void MuonCalib::writeADC2NRGXML(const string &filename) {
     m_adc2nrg[diodeIdxNS] = enemu/dac2adc(diodeIdxNS,(enemu/mpdS)*exp(-asym_center_S));
   }
 
-  TwrNum twr = 0;
+  TwrNum twr = m_cfg.twrBay;
   outfile << "<?xml version=\'1.0\' encoding=\'UTF-8\'?>" << endl;
   outfile << "<LATdoc name=\'\'>" << endl;
   outfile << "  <declarations>"   << endl;
@@ -1961,7 +1960,7 @@ void MuonCalib::writeADC2NRGXML(const string &filename) {
   outfile << "  </declarations>"  << endl;
   outfile << "  <configuration hierarchy=\"[\'low_hi_nrg\', \'GCCC\', \'GCRC\', \'GCFE\', \'adc2nrg\']\" shape=\'(2, 8, 2, 12)\' version=\'NA\' type=\'d\' name=\'\'>" << endl;
   outfile << "    <GLAT>"         << endl;
-  outfile << "      <GTEM ID=\'0\'>" << endl;
+  outfile << "      <GTEM ID=\'" << twr << "\'>" << endl;
   for (int diode=0; diode<2; diode++){
     outfile << "        <low_hi_nrg ID=\'" << diode << "\'>" << endl;
     for (int xy = 0; xy<2; xy++){
