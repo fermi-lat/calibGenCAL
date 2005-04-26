@@ -358,7 +358,7 @@ void MtData::writeFleFheBiasXML(const string &filename){
   if (!outfile.is_open())
     throw string("Unable to open " + filename);
 
-  int tower = m_cfg.twrBay;
+  TwrNum twr = m_cfg.twrBay;
   outfile << "<?xml version=\'1.0\' encoding=\'UTF-8\'?>" << endl;
   outfile << "<LATdoc name=\'\'>" << endl;
   outfile << "  <declarations>"   << endl;
@@ -368,7 +368,7 @@ void MtData::writeFleFheBiasXML(const string &filename){
   outfile << "  </declarations>"  << endl;
   outfile << "  <configuration hierarchy=\"[\'fle_fhe\',\'GCCC\', \'GCRC\', \'GCFE\', \'thrBias\']\" shape=\'(2, 8, 2, 12)\' version=\'NA\' type=\'d\' name=\'\' usage=\'add the constant from this table to the charge injection FLE threshold to get the corresponding FLE threshold for muons\'>" << endl;
   outfile << "    <GLAT>"         << endl;
-  outfile << "      <GTEM ID=\'" << m_cfg.twrBay << "\'>" << endl;
+  outfile << "      <GTEM ID=\'" << twr << "\'>" << endl;
 
   for (int diode=0; diode<2; diode++){
     outfile << "        <fle_fhe ID=\'" << diode << "\'>" << endl;

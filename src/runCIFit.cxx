@@ -253,7 +253,7 @@ void CfData::ReadSplinesTXT (const string &filename) {
     throw tmp.str();
   }
 
-  short twr = m_cfg.twrBay;
+  //short twr = m_cfg.twrBay;
   short lyr;
   short col;
   short face;
@@ -300,7 +300,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.12 2005/04/18 15:53:41 heather Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.13 2005/04/26 03:09:16 fewtrell Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
