@@ -1,5 +1,18 @@
 ------------------------------------------------------------
 User: fewtrell  Mon Apr 25 20:09:15 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calDacXML.py calExcept.py fits2xml.py 
+Log Message:
+support for arbitrary single tower in all c++ apps but muthresh evol.
+this allows merging of multiple outputs for multitower calibs.
+also took away unused config items.
+added verbose mode to muonCalib.
+added CalVec index classes for LAT wide and single tower only indexing.
+    *
+------------------------------------------------------------
+User: fewtrell  Mon Apr 25 20:09:15 PDT 2005
 calibGenCAL/output
 
 Modified Files:
