@@ -1,24 +1,4 @@
 ------------------------------------------------------------
-User: fewtrell  Tue Apr 26 08:28:11 PDT 2005
-calibGenCAL/output
-
-Removed Files:
-	fake_tholdci_perface.txt fake_tholdci_perrange.txt 
-Log Message:
-removing uneeded files
-
-    *
-------------------------------------------------------------
-User: fewtrell  Tue Apr 26 08:28:02 PDT 2005
-calibGenCAL/doc
-
-Modified Files:
-	release.notes 
-Log Message:
-new tag
-
-    *
-------------------------------------------------------------
 TAG
 Tag name: v3r6, operation: add
 Package: calibGenCAL
