@@ -3,8 +3,8 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLBASEROOT)/xml/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit_option.xml,v 1.8 2005/04/13 17:56:43 fewtrell Exp $"
-       cvs_Revision="$Revision: 1.8 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit_option.xml,v 1.9 2005/04/26 03:09:16 fewtrell Exp $"
+       cvs_Revision="$Revision: 1.9 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP"      value="2004-11-11-14:39"> Timestamp for test run.</item>
@@ -28,8 +28,8 @@
 
     <item name="LOGFILE"           value=""> application log file duplicates stdout (default "" autogenerates filename from input filename)</item>
     
-    <item name="ROOTFILE_LE1"   value="D:\GLAST\DATA\050414193500_FM115_TVAC_calu_collect_ci_singlex16.root"> input DIGIROOT file LE </item>
-    <item name="ROOTFILE_HE1"   value="D:\GLAST\DATA\050414193859_FM115_TVAC_calu_collect_ci_singlex16.root"> input DIGIROOT file HE </item>
+    <item name="ROOTFILE_LE1"   value="Z:\FM\Module\FM110\FM110_EMI_calibGen_050225140955\root\050225141852_FM110_EMI_calu_collect_ci_singlex16.root"> input DIGIROOT file LE </item>
+    <item name="ROOTFILE_HE1"   value="Z:\FM\Module\FM110\FM110_EMI_calibGen_050225140955\root\050225142253_FM110_EMI_calu_collect_ci_singlex16.root"> input DIGIROOT file HE </item>
   </section>
 
   <section name="SPLINE_CFG">
