@@ -149,7 +149,7 @@ void MtData::initHists() {
 
       m_muHists[faceIdx] = new TH1F(muHistName.str().c_str(),
                                           muHistName.str().c_str(),
-                                          100,0,2000);
+                                          100,0,3000);
     }
   }else // clear existing histsograms
 	  for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++){
@@ -166,7 +166,7 @@ void MtData::initHists() {
 
       m_trigHists[faceIdx] = new TH1F(trigHistName.str().c_str(),
                                           trigHistName.str().c_str(),
-                                          100,0,2000);
+                                          100,0,3000);
     }
   }else // clear existing histsograms
 	  for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++){
@@ -270,7 +270,7 @@ void MtData::FitData() {
 	  }
 		for(int i=0;i<m_cfg.nDACs;i++) if(eff[i] > 0.5) {a0=x[i]; break;}
 		TGraphErrors* geff = new TGraphErrors(m_cfg.nDACs,x,eff,ex,ey);
-		TF1* step = new TF1("step","1.0/(1.0+exp(-[1]*(x-[0])))",0,1000);
+		TF1* step = new TF1("step","1.0/(1.0+exp(-[1]*(x-[0])))",0,3000);
 		step->SetParameters(a0,0.1);
 		geff->Fit(step,"QN");
 		m_ciThresh[faceIdx] = step->GetParameter(0);
@@ -286,7 +286,7 @@ void MtData::FitData() {
 		float* ytrig =(m_trigHists[faceIdx])->GetArray();
 		a0=0.0;
 		for(int i=0;i<100;i++){
-			x[i]=20*(i+0.5);
+			x[i]=30*(i+0.5);
 			ex[i]=1.0;
 			float trig=ytrig[i+1];
 			float mu=ymu[i+1];
@@ -294,11 +294,12 @@ void MtData::FitData() {
 			float strig=(trig>0.9) ? trig : 1;
 			float snotrig=(notrig>0.9) ? notrig : 1;
 			ey[i]=sqrt(strig*notrig*notrig + snotrig*trig*trig)/(mu*mu+0.1);
+			if(trig<0.2 && notrig<0.2)ey[i]=10.0;
 			eff[i] = trig/(mu+0.01);
 		}
 		for(int i=0;i<100;i++) if(eff[i] > 0.5) {a0=x[i]; break;}
 		geff = new TGraphErrors(100,x,eff,ex,ey);
-		step = new TF1("step","1.0/(1.0+exp(-[1]*(x-[0])))",0,1000);
+		step = new TF1("step","1.0/(1.0+exp(-[1]*(x-[0])))",0,3000);
 		step->SetParameters(a0,0.1);
 		geff->Fit(step,"QN");
 		m_muThresh[faceIdx] = step->GetParameter(0);

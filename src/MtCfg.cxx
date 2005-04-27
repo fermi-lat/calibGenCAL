@@ -77,7 +77,12 @@ void MtCfg::readCfgFile(const string& path) {
   vector<string> tokens;
   string delim("_");
   tokenize_str(baseFilename,tokens,delim); 
-  string moduleName = ((tokens[1]).size() == 5) ? tokens[1] : tokens[2];
+  string moduleName = "FMxxx";
+  if ((tokens[1]).size() == 5 && ((tokens[1]).substr(0,2))== string("FM")) moduleName=tokens[1];
+  if ((tokens[2]).size() == 5 && ((tokens[2]).substr(0,2)) == string("FM")) moduleName=tokens[2];
+
+  string runID = tokens[0];
+  if (runID.substr(0,12) == string("digitization")) runID = tokens[1];
 
   // Auto-generate output filenames
   string twrBayStr; //shared by all output filenames
@@ -87,8 +92,7 @@ void MtCfg::readCfgFile(const string& path) {
     twrBayStr = tmp.str();
   }
   if (outputXMLPath.length() == 0)
-    outputXMLPath = outputDir + tokens[0]+ "_" + moduleName + "_" + "CAL_flefheBias"
-    + '.' + twrBayStr + ".xml";
+	outputXMLPath = outputDir + runID+ "_" + twrBayStr + "_" + moduleName + "_" + "cal_bias.xml";
   if (outputTXTPath.length() == 0)
     outputTXTPath = outputDir + "muTrig." + baseFilename +'.' + twrBayStr + ".txt";
   if (logfile.length() == 0)

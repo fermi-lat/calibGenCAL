@@ -185,17 +185,24 @@ void McCfg::readCfgFile(const string& cfgPath) {
   // generate adc2nrg output filename
   if (adc2nrgFileXML.length() == 0){
     vector<string> baseFilenameElem;
+	string moduleName = "FMxxx";
 
     // expected basefilename format has '_' delimited fields.
     tokenize_str(baseFilename,baseFilenameElem,"_");
+	string runID = baseFilenameElem[0];
 
     if (baseFilenameElem.size() < 2) // unexpected filename format.
-      adc2nrgFileXML = outputDir + "cal_adc2nrg." + baseFilename
-        + '.' + twrBayStr + ".xml";
-    else // default filename format
-      adc2nrgFileXML = outputDir + baseFilenameElem[0] + "_"
-        + baseFilenameElem[1] + "_cal_adc2nrg" 
-        + '.' + twrBayStr + ".xml";
+      adc2nrgFileXML = outputDir  + runID
+        + "_" + twrBayStr + "_" + moduleName + "_cal_adc2nrg"+ ".xml";
+	else {   // default filename format
+		if ((baseFilenameElem[1]).size() == 5 && ((baseFilenameElem[1]).substr(0,2))== string("FM")) moduleName=baseFilenameElem[1];
+		if ((baseFilenameElem[2]).size() == 5 && ((baseFilenameElem[2]).substr(0,2))== string("FM")) moduleName=baseFilenameElem[2];
+
+		if (runID.substr(0,12) == string("digitization")) runID = baseFilenameElem[1];
+
+
+		adc2nrgFileXML = outputDir + runID+"_"+ twrBayStr + "_"  + moduleName + "_cal_adc2nrg" + ".xml";
+	}
   }
   
 
