@@ -103,6 +103,7 @@ void McCfg::readCfgFile(const string& cfgPath) {
 
   // ridiculous comparison elminates cast warning in msvc
   readInPeds = ifile.getBool(GENERAL.c_str(), "READ_IN_PEDS") != 0;
+  pedsOnly   = ifile.getBool(GENERAL.c_str(), "PEDS_ONLY")    != 0;
   readInAsym = ifile.getBool(GENERAL.c_str(), "READ_IN_ASYM") != 0;
   skipMPD    = ifile.getBool(GENERAL.c_str(), "SKIP_MPD")     != 0;
 

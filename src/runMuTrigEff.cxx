@@ -478,7 +478,7 @@ void RootCiTrig::DigiCal() {
   }
 
 
-  const TObjArray* calDigiCol = m_digiEvt->getCalDigiCol();
+  const TClonesArray* calDigiCol = m_digiEvt->getCalDigiCol();
   if (!calDigiCol) {
     ostringstream temp;
     temp << "Empty calDigiCol event #" << m_evtId;
@@ -630,7 +630,7 @@ void RootMuTrig::DigiCal() {
 	for (int side=0;side<2;side++) m_fle[side][layer] = cdiag.low(side);  
   
   }
-  const TObjArray* calDigiCol = m_digiEvt->getCalDigiCol();
+  const TClonesArray* calDigiCol = m_digiEvt->getCalDigiCol();
   if (!calDigiCol) {
     ostringstream temp;
     temp << "Empty calDigiCol event #" << m_evtId;

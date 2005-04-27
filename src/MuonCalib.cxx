@@ -179,16 +179,17 @@ void MuonCalib::fillRoughPedHists(int nEvts) {
       continue;
     }
 
-    const TObjArray* calDigiCol = m_digiEvt->getCalDigiCol();
+    const TClonesArray* calDigiCol = m_digiEvt->getCalDigiCol();
     if (!calDigiCol) {
       cerr << "no calDigiCol found for event#" << iEvt << endl;
       continue;
     }
 
+    TIter calDigiIter(calDigiCol);
     CalDigi *pCalDigi = 0;
 
     //loop through each 'hit' in one event
-    for( int cde_nb=0; (pCalDigi=(CalDigi*) calDigiCol->At(cde_nb)); cde_nb++ ){ 
+    while ((pCalDigi = (CalDigi*)calDigiIter.Next())) {
       CalDigi &calDigi = *pCalDigi; // use reference to avoid -> syntax
 
       //-- XtalId --//
@@ -299,16 +300,17 @@ void MuonCalib::fillPedHists(int nEvts) {
       continue;
     }
 
-    const TObjArray* calDigiCol = m_digiEvt->getCalDigiCol();
+    const TClonesArray* calDigiCol = m_digiEvt->getCalDigiCol();
     if (!calDigiCol) {
       cerr << "no calDigiCol found for event#" << iEvt << endl;
       continue;
     }
 
+    TIter calDigiIter(calDigiCol);
     CalDigi *pCalDigi = 0;
 
     //loop through each 'hit' in single event
-    for( int cde_nb=0; (pCalDigi=(CalDigi*)calDigiCol->At(cde_nb)); cde_nb++ ) { 
+    while ((pCalDigi = (CalDigi*)calDigiIter.Next())) {
       CalDigi &calDigi = *pCalDigi; // use reference to avoid -> syntax
 
       //-- XtalId --//
@@ -645,16 +647,17 @@ void MuonCalib::HitSummary::clear() {
 void MuonCalib::summarizeHits(HitSummary &hs) {
   hs.clear();
 
-  const TObjArray* calDigiCol = m_digiEvt->getCalDigiCol();
+  const TClonesArray* calDigiCol = m_digiEvt->getCalDigiCol();
   if (!calDigiCol) {
     cerr << "no calDigiCol found for event" << m_digiEvt << endl;
     return;
   }
 
+  TIter calDigiIter(calDigiCol);
   CalDigi *pCalDigi = 0;
 
   // PER HIT LOOP:
-  for( int cde_nb=0; (pCalDigi=(CalDigi*) calDigiCol->At(cde_nb)); cde_nb++ ) {
+  while ((pCalDigi = (CalDigi*)calDigiIter.Next())) {
     CalDigi &calDigi = *pCalDigi; // use reference to avoid -> syntax
 
     //-- XtalId --//
