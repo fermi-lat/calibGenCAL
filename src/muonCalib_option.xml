@@ -3,8 +3,8 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLBASEROOT)/xml/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/muonCalib_option.xml,v 1.10 2005/04/26 03:09:16 fewtrell Exp $"
- cvs_Revision="$Revision: 1.10 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/muonCalib_option.xml,v 1.11 2005/04/27 16:44:06 fewtrell Exp $"
+ cvs_Revision="$Revision: 1.11 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP"    value="2004-07-31-06:50"> Timestamp for test run.</item>
@@ -67,7 +67,7 @@
     <item name="NEVENTS_MPD"      value="1000000"> Number of events to run for MevPerDac calibration</item>
     
     <item name="READ_IN_PEDS"     value="false"> (boolean) Skip pedestal analysis and read pedestal .txt file from previous run</item>
-    <item name="PEDS_ONLY"        value="true"> (boolean) Stop processing after pedestal phase</item>
+    <item name="PEDS_ONLY"        value="false"> (boolean) Stop processing after pedestal phase</item>
     <item name="READ_IN_ASYM"     value="false"> (boolean) Skip asymmetry analysis and read asym .txt file from previous run</item>
     <item name="SKIP_MPD"         value="false"> (boolean) Skip MevPerDac analysis pass.</item>
 
