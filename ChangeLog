@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Apr 27 09:44:05 PDT 2005
+calibGenCAL/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+
+v3r6p2 Indexing of CalDigiCol wasn't working for multitower.  switched to proper iterator, also switched from TObjArray to TClonesArray
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r6p1, operation: add
 Package: calibGenCAL
