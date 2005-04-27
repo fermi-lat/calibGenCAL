@@ -3,13 +3,13 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLBASEROOT)/xml/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/muonCalib_option.xml,v 1.11 2005/04/27 16:44:06 fewtrell Exp $"
- cvs_Revision="$Revision: 1.11 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/muonCalib_option.xml,v 1.12 2005/04/27 16:54:56 fewtrell Exp $"
+ cvs_Revision="$Revision: 1.12 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP"    value="2004-07-31-06:50"> Timestamp for test run.</item>
     <item name="INSTRUMENT"   value="LAT"> Instrument name </item>
-    <item name="TOWER_BAY"    value="4"> Currently supports single tower calibration on arbitrary tower </item>
+    <item name="TOWER_BAY"    value="0"> Currently supports single tower calibration on arbitrary tower </item>
   </section>
 
   <section name="PATHS"> Intput/Output file paths
