@@ -300,7 +300,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.13 2005/04/26 03:09:16 fewtrell Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.14 2005/04/26 15:28:14 fewtrell Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
@@ -489,7 +489,7 @@ void RootCI::DigiCal() {
   int testDAC   = (ievt%m_cfg.nPulsesPerXtal)/m_cfg.nPulsesPerDAC;
   int iSamp   = (ievt%m_cfg.nPulsesPerXtal)%m_cfg.nPulsesPerDAC;
 
-  const TObjArray* calDigiCol = m_digiEvt->getCalDigiCol();
+  const TClonesArray* calDigiCol = m_digiEvt->getCalDigiCol();
   if (!calDigiCol) {
     ostringstream tmp;
     tmp << __FILE__ << ":" << __LINE__ << " " 

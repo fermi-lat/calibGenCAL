@@ -93,7 +93,8 @@ class McCfg : ICfg {
 
   bool readInPeds;      ///< skip ped calib and read in prev results from .txt
   bool readInAsym;      ///< skip Asym calib and read in prev results from .txt
-  bool skipMPD;         ///< smip MevPerDAC calibration
+  bool skipMPD;         ///< skip MevPerDAC calibration entirely
+  bool pedsOnly;        ///< stop after pedestal calibration
 
   bool genXML;          ///< generate xml output
   bool genTXT;          ///< generate text output

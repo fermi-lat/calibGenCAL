@@ -84,13 +84,16 @@ int main(int argc, char** argv) {
       appData.readCalPeds(cfg.pedFileTXT);
     }
 
-    // LOAD INTNONLIN
-    cfg.ostrm << "Reading integral nonlinearity from " << cfg.intNonlinFile << endl;
-    appData.readIntNonlin(cfg.intNonlinFile);
+    if (cfg.pedsOnly) return 0;
     
     ///////////////////////////////
     // *** PHASE 2: ASYMMETRY *** //
     ///////////////////////////////
+
+    // LOAD INTNONLIN (USED IN ASYM AND MEVPERDAC)
+    cfg.ostrm << "Reading integral nonlinearity from " << cfg.intNonlinFile << endl;
+    appData.readIntNonlin(cfg.intNonlinFile);
+    
 
     if (!cfg.readInAsym) {
       // PASS 3 - Asymmetry

@@ -361,7 +361,7 @@ void RootThreshEvol::fillThreshHists()
           for (int side=0;side<2;side++) m_fle[side][layer] = cdiag.low(side);  
   
         }
-        const TObjArray* calDigiCol = m_digiEvt->getCalDigiCol();
+        const TClonesArray* calDigiCol = m_digiEvt->getCalDigiCol();
         if (!calDigiCol) {
           ostringstream temp;
           temp << "Empty calDigiCol event #" << m_evtId;
@@ -439,15 +439,16 @@ void RootThreshEvol::fillPedHists(){
         continue;
       }
 
-      const TObjArray* calDigiCol = m_digiEvt->getCalDigiCol();
+      const TClonesArray* calDigiCol = m_digiEvt->getCalDigiCol();
       if (!calDigiCol) {
         cerr << "no calDigiCol found for event#" << iEvt << endl;
         continue;
       }
 
+      TIter calDigiIter(calDigiCol);
       CalDigi *pCalDigi = 0;
 
-      for( int cde_nb=0; (pCalDigi=(CalDigi*) calDigiCol->At(cde_nb)); cde_nb++ ) { //loop through each 'hit' in one event
+      while ((pCalDigi = (CalDigi*)calDigiIter.Next())) {
         CalDigi &calDigi = *pCalDigi; // use reference to avoid -> syntax
         const CalXtalReadout& readout=*calDigi.getXtalReadout(LEX8); // get LEX8 data
 
