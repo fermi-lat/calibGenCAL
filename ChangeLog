@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Apr 27 10:03:38 PDT 2005
+calibGenCAL/src
+
+Modified Files:
+	muonCalib_option.xml 
+Log Message:
+default tower bay should be .0
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Apr 27 09:54:57 PDT 2005
 calibGenCAL/src
 
