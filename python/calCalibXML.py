@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/25 16:43:54 $"
-__version__   = "$Revision: 1.14 $, $Author: dwood $"
+__date__      = "$Date: 2005/05/02 15:47:05 $"
+__version__   = "$Revision: 1.15 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -93,12 +93,14 @@ class calCalibXML(calXML.calXML):
         return g
 
 
-    def dimensionWrite(self, nFace = 2, nRange = 4, nDacCol = 0):
+    def dimensionWrite(self, nFace = 2, nRange = 4, nDacCol = 0, nXpos = 0):
         """
         Creates the <dimension> element for a calibration XML file
 
         Param: nFace The value for the 'nFace' attribute.
         Param: nRange The value for the 'nRange' attribute.
+        Param: nDacCol The value for the 'nDacCol' attribute.
+        Param: nXpos: The value for the 'nXpos' attribute.
         
         Returns: A reference to the <dimension> Element object.
         """
@@ -111,8 +113,8 @@ class calCalibXML(calXML.calXML):
         d.setAttribute('nFace', str(nFace))
         d.setAttribute('nRange', str(nRange))
         d.setAttribute('exact', 'false')
-        if nDacCol > 0:
-            d.setAttribute('nDacCol', str(nDacCol))
+        d.setAttribute('nDacCol', str(nDacCol))
+        d.setAttribute('nXpos', str(nXpos))
 
         return d
 
@@ -574,7 +576,7 @@ class calIntNonlinCalibXML(calCalibXML):
 
         # insert <dimension> element  
             
-        d = self.dimensionWrite()
+        d = self.dimensionWrite(nRange = 4)
         r.appendChild(d)
 
         # insert <dac> elements
@@ -875,7 +877,7 @@ class calAsymCalibXML(calCalibXML):
 
         # insert <dimension> element  
             
-        d = self.dimensionWrite(nRange = 1, nFace = 1)
+        d = self.dimensionWrite(nRange = 1, nFace = 1, nXpos = 1)
         r.appendChild(d)
 
         # insert <xpos> element
@@ -935,49 +937,49 @@ class calAsymCalibXML(calCalibXML):
                     s = ''                    
                     for d in range(pLen):
                         ad = asymData[tem, row, fe, 0, d]
-                        s += '%s ' % ad
+                        s += '%0.6f ' % ad
                     a.setAttribute('bigVals', s)
 
                     s = ''                    
                     for d in range(pLen):
                         ad = asymData[tem, row, fe, 1, d]
-                        s += '%s ' % ad
+                        s += '%0.6f ' % ad
                     a.setAttribute('smallVals', s)
 
                     s = ''                    
                     for d in range(pLen):
                         ad = asymData[tem, row, fe, 2, d]
-                        s += '%s ' % ad
+                        s += '%0.6f ' % ad
                     a.setAttribute('NsmallPbigVals', s)
 
                     s = ''                    
                     for d in range(pLen):
                         ad = asymData[tem, row, fe, 3, d]
-                        s += '%s ' % ad
+                        s += '%0.6f ' % ad
                     a.setAttribute('PsmallNbigVals', s)
 
                     s = ''                    
                     for d in range(pLen):
                         ad = asymData[tem, row, fe, 4, d]
-                        s += '%s ' % ad
+                        s += '%0.6f ' % ad
                     a.setAttribute('bigSigs', s)
 
                     s = ''                    
                     for d in range(pLen):
                         ad = asymData[tem, row, fe, 5, d]
-                        s += '%s ' % ad
+                        s += '%0.6f ' % ad
                     a.setAttribute('smallSigs', s)
 
                     s = ''                    
                     for d in range(pLen):
                         ad = asymData[tem, row, fe, 6, d]
-                        s += '%s ' % ad
+                        s += '%0.6f ' % ad
                     a.setAttribute('NsmallPbigSigs', s)
 
                     s = ''                    
                     for d in range(pLen):
                         ad = asymData[tem, row, fe, 7, d]
-                        s += '%s ' % ad
+                        s += '%0.6f ' % ad
                     a.setAttribute('PsmallNbigSigs', s)                    
                       
         
