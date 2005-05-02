@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon May  2 08:47:05 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Implemented write() methods for calPedCalibXML, calMevPerDacCalibXML, and calAsymCalibXML classes.
+    *
+------------------------------------------------------------
 User: dwood  Mon May  2 07:58:03 PDT 2005
 calibGenCAL/python
 
