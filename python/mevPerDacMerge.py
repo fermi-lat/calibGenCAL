@@ -13,8 +13,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to merge mutilple CAL MevPerDac calibration XML files."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/14 19:17:17 $"
-__version__   = "$Revision: 1.3 $, $Author: dwood $"
+__date__      = "$Date: 2005/05/02 14:57:28 $"
+__version__   = "$Revision: 1.1 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -36,16 +36,18 @@ class inputFile:
     Represents one mevPerDacMerge input XML file.
     """
     
-    def __init__(self, twr, name, energyData):
+    def __init__(self, srcTwr, destTwr, name, energyData):
         """
         inputFile constructor
 
-        Param: twr The tower number (0 - 15)
+        Param: srcTwr The data source tower number (0 - 15).
+        Param: destTwr The data destination tower number (0 - 15).
         Param: name The input file name
         Param: pedData A Numeric ADC data arrays from the input file.
         """
-        
-        self.twr = twr
+
+        self.srcTwr = srcTwr
+        self.destTwr = destTwr
         self.name = name
         self.energyData = energyData
 
@@ -116,13 +118,23 @@ if __name__ == '__main__':
         if len(optList) != 2 or optList[0] != 'mevperdac':
             log.error("mevPerDacMerge: unknown option %s in section [infiles]", opt)
             sys.exit(1)
-        twr = int(optList[1])
-        if twr < 0 or twr > 15:
+        destTwr = int(optList[1])
+        if destTwr < 0 or destTwr > 15:
             log.error("mevPerDacMerge: index for [infiles] option %s out of range (0 - 15)", opt)
-        name = configFile.get('infiles', opt)
-        inFile = inputFile(twr, name, None)
+        value = configFile.get('infiles', opt)
+        nameList = value.split(',')
+        nameLen = len(nameList)
+        if nameLen == 1:
+            name = nameList[0]
+            srcTwr = 0
+        elif nameLen == 2:
+            name = nameList[0]
+            srcTwr = int(nameList[1])
+        else:
+            log.error("intNonlinMerge: incorrect option format %s", value)
+        inFile = inputFile(srcTwr, destTwr, name, None)
         inFiles.append(inFile)
-        log.debug('mevPerDacMerge: adding file %s to input as tower %d', name, twr)
+        log.debug('mevPerDacMerge: adding file %s to input as tower %d', name, destTwr)
 
 
     # get DTD file name
@@ -155,14 +167,14 @@ if __name__ == '__main__':
         for row in range(8):
             for fe in range(12):
                 for val in range(8):
-                            x = energyData[0, row, fe, val]
-                            outData[f.twr, row, fe, val] = x
+                            x = energyData[f.srcTwr, row, fe, val]
+                            outData[f.destTwr, row, fe, val] = x
 
     log.info('mevPerDacMerge: writing output file %s', outName)
 
     temList = []
     for f in inFiles:
-        temList.append(f.twr)
+        temList.append(f.destTwr)
 
     outFile = calCalibXML.calMevPerDacCalibXML(outName, calCalibXML.MODE_CREATE)
     outFile.write(outData, tems = temList)

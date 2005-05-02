@@ -13,8 +13,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to merge mutilple CAL Ped calibration XML files."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/14 19:17:17 $"
-__version__   = "$Revision: 1.3 $, $Author: dwood $"
+__date__      = "$Date: 2005/05/02 14:58:03 $"
+__version__   = "$Revision: 1.1 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -36,16 +36,18 @@ class inputFile:
     Represents one pedMerge input XML file.
     """
     
-    def __init__(self, twr, name, pedData):
+    def __init__(self, srcTwr, destTwr, name, pedData):
         """
         inputFile constructor
 
-        Param: twr The tower number (0 - 15)
+        Param: srcTwr The data source tower number (0 - 15).
+        Param: destTwr The data destination tower number (0 - 15).
         Param: name The input file name
         Param: pedData A Numeric ADC data arrays from the input file.
         """
         
-        self.twr = twr
+        self.srcTwr = srcTwr
+        self.destTwr = destTwr
         self.name = name
         self.pedData = pedData
 
@@ -116,13 +118,23 @@ if __name__ == '__main__':
         if len(optList) != 2 or optList[0] != 'ped':
             log.error("pedMerge: unknown option %s in section [infiles]", opt)
             sys.exit(1)
-        twr = int(optList[1])
-        if twr < 0 or twr > 15:
+        destTwr = int(optList[1])
+        if destTwr < 0 or destTwr > 15:
             log.error("pedMerge: index for [infiles] option %s out of range (0 - 15)", opt)
-        name = configFile.get('infiles', opt)
-        inFile = inputFile(twr, name, None)
+        value = configFile.get('infiles', opt)
+        nameList = value.split(',')
+        nameLen = len(nameList)
+        if nameLen == 1:
+            name = nameList[0]
+            srcTwr = 0
+        elif nameLen == 2:
+            name = nameList[0]
+            srcTwr = int(nameList[1])
+        else:
+            log.error("intNonlinMerge: incorrect option format %s", value)
+        inFile = inputFile(srcTwr, destTwr, name, None)
         inFiles.append(inFile)
-        log.debug('pedMerge: adding file %s to input as tower %d', name, twr)
+        log.debug('pedMerge: adding file %s to input as tower %d', name, destTwr)
 
 
     # get DTD file name
@@ -157,14 +169,14 @@ if __name__ == '__main__':
                 for fe in range(12):
                     for erng in range(4):
                         for val in range(3):
-                            x = pedData[0, row, end, fe, erng, val]
-                            outData[f.twr, row, end, fe, erng, val] = x
+                            x = pedData[f.srcTwr, row, end, fe, erng, val]
+                            outData[f.destTwr, row, end, fe, erng, val] = x
 
     log.info('pedMerge: writing output file %s', outName)
 
     temList = []
     for f in inFiles:
-        temList.append(f.twr)
+        temList.append(f.destTwr)
 
     outFile = calCalibXML.calPedCalibXML(outName, calCalibXML.MODE_CREATE)
     outFile.write(outData, tems = temList)

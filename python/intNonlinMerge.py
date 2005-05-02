@@ -13,8 +13,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to merge mutilple CAL IntNonlin calibration XML files."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/05/02 14:15:34 $"
-__version__   = "$Revision: 1.6 $, $Author: dwood $"
+__date__      = "$Date: 2005/05/02 14:55:49 $"
+__version__   = "$Revision: 1.7 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -36,17 +36,19 @@ class inputFile:
     Represents one intNonlinMerge input XML file.
     """
     
-    def __init__(self, twr, name, dacData, adcData):
+    def __init__(self, srcTwr, destTwr, name, dacData, adcData):
         """
         inputFile constructor
 
-        Param: twr The tower number (0 - 15)
+        Param: srcTwr The data source tower number (0 - 15).
+        Param: destTwr The data destination tower number (0 - 15).
         Param: name The input file name
         Param: dacData A list of Numeric DAC data arrays from the input file.
         Param: dacData A list of Numeric ADC data arrays from the input file.
         """
         
-        self.twr = twr
+        self.srcTwr = srcTwr
+        self.destTwr = destTwr
         self.name = name
         self.dacData = dacData
         self.adcData = adcData
@@ -120,13 +122,23 @@ if __name__ == '__main__':
         if len(optList) != 2 or optList[0] != 'intnonlin':
             log.error("intNonlinMerge: unknown option %s in section [infiles]", opt)
             sys.exit(1)
-        twr = int(optList[1])
-        if twr < 0 or twr > 15:
+        destTwr = int(optList[1])
+        if destTwr < 0 or destTwr > 15:
             log.error("intNonlinMerge: index for [infiles] option %s out of range (0 - 15)", opt)
-        name = configFile.get('infiles', opt)
-        inFile = inputFile(twr, name, None, None)
+        value = configFile.get('infiles', opt)
+        nameList = value.split(',')
+        nameLen = len(nameList)
+        if nameLen == 1:
+            name = nameList[0]
+            srcTwr = 0
+        elif nameLen == 2:
+            name = nameList[0]
+            srcTwr = int(nameList[1])
+        else:
+            log.error("intNonlinMerge: incorrect option format %s", value)
+        inFile = inputFile(srcTwr, destTwr, name, None, None)
         inFiles.append(inFile)
-        log.debug('intNonLinMerge: adding file %s to input as tower %d', name, twr)
+        log.debug('intNonLinMerge: adding file %s to input as tower %d', name, destTwr)
 
 
     # get DTD file name
@@ -193,11 +205,11 @@ if __name__ == '__main__':
                         inSize = inData.shape[-1]
                         outSize = outData.shape[-1]
                         for dac in range(inSize):
-                            x = inData[0, row, end, fe, dac]
-                            outData[f.twr, row, end, fe, dac] = x
+                            x = inData[f.srcTwr, row, end, fe, dac]
+                            outData[f.destTwr, row, end, fe, dac] = x
                         if outSize > inSize:
                             for dac in range(inSize, outSize):
-                               outData[f.twr, row, end, fe, dac] = -1.0 
+                               outData[f.destTwr, row, end, fe, dac] = -1.0 
                             
             
 
@@ -205,7 +217,7 @@ if __name__ == '__main__':
 
     temList = []
     for f in inFiles:
-        temList.append(f.twr)
+        temList.append(f.destTwr)
 
     outFile = calCalibXML.calIntNonlinCalibXML(outName, calCalibXML.MODE_CREATE)
     outFile.write(dacDataOut, adcDataOut, startTime = info['startTime'], stopTime = info['stopTime'], \

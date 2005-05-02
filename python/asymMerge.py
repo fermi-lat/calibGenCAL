@@ -13,8 +13,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to merge mutilple CAL Asym calibration XML files."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/05/02 14:55:49 $"
-__version__   = "$Revision: 1.7 $, $Author: dwood $"
+__date__      = "$Date: 2005/05/02 16:09:01 $"
+__version__   = "$Revision: 1.1 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -36,17 +36,19 @@ class inputFile:
     Represents one asymMerge input XML file.
     """
     
-    def __init__(self, twr, name, xposData, asymData):
+    def __init__(self, srcTwr, destTwr, name, xposData, asymData):
         """
         inputFile constructor
 
-        Param: twr The tower number (0 - 15)
+        Param: srcTwr The data source tower number (0 - 15).
+        Param: destTwr The data destination tower number (0 - 15).
         Param: name The input file name
         Param: xposData A list of position value from the input file.
         Param: asymData A Numeric asymmetry data array from the input file.
         """
         
-        self.twr = twr
+        self.srcTwr = srcTwr
+        self.destTwr = destTwr
         self.name = name
         self.xposData = xposData
         self.asymData = asymData
@@ -120,13 +122,23 @@ if __name__ == '__main__':
         if len(optList) != 2 or optList[0] != 'asym':
             log.error("asymMerge: unknown option %s in section [infiles]", opt)
             sys.exit(1)
-        twr = int(optList[1])
-        if twr < 0 or twr > 15:
+        destTwr = int(optList[1])
+        if destTwr < 0 or destTwr > 15:
             log.error("asymMerge: index for [infiles] option %s out of range (0 - 15)", opt)
-        name = configFile.get('infiles', opt)
-        inFile = inputFile(twr, name, None, None)
+        value = configFile.get('infiles', opt)
+        nameList = value.split(',')
+        nameLen = len(nameList)
+        if nameLen == 1:
+            name = nameList[0]
+            srcTwr = 0
+        elif nameLen == 2:
+            name = nameList[0]
+            srcTwr = int(nameList[1])
+        else:
+            log.error("asymMerge: incorrect option format %s", value)
+        inFile = inputFile(srcTwr, destTwr, name, None, None)
         inFiles.append(inFile)
-        log.debug('asymMerge: adding file %s to input as tower %d', name, twr)
+        log.debug('asymMerge: adding file %s to input as tower %d', name, destTwr)
 
 
     # get DTD file name
@@ -165,15 +177,15 @@ if __name__ == '__main__':
             for fe in range(12):
                 for val in range(8):
                     for pos in range(xposLen):
-                        x = asymData[0, row, fe, val, pos]
-                        outData[f.twr, row, fe, val, pos] = x
+                        x = asymData[f.srcTwr, row, fe, val, pos]
+                        outData[f.destTwr, row, fe, val, pos] = x
                             
             
     log.info('asymMerge: writing output file %s', outName)
 
     temList = []
     for f in inFiles:
-        temList.append(f.twr)
+        temList.append(f.destTwr)
 
     outFile = calCalibXML.calAsymCalibXML(outName, calCalibXML.MODE_CREATE)
     outFile.write(xposData, outData, tems = temList)
