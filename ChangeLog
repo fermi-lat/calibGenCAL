@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon May  2 09:10:10 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Fix output format for calAsymCalibXML files.
+    *
+------------------------------------------------------------
 User: dwood  Mon May  2 09:09:01 PDT 2005
 calibGenCAL/python
 
