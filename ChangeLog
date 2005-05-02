@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon May  2 07:15:34 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	intNonlinMerge.py 
+Log Message:
+Added to header documentation
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r6p3, operation: add
 Package: calibGenCAL
