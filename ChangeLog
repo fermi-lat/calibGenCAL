@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon May  2 07:58:03 PDT 2005
+calibGenCAL/python
+
+Added Files:
+	pedMerge.py pedMerge.bat 
+Log Message:
+Utility to merge two single tower Ped calibration files into a single output file.
+    *
+------------------------------------------------------------
 User: dwood  Mon May  2 07:57:28 PDT 2005
 calibGenCAL/python
 
