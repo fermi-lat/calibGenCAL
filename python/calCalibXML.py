@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/21 16:47:54 $"
-__version__   = "$Revision: 1.13 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/25 16:43:54 $"
+__version__   = "$Revision: 1.14 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -841,12 +841,23 @@ class calAsymCalibXML(calCalibXML):
         calCalibXML.__init__(self, fileName, mode)
         
 
-    def write(self, tems = (0,)):
+    def write(self, xposData, asymData, tems = (0,)):
         """
         Write data to a CAL Asym XML file
 
         Param: xposData - A list of position values. The length of this array is the
                           number of data points for each crystal.
+        Param: asymData -   A Numeric array of shape (16, 8, 12, 8, <size>), where
+                         <size> is the length of xposData array. The next-to-last
+                         dimension contains the following data:
+                             0 = bigVals value
+                             1 = smallVals value
+                             2 = NsmallPbigVals value
+                             3 = PsmallNbigVals value
+                             4 = bigSigs value
+                             5 = smallSigs value
+                             6 = NsmallPbigSigs value
+                             7 = PsmallNbigSigs values
         Param: tems - A list of TEM ID values to include in the output data set.
         """
 
@@ -866,6 +877,15 @@ class calAsymCalibXML(calCalibXML):
             
         d = self.dimensionWrite(nRange = 1, nFace = 1)
         r.appendChild(d)
+
+        # insert <xpos> element
+
+        xp = doc.createElement('xpos')
+        s = ''
+        for pos in xposData:
+            s += '%s ' % str(pos)
+        xp.setAttribute('values', s.rstrip(' '))
+        r.appendChild(xp)        
 
         for tem in tems:
             
@@ -899,14 +919,67 @@ class calAsymCalibXML(calCalibXML):
                     x = doc.createElement('xtal')
                     x.setAttribute('iXtal', str(fe))
                     l.appendChild(x)
-                        
-                    for end in range(2):
 
-                        # insert <face> elements
+                    # insert <face> element
 
-                        f = doc.createElement('face')
-                        f.setAttribute('end', 'NA')
-                        l.appendChild(f)
+                    f = doc.createElement('face')
+                    f.setAttribute('end', 'NA')
+                    x.appendChild(f)
+
+                    # insert <asym> element
+
+                    a = doc.createElement('asym')
+                    f.appendChild(a)
+                    pLen = len(xposData)
+
+                    s = ''                    
+                    for d in range(pLen):
+                        ad = asymData[tem, row, fe, 0, d]
+                        s += '%s ' % ad
+                    a.setAttribute('bigVals', s)
+
+                    s = ''                    
+                    for d in range(pLen):
+                        ad = asymData[tem, row, fe, 1, d]
+                        s += '%s ' % ad
+                    a.setAttribute('smallVals', s)
+
+                    s = ''                    
+                    for d in range(pLen):
+                        ad = asymData[tem, row, fe, 2, d]
+                        s += '%s ' % ad
+                    a.setAttribute('NsmallPbigVals', s)
+
+                    s = ''                    
+                    for d in range(pLen):
+                        ad = asymData[tem, row, fe, 3, d]
+                        s += '%s ' % ad
+                    a.setAttribute('PsmallNbigVals', s)
+
+                    s = ''                    
+                    for d in range(pLen):
+                        ad = asymData[tem, row, fe, 4, d]
+                        s += '%s ' % ad
+                    a.setAttribute('bigSigs', s)
+
+                    s = ''                    
+                    for d in range(pLen):
+                        ad = asymData[tem, row, fe, 5, d]
+                        s += '%s ' % ad
+                    a.setAttribute('smallSigs', s)
+
+                    s = ''                    
+                    for d in range(pLen):
+                        ad = asymData[tem, row, fe, 6, d]
+                        s += '%s ' % ad
+                    a.setAttribute('NsmallPbigSigs', s)
+
+                    s = ''                    
+                    for d in range(pLen):
+                        ad = asymData[tem, row, fe, 7, d]
+                        s += '%s ' % ad
+                    a.setAttribute('PsmallNbigSigs', s)                    
+                      
         
         # write output XML file
 
@@ -1075,10 +1148,22 @@ class calMevPerDacCalibXML(calCalibXML):
         calCalibXML.__init__(self, fileName, mode)
         
 
-    def write(self, tems = (0,)):
+    def write(self, energyData, tems = (0,)):
         """
         Write data to a CAL MevPerDac XML file
 
+        Param: energyData -
+            A Numeric array containing the energy conversion data
+            of shape (16, 8, 12, 8) The last dimension contains
+            the following data for each crystal:
+                0 = bigVal value
+                1 = smallVal value
+                2 = bigSig value
+                3 = smallSig value
+                4 = NEG end bigSmallRatioVals value
+                5 = NEG end bigSmallRatioSigs value
+                6 = POS end bigSmallRatioVals value
+                7 = POS end bigSmallRatioSigs value
         Param: tems - A list of TEM ID values to include in the output data set.
         """
 
@@ -1137,6 +1222,36 @@ class calMevPerDacCalibXML(calCalibXML):
                     f = doc.createElement('face')
                     f.setAttribute('end', 'NA')
                     x.appendChild(f)
+
+                    # insert <mevPerDac> element
+
+                    me = doc.createElement('mevPerDac')
+                    
+                    val = energyData[tem, row, fe, 0]
+                    me.setAttribute('bigVal', '%0.6f' % val)
+                    val = energyData[tem, row, fe, 1]
+                    me.setAttribute('smallVal', '%0.6f' % val)
+                    val = energyData[tem, row, fe, 2]
+                    me.setAttribute('bigSig', '%0.6f' % val)
+                    val = energyData[tem, row, fe, 3]
+                    me.setAttribute('smallSig', '%0.6f' % val)
+
+                    f.appendChild(me)
+
+                    # insert <bigSmall> elements
+
+                    for end in range(2):
+
+                        bs = doc.createElement('bigSmall')
+
+                        bs.setAttribute('end', POSNEG[end])
+                        val = energyData[tem, row, fe, (4 + (end * 2))]
+                        bs.setAttribute('bigSmallRatioVals', '%0.6f' % val)
+                        val = energyData[tem, row, fe, (5 + (end * 2))]
+                        bs.setAttribute('bigSmallRatioSigs', '%0.6f' % val)
+
+                        me.appendChild(bs)
+                        
         
         # write output XML file
 
@@ -1157,7 +1272,7 @@ class calMevPerDacCalibXML(calCalibXML):
                      4 = NEG end bigSmallRatioVals value
                      5 = NEG end bigSmallRatioSigs value
                      6 = POS end bigSmallRatioVals value
-                     7 = POS end bigSmallRatioVals value
+                     7 = POS end bigSmallRatioSigs value
         """
         
         # verify file type
@@ -1259,10 +1374,18 @@ class calPedCalibXML(calCalibXML):
         calCalibXML.__init__(self, fileName, mode)
         
 
-    def write(self, tems = (0,)):
+    def write(self, pedData, tems = (0,)):
         """
         Write data to a CAL Ped XML file
 
+        Param: pedData -
+            A Numeric array containing the pedestal data
+            of shape (16, 8, 2, 12, 4, 3) The last dimension contains
+            the following data for each crystal end and energy
+            range:
+                0 = avg value
+                1 = sig value
+                2 = cos values
         Param: tems - A list of TEM ID values to include in the output data set.
         """
 
@@ -1280,7 +1403,7 @@ class calPedCalibXML(calCalibXML):
 
         # insert <dimension> element  
             
-        d = self.dimensionWrite(nRange = 1, nFace = 1)
+        d = self.dimensionWrite(nRange = 4, nFace = 2)
         r.appendChild(d)
 
         for tem in tems:
@@ -1316,11 +1439,27 @@ class calPedCalibXML(calCalibXML):
                     x.setAttribute('iXtal', str(fe))
                     l.appendChild(x)
 
-                    # insert <face> element
+                    for end in range(2):
 
-                    f = doc.createElement('face')
-                    f.setAttribute('end', 'NA')
-                    x.appendChild(f)
+                        # insert <face> elements
+
+                        f = doc.createElement('face')
+                        f.setAttribute('end', POSNEG[end])
+                        x.appendChild(f)
+
+                        # insert <calPed> elements
+
+                        for erng in range(4):
+
+                            p = doc.createElement('calPed')
+                            p.setAttribute('range', calConstant.CRNG[erng])
+                            ped = pedData[tem, row, end, fe, erng, 0]
+                            p.setAttribute('avg', '%0.6f' % ped)
+                            ped = pedData[tem, row, end, fe, erng, 1]
+                            p.setAttribute('sig', '%0.6f' % ped)
+                            ped = pedData[tem, row, end, fe, erng, 2]
+                            p.setAttribute('cos', '%0.6f' % ped)
+                            f.appendChild(p)
         
         # write output XML file
 
@@ -1397,7 +1536,7 @@ class calPedCalibXML(calCalibXML):
                             pedData[tem, row, end, fe, erng, 1] = sig
 
                             #cos = float(p.getAttribute('cos'))
-                            #pedData[tem, row, end, fe, erng, 2] = cos
+                            pedData[tem, row, end, fe, erng, 2] = 2.0
                            
                                     
         return pedData           
