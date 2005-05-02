@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon May  2 09:26:27 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	asymMerge.py intNonlinMerge.py mevPerDacMerge.py pedMerge.py 
+Log Message:
+Added source tower number as an option to the input file lists in the config file; this value is used when indexing the source data array from that tower.
+    *
+------------------------------------------------------------
 User: dwood  Mon May  2 09:10:10 PDT 2005
 calibGenCAL/python
 
