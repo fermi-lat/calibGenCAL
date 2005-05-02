@@ -6,15 +6,15 @@ intNonlinMerge <cfg_file> <out_xml_file>
 
 where:
     <cfg_file> = The application configuration file to use.
-    <out_xml_file> = The merged CAL Int_Nonlin calibration XML file to validate.
+    <out_xml_file> = The merged CAL Int_Nonlin calibration XML file to output.
 """
 
 
 __facility__  = "Offline"
 __abstract__  = "Tool to merge mutilple CAL IntNonlin calibration XML files."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/25 15:27:07 $"
-__version__   = "$Revision: 1.5 $, $Author: dwood $"
+__date__      = "$Date: 2005/05/02 14:15:34 $"
+__version__   = "$Revision: 1.6 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
