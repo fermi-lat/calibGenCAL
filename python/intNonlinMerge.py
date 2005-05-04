@@ -13,8 +13,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to merge mutilple CAL IntNonlin calibration XML files."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/05/02 14:55:49 $"
-__version__   = "$Revision: 1.7 $, $Author: dwood $"
+__date__      = "$Date: 2005/05/02 16:26:27 $"
+__version__   = "$Revision: 1.8 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -220,9 +220,7 @@ if __name__ == '__main__':
         temList.append(f.destTwr)
 
     outFile = calCalibXML.calIntNonlinCalibXML(outName, calCalibXML.MODE_CREATE)
-    outFile.write(dacDataOut, adcDataOut, startTime = info['startTime'], stopTime = info['stopTime'], \
-                  triggers = info['triggers'], mode = info['mode'], source = info['mode'], \
-                  tems = temList)
+    outFile.write(dacDataOut, adcDataOut, inputSample = None, tems = temList)
     outFile.close()
 
 
