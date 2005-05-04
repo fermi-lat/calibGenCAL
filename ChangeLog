@@ -1,15 +1,4 @@
 ------------------------------------------------------------
-User: fewtrell  Wed May  4 10:45:18 PDT 2005
-calibGenCAL/doc
-
-Modified Files:
-	release.notes 
-Log Message:
-added optional disable grouping in ciFit (more elegant fix for bad calib_gain setting data).
-prettied some comments in ciFit.
-slight modifications to the progress print outs
-    *
-------------------------------------------------------------
 User: dwood  Wed May  4 09:43:59 PDT 2005
 calibGenCAL/python
 
