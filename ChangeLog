@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Wed May  4 09:38:19 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Changed interface to calIntNonlinCalibXML.write(); made <inputSample> element output optional from dictionary paramter.
+    *
+------------------------------------------------------------
 User: dwood  Mon May  2 09:26:27 PDT 2005
 calibGenCAL/python
 
