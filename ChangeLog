@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Wed May  4 09:43:59 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Corrected value of <dimension> nDacCol attribute value when writing IntNonlin files
+    *
+------------------------------------------------------------
 User: dwood  Wed May  4 09:38:19 PDT 2005
 calibGenCAL/python
 
