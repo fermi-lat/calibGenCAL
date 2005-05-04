@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/05/04 16:38:19 $"
-__version__   = "$Revision: 1.17 $, $Author: dwood $"
+__date__      = "$Date: 2005/05/04 16:43:59 $"
+__version__   = "$Revision: 1.18 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -788,8 +788,13 @@ class calIntNonlinCalibXML(calCalibXML):
         isList = g.getElementsByTagName('inputSample')
         isLen = len(isList)
         if isLen != 1:
-            raise calFileReadExcept, "found %d <inputSample> elements (expected 1)" % isLen
-
+            i['startTime'] = None
+            i['stopTime'] = None
+            i['triggers'] = None
+            i['mode'] = None
+            i['source'] = None
+            return i
+            
         # get <inputSample> attribute values
 
         isn = isList[0]
