@@ -559,8 +559,10 @@ void RootCiTrig::Go(Int_t nEvtAsked)
     // Digi ONLY analysis
     if (m_digiEvt) {
       m_evtId = m_digiEvt->getEventId();
-      if(m_evtId%1000 == 0)
-        m_cfg.ostr << " event " << m_evtId << endl;
+      if(m_evtId%1000 == 0) {
+        m_cfg.ostr << " event " << m_evtId << '\r';
+        m_cfg.ostr.flush();
+      }
 
       DigiCal();
     }
@@ -728,8 +730,10 @@ void RootMuTrig::Go()
     // Digi ONLY analysis
     if (m_digiEvt) {
       m_evtId = m_digiEvt->getEventId();
-      if(m_evtId%1000 == 0)
+      if(m_evtId%1000 == 0) {
         m_cfg.ostr << " event " << m_evtId << endl;
+        m_cfg.ostr.flush();
+      }
 
       DigiCal();
     }

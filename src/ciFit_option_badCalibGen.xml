@@ -3,8 +3,8 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLBASEROOT)/xml/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit_option.xml,v 1.9 2005/04/26 03:09:16 fewtrell Exp $"
-       cvs_Revision="$Revision: 1.9 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit_option_badCalibGen.xml,v 1.1 2005/04/27 18:09:59 chehtman Exp $"
+       cvs_Revision="$Revision: 1.1 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP"      value="2004-11-11-14:39"> Timestamp for test run.</item>
@@ -28,15 +28,16 @@
 
     <item name="LOGFILE"           value=""> application log file duplicates stdout (default "" autogenerates filename from input filename)</item>
     
-    <item name="ROOTFILE_LE1"   value="Z:\FM\Module\FM110\FM110_EMI_calibGen_050225140955\root\050225141852_FM110_EMI_calu_collect_ci_singlex16.root"> input DIGIROOT file LE </item>
-    <item name="ROOTFILE_HE1"   value="Z:\FM\Module\FM110\FM110_EMI_calibGen_050225140955\root\050225142253_FM110_EMI_calu_collect_ci_singlex16.root"> input DIGIROOT file HE </item>
+    <item name="ROOTFILE_LE1"   value="D:\GLAST\DATA\slac_1_of_2_tower_ciFit\digitization-v3r1p10_135001585_digi_DIGI.root"> input DIGIROOT file LE </item>
+    <item name="ROOTFILE_HE1"   value="D:\GLAST\DATA\slac_1_of_2_tower_ciFit\digitization-v3r1p10_135001586_digi_DIGI.root"> input DIGIROOT file HE </item>
   </section>
 
   <section name="SPLINE_CFG">
-    <item name="GROUP_WIDTH"   value="3,4,3,4"> # of points to use for each smoothing step, 1 entry per RANGE </item>
-    <item name="SKIP_LOW"      value="3,1,100,100"> # of points at beggining of array to copy verbatim and skip smoothing step </item>
-    <item name="SKIP_HIGH"     value="6,10,100,100"> # of points at end of array to copy verbatim and skip smoothing step </item>
-    <item name="N_PTS_MIN"     value="22,40,300,300"> minimum # of spline points to output per range </item>
+    <item name="ENABLE_GRP"  value="1,1,0,0"> (boolean vector) per adc-range, enable grouping/smoothing if true</item>
+    <item name="GROUP_WIDTH" value="3,4,3,4"> # of points to use for each smoothing step, 1 entry per RANGE </item>
+    <item name="SKIP_LOW"    value="3,1,3,1"> # of points at beggining of array to copy verbatim and skip smoothing step </item>
+    <item name="SKIP_HIGH"   value="6,10,6,10"> # of points at end of array to copy verbatim and skip smoothing step </item>
+    <item name="N_PTS_MIN"   value="22,40,22,41"> minimum # of spline points to output per range </item>
   </section>
   
   <section name="GENERAL"> General program options

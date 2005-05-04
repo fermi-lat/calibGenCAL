@@ -85,3 +85,5 @@ v3r6p1 warnings on linux compile fixed
 v3r6p2 Indexing of CalDigiCol wasn't working for multitower.  switched to proper iterator, also switched to TClonesArray
 
 v3r6p3 Added the options files (ciFit_option_badCalibGen and muonCalib_option_badcalibGen) to handle properly the charge injection calibrations (files produced by calibGen online suite) with incorrect calibGain for high energy diode. Modified names for bias and adc2nrg output files. Fixed the bug in defining the maximum non-saturated point in charge injection calibration. Improved the stability of thershold fit in runMuTrigEff by assigning very big error to the efficiency histogram bins with no events.
+
+v3r6p4 Added optional disable grouping in ciFit (more elegant fix for the bad calib_gain).  fixed comments in the spline grouping portion of cifit.  
