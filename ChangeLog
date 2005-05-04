@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Wed May  4 11:32:07 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Made prescience of <inputSample> element optional in calIntNonlinCalibXML.info() method; items are set to None if the <inputSample> element is not available.
+    *
+------------------------------------------------------------
 User: dwood  Wed May  4 11:28:04 PDT 2005
 calibGenCAL/python
 
