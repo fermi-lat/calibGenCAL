@@ -1,5 +1,18 @@
 ------------------------------------------------------------
 User: fewtrell  Wed May  4 10:45:18 PDT 2005
+calibGenCAL/src
+
+Modified Files:
+	CalDefs.h CfCfg.cxx CfCfg.h MuonCalib.cxx ciFit_option.xml 
+	ciFit_option_badCalibGen.xml runCIFit.cxx runMuThreshEvol.cxx 
+	runMuTrigEff.cxx 
+Log Message:
+added optional disable grouping in ciFit (more elegant fix for bad calib_gain setting data).
+prettied some comments in ciFit.
+slight modifications to the progress print outs
+    *
+------------------------------------------------------------
+User: fewtrell  Wed May  4 10:45:18 PDT 2005
 calibGenCAL/doc
 
 Modified Files:
