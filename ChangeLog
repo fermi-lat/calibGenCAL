@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Wed May  4 11:28:04 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	intNonlinMerge.py 
+Log Message:
+Revised call to calIntNonlinCalibXML.write() to use new interface; <inputSample> attributes no longer required as a set of parameters.
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r6p4, operation: add
 Package: calibGenCAL
