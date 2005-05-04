@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/05/02 15:47:05 $"
-__version__   = "$Revision: 1.15 $, $Author: dwood $"
+__date__      = "$Date: 2005/05/02 16:10:10 $"
+__version__   = "$Revision: 1.16 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -524,8 +524,7 @@ class calIntNonlinCalibXML(calCalibXML):
         calCalibXML.__init__(self, fileName, mode)
         
 
-    def write(self, dacData, adcData, startTime = None, stopTime = None, \
-              triggers = None, mode = None, source = None, tems = (0,)):             
+    def write(self, dacData, adcData, inputSample = None, tems = (0,)):             
         """
         Write data to a CAL IntNonlin XML file
 
@@ -539,11 +538,12 @@ class calIntNonlinCalibXML(calCalibXML):
                          correspoding DAC values array, the extra ADC values at
                          the end should be set to '-1'.  This will prevent them
                          from being written to the XML file.
-        Param: startTime - The <inputSample> 'startTime' attribute value.
-        Param: stopTime - The <inputSample> 'stopTime' attribute value.
-        Param: trigger - The <inputSample> 'trigger' attribute value.
-        Param: mode - The <inputSample> 'mode' attribute value.
-        Param: source - The <inputSample> 'source' attribute value.
+        Param: inputSample - A dictionary of <inputSample> values:
+            'startTime' - The <inputSample> 'startTime' attribute value.
+            'stopTime' - The <inputSample> 'stopTime' attribute value.
+            'trigger' - The <inputSample> 'trigger' attribute value.
+            'mode' - The <inputSample> 'mode' attribute value.
+            'source' - The <inputSample> 'source' attribute value.
         Param: tems - A list of TEM ID values to include in the output data set.
         """
 
@@ -561,18 +561,19 @@ class calIntNonlinCalibXML(calCalibXML):
 
         # insert <inputSample> element
 
-        s = doc.createElement('inputSample')
-        if startTime is not None:
-            s.setAttribute('startTime', startTime)
-        if stopTime is not None:
-            s.setAttribute('stopTime', stopTime)
-        if triggers is not None:
-            s.setAttribute('triggers', triggers)
-        if mode is not None:
-            s.setAttribute('mode', mode)
-        if source is not None:
-            s.setAttribute('source', source)
-        g.appendChild(s)
+        if inputSample is not None:
+            s = doc.createElement('inputSample')
+            if startTime is not None:
+                s.setAttribute('startTime', inputSample['startTime'])
+            if stopTime is not None:
+                s.setAttribute('stopTime', inputSample['stopTime'])
+            if triggers is not None:
+                s.setAttribute('triggers', inputSample['triggers'])
+            if mode is not None:
+                s.setAttribute('mode', inputSample['mode'])
+            if source is not None:
+                s.setAttribute('source', inputSample['source'])
+            g.appendChild(s)
 
         # insert <dimension> element  
             
