@@ -131,14 +131,14 @@ namespace CalDefs {
     TwrNum(short val) : 
       SimpleId(val) {}
     
-    short getRow() const {return m_data/N_TWR_COLS;}
-    short getCol() const {return m_data%N_TWR_COLS;}
+    short getRow() const {return m_data/N_COLS;}
+    short getCol() const {return m_data%N_COLS;}
     
     static const short N_VALS=16;
     bool isValid() const {return m_data < N_VALS;}
     
-  private:
-    static const short N_TWR_COLS = 4;
+    static const short N_COLS = 4;
+    static const short N_ROWS = 4;
   };
 
   class LyrNum : public SimpleId {

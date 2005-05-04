@@ -97,6 +97,7 @@ void CfData::FitData() {
     for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
       tRngIdx rngIdx(faceIdx,rng);
 
+      // point to current adc vector
       vector<float> &curADC = m_adcMean[rngIdx];
       // get pedestal
       float ped     = curADC[0];
@@ -124,54 +125,91 @@ void CfData::FitData() {
                      m_dacArr,
                      tmpADC);
 
-      // copy SKPLO points directly from beginning of array.
-      int spl_idx = 0;
-      for (int i = 0; i < skpLo; i++,spl_idx++) {
-        if (curADC[i] > adc_max) break; // quit if past the max_value (unlikely)
-        m_splineADC[rngIdx].push_back(curADC[i]);
-        if (m_splineADC[rngIdx].size() >  m_splineDAC[rng].size())
-          m_splineDAC[rng].push_back((int)m_dacArr[i]);
-      }
+      if (!m_cfg.splineEnableGrp[rng]) {
+        ////////////////////////
+        // GROUPING DISNABLED //
+        ////////////////////////
+        for (int i = 0; i <= last_idx; i++) {
+          // quit past the max_value
+          if (curADC[i] > adc_max) break; 
+          
+          // put new ADC val on list
+          m_splineADC[rngIdx].push_back(curADC[i]);
 
-      //
-      // RUN SPLINE FITS
-      //
-      // start one grp above skiplo & go as high as you can w/out entering skpHi
-      for (int cp = skpLo + grpWid - 1; // cp = 'center point'
-           cp < (nPtsMin-skpLo-skpHi)*grpWid + skpLo;
-           cp += grpWid, spl_idx++) {
-        int lp = cp - grpWid;
-        int hp  = cp + grpWid;
+          // put new DAC val on global output list if needed
+          if (m_splineADC[rngIdx].size() >  m_splineDAC[rng].size())
+            m_splineDAC[rng].push_back((int)m_dacArr[i]);
+        }
+      } else {
 
-        myGraph.Fit(&splineFunc,"QN","",m_dacArr[lp],m_dacArr[hp]);
-        float myPar1 = splineFunc.GetParameter(0);
-        float myPar2 = splineFunc.GetParameter(1);
-        float myPar3 = splineFunc.GetParameter(2);
+        //////////////////////
+        // GROUPING ENABLED //
+        //////////////////////
 
-        int   fitDAC = (int)m_dacArr[cp];
-        float fitADC = myPar1 + fitDAC*(myPar2 + fitDAC*myPar3);
+        // PART I: NO SMOOTHING/GROUPING FOR SKIPLO PTS ////////////////////////
+        // copy SKPLO points directly from beginning of array.
 
-        if (fitADC > adc_max) break; // quit if we have past the max_adc_value
+        int spl_idx = 0;
+        for (int i = 0; i < skpLo; i++,spl_idx++) {
+          // quit past the max_value- unlikely
+          if (curADC[i] > adc_max) break; 
+          
+          // put new ADC val on list
+          m_splineADC[rngIdx].push_back(curADC[i]);
 
-        // output result
-        m_splineADC[rngIdx].push_back(fitADC);
-        if (m_splineADC[rngIdx].size() > m_splineDAC[rng].size())
-          m_splineDAC[rng].push_back(fitDAC);
-      }
+          // put new DAC val on global output list if needed
+          if (m_splineADC[rngIdx].size() >  m_splineDAC[rng].size())
+            m_splineDAC[rng].push_back((int)m_dacArr[i]);
+        }
 
-      // copy SKPHI points directly from face of array.
-      for (int i = (nPtsMin-skpLo-skpHi)*grpWid + skpLo;
-           i <= last_idx;
-           i++,spl_idx++) {
-        if (curADC[i] > adc_max) break; // quit if past the max_adc_value
+        // PART II: GROUP & SMOOTH MIDDLE RANGE  ///////////////////////////////
+        // start one grp above skiplo & go as hi as you can w/out entering skpHi
+        for (int cp = skpLo + grpWid - 1; // cp = 'center point'
+             cp < (nPtsMin-skpLo-skpHi)*grpWid + skpLo;
+             cp += grpWid, spl_idx++) {
+          int lp = cp - grpWid; // 1st point in group
+          int hp  = cp + grpWid; // last point in group
 
-        m_splineADC[rngIdx].push_back(curADC[i]); 
-        if (m_splineADC[rngIdx].size() >  m_splineDAC[rng].size())
-          m_splineDAC[rng].push_back((int)m_dacArr[i]);
+          // fit curve to grouped points
+          myGraph.Fit(&splineFunc,"QN","",m_dacArr[lp],m_dacArr[hp]);
+          float myPar1 = splineFunc.GetParameter(0);
+          float myPar2 = splineFunc.GetParameter(1);
+          float myPar3 = splineFunc.GetParameter(2);
+
+          // use DAC value from center point
+          int   fitDAC = (int)m_dacArr[cp];
+          // eval smoothed ADC value
+          float fitADC = myPar1 + fitDAC*(myPar2 + fitDAC*myPar3);
+
+          // quit if we have past the max_adc_value
+          if (fitADC > adc_max) break;
+
+          // put new ADC val on list
+          m_splineADC[rngIdx].push_back(fitADC);
+
+          // put new DAC val on global output list if needed
+          if (m_splineADC[rngIdx].size() > m_splineDAC[rng].size())
+            m_splineDAC[rng].push_back(fitDAC);
+        }
+
+        // PART III: NO SMOOTHING/GROUPING FOR LAST SKPHI PTS //////////////////
+        // copy SKPHI points directly from face of array.
+        for (int i = (nPtsMin-skpLo-skpHi)*grpWid + skpLo;
+             i <= last_idx;
+             i++,spl_idx++) {
+          // quit if past the max_adc_value
+          if (curADC[i] > adc_max) break;
+
+          // put new ADC val on list
+          m_splineADC[rngIdx].push_back(curADC[i]); 
+
+          // put new DAC val on global output list if needed
+          if (m_splineADC[rngIdx].size() >  m_splineDAC[rng].size())
+            m_splineDAC[rng].push_back((int)m_dacArr[i]);
+        }
       }
     }
   }
-
   delete tmpADC;
 }
 
@@ -300,7 +338,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.14 2005/04/26 15:28:14 fewtrell Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.15 2005/04/27 16:44:06 fewtrell Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
@@ -325,12 +363,12 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   xmlFile << "<!-- number of collections of dac settings should normally be" << endl;
   xmlFile << "     0 (the default), if dacs aren't used to acquire data, or " << endl;
   xmlFile << "     equal to nRange -->" << endl;
-  xmlFile << " <dimension nRow=\"" << 1 
-          << "\" nCol=\"" << 1 
-          << "\" nLayer=\"" << LyrNum::N_VALS 
-          << "\" nXtal=\""  << ColNum::N_VALS 
-          << "\" nFace=\""  << FaceNum::N_VALS 
-          << "\" nRange=\"" << RngNum::N_VALS << "\"" << endl;
+  xmlFile << " <dimension nRow=\"" << TwrNum::N_ROWS
+          << "\" nCol=\""          << TwrNum::N_COLS
+          << "\" nLayer=\""        << LyrNum::N_VALS 
+          << "\" nXtal=\""         << ColNum::N_VALS 
+          << "\" nFace=\""         << FaceNum::N_VALS 
+          << "\" nRange=\""        << RngNum::N_VALS << "\"" << endl;
   xmlFile << "           nDacCol=\"" << RngNum::N_VALS << "\" />" << endl;
 
   //
@@ -603,8 +641,10 @@ void RootCI::Go(Int_t nEvtAsked)
     // Digi ONLY analysis
     if (m_digiEvt) {
       m_evtId = m_digiEvt->getEventId();
-      if(m_evtId%1000 == 0)
-        m_cfg.ostrm << " event " << m_evtId << endl;
+      if(m_evtId%1000 == 0) {
+        m_cfg.ostrm << " event " << m_evtId << '\r';
+        m_cfg.ostrm.flush();
+      }
 
       DigiCal();
     }

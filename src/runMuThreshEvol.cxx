@@ -505,8 +505,10 @@ UInt_t RootThreshEvol::getEvent(UInt_t ievt) {
   int nb = RootFileAnalysis::getEvent(ievt);
   if (m_digiEvt && nb) { //make sure that m_digiEvt is valid b/c we will assume so after this
     m_evtId = m_digiEvt->getEventId();
-    if(m_evtId%1000 == 0)
-      m_ostrm << " event " << m_evtId << endl;
+    if(m_evtId%1000 == 0) {
+      m_ostrm << " event " << m_evtId << '\r';
+      m_ostrm.flush();
+    }
   }
 
   return nb;

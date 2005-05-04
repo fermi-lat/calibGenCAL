@@ -142,8 +142,11 @@ UInt_t MuonCalib::getEvent(UInt_t ievt) {
   //make sure that m_digiEvt is valid b/c we will assume so after this
   if (m_digiEvt && nb) { 
     m_evtId = m_digiEvt->getEventId();
-    if(m_evtId%1000 == 0)
-      m_ostrm << " event " << m_evtId << endl;
+    if(m_evtId%1000 == 0) {
+      m_ostrm << " event " << m_evtId << '\r';
+      m_ostrm.flush();
+    }
+    
   }
 
   return nb;
@@ -1720,10 +1723,12 @@ void MuonCalib::writePedsXML(const string &filename, const string &dtdPath) {
     
   outfile << " calibType=\"CAL_Ped\" fmtVersion=\"v2r2\" >" << endl;
   outfile << " </generic>" << endl;
-  outfile << " <dimension nRow=\"1\" nCol=\"1\" nLayer=\"" << LyrNum::N_VALS 
-          << "\" nXtal=\""  << ColNum::N_VALS 
-          << "\" nFace=\""   << FaceNum::N_VALS 
-          << "\" nRange=\"" << RngNum::N_VALS 
+  outfile << " <dimension nRow=\"" << TwrNum::N_ROWS 
+          << "\" nCol=\""          << TwrNum::N_COLS 
+          << "\" nLayer=\""        << LyrNum::N_VALS 
+          << "\" nXtal=\""         << ColNum::N_VALS 
+          << "\" nFace=\""         << FaceNum::N_VALS 
+          << "\" nRange=\""        << RngNum::N_VALS 
           << "\"/>" << endl;
   
   // currently only loop through one tower.
@@ -1786,11 +1791,13 @@ void MuonCalib::writeAsymXML(const string &filename, const string &dtdPath) {
   
   outfile << " calibType=\"CAL_Asym\" fmtVersion=\"v2r2\" >" << endl;
   outfile << " </generic>"  << endl;
-  outfile << " <dimension nRow=\"1\" nCol=\"1\" nLayer=\"" << LyrNum::N_VALS 
-          << "\" nXtal=\""  << ColNum::N_VALS 
-          << "\" nFace=\""   << 1
-          << "\" nRange=\"" << 1
-          << "\" nXpos=\""  << 1
+  outfile << " <dimension nRow=\"" << TwrNum::N_ROWS
+          << "\" nCol=\""          << TwrNum::N_COLS
+          << "\" nLayer=\""        << LyrNum::N_VALS 
+          << "\" nXtal=\""         << ColNum::N_VALS 
+          << "\" nFace=\""         << 1
+          << "\" nRange=\""        << 1
+          << "\" nXpos=\""         << 1
           << "\"/>" << endl;
   
   // -- GENERATE xpos VALUES -- //
@@ -1893,7 +1900,9 @@ void MuonCalib::writeMPDXML(const string &filename, const string &dtdPath) {
           << "\" timestamp=\"" << m_cfg.timestamp << "\"";
   outfile << " calibType=\"CAL_MevPerDac\" fmtVersion=\"v2r2\" >" << endl;
   outfile << " </generic>" << endl;
-  outfile << " <dimension nRow=\"1\" nCol=\"1\" nLayer=\"" << LyrNum::N_VALS 
+  outfile << " <dimension nRow=\"" << TwrNum::N_ROWS
+          << "\" nCol=\""          << TwrNum::N_COLS
+          << "\" nLayer=\""        << LyrNum::N_VALS 
           << "\" nXtal=\""  << ColNum::N_VALS 
           << "\" nFace=\""  << 1 
           << "\" nRange=\"" << 1 

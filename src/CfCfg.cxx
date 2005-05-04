@@ -63,10 +63,11 @@ void CfCfg::readCfgFile(const string& path) {
   genLogfile = ifile.getBool(GENERAL.c_str(), "GENERATE_LOGFILE") != 0;
 
   // SPLINE CFG
-  splineGroupWidth = ifile.getIntVector(SPLINE_CFG.c_str(), "GROUP_WIDTH");
-  splineSkipLow    = ifile.getIntVector(SPLINE_CFG.c_str(), "SKIP_LOW"  );
-  splineSkipHigh   = ifile.getIntVector(SPLINE_CFG.c_str(), "SKIP_HIGH" );
-  splineNPtsMin    = ifile.getIntVector(SPLINE_CFG.c_str(), "N_PTS_MIN" );
+  splineEnableGrp  = ifile.getIntVector(SPLINE_CFG.c_str(), "ENABLE_GRP");
+  splineGroupWidth = ifile.getIntVector(SPLINE_CFG.c_str(),  "GROUP_WIDTH");
+  splineSkipLow    = ifile.getIntVector(SPLINE_CFG.c_str(),  "SKIP_LOW"  );
+  splineSkipHigh   = ifile.getIntVector(SPLINE_CFG.c_str(),  "SKIP_HIGH" );
+  splineNPtsMin    = ifile.getIntVector(SPLINE_CFG.c_str(),  "N_PTS_MIN" );
   
   // Geneate derived config quantities.
   nDACs          = dacVals.size();

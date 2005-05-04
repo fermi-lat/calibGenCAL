@@ -62,10 +62,11 @@ class CfCfg : ICfg {
 
 
   // SECTION: SPLINE CONFIG //
-  vector<int> splineGroupWidth;
-  vector<int> splineSkipLow;
-  vector<int> splineSkipHigh;
-  vector<int> splineNPtsMin;
+  vector<int>  splineEnableGrp;
+  vector<int>  splineGroupWidth;
+  vector<int>  splineSkipLow;
+  vector<int>  splineSkipHigh;
+  vector<int>  splineNPtsMin;
 
   // DERIVED FROM CONFIG PARMS //
   int nPulsesPerXtal;
