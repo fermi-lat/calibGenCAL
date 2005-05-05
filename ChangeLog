@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Thu May  5 14:27:08 PDT 2005
+calibGenCAL/python/cfg
+
+Added Files:
+	asymMerge.cfg intNonlinMerge.cfg mevPerDacMerge.cfg 
+	pedMerge.cfg 
+Log Message:
+preparing for debut of python merge scripts.
+    *
+------------------------------------------------------------
+User: fewtrell  Thu May  5 14:27:08 PDT 2005
 calibGenCAL/doc
 
 Modified Files:
