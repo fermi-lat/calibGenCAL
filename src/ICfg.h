@@ -10,11 +10,10 @@
 // STD INCLUDES
 #include <string>
 
-/*!
-   \class ICfg Abastract template class for config classes used in calibGenCAL
- */
-
 using namespace std;
+
+/*! \brief Abstract template class for config classes used in calibGenCAL
+ */
 
 class ICfg {
 public:
