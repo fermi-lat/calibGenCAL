@@ -11,8 +11,7 @@ calibrations.
 of 10 spline points along each crystal length.
 - Integral Nonlinearity - adc2dac conversion in all 4 ranges.  
 Corrects for nonlinearity in adc scale.
-- MevPerDAC - Relastionship of total energy deposited to the geometric mean of 
-the DAC values at both ends of the xtal.  Onboard DAC scale units are used for 
+- MevPerDAC - MeV/sqrt(dacP*dacN) for each xtal/diode size.  Effectively an inverse gain measurement.  Onboard DAC scale units are used for 
 calculation b/c it is much more linear than ADC scale.
  
 \b Applications:
