@@ -11,7 +11,8 @@ calibrations.
 of 10 spline points along each crystal length.
 - Integral Nonlinearity - adc2dac conversion in all 4 ranges.  
 Corrects for nonlinearity in adc scale.
-- MevPerDAC - MeV/sqrt(dacP*dacN) for each xtal/diode size.  Effectively an inverse gain measurement.  Onboard DAC scale units are used for 
+- MevPerDAC - Relastionship of total energy deposited to the geometric mean of 
+the DAC values at both ends of the xtal.  Onboard DAC scale units are used for 
 calculation b/c it is much more linear than ADC scale.
  
 \b Applications:
@@ -39,4 +40,22 @@ specific class that provide the data structures/event loop/output code.
 - \b CGCUtil.h - contains generic, non-glast related utility functions which are
 shared throughout the calibGenCAL package. (string, stream & vector manipulation
 for example).
+
+\b Python Script Utilities:
+The calibGenCAL python utilites have been tested using Python 2.3 and Python 2.4.
+Their use also requires that the following python extensions be installed:
+- \b Numeric
+- \b PyXML
+A set of shell scripts in the %CALIBGENCALROOT%\python directory may be used to
+launch the tools.
+- \b intNonlinMerge [-V] <cfg_file> <out_xml_file>
+- \b pedMerge [-V] <cfg_file> <out_xml_file>
+- \b mevPerDacMerge [-V] <cfg_file> <out_xml_file>
+- \b asymMerge [-V] <cfg_file> <out_xml_file>
+The merge tools take multiple single-tower CAL calibration XML files and produce 
+a single output file of the same type, with the option to specify the source and
+destination tower addressing.  All of the python merge tools take a configuration 
+file as input.  This configuration file specifies the input data sets and tower 
+addressing. Sample configuration scripts for these tools are included in the 
+package.  The -V option increases the verbosity of the diagnostic output.
 */
