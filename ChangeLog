@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri May  6 10:45:26 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	tholdCIGen.bat 
+Log Message:
+Made paths use CALIBGENCALROOT env variable.
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r6p5, operation: add
 Package: calibGenCAL
