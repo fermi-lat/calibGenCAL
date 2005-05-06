@@ -1,0 +1,7 @@
+#! /bin/sh
+# CVS $Id: sbx,v 1.1 2004/04/21 18:01:26 dwood Exp $
+
+PYTHONPATH=${CALIBGENCALROOT}/python;${PYTHONROOT}
+export PYTHONPATH
+
+python ${CALIBGENCALROOT}/python/intNonlinMerge.py "$@"
