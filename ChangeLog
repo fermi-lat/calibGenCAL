@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon May  9 09:01:27 PDT 2005
+calibGenCAL/python
+
+Added Files:
+	mevPerDacVal.bat mevPerDacVal.py 
+Log Message:
+Validation script for CAL MevPerDac XML calibration data files.
+    *
+------------------------------------------------------------
 User: dwood  Mon May  9 06:35:03 PDT 2005
 calibGenCAL/python
 
