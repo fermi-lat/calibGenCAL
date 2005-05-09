@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: dwood  Mon May  9 09:44:47 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	intNonlinMerge 
+Added Files:
+	asymMerge mevPerDacMerge pedMerge 
+Log Message:
+Linux sh launch scripts for python merge tools.
+    *
+------------------------------------------------------------
 User: dwood  Mon May  9 09:01:27 PDT 2005
 calibGenCAL/python
 
