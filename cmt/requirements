@@ -28,3 +28,6 @@ application runMuTrigEff runMuTrigEff.cxx MtCfg.cxx RootFileAnalysis.cxx CGCUtil
 
 application runMuThreshEvol runMuThreshEvol.cxx TeCfg.cxx RootFileAnalysis.cxx CGCUtil.cxx CalDefs.cxx
 
+setup_script setup_python
+
+
