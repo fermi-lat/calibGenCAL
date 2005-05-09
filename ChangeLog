@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon May  9 13:19:05 PDT 2005
+calibGenCAL/cmt
+
+Modified Files:
+	.cvsignore 
+Log Message:
+Removed bat,sh, and csh wildcard patterns.
+    *
+------------------------------------------------------------
 User: dwood  Mon May  9 09:44:47 PDT 2005
 calibGenCAL/python
 
