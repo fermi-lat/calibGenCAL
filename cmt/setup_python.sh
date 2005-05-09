@@ -1,0 +1,4 @@
+
+PATH=${CALIBGENCALROOT}/python:${PATH}
+export PATH
+
