@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon May  9 14:08:57 PDT 2005
+calibGenCAL/cmt
+
+Removed Files:
+	setup_python.bat setup_python.sh setup_python.csh 
+Log Message:
+PATH setup does not work with user setup scripts; use path_append in requirements file instead.
+    *
+------------------------------------------------------------
 User: dwood  Mon May  9 13:27:56 PDT 2005
 calibGenCAL/cmt
 
