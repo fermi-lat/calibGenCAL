@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon May  9 06:35:03 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	asymMerge.py intNonlinMerge.py mevPerDacMerge.py pedMerge.py 
+Log Message:
+Allowed for multiple intput file types for common merge tool config file.
+    *
+------------------------------------------------------------
 User: dwood  Fri May  6 10:50:44 PDT 2005
 calibGenCAL/python
 
