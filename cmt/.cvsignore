@@ -1,8 +1,5 @@
 setup.*
 cleanup.*
-*.bat
-*.csh
-*.sh
 NMake
 Make*
 *.mak*
