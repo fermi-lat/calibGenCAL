@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon May  9 13:27:56 PDT 2005
+calibGenCAL/cmt
+
+Added Files:
+	setup_python.csh setup_python.sh 
+Log Message:
+Shell scripts to setup calibGenCAL python for linux targets.
+    *
+------------------------------------------------------------
 User: dwood  Mon May  9 13:22:21 PDT 2005
 calibGenCAL/cmt
 
