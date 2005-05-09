@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: dwood  Mon May  9 13:22:21 PDT 2005
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Added Files:
+	setup_python.bat 
+Log Message:
+Setup BAT script to handle calibGenCAL python environment setup.
+    *
+------------------------------------------------------------
 User: dwood  Mon May  9 13:19:05 PDT 2005
 calibGenCAL/cmt
 
