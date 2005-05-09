@@ -18,6 +18,7 @@ use calibUtil
 macro_append ROOT_libs " -lHist -lGraf -lGpad " \
              WIN32 " ${ROOT_PATH}/lib/libHist.lib ${ROOT_PATH}/lib/libGraf.lib ${ROOT_PATH}/lib/libGpad.lib "
 
+path_append PATH ${CALIBGENCALROOT}/python
 
 
 application runMuonCalib runMuonCalib.cxx MuonCalib.cxx McCfg.cxx RootFileAnalysis.cxx CGCUtil.cxx CalDefs.cxx
@@ -28,6 +29,7 @@ application runMuTrigEff runMuTrigEff.cxx MtCfg.cxx RootFileAnalysis.cxx CGCUtil
 
 application runMuThreshEvol runMuThreshEvol.cxx TeCfg.cxx RootFileAnalysis.cxx CGCUtil.cxx CalDefs.cxx
 
-setup_script setup_python
+
+
 
 
