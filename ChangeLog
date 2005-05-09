@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon May  9 14:24:52 PDT 2005
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+Use path_append CMT command to setup python directory in user PATH.
+    *
+------------------------------------------------------------
 User: dwood  Mon May  9 14:08:57 PDT 2005
 calibGenCAL/cmt
 
