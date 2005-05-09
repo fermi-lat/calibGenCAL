@@ -1,4 +1,84 @@
 ------------------------------------------------------------
+TAG
+Tag name: v3r6p6, operation: add
+Package: calibGenCAL
+User: fewtrell  Mon May  9 14:39:30 2005
+Files:
+  calibGenCAL/.cvsignore  1.2
+  calibGenCAL/ChangeLog  1.263
+  calibGenCAL/cmt/.cvsignore  1.2
+  calibGenCAL/cmt/requirements  1.29
+  calibGenCAL/doc/release.notes  1.43
+  calibGenCAL/output/.cvsignore  1.1
+  calibGenCAL/output/fake_tholdci.xml  1.4
+  calibGenCAL/python/mevPerDacVal.bat  1.1
+  calibGenCAL/python/tholdCIGen.bat  1.2
+  calibGenCAL/python/tholdCIGen.py  1.1
+  calibGenCAL/python/pedVal.py  1.4
+  calibGenCAL/python/calCalibXML.py  1.19
+  calibGenCAL/python/mevPerDacVal.py  1.1
+  calibGenCAL/python/asymMerge  1.1
+  calibGenCAL/python/asymMerge.py  1.4
+  calibGenCAL/python/fits2xml.bat  1.1
+  calibGenCAL/python/pedMerge  1.1
+  calibGenCAL/python/asymMerge.bat  1.1
+  calibGenCAL/python/intNonlinVal.bat  1.2
+  calibGenCAL/python/intNonlinMerge.py  1.11
+  calibGenCAL/python/calFitsIO.py  1.2
+  calibGenCAL/python/asymVal.py  1.7
+  calibGenCAL/python/intNonlinMerge  1.2
+  calibGenCAL/python/calXML.py  1.1
+  calibGenCAL/python/mevPerDacMerge  1.1
+  calibGenCAL/python/mevPerDacMerge.bat  1.1
+  calibGenCAL/python/asymVal.bat  1.2
+  calibGenCAL/python/pedVal.bat  1.2
+  calibGenCAL/python/pedMerge.bat  1.1
+  calibGenCAL/python/intNonlinMerge.bat  1.2
+  calibGenCAL/python/calConstant.py  1.2
+  calibGenCAL/python/fits2xml.py  1.3
+  calibGenCAL/python/calExcept.py  1.3
+  calibGenCAL/python/intNonlinVal.py  1.9
+  calibGenCAL/python/calDacXML.py  1.4
+  calibGenCAL/python/mevPerDacMerge.py  1.4
+  calibGenCAL/python/calFitsXML.py  1.2
+  calibGenCAL/python/.cvsignore  1.1
+  calibGenCAL/python/pedMerge.py  1.4
+  calibGenCAL/python/cfg/mevPerDacMerge.cfg  1.1
+  calibGenCAL/python/cfg/pedMerge.cfg  1.1
+  calibGenCAL/python/cfg/intNonlinMerge.cfg  1.1
+  calibGenCAL/python/cfg/asymMerge.cfg  1.1
+  calibGenCAL/src/TeCfg.cxx  1.2
+  calibGenCAL/src/ciFit_option_badCalibGen.xml  1.2
+  calibGenCAL/src/McCfg.cxx  1.9
+  calibGenCAL/src/runCIFit.cxx  1.16
+  calibGenCAL/src/ciFit_option.xml  1.11
+  calibGenCAL/src/TeCfg.h  1.2
+  calibGenCAL/src/CalDefs.h  1.9
+  calibGenCAL/src/CGCUtil.cxx  1.5
+  calibGenCAL/src/MuonCalib.cxx  1.14
+  calibGenCAL/src/McCfg.h  1.7
+  calibGenCAL/src/mainpage.h  1.13
+  calibGenCAL/src/ThreshEvol_option.xml  1.3
+  calibGenCAL/src/CalDefs.cxx  1.4
+  calibGenCAL/src/MtCfg.cxx  1.5
+  calibGenCAL/src/RootFileAnalysis.h  1.7
+  calibGenCAL/src/CGCUtil.h  1.5
+  calibGenCAL/src/MtCfg.h  1.3
+  calibGenCAL/src/MuonCalib.h  1.5
+  calibGenCAL/src/CfCfg.cxx  1.7
+  calibGenCAL/src/CfCfg.h  1.6
+  calibGenCAL/src/runMuTrigEff.cxx  1.11
+  calibGenCAL/src/runMuonCalib.cxx  1.20
+  calibGenCAL/src/ICfg.h  1.6
+  calibGenCAL/src/muonCalib_option.xml  1.13
+  calibGenCAL/src/MuTrigEff_option.xml  1.4
+  calibGenCAL/src/runMuThreshEvol.cxx  1.8
+  calibGenCAL/src/muonCalib_option_badCalibGen.xml  1.1
+  calibGenCAL/src/RootFileAnalysis.cxx  1.7
+  calibGenCAL/xml/.cvsignore  1.1
+
+    *
+------------------------------------------------------------
 User: dwood  Mon May  9 14:24:52 PDT 2005
 calibGenCAL/cmt
 
