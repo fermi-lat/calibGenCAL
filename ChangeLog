@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Tue May 10 07:00:49 PDT 2005
+calibGenCAL/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+furgot to commit this before tagging v3r6p6
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r6p6, operation: add
 Package: calibGenCAL
