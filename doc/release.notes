@@ -89,3 +89,5 @@ v3r6p3 Added the options files (ciFit_option_badCalibGen and muonCalib_option_ba
 v3r6p4 Added optional disable grouping in ciFit (more elegant fix for the bad calib_gain).  fixed comments in the spline grouping portion of cifit.  
 
 v3r6p5 Python merge scripts are now officially supported.
+
+v3r6p6 Python script conveniences.  cmt setup now puts 'python/' subfolder in %PATH%.  Python merge scripts now accept common config file.  ****Merge.sh launcher scripts added for each merge tool.
