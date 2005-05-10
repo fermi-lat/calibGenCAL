@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Tue May 10 07:06:03 PDT 2005
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+bad newlines in requirements file were causing cmt errors on windows
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue May 10 07:00:49 PDT 2005
 calibGenCAL/doc
 
