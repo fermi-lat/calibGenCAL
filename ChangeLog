@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Wed May 11 13:18:05 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calDacXML.py 
+Log Message:
+Added class calEnergyXML to handle relgain and adc2nrg files; added method calDacXML.write().
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r6p7, operation: add
 Package: calibGenCAL
