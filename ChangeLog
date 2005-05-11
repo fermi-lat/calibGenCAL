@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Wed May 11 13:20:08 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calFitsXML.py 
+Log Message:
+Allowed relgain files to support more than one tower; this required changing the shape of the array returned by the read() method for those files.
+    *
+------------------------------------------------------------
 User: dwood  Wed May 11 13:18:05 PDT 2005
 calibGenCAL/python
 
