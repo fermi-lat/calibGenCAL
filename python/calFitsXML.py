@@ -6,8 +6,8 @@ Class to read and write CAL XML files derived from FITS data sets.
 __facility__  = "Offline"
 __abstract__  = "Class to read and write CAL XML files derived from FITS data sets"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/03/31 21:55:42 $"
-__version__   = "$Revision: 1.20 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/12 14:06:47 $"
+__version__   = "$Revision: 1.2 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -603,7 +603,7 @@ class calFitsXML(object):
 
     def __readREL(self):       
 
-        data = Numeric.zeros((9, 1, 4, 8, 2, 12), Numeric.Float32)
+        data = Numeric.zeros((9, 4, 16, 8, 2, 12), Numeric.Float32)
 
         if self.__xmlVersion >= 1:
             elName = 'row'
@@ -657,7 +657,7 @@ class calFitsXML(object):
                             if dNum != 9:
                                 raise calFileReadExcept, "wrong number of data points: %u (expected 9)" % dNum
                             for gain in range(9):
-                                data[gain, 0, erng, layer, end, fe] = float(adcList[gain])
+                                data[gain, erng, tem, layer, end, fe] = float(adcList[gain])
 
         return data
 
