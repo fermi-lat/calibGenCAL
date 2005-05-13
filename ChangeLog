@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: dwood  Fri May 13 11:05:30 PDT 2005
+calibGenCAL/src
+
+Modified Files:
+	mainpage.h 
+Log Message:
+Added documentation for DAC settings tools.
+    *
+------------------------------------------------------------
+User: dwood  Fri May 13 11:05:30 PDT 2005
 calibGenCAL/python
 
 Modified Files:
