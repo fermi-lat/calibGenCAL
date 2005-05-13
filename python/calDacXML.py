@@ -6,8 +6,8 @@ Classes to represent CAL DAC settings XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL DAC settings XML documents"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/26 03:09:15 $"
-__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/05/11 20:18:05 $"
+__version__   = "$Revision: 1.5 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -197,18 +197,18 @@ class calDacXML(calSnapshotXML):
         s = '[\'GCCC\',\'GCRC\',\'GCFE\',\'%s\']' % self.__dacName  
         ce.setAttribute('hierarchy', s)
         ce.setAttribute('type', 's')
-        ce.setAttribute('shape', '(16,8,2,12)')
+        ce.setAttribute('shape', '(8,2,12)')
         ce.setAttribute('version', 'NA')
         if lrefgain is not None:
             ce.setAttribute('leRefGain', str(lrefgain))
         if hrefgain is not None:
             ce.setAttribute('heRefGain', str(hrefgain))
-        ld.appendChild(ce)
+        ld.appendChild(ce)           
 
         # insert <GLAT> element  
             
         gl = doc.createElement('GLAT')
-        ld.appendChild(gl)
+        ce.appendChild(gl)     
 
         for tem in tems:
                         
@@ -324,11 +324,11 @@ class calEnergyXML(calXML.calXML):
             if self.__engName == 'adc2nrg':
                 eName = 'low_hi_nrg'
             else:
-                eName = 'trhBias'
+                eName = 'fle_fhe'
             eList = t.getElementsByTagName(eName)
             eLen = len(eList)
-            if eLen > 2:
-                raise calFileReadExcept, "found %d <GCCC> elements, expected <= 2" % eLen
+            if eLen != 2:
+                raise calFileReadExcept, "found %d <%s> elements, expected 2" % (eLen, eName)
             for e in eList:
                 eng = int(e.getAttribute('ID'))
                 if eng < 0 or eng > 1:
