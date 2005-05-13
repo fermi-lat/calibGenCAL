@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri May 13 08:24:47 PDT 2005
+calibGenCAL/python
+
+Added Files:
+	genFHEsettings.bat genFHEsettings.py 
+Log Message:
+Tool to generate CAL FHE DAC values based on target energy.
+    *
+------------------------------------------------------------
 User: dwood  Fri May 13 07:11:48 PDT 2005
 calibGenCAL/python
 
