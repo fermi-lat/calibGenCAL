@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri May 13 07:11:10 PDT 2005
+calibGenCAL/python
+
+Added Files:
+	genLACsettings.bat genLACsettings.py 
+Log Message:
+Tool to generate CAL LAC DAC values based on target energy.
+    *
+------------------------------------------------------------
 User: dwood  Fri May 13 07:10:27 PDT 2005
 calibGenCAL/python
 
