@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Fri May 13 11:05:30 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	genFHEsettings.py genFLEsettings.py genLACsettings.py 
+	genULDsettings.py 
+Log Message:
+Added documentation for DAC settings tools.
+    *
+------------------------------------------------------------
 User: dwood  Fri May 13 08:24:47 PDT 2005
 calibGenCAL/python
 
