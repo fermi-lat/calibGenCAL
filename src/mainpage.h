@@ -50,16 +50,28 @@ Their use also requires that the following python extensions be installed:
 
 A set of shell scripts in the %CALIBGENCALROOT%/python directory may be used to
 launch the tools.
+
 - \b intNonlinMerge [-V] <cfg_file> <out_xml_file>
 - \b pedMerge [-V] <cfg_file> <out_xml_file>
 - \b mevPerDacMerge [-V] <cfg_file> <out_xml_file>
 - \b asymMerge [-V] <cfg_file> <out_xml_file>
+
+- \b genLACsettings [-V] <MeV> <cfg_file> <out_xml_file>
+- \b genFLEsettings [-V] <MeV> <cfg_file> <out_xml_file>
+- \b genFHEsettings [-V] <GeV> <cfg_file> <out_xml_file>
+- \b genULDsettings [-V] [-M <margin>] <uld2adc_file> <out_xml_file>
 
 The merge tools take multiple single-tower CAL calibration XML files and produce 
 a single output file of the same type, with the option to specify the source and
 destination tower addressing.  All of the python merge tools take a configuration 
 file as input.  This configuration file specifies the input data sets and tower 
 addressing. The -V option increases the verbosity of the diagnostic output.
+
+The DAC settings generation tools produce configuration XML files providing values
+to configure each channel.  The LAC, FLE, and, FHE tools take a configuration file
+and a threshold energy as input.  The ULD file takes a ULD characterization
+file and saturation margin value as input.  The -V option increases the verbosity of 
+the diagnostic output.
 
 Sample configuration scripts for these tools are included in the 
 python/cfg folder.  

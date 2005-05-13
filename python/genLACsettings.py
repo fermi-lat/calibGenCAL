@@ -1,13 +1,21 @@
 """
-Generate LAC Discriminator settings selected by Energy
+Generate LAC Discriminator settings selected by Energy.  The command line is:
+
+genLACsettings [-V] <MeV> <cfg_file> <out_xml_file>
+
+where:
+    -V              = verbose; turn on debug output
+    <MeV>           = The threshold energy in MeV units.
+    <cfg_file>      = The application configuration file to use.
+    <out_xml_file>  = The LAC settings XML file to output.
 """
 
 
 __facility__    = "Offline"
 __abstract__    = "Generate LAC Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2005/04/01 18:08:35 $"
-__version__     = "$Revision: 1.18 $, $Author: dwood $"
+__date__        = "$Date: 2005/05/13 14:11:10 $"
+__version__     = "$Revision: 1.1 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
