@@ -1,13 +1,22 @@
 """
-Generate ULD Discriminator settings selected by Energy
+Generate ULD Discriminator settings selected by Energy.  The command line is:
+
+genULDsettings [-V] [-M <margin>] <uld2adc_file> <out_xml_file>
+
+where:
+    -V              = verbose; turn on debug output
+    -M margin       = The saturation ADC margin value; default is '50'.
+    <uld2adc_file>  = The ULD/ADC characterization table XML file.
+    <out_xml_file>  = The ULD settings XML file to output.
 """
 
 
+
 __facility__    = "Offline"
-__abstract__    = "Generate LAC Discriminator settings selected by Energy"
-__author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2005/04/01 18:08:35 $"
-__version__     = "$Revision: 1.18 $, $Author: dwood $"
+__abstract__    = "Generate ULD Discriminator settings selected by Energy"
+__author__      = "D.L.Wood"
+__date__        = "$Date: 2005/05/13 14:10:27 $"
+__version__     = "$Revision: 1.1 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 

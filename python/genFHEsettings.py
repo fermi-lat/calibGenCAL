@@ -1,13 +1,21 @@
 """
-Generate FHE Discriminator settings selected by Energy
+Generate FHE Discriminator settings selected by Energy.  The command line is:
+
+genFHEsettings [-V] <GeV> <cfg_file> <out_xml_file>
+
+where:
+    -V              = verbose; turn on debug output
+    <GeV>           = The threshold energy in GeV units.
+    <cfg_file>      = The application configuration file to use.
+    <out_xml_file>  = The FHE settings XML file to output.
 """
 
 
 __facility__    = "Offline"
 __abstract__    = "Generate FHE Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2005/04/01 17:28:18 $"
-__version__     = "$Revision: 1.6 $, $Author: dwood $"
+__date__        = "$Date: 2005/05/13 15:24:47 $"
+__version__     = "$Revision: 1.1 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
