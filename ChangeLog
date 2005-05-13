@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri May 13 07:10:27 PDT 2005
+calibGenCAL/python
+
+Added Files:
+	genULDsettings.bat genULDsettings.py 
+Log Message:
+Tool to generate CAL ULD DAC values based on range saturation.
+    *
+------------------------------------------------------------
 User: dwood  Fri May 13 07:09:19 PDT 2005
 calibGenCAL/python
 
