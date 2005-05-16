@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon May 16 10:12:20 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	tholdCIGen.py 
+Log Message:
+Re-worked config file option names; allowed for single snapshot XML file instead of multiple DAC settings XML files; read config_0 settings in snapshot to obtain gain settings for each FE.
+    *
+------------------------------------------------------------
 User: dwood  Mon May 16 10:10:55 PDT 2005
 calibGenCAL/python
 
