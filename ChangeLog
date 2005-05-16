@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon May 16 12:15:51 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	genULDsettings.py 
+Log Message:
+Made input parameters taken from config file; added ability to specifiy source and destintation TEM addresses.
+    *
+------------------------------------------------------------
 User: dwood  Mon May 16 10:12:20 PDT 2005
 calibGenCAL/python
 
