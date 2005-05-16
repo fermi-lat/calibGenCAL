@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon May 16 10:10:55 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Allowed for calTholdCICalibXML.write() method to take HE and LE gain indicies as array paramters since each gain setting may be different per channel.
+    *
+------------------------------------------------------------
 User: dwood  Fri May 13 11:05:30 PDT 2005
 calibGenCAL/src
 
