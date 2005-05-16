@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Mon May 16 12:29:04 PDT 2005
+calibGenCAL/python/cfg
+
+Added Files:
+	genFHEsettings.cfg genFLEsettings.cfg genLACsettings.cfg 
+	genULDsettings.cfg 
+Log Message:
+Sample configuration input files for DAC settings tools.
+    *
+------------------------------------------------------------
 User: dwood  Mon May 16 12:19:42 PDT 2005
 calibGenCAL/src
 
