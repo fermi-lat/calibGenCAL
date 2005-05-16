@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/05/04 16:43:59 $"
-__version__   = "$Revision: 1.18 $, $Author: dwood $"
+__date__      = "$Date: 2005/05/04 18:32:07 $"
+__version__   = "$Revision: 1.19 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -255,8 +255,10 @@ class calTholdCICalibXML(calCalibXML):
             data for HEX1 energy range (16, 8, 2, 12, <N>).
         Param: pedData - A Numeric array of pedestal value data
             (16, 9, 4, 8, 2, 12).
-        Param: lrefGain The LE gain value.
-        Param: hrefGain The HE gain value.
+        Param: lrefGain A Numeric array of LE gain index settings data
+            (16, 8, 2, 12)
+        Param: hrefGain A Numeric array of HE gain index settings data
+            (16, 8, 2, 12).
         Param: tems A list of TEM ID's to write out.
         """
 
@@ -280,10 +282,6 @@ class calTholdCICalibXML(calCalibXML):
         # insert <generic> element
 
         g = self.genericWrite('CAL_TholdCI')
-        c = doc.createComment('LE gain index = %d' % lrefGain)
-        g.appendChild(c)
-        c = doc.createComment('HE gain index = %d' % hrefGain)
-        g.appendChild(c)
         r.appendChild(g)
 
         # insert <dimension> element  
@@ -353,16 +351,19 @@ class calTholdCICalibXML(calCalibXML):
                         c = doc.createComment('FHE DAC = %d' % dac)
                         tc.appendChild(c)
                         tc.setAttribute('FHEVal', "%0.3f" % adc)
-                        tc.setAttribute('FHESig', '1')                     
+                        tc.setAttribute('FHESig', '1')                       
                         
                         f.appendChild(tc)
 
                         for erng in range(3):
 
                             if erng < 2:
-                                gain = lrefGain
+                                gain = lrefGain[tem, row, end, fe]
                             else:
-                                gain = (hrefGain - 8)
+                                gain = (hrefGain[tem, row, end, fe] - 8)
+
+                            c = doc.createComment('%s gain index = %d' % (calConstant.CRNG[erng], gain))
+                            tc.appendChild(c)                                
 
                             # insert <tholdCIRange> elements
 
@@ -379,7 +380,7 @@ class calTholdCICalibXML(calCalibXML):
 
                             ped = pedData[tem, gain, erng, row, end, fe]                        
                             tcr.setAttribute('pedVal', "%0.3f" % ped)
-                            tcr.setAttribute('pedSig', '1')
+                            tcr.setAttribute('pedSig', '1')                            
                             
                             tc.appendChild(tcr)
 
@@ -397,8 +398,11 @@ class calTholdCICalibXML(calCalibXML):
                             adc = intNonlinData[tem, row, end, fe, (size - 1)]
                         tcr.setAttribute('ULDVal', '%0.3f' % adc)
                         tcr.setAttribute('ULDSig', '30')
-                        
-                        ped = pedData[tem, (hrefGain - 8), 3, row, end, fe]
+
+                        gain = hrefGain[tem, row, end, fe] - 8
+                        c = doc.createComment('%s gain index = %d' % (calConstant.CRNG[3], gain))
+                        tc.appendChild(c) 
+                        ped = pedData[tem, gain, 3, row, end, fe]
                         tcr.setAttribute('pedVal', "%0.3f" % ped)
                         tcr.setAttribute('pedSig', '1')
                         
