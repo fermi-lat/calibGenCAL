@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon May 16 12:16:28 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	genFHEsettings.py genFLEsettings.py genLACsettings.py 
+Log Message:
+Added ability to set destination and source TEM addresses.
+    *
+------------------------------------------------------------
 User: dwood  Mon May 16 12:15:51 PDT 2005
 calibGenCAL/python
 
