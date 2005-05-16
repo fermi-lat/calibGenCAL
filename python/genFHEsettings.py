@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate FHE Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2005/05/13 15:24:47 $"
-__version__     = "$Revision: 1.1 $, $Author: dwood $"
+__date__        = "$Date: 2005/05/13 18:05:30 $"
+__version__     = "$Revision: 1.2 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -133,7 +133,38 @@ if __name__ == '__main__':
     if heGain is None:
         log.error('genFHEsettings: config file %s missing [gains]:hegain option', configName)
         sys.exit(1)
-    log.debug('genFHEsettings: using HE gain %d', heGain)        
+    log.debug('genFHEsettings: using HE gain %d', heGain)
+
+       # get tower addresses
+
+    if 'towers' not in sections:
+        log.error("genLACsettings: config file %s missing [towers] section", configName)
+        sys.exit(1)
+
+    srcTwr = None
+    destTwr = None
+
+    options = configFile.options('towers')
+    for opt in options:
+        if opt == 'srctower':
+            srcTwr = int(configFile.get('towers', 'srctower'))
+            if srcTwr < 0 or srcTwr > 15:
+                log.error('genFHEsettings: option %s (%d) out of range', opt, srcTwr)
+                sys.exit(1)
+        if opt == 'desttower':
+            destTwr = int(configFile.get('towers', 'desttower'))
+            if destTwr < 0 or destTwr > 15:
+                log.error('genFHEsettings: option %s (%d) out of range', opt, destTwr)
+                sys.exit(1)
+
+    if srcTwr is None:
+        log.error('genFHEsettings: config file %s missing [towers]:srctower option', configName)
+        sys.exit(1)
+    log.debug('genFHEsettings: using source tower %d', srcTwr) 
+    if destTwr is None:
+        log.error('genFHEsettings: config file %s missing [towers]:desttower option', configName)
+        sys.exit(1)
+    log.debug('genFHEsettings: using destination tower %d', destTwr)    
 
     # read FHE DAC ADC characterization file      
 
@@ -163,7 +194,6 @@ if __name__ == '__main__':
     biasTable = fio.read()
     fio.close()
       
-    temId = 0
     if HEX8FLAG:
         nrgIdx= 2
         nrgRangeMultiplier=1.
@@ -175,28 +205,28 @@ if __name__ == '__main__':
     if heGain == 0:
       heGainIdx = 8
 
-    fineThresholds = adcThresholds[temId,:,:,:,0:64]
+    fineThresholds = adcThresholds[srcTwr,:,:,:,0:64]
     log.debug('genFHEsettings: fineThresholds:[0,0,0,:]:%s', str(fineThresholds[0,0,0,:]))
-    coarseThresholds = adcThresholds[temId,:,:,:,64:]
+    coarseThresholds = adcThresholds[srcTwr,:,:,:,64:]
     log.debug('genFHEsettings: coarseThresholds:[0,0,0,:]:%s', str(coarseThresholds[0,0,0,:]))
 
     adcs = Numeric.ones((8,2,12),Numeric.Float) * float(GeV) * 1000
-    adcs = adcs * relgain[heGainIdx,nrgIdx,temId,...] / relgain[8,nrgIdx,temId,...]
+    adcs = adcs * relgain[heGainIdx,nrgIdx,srcTwr,...] / relgain[8,nrgIdx,srcTwr,...]
     log.debug('genFHEsettings: adcs[0,0,0]:%6.3f relgain[%d,0,%d,0,0,0]:%6.3f relgain[8,0,%d,0,0,0]:%6.3f', \
-                     adcs[0,0,0], heGainIdx, nrgIdx, relgain[heGainIdx,nrgIdx,temId,0,0,0], nrgIdx, \
-                     relgain[8,nrgIdx,temId,0,0,0])
-    adcs = adcs / adc2nrg[temId,...,1]
-    log.debug('genFHEsettings: adcs[0,0,0]:%6.3f adc2nrg[0,0,0,0,1]:%6.3f', adcs[0,0,0], adc2nrg[0,0,0,0,1])
+                     adcs[0,0,0], heGainIdx, nrgIdx, relgain[heGainIdx,nrgIdx,srcTwr,0,0,0], nrgIdx, \
+                     relgain[8,nrgIdx,srcTwr,0,0,0])
+    adcs = adcs / adc2nrg[srcTwr,...,1]
+    log.debug('genFHEsettings: adcs[0,0,0]:%6.3f adc2nrg[0,0,0,0,1]:%6.3f', adcs[0,0,0], adc2nrg[srcTwr,0,0,0,1])
     adcs = adcs / nrgRangeMultiplier
     log.debug('genFHEsettings: adcs[0,0,0]:%6.3f nrgRangeMultiplier:%6.3f', adcs[0,0,0], nrgRangeMultiplier)
-    adcs = adcs - biasTable[temId,...,1]
-    log.debug('genFHEsettings: adcs[0,0,0]:%6.3f biasTable[0,0,0,0,1]:%6.3f', adcs[0,0,0], biasTable[0,0,0,0,1])
+    adcs = adcs - biasTable[srcTwr,...,1]
+    log.debug('genFHEsettings: adcs[0,0,0]:%6.3f biasTable[0,0,0,0,1]:%6.3f', adcs[0,0,0], biasTable[srcTwr,0,0,0,1])
 
     nomSetting = Numeric.zeros((16,8,2,12))
     q = Numeric.choose(Numeric.less(fineThresholds,adcs[...,Numeric.NewAxis]),(0,1))
     q1 = 64 - Numeric.argmax(q[:,:,:,::-1], axis = 3)
     q1 = Numeric.choose(Numeric.equal(q1,64),(q1,0))
-    nomSetting[temId,...] = q1
+    nomSetting[destTwr,...] = q1
     q = Numeric.choose(Numeric.less(coarseThresholds,adcs[...,Numeric.NewAxis]),(0,1))
     q1 = q1 = 64 - Numeric.argmax(q[:,:,:,::-1], axis = 3)
     q1 = Numeric.choose(Numeric.equal(q1,128),(q1,127))
@@ -205,7 +235,8 @@ if __name__ == '__main__':
     # create output file
 
     fio = calDacXML.calDacXML(outName, 'fle_dac', calDacXML.MODE_CREATE)
-    fio.write(nomSetting, hrefgain = heGain)
+    tlist = (destTwr,)
+    fio.write(nomSetting, hrefgain = heGain, tems = tlist)
     fio.close()
 
     sys.exit(0)

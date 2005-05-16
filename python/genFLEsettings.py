@@ -10,17 +10,17 @@ where:
     <out_xml_file>  = The FLE settings XML file to output.
 """
 
-##
-## \file genFLESettingsMeV.py
-##
+
 
 __facility__    = "Offline"
 __abstract__    = "Generate FLE Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2005/05/13 14:11:48 $"
-__version__     = "$Revision: 1.1 $, $Author: dwood $"
+__date__        = "$Date: 2005/05/13 18:05:30 $"
+__version__     = "$Revision: 1.2 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
+
+
 
 import sys, os, time
 import logging
@@ -135,6 +135,38 @@ if __name__ == '__main__':
     log.debug('genFLEsettings: using LE gain %d', leGain)
 
 
+    # get tower addresses
+
+    if 'towers' not in sections:
+        log.error("genFLEsettings: config file %s missing [towers] section", configName)
+        sys.exit(1)
+
+    srcTwr = None
+    destTwr = None
+
+    options = configFile.options('towers')
+    for opt in options:
+        if opt == 'srctower':
+            srcTwr = int(configFile.get('towers', 'srctower'))
+            if srcTwr < 0 or srcTwr > 15:
+                log.error('genFLEsettings: option %s (%d) out of range', opt, srcTwr)
+                sys.exit(1)
+        if opt == 'desttower':
+            destTwr = int(configFile.get('towers', 'desttower'))
+            if destTwr < 0 or destTwr > 15:
+                log.error('genFLEsettings: option %s (%d) out of range', opt, destTwr)
+                sys.exit(1)
+
+    if srcTwr is None:
+        log.error('genFLEsettings: config file %s missing [towers]:srctower option', configName)
+        sys.exit(1)
+    log.debug('genFLEsettings: using source tower %d', srcTwr) 
+    if destTwr is None:
+        log.error('genFLEsettings: config file %s missing [towers]:desttower option', configName)
+        sys.exit(1)
+    log.debug('genFLEsettings: using destination tower %d', destTwr)
+    
+
     # read FLE DAC ADC characterization file
     
     log.info("genFLEsettings: reading FLE ADC file %s", fleName)
@@ -163,7 +195,6 @@ if __name__ == '__main__':
     biasTable = fio.read()
     fio.close()
     
-    temId = 0
     if LEX8FLAG:
       nrgIdx= 0
       nrgRangeMultiplier=1.
@@ -172,27 +203,27 @@ if __name__ == '__main__':
       nrgRangeMultiplier=9.
       
 
-    fineThresholds = adcThresholds[temId,:,:,:,0:64]
+    fineThresholds = adcThresholds[srcTwr,:,:,:,0:64]
     log.debug('genFLEsettings:: fineThresholds:[0,0,0,:]:%s', str(fineThresholds[0,0,0,:]))
-    coarseThresholds = adcThresholds[temId,:,:,:,64:]
+    coarseThresholds = adcThresholds[srcTwr,:,:,:,64:]
     log.debug('genFLEsettings:: coarseThresholds:[0,0,0,:]:%s', str(coarseThresholds[0,0,0,:]))   
 
     adcs = Numeric.ones((8,2,12),Numeric.Float) * float(MeV)
-    adcs = adcs * relgain[leGain,nrgIdx,temId,...]
+    adcs = adcs * relgain[leGain,nrgIdx,srcTwr,...]
     log.debug('genFLEsettings: adcs[0,0,0]:%6.3f relgain[%d,0,%d,0,0,0]:%6.3f', adcs[0,0,0], leGain, \
-                     nrgIdx, relgain[leGain,nrgIdx,temId,0,0,0])
-    adcs = adcs / adc2nrg[temId,...,0]
-    log.debug('genFLEsettings: adcs[0,0,0]:%6.3f adc2nrg[0,0,0,0]:%6.3f', adcs[0,0,0], adc2nrg[temId,0,0,0,0])
+                     nrgIdx, relgain[leGain,nrgIdx,srcTwr,0,0,0])
+    adcs = adcs / adc2nrg[srcTwr,...,0]
+    log.debug('genFLEsettings: adcs[0,0,0]:%6.3f adc2nrg[0,0,0,0]:%6.3f', adcs[0,0,0], adc2nrg[srcTwr,0,0,0,0])
     adcs = adcs / nrgRangeMultiplier
     log.debug('genFLEsettings: adcs[0,0,0]:%6.3f nrgRangeMultiplier:%6.3f', adcs[0,0,0], nrgRangeMultiplier)
-    adcs = adcs - biasTable[temId,...,0]
-    log.debug('genFLEsettings: adcs[0,0,0]:%6.3f biasTable[0,0,0,0]:%6.3f', adcs[0,0,0], biasTable[temId,0,0,0,0])
+    adcs = adcs - biasTable[srcTwr,...,0]
+    log.debug('genFLEsettings: adcs[0,0,0]:%6.3f biasTable[0,0,0,0]:%6.3f', adcs[0,0,0], biasTable[srcTwr,0,0,0,0])
 
     nomSetting = Numeric.zeros((16,8,2,12))
     q = Numeric.choose(Numeric.less(fineThresholds,adcs[...,Numeric.NewAxis]),(0,1))
     q1 = 64 - Numeric.argmax(q[:,:,:,::-1], axis = 3)
     q1 = Numeric.choose(Numeric.equal(q1,64),(q1,0))
-    nomSetting[temId,...] = q1
+    nomSetting[destTwr,...] = q1
     q = Numeric.choose(Numeric.less(coarseThresholds,adcs[...,Numeric.NewAxis]),(0,1))
     q1 = q1 = 64 - Numeric.argmax(q[:,:,:,::-1], axis = 3)
     q1 = Numeric.choose(Numeric.equal(q1,128),(q1,127))
@@ -201,7 +232,8 @@ if __name__ == '__main__':
     # create output file
 
     fio = calDacXML.calDacXML(outName, 'fle_dac', calDacXML.MODE_CREATE)
-    fio.write(nomSetting, lrefgain = leGain)
+    tlist = (destTwr,)
+    fio.write(nomSetting, lrefgain = leGain, tems = tlist)
     fio.close()
 
     sys.exit(0)
