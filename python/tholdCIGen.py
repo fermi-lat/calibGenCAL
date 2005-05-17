@@ -15,10 +15,33 @@ import calCalibXML
 
 
 
+class inputFile:
+    """
+    Represents one tho input XML file.
+    """
+    
+    def __init__(self, srcTwr, destTwr, name):
+        """
+        inputFile constructor
+
+        Param: srcTwr The data source tower number (0 - 15).
+        Param: destTwr The data destination tower number (0 - 15).
+        Param: name The input file name
+        Param: adcData A Numeric ADC data array from the input file.
+        """
+        
+        self.srcTwr = srcTwr
+        self.destTwr = destTwr
+        self.name = name
+
+
+##################################################################################        
+
+
 if __name__ == '__main__':
 
 
-    usage = "genTholdCI <cfg_file> <out_xml_file>"
+    usage = "genTholdCI [-V] <cfg_file> <out_xml_file>"
 
 
     # setup logger
@@ -38,10 +61,15 @@ if __name__ == '__main__':
     # check command line
 
     try:
-        opts = getopt.getopt(sys.argv[1:], "")
+        opts = getopt.getopt(sys.argv[1:], "-V")
     except getopt.GetoptError:
         log.error(usage)
         sys.exit(1)
+
+    optList = opts[0]
+    for o in optList:
+        if o[0] == '-V':
+            log.setLevel(logging.DEBUG)        
         
     args = opts[1]
     if len(args) != 2:
@@ -59,16 +87,16 @@ if __name__ == '__main__':
     configFile.read(configName)
     sections = configFile.sections()
     if len(sections) == 0:
-        log.error("config file %s missing or empty" % configName)
+        log.error("genTholdCI: config file %s missing or empty" % configName)
         sys.exit(1)
 
     # get DAC setttings file names
 
     if 'dacfiles' not in sections:
-        log.error("config file %s missing [dacfiles] section" % configName)
+        log.error("genTholdCI: config file %s missing [dacfiles] section" % configName)
         sys.exit(1)
     if not configFile.has_option('dacfiles', 'snapshot'):
-        log.error("config file %s missing [dacfiles]:snapshot option" % configName)
+        log.error("genTholdCI: config file %s missing [dacfiles]:snapshot option" % configName)
         sys.exit(1)
 
     snapshotName = configFile.get('dacfiles', 'snapshot')
@@ -77,34 +105,62 @@ if __name__ == '__main__':
     # get DAC/ADC characterization file names
 
     if 'adcfiles' not in sections:
-        log.error("config file %s missing [adcfiles] section" % configName)
+        log.error("genTholdCI: config file %s missing [adcfiles] section" % configName)
         sys.exit(1)
-    if not configFile.has_option('adcfiles', 'uld2adc'):
-        log.error("config file %s missing [adcfiles]:uld2adcfile option" % configName)
-        sys.exit(1)
-    if not configFile.has_option('adcfiles', 'lac2adc'):
-        log.error("config file %s missing [adcfiles]:lac2adcfile option" % configName)
-        sys.exit(1)
-    if not configFile.has_option('adcfiles', 'fle2adc'):
-        log.error("config file %s missing [adcfiles]:fle2adcfile option" % configName)
-        sys.exit(1)
-    if not configFile.has_option('adcfiles', 'fhe2adc'):
-        log.error("config file %s missing [adcfiles]:fhe2adcfile option" % configName)
-        sys.exit(1)
+
+    uldFiles = []
+    lacFiles = []
+    fleFiles = []
+    fheFiles = []
+    pedFiles = []
+
+    options = configFile.options('adcfiles')
+    for opt in options:
+        
+        optList = opt.split('_')
+        if len(optList) != 2:
+            continue
+        
+        if optList[0] == 'uld2adc':
+            fList = uldFiles
+        elif optList[0] == 'lac2adc':
+            fList = lacFiles
+        elif optList[0] == 'fle2adc':
+            fList = fleFiles
+        elif optList[0] == 'fhe2adc':
+            fList = fheFiles
+        elif optList[0] == 'pedestals':
+            fList = pedFiles
+        else:
+            continue
+
+        destTwr = int(optList[1])        
+        if destTwr < 0 or destTwr > 15:
+            log.error("genTholdCI: index for [adcfiles] option %s out of range (0 - 15)", opt)
+            sys.exit(1)
+            
+        value = configFile.get('adcfiles', opt)
+        nameList = value.split(',')
+        nameLen = len(nameList)
+        if nameLen == 2:
+            name = nameList[0]
+            srcTwr = int(nameList[1])
+        else:
+            log.error("genTholdCI: incorrect option format %s", value)
+            sys.exit(1)
+        if srcTwr < 0 or srcTwr > 15:
+            log.error("genTholdCI: src index for [infiles] option %s out of range (0 - 15)", opt)
+            sys.exit(1)    
+        inFile = inputFile(srcTwr, destTwr, name)
+        fList.append(inFile)
+        
+        log.debug('genTholdCI: adding %s file %s to input as tower %d (from %d)', optList[0], name,
+                  destTwr, srcTwr)
+
     if not configFile.has_option('adcfiles', 'intnonlin'):
         log.error("config file %s missing [adcfiles]:intnonlin option" % configName)
         sys.exit(1)
-    if not configFile.has_option('adcfiles', 'pedestals'):
-        log.error("config file %s missing [adcfiles]:pedestals option" % configName)
-        sys.exit(1)    
-
-    uldAdcName = configFile.get('adcfiles', 'uld2adc')
-    lacAdcName = configFile.get('adcfiles', 'lac2adc')
-    fleAdcName = configFile.get('adcfiles', 'fle2adc')
-    fheAdcName = configFile.get('adcfiles', 'fhe2adc')
     intNonlinName = configFile.get('adcfiles', 'intnonlin')
-    pedName = configFile.get('adcfiles', 'pedestals')
-
 
 
     # get DTD spec file names
@@ -128,6 +184,7 @@ if __name__ == '__main__':
     lacDacData = snapshotFile.read('log_acpt')
     uldDacData = snapshotFile.read('rng_uld_dac')
     config0Data = snapshotFile.read('config_0')
+    tlist =  snapshotFile.getTowers()
     snapshotFile.close()
 
     # get gain indicies
@@ -135,33 +192,63 @@ if __name__ == '__main__':
     leGainData = (config0Data & 0x0007)
     heGainData = ((config0Data & 0x0078) >> 3)
 
+    # create empty ADC data arrays
+
+    pedData = Numeric.zeros((16, 9, 4, 8, 2, 12), Numeric.Float32)
+    uldAdcData = Numeric.zeros((3, 16, 8, 2, 12, 128), Numeric.Float32)
+    lacAdcData = Numeric.zeros((16, 8, 2, 12, 128), Numeric.Float32)
+    fleAdcData = Numeric.zeros((16, 8, 2, 12, 128), Numeric.Float32)
+    fheAdcData = Numeric.zeros((16, 8, 2, 12, 128), Numeric.Float32)
+
     # read LAC/ADC characterization file
+    
+    for f in lacFiles:    
 
-    log.info("genTholdCI: Reading file %s", lacAdcName)
-    lacAdcFile = calFitsXML.calFitsXML(fileName = lacAdcName, mode = calFitsXML.MODE_READONLY)
-    lacAdcData = lacAdcFile.read()
-    lacAdcFile.close()
+        log.info("genTholdCI: Reading file %s", f.name)
+        lacAdcFile = calFitsXML.calFitsXML(fileName = f.name, mode = calFitsXML.MODE_READONLY)
+        adcData = lacAdcFile.read()
+        lacAdcData[f.destTwr,...] = adcData[f.srcTwr,...]
+        lacAdcFile.close()
 
-    # read ULD/ADC characterization file
+    # read ULD/ADC characterization files
 
-    log.info("genTholdCI: Reading file %s", uldAdcName)
-    uldAdcFile = calFitsXML.calFitsXML(fileName = uldAdcName, mode = calFitsXML.MODE_READONLY)
-    uldAdcData = uldAdcFile.read()
-    uldAdcFile.close()
+    for f in uldFiles:        
+    
+        log.info("genTholdCI: Reading file %s", f.name)
+        uldAdcFile = calFitsXML.calFitsXML(fileName = f.name, mode = calFitsXML.MODE_READONLY)
+        adcData = uldAdcFile.read()
+        uldAdcData[:,f.destTwr,...] = adcData[:,f.srcTwr,...]
+        uldAdcFile.close()
 
-    # read FLE/ADC characterization file
+        
+    # read FLE/ADC characterization files
 
-    log.info("genTholdCI: Reading file %s", fleAdcName)
-    fleAdcFile = calFitsXML.calFitsXML(fileName = fleAdcName, mode = calFitsXML.MODE_READONLY)
-    fleAdcData = fleAdcFile.read()
-    fleAdcFile.close()
+    for f in fleFiles:
+        
+        log.info("genTholdCI: Reading file %s", f.name)
+        fleAdcFile = calFitsXML.calFitsXML(fileName = f.name, mode = calFitsXML.MODE_READONLY)
+        adcData = fleAdcFile.read()
+        fleAdcData[f.destTwr,...] = adcData[f.srcTwr,...]
+        fleAdcFile.close()
 
-    # read FHE/ADC characterization file
+    # read FHE/ADC characterization files
 
-    log.info("genTholdCI: Reading file %s", fheAdcName)
-    fheAdcFile = calFitsXML.calFitsXML(fileName = fheAdcName, mode = calFitsXML.MODE_READONLY)
-    fheAdcData = fheAdcFile.read()
-    fheAdcFile.close()
+    for f in fheFiles:    
+
+        log.info("genTholdCI: Reading file %s", f.name)
+        fheAdcFile = calFitsXML.calFitsXML(fileName = f.name, mode = calFitsXML.MODE_READONLY)
+        adcData = fheAdcFile.read()
+        fheAdcData[f.destTwr,...] = adcData[f.srcTwr,...]
+        fheAdcFile.close()
+
+    # read pedestal values file
+
+    for f in pedFiles:    
+
+        log.info("genTholdCI: Reading file %s", f.name)
+        pedFile = calFitsXML.calFitsXML(fileName = f.name, mode = calFitsXML.MODE_READONLY)
+        pedData[f.destTwr,...] = pedFile.read()
+        pedFile.close()        
 
     # read ADC non-linearity characterization data
 
@@ -170,21 +257,14 @@ if __name__ == '__main__':
     (intNonlinDacData, intNonlinAdcData) = intNonlinFile.read()
     intNonlinFile.close()
 
-    # read pedestal values file
-
-    log.info("genTholdCI: Reading file %s", pedName)
-    pedFile = calFitsXML.calFitsXML(fileName = pedName, mode = calFitsXML.MODE_READONLY)
-    pedData = Numeric.zeros((16, 9, 4, 8, 2, 12), Numeric.Float32)
-    pedData[0,:] = pedFile.read()
-    pedFile.close()
-
     # create CAL calibration output XML file
 
     log.info("genTholdCI: Creating file %s", calibName)
     calibFile = calCalibXML.calTholdCICalibXML(calibName, mode = calCalibXML.MODE_CREATE)
     dacData = (uldDacData, lacDacData, fleDacData, fheDacData)
     adcData = (uldAdcData, lacAdcData, fleAdcData, fheAdcData)
-    calibFile.write(dacData, adcData, intNonlinAdcData[3], pedData, leGainData, heGainData)
+    calibFile.write(dacData, adcData, intNonlinAdcData[3], pedData, leGainData, heGainData,
+                    tems = tlist)
     calibFile.close()
 
     # make copy of XML output file
