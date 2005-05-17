@@ -6,8 +6,8 @@ Classes to represent CAL DAC settings XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL DAC settings XML documents"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/05/13 14:09:19 $"
-__version__   = "$Revision: 1.6 $, $Author: dwood $"
+__date__      = "$Date: 2005/05/17 15:07:33 $"
+__version__   = "$Revision: 1.7 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -319,6 +319,36 @@ class calEnergyXML(calXML.calXML):
         if engName not in ENG_FILE_TYPES:
             raise calFileOpenExcept, "ENG name %s not supported" % str(engName)
         self.__engName = engName
+
+
+    def getTowers(self):
+        """
+        Get the ID's of towers contributing to the data file.
+
+        Returns: A list of tower ID's.        
+        """
+
+        towers = []
+
+        # find <GTEM> elements
+
+        doc = self.getDoc()
+
+        latList = doc.getElementsByTagName('GLAT')
+        latLen = len(latList)
+        if latLen != 1:
+            raise calFileReadExcept, "found %d <GLAT> elements, expected 1" % latLen
+        temList = latList[0].getElementsByTagName('GTEM')
+        temLen = len(temList)
+        if temLen > 16:
+            raise calFileReadExcept, "found %d <GTEM> elements, expected <= 16" % temLen
+        for t in temList:
+            tem = int(t.getAttribute('ID'))
+            if tem < 0 or tem > 16:
+                raise calFileReadExcept, "<GTEM> ID attribute value %d, expected (0 - 15)" % tem
+            towers.append(tem)
+
+        return towers                    
 
         
     def read(self):
