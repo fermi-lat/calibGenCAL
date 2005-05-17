@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Tue May 17 10:56:26 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	tholdCIGen.py 
+Log Message:
+Added ability to specify multiple tower characterization files.
+    *
+------------------------------------------------------------
 User: dwood  Tue May 17 09:16:30 PDT 2005
 calibGenCAL/python
 
