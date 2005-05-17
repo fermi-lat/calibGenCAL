@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Tue May 17 08:07:33 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calDacXML.py 
+Log Message:
+Added calSnapshotXML.getTowers() method to support reading multi-tower snapshot files.
+    *
+------------------------------------------------------------
 User: dwood  Mon May 16 12:29:04 PDT 2005
 calibGenCAL/python/cfg
 
