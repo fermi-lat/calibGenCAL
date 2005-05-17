@@ -61,6 +61,8 @@ launch the tools.
 - \b genFHEsettings [-V] <GeV> <cfg_file> <out_xml_file>
 - \b genULDsettings [-V] <cfg_file> <out_xml_file>
 
+- \b tholdCIGen [-V] <cfg_file> <out_xml_file>
+
 The merge tools take multiple single-tower CAL calibration XML files and produce 
 a single output file of the same type, with the option to specify the source and
 destination tower addressing.  All of the python merge tools take a configuration 
@@ -71,6 +73,11 @@ The DAC settings generation tools produce configuration XML files providing valu
 to configure each channel.  The DAC settings tools take a configuration file
 and possibly (except for ULD) a threshold energy as input.  TThe -V option increases 
 the verbosity of the diagnostic output.
+
+The tholdCIGen application produces a CAL threshold calibration XML file using
+information from numerous input files.  A snapshot file provides the configuration
+of the CAL for each calibration desired.  A set of characterization files produced
+by the CI tests provide the ADC threshold data lookup for each configuration.
 
 Sample configuration scripts for these tools are included in the 
 python/cfg folder.  
