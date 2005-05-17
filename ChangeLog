@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Tue May 17 11:50:50 PDT 2005
+calibGenCAL/python/cfg
+
+Added Files:
+	tholdCIGen.cfg 
+Log Message:
+Sample config file for tholdCIGen tool.
+    *
+------------------------------------------------------------
 User: dwood  Tue May 17 11:25:36 PDT 2005
 calibGenCAL/python
 
