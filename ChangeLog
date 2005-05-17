@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Tue May 17 09:14:03 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Reduced verbosity of comments; corrected HE gain index calculation in calIntNonlinCalibXML class.
+    *
+------------------------------------------------------------
 User: dwood  Tue May 17 08:07:33 PDT 2005
 calibGenCAL/python
 
