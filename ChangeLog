@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Tue May 17 11:54:25 PDT 2005
+calibGenCAL/src
+
+Modified Files:
+	mainpage.h 
+Log Message:
+Added notes for tholdCIGen tool.
+    *
+------------------------------------------------------------
 User: dwood  Tue May 17 11:50:50 PDT 2005
 calibGenCAL/python/cfg
 
