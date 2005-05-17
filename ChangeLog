@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Tue May 17 11:25:36 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	tholdCIGen.py 
+Log Message:
+Added command line doc block.
+    *
+------------------------------------------------------------
 User: dwood  Tue May 17 10:56:26 PDT 2005
 calibGenCAL/python
 
