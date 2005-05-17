@@ -1,5 +1,12 @@
 """
-Tool to produce CAL TholdCI XML calibration data files.
+Tool to produce CAL TholdCI XML calibration data files.  The command line is:
+
+tholdCIGen [-V] <cfg_file> <out_xml_file>
+
+where:
+    -V              = verbose; turn on debug output
+    <cfg_file>      = The application configuration file to use.
+    <out_xml_file>  = The merged CAL TholdCI calibration XML file to output.
 """
 
 import sys, os
@@ -41,7 +48,7 @@ class inputFile:
 if __name__ == '__main__':
 
 
-    usage = "genTholdCI [-V] <cfg_file> <out_xml_file>"
+    usage = "tholdCIGen [-V] <cfg_file> <out_xml_file>"
 
 
     # setup logger
