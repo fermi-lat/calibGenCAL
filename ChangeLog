@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+TAG
+Tag name: v3r6p8, operation: add
+Package: calibGenCAL
+User: fewtrell  Mon May 23 13:24:52 2005
+Files:
+  calibGenCAL/doc/release.notes  1.46
+
+    *
+------------------------------------------------------------
 User: dwood  Mon May 23 11:19:47 PDT 2005
 calibGenCAL/python
 
