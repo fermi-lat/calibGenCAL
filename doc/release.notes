@@ -94,4 +94,4 @@ v3r6p6 Python script conveniences.  cmt setup now puts 'python/' subfolder in %P
 
 v3r6p7 fixed ugly newlines in requirements which were causing cmt errors on windows.
 
-v3r6p8 Fixed incorrect geometry constants which cause ~2% error in MevPerDAC.  Also officially releasing the tholdCIgen.py script.
+v3r6p9 Fixed incorrect geometry constants which cause ~2% error in MevPerDAC.  tholdCIGen.py & DAC tools are now in beta mode will probably be deemed officially released in next tag.
