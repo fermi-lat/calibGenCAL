@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon May 23 11:19:05 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calDacXML.py 
+Log Message:
+Fixed method and class documentation comments.
+    *
+------------------------------------------------------------
 User: fewtrell  Mon May 23 11:12:54 PDT 2005
 calibGenCAL/src
 
