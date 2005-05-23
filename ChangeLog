@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon May 23 11:19:47 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calFitsXML.py 
+Log Message:
+Fixed exception string
+    *
+------------------------------------------------------------
 User: dwood  Mon May 23 11:19:05 PDT 2005
 calibGenCAL/python
 
