@@ -1,13 +1,13 @@
 """
-Classes to represent CAL DAC settings XML documents.
+Classes to represent CAL hardware settings XML documents.
 """
 
 
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL DAC settings XML documents"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/05/17 15:07:33 $"
-__version__   = "$Revision: 1.7 $, $Author: dwood $"
+__date__      = "$Date: 2005/05/17 16:16:30 $"
+__version__   = "$Revision: 1.8 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -42,7 +42,13 @@ class calSnapshotXML(calXML.calXML):
     """
 
     def __init__(self, fileName, mode = MODE_READONLY):
-    
+        """
+        Open a CAL HW snapshot configuration XML file
+
+        \param fileName The XML file name.
+        \param mode The file access mode (MODE_READONLY or MODE_CREATE).
+        """
+        
         calXML.calXML.__init__(self, fileName, mode)
 
 
@@ -80,13 +86,7 @@ class calSnapshotXML(calXML.calXML):
         """
         Read CAL data from a snapshot XML file
 
-        Param: dacName - The name of the DAC element to read.  The following
-        HW items are supported:
-
-            fle_dac - CAL FLE DAC setttings
-            fhe_dac - CAL FHE DAC settings
-            log_acpt - CAL LAC DAC settings
-            rng_uld_dac - CAL ULD DAC settings        
+        Param: dacName - The name of the HW configuration element to read.
 
         Returns: A Numeric array of data (16, 8, 2, 12) read from the
         XML file.
@@ -171,8 +171,6 @@ class calDacXML(calSnapshotXML):
         fhe_dac - CAL FHE DAC settings
         log_acpt - CAL LAC DAC settings
         rng_uld_dac - CAL ULD DAC settings
-        thrBias - CAL threshold bias values
-        adc2nrg - CAL ADC to energy conversion values
     """
 
     def __init__(self, fileName, dacName, mode = MODE_READONLY):
@@ -303,11 +301,16 @@ class calEnergyXML(calXML.calXML):
     
     This class provides methods for accessing CAL ADC to energy
     data stored in XML pseudo-snapshot file format.
+
+    The following file types are supported:
+    
+        thrBias - CAL threshold bias values
+        adc2nrg - CAL ADC to energy conversion values
     """
 
     def __init__(self, fileName, engName, mode = MODE_READONLY):
         """
-        Open a CAL DAC configuration XML file
+        Open a CAL energy configuration XML file
 
         \param fileName The XML file name.
         \param engName The name of the bottom level XML data element.
