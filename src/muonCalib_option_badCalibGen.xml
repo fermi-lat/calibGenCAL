@@ -3,8 +3,8 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLBASEROOT)/xml/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/muonCalib_option.xml,v 1.10 2005/04/26 03:09:16 fewtrell Exp $"
- cvs_Revision="$Revision: 1.10 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/muonCalib_option_badCalibGen.xml,v 1.1 2005/04/27 18:09:59 chehtman Exp $"
+ cvs_Revision="$Revision: 1.1 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP"    value="2004-07-31-06:50"> Timestamp for test run.</item>
@@ -45,8 +45,8 @@
   <section name="CONSTANTS"> Constants
     <item name="HIT_THRESH"      value="100"> Threshold val for counting a 'hit xtal'.  (ADCM + ADCP) </item>
     
-    <item name="CELL_HOR_PITCH"  value="21.35"> Horizontal pitch (in mm) between 2 neighboring xtals mounted in the Cal structure</item>
-    <item name="CELL_VERT_PITCH" value="27.84"> Horizontal pitch (in mm) between 2 neighboring xtals mounted in the Cal structure</item>
+    <item name="CELL_HOR_PITCH" value="27.84"> Horizontal pitch (in mm) between 2 neighboring xtals mounted in the Cal structure</item>
+    <item name="CELL_VERT_PITCH"  value="21.35"> Horizontal pitch (in mm) between 2 neighboring xtals mounted in the Cal structure</item>
     <item name="CSI_LENGTH"      value="326.0"> Length (in mm) of one Cal CsI crystal </item>
     
     <item name="MAX_ASYM_LL" value="0.5"> Used to throw out bad asymmetry logratios</item>

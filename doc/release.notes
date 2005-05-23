@@ -93,3 +93,5 @@ v3r6p5 Python merge scripts are now officially supported.
 v3r6p6 Python script conveniences.  cmt setup now puts 'python/' subfolder in %PATH%.  Python merge scripts now accept common config file.  ****Merge.sh launcher scripts added for each merge tool.
 
 v3r6p7 fixed ugly newlines in requirements which were causing cmt errors on windows.
+
+v3r6p8 Fixed incorrect geometry constants which cause ~2% error in MevPerDAC.  Also officially releasing the tholdCIgen.py script.
