@@ -6,8 +6,8 @@ Class to read and write CAL XML files derived from FITS data sets.
 __facility__  = "Offline"
 __abstract__  = "Class to read and write CAL XML files derived from FITS data sets"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/12 14:06:47 $"
-__version__   = "$Revision: 1.2 $, $Author: dwood $"
+__date__      = "$Date: 2005/05/11 20:20:08 $"
+__version__   = "$Revision: 1.3 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -450,7 +450,7 @@ class calFitsXML(object):
         dList = self.__doc.getElementsByTagName('CALdoc')
         dLen = len(dList)
         if dLen != 1:
-            raise calFileReadExcept, "wrong number of <CAL_doc> elements: %u (expected 1)" % dNum
+            raise calFileReadExcept, "wrong number of <CAL_doc> elements: %u (expected 1)" % dLen
         d = dList[0]
         type = d.getAttribute('type')
         if len(type) == 0:
