@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Mon May 23 11:12:54 PDT 2005
+calibGenCAL/src
+
+Modified Files:
+	mainpage.h muonCalib_option.xml 
+	muonCalib_option_badCalibGen.xml 
+Log Message:
+fixed bad geometry constants in muon calib which caused ~2% bias in gain 
+    *
+------------------------------------------------------------
+User: fewtrell  Mon May 23 11:12:54 PDT 2005
 calibGenCAL/doc
 
 Modified Files:
