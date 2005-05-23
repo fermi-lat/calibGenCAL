@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Mon May 23 11:12:54 PDT 2005
+calibGenCAL/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+fixed bad geometry constants in muon calib which caused ~2% bias in gain 
+    *
+------------------------------------------------------------
 User: dwood  Tue May 17 12:23:06 PDT 2005
 calibGenCAL/python/cfg
 
