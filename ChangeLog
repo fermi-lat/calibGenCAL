@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Wed May 25 11:28:16 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+In method calTholdCICalibXML.write(), added an extra parameter which is a Numeric array of CI-muon bias correction values; these values are added when producing threshold values for FLE and FHE DACs
+    *
+------------------------------------------------------------
 User: dwood  Wed May 25 11:25:13 PDT 2005
 calibGenCAL/python
 
