@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: dwood  Wed May 25 12:47:36 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	asymMerge.bat asymVal.bat genFHEsettings.bat 
+	genFLEsettings.bat genLACsettings.bat genULDsettings.bat 
+	intNonlinMerge.bat intNonlinVal.bat mevPerDacMerge.bat 
+	mevPerDacVal.bat pedMerge.bat pedVal.bat tholdCIGen.bat 
+Log Message:
+Added check for existence of CALIBGENCALROOT variable before trying to find python script.
+    *
+------------------------------------------------------------
 User: dwood  Wed May 25 11:29:41 PDT 2005
 calibGenCAL/python/cfg
 
