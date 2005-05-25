@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Wed May 25 11:25:13 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	genFHEsettings.py 
+Log Message:
+Corrected DAC element name in output file.
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r6p9, operation: add
 Package: calibGenCAL
