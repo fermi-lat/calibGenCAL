@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate FHE Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2005/05/13 18:05:30 $"
-__version__     = "$Revision: 1.2 $, $Author: dwood $"
+__date__        = "$Date: 2005/05/16 19:16:28 $"
+__version__     = "$Revision: 1.3 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -234,7 +234,7 @@ if __name__ == '__main__':
 
     # create output file
 
-    fio = calDacXML.calDacXML(outName, 'fle_dac', calDacXML.MODE_CREATE)
+    fio = calDacXML.calDacXML(outName, 'fhe_dac', calDacXML.MODE_CREATE)
     tlist = (destTwr,)
     fio.write(nomSetting, hrefgain = heGain, tems = tlist)
     fio.close()
