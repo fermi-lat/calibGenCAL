@@ -120,6 +120,7 @@ if __name__ == '__main__':
     fleFiles = []
     fheFiles = []
     pedFiles = []
+    biasFiles = []
 
     options = configFile.options('adcfiles')
     for opt in options:
@@ -138,6 +139,8 @@ if __name__ == '__main__':
             fList = fheFiles
         elif optList[0] == 'pedestals':
             fList = pedFiles
+        elif optList[0] == 'bias':
+            fList = biasFiles
         else:
             continue
 
@@ -206,6 +209,7 @@ if __name__ == '__main__':
     lacAdcData = Numeric.zeros((16, 8, 2, 12, 128), Numeric.Float32)
     fleAdcData = Numeric.zeros((16, 8, 2, 12, 128), Numeric.Float32)
     fheAdcData = Numeric.zeros((16, 8, 2, 12, 128), Numeric.Float32)
+    biasAdcData = Numeric.zeros((16, 8, 2, 12, 2), Numeric.Float32)
 
     # read LAC/ADC characterization file
     
@@ -255,7 +259,17 @@ if __name__ == '__main__':
         log.info("genTholdCI: Reading file %s", f.name)
         pedFile = calFitsXML.calFitsXML(fileName = f.name, mode = calFitsXML.MODE_READONLY)
         pedData[f.destTwr,...] = pedFile.read()
-        pedFile.close()        
+        pedFile.close()
+
+    # read bias correction file
+
+    for f in biasFiles:
+
+        log.info("genTholdCI: Reading file %s", f.name)
+        biasFile = calDacXML.calEnergyXML(f.name, 'thrBias')
+        adcData = biasFile.read()
+        biasAdcData[f.destTwr,...] = adcData[srcTwr,...]
+        biasFile.close()
 
     # read ADC non-linearity characterization data
 
@@ -271,7 +285,7 @@ if __name__ == '__main__':
     dacData = (uldDacData, lacDacData, fleDacData, fheDacData)
     adcData = (uldAdcData, lacAdcData, fleAdcData, fheAdcData)
     calibFile.write(dacData, adcData, intNonlinAdcData[3], pedData, leGainData, heGainData,
-                    tems = tlist)
+                    biasAdcData, tems = tlist)
     calibFile.close()
 
     # make copy of XML output file
