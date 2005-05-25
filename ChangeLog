@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Wed May 25 11:29:41 PDT 2005
+calibGenCAL/python/cfg
+
+Modified Files:
+	tholdCIGen.cfg 
+Log Message:
+Added bias correction file to the input files section; needed for CI-muon threshold values.
+    *
+------------------------------------------------------------
 User: dwood  Wed May 25 11:28:58 PDT 2005
 calibGenCAL/python
 
