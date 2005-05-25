@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/05/16 17:10:54 $"
-__version__   = "$Revision: 1.20 $, $Author: dwood $"
+__date__      = "$Date: 2005/05/17 16:14:03 $"
+__version__   = "$Revision: 1.21 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -232,7 +232,8 @@ class calTholdCICalibXML(calCalibXML):
         calCalibXML.__init__(self, fileName, mode)
         
 
-    def write(self, dacData, adcData, intNonlinData, pedData, lrefGain, hrefGain, tems = (0,)):
+    def write(self, dacData, adcData, intNonlinData, pedData, lrefGain, hrefGain,
+              biasData, tems = (0,)):
         """
         Write data to a CAL TholdCI XML file
 
@@ -259,6 +260,8 @@ class calTholdCICalibXML(calCalibXML):
             (16, 8, 2, 12)
         Param: hrefGain A Numeric array of HE gain index settings data
             (16, 8, 2, 12).
+        Param: biasData A Numeric array of bias correction values
+            (16, 8, 2, 12, 2)
         Param: tems A list of TEM ID's to write out.
         """
 
@@ -341,6 +344,7 @@ class calTholdCICalibXML(calCalibXML):
                         
                         dac = int(fleDac[tem, row, end, fe])
                         adc = fleAdc[tem, row, end, fe, dac]
+                        adc += biasData[tem, row, end, fe, 0]
                         c = doc.createComment('FLE DAC = %d' % dac)
                         tc.appendChild(c)
                         tc.setAttribute('FLEVal', "%0.3f" % adc)
@@ -348,6 +352,7 @@ class calTholdCICalibXML(calCalibXML):
 
                         dac = int(fheDac[tem, row, end, fe])
                         adc = fheAdc[tem, row, end, fe, dac]
+                        adc += biasData[tem, row, end, fe, 0]
                         c = doc.createComment('FHE DAC = %d' % dac)
                         tc.appendChild(c)
                         tc.setAttribute('FHEVal', "%0.3f" % adc)
@@ -360,7 +365,12 @@ class calTholdCICalibXML(calCalibXML):
                         c = doc.createComment('LE gain = %d' % lrefGain[tem, row, end, fe])
                         tc.appendChild(c)
                         c = doc.createComment('HE gain = %d' % hrefGain[tem, row, end, fe])
-                        tc.appendChild(c) 
+                        tc.appendChild(c)
+
+                        c = doc.createComment('LE bias = %0.3f' % biasData[tem, row, end, fe, 0])
+                        tc.appendChild(c)
+                        c = doc.createComment('HE bias = %0.3f' % biasData[tem, row, end, fe, 1])
+                        tc.appendChild(c)
                         
                         f.appendChild(tc)
                         
