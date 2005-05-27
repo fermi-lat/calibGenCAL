@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/05/17 16:14:03 $"
-__version__   = "$Revision: 1.21 $, $Author: dwood $"
+__date__      = "$Date: 2005/05/25 18:28:16 $"
+__version__   = "$Revision: 1.22 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -376,12 +376,15 @@ class calTholdCICalibXML(calCalibXML):
                         
                         for erng in range(3):
 
+                            # get gain setting for channel
+
                             if erng < 2:
                                 gain = lrefGain[tem, row, end, fe]
                             else:
                                 gain = (hrefGain[tem, row, end, fe] - 8)
                                 if gain < 0:
                                     gain = 8
+                            gain = int(gain)
                        
                             # insert <tholdCIRange> elements
 
@@ -419,6 +422,7 @@ class calTholdCICalibXML(calCalibXML):
                         gain = hrefGain[tem, row, end, fe] - 8
                         if gain < 0:
                             gain = 8
+                        gain = int(gain)
                         ped = pedData[tem, gain, 3, row, end, fe]
                         tcr.setAttribute('pedVal', "%0.3f" % ped)
                         tcr.setAttribute('pedSig', '1')
