@@ -27,7 +27,7 @@ class inputFile:
     Represents one tho input XML file.
     """
     
-    def __init__(self, srcTwr, destTwr, name):
+    def __init__(self, srcTwr, destTwr, name, version = None):
         """
         inputFile constructor
 
@@ -35,11 +35,13 @@ class inputFile:
         Param: destTwr The data destination tower number (0 - 15).
         Param: name The input file name
         Param: adcData A Numeric ADC data array from the input file.
+        Param: version The XML format version of the input file.
         """
         
         self.srcTwr = srcTwr
         self.destTwr = destTwr
         self.name = name
+        self.version = version
 
 
 ##################################################################################        
@@ -228,10 +230,10 @@ if __name__ == '__main__':
         log.info("genTholdCI: Reading file %s", f.name)
         uldAdcFile = calFitsXML.calFitsXML(fileName = f.name, mode = calFitsXML.MODE_READONLY)
         adcData = uldAdcFile.read()
+        f.version = uldAdcFile.getVersion()
         uldAdcData[:,f.destTwr,...] = adcData[:,f.srcTwr,...]
         uldAdcFile.close()
 
-        
     # read FLE/ADC characterization files
 
     for f in fleFiles:
@@ -277,6 +279,29 @@ if __name__ == '__main__':
     intNonlinFile = calCalibXML.calIntNonlinCalibXML(intNonlinName)
     (intNonlinDacData, intNonlinAdcData) = intNonlinFile.read()
     intNonlinFile.close()
+
+    # correct pedestal subtraction for v1 ULD XML files
+
+    for f in uldFiles:
+        if f.version <= 1:
+            log.debug("tholdCIGen: correcting pedestal subtraction for file %s, ver %d",
+                      f.name, f.version)
+            for row in range(8):
+                for end in range(2):
+                    for fe in range(12):
+                        for erng in range(3):
+                            if erng < 2:
+                                gData = int(leGainData[f.destTwr, row, end, fe])
+                            else:
+                                gData = int(heGainData[f.destTwr, row, end, fe])
+                                gData -= 8
+                                if gData < 0:
+                                    gData = 8
+                            psData = pedData[f.destTwr, gData, erng, row, end, fe]
+                            paData = pedData[f.destTwr, gData, (erng + 1), row, end, fe]
+                            for dac in range(128):
+                               uldAdcData[erng, f.destTwr, row, end, fe, dac] += paData
+                               uldAdcData[erng, f.destTwr, row, end, fe, dac] -= psData
 
     # create CAL calibration output XML file
 
