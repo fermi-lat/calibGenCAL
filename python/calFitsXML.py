@@ -6,8 +6,8 @@ Class to read and write CAL XML files derived from FITS data sets.
 __facility__  = "Offline"
 __abstract__  = "Class to read and write CAL XML files derived from FITS data sets"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/05/11 20:20:08 $"
-__version__   = "$Revision: 1.3 $, $Author: dwood $"
+__date__      = "$Date: 2005/05/23 18:19:47 $"
+__version__   = "$Revision: 1.4 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -435,14 +435,36 @@ class calFitsXML(object):
         k = self.__doc.createElement('key')
         k.setAttribute('name', str(name))
         k.appendChild(self.__doc.createTextNode(str(value)))
-        hdrNode.appendChild(k)        
+        hdrNode.appendChild(k)
+
+
+    def getVersion(self):
+        """
+        \brief Get the format version of a CAL FITS/XML file
+
+        \returns The version number of the XML file, taken from the
+                 <CALdoc> attribute.
+        """
+
+        # get XML root document element
+
+        dList = self.__doc.getElementsByTagName('CALdoc')
+        dLen = len(dList)
+        if dLen != 1:
+            raise calFileReadExcept, "wrong number of <CAL_doc> elements: %u (expected 1)" % dLen
+        d = dList[0]
+
+        # get XML format version
+
+        xmlVersion = int(d.getAttribute('version'))
+        return xmlVersion
 
 
     def read(self):
         """
         \brief Read data from a CAL FITS/XML file
 
-        \returns rawEventData A Numeric array of data read from the FITS data table.
+        \returns A Numeric array of data read from the FITS data table.
         """
 
         # get XML document type
