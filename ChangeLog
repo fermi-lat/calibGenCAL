@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Wed Jun  1 11:40:02 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calFitsXML.py 
+Log Message:
+Added method calFitsXML.getVersion() to get version number from <CALdoc> element.
+    *
+------------------------------------------------------------
 User: dwood  Fri May 27 10:13:11 PDT 2005
 calibGenCAL/python
 
