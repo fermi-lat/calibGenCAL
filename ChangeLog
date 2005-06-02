@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Jun  2 13:19:09 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	tholdCIGen.py 
+Log Message:
+Added check for ULD ADC files that have no pedestal subtraction for the data; perform the calculation myself.
+    *
+------------------------------------------------------------
 User: dwood  Thu Jun  2 12:20:24 PDT 2005
 calibGenCAL/python
 
