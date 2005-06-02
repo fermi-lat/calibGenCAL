@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Jun  2 14:07:41 PDT 2005
+calibGenCAL/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+v3r6p10 tholdCIgen now handles ULD files w/ incorrect pedestal subtraction (fits v1), lack of pedestal subtraction.  tholdCIGen supports override of snapshot file w/ fragments
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Jun  2 13:19:09 PDT 2005
 calibGenCAL/python
 
