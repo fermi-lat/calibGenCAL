@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Jun  2 12:20:24 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	tholdCIGen.py 
+Log Message:
+Added ability to override DAC settings taken from snapshot with settings taken from snapshot fragments.
+    *
+------------------------------------------------------------
 User: dwood  Wed Jun  1 11:41:13 PDT 2005
 calibGenCAL/python
 
