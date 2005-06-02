@@ -110,6 +110,51 @@ if __name__ == '__main__':
 
     snapshotName = configFile.get('dacfiles', 'snapshot')
 
+    uldDacFiles = []
+    lacDacFiles = []
+    fleDacFiles = []
+    fheDacFiles = []
+
+    options = configFile.options('dacfiles')
+    for opt in options:
+        optList = opt.split('_')
+        if len(optList) != 2:
+            continue
+        
+        if optList[0] == 'uld':
+            fList = uldDacFiles
+        elif optList[0] == 'lac':
+            fList = lacDacFiles
+        elif optList[0] == 'fle':
+            fList = fleDacFiles
+        elif optList[0] == 'fhe':
+            fList = fheDacFiles
+        else:
+            continue
+            
+        destTwr = int(optList[1])        
+        if destTwr < 0 or destTwr > 15:
+            log.error("genTholdCI: index for [dacfiles] option %s out of range (0 - 15)", opt)
+            sys.exit(1)
+
+        value = configFile.get('dacfiles', opt)
+        nameList = value.split(',')
+        nameLen = len(nameList)
+        if nameLen == 2:
+            name = nameList[0]
+            srcTwr = int(nameList[1])
+        else:
+            log.error("genTholdCI: incorrect option format %s", value)
+            sys.exit(1)
+        if srcTwr < 0 or srcTwr > 15:
+            log.error("genTholdCI: src index for [dacfiles] option %s out of range (0 - 15)", opt)
+            sys.exit(1)
+            
+        inFile = inputFile(srcTwr, destTwr, name)
+        fList.append(inFile)
+        
+        log.debug('genTholdCI: adding %s file %s to input as tower %d (from %d)', optList[0], name,
+                  destTwr, srcTwr)
 
     # get DAC/ADC characterization file names
 
@@ -117,12 +162,12 @@ if __name__ == '__main__':
         log.error("genTholdCI: config file %s missing [adcfiles] section" % configName)
         sys.exit(1)
 
-    uldFiles = []
-    lacFiles = []
-    fleFiles = []
-    fheFiles = []
-    pedFiles = []
-    biasFiles = []
+    uldAdcFiles = []
+    lacAdcFiles = []
+    fleAdcFiles = []
+    fheAdcFiles = []
+    pedAdcFiles = []
+    biasAdcFiles = []
 
     options = configFile.options('adcfiles')
     for opt in options:
@@ -132,17 +177,17 @@ if __name__ == '__main__':
             continue
         
         if optList[0] == 'uld2adc':
-            fList = uldFiles
+            fList = uldAdcFiles
         elif optList[0] == 'lac2adc':
-            fList = lacFiles
+            fList = lacAdcFiles
         elif optList[0] == 'fle2adc':
-            fList = fleFiles
+            fList = fleAdcFiles
         elif optList[0] == 'fhe2adc':
-            fList = fheFiles
+            fList = fheAdcFiles
         elif optList[0] == 'pedestals':
-            fList = pedFiles
+            fList = pedAdcFiles
         elif optList[0] == 'bias':
-            fList = biasFiles
+            fList = biasAdcFiles
         else:
             continue
 
@@ -161,7 +206,7 @@ if __name__ == '__main__':
             log.error("genTholdCI: incorrect option format %s", value)
             sys.exit(1)
         if srcTwr < 0 or srcTwr > 15:
-            log.error("genTholdCI: src index for [infiles] option %s out of range (0 - 15)", opt)
+            log.error("genTholdCI: src index for [adcfiles] option %s out of range (0 - 15)", opt)
             sys.exit(1)    
         inFile = inputFile(srcTwr, destTwr, name)
         fList.append(inFile)
@@ -199,6 +244,40 @@ if __name__ == '__main__':
     tlist =  snapshotFile.getTowers()
     snapshotFile.close()
 
+    # optionally overlay snapshot fragment config settings
+
+    for f in uldDacFiles:
+
+        log.info("genTholdCI: Reading file %s", f.name)
+        uldDacFile = calDacXML.calDacXML(f.name, 'rng_uld_dac')
+        dacData = uldDacFile.read()
+        uldDacData[f.destTwr,...] = dacData[f.srcTwr,...]
+        uldDacFile.close()
+        
+    for f in lacDacFiles:
+
+        log.info("genTholdCI: Reading file %s", f.name)
+        lacDacFile = calDacXML.calDacXML(f.name, 'log_acpt')
+        dacData = lacDacFile.read()
+        lacDacData[f.destTwr,...] = dacData[f.srcTwr,...]
+        lacDacFile.close()
+
+    for f in fleDacFiles:
+
+        log.info("genTholdCI: Reading file %s", f.name)
+        fleDacFile = calDacXML.calDacXML(f.name, 'fle_dac')
+        dacData = fleDacFile.read()
+        fleDacData[f.destTwr,...] = dacData[f.srcTwr,...]
+        fleDacFile.close()
+
+    for f in fheDacFiles:
+
+        log.info("genTholdCI: Reading file %s", f.name)
+        fheDacFile = calDacXML.calDacXML(f.name, 'fhe_dac')
+        dacData = fheDacFile.read()
+        fheDacData[f.destTwr,...] = dacData[f.srcTwr,...]
+        fheDacFile.close()        
+
     # get gain indicies
 
     leGainData = (config0Data & 0x0007)
@@ -215,7 +294,7 @@ if __name__ == '__main__':
 
     # read LAC/ADC characterization file
     
-    for f in lacFiles:    
+    for f in lacAdcFiles:    
 
         log.info("genTholdCI: Reading file %s", f.name)
         lacAdcFile = calFitsXML.calFitsXML(fileName = f.name, mode = calFitsXML.MODE_READONLY)
@@ -225,7 +304,7 @@ if __name__ == '__main__':
 
     # read ULD/ADC characterization files
 
-    for f in uldFiles:        
+    for f in uldAdcFiles:        
     
         log.info("genTholdCI: Reading file %s", f.name)
         uldAdcFile = calFitsXML.calFitsXML(fileName = f.name, mode = calFitsXML.MODE_READONLY)
@@ -236,7 +315,7 @@ if __name__ == '__main__':
 
     # read FLE/ADC characterization files
 
-    for f in fleFiles:
+    for f in fleAdcFiles:
         
         log.info("genTholdCI: Reading file %s", f.name)
         fleAdcFile = calFitsXML.calFitsXML(fileName = f.name, mode = calFitsXML.MODE_READONLY)
@@ -246,7 +325,7 @@ if __name__ == '__main__':
 
     # read FHE/ADC characterization files
 
-    for f in fheFiles:    
+    for f in fheAdcFiles:    
 
         log.info("genTholdCI: Reading file %s", f.name)
         fheAdcFile = calFitsXML.calFitsXML(fileName = f.name, mode = calFitsXML.MODE_READONLY)
@@ -256,7 +335,7 @@ if __name__ == '__main__':
 
     # read pedestal values file
 
-    for f in pedFiles:    
+    for f in pedAdcFiles:    
 
         log.info("genTholdCI: Reading file %s", f.name)
         pedFile = calFitsXML.calFitsXML(fileName = f.name, mode = calFitsXML.MODE_READONLY)
@@ -265,12 +344,12 @@ if __name__ == '__main__':
 
     # read bias correction file
 
-    for f in biasFiles:
+    for f in biasAdcFiles:
 
         log.info("genTholdCI: Reading file %s", f.name)
         biasFile = calDacXML.calEnergyXML(f.name, 'thrBias')
         adcData = biasFile.read()
-        biasAdcData[f.destTwr,...] = adcData[srcTwr,...]
+        biasAdcData[f.destTwr,...] = adcData[f.srcTwr,...]
         biasFile.close()
 
     # read ADC non-linearity characterization data
@@ -282,7 +361,7 @@ if __name__ == '__main__':
 
     # correct pedestal subtraction for v1 ULD XML files
 
-    for f in uldFiles:
+    for f in uldAdcFiles:
         if f.version <= 1:
             log.debug("tholdCIGen: correcting pedestal subtraction for file %s, ver %d",
                       f.name, f.version)
