@@ -359,10 +359,33 @@ if __name__ == '__main__':
     (intNonlinDacData, intNonlinAdcData) = intNonlinFile.read()
     intNonlinFile.close()
 
-    # correct pedestal subtraction for v1 ULD XML files
+    # do pedestal corrections for ULD ADC data
 
     for f in uldAdcFiles:
-        if f.version <= 1:
+        
+        # first check for ULD values that are not pedestal subtracted
+
+        if uldAdcData[0, f.destTwr, 0, 0, 0, -1] == 4095.0:
+            log.debug("tholdCIGen: implementing pedestal subtraction for file %s, ver %d",
+                      f.name, f.version)
+            for row in range(8):
+                for end in range(2):
+                    for fe in range(12):
+                        for erng in range(3):
+                            if erng < 2:
+                                gData = int(leGainData[f.destTwr, row, end, fe])
+                            else:
+                                gData = int(heGainData[f.destTwr, row, end, fe])
+                                gData -= 8
+                                if gData < 0:
+                                    gData = 8
+                            psData = pedData[f.destTwr, gData, erng, row, end, fe]
+                            for dac in range(128):
+                               uldAdcData[erng, f.destTwr, row, end, fe, dac] -= psData
+
+        # correct pedestal subtraction for v1 ULD XML files
+     
+        elif f.version <= 1:
             log.debug("tholdCIGen: correcting pedestal subtraction for file %s, ver %d",
                       f.name, f.version)
             for row in range(8):
