@@ -31,9 +31,9 @@ A set of shell scripts in the %CALIBGENCALROOT%/python directory may be used to
 launch the tools.
 
 - \b intNonlinMerge [-V] <cfg_file> <out_xml_file>
-- \b pedMerge [-V] <cfg_file> <out_xml_file>
+- \b pedMerge       [-V] <cfg_file> <out_xml_file>
 - \b mevPerDacMerge [-V] <cfg_file> <out_xml_file>
-- \b asymMerge [-V] <cfg_file> <out_xml_file>
+- \b asymMerge      [-V] <cfg_file> <out_xml_file>
 
 - \b genLACsettings [-V] <MeV> <cfg_file> <out_xml_file>
 - \b genFLEsettings [-V] <MeV> <cfg_file> <out_xml_file>

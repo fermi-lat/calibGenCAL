@@ -95,3 +95,5 @@ v3r6p6 Python script conveniences.  cmt setup now puts 'python/' subfolder in %P
 v3r6p7 fixed ugly newlines in requirements which were causing cmt errors on windows.
 
 v3r6p9 Fixed incorrect geometry constants which cause ~2% error in MevPerDAC.  tholdCIGen.py & DAC tools are now in beta mode will probably be deemed officially released in next tag.
+
+v3r6p10 tholdCIgen now handles ULD files w/ incorrect pedestal subtraction (fits v1), lack of pedestal subtraction.  tholdCIGen supports override of snapshot file w/ fragments
