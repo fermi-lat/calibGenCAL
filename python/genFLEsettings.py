@@ -15,8 +15,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate FLE Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2005/05/13 18:05:30 $"
-__version__     = "$Revision: 1.2 $, $Author: dwood $"
+__date__        = "$Date: 2005/05/16 19:16:28 $"
+__version__     = "$Revision: 1.3 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -31,7 +31,6 @@ import Numeric
 
 import calFitsXML
 import calDacXML
-from calConstant import CPM, CXY
 
 
 LEX8FLAG = True
@@ -225,7 +224,7 @@ if __name__ == '__main__':
     q1 = Numeric.choose(Numeric.equal(q1,64),(q1,0))
     nomSetting[destTwr,...] = q1
     q = Numeric.choose(Numeric.less(coarseThresholds,adcs[...,Numeric.NewAxis]),(0,1))
-    q1 = q1 = 64 - Numeric.argmax(q[:,:,:,::-1], axis = 3)
+    q1 = (64 - Numeric.argmax(q[:,:,:,::-1], axis = 3)) + 64
     q1 = Numeric.choose(Numeric.equal(q1,128),(q1,127))
     nomSetting = Numeric.choose(Numeric.equal(nomSetting,0),(nomSetting,q1))     
 
