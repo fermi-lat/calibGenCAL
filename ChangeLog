@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon Jun  6 12:26:16 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	genFHEsettings.py genFLEsettings.py genLACsettings.py 
+Log Message:
+Corrected DAC settings output when value is in coarse range.
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r6p10, operation: add
 Package: calibGenCAL
