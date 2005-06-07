@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate LAC Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2005/05/16 19:16:28 $"
-__version__     = "$Revision: 1.3 $, $Author: dwood $"
+__date__        = "$Date: 2005/06/06 19:26:16 $"
+__version__     = "$Revision: 1.4 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -201,11 +201,11 @@ if __name__ == '__main__':
 
     nomSetting = Numeric.zeros((16,8,2,12))
     q = Numeric.choose(Numeric.less(fineThresholds,adcs[...,Numeric.NewAxis]),(0,1))
-    q1 = 64 - Numeric.argmax(q[srcTwr,:,:,::-1], axis = 2)
+    q1 = 64 - Numeric.argmax(q[:,:,:,::-1], axis = 3)
     q1 = Numeric.choose(Numeric.equal(q1,64),(q1,0))
     nomSetting[destTwr,...] = q1
     q = Numeric.choose(Numeric.less(coarseThresholds,adcs[...,Numeric.NewAxis]),(0,1))
-    q1 = (64 - Numeric.argmax(q[srcTwr,:,:,::-1], axis = 2)) + 64
+    q1 = (64 - Numeric.argmax(q[:,:,:,::-1], axis = 3)) + 64
     q1 = Numeric.choose(Numeric.equal(q1,128),(q1,127))
     nomSetting = Numeric.choose(Numeric.equal(nomSetting,0),(nomSetting,q1))       
 
