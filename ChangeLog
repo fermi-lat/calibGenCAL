@@ -1,22 +1,4 @@
 ------------------------------------------------------------
-User: fewtrell  Wed Jun  8 11:53:46 PDT 2005
-calibGenCAL/python/cfg
-
-Modified Files:
-	tholdCIGen.cfg 
-Log Message:
-fixed JIRA CAL-10, CAL-11, CAL-12
-    *
-------------------------------------------------------------
-User: fewtrell  Wed Jun  8 11:53:46 PDT 2005
-calibGenCAL/doc
-
-Modified Files:
-	release.notes 
-Log Message:
-fixed JIRA CAL-10, CAL-11, CAL-12
-    *
-------------------------------------------------------------
 User: dwood  Tue Jun  7 13:43:49 PDT 2005
 calibGenCAL/python
 
