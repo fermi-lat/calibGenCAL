@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate LAC Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2005/06/06 19:26:16 $"
-__version__     = "$Revision: 1.4 $, $Author: dwood $"
+__date__        = "$Date: 2005/06/07 20:43:49 $"
+__version__     = "$Revision: 1.5 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -190,7 +190,21 @@ if __name__ == '__main__':
     coarseThresholds = adcThresholds[srcTwr,:,:,:,64:]
     log.debug('genLACsettings: coarseThresholds:[0,0,0,0,:]:%s' % str(coarseThresholds[0,0,0,:]))
 
-    adcs = Numeric.ones((8,2,12), Numeric.Float32) * float(MeV)
+    # calculate thresholds in ADC units from energy
+
+    MeV = float(MeV)
+    if MeV < 2.0:
+
+        # estimate for thresholds below 2 MeV
+
+        offset = int((2.0 - MeV) * 3.0)
+        MeV = 2.0
+    else:
+        offset = 0
+
+    log.debug('genLACsettings: Energy: %6.3f Offset:%6.3f', MeV, offset)        
+
+    adcs = Numeric.ones((8,2,12), Numeric.Float32) * MeV
     adcs = adcs * relgain[leGain,nrgIdx,srcTwr,...]
     log.debug('genLACsettings: adcs[0,0,0,0]:%6.3f relgain[%d,0,%d,0,0,0]:%6.3f' %(adcs[0,0,0], \
                     leGain,nrgIdx, relgain[leGain, nrgIdx,srcTwr,0,0,0]))
@@ -198,6 +212,10 @@ if __name__ == '__main__':
     log.debug('genLACsettings: adcs[0,0,0,0]:%6.3f adc2nrg[0,0,0,0]:%6.3f' %(adcs[0,0,0], adc2nrg[srcTwr,0,0,0,0]))
     adcs = adcs / nrgRangeMultiplier
     log.debug('genLACsettings: adcs[0,0,0,0]:%6.3f nrgRangeMultiplier:%6.3f' %(adcs[0,0,0], nrgRangeMultiplier))
+
+    # find setting that gives threshold
+    # use fine DAC settings unless threshold is out of range
+    # use coarse DAC settings for high thresholds
 
     nomSetting = Numeric.zeros((16,8,2,12))
     q = Numeric.choose(Numeric.less(fineThresholds,adcs[...,Numeric.NewAxis]),(0,1))
@@ -207,7 +225,8 @@ if __name__ == '__main__':
     q = Numeric.choose(Numeric.less(coarseThresholds,adcs[...,Numeric.NewAxis]),(0,1))
     q1 = (64 - Numeric.argmax(q[:,:,:,::-1], axis = 3)) + 64
     q1 = Numeric.choose(Numeric.equal(q1,128),(q1,127))
-    nomSetting = Numeric.choose(Numeric.equal(nomSetting,0),(nomSetting,q1))       
+    nomSetting = Numeric.choose(Numeric.equal(nomSetting,0),(nomSetting,q1))
+    nomSetting = (nomSetting - offset)
 
     # create output file
 
