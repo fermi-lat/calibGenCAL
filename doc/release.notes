@@ -99,3 +99,5 @@ v3r6p9 Fixed incorrect geometry constants which cause ~2% error in MevPerDAC.  t
 v3r6p10 tholdCIgen now handles ULD files w/ incorrect pedestal subtraction (fits v1), lack of pedestal subtraction.  tholdCIGen supports override of snapshot file w/ fragments
 
 v3r6p11 fixed 3 bugs in gen***settings.py tools.  JIRA CAL-10,CAL-11,CAL-12.  FLE & FHE max out @ 0x40, also 100 mev & 20 mev FLE settings roughly the same.  also LAC settings the same for all layers
+
+v3r6p12 Corrected genLACsettings tool for thresholds < 2 MeV; uses approximation based on 2 MeV values.
