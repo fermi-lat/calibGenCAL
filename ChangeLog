@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon Jun 13 09:48:09 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	genLACsettings.py 
+Log Message:
+Fixed LAC settings for thresholds < 2 MeV; for these values, the output is just a linear approximation based on the 2 MeV value.
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r6p11, operation: add
 Package: calibGenCAL
