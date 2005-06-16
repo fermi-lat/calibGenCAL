@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Jun 16 07:42:20 PDT 2005
+calibGenCAL/python
+
+Added Files:
+	tholdCIVal.bat tholdCIVal.py 
+Log Message:
+Application to validate Thold_CI XML calibration files; currently only looks at the ULD threshold values.
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r6p12, operation: add
 Package: calibGenCAL
