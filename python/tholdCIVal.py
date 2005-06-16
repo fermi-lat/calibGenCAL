@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Thold_CI calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/25 21:32:48 $"
-__version__   = "$Revision: 1.7 $, $Author: dwood $"
+__date__      = "$Date: 2005/06/16 14:42:20 $"
+__version__   = "$Revision: 1.1 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -68,6 +68,7 @@ def rootHists(adcData, uld):
                         
         cx = ROOT.TCanvas(cName, title, -1)
         cx.SetGrid()
+        cx.cd()
         xtalLeg = ROOT.TLegend(0.88, 0.88, 0.99, 0.99)
         hists = [None, None, None, None]
                         
@@ -78,18 +79,24 @@ def rootHists(adcData, uld):
             hs = sumHists[erng]
             hx.SetLineColor(erng + 1)
             hx.SetStats(False)
-
+            
+            
             for row in range(8):
                 for end in range(2):
                     for fe in range(12):
-
                         uld = uldData[tem, row, end, fe, erng]                        
                         hx.Fill(uld)
                         hs.Fill(uld)
 
             hists[erng] = hx
             xtalLeg.AddEntry(hx, calConstant.CRNG[erng], 'L')
-            cx.Update()                       
+            cx.Update()
+
+        hMax = 0
+        for erng in range(4):
+            hx = hists[erng]
+            if hx.GetMaximum() > hMax:
+                hMax = hx.GetMaximum()
 
         for erng in range(4):
             if erng == 0:
@@ -97,14 +104,21 @@ def rootHists(adcData, uld):
             else:
                 dopt = 'SAME'
             hx = hists[erng]
+            hx.SetMaximum(hMax)
             hx.Draw(dopt)
             cx.Update()
 
-            xtalLeg.Draw()
-            cx.Update()                    
-            cx.Write()
+        xtalLeg.Draw()
+        cx.Update()                    
+        cx.Write()
 
     cs.cd()
+
+    hMax = 0
+    for erng in range(4):
+        hs = sumHists[erng]
+        if hs.GetMaximum() > hMax:
+            hMax = hs.GetMaximum()    
         
     for erng in range(4):
 
@@ -113,6 +127,7 @@ def rootHists(adcData, uld):
             dopt = ''
         else:
             dopt = 'SAME'
+        hs.SetMaximum(hMax)
         hs.Draw(dopt)
         cs.Update()
 
@@ -137,29 +152,29 @@ def calcError(uldData):
                             if uld > uldWarnLimits[1]:
                                 
                                 if uld > uldErrLimits[1]:
-                                    msg = 'tholdCIVal: %0.3f > %0.3f for %d,%s,%d,%s' % \
-                                            (uld, uldErrLimits[1], tem, calConstant.CROW[row], fe,
-                                            calConstant.CRNG[erng])
+                                    msg = 'tholdCIVal: %0.3f > %0.3f for T%d,%s%s,%d,%s' % \
+                                            (uld, uldErrLimits[1], tem, calConstant.CROW[row],
+                                             calConstant.CPM[end], fe, calConstant.CRNG[erng])
                                     log.error(msg)
                                     status = 1
                                 else:
-                                    msg = 'tholdCIVal: %0.3f > %0.3f for %d,%s,%d,%s' % \
-                                            (uld, uldWarnLimits[1], tem, calConstant.CROW[row], fe,
-                                            calConstant.CRNG[erng])
+                                    msg = 'tholdCIVal: %0.3f > %0.3f for T%d,%s%s,%d,%s' % \
+                                            (uld, uldWarnLimits[1], tem, calConstant.CROW[row],
+                                             calConstant.CPM[end], fe, calConstant.CRNG[erng])
                                     log.warning(msg)
 
                             if uld < uldWarnLimits[0]:
                                 
                                 if uld < uldErrLimits[0]:
-                                    msg = 'tholdCIVal: %0.3f < %0.3f for %d,%s,%d,%s' % \
-                                            (uld, uldErrLimits[0], tem, calConstant.CROW[row], fe,
-                                            calConstant.CRNG[erng])
+                                    msg = 'tholdCIVal: %0.3f < %0.3f for T%d,%s%s,%d,%s' % \
+                                            (uld, uldErrLimits[0], tem, calConstant.CROW[row],
+                                             calConstant.CPM[end], fe, calConstant.CRNG[erng])
                                     log.error(msg)
                                     status = 1
                                 else:
-                                    msg = 'tholdCIVal: %0.3f < %0.3f for %d,%s,%d,%s' % \
-                                            (uld, uldWarnLimits[0], tem, calConstant.CROW[row], fe,
-                                            calConstant.CRNG[erng])
+                                    msg = 'tholdCIVal: %0.3f < %0.3f for T%d,%s%s,%d,%s' % \
+                                            (uld, uldWarnLimits[0], tem, calConstant.CROW[row],
+                                             calConstant.CPM[end], fe, calConstant.CRNG[erng])
                                     log.warning(msg)                                
 
     return (status)
