@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri Jun 17 07:22:38 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	tholdCIVal.py 
+Log Message:
+Added check of FLE and LAC values against LEX8 ULD; check of FHE value against HEX8 ULD.
+    *
+------------------------------------------------------------
 User: dwood  Thu Jun 16 10:16:59 PDT 2005
 calibGenCAL/python
 
