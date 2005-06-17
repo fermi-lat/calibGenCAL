@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri Jun 17 11:29:00 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py calConstant.py tholdCIGen.py tholdCIVal.py 
+Log Message:
+Added constants CRNG_xxx to allow symbolic names for energy range indicies 0 - 3.
+    *
+------------------------------------------------------------
 User: dwood  Fri Jun 17 11:08:19 PDT 2005
 calibGenCAL/python
 
