@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate FHE Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2005/05/25 18:25:13 $"
-__version__     = "$Revision: 1.4 $, $Author: dwood $"
+__date__        = "$Date: 2005/06/06 19:26:16 $"
+__version__     = "$Revision: 1.5 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -29,6 +29,7 @@ import Numeric
 
 import calFitsXML
 import calDacXML
+import calConstant
 
 
 HEX8FLAG = True
@@ -193,15 +194,17 @@ if __name__ == '__main__':
     fio.close()
       
     if HEX8FLAG:
-        nrgIdx= 2
-        nrgRangeMultiplier=1.
+        nrgIdx = calConstant.CRNG_HEX8
+        nrgRangeMultiplier = 1.
     else:
-        nrgIdx=3
+        nrgIdx = calConstant.CRNG_HEX8
         nrgRangeMultiplier=9.
 
     heGainIdx = max(0,heGain-8)
     if heGain == 0:
       heGainIdx = 8
+
+    # split characterization data into fine and coarse ranges
 
     fineThresholds = adcThresholds[srcTwr,:,:,:,0:64]
     log.debug('genFHEsettings: fineThresholds:[0,0,0,:]:%s', str(fineThresholds[0,0,0,:]))

@@ -15,8 +15,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate FLE Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2005/05/16 19:16:28 $"
-__version__     = "$Revision: 1.3 $, $Author: dwood $"
+__date__        = "$Date: 2005/06/06 19:26:16 $"
+__version__     = "$Revision: 1.4 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -31,6 +31,7 @@ import Numeric
 
 import calFitsXML
 import calDacXML
+import calConstant
 
 
 LEX8FLAG = True
@@ -195,17 +196,20 @@ if __name__ == '__main__':
     fio.close()
     
     if LEX8FLAG:
-      nrgIdx= 0
-      nrgRangeMultiplier=1.
+      nrgIdx = calConstant.CRNG_LEX8
+      nrgRangeMultiplier = 1.
     else:
-      nrgIdx=1
-      nrgRangeMultiplier=9.
+      nrgIdx = calConstant.CRNG_LEX1
+      nrgRangeMultiplier = 9.
       
+    # split characterization data into fine and coarse ranges
 
     fineThresholds = adcThresholds[srcTwr,:,:,:,0:64]
     log.debug('genFLEsettings:: fineThresholds:[0,0,0,:]:%s', str(fineThresholds[0,0,0,:]))
     coarseThresholds = adcThresholds[srcTwr,:,:,:,64:]
-    log.debug('genFLEsettings:: coarseThresholds:[0,0,0,:]:%s', str(coarseThresholds[0,0,0,:]))   
+    log.debug('genFLEsettings:: coarseThresholds:[0,0,0,:]:%s', str(coarseThresholds[0,0,0,:]))
+
+    # calculate thresholds in ADC units from energy    
 
     adcs = Numeric.ones((8,2,12),Numeric.Float) * float(MeV)
     adcs = adcs * relgain[leGain,nrgIdx,srcTwr,...]
@@ -217,6 +221,10 @@ if __name__ == '__main__':
     log.debug('genFLEsettings: adcs[0,0,0]:%6.3f nrgRangeMultiplier:%6.3f', adcs[0,0,0], nrgRangeMultiplier)
     adcs = adcs - biasTable[srcTwr,...,0]
     log.debug('genFLEsettings: adcs[0,0,0]:%6.3f biasTable[0,0,0,0]:%6.3f', adcs[0,0,0], biasTable[srcTwr,0,0,0,0])
+
+    # find setting that gives threshold
+    # use fine DAC settings unless threshold is out of range
+    # use coarse DAC settings for high thresholds
 
     nomSetting = Numeric.zeros((16,8,2,12))
     q = Numeric.choose(Numeric.less(fineThresholds,adcs[...,Numeric.NewAxis]),(0,1))
