@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri Jun 17 07:47:30 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	tholdCIVal.py 
+Log Message:
+Changed ULD upper level check to be that ULD + PED value is less than 4095.
+    *
+------------------------------------------------------------
 User: dwood  Fri Jun 17 07:22:38 PDT 2005
 calibGenCAL/python
 
