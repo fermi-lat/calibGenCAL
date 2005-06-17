@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Thold_CI calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/06/17 14:47:30 $"
-__version__   = "$Revision: 1.4 $, $Author: dwood $"
+__date__      = "$Date: 2005/06/17 18:08:19 $"
+__version__   = "$Revision: 1.5 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -178,9 +178,9 @@ def rootHists(adcData, uldData):
                     for fe in range(12):
                     
                         if val == 3:
-                            adc = uldData[tem, row, end, fe, 0]
+                            adc = uldData[tem, row, end, fe, calConstant.CRNG_LEX8]
                         elif val == 4:
-                            adc = uldData[tem, row, end, fe, 2]
+                            adc = uldData[tem, row, end, fe, calConstant.CRNG_HEX8]
                         else:
                             adc = adcData[tem, row, end, fe, val]
                         hx.Fill(adc)
@@ -273,7 +273,7 @@ def calcError(adcData, uldData, pedData):
 
                             # check ULD values against other thresholds
 
-                            if erng == 0:
+                            if erng == calConstant.CRNG_LEX8:
 
                                 if adcData[tem, row, end, fe, 0] > uld:
                                     log.warning('tholdCIVal: LAC %0.3f > %0.3f for T%d,%s%s,%d,%s',
@@ -285,7 +285,7 @@ def calcError(adcData, uldData, pedData):
                                              adcData[tem, row, end, fe, 1], uld, tem, calConstant.CROW[row],
                                              calConstant.CPM[end], fe, calConstant.CRNG[erng])
 
-                            elif erng == 2:
+                            elif erng == calConstant.CRNG_HEX8:
 
                                 if adcData[tem, row, end, fe, 2] > uld:                                
                                     log.warning('tholdCIVal: FHE %0.3f > %0.3f for T%d,%s%s,%d,%s',
@@ -325,9 +325,9 @@ if __name__ == '__main__':
             rootName = o[1]
             rootOutput = True
         elif o[0] == '-E':
-            errLimit = float(o[1])
+            uldErrLimit = float(o[1])
         elif o[0] == '-W':
-            warnLimit = float(o[1])
+            uldWarnLimit = float(o[1])
         elif o[0] == '-L':
             if os.path.exists(o[1]):
                 log.warning('tholdCIVal: deleting old log file %s', o[1])
