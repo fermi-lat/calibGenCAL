@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Thold_CI calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/06/16 17:16:59 $"
-__version__   = "$Revision: 1.2 $, $Author: dwood $"
+__date__      = "$Date: 2005/06/17 14:22:38 $"
+__version__   = "$Revision: 1.3 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -136,7 +136,7 @@ def rootHists(adcData, uld):
 
 
 
-def calcError(adcData, uldData):
+def calcError(adcData, uldData, pedData):
 
     status = 0
 
@@ -149,32 +149,26 @@ def calcError(adcData, uldData):
                     for erng in range(4):
 
                             uld = uldData[tem, row, end, fe, erng]
+                            ped = pedData[tem, row, end, fe, erng]
                             
-                            if uld > uldWarnLimits[1]:
+                            if (uld + ped) > 4095.0:
                                 
-                                if uld > uldErrLimits[1]:
-                                    msg = 'tholdCIVal: %0.3f > %0.3f for T%d,%s%s,%d,%s' % \
-                                            (uld, uldErrLimits[1], tem, calConstant.CROW[row],
-                                             calConstant.CPM[end], fe, calConstant.CRNG[erng])
-                                    log.error(msg)
-                                    status = 1
-                                else:
-                                    msg = 'tholdCIVal: %0.3f > %0.3f for T%d,%s%s,%d,%s' % \
-                                            (uld, uldWarnLimits[1], tem, calConstant.CROW[row],
-                                             calConstant.CPM[end], fe, calConstant.CRNG[erng])
-                                    log.warning(msg)
+                                log.error('tholdCIVal: ULD + PED %0.3f > 4095.0 for T%d,%s%s,%d,%s',
+                                          (uld + ped), tem, calConstant.CROW[row], calConstant.CPM[end],
+                                          fe, calConstant.CRNG[erng])
+                                status = 1
 
-                            if uld < uldWarnLimits[0]:
+                            if uld < uldWarnLimit:
                                 
-                                if uld < uldErrLimits[0]:
+                                if uld < uldErrLimit:
                                     msg = 'tholdCIVal: %0.3f < %0.3f for T%d,%s%s,%d,%s' % \
-                                            (uld, uldErrLimits[0], tem, calConstant.CROW[row],
+                                            (uld, uldErrLimit, tem, calConstant.CROW[row],
                                              calConstant.CPM[end], fe, calConstant.CRNG[erng])
                                     log.error(msg)
                                     status = 1
                                 else:
                                     msg = 'tholdCIVal: %0.3f < %0.3f for T%d,%s%s,%d,%s' % \
-                                            (uld, uldWarnLimits[0], tem, calConstant.CROW[row],
+                                            (uld, uldWarnLimit, tem, calConstant.CROW[row],
                                              calConstant.CPM[end], fe, calConstant.CRNG[erng])
                                     log.warning(msg)
 
@@ -213,8 +207,8 @@ if __name__ == '__main__':
     usage = "usage: tholdCIVal [-V] [-L <log_file>] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>"
 
     rootOutput = False
-    uldErrLimits = (3000.0, 4095.0)
-    uldWarnLimits = (3200.0, 4000.0)    
+    uldErrLimit = 3000.0
+    uldWarnLimit = 3200.0   
 
     # setup logger
 
@@ -258,10 +252,8 @@ if __name__ == '__main__':
     xmlName = args[0]
 
     log.debug('tholdCIVal: using input file %s', xmlName)
-    log.debug('tholdCIVal: using ULD lower err limit %6.3f', uldErrLimits[0])
-    log.debug('tholdCIVal: using ULD upper err limit %6.3f', uldErrLimits[1])
-    log.debug('tholdCIVal: using ULD lower warn limit %6.3f', uldWarnLimits[0])
-    log.debug('tholdCIVal: using ULD upper warn limit %6.3f', uldWarnLimits[1])
+    log.debug('tholdCIVal: using ULD lower err limit %6.3f', uldErrLimit)
+    log.debug('tholdCIVal: using ULD lower warn limit %6.3f', uldWarnLimit)
 
     # open and read XML Thold_CI file
 
@@ -272,7 +264,7 @@ if __name__ == '__main__':
 
     # validate calibration data
 
-    valStatus = calcError(adcData, uldData)    
+    valStatus = calcError(adcData, uldData, pedData)    
 
     # create ROOT output file
     
