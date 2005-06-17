@@ -6,8 +6,8 @@ Global calorimeter constant values
 __facility__      = "Online"
 __abstract__      = "Global calorimeter constant values"
 __author__        = "D.L. Wood"
-__date__          = "$Date: 2005/03/29 00:32:25 $"
-__version__       = "$Revision: 1.20 $, $Author: cm $"
+__date__          = "$Date: 2005/04/12 14:02:12 $"
+__version__       = "$Revision: 1.2 $, $Author: dwood $"
 __release__       = "$Name:  $"
 __credits__       = "NRL code 7650"
 
@@ -56,6 +56,13 @@ FE_IDX = {'0':0,'1':1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,'1
 # Calorimeter range number to name mapping
 
 CRNG = ('LEX8','LEX1','HEX8','HEX1')
+
+# Calorimeter symbolic names for energy range indicies
+
+CRNG_LEX8 = 0
+CRNG_LEX1 = 1
+CRNG_HEX8 = 2
+CRNG_HEX1 = 3
 
 # Calorimeter layer number to string mapping
 

@@ -19,6 +19,7 @@ import Numeric
 import calDacXML
 import calFitsXML
 import calCalibXML
+import calConstant
 
 
 
@@ -372,7 +373,7 @@ if __name__ == '__main__':
                 for end in range(2):
                     for fe in range(12):
                         for erng in range(3):
-                            if erng < 2:
+                            if erng < erng < calConstant.CRNG_HEX8:
                                 gData = int(leGainData[f.destTwr, row, end, fe])
                             else:
                                 gData = int(heGainData[f.destTwr, row, end, fe])
@@ -392,7 +393,7 @@ if __name__ == '__main__':
                 for end in range(2):
                     for fe in range(12):
                         for erng in range(3):
-                            if erng < 2:
+                            if erng < calConstant.CRNG_HEX8:
                                 gData = int(leGainData[f.destTwr, row, end, fe])
                             else:
                                 gData = int(heGainData[f.destTwr, row, end, fe])
@@ -411,7 +412,7 @@ if __name__ == '__main__':
     calibFile = calCalibXML.calTholdCICalibXML(calibName, mode = calCalibXML.MODE_CREATE)
     dacData = (uldDacData, lacDacData, fleDacData, fheDacData)
     adcData = (uldAdcData, lacAdcData, fleAdcData, fheAdcData)
-    calibFile.write(dacData, adcData, intNonlinAdcData[3], pedData, leGainData, heGainData,
+    calibFile.write(dacData, adcData, intNonlinAdcData[calConstant.CRNG_HEX1], pedData, leGainData, heGainData,
                     biasAdcData, tems = tlist)
     calibFile.close()
 
