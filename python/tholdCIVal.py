@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Thold_CI calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/06/17 14:22:38 $"
-__version__   = "$Revision: 1.3 $, $Author: dwood $"
+__date__      = "$Date: 2005/06/17 14:47:30 $"
+__version__   = "$Revision: 1.4 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -38,33 +38,34 @@ import calCalibXML
 import calConstant
                    
 
+ADC_VALS = ('LAC', 'FLE', 'FHE', 'LEX8 ULD', 'HEX8 ULD')
 
 
-def rootHists(adcData, uld):
+def rootHists(adcData, uldData):
 
     # create summary ULD histograms
 
     sumHists = [None, None, None, None]
-    cs = ROOT.TCanvas('c_Summary', 'Summary', -1)
+    cs = ROOT.TCanvas('c_Summary_ULD', 'Summary_ULD', -1)
     cs.SetGrid()
     sumLeg = ROOT.TLegend(0.88, 0.88, 0.99, 0.99)
 
     for erng in range(4):
 
-        hName = "h_Summary_%s" % calConstant.CRNG[erng]       
-        hs = ROOT.TH1F(hName, 'TholdCI_Summary', 100, uldErrLimits[0], uldErrLimits[1])
+        hName = "h_Summary_ULD_%s" % calConstant.CRNG[erng]       
+        hs = ROOT.TH1F(hName, 'TholdCI_Summary_ULD', 100, uldErrLimit, 4095)
         hs.SetLineColor(erng + 1)
         hs.SetStats(False)
         sumHists[erng] = hs
         sumLeg.AddEntry(hs, calConstant.CRNG[erng], 'L')
         cs.Update()
         
-    # create ROOT histograms of ULD data per channel
+    # create ROOT histograms of ULD data per tower
 
     for tem in towers:      
 
         title = "T%d" % (tem)
-        cName = "ch_%s" % title
+        cName = "ch_ULD_%s" % title
                         
         cx = ROOT.TCanvas(cName, title, -1)
         cx.SetGrid()
@@ -75,7 +76,7 @@ def rootHists(adcData, uld):
         for erng in range(4):
                             
             hName = "h_%s_%d_%s" % (title, tem, calConstant.CRNG[erng])
-            hx = ROOT.TH1F(hName, 'TholdCI_%s' % title, 100, uldErrLimits[0], uldErrLimits[1])
+            hx = ROOT.TH1F(hName, 'TholdCI_ULD_%s' % title, 100, uldErrLimit, 4095)
             hs = sumHists[erng]
             hx.SetLineColor(erng + 1)
             hx.SetStats(False)
@@ -135,6 +136,104 @@ def rootHists(adcData, uld):
     cs.Write()
 
 
+    # create summary ADC histograms
+
+    sumHists = [None, None, None, None, None]
+    cs = ROOT.TCanvas('c_Summary_ADC', 'Summary_ADC', -1)
+    cs.SetGrid()
+    sumLeg = ROOT.TLegend(0.88, 0.88, 0.99, 0.99)
+
+    for val in range(5):
+
+        hName = "h_Summary_ADC_%s" % ADC_VALS[val]       
+        hs = ROOT.TH1F(hName, 'TholdCI_Summary_ADC', 100, 0, 4095)
+        hs.SetLineColor(val + 1)
+        hs.SetStats(False)
+        sumHists[val] = hs
+        sumLeg.AddEntry(hs, ADC_VALS[val], 'L')
+
+    # create ROOT histograms of FLE/FHE/LAC data per tower        
+
+    for tem in towers:      
+
+        title = "T%d" % (tem)
+        cName = "ch_ADC_%s" % title
+                        
+        cx = ROOT.TCanvas(cName, title, -1)
+        cx.SetGrid()
+        cx.cd()
+        xtalLeg = ROOT.TLegend(0.88, 0.88, 0.99, 0.99)
+        hists = [None, None, None, None, None]
+                        
+        for val in range(5):
+                            
+            hName = "h_%s_%d_%s" % (title, tem, ADC_VALS[val])
+            hx = ROOT.TH1F(hName, 'TholdCI_ADC_%s' % title, 100, 0, 4095)
+            hs = sumHists[val]
+            hx.SetLineColor(val + 1)
+            hx.SetStats(False)
+            
+            for row in range(8):
+                for end in range(2):
+                    for fe in range(12):
+                    
+                        if val == 3:
+                            adc = uldData[tem, row, end, fe, 0]
+                        elif val == 4:
+                            adc = uldData[tem, row, end, fe, 2]
+                        else:
+                            adc = adcData[tem, row, end, fe, val]
+                        hx.Fill(adc)
+                        hs.Fill(adc)
+
+            hists[val] = hx
+            xtalLeg.AddEntry(hx, ADC_VALS[val], 'L')
+            cx.Update()
+
+        hMax = 0
+        for val in range(5):
+            hx = hists[val]
+            if hx.GetMaximum() > hMax:
+                hMax = hx.GetMaximum()
+
+        for val in range(5):
+            if val == 0:
+                dopt = ''
+            else:
+                dopt = 'SAME'
+            hx = hists[val]
+            hx.SetMaximum(hMax)
+            hx.Draw(dopt)
+            cx.Update()
+
+        xtalLeg.Draw()
+        cx.Update()                    
+        cx.Write()
+
+    cs.cd()
+
+    hMax = 0
+    for val in range(5):
+        hs = sumHists[val]
+        if hs.GetMaximum() > hMax:
+            hMax = hs.GetMaximum()    
+        
+    for val in range(5):
+
+        hs = sumHists[val]
+        if val == 0:
+            dopt = ''
+        else:
+            dopt = 'SAME'
+        hs.SetMaximum(hMax)
+        hs.Draw(dopt)
+        cs.Update()
+
+    sumLeg.Draw()
+    cs.Update()
+    cs.Write()    
+
+
 
 def calcError(adcData, uldData, pedData):
 
@@ -161,13 +260,13 @@ def calcError(adcData, uldData, pedData):
                             if uld < uldWarnLimit:
                                 
                                 if uld < uldErrLimit:
-                                    msg = 'tholdCIVal: %0.3f < %0.3f for T%d,%s%s,%d,%s' % \
+                                    msg = 'tholdCIVal: ULD %0.3f < %0.3f for T%d,%s%s,%d,%s' % \
                                             (uld, uldErrLimit, tem, calConstant.CROW[row],
                                              calConstant.CPM[end], fe, calConstant.CRNG[erng])
                                     log.error(msg)
                                     status = 1
                                 else:
-                                    msg = 'tholdCIVal: %0.3f < %0.3f for T%d,%s%s,%d,%s' % \
+                                    msg = 'tholdCIVal: ULD %0.3f < %0.3f for T%d,%s%s,%d,%s' % \
                                             (uld, uldWarnLimit, tem, calConstant.CROW[row],
                                              calConstant.CPM[end], fe, calConstant.CRNG[erng])
                                     log.warning(msg)
@@ -177,25 +276,21 @@ def calcError(adcData, uldData, pedData):
                             if erng == 0:
 
                                 if adcData[tem, row, end, fe, 0] > uld:
-                                    log.error('tholdCIVal: LAC %0.3f > LEX8 ULD %0.3f for T%d,%s%s,%d',
+                                    log.warning('tholdCIVal: LAC %0.3f > %0.3f for T%d,%s%s,%d,%s',
                                              adcData[tem, row, end, fe, 0], uld, tem, calConstant.CROW[row],
-                                             calConstant.CPM[end], fe)
-                                    status = 1
+                                             calConstant.CPM[end], fe, calConstant.CRNG[erng])
                                               
                                 if adcData[tem, row, end, fe, 1] > uld:
-                                    log.error('tholdCIVal: FLE %0.3f > LEX8 ULD %0.3f for T%d,%s%s,%d',
+                                    log.warning('tholdCIVal: FLE %0.3f > %0.3f for T%d,%s%s,%d,%s',
                                              adcData[tem, row, end, fe, 1], uld, tem, calConstant.CROW[row],
-                                             calConstant.CPM[end], fe)
-                                    status = 1
+                                             calConstant.CPM[end], fe, calConstant.CRNG[erng])
 
                             elif erng == 2:
 
                                 if adcData[tem, row, end, fe, 2] > uld:                                
-                                    log.error('tholdCIVal: FHE %0.3f > HEX8 ULD %0.3f for T%d,%s%s,%d',
+                                    log.warning('tholdCIVal: FHE %0.3f > %0.3f for T%d,%s%s,%d,%s',
                                              adcData[tem, row, end, fe, 2], uld, tem, calConstant.CROW[row],
-                                             calConstant.CPM[end], fe)
-                                    status = 1
-                                                                
+                                             calConstant.CPM[end], fe, calConstant.CRNG[erng])
                                               
 
     return (status)
