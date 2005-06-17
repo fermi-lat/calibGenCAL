@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Thold_CI calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/06/16 14:42:20 $"
-__version__   = "$Revision: 1.1 $, $Author: dwood $"
+__date__      = "$Date: 2005/06/16 17:16:59 $"
+__version__   = "$Revision: 1.2 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -80,7 +80,6 @@ def rootHists(adcData, uld):
             hx.SetLineColor(erng + 1)
             hx.SetStats(False)
             
-            
             for row in range(8):
                 for end in range(2):
                     for fe in range(12):
@@ -137,9 +136,11 @@ def rootHists(adcData, uld):
 
 
 
-def calcError(uldData):
+def calcError(adcData, uldData):
 
     status = 0
+
+    # validate ULD values    
 
     for tem in towers:
         for row in range(8):
@@ -175,7 +176,33 @@ def calcError(uldData):
                                     msg = 'tholdCIVal: %0.3f < %0.3f for T%d,%s%s,%d,%s' % \
                                             (uld, uldWarnLimits[0], tem, calConstant.CROW[row],
                                              calConstant.CPM[end], fe, calConstant.CRNG[erng])
-                                    log.warning(msg)                                
+                                    log.warning(msg)
+
+                            # check ULD values against other thresholds
+
+                            if erng == 0:
+
+                                if adcData[tem, row, end, fe, 0] > uld:
+                                    log.error('tholdCIVal: LAC %0.3f > LEX8 ULD %0.3f for T%d,%s%s,%d',
+                                             adcData[tem, row, end, fe, 0], uld, tem, calConstant.CROW[row],
+                                             calConstant.CPM[end], fe)
+                                    status = 1
+                                              
+                                if adcData[tem, row, end, fe, 1] > uld:
+                                    log.error('tholdCIVal: FLE %0.3f > LEX8 ULD %0.3f for T%d,%s%s,%d',
+                                             adcData[tem, row, end, fe, 1], uld, tem, calConstant.CROW[row],
+                                             calConstant.CPM[end], fe)
+                                    status = 1
+
+                            elif erng == 2:
+
+                                if adcData[tem, row, end, fe, 2] > uld:                                
+                                    log.error('tholdCIVal: FHE %0.3f > HEX8 ULD %0.3f for T%d,%s%s,%d',
+                                             adcData[tem, row, end, fe, 2], uld, tem, calConstant.CROW[row],
+                                             calConstant.CPM[end], fe)
+                                    status = 1
+                                                                
+                                              
 
     return (status)
 
@@ -186,8 +213,8 @@ if __name__ == '__main__':
     usage = "usage: tholdCIVal [-V] [-L <log_file>] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>"
 
     rootOutput = False
-    uldErrLimits = (3000.0, 4000.0)
-    uldWarnLimits = (3200.0, 3800.0)    
+    uldErrLimits = (3000.0, 4095.0)
+    uldWarnLimits = (3200.0, 4000.0)    
 
     # setup logger
 
@@ -245,7 +272,7 @@ if __name__ == '__main__':
 
     # validate calibration data
 
-    valStatus = calcError(uldData)    
+    valStatus = calcError(adcData, uldData)    
 
     # create ROOT output file
     
