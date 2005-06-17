@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri Jun 17 11:08:19 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	tholdCIVal.py 
+Log Message:
+Made ADC > ULD condition a warning instead of error; needs to be addressed in the future; added ROOT histograms of FLE,FHE, and LAC threshold ADC values.
+    *
+------------------------------------------------------------
 User: dwood  Fri Jun 17 07:47:30 PDT 2005
 calibGenCAL/python
 
