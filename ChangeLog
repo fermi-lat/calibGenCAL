@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri Jun 17 11:57:49 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	genFHEsettings.py genFLEsettings.py genLACsettings.py 
+Log Message:
+Use CRNG_xxx constants from calConstant when referencing energy range indicies.
+    *
+------------------------------------------------------------
 User: dwood  Fri Jun 17 11:29:00 PDT 2005
 calibGenCAL/python
 
