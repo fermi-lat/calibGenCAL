@@ -15,8 +15,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate FLE Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2005/06/06 19:26:16 $"
-__version__     = "$Revision: 1.4 $, $Author: dwood $"
+__date__        = "$Date: 2005/06/17 18:57:49 $"
+__version__     = "$Revision: 1.5 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -35,6 +35,7 @@ import calConstant
 
 
 LEX8FLAG = True
+
 
 
 
@@ -202,12 +203,17 @@ if __name__ == '__main__':
       nrgIdx = calConstant.CRNG_LEX1
       nrgRangeMultiplier = 9.
       
-    # split characterization data into fine and coarse ranges
+    # split characterization data into fine and coarse DAC ranges
 
     fineThresholds = adcThresholds[srcTwr,:,:,:,0:64]
     log.debug('genFLEsettings:: fineThresholds:[0,0,0,:]:%s', str(fineThresholds[0,0,0,:]))
     coarseThresholds = adcThresholds[srcTwr,:,:,:,64:]
     log.debug('genFLEsettings:: coarseThresholds:[0,0,0,:]:%s', str(coarseThresholds[0,0,0,:]))
+
+    # extrapolate data for upper end of coarse DAC range
+
+    calFitsXML.adcExtrapolate(coarseThresholds)
+    log.debug('genFLEsettings:: coarseThresholds (extrapolated):[0,0,0,:]:%s', str(coarseThresholds[0,0,0,:]))
 
     # calculate thresholds in ADC units from energy    
 
