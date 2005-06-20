@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Ped calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/25 19:20:59 $"
-__version__   = "$Revision: 1.3 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/25 21:32:48 $"
+__version__   = "$Revision: 1.4 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -156,13 +156,13 @@ def calcError(pedData):
                             if ex > wLim:
                             
                                 if ex > eLim:
-                                    msg = 'pedVal: %0.3f > %0.3f for %d,%s%s,%d,%s' % \
+                                    msg = '%0.3f > %0.3f for %d,%s%s,%d,%s' % \
                                         (ex, eLim, tem, calConstant.CROW[row],
                                          calConstant.CPM[end], fe, calConstant.CRNG[erng])
                                     log.error(msg)
                                     status = 1
                                 else:
-                                    msg = 'pedVal: %0.3f > %0.3f for %d,%s%s,%d,%s' % \
+                                    msg = '%0.3f > %0.3f for %d,%s%s,%d,%s' % \
                                         (ex, wLim, tem, calConstant.CROW[row],
                                          calConstant.CPM[end], fe, calConstant.CRNG[erng])
                                     log.warning(msg)
@@ -175,7 +175,7 @@ def calcError(pedData):
 
 if __name__ == '__main__':
 
-    usage = "usage: pedVal [-V] [-L <log_file>] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>"
+    usage = "pedVal [-V] [-L <log_file>] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>"
 
     rootOutput = False
     x8ErrLimit = 10.0
@@ -184,7 +184,7 @@ if __name__ == '__main__':
     # setup logger
 
     logging.basicConfig()
-    log = logging.getLogger()
+    log = logging.getLogger('pedVal')
     log.setLevel(logging.INFO)
 
     # check command line
@@ -206,7 +206,7 @@ if __name__ == '__main__':
             x8WarnLimit = float(o[1])
         elif o[0] == '-L':
             if os.path.exists(o[1]):
-                log.warning('pedVal: deleting old log file %s', o[1])
+                log.warning('Deleting old log file %s', o[1])
                 os.remove(o[1])
             hdl = logging.FileHandler(o[1])
             fmt = logging.Formatter('%(levelname)s %(message)s')
@@ -224,11 +224,11 @@ if __name__ == '__main__':
     x1ErrLimit = (x8ErrLimit / 5.0)
     x1WarnLimit = (x8WarnLimit / 5.0)
 
-    log.debug('pedVal: using input file %s', xmlName)
-    log.debug('pedVal: using sig err limit %0.3f for x8 ranges', x8ErrLimit)
-    log.debug('pedVal: using sig err limit %0.3f for x1 ranges', x1ErrLimit)
-    log.debug('pedVal: using sig warn limit %0.3f for x8 ranges', x8WarnLimit)
-    log.debug('pedVal: using sig warn limit %0.3f for x1 ranges', x1WarnLimit)
+    log.debug('Using input file %s', xmlName)
+    log.debug('Using sig err limit %0.3f for x8 ranges', x8ErrLimit)
+    log.debug('Using sig err limit %0.3f for x1 ranges', x1ErrLimit)
+    log.debug('Using sig warn limit %0.3f for x8 ranges', x8WarnLimit)
+    log.debug('Using sig warn limit %0.3f for x1 ranges', x1WarnLimit)
 
     # open and read XML Ped file
 
@@ -266,6 +266,6 @@ if __name__ == '__main__':
     else:
         statusStr = 'FAILED'
 
-    log.info('pedVal: validation %s for file %s', statusStr, xmlName)
+    log.info('Validation %s for file %s', statusStr, xmlName)
     sys.exit(valStatus)
     

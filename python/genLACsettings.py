@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate LAC Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2005/06/17 18:57:49 $"
-__version__     = "$Revision: 1.7 $, $Author: dwood $"
+__date__        = "$Date: 2005/06/20 13:37:23 $"
+__version__     = "$Revision: 1.8 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -42,7 +42,7 @@ if __name__ == '__main__':
     # setup logger
 
     logging.basicConfig()
-    log = logging.getLogger()
+    log = logging.getLogger('genLACsettings')
     log.setLevel(logging.INFO)
 
 
@@ -70,18 +70,18 @@ if __name__ == '__main__':
 
     # read config file settings
 
-    log.info("genLACsettings: Reading file %s", configName)
+    log.info("Reading file %s", configName)
     configFile = ConfigParser.SafeConfigParser()
     configFile.read(configName)
     sections = configFile.sections()
     if len(sections) == 0:
-        log.error("genLACsettings: config file %s missing or empty", configName)
+        log.error("Config file %s missing or empty", configName)
         sys.exit(1)
 
     # get input file names
 
     if 'infiles' not in sections:
-        log.error("genLACsettings: config file %s missing [infiles] section", configName)
+        log.error("Config file %s missing [infiles] section", configName)
         sys.exit(1) 
 
     lacName = None
@@ -97,20 +97,20 @@ if __name__ == '__main__':
         elif opt == 'adc2nrg':
             adc2nrgName = configFile.get('infiles', opt)   
     if lacName is None:
-        log.error('genLACsettings: config file %s missing [infiles]:lac2adc option')
+        log.error('Config file %s missing [infiles]:lac2adc option')
         sys.exit(1)
     if relName is None:
-        log.error('genLACsettings: config file %s missing [infiles]:relgain option')
+        log.error('Config file %s missing [infiles]:relgain option')
         sys.exit(1)
     if adc2nrgName is None:
-        log.error('genLACsettings: config file %s missing [infiles]:adc2nrg option')
+        log.error('Config file %s missing [infiles]:adc2nrg option')
         sys.exit(1)
     
 
     # get gain settings
 
     if 'gains' not in sections:
-        log.error("genLACsettings: config file %s missing [gains] section", configName)
+        log.error("Config file %s missing [gains] section", configName)
         sys.exit(1)
 
     leGain = None
@@ -121,14 +121,14 @@ if __name__ == '__main__':
             leGain = int(configFile.get('gains', opt))
 
     if leGain is None:
-        log.error('genLACsettings: config file %s missing [gains]:legain option', configName)
+        log.error('Config file %s missing [gains]:legain option', configName)
         sys.exit(1)
-    log.debug('genLACsettings: using LE gain %d', leGain)
+    log.debug('Using LE gain %d', leGain)
 
     # get tower addresses
 
     if 'towers' not in sections:
-        log.error("genLACsettings: config file %s missing [towers] section", configName)
+        log.error("Config file %s missing [towers] section", configName)
         sys.exit(1)
 
     srcTwr = None
@@ -139,27 +139,27 @@ if __name__ == '__main__':
         if opt == 'srctower':
             srcTwr = int(configFile.get('towers', 'srctower'))
             if srcTwr < 0 or srcTwr > 15:
-                log.error('genLACsettings: option %s (%d) out of range', opt, srcTwr)
+                log.error('Option %s (%d) out of range', opt, srcTwr)
                 sys.exit(1)
         if opt == 'desttower':
             destTwr = int(configFile.get('towers', 'desttower'))
             if destTwr < 0 or destTwr > 15:
-                log.error('genLACsettings: option %s (%d) out of range', opt, destTwr)
+                log.error('Option %s (%d) out of range', opt, destTwr)
                 sys.exit(1)
 
     if srcTwr is None:
-        log.error('genLACsettings: config file %s missing [towers]:srctower option', configName)
+        log.error('Config file %s missing [towers]:srctower option', configName)
         sys.exit(1)
-    log.debug('genLACsettings: using source tower %d', srcTwr) 
+    log.debug('Using source tower %d', srcTwr) 
     if destTwr is None:
-        log.error('genLACsettings: config file %s missing [towers]:desttower option', configName)
+        log.error('Config file %s missing [towers]:desttower option', configName)
         sys.exit(1)
-    log.debug('genLACsettings: using destination tower %d', destTwr)    
+    log.debug('Using destination tower %d', destTwr)    
        
 
     # read LAC ADC characterization file
 
-    log.info("genLACsettings: reading LAC ADC file %s", lacName)
+    log.info("Reading LAC ADC file %s", lacName)
     fio = calFitsXML.calFitsXML(fileName = lacName, mode = calFitsXML.MODE_READONLY)
     adcThresholds = fio.read()
     info = fio.info()
@@ -167,14 +167,14 @@ if __name__ == '__main__':
 
     # read relative gain factor file     
 
-    log.info("genLACsettings: reading relgain file %s", relName)
+    log.info("Reading relgain file %s", relName)
     fio = calFitsXML.calFitsXML(fileName = relName, mode = calFitsXML.MODE_READONLY)
     relgain = fio.read()
     fio.close()
 
     # read ADC to energy conversion file
     
-    log.info("genLACsettings: reading adc2nrg file %s", adc2nrgName)
+    log.info("Reading adc2nrg file %s", adc2nrgName)
     fio = calDacXML.calEnergyXML(adc2nrgName, 'adc2nrg')
     adc2nrg = fio.read()
     fio.close()
@@ -189,9 +189,9 @@ if __name__ == '__main__':
     # split characterization data into fine and coarse DAC ranges      
     
     fineThresholds = adcThresholds[srcTwr,:,:,:,0:64]
-    log.debug('genLACsettings: fineThresholds:[0,0,0,0,:]:%s' % str(fineThresholds[0,0,0,:]))
+    log.debug('fineThresholds:[0,0,0,0,:]:%s' % str(fineThresholds[0,0,0,:]))
     coarseThresholds = adcThresholds[srcTwr,:,:,:,64:]
-    log.debug('genLACsettings: coarseThresholds:[0,0,0,0,:]:%s' % str(coarseThresholds[0,0,0,:]))     
+    log.debug('coarseThresholds:[0,0,0,0,:]:%s' % str(coarseThresholds[0,0,0,:]))     
 
     # calculate thresholds in ADC units from energy
 
@@ -205,16 +205,16 @@ if __name__ == '__main__':
     else:
         offset = 0
 
-    log.debug('genLACsettings: Energy: %6.3f Offset:%6.3f', MeV, offset)   
+    log.debug('Energy: %6.3f Offset:%6.3f', MeV, offset)   
 
     adcs = Numeric.ones((8,2,12), Numeric.Float32) * MeV
     adcs = adcs * relgain[leGain,nrgIdx,srcTwr,...]
-    log.debug('genLACsettings: adcs[0,0,0,0]:%6.3f relgain[%d,0,%d,0,0,0]:%6.3f' %(adcs[0,0,0], \
+    log.debug('adcs[0,0,0,0]:%6.3f relgain[%d,0,%d,0,0,0]:%6.3f' %(adcs[0,0,0], \
                     leGain,nrgIdx, relgain[leGain, nrgIdx,srcTwr,0,0,0]))
     adcs = adcs / adc2nrg[srcTwr,...,0]
-    log.debug('genLACsettings: adcs[0,0,0,0]:%6.3f adc2nrg[0,0,0,0]:%6.3f' %(adcs[0,0,0], adc2nrg[srcTwr,0,0,0,0]))
+    log.debug('adcs[0,0,0,0]:%6.3f adc2nrg[0,0,0,0]:%6.3f' %(adcs[0,0,0], adc2nrg[srcTwr,0,0,0,0]))
     adcs = adcs / nrgRangeMultiplier
-    log.debug('genLACsettings: adcs[0,0,0,0]:%6.3f nrgRangeMultiplier:%6.3f' %(adcs[0,0,0], nrgRangeMultiplier))
+    log.debug('adcs[0,0,0,0]:%6.3f nrgRangeMultiplier:%6.3f' %(adcs[0,0,0], nrgRangeMultiplier))
 
     # find setting that gives threshold
     # use fine DAC settings unless threshold is out of range
@@ -233,7 +233,7 @@ if __name__ == '__main__':
 
     # create output file
 
-    log.info('genLACsettings: writing output file %s', outName)
+    log.info('Writing output file %s', outName)
     tlist = (destTwr,)
     fio = calDacXML.calDacXML(outName, 'log_acpt', calDacXML.MODE_CREATE)
     fio.write(nomSetting, lrefgain = leGain, tems = tlist)

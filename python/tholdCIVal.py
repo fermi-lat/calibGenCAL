@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Thold_CI calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/06/17 18:08:19 $"
-__version__   = "$Revision: 1.5 $, $Author: dwood $"
+__date__      = "$Date: 2005/06/17 18:29:00 $"
+__version__   = "$Revision: 1.6 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -252,7 +252,7 @@ def calcError(adcData, uldData, pedData):
                             
                             if (uld + ped) > 4095.0:
                                 
-                                log.error('tholdCIVal: ULD + PED %0.3f > 4095.0 for T%d,%s%s,%d,%s',
+                                log.error('ULD + PED %0.3f > 4095.0 for T%d,%s%s,%d,%s',
                                           (uld + ped), tem, calConstant.CROW[row], calConstant.CPM[end],
                                           fe, calConstant.CRNG[erng])
                                 status = 1
@@ -260,13 +260,13 @@ def calcError(adcData, uldData, pedData):
                             if uld < uldWarnLimit:
                                 
                                 if uld < uldErrLimit:
-                                    msg = 'tholdCIVal: ULD %0.3f < %0.3f for T%d,%s%s,%d,%s' % \
+                                    msg = 'ULD %0.3f < %0.3f for T%d,%s%s,%d,%s' % \
                                             (uld, uldErrLimit, tem, calConstant.CROW[row],
                                              calConstant.CPM[end], fe, calConstant.CRNG[erng])
                                     log.error(msg)
                                     status = 1
                                 else:
-                                    msg = 'tholdCIVal: ULD %0.3f < %0.3f for T%d,%s%s,%d,%s' % \
+                                    msg = 'ULD %0.3f < %0.3f for T%d,%s%s,%d,%s' % \
                                             (uld, uldWarnLimit, tem, calConstant.CROW[row],
                                              calConstant.CPM[end], fe, calConstant.CRNG[erng])
                                     log.warning(msg)
@@ -276,19 +276,19 @@ def calcError(adcData, uldData, pedData):
                             if erng == calConstant.CRNG_LEX8:
 
                                 if adcData[tem, row, end, fe, 0] > uld:
-                                    log.warning('tholdCIVal: LAC %0.3f > %0.3f for T%d,%s%s,%d,%s',
+                                    log.warning('LAC %0.3f > %0.3f for T%d,%s%s,%d,%s',
                                              adcData[tem, row, end, fe, 0], uld, tem, calConstant.CROW[row],
                                              calConstant.CPM[end], fe, calConstant.CRNG[erng])
                                               
                                 if adcData[tem, row, end, fe, 1] > uld:
-                                    log.warning('tholdCIVal: FLE %0.3f > %0.3f for T%d,%s%s,%d,%s',
+                                    log.warning('FLE %0.3f > %0.3f for T%d,%s%s,%d,%s',
                                              adcData[tem, row, end, fe, 1], uld, tem, calConstant.CROW[row],
                                              calConstant.CPM[end], fe, calConstant.CRNG[erng])
 
                             elif erng == calConstant.CRNG_HEX8:
 
                                 if adcData[tem, row, end, fe, 2] > uld:                                
-                                    log.warning('tholdCIVal: FHE %0.3f > %0.3f for T%d,%s%s,%d,%s',
+                                    log.warning('FHE %0.3f > %0.3f for T%d,%s%s,%d,%s',
                                              adcData[tem, row, end, fe, 2], uld, tem, calConstant.CROW[row],
                                              calConstant.CPM[end], fe, calConstant.CRNG[erng])
                                               
@@ -308,7 +308,7 @@ if __name__ == '__main__':
     # setup logger
 
     logging.basicConfig()
-    log = logging.getLogger()
+    log = logging.getLogger('tholdCIVal')
     log.setLevel(logging.INFO)
 
     # check command line
@@ -330,7 +330,7 @@ if __name__ == '__main__':
             uldWarnLimit = float(o[1])
         elif o[0] == '-L':
             if os.path.exists(o[1]):
-                log.warning('tholdCIVal: deleting old log file %s', o[1])
+                log.warning('Deleting old log file %s', o[1])
                 os.remove(o[1])
             hdl = logging.FileHandler(o[1])
             fmt = logging.Formatter('%(levelname)s %(message)s')
@@ -346,9 +346,9 @@ if __name__ == '__main__':
 
     xmlName = args[0]
 
-    log.debug('tholdCIVal: using input file %s', xmlName)
-    log.debug('tholdCIVal: using ULD lower err limit %6.3f', uldErrLimit)
-    log.debug('tholdCIVal: using ULD lower warn limit %6.3f', uldWarnLimit)
+    log.debug('Using input file %s', xmlName)
+    log.debug('Using ULD lower err limit %6.3f', uldErrLimit)
+    log.debug('Using ULD lower warn limit %6.3f', uldWarnLimit)
 
     # open and read XML Thold_CI file
 
@@ -385,7 +385,7 @@ if __name__ == '__main__':
     else:
         statusStr = 'FAILED'
 
-    log.info('tholdCIVal: validation %s for file %s', statusStr, xmlName)        
+    log.info('Validation %s for file %s', statusStr, xmlName)        
         
     sys.exit(valStatus)
 

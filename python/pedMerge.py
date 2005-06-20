@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to merge mutilple CAL Ped calibration XML files."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/05/05 14:32:17 $"
-__version__   = "$Revision: 1.3 $, $Author: dwood $"
+__date__      = "$Date: 2005/05/09 13:35:03 $"
+__version__   = "$Revision: 1.4 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -63,7 +63,7 @@ if __name__ == '__main__':
     # setup logger
 
     logging.basicConfig()
-    log = logging.getLogger()
+    log = logging.getLogger('pedMerge')
     log.setLevel(logging.INFO)
 
 
@@ -93,28 +93,28 @@ if __name__ == '__main__':
     try:
         calibUtilRoot = os.environ['CALIBUTILROOT']
     except:
-        log.error('mevPerDacMerge: CALIBUTILROOT must be defined')
+        log.error('CALIBUTILROOT must be defined')
         sys.exit(1)    
 
 
     # read config file settings
 
-    log.info("pedMerge: Reading file %s", configName)
+    log.info("Reading file %s", configName)
     configFile = ConfigParser.SafeConfigParser()
     configFile.read(configName)
     sections = configFile.sections()
     if len(sections) == 0:
-        log.error("pedMerge: config file %s missing or empty" % configName)
+        log.error("Config file %s missing or empty" % configName)
         sys.exit(1)
 
     # get input file names and tower ID's
 
     if 'infiles' not in sections:
-        log.error("pedMerge: config file %s missing [infiles] section" % configName)
+        log.error("Config file %s missing [infiles] section" % configName)
         sys.exit(1)
 
     if 'dtdfiles' not in sections:
-        log.error("pedMerge: config file %s missing [dtdfiles] section" % configName)
+        log.error("Config file %s missing [dtdfiles] section" % configName)
         sys.exit(1)    
 
     inFiles = []
@@ -125,7 +125,7 @@ if __name__ == '__main__':
             continue
         destTwr = int(optList[1])
         if destTwr < 0 or destTwr > 15:
-            log.error("pedMerge: dest index for [infiles] option %s out of range (0 - 15)", opt)
+            log.error("Dest index for [infiles] option %s out of range (0 - 15)", opt)
             sys.exit(1)
         value = configFile.get('infiles', opt)
         nameList = value.split(',')
@@ -137,20 +137,20 @@ if __name__ == '__main__':
             name = nameList[0]
             srcTwr = int(nameList[1])
         else:
-            log.error("intNonlinMerge: incorrect option format %s", value)
+            log.error("Incorrect option format %s", value)
             sys.exit(1)
         if srcTwr < 0 or srcTwr > 15:
-            log.error("pedMerge: src index for [infiles] option %s out of range (0 - 15)", opt)
+            log.error("Src index for [infiles] option %s out of range (0 - 15)", opt)
             sys.exit(1)
         inFile = inputFile(srcTwr, destTwr, name, None)
         inFiles.append(inFile)
-        log.debug('pedMerge: adding file %s to input as tower %d', name, destTwr)
+        log.debug('Adding file %s to input as tower %d', name, destTwr)
 
 
     # get DTD file name
 
     if not configFile.has_option('dtdfiles', 'dtdfile'):
-        log.error("pedMerge: config file %s missing [dtdfiles]:dtdfile option" % configName)
+        log.error("Config file %s missing [dtdfiles]:dtdfile option" % configName)
         sys.exit(1)
     dtdName = os.path.join(calibUtilRoot, 'xml', configFile.get('dtdfiles', 'dtdfile'))
 
@@ -159,7 +159,7 @@ if __name__ == '__main__':
 
     firstFile = True
     for f in inFiles:
-        log.info('pedMerge: reading file %s', f.name)
+        log.info('Reading file %s', f.name)
         inFile = calCalibXML.calPedCalibXML(f.name)
         pedData = inFile.read()
         f.pedData = pedData
@@ -168,7 +168,7 @@ if __name__ == '__main__':
             firstFile = False
         inFile.close()
 
-    log.debug('pedMerge: using ouput info:\n%s', str(info))
+    log.debug('Using ouput info:\n%s', str(info))
 
     outData = Numeric.zeros((16, 8, 2, 12, 4, 3), Numeric.Float32)
 
@@ -182,7 +182,7 @@ if __name__ == '__main__':
                             x = pedData[f.srcTwr, row, end, fe, erng, val]
                             outData[f.destTwr, row, end, fe, erng, val] = x
 
-    log.info('pedMerge: writing output file %s', outName)
+    log.info('Writing output file %s', outName)
 
     temList = []
     for f in inFiles:

@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Asym calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/25 16:53:13 $"
-__version__   = "$Revision: 1.6 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/25 21:32:48 $"
+__version__   = "$Revision: 1.7 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -223,13 +223,13 @@ def calcError(xposData, asymData):
                         if ex > warnLimit:
                             
                             if ex > errLimit:
-                                msg = 'asymVal: %0.6f > %0.6f for %d,%s,%d,%s (%d,%0.3f)' % \
+                                msg = '%0.6f > %0.6f for %d,%s,%d,%s (%d,%0.3f)' % \
                                         (ex, errLimit, tem, calConstant.CROW[row], fe,
                                         VAL_NAMES[val], p[1], a[1])
                                 log.error(msg)
                                 status = 1
                             else:
-                                msg = 'asymVal: %0.6f > %0.6f for %d,%s,%d,%s (%d,%0.3f)' % \
+                                msg = '%0.6f > %0.6f for %d,%s,%d,%s (%d,%0.3f)' % \
                                         (ex, warnLimit, tem, calConstant.CROW[row], fe,
                                         VAL_NAMES[val], p[1], a[1])
                                 log.warning(msg)
@@ -251,7 +251,7 @@ if __name__ == '__main__':
     # setup logger
 
     logging.basicConfig()
-    log = logging.getLogger()
+    log = logging.getLogger('asymVal')
     log.setLevel(logging.INFO)
 
     # check command line
@@ -273,7 +273,7 @@ if __name__ == '__main__':
             warnLimit = float(o[1])
         elif o[0] == '-L':
             if os.path.exists(o[1]):
-                log.warning('asymVal: deleting old log file %s', o[1])
+                log.warning('Deleting old log file %s', o[1])
                 os.remove(o[1])
             hdl = logging.FileHandler(o[1])
             fmt = logging.Formatter('%(levelname)s %(message)s')
@@ -289,9 +289,9 @@ if __name__ == '__main__':
 
     xmlName = args[0]
 
-    log.debug('asymVal: using input file %s', xmlName)
-    log.debug('asymVal: using sec deriv err limit %0.6f', errLimit)
-    log.debug('asymVal: using sec deriv warn limit %0.6f', warnLimit)
+    log.debug('Using input file %s', xmlName)
+    log.debug('Using sec deriv err limit %0.6f', errLimit)
+    log.debug('Using sec deriv warn limit %0.6f', warnLimit)
 
     # open and read XML Asym file
 
@@ -332,7 +332,7 @@ if __name__ == '__main__':
     else:
         statusStr = 'FAILED'
 
-    log.info('asymVal: validation %s for file %s', statusStr, xmlName)        
+    log.info('Validation %s for file %s', statusStr, xmlName)        
         
     sys.exit(valStatus)
 

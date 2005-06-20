@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL IntNonlin calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/25 16:52:24 $"
-__version__   = "$Revision: 1.8 $, $Author: dwood $"
+__date__      = "$Date: 2005/04/25 21:32:48 $"
+__version__   = "$Revision: 1.9 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -297,13 +297,13 @@ def calcError(dacData, adcData):
                             if ex > warnLimit:
                             
                                 if ex > errLimit:
-                                    msg = 'intNonlinVal: %0.3f > %0.3f for %d,%s%s,%d,%s (%d,%0.3f)' % \
+                                    msg = '%0.3f > %0.3f for %d,%s%s,%d,%s (%d,%0.3f)' % \
                                             (ex, errLimit, tem, calConstant.CROW[row], calConstant.CPM[end], fe,
                                             calConstant.CRNG[erng], d[1], a[1])
                                     log.error(msg)
                                     status = 1
                                 else:
-                                    msg = 'intNonlinVal: %0.3f > %0.3f for %d,%s%s,%d,%s (%d,%0.3f)' % \
+                                    msg = '%0.3f > %0.3f for %d,%s%s,%d,%s (%d,%0.3f)' % \
                                             (ex, warnLimit, tem, calConstant.CROW[row], calConstant.CPM[end], fe,
                                             calConstant.CRNG[erng], d[1], a[1])
                                     log.warning(msg)
@@ -318,7 +318,7 @@ def calcError(dacData, adcData):
 
 if __name__ == '__main__':
 
-    usage = "usage: intNonlinVal [-V] [-L <log_file>] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>"
+    usage = "intNonlinVal [-V] [-L <log_file>] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>"
 
     rootOutput = False
     errLimit = 2.0
@@ -349,7 +349,7 @@ if __name__ == '__main__':
             warnLimit = float(o[1])
         elif o[0] == '-L':
             if os.path.exists(o[1]):
-                log.warning('intNonlinVal: eleting old log file %s', o[1])
+                log.warning('Deleting old log file %s', o[1])
                 os.remove(o[1])
             hdl = logging.FileHandler(o[1])
             fmt = logging.Formatter('%(levelname)s %(message)s')
@@ -365,9 +365,9 @@ if __name__ == '__main__':
 
     xmlName = args[0]
 
-    log.debug('intNonlinVal: using input file %s', xmlName)
-    log.debug('intNonlinVal: using sec deriv err limit %0.3f', errLimit)
-    log.debug('intNonlinVal: using sec deriv warn limit %0.3f', warnLimit)    
+    log.debug('Using input file %s', xmlName)
+    log.debug('Using sec deriv err limit %0.3f', errLimit)
+    log.debug('Using sec deriv warn limit %0.3f', warnLimit)    
 
     # open and read XML IntNonlin file
 
@@ -409,7 +409,7 @@ if __name__ == '__main__':
     else:
         statusStr = 'FAILED'
        
-    log.info('intNonlinVal: validation %s for file %s', statusStr, xmlName)
+    log.info('Validation %s for file %s', statusStr, xmlName)
     sys.exit(valStatus)
 
 
