@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: dwood  Mon Jun 20 07:36:25 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	asymMerge.py asymVal.py genFHEsettings.py genLACsettings.py 
+	genULDsettings.py intNonlinMerge.py intNonlinVal.py 
+	mevPerDacMerge.py mevPerDacVal.py pedMerge.py pedVal.py 
+	tholdCIGen.py tholdCIVal.py 
+Log Message:
+Used logger namespace to provide application name in messages
+    *
+------------------------------------------------------------
 User: dwood  Mon Jun 20 06:37:23 PDT 2005
 calibGenCAL/python
 
