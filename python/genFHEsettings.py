@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate FHE Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2005/06/06 19:26:16 $"
-__version__     = "$Revision: 1.5 $, $Author: dwood $"
+__date__        = "$Date: 2005/06/17 18:57:49 $"
+__version__     = "$Revision: 1.6 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -204,12 +204,14 @@ if __name__ == '__main__':
     if heGain == 0:
       heGainIdx = 8
 
-    # split characterization data into fine and coarse ranges
+    # split characterization data into fine and coarse DAC ranges
 
     fineThresholds = adcThresholds[srcTwr,:,:,:,0:64]
     log.debug('genFHEsettings: fineThresholds:[0,0,0,:]:%s', str(fineThresholds[0,0,0,:]))
     coarseThresholds = adcThresholds[srcTwr,:,:,:,64:]
-    log.debug('genFHEsettings: coarseThresholds:[0,0,0,:]:%s', str(coarseThresholds[0,0,0,:]))
+    log.debug('genFHEsettings: coarseThresholds:[0,0,0,:]:%s', str(coarseThresholds[0,0,0,:]))    
+
+    # calculate thresholds in ADC units from energy
 
     adcs = Numeric.ones((8,2,12),Numeric.Float) * float(GeV) * 1000
     adcs = adcs * relgain[heGainIdx,nrgIdx,srcTwr,...] / relgain[8,nrgIdx,srcTwr,...]
@@ -222,6 +224,10 @@ if __name__ == '__main__':
     log.debug('genFHEsettings: adcs[0,0,0]:%6.3f nrgRangeMultiplier:%6.3f', adcs[0,0,0], nrgRangeMultiplier)
     adcs = adcs - biasTable[srcTwr,...,1]
     log.debug('genFHEsettings: adcs[0,0,0]:%6.3f biasTable[0,0,0,0,1]:%6.3f', adcs[0,0,0], biasTable[srcTwr,0,0,0,1])
+
+    # find setting that gives threshold
+    # use fine DAC settings unless threshold is out of range
+    # use coarse DAC settings for high thresholds
 
     nomSetting = Numeric.zeros((16,8,2,12))
     q = Numeric.choose(Numeric.less(fineThresholds,adcs[...,Numeric.NewAxis]),(0,1))

@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate LAC Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2005/06/13 16:48:09 $"
-__version__     = "$Revision: 1.6 $, $Author: dwood $"
+__date__        = "$Date: 2005/06/17 18:57:49 $"
+__version__     = "$Revision: 1.7 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -186,12 +186,12 @@ if __name__ == '__main__':
       nrgIdx=calConstant.CRNG_LEX1
       nrgRangeMultiplier=9.
 
-    # split characterization data into fine and coarse ranges      
+    # split characterization data into fine and coarse DAC ranges      
     
     fineThresholds = adcThresholds[srcTwr,:,:,:,0:64]
     log.debug('genLACsettings: fineThresholds:[0,0,0,0,:]:%s' % str(fineThresholds[0,0,0,:]))
     coarseThresholds = adcThresholds[srcTwr,:,:,:,64:]
-    log.debug('genLACsettings: coarseThresholds:[0,0,0,0,:]:%s' % str(coarseThresholds[0,0,0,:]))
+    log.debug('genLACsettings: coarseThresholds:[0,0,0,0,:]:%s' % str(coarseThresholds[0,0,0,:]))     
 
     # calculate thresholds in ADC units from energy
 
@@ -205,7 +205,7 @@ if __name__ == '__main__':
     else:
         offset = 0
 
-    log.debug('genLACsettings: Energy: %6.3f Offset:%6.3f', MeV, offset)        
+    log.debug('genLACsettings: Energy: %6.3f Offset:%6.3f', MeV, offset)   
 
     adcs = Numeric.ones((8,2,12), Numeric.Float32) * MeV
     adcs = adcs * relgain[leGain,nrgIdx,srcTwr,...]
