@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon Jun 20 07:45:26 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calFitsXML.py genFLEsettings.py 
+Log Message:
+Added function calFitsXML.adcExtrapolate() to estimate threshold values in coarse range when past the LEX8 limit.
+    *
+------------------------------------------------------------
 User: dwood  Mon Jun 20 07:36:25 PDT 2005
 calibGenCAL/python
 
