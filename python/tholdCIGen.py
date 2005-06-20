@@ -324,6 +324,12 @@ if __name__ == '__main__':
         fleAdcData[f.destTwr,...] = adcData[f.srcTwr,...]
         fleAdcFile.close()
 
+        # extrapolate coarse DAC range
+
+        coarseThresh = fleAdcData[f.destTwr,...,64:]
+        calFitsXML.adcExtrapolate(coarseThresh)
+        fleAdcData[f.destTwr,...,64:] = coarseThresh
+        
     # read FHE/ADC characterization files
 
     for f in fheAdcFiles:    
