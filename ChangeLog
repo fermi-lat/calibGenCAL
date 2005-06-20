@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon Jun 20 09:16:01 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	tholdCIGen.py 
+Log Message:
+Added extrapolation when looking up FLE thresholds in the coarse DAC range.
+    *
+------------------------------------------------------------
 User: dwood  Mon Jun 20 07:45:26 PDT 2005
 calibGenCAL/python
 
