@@ -1,24 +1,26 @@
 """
-Class to read and write CAL XML files derived from FITS data sets.
+Classes and functions to read and write CAL XML files derived from FITS data sets.
 """
 
 
 __facility__  = "Offline"
 __abstract__  = "Class to read and write CAL XML files derived from FITS data sets"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/05/23 18:19:47 $"
-__version__   = "$Revision: 1.4 $, $Author: dwood $"
+__date__      = "$Date: 2005/06/01 18:40:02 $"
+__version__   = "$Revision: 1.5 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 
 import sys, os, time
 import logging
+
 import xml.dom.minidom
 import xml.dom.ext
-import Numeric
-from calExcept import *
 
+import Numeric
+
+from calExcept import *
 from calConstant import CFACE, CROW, CPM, CRNG
 
 
@@ -28,53 +30,51 @@ MODE_READONLY = 2
 FILE_TYPES = ('fhe_dac', 'fle_dac', 'log_acpt', 'pedestal value', 'relative gain factor', 'rng_uld_dac')
 
 
-##########################################################################################
-##
-## \class calFitsXML
-##
-## \brief CAL FITS/XML ancillary data file class.
-##
-## This class provides methods for accessing CAL FITS ancillary data stored in XML
-## format.  The following file types are supported: \n
-##
-## - fle_dac: FLE DAC characterization \n
-## - fhe_dac: FHE DAC characterization \n
-## - log_acpt: LAC DAC characterization \n
-## - rng_uld_dac: LAC DAC characterization \n
-## - pedestal value: pedestal values \n
-## - relative gain factor: relative gain factor values \n
-##
-##########################################################################################
+
 
 class calFitsXML(object):
+    """
+    CAL FITS/XML ancillary data file class.
+
+    This class provides methods for accessing CAL FITS ancillary data stored in XML
+    format.  The following file types are supported:
+
+    - fle_dac: FLE DAC characterization
+    - fhe_dac: FHE DAC characterization
+    - log_acpt: LAC DAC characterization
+    - rng_uld_dac: LAC DAC characterization
+    - pedestal value: pedestal values 
+    - relative gain factor: relative gain factor values
+    """
+    
   
     def __init__(self, filePath = None, fileName = None, mode = MODE_CREATE, labels = None, \
                 calSNs = None, dataset = None, lrefgain = None, hrefgain = None, pedFile = None, \
                 erng = None, reportName = None, runId = None, comment = None, fitsName = None, \
                 fitsTime = None):
         """
-        \brief Open a CAL FITS data XML file
+        Open a CAL FITS data XML file
 
-        \param filePath The XML file directory path.
-        \param fileName The XML file name.
-        \param mode The file access mode (MODE_READONLY or MODE_CREATE).
-        \param labels A sequence of FITS table header values: \n
+        Param: filePath The XML file directory path.
+        Param: fileName The XML file name.
+        Param: mode The file access mode (MODE_READONLY or MODE_CREATE).
+        Param: labels A sequence of FITS table header values:
             labels[0] = Table header \e LAXIS1 string value
             labels[1] = Table header \e LAXIS2 string value
               ...
             labels[-2] = Table header \e LAXIS<n> string value.
             labels[-1] = Table header \e TTYPE1 string value.
-        \param calSNs A sequence of up to table header \e CALSN<n> string values.
-        \param dataset The table header \e DATASET string value.
-        \param lrefgain The table header \e LREFGAIN integer value.
-        \param hrefgain The table header \e HREFGAIN integer value.
-        \param pedFile The table header \e PEDFILE string value.
-        \param erng The table header \e ERNG string value.
-        \param reportName The name of the associated test report file.
-        \param runId The run collection ID for the data.
-        \param comment The table header \e COMMENT string value.
-        \param fitsName The name of the FITS file from which the XML file is derived.
-        \param fitsName The creation time of the FITS file from which the XML file is derived.
+        Param: calSNs A sequence of up to table header \e CALSN<n> string values.
+        Param: dataset The table header \e DATASET string value.
+        Param: lrefgain The table header \e LREFGAIN integer value.
+        Param: hrefgain The table header \e HREFGAIN integer value.
+        Param: pedFile The table header \e PEDFILE string value.
+        Param: erng The table header \e ERNG string value.
+        Param: reportName The name of the associated test report file.
+        Param: runId The run collection ID for the data.
+        Param: comment The table header \e COMMENT string value.
+        Param: fitsName The name of the FITS file from which the XML file is derived.
+        Param: fitsName The creation time of the FITS file from which the XML file is derived.
         """
 
         self.__numAxes = 7
@@ -137,9 +137,9 @@ class calFitsXML(object):
 
     def write(self, data):
         """
-        \brief Write data to a CAL FITS file
+        Write data to a CAL FITS file
 
-        \param rawEventData A Numeric array of data to be written in the FITS table.
+        Param: rawEventData A Numeric array of data to be written in the FITS table.
         """
         
         if self.__mode == MODE_READONLY:
@@ -440,9 +440,9 @@ class calFitsXML(object):
 
     def getVersion(self):
         """
-        \brief Get the format version of a CAL FITS/XML file
+        Get the format version of a CAL FITS/XML file
 
-        \returns The version number of the XML file, taken from the
+        Returns: The version number of the XML file, taken from the
                  <CALdoc> attribute.
         """
 
@@ -462,9 +462,9 @@ class calFitsXML(object):
 
     def read(self):
         """
-        \brief Read data from a CAL FITS/XML file
+        Read data from a CAL FITS/XML file
 
-        \returns A Numeric array of data read from the FITS data table.
+        Returns: A Numeric array of data read from the FITS data table.
         """
 
         # get XML document type
@@ -747,29 +747,29 @@ class calFitsXML(object):
 
     def info(self):
         """
-        \brief Get a CAL FITS/XML file table header values
+        Get a CAL FITS/XML file table header values
         
-        The following key values are recognized in the FITS file table header: \n
+        The following key values are recognized in the FITS file table header: 
 
-          - \e TTYPE1 - The file type ('fle_dac', 'fhe_dac', 'log acpt', 'pedestal values', ... \n
-          - \e TFORM1 - The FITS file format \n
-          - \e EXTNAME - The FITS table name -  'GLAST CAL Ancillary Data' \n
-          - \e SHAPE - The Python shape tuple for the FITS data \n
-          - \e TYPECODE - The Python typecode for the FITS data \n
-          - \e FITSNAME - The orignal name of the FITS file \n
-          - \e FITSTIME - The time the FITS file was created \n
-          - \e LAXIS1 - LAXIS7 - The FITS table dimension labels. \n
-          - \e CALSNX+,CALSNX-,CALSNY+,CALSNY- - The CAL AFEE board serial numbers \n
-          - \e DATASET - The name of the event data file associated with the FITS data \n
-          - \e LREFGAIN - The low reference gain used during the collection of the FITS data. \n
-          - \e HREFGAIN - The high reference gain used during the collection of the FITS data. \n
-          - \e PEDFILE - The name of the pedestal FITS file associated with the FITS data. \n
-          - \e ERNG - The energy range used during the collection of the FITS data. \n
-          - \e RPTNAME - The name of the associated test report file. \n
-          - \e RUNID - The run collection ID for the data. \n
-          - \e COMMENT - A general comment and notes string for the FITS file. \n
+          - TTYPE1 - The file type ('fle_dac', 'fhe_dac', 'log acpt', 'pedestal values', ... 
+          - TFORM1 - The FITS file format
+          - EXTNAME - The FITS table name -  'GLAST CAL Ancillary Data'
+          - SHAPE - The Python shape tuple for the FITS data
+          - TYPECODE - The Python typecode for the FITS data
+          - FITSNAME - The orignal name of the FITS file
+          - FITSTIME - The time the FITS file was created
+          - LAXIS1 - LAXIS7 - The FITS table dimension labels.
+          - CALSNX+,CALSNX-,CALSNY+,CALSNY- - The CAL AFEE board serial numbers
+          - DATASET - The name of the event data file associated with the FITS data 
+          - LREFGAIN - The low reference gain used during the collection of the FITS data.
+          - HREFGAIN - The high reference gain used during the collection of the FITS data.
+          - PEDFILE - The name of the pedestal FITS file associated with the FITS data.
+          - ERNG - The energy range used during the collection of the FITS data.
+          - RPTNAME - The name of the associated test report file.
+          - RUNID - The run collection ID for the data.
+          - COMMENT - A general comment and notes string for the FITS file.
           
-        \returns A dictionary of <table header key>:<value> pairs.
+        Returns: A dictionary of <table header key>:<value> pairs.
         """
         
         i = {}
@@ -821,7 +821,7 @@ class calFitsXML(object):
                     
     def close(self):
         """
-        \brief Close a CAL FITS/XML file.
+        Close a CAL FITS/XML file.
         """
         
         self.__xmlFile.close()
@@ -831,4 +831,37 @@ class calFitsXML(object):
           self.__log.warning("calFitsXML: XML document unlink failed")
         self.__doc = None
 
-        
+
+
+def adcExtrapolate(adcData):
+    """
+    Extrapolate ADC values beyond testing range.
+
+    Param: adcData - A Numeric array of shape (8, 2, 12, 64) containing one range of ADC
+    data.  The last good segment before saturation is used to extrapolate the remaining
+    values in the range.  The data is changed in place.
+    """
+
+    for row in range(8):
+        for end in range(2):
+            for fe in range(12):
+                
+                # find data before saturation
+
+                dac = 63
+                sat = adc = adcData[row, end, fe, dac]
+                while adc == sat:
+                    dac -= 1
+                    adc = adcData[row, end, fe, dac]
+
+                # get slope of last good segment
+                
+                a0 = adcData[row, end, fe, (dac - 1)]
+                a1 = adcData[row, end, fe, dac]
+                m = (a1 - a0)
+
+                # extrapolate remaining values
+
+                for d in range((dac + 1), 64):
+                    adcData[row, end, fe, d] = a1 + m
+                    a1 = adcData[row, end, fe, d]        
