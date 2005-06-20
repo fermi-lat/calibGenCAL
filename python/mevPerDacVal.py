@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL MevPerDac calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/25 21:32:48 $"
-__version__   = "$Revision: 1.4 $, $Author: dwood $"
+__date__      = "$Date: 2005/05/09 16:01:26 $"
+__version__   = "$Revision: 1.1 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -109,12 +109,12 @@ def calcError(energyData):
                     if ex > warnLim:
                             
                         if ex > errLim:
-                            msg = 'mevPerDacVal: %0.3f > %0.3f for %d,%s,%d,%s' % \
+                            msg = '%0.3f > %0.3f for %d,%s,%d,%s' % \
                                 (ex, errLim, tem, calConstant.CROW[row], fe, BIGSMALL[val])
                             log.error(msg)
                             status = 1
                         else:
-                            msg = 'mevPerDacVal: %0.3f > %0.3f for %d,%s,%d,%s' % \
+                            msg = '%0.3f > %0.3f for %d,%s,%d,%s' % \
                                 (ex, warnLim, tem, calConstant.CROW[row], fe, BIGSMALL[val])
                             log.warning(msg)
 
@@ -126,7 +126,7 @@ def calcError(energyData):
 
 if __name__ == '__main__':
 
-    usage = "usage: mevPerDacVal [-V] [-L <log_file>] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>"
+    usage = "mevPerDacVal [-V] [-L <log_file>] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>"
 
     rootOutput = False
     smallErrLim = 30.0
@@ -135,7 +135,7 @@ if __name__ == '__main__':
     # setup logger
 
     logging.basicConfig()
-    log = logging.getLogger()
+    log = logging.getLogger('mevPerDacVal')
     log.setLevel(logging.INFO)
 
     # check command line
@@ -157,7 +157,7 @@ if __name__ == '__main__':
             smallWarnLim = float(o[1])
         elif o[0] == '-L':
             if os.path.exists(o[1]):
-                log.warning('mevPerDacVal: deleting old log file %s', o[1])
+                log.warning('Deleting old log file %s', o[1])
                 os.remove(o[1])
             hdl = logging.FileHandler(o[1])
             fmt = logging.Formatter('%(levelname)s %(message)s')
@@ -175,11 +175,11 @@ if __name__ == '__main__':
     bigErrLim = (smallErrLim / 5)
     bigWarnLim = (smallWarnLim / 5)
 
-    log.debug('mevPerDacVal: using input file %s', xmlName)
-    log.debug('mevPerDacVal: using err limit %0.3f for Big diodes', bigErrLim)
-    log.debug('mevPerDacVal: using err limit %0.3f for Small diodes', smallErrLim)
-    log.debug('mevPerDacVal: using warn limit %0.3f for Big diodes', bigWarnLim)
-    log.debug('mevPerDacVal: using warn limit %0.3f Small diodes', smallWarnLim)
+    log.debug('Using input file %s', xmlName)
+    log.debug('Using err limit %0.3f for Big diodes', bigErrLim)
+    log.debug('Using err limit %0.3f for Small diodes', smallErrLim)
+    log.debug('Using warn limit %0.3f for Big diodes', bigWarnLim)
+    log.debug('Using warn limit %0.3f Small diodes', smallWarnLim)
 
     # open and read XML Ped file
 
@@ -217,6 +217,6 @@ if __name__ == '__main__':
     else:
         statusStr = 'FAILED'
 
-    log.info('mevPerDacVal: validation %s for file %s', statusStr, xmlName)
+    log.info('Validation %s for file %s', statusStr, xmlName)
     sys.exit(valStatus)
     

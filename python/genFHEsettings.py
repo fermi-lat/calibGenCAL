@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate FHE Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2005/06/17 18:57:49 $"
-__version__     = "$Revision: 1.6 $, $Author: dwood $"
+__date__        = "$Date: 2005/06/20 13:37:23 $"
+__version__     = "$Revision: 1.7 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -43,7 +43,7 @@ if __name__ == '__main__':
     # setup logger
 
     logging.basicConfig()
-    log = logging.getLogger()
+    log = logging.getLogger('genFHEsettings')
     log.setLevel(logging.INFO)
 
 
@@ -74,18 +74,18 @@ if __name__ == '__main__':
 
     # read config file settings
 
-    log.info("genFHEsettings: Reading file %s", configName)
+    log.info("Reading file %s", configName)
     configFile = ConfigParser.SafeConfigParser()
     configFile.read(configName)
     sections = configFile.sections()
     if len(sections) == 0:
-        log.error("genFHEsettings: config file %s missing or empty", configName)
+        log.error("Config file %s missing or empty", configName)
         sys.exit(1)
 
     # get input file names
 
     if 'infiles' not in sections:
-        log.error("genFHEsettings: config file %s missing [infiles] section", configName)
+        log.error("Config file %s missing [infiles] section", configName)
         sys.exit(1) 
 
     fheName = None
@@ -104,22 +104,22 @@ if __name__ == '__main__':
         elif opt == 'bias':
             biasName = configFile.get('infiles', opt)
     if fheName is None:
-        log.error('genFHEsettings: config file %s missing [infiles]:fhe2adc option', configName)
+        log.error('Config file %s missing [infiles]:fhe2adc option', configName)
         sys.exit(1)
     if relName is None:
-        log.error('genFHEsettings: config file %s missing [infiles]:relgain option', configName)
+        log.error('Config file %s missing [infiles]:relgain option', configName)
         sys.exit(1)
     if adc2nrgName is None:
-        log.error('genFHEsettings: config file %s missing [infiles]:adc2nrg option', configName)
+        log.error('Config file %s missing [infiles]:adc2nrg option', configName)
         sys.exit(1)
     if biasName is None:
-        log.error('genFHEsettings: config file %s missing [infiles]:bias option', configName)
+        log.error('Config file %s missing [infiles]:bias option', configName)
         sys.exit(1)
 
     # get gain settings
 
     if 'gains' not in sections:
-        log.error("genFHEsettings: config file %s missing [gains] section", configName)
+        log.error("Config file %s missing [gains] section", configName)
         sys.exit(1)
 
     heGain = None
@@ -130,14 +130,14 @@ if __name__ == '__main__':
             heGain = int(configFile.get('gains', opt))
 
     if heGain is None:
-        log.error('genFHEsettings: config file %s missing [gains]:hegain option', configName)
+        log.error('Config file %s missing [gains]:hegain option', configName)
         sys.exit(1)
-    log.debug('genFHEsettings: using HE gain %d', heGain)
+    log.debug('Using HE gain %d', heGain)
 
        # get tower addresses
 
     if 'towers' not in sections:
-        log.error("genLACsettings: config file %s missing [towers] section", configName)
+        log.error("Config file %s missing [towers] section", configName)
         sys.exit(1)
 
     srcTwr = None
@@ -148,47 +148,47 @@ if __name__ == '__main__':
         if opt == 'srctower':
             srcTwr = int(configFile.get('towers', 'srctower'))
             if srcTwr < 0 or srcTwr > 15:
-                log.error('genFHEsettings: option %s (%d) out of range', opt, srcTwr)
+                log.error('Option %s (%d) out of range', opt, srcTwr)
                 sys.exit(1)
         if opt == 'desttower':
             destTwr = int(configFile.get('towers', 'desttower'))
             if destTwr < 0 or destTwr > 15:
-                log.error('genFHEsettings: option %s (%d) out of range', opt, destTwr)
+                log.error('Option %s (%d) out of range', opt, destTwr)
                 sys.exit(1)
 
     if srcTwr is None:
-        log.error('genFHEsettings: config file %s missing [towers]:srctower option', configName)
+        log.error('Config file %s missing [towers]:srctower option', configName)
         sys.exit(1)
-    log.debug('genFHEsettings: using source tower %d', srcTwr) 
+    log.debug('Using source tower %d', srcTwr) 
     if destTwr is None:
-        log.error('genFHEsettings: config file %s missing [towers]:desttower option', configName)
+        log.error('Config file %s missing [towers]:desttower option', configName)
         sys.exit(1)
-    log.debug('genFHEsettings: using destination tower %d', destTwr)    
+    log.debug('Using destination tower %d', destTwr)    
 
     # read FHE DAC ADC characterization file      
 
-    log.info("genFHEsettings: reading FHE ADC file %s", fheName)
+    log.info("Reading FHE ADC file %s", fheName)
     fio = calFitsXML.calFitsXML(fileName = fheName, mode = calFitsXML.MODE_READONLY)
     adcThresholds = fio.read()
     fio.close() 
 
     # read relative gain factor file     
 
-    log.info("genFHEsettings: reading relgain file %s", relName)
+    log.info("Reading relgain file %s", relName)
     fio = calFitsXML.calFitsXML(fileName = relName, mode = calFitsXML.MODE_READONLY)
     relgain = fio.read()
     fio.close()
 
     # read ADC to energy conversion file
     
-    log.info("genFHEsettings: reading adc2nrg file %s", adc2nrgName)
+    log.info("Reading adc2nrg file %s", adc2nrgName)
     fio = calDacXML.calEnergyXML(adc2nrgName, 'adc2nrg')
     adc2nrg = fio.read()
     fio.close()
 
     # read bias settings file
     
-    log.info("genFHEsettings: reading bias file %s", biasName)
+    log.info("Reading bias file %s", biasName)
     fio = calDacXML.calEnergyXML(biasName, 'thrBias')
     biasTable = fio.read()
     fio.close()
@@ -207,23 +207,23 @@ if __name__ == '__main__':
     # split characterization data into fine and coarse DAC ranges
 
     fineThresholds = adcThresholds[srcTwr,:,:,:,0:64]
-    log.debug('genFHEsettings: fineThresholds:[0,0,0,:]:%s', str(fineThresholds[0,0,0,:]))
+    log.debug('fineThresholds:[0,0,0,:]:%s', str(fineThresholds[0,0,0,:]))
     coarseThresholds = adcThresholds[srcTwr,:,:,:,64:]
-    log.debug('genFHEsettings: coarseThresholds:[0,0,0,:]:%s', str(coarseThresholds[0,0,0,:]))    
+    log.debug('coarseThresholds:[0,0,0,:]:%s', str(coarseThresholds[0,0,0,:]))    
 
     # calculate thresholds in ADC units from energy
 
     adcs = Numeric.ones((8,2,12),Numeric.Float) * float(GeV) * 1000
     adcs = adcs * relgain[heGainIdx,nrgIdx,srcTwr,...] / relgain[8,nrgIdx,srcTwr,...]
-    log.debug('genFHEsettings: adcs[0,0,0]:%6.3f relgain[%d,0,%d,0,0,0]:%6.3f relgain[8,0,%d,0,0,0]:%6.3f', \
+    log.debug('adcs[0,0,0]:%6.3f relgain[%d,0,%d,0,0,0]:%6.3f relgain[8,0,%d,0,0,0]:%6.3f', \
                      adcs[0,0,0], heGainIdx, nrgIdx, relgain[heGainIdx,nrgIdx,srcTwr,0,0,0], nrgIdx, \
                      relgain[8,nrgIdx,srcTwr,0,0,0])
     adcs = adcs / adc2nrg[srcTwr,...,1]
-    log.debug('genFHEsettings: adcs[0,0,0]:%6.3f adc2nrg[0,0,0,0,1]:%6.3f', adcs[0,0,0], adc2nrg[srcTwr,0,0,0,1])
+    log.debug('adcs[0,0,0]:%6.3f adc2nrg[0,0,0,0,1]:%6.3f', adcs[0,0,0], adc2nrg[srcTwr,0,0,0,1])
     adcs = adcs / nrgRangeMultiplier
-    log.debug('genFHEsettings: adcs[0,0,0]:%6.3f nrgRangeMultiplier:%6.3f', adcs[0,0,0], nrgRangeMultiplier)
+    log.debug('adcs[0,0,0]:%6.3f nrgRangeMultiplier:%6.3f', adcs[0,0,0], nrgRangeMultiplier)
     adcs = adcs - biasTable[srcTwr,...,1]
-    log.debug('genFHEsettings: adcs[0,0,0]:%6.3f biasTable[0,0,0,0,1]:%6.3f', adcs[0,0,0], biasTable[srcTwr,0,0,0,1])
+    log.debug('adcs[0,0,0]:%6.3f biasTable[0,0,0,0,1]:%6.3f', adcs[0,0,0], biasTable[srcTwr,0,0,0,1])
 
     # find setting that gives threshold
     # use fine DAC settings unless threshold is out of range
@@ -241,6 +241,7 @@ if __name__ == '__main__':
 
     # create output file
 
+    log.info('Writing output file %s', outName)
     fio = calDacXML.calDacXML(outName, 'fhe_dac', calDacXML.MODE_CREATE)
     tlist = (destTwr,)
     fio.write(nomSetting, hrefgain = heGain, tems = tlist)
