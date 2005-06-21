@@ -101,3 +101,5 @@ v3r6p10 tholdCIgen now handles ULD files w/ incorrect pedestal subtraction (fits
 v3r6p11 fixed 3 bugs in gen***settings.py tools.  JIRA CAL-10,CAL-11,CAL-12.  FLE & FHE max out @ 0x40, also 100 mev & 20 mev FLE settings roughly the same.  also LAC settings the same for all layers
 
 v3r6p12 Corrected genLACsettings tool for thresholds < 2 MeV; uses approximation based on 2 MeV values.
+
+v3r6p13 Use extrapolated LEX8 characterization values in tools where FLE threshold is in LEX1 range.
