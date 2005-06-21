@@ -6,8 +6,8 @@ Classes and functions to read and write CAL XML files derived from FITS data set
 __facility__  = "Offline"
 __abstract__  = "Class to read and write CAL XML files derived from FITS data sets"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/06/01 18:40:02 $"
-__version__   = "$Revision: 1.5 $, $Author: dwood $"
+__date__      = "$Date: 2005/06/20 14:45:26 $"
+__version__   = "$Revision: 1.6 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -864,4 +864,6 @@ def adcExtrapolate(adcData):
 
                 for d in range((dac + 1), 64):
                     adcData[row, end, fe, d] = a1 + m
-                    a1 = adcData[row, end, fe, d]        
+                    a1 = adcData[row, end, fe, d]
+
+                    
