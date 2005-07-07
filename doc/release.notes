@@ -103,3 +103,5 @@ v3r6p11 fixed 3 bugs in gen***settings.py tools.  JIRA CAL-10,CAL-11,CAL-12.  FL
 v3r6p12 Corrected genLACsettings tool for thresholds < 2 MeV; uses approximation based on 2 MeV values.
 
 v3r6p13 Use extrapolated LEX8 characterization values in tools where FLE threshold is in LEX1 range.
+
+v3r6p14 ciFit & runMuTrigEff will now accept CI files w/ any multiple of nXtalsPerTower hits per event.  i.e. they accept parallel calibrations.  Also runMuTrigEff will intelligently skip the 'scan events' which are sometimes intersperved w/ data events, & can slightly mess up the event numbering & binning

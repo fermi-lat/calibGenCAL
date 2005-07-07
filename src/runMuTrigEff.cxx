@@ -148,63 +148,63 @@ void MtData::initHists() {
       muHistName << "mu_" << faceIdx;
 
       m_muHists[faceIdx] = new TH1F(muHistName.str().c_str(),
-                                          muHistName.str().c_str(),
-                                          100,0,3000);
+                                    muHistName.str().c_str(),
+                                    100,0,3000);
     }
   }else // clear existing histsograms
-	  for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++){
-			m_muHists[faceIdx]->Reset();
-			
-	  }
+    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++){
+      m_muHists[faceIdx]->Reset();
+                        
+    }
 
-   if (m_trigHists.size() == 0){ 
-      m_trigHists.resize(tFaceIdx::N_VALS);
+  if (m_trigHists.size() == 0){ 
+    m_trigHists.resize(tFaceIdx::N_VALS);
 
     for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
       ostringstream trigHistName;
       trigHistName << "trig_" << faceIdx;
 
       m_trigHists[faceIdx] = new TH1F(trigHistName.str().c_str(),
-                                          trigHistName.str().c_str(),
-                                          100,0,3000);
+                                      trigHistName.str().c_str(),
+                                      100,0,3000);
     }
   }else // clear existing histsograms
-	  for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++){
-			m_trigHists[faceIdx]->Reset();
-			
-	  }
+    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++){
+      m_trigHists[faceIdx]->Reset();
+                        
+    }
   if (m_ciAdcHists.size() == 0){ 
-      m_ciAdcHists.resize(tFaceIdx::N_VALS);
+    m_ciAdcHists.resize(tFaceIdx::N_VALS);
 
     for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
       ostringstream ciAdcHistName;
       ciAdcHistName << "ciAdc_" << faceIdx;
 
       m_ciAdcHists[faceIdx] = new TH1F(ciAdcHistName.str().c_str(),
-                                          ciAdcHistName.str().c_str(),
-                                          m_cfg.nDACs,0,m_cfg.nDACs);
+                                       ciAdcHistName.str().c_str(),
+                                       m_cfg.nDACs,0,m_cfg.nDACs);
     }
   }else // clear existing histsograms
-	  for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++){
-			m_ciAdcHists[faceIdx]->Reset();
-			
-	  }
+    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++){
+      m_ciAdcHists[faceIdx]->Reset();
+                        
+    }
   if (m_ciEffHists.size() == 0){ 
-      m_ciEffHists.resize(tFaceIdx::N_VALS);
+    m_ciEffHists.resize(tFaceIdx::N_VALS);
 
     for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
       ostringstream ciEffHistName;
       ciEffHistName << "ciEff_" << faceIdx;
 
       m_ciEffHists[faceIdx] = new TH1F(ciEffHistName.str().c_str(),
-                                          ciEffHistName.str().c_str(),
-                                          m_cfg.nDACs,0,m_cfg.nDACs);
+                                       ciEffHistName.str().c_str(),
+                                       m_cfg.nDACs,0,m_cfg.nDACs);
     }
   }else // clear existing histsograms
-	  for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++){
-			m_ciEffHists[faceIdx]->Reset();
-			
-	  }
+    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++){
+      m_ciEffHists[faceIdx]->Reset();
+                        
+    }
 
 }
 MtData::MtData(MtCfg &cfg) :
@@ -215,100 +215,100 @@ MtData::MtData(MtCfg &cfg) :
   m_trigSum(tFaceIdx::N_VALS, vector<float>(cfg.nDACs,0))
 
 {
-	      // open new histogram file
-      if (m_cfg.genHistfile) openHistFile(m_cfg.histFile);
-	  initHists();
-      m_cfg.ostr << "Reading pedestals from " << m_cfg.pedFileTXT << endl;
-      readCalPeds(m_cfg.pedFileTXT);
+  // open new histogram file
+  if (m_cfg.genHistfile) openHistFile(m_cfg.histFile);
+  initHists();
+  m_cfg.ostr << "Reading pedestals from " << m_cfg.pedFileTXT << endl;
+  readCalPeds(m_cfg.pedFileTXT);
 
- }
+}
 
 // smooth test lines & print output.
 void MtData::FitData() {
-	if (m_muThresh.size() == 0)m_muThresh.resize(tFaceIdx::N_VALS);
-	if (m_muThreshWidth.size() == 0)m_muThreshWidth.resize(tFaceIdx::N_VALS);
-	if (m_ciThresh.size() == 0)m_ciThresh.resize(tFaceIdx::N_VALS);
-	if (m_ciThreshWidth.size() == 0)m_ciThreshWidth.resize(tFaceIdx::N_VALS);
-	if (m_muThreshErr.size() == 0)m_muThreshErr.resize(tFaceIdx::N_VALS);
-	if (m_muThreshWidthErr.size() == 0)m_muThreshWidthErr.resize(tFaceIdx::N_VALS);
-	if (m_ciThreshErr.size() == 0)m_ciThreshErr.resize(tFaceIdx::N_VALS);
-	if (m_ciThreshWidthErr.size() == 0)m_ciThreshWidthErr.resize(tFaceIdx::N_VALS);
+  if (m_muThresh.size() == 0)m_muThresh.resize(tFaceIdx::N_VALS);
+  if (m_muThreshWidth.size() == 0)m_muThreshWidth.resize(tFaceIdx::N_VALS);
+  if (m_ciThresh.size() == 0)m_ciThresh.resize(tFaceIdx::N_VALS);
+  if (m_ciThreshWidth.size() == 0)m_ciThreshWidth.resize(tFaceIdx::N_VALS);
+  if (m_muThreshErr.size() == 0)m_muThreshErr.resize(tFaceIdx::N_VALS);
+  if (m_muThreshWidthErr.size() == 0)m_muThreshWidthErr.resize(tFaceIdx::N_VALS);
+  if (m_ciThreshErr.size() == 0)m_ciThreshErr.resize(tFaceIdx::N_VALS);
+  if (m_ciThreshWidthErr.size() == 0)m_ciThreshWidthErr.resize(tFaceIdx::N_VALS);
 
-	RngNum rng = LEX8;
-	for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
+  RngNum rng = LEX8;
+  for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
 
-      tRngIdx rngIdx(faceIdx,rng);
-	  float a0=0.0;
-	  float x[400],ex[400],ey[400],eff[400];
+    tRngIdx rngIdx(faceIdx,rng);
+    float a0=0.0;
+    float x[400],ex[400],ey[400],eff[400];
 
 
-// calculation of trigger efficiency for charge injection
-      // get pedestal
-      float ciPed     = m_adcSum[rngIdx][0] /
-        m_adcN[rngIdx][0];
+    // calculation of trigger efficiency for charge injection
+    // get pedestal
+    float ciPed     = m_adcSum[rngIdx][0] /
+      m_adcN[rngIdx][0];
 
-	  m_delPed[faceIdx] = ciPed - m_calPed[rngIdx];
+    m_delPed[faceIdx] = ciPed - m_calPed[rngIdx];
 
-      //calculate ped-subtracted means.
-	  for (int i = 0; i < m_cfg.nDACs; i++){
-        x[i] = 
-          m_adcSum[rngIdx][i] /
-//          m_adcN[rngIdx][i] - ped;
-          m_adcN[rngIdx][i] - m_calPed[rngIdx];
-	    ex[i]=1.0;
-	    float trig = m_trigSum[faceIdx][i];
-		float ntot = m_adcN[rngIdx][i];
-		float notrig = ntot - trig;
-			float strig=(trig>0.9) ? trig : 1;
-			float snotrig=(notrig>0.9) ? notrig : 1;
-			ey[i]=sqrt(strig*notrig*notrig + snotrig*trig*trig)/(ntot*ntot+0.1);
-			eff[i] = trig/(ntot+0.01);
-			(m_ciEffHists[faceIdx])->SetBinContent(i,eff[i]);
-			(m_ciEffHists[faceIdx])->SetBinError(i,ey[i]);
-			(m_ciAdcHists[faceIdx])->SetBinContent(i,x[i]);
-			(m_ciAdcHists[faceIdx])->SetBinError(i,ex[i]);
-	  }
-		for(int i=0;i<m_cfg.nDACs;i++) if(eff[i] > 0.5) {a0=x[i]; break;}
-		TGraphErrors* geff = new TGraphErrors(m_cfg.nDACs,x,eff,ex,ey);
-		TF1* step = new TF1("step","1.0/(1.0+exp(-[1]*(x-[0])))",0,3000);
-		step->SetParameters(a0,0.1);
-		geff->Fit(step,"QN");
-		m_ciThresh[faceIdx] = step->GetParameter(0);
-		m_ciThreshWidth[faceIdx] = step->GetParameter(1);
-		m_ciThreshErr[faceIdx] = step->GetParError(0);
-		m_ciThreshWidthErr[faceIdx] = step->GetParError(1);
-		delete step;
-		delete geff;
+    //calculate ped-subtracted means.
+    for (int i = 0; i < m_cfg.nDACs; i++){
+      x[i] = 
+        m_adcSum[rngIdx][i] /
+        //          m_adcN[rngIdx][i] - ped;
+        m_adcN[rngIdx][i] - m_calPed[rngIdx];
+      ex[i]=1.0;
+      float trig = m_trigSum[faceIdx][i];
+      float ntot = m_adcN[rngIdx][i];
+      float notrig = ntot - trig;
+      float strig=(trig>0.9) ? trig : 1;
+      float snotrig=(notrig>0.9) ? notrig : 1;
+      ey[i]=sqrt(strig*notrig*notrig + snotrig*trig*trig)/(ntot*ntot+0.1);
+      eff[i] = trig/(ntot+0.01);
+      (m_ciEffHists[faceIdx])->SetBinContent(i,eff[i]);
+      (m_ciEffHists[faceIdx])->SetBinError(i,ey[i]);
+      (m_ciAdcHists[faceIdx])->SetBinContent(i,x[i]);
+      (m_ciAdcHists[faceIdx])->SetBinError(i,ex[i]);
+    }
+    for(int i=0;i<m_cfg.nDACs;i++) if(eff[i] > 0.5) {a0=x[i]; break;}
+    TGraphErrors* geff = new TGraphErrors(m_cfg.nDACs,x,eff,ex,ey);
+    TF1* step = new TF1("step","1.0/(1.0+exp(-[1]*(x-[0])))",0,3000);
+    step->SetParameters(a0,0.1);
+    geff->Fit(step,"QN");
+    m_ciThresh[faceIdx] = step->GetParameter(0);
+    m_ciThreshWidth[faceIdx] = step->GetParameter(1);
+    m_ciThreshErr[faceIdx] = step->GetParError(0);
+    m_ciThreshWidthErr[faceIdx] = step->GetParError(1);
+    delete step;
+    delete geff;
 
-// calculation of trigger efficiency for muons
+    // calculation of trigger efficiency for muons
 
-		float* ymu =(m_muHists[faceIdx])->GetArray();
-		float* ytrig =(m_trigHists[faceIdx])->GetArray();
-		a0=0.0;
-		for(int i=0;i<100;i++){
-			x[i]=30*(i+0.5);
-			ex[i]=1.0;
-			float trig=ytrig[i+1];
-			float mu=ymu[i+1];
-			float notrig=mu-trig;
-			float strig=(trig>0.9) ? trig : 1;
-			float snotrig=(notrig>0.9) ? notrig : 1;
-			ey[i]=sqrt(strig*notrig*notrig + snotrig*trig*trig)/(mu*mu+0.1);
-			if(trig<0.2 && notrig<0.2)ey[i]=10.0;
-			eff[i] = trig/(mu+0.01);
-		}
-		for(int i=0;i<100;i++) if(eff[i] > 0.5) {a0=x[i]; break;}
-		geff = new TGraphErrors(100,x,eff,ex,ey);
-		step = new TF1("step","1.0/(1.0+exp(-[1]*(x-[0])))",0,3000);
-		step->SetParameters(a0,0.1);
-		geff->Fit(step,"QN");
-		m_muThresh[faceIdx] = step->GetParameter(0);
-		m_muThreshWidth[faceIdx] = step->GetParameter(1);
-		m_muThreshErr[faceIdx] = step->GetParError(0);
-		m_muThreshWidthErr[faceIdx] = step->GetParError(1);
-		delete step;
-		delete geff;
-	}
+    float* ymu =(m_muHists[faceIdx])->GetArray();
+    float* ytrig =(m_trigHists[faceIdx])->GetArray();
+    a0=0.0;
+    for(int i=0;i<100;i++){
+      x[i]=30*(i+0.5);
+      ex[i]=1.0;
+      float trig=ytrig[i+1];
+      float mu=ymu[i+1];
+      float notrig=mu-trig;
+      float strig=(trig>0.9) ? trig : 1;
+      float snotrig=(notrig>0.9) ? notrig : 1;
+      ey[i]=sqrt(strig*notrig*notrig + snotrig*trig*trig)/(mu*mu+0.1);
+      if(trig<0.2 && notrig<0.2)ey[i]=10.0;
+      eff[i] = trig/(mu+0.01);
+    }
+    for(int i=0;i<100;i++) if(eff[i] > 0.5) {a0=x[i]; break;}
+    geff = new TGraphErrors(100,x,eff,ex,ey);
+    step = new TF1("step","1.0/(1.0+exp(-[1]*(x-[0])))",0,3000);
+    step->SetParameters(a0,0.1);
+    geff->Fit(step,"QN");
+    m_muThresh[faceIdx] = step->GetParameter(0);
+    m_muThreshWidth[faceIdx] = step->GetParameter(1);
+    m_muThreshErr[faceIdx] = step->GetParError(0);
+    m_muThreshWidthErr[faceIdx] = step->GetParError(1);
+    delete step;
+    delete geff;
+  }
    
 }
 
@@ -317,24 +317,24 @@ void MtData::writeThreshTXT(const string &filename) {
   if (!outfile.is_open())
     throw string("Unable to open " + filename);
 
-//  TNtuple* ntp = new TNtuple("ci_mu_thresh_ntp","ci_mu_thresh_ntp","lyr:col:face:muThresh:muThreshWidth:ciThresh:ciThreshWidth");
-//  float xntp[7];
+  //  TNtuple* ntp = new TNtuple("ci_mu_thresh_ntp","ci_mu_thresh_ntp","lyr:col:face:muThresh:muThreshWidth:ciThresh:ciThreshWidth");
+  //  float xntp[7];
 
   for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
     LyrNum lyr = faceIdx.getLyr();
     ColNum col = faceIdx.getCol();
     FaceNum face = faceIdx.getFace();
-/*
-	xntp[0]= lyr;
-    xntp[1]= col;
-    xntp[2]= face;
-    xntp[3]= m_muThresh[faceIdx];
-    xntp[4]= m_muThreshWidth[faceIdx];
-    xntp[5]= m_ciThresh[faceIdx];
-    xntp[6]= m_ciThreshWidth[faceIdx];
+    /*
+      xntp[0]= lyr;
+      xntp[1]= col;
+      xntp[2]= face;
+      xntp[3]= m_muThresh[faceIdx];
+      xntp[4]= m_muThreshWidth[faceIdx];
+      xntp[5]= m_ciThresh[faceIdx];
+      xntp[6]= m_ciThreshWidth[faceIdx];
 
-	ntp->Fill(xntp);
-*/
+      ntp->Fill(xntp);
+    */
     outfile  << " " << lyr
              << " " << col
              << " " << face
@@ -350,7 +350,7 @@ void MtData::writeThreshTXT(const string &filename) {
              << " " << m_delPed[faceIdx]
              << endl;
   }
-//   ntp->Write();
+  //   ntp->Write();
 
 }
 
@@ -383,7 +383,7 @@ void MtData::writeFleFheBiasXML(const string &filename){
           for (int gcfe = 0; gcfe<12; gcfe++){
             outfile << "              <GCFE ID=\'" << gcfe << "\'>" << endl;
             int col = gcfe;
-			tFaceIdx faceIdx(layer,col,side);
+            tFaceIdx faceIdx(layer,col,side);
 
             float fleBias = m_muThresh[faceIdx] - m_ciThresh[faceIdx];
             outfile << "                <thrBias>" << fleBias << "</thrBias>" << endl;
@@ -414,7 +414,7 @@ public:
   // Standard ctor, where user provides the names of the input root files
   // and optionally the name of the output ROOT histogram file
   RootCiTrig(vector<string> &digiFileNames,
-         MtData  &data, MtCfg &cfg);
+             MtData  &data, MtCfg &cfg);
 
   // standard dtor
   ~RootCiTrig();
@@ -436,7 +436,10 @@ private:
   MtCfg  &m_cfg;
   bool m_fle[2][8];
 
-  int m_evtId;
+  int m_evtId;     /// current event id
+  int m_nEvtMax;      /// max event to loop to
+  int m_iGoodEvt;  /// count good events
+
 };
 
 
@@ -444,7 +447,11 @@ RootCiTrig::RootCiTrig(vector<string> &digiFileNames, MtData  &data, MtCfg &cfg)
   RootFileAnalysis(vector<string>(0), digiFileNames, vector<string>(0)),
   m_curDiode(LE),
   m_mtData(data),
-  m_cfg(cfg) {}
+  m_cfg(cfg),
+  m_evtId(0),
+  m_nEvtMax(0),
+  m_iGoodEvt(0)
+{}
 
 // default dstor
 RootCiTrig::~RootCiTrig() {
@@ -462,20 +469,21 @@ bool  RootCiTrig::isRngEnabled(RngNum rng) {
 // compiles stats for each test type.
 void RootCiTrig::DigiCal() {
   // Determine test config for this event (which xtal?, which dac?)
-  int testCol   = m_evtId/m_cfg.nPulsesPerXtal;
-  int testDAC   = (m_evtId%m_cfg.nPulsesPerXtal)/m_cfg.nPulsesPerDAC;
+  // only count good events
+  int testCol   = m_iGoodEvt/m_cfg.nPulsesPerXtal;
+  int testDAC   = (m_iGoodEvt%m_cfg.nPulsesPerXtal)/m_cfg.nPulsesPerDAC;
 
 
-	for(int layer=0;layer<8;layer++)for(int side=0;side<2;side++)m_fle[side][layer]=false;
-    const TClonesArray* calDiagCol = m_digiEvt->getCalDiagnosticCol();
+  for(int layer=0;layer<8;layer++)for(int side=0;side<2;side++)m_fle[side][layer]=false;
+  const TClonesArray* calDiagCol = m_digiEvt->getCalDiagnosticCol();
   TIter calDiagIter(calDiagCol);
- // Loop through diagnostics for all layers
+  // Loop through diagnostics for all layers
   CalDiagnosticData *pdiag = 0;
   while ((pdiag = (CalDiagnosticData*)calDiagIter.Next())) {  //loop through each 'hit' in one event
     CalDiagnosticData &cdiag = *pdiag; // use ref to reduce '->'
   
-	int layer = cdiag.layer();
-	for (int side=0;side<2;side++)m_fle[side][layer] = cdiag.low(side);  
+    int layer = cdiag.layer();
+    for (int side=0;side<2;side++)m_fle[side][layer] = cdiag.low(side);  
   }
 
 
@@ -489,38 +497,50 @@ void RootCiTrig::DigiCal() {
 
   // Loop through each xtal interaction
   CalDigi *pdig = 0;
-  while ((pdig = (CalDigi*)calDigiIter.Next())) {  //loop through each 'hit' in one event
-    CalDigi &cdig = *pdig; // use ref to reduce '->'
+  int nDigis = calDigiCol->GetEntries();
+  // event should have 1 hit for every xtal in each tower
+  // we support any nTowers
+  if(nDigis > 0 && nDigis%tXtalIdx::N_VALS == 0) {
+    m_iGoodEvt++;
+    while ((pdig = (CalDigi*)calDigiIter.Next())) {  //loop through each 'hit' in one event
+      CalDigi &cdig = *pdig; // use ref to reduce '->'
+      
+      CalXtalId id = cdig.getPackedId();  // get interaction information
+      ColNum col = id.getColumn();
+      if (col != testCol) continue;
 
-    CalXtalId id = cdig.getPackedId();  // get interaction information
-    ColNum col = id.getColumn();
-    if (col != testCol) continue;
+      TwrNum twr = id.getTower();
+      if (twr != m_cfg.twrBay) continue;  // skip hit if it is the wrong tower
+      LyrNum lyr = id.getLayer();
 
-    TwrNum twr = id.getTower();
-    if (twr != m_cfg.twrBay) continue;  // skip hit if it is the wrong tower
-    LyrNum lyr = id.getLayer();
+      // Loop through each readout on current xtal
+      int numRo = cdig.getNumReadouts();
+      for (int iRo=0; iRo<numRo; iRo++){
+        const CalXtalReadout &acRo = *(cdig.getXtalReadout(iRo));
+        for (FaceNum face; face.isValid(); face++) {
+          RngNum rng = acRo.getRange((CalXtalId::XtalFace)(short)face);
+          // only interested in current diode!
+          if (!isRngEnabled(rng)) continue;
 
-    // Loop through each readout on current xtal
-    int numRo = cdig.getNumReadouts();
-    for (int iRo=0; iRo<numRo; iRo++){
-      const CalXtalReadout &acRo = *(cdig.getXtalReadout(iRo));
-      for (FaceNum face; face.isValid(); face++) {
-        RngNum rng = acRo.getRange((CalXtalId::XtalFace)(short)face);
-        // only interested in current diode!
-        if (!isRngEnabled(rng)) continue;
-
-        int adc    = acRo.getAdc((CalXtalId::XtalFace)(short)face);
+          int adc    = acRo.getAdc((CalXtalId::XtalFace)(short)face);
  
-        tFaceIdx faceIdx(lyr,col,face);
-        tRngIdx rngIdx(lyr,col,face,rng);
+          tFaceIdx faceIdx(lyr,col,face);
+          tRngIdx rngIdx(lyr,col,face,rng);
         
-        // assign to table
-        m_mtData.m_adcSum[rngIdx][testDAC] += adc;
-        m_mtData.m_adcN[rngIdx][testDAC]++;
-		if(rng == LEX8 && m_fle[face][lyr])m_mtData.m_trigSum[faceIdx][testDAC]++;
-      } // foreach face
-    } // foreach readout
-  } // foreach xtal
+          // assign to table
+          m_mtData.m_adcSum[rngIdx][testDAC] += adc;
+          m_mtData.m_adcN[rngIdx][testDAC]++;
+          if(rng == LEX8 && m_fle[face][lyr])m_mtData.m_trigSum[faceIdx][testDAC]++;
+        } // foreach face
+      } // foreach readout
+    } // foreach xtal
+  } // if nDigis
+  else {
+    m_cfg.ostr << " event " << m_evtId << " contains " 
+                << nDigis << " digis - skipped" << endl;
+    m_nEvtMax++;
+  }
+
 }
 
 void RootCiTrig::Go(Int_t nEvtAsked)
@@ -542,8 +562,8 @@ void RootCiTrig::Go(Int_t nEvtAsked)
   //
   Int_t nEvts = getEntries();
   m_cfg.ostr << "\nNum Events in File is: " << nEvts << endl;
-  Int_t curI;
-  Int_t nMax = min(nEvtAsked+m_startEvt,nEvts);
+  Int_t curI=0;
+  m_nEvtMax = min(nEvtAsked+m_startEvt,nEvts);
 
   if (nEvtAsked+m_startEvt >  nEvts) {
     ostringstream temp;
@@ -552,7 +572,7 @@ void RootCiTrig::Go(Int_t nEvtAsked)
   }
 
   // BEGINNING OF EVENT LOOP
-  for (Int_t iEvt=m_startEvt; iEvt<nMax; iEvt++, curI=iEvt) {
+  for (Int_t iEvt=m_startEvt; iEvt<m_nEvtMax; iEvt++, curI=iEvt) {
     if (m_digiEvt) m_digiEvt->Clear();
 
     getEvent(iEvt);
@@ -578,12 +598,12 @@ void RootCiTrig::Go(Int_t nEvtAsked)
 
 class RootMuTrig : public RootFileAnalysis {
 public:
-	typedef enum { EvenRowsEvenColumns = 0, OddRowsEvenColumns = 1} TRIGCONFIG;
-	
+  typedef enum { EvenRowsEvenColumns = 0, OddRowsEvenColumns = 1} TRIGCONFIG;
+        
   // Standard ctor, where user provides the names of the input root files
   // and optionally the name of the output ROOT histogram file
   RootMuTrig(vector<string> &digiFileNames,
-         MtData  &data, MtCfg &cfg, RootMuTrig::TRIGCONFIG trigConf);
+             MtData  &data, MtCfg &cfg, RootMuTrig::TRIGCONFIG trigConf);
 
   // standard dtor
   ~RootMuTrig();
@@ -608,12 +628,12 @@ private:
 
 
 RootMuTrig::RootMuTrig(vector<string> &digiFileNames, MtData  &data, MtCfg &cfg,
-					   RootMuTrig::TRIGCONFIG trigConf) :
+                       RootMuTrig::TRIGCONFIG trigConf) :
   RootFileAnalysis(vector<string>(0), digiFileNames, vector<string>(0)),
   m_mtData(data),
   m_cfg(cfg),
   m_trigConfig(trigConf)
-  {}
+{}
 
 // default dstor
 RootMuTrig::~RootMuTrig() {
@@ -621,16 +641,16 @@ RootMuTrig::~RootMuTrig() {
 
 // compiles stats for each test type.
 void RootMuTrig::DigiCal() {
-	for(int layer=0;layer<8;layer++)for(int side=0;side<2;side++)m_fle[side][layer]=false;
-    const TClonesArray* calDiagCol = m_digiEvt->getCalDiagnosticCol();
+  for(int layer=0;layer<8;layer++)for(int side=0;side<2;side++)m_fle[side][layer]=false;
+  const TClonesArray* calDiagCol = m_digiEvt->getCalDiagnosticCol();
   TIter calDiagIter(calDiagCol);
- // Loop through diagnostics for all layers
+  // Loop through diagnostics for all layers
   CalDiagnosticData *pdiag = 0;
   while ((pdiag = (CalDiagnosticData*)calDiagIter.Next())) {  //loop through each 'hit' in one event
     CalDiagnosticData &cdiag = *pdiag; // use ref to reduce '->'
   
-	int layer = cdiag.layer();
-	for (int side=0;side<2;side++) m_fle[side][layer] = cdiag.low(side);  
+    int layer = cdiag.layer();
+    for (int side=0;side<2;side++) m_fle[side][layer] = cdiag.low(side);  
   
   }
   const TClonesArray* calDigiCol = m_digiEvt->getCalDigiCol();
@@ -640,7 +660,7 @@ void RootMuTrig::DigiCal() {
     throw temp.str();
   }
   TIter calDigiIter(calDigiCol);
-    if (m_adc.size() == 0) 
+  if (m_adc.size() == 0) 
     m_adc.resize(tFaceIdx::N_VALS);
 
   // Loop through each xtal interaction
@@ -661,43 +681,43 @@ void RootMuTrig::DigiCal() {
       for (FaceNum face; face.isValid(); face++) {
         RngNum rng = acRo.getRange((CalXtalId::XtalFace)(short)face);
         // only interested in LEX8 range
-		if(rng == 0){
-			tFaceIdx faceIdx(lyr,col,face);
-			tRngIdx rng(faceIdx,rng);
-			float ped = m_mtData.getPed(rng);
-			m_adc[faceIdx]  = acRo.getAdc((CalXtalId::XtalFace)(short)face)-ped;
-		}
+        if(rng == 0){
+          tFaceIdx faceIdx(lyr,col,face);
+          tRngIdx rng(faceIdx,rng);
+          float ped = m_mtData.getPed(rng);
+          m_adc[faceIdx]  = acRo.getAdc((CalXtalId::XtalFace)(short)face)-ped;
+        }
 
       } // foreach face
     } // foreach readout
   } // foreach xtal
 
-	bool odd = !m_trigConfig;
-	for (int l = 0;l<8;l++){
-		
-		if ( (l+1) % 2) odd = !odd;
-		int st = odd;
-		for (int c = st;c<12;c=c+2){
-			bool trg_other_layers = false;
-			for (int s=0;s<2;s++)
-				for(int ll=0;ll<8;ll++)
-					if(l != ll)trg_other_layers = trg_other_layers || m_fle[s][ll];
-			for (int s=0;s<2;s++){
-				bool no_trg_layer = trg_other_layers;
-				for (int cc = st;cc<12;cc=cc+2){
-					if (cc != c){
-						tFaceIdx face(l,cc,s);
-						no_trg_layer = no_trg_layer && (m_adc[face] < 50);
-					}
-				}
-				tFaceIdx faceIdx(l,c,s);
-				if(no_trg_layer){
-					m_mtData.fillMuHist(faceIdx,m_adc[faceIdx]);
-					if(m_fle[s][l])m_mtData.fillTrigHist(faceIdx,m_adc[faceIdx]);
-				}
-			}
-		}
-	}
+  bool odd = !m_trigConfig;
+  for (int l = 0;l<8;l++){
+                
+    if ( (l+1) % 2) odd = !odd;
+    int st = odd;
+    for (int c = st;c<12;c=c+2){
+      bool trg_other_layers = false;
+      for (int s=0;s<2;s++)
+        for(int ll=0;ll<8;ll++)
+          if(l != ll)trg_other_layers = trg_other_layers || m_fle[s][ll];
+      for (int s=0;s<2;s++){
+        bool no_trg_layer = trg_other_layers;
+        for (int cc = st;cc<12;cc=cc+2){
+          if (cc != c){
+            tFaceIdx face(l,cc,s);
+            no_trg_layer = no_trg_layer && (m_adc[face] < 50);
+          }
+        }
+        tFaceIdx faceIdx(l,c,s);
+        if(no_trg_layer){
+          m_mtData.fillMuHist(faceIdx,m_adc[faceIdx]);
+          if(m_fle[s][l])m_mtData.fillTrigHist(faceIdx,m_adc[faceIdx]);
+        }
+      }
+    }
+  }
 }
 
 void RootMuTrig::Go()
@@ -719,7 +739,7 @@ void RootMuTrig::Go()
   //
   Int_t nEvts = getEntries();
   m_cfg.ostr << "\nNum Events in File is: " << nEvts << endl;
-  Int_t curI;
+  Int_t curI=0;
  
 
   // BEGINNING OF EVENT LOOP
@@ -773,16 +793,16 @@ int main(int argc, char **argv) {
     {
       vector<string> digiFileNames;
       digiFileNames.push_back(cfg.rootFileCI);
-	  RootCiTrig rd(digiFileNames,data,cfg);  
+      RootCiTrig rd(digiFileNames,data,cfg);  
       rd.SetDiode(RootCiTrig::LE);
       rd.Go(cfg.nPulsesPerRun);
-   }
+    }
 
     // trigger configuration A :  Even Rows Even Columns
     {
       vector<string> digiFileNames;
       digiFileNames.push_back(cfg.rootFileA);
-	  RootMuTrig rd(digiFileNames,data,cfg,RootMuTrig::EvenRowsEvenColumns);  
+      RootMuTrig rd(digiFileNames,data,cfg,RootMuTrig::EvenRowsEvenColumns);  
       rd.Go();
     }
 
