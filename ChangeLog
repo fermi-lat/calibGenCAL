@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Jul  7 16:43:49 PDT 2005
+calibGenCAL/src
+
+Modified Files:
+	runCIFit.cxx runMuTrigEff.cxx 
+Log Message:
+ciFit & muTrigEff should now work on || CI calibration files.  also, small update, muTrigEff now intelligently skips interspersed 'scan events'.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Jul  7 16:43:44 PDT 2005
 calibGenCAL/doc
 
