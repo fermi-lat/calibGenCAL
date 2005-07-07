@@ -338,7 +338,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.15 2005/04/27 16:44:06 fewtrell Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.16 2005/05/04 17:45:18 fewtrell Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
@@ -469,9 +469,9 @@ private:
   CfData &m_CfData;
   CfCfg  &m_cfg;
 
-  int m_evtId;
-  int m_nMax;
-  int m_iGoodEvt;
+  int m_evtId;     /// current event id
+  int m_nEvtMax;      /// max event to loop to
+  int m_iGoodEvt;  /// count good events
 
   CalVec<tRngIdx,  TH1F*> m_ciHists; 
 
@@ -482,9 +482,11 @@ RootCI::RootCI(vector<string> &digiFileNames, CfData  &data, CfCfg &cfg) :
   RootFileAnalysis(vector<string>(0), digiFileNames, vector<string>(0)),
   m_curDiode(BOTH_DIODES),
   m_CfData(data),
-  m_cfg(cfg) {
-  m_iGoodEvt = 0; 
-}
+  m_cfg(cfg),
+  m_evtId(0),
+  m_nEvtMax(0),
+  m_iGoodEvt(0)
+{}
 
 // default dstor
 RootCI::~RootCI() {
@@ -522,10 +524,10 @@ bool  RootCI::isRngEnabled(RngNum rng) {
 // compiles stats for each test type.
 void RootCI::DigiCal() {
   // Determine test config for this event (which xtal?, which dac?)
-  int ievt = m_iGoodEvt;
-  int testCol   = ievt/m_cfg.nPulsesPerXtal;
-  int testDAC   = (ievt%m_cfg.nPulsesPerXtal)/m_cfg.nPulsesPerDAC;
-  int iSamp   = (ievt%m_cfg.nPulsesPerXtal)%m_cfg.nPulsesPerDAC;
+  // only count good events
+  int testCol   = m_iGoodEvt/m_cfg.nPulsesPerXtal;
+  int testDAC   = (m_iGoodEvt%m_cfg.nPulsesPerXtal)/m_cfg.nPulsesPerDAC;
+  int iSamp   = (m_iGoodEvt%m_cfg.nPulsesPerXtal)%m_cfg.nPulsesPerDAC;
 
   const TClonesArray* calDigiCol = m_digiEvt->getCalDigiCol();
   if (!calDigiCol) {
@@ -538,8 +540,11 @@ void RootCI::DigiCal() {
 
   // Loop through each xtal interaction
   CalDigi *pdig = 0;
+
   int nDigis = calDigiCol->GetEntries();
-  if(nDigis == tXtalIdx::N_VALS){
+  // event should have 1 hit for every xtal in each tower
+  // we support any nTowers
+  if(nDigis > 0 && nDigis%tXtalIdx::N_VALS == 0){
     m_iGoodEvt++;
 
     //loop through each 'hit' in one event
@@ -600,7 +605,7 @@ void RootCI::DigiCal() {
   else {
     m_cfg.ostrm << " event " << m_evtId << " contains " 
                 << nDigis << " digis - skipped" << endl;
-    m_nMax++;
+    m_nEvtMax++;
   }
 }
 
@@ -623,8 +628,8 @@ void RootCI::Go(Int_t nEvtAsked)
   //
   Int_t nEvts = getEntries();
   m_cfg.ostrm << "\nNum Events in File is: " << nEvts << endl;
-  Int_t curI;
-  m_nMax = min(nEvtAsked+m_startEvt,nEvts);
+  Int_t curI=0;
+  m_nEvtMax = min(nEvtAsked+m_startEvt,nEvts);
 
   if (nEvtAsked+m_startEvt >  nEvts) {
     ostringstream tmp;
@@ -634,7 +639,7 @@ void RootCI::Go(Int_t nEvtAsked)
   }
 
   // BEGINNING OF EVENT LOOP
-  for (Int_t iEvt=m_startEvt; iEvt<m_nMax; iEvt++, curI=iEvt) {
+  for (Int_t iEvt=m_startEvt; iEvt<m_nEvtMax; iEvt++, curI=iEvt) {
     if (m_digiEvt) m_digiEvt->Clear();
 
     getEvent(iEvt);
