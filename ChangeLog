@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Jul 15 12:04:36 PDT 2005
+calibGenCAL/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+muon calib will now run on best-range 1st, 4-range data.
+before only ran on fixed-order 4-range data.
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r6p14, operation: add
 Package: calibGenCAL
