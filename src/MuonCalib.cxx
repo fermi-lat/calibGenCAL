@@ -47,6 +47,24 @@ template<class T> void del_all_ptrs(T &container) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+/// \return correct ADC value, -1 if it doesn't exist.
+float MuonCalib::getADCByRng(const CalDigi &calDigi, XtalRng xRng) {
+  short face = xRng.getFace();
+  RngNum  rng  = xRng.getRng();
+
+  short nReadouts = calDigi.getNumReadouts();
+  
+  for (short nRO = 0; nRO < nReadouts; nRO++) {
+    RngNum rngRO = calDigi.getRange(nRO, (CalXtalId::XtalFace)face);
+
+    // quit once we've found the right range.
+    if (rngRO == rng) 
+      return calDigi.getAdc(nRO, (CalXtalId::XtalFace)face);
+  }
+  
+  return 0;
+}
+
 MuonCalib::MuonCalib(McCfg &cfg) : 
   RootFileAnalysis(vector<string>(0),  // no mc files
                    cfg.rootFileList,   // input digi files
@@ -204,30 +222,20 @@ void MuonCalib::fillRoughPedHists(int nEvts) {
       ColNum col = id.getColumn();
       LyrNum lyr = id.getLayer();
 
-      // get LEX8 data
-      const CalXtalReadout& readout=*calDigi.getXtalReadout(LEX8); 
+      float adcP = getADCByRng(calDigi, XtalRng(POS_FACE,LEX8));
+      float adcN = getADCByRng(calDigi, XtalRng(NEG_FACE,LEX8));
 
-      // check that we are in the expected readout mode
-      RngNum rngP = readout.getRange(CalXtalId::POS);
-      RngNum rngN = readout.getRange(CalXtalId::NEG);
-      if (rngP != LEX8 || rngN != LEX8) {
-        ostringstream tmp;
-        tmp << __FILE__  << ":" << __LINE__ << " " 
-            << "Event# " << m_evtId << 
-          " 1st range shold be LEX8, unexpected trigger mode!";
-        throw tmp.str();
+      // check for missing readout
+      if (adcP < 0 || adcN <0) {
+        m_ostrm << "Couldn't get LEX8 readout for evt=" << m_evtId << endl;
+        continue;
       }
-      
-
-      float adcP = readout.getAdc(CalXtalId::POS);
-      float adcN = readout.getAdc(CalXtalId::NEG);
 
       tFaceIdx faceIdx(lyr,col,POS_FACE);
       m_roughPedHists[faceIdx]->Fill(adcP);
-
+      
       faceIdx.setFace(NEG_FACE);
       m_roughPedHists[faceIdx]->Fill(adcN);
-
     }
   }
 }
@@ -336,21 +344,16 @@ void MuonCalib::fillPedHists(int nEvts) {
       }
       
       // 1st look at LEX8 vals
-      const CalXtalReadout& readout=*calDigi.getXtalReadout(LEX8); 
-
-      // check that we are in the expected readout mode
-      RngNum rngP = readout.getRange(CalXtalId::POS);
-      RngNum rngN = readout.getRange(CalXtalId::NEG);
-      if (rngP != LEX8 || rngN != LEX8) {
-        ostringstream tmp;
-        tmp << __FILE__  << ":"     << __LINE__ << " " 
-            << "Event# " << m_evtId 
-            << " 1st range shold be LEX8, unexpected trigger mode!";
-        throw tmp.str(); 
-      }
       
-      float adcP = readout.getAdc(CalXtalId::POS);
-      float adcN = readout.getAdc(CalXtalId::NEG);
+      float adcP = getADCByRng(calDigi,XtalRng(POS_FACE,LEX8));
+      float adcN = getADCByRng(calDigi,XtalRng(NEG_FACE,LEX8));
+      // check for missing readout
+      if (adcP < 0 || adcN <0) {
+        m_ostrm << "Couldn't get LEX8 readout for evt=" << m_evtId << endl;
+        continue;
+      }
+
+      
 
       // skip outliers (outside of 5 sigma.
       if (fabs(adcN - m_calRoughPed[tFaceIdx(xtalIdx,NEG_FACE)]) < 
@@ -364,22 +367,16 @@ void MuonCalib::fillPedHists(int nEvts) {
           // check that we are in the expected readout mode
           RngNum rngP = readout.getRange(CalXtalId::POS);
           RngNum rngN = readout.getRange(CalXtalId::NEG);
-          if (rngP != n || rngN != n) {
-            ostringstream tmp;
-            tmp << __FILE__  << ":"     << __LINE__ << " " 
-                << "Event# " << m_evtId 
-                << " 4-Range readouts out of order.  Expecting 0,1,2,3";
-            throw tmp.str();
-          }
-          RngNum rng = rngP;
 
+          // pos face
           int adc = readout.getAdc(CalXtalId::POS);
-          tRngIdx rngIdx(xtalIdx,POS_FACE, rng);
-          m_pedHists[rngIdx]->Fill(adc);
+          tRngIdx rngIdxP(xtalIdx, POS_FACE, rngP);
+          m_pedHists[rngIdxP]->Fill(adc);
 
+          // neg face
           adc = readout.getAdc(CalXtalId::NEG);
-          rngIdx.setFace(NEG_FACE);
-          m_pedHists[rngIdx]->Fill(adc);
+          tRngIdx rngIdxN(xtalIdx, NEG_FACE, rngN);
+          m_pedHists[rngIdxN]->Fill(adc);
         }
       }
     }
@@ -686,24 +683,19 @@ void MuonCalib::summarizeHits(HitSummary &hs) {
     // load up all adc values for each xtal diode
     // also ped subtraced adc values.
     for (XtalDiode xDiode; xDiode.isValid(); xDiode++) {
-      DiodeNum diode  = xDiode.getDiode();
-      RngNum   rng    = diode.getX8Rng();  // we are only interested in x8 range adc vals for muon calib
-      FaceNum  face   = xDiode.getFace();
+      DiodeNum  diode  = xDiode.getDiode();
+      RngNum    rng    = diode.getX8Rng();  // we are only interested in x8 range adc vals for muon calib
+      FaceNum   face   = xDiode.getFace();
       tRngIdx   rngIdx  (xtalIdx, face, rng);
       tDiodeIdx diodeIdx(xtalIdx, face, diode);
 
-      const CalXtalReadout& readout = *calDigi.getXtalReadout(rng);
-      RngNum tmpRng = readout.getRange((CalXtalId::XtalFace)(int)face);
-      // check that we are in the proper readout mode
-      if (tmpRng != rng) {
-        ostringstream tmp;
-        tmp << __FILE__ << ":" << __LINE__ << " " 
-            << "Event# " << m_evtId 
-            << " 4-Range readouts out of order.  Expecting 0,1,2,3";
-        throw tmp.str();
+      float adc = getADCByRng(calDigi,XtalRng(face,rng)); // raw adc
+      if (adc < 0) {
+        m_ostrm << "Couldn't get adc val for face=" << face 
+                << " rng=" << rng 
+                << " evt=" << m_evtId << endl;
+        continue;
       }
-
-      float adc = readout.getAdc((CalXtalId::XtalFace)(int)face); // raw adc
       hs.adc_ped[diodeIdx] = adc - m_calPed[rngIdx];// subtract pedestals
       if (m_cfg.verbose)
         m_ostrm << "nDiode " << diodeIdx.getInt() 

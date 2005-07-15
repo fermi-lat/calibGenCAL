@@ -292,6 +292,11 @@ class MuonCalib : public RootFileAnalysis {
   CalVec<tDiodeIdx, vector<float> > m_calInlDAC;
   
 
+  //-- Generic --//
+  /// loop through digi & return adc value for given face & range
+  /// NOTE: they're not allways in order 0-3
+  float getADCByRng(const CalDigi &calDigi, XtalRng xRng);
+
   //-- Integral Nonlinearity --//
 
   /// creates & populates INL splines from m_calIntNonlin;
@@ -317,6 +322,8 @@ class MuonCalib : public RootFileAnalysis {
       ((float)col + 0.5)  // calc for middle of segment
       - 0.5*m_cfg.csiLength;     // put 0 in middle of xtal
   }
+
+  
 
   /// contains all application config data.
   const McCfg &m_cfg;   
