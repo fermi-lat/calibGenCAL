@@ -1,5 +1,16 @@
 ------------------------------------------------------------
 User: fewtrell  Wed Jul 27 12:46:41 PDT 2005
+calibGenCAL/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+assymetry data now auto removes outliers, no need for hard coded limits which change based on gain.
+so no need for muonCalib_badCalibGen.xml cfg file.
+also, muonCalib theoretically supports autoranging 4-range data as well as lex8 1st 4 range data
+    *
+------------------------------------------------------------
+User: fewtrell  Wed Jul 27 12:46:41 PDT 2005
 calibGenCAL/cmt
 
 Modified Files:
