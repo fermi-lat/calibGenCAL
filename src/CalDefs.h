@@ -73,6 +73,10 @@ namespace CalDefs {
       parent_type::resize(sz);
     }
 
+	void resize(size_type sz, const value_type &val) {
+		parent_type::resize(sz,val);
+	}
+
     void clear() {
       parent_type::clear();
     }

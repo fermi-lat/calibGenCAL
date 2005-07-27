@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate ULD Discriminator settings selected by Energy"
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2005/05/16 19:15:51 $"
-__version__     = "$Revision: 1.3 $, $Author: dwood $"
+__date__        = "$Date: 2005/06/20 14:36:25 $"
+__version__     = "$Revision: 1.4 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 

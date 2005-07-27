@@ -204,13 +204,13 @@ class MuonCalib : public RootFileAnalysis {
   CalVec<tRngIdx,  TH1F*> m_pedHists; 
 
   /// list of profiles for logratio values Large diode vs Large diode over position 1 per xtal
-  CalVec<tXtalIdx, TProfile*> m_asymProfsLL; 
+  CalVec<tXtalIdx, TH2F*> m_asymHistsLL; 
   /// list of profiles for logratio values Large diode vs Small diode over position 1 per xtal
-  CalVec<tXtalIdx, TProfile*> m_asymProfsLS; 
+  CalVec<tXtalIdx, TH2F*> m_asymHistsLS; 
   /// list of profiles for logratio values Small diode vs Large diode over position 1 per xtal
-  CalVec<tXtalIdx, TProfile*> m_asymProfsSL; 
+  CalVec<tXtalIdx, TH2F*> m_asymHistsSL; 
   /// list of profiles for logratio values Small diode vs Small diode over position 1 per xtal
-  CalVec<tXtalIdx, TProfile*> m_asymProfsSS; 
+  CalVec<tXtalIdx, TH2F*> m_asymHistsSS; 
   
   /// profile X=bigdioedac Y=smalldioedac 1 per xtal
   CalVec<tXtalIdx, TProfile*> m_dacL2SProfs;  

@@ -15,8 +15,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate FLE Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2005/06/17 18:57:49 $"
-__version__     = "$Revision: 1.5 $, $Author: dwood $"
+__date__        = "$Date: 2005/06/20 14:45:26 $"
+__version__     = "$Revision: 1.6 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 

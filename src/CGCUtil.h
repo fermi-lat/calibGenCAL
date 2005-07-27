@@ -1,5 +1,5 @@
 #ifndef CGCUtil_H
-#define CGCUtil_H 1
+#define CGCUtil_H
 
 // LOCAL INCLUDES
 
@@ -16,7 +16,7 @@ using namespace std;
 
 namespace CGCUtil {
 
-  const string CVS_TAG("$Name: v3r3p2 $");
+  const string CVS_TAG("$Name:  $");
 
   /// Template function fills any STL type container with zero values
   template <class T> static void fill_zero(T &container) {
@@ -68,7 +68,7 @@ namespace CGCUtil {
   class multiplexor_ostream : public ostream
     {
     public:
-      multiplexor_ostream() : ostream(new multiplexor_streambuf()), ios(0) {}
+      multiplexor_ostream() : ios(0), ostream(new multiplexor_streambuf()){}
       virtual ~multiplexor_ostream() { delete rdbuf(); }
   
       streamvector& getostreams() { return ((multiplexor_streambuf*)rdbuf())->_streams; }

@@ -76,15 +76,6 @@ class McCfg : ICfg {
   double cellVertPitch; ///< vertical pitch between 2 cal xtals
   double csiLength;     ///< length of one cal CsI crystal
 
-  double maxAsymLL;     ///< used in omission of events w/ bad asym logratio
-  double maxAsymLS;     ///< used in omission of events w/ bad asym logratio
-  double maxAsymSL;     ///< used in omission of events w/ bad asym logratio
-  double maxAsymSS;     ///< used in omission of events w/ bad asym logratio
-  double minAsymLL;     ///< used in omission of events w/ bad asym logratio
-  double minAsymLS;     ///< used in omission of events w/ bad asym logratio
-  double minAsymSL;     ///< used in omission of events w/ bad asym logratio
-  double minAsymSS;     ///< used in omission of events w/ bad asym logratio
-  
   // SECTION: GENERAL //
   int nEvtRoughPed;     ///< number of events for rough pedestal calibration
   int nEvtPed;          ///< number of events for Pedestal calibration

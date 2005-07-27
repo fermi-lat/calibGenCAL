@@ -3,8 +3,8 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLBASEROOT)/xml/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/muonCalib_option.xml,v 1.13 2005/04/27 17:03:38 fewtrell Exp $"
- cvs_Revision="$Revision: 1.13 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/muonCalib_option.xml,v 1.14 2005/05/23 18:12:54 fewtrell Exp $"
+ cvs_Revision="$Revision: 1.14 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP"    value="2004-07-31-06:50"> Timestamp for test run.</item>
@@ -48,15 +48,6 @@
     <item name="CELL_VERT_PITCH"  value="21.35"> Horizontal pitch (in mm) between 2 neighboring xtals mounted in the Cal structure</item>
     <item name="CELL_HOR_PITCH" value="27.84"> Horizontal pitch (in mm) between 2 neighboring xtals mounted in the Cal structure</item>
     <item name="CSI_LENGTH"      value="326.0"> Length (in mm) of one Cal CsI crystal </item>
-    
-    <item name="MAX_ASYM_LL" value="0.5"> Used to throw out bad asymmetry logratios</item>
-    <item name="MAX_ASYM_LS" value="2.5"> Used to throw out bad asymmetry logratios</item>
-    <item name="MAX_ASYM_SL" value="-1.0"> Used to throw out bad asymmetry logratios</item>
-    <item name="MAX_ASYM_SS" value="1.0"> Used to throw out bad asymmetry logratios</item>
-    <item name="MIN_ASYM_LL" value="-0.5"> Used to throw out bad asymmetry logratios</item>
-    <item name="MIN_ASYM_LS" value="1.0"> Used to throw out bad asymmetry logratios</item>
-    <item name="MIN_ASYM_SL" value="-2.5"> Used to throw out bad asymmetry logratios</item>
-    <item name="MIN_ASYM_SS" value="-1.0"> Used to throw out bad asymmetry logratios</item>
     
   </section>
     

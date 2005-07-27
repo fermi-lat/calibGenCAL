@@ -21,13 +21,13 @@ macro_append ROOT_libs " -lHist -lGraf -lGpad " \
 path_append PATH ${CALIBGENCALROOT}/python
 
 
-application runMuonCalib runMuonCalib.cxx MuonCalib.cxx McCfg.cxx RootFileAnalysis.cxx CGCUtil.cxx CalDefs.cxx
+application runMuonCalib runMuonCalib.cxx MuonCalib.cxx McCfg.cxx RootFileAnalysis.cxx CGCUtil.cxx CalDefs.cxx MuonCalib.h CGCUtil.h CalDefs.h
 
-application runCIFit runCIFit.cxx CfCfg.cxx RootFileAnalysis.cxx CGCUtil.cxx CalDefs.cxx
+application runCIFit runCIFit.cxx CfCfg.cxx RootFileAnalysis.cxx CGCUtil.cxx CalDefs.cxx CfCfg.h CGCUtil.h  CalDefs.h
 
-application runMuTrigEff runMuTrigEff.cxx MtCfg.cxx RootFileAnalysis.cxx CGCUtil.cxx CalDefs.cxx
+application runMuTrigEff runMuTrigEff.cxx MtCfg.cxx RootFileAnalysis.cxx CGCUtil.cxx CalDefs.cxx CGCUtil.h MtCfg.h  CalDefs.h
 
-application runMuThreshEvol runMuThreshEvol.cxx TeCfg.cxx RootFileAnalysis.cxx CGCUtil.cxx CalDefs.cxx
+application runMuThreshEvol runMuThreshEvol.cxx TeCfg.cxx RootFileAnalysis.cxx CGCUtil.cxx CalDefs.cxx CGCUtil.h TeCfg.h  CalDefs.h
 
 
 
