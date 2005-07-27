@@ -1,4 +1,24 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Jul 27 12:46:42 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	.cvsignore asymMerge.bat asymMerge.py asymVal.bat asymVal.py 
+	calCalibXML.py calConstant.py calDacXML.py calFitsIO.py 
+	calFitsXML.py calXML.py fits2xml.bat genFHEsettings.bat 
+	genFHEsettings.py genFLEsettings.bat genFLEsettings.py 
+	genLACsettings.bat genLACsettings.py genULDsettings.bat 
+	genULDsettings.py intNonlinMerge.bat intNonlinMerge.py 
+	intNonlinVal.bat intNonlinVal.py mevPerDacMerge.bat 
+	mevPerDacMerge.py mevPerDacVal.bat mevPerDacVal.py 
+	pedMerge.bat pedMerge.py pedVal.bat pedVal.py tholdCIGen.bat 
+	tholdCIGen.py tholdCIVal.bat tholdCIVal.py 
+Log Message:
+assymetry data now auto removes outliers, no need for hard coded limits which change based on gain.
+so no need for muonCalib_badCalibGen.xml cfg file.
+also, muonCalib theoretically supports autoranging 4-range data as well as lex8 1st 4 range data
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Jul 27 12:46:41 PDT 2005
 calibGenCAL/doc
 
