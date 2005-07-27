@@ -3,8 +3,8 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLBASEROOT)/xml/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit_option.xml,v 1.10 2005/04/27 18:09:59 chehtman Exp $"
-       cvs_Revision="$Revision: 1.10 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit_option.xml,v 1.11 2005/05/04 17:45:18 fewtrell Exp $"
+       cvs_Revision="$Revision: 1.11 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP"      value="2004-11-11-14:39"> Timestamp for test run.</item>
@@ -23,8 +23,6 @@
     <item name="DTD_FILE"     value="$(CALIBUTILROOT)/xml/calCalib_v2r1.dtd"> description file for output .xml file </item>
     <item name="XMLPATH"     value=""> Optional path for output .xml file (default "" autogenerates filename from input filename)</item>
     <item name="TXTPATH"     value=""> Optoinal path for output .txt file (default "" autogenerates filename from input filename)</item>
-
-    <item name="INFILE_TYPE" value="ROOT">Input file type (ROOT,CSV)</item>
 
     <item name="LOGFILE"           value=""> application log file duplicates stdout (default "" autogenerates filename from input filename)</item>
     

@@ -6,8 +6,8 @@ CAL FITS ancillary data classes
 __facility__ = "Offline"
 __abstract__ = "CAL FITS ancillary data writer class"
 __author__   = "B. Leas"
-__date__     = "$Date: 2005/03/18 14:56:03 $"
-__version__  = "$Revision: 1.21 $, $Author: cm $"
+__date__     = "$Date: 2005/04/12 14:06:47 $"
+__version__  = "$Revision: 1.2 $, $Author: dwood $"
 __release__  = "$Name:  $"
 __credits__  = "SLAC"
 

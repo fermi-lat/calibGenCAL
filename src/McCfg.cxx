@@ -86,15 +86,6 @@ void McCfg::readCfgFile(const string& cfgPath) {
   cellVertPitch = ifile.getDouble(CONSTANTS.c_str(), "CELL_VERT_PITCH");
   csiLength     = ifile.getDouble(CONSTANTS.c_str(), "CSI_LENGTH");
 
-  maxAsymLL = ifile.getDouble(CONSTANTS.c_str(), "MAX_ASYM_LL");
-  maxAsymLS = ifile.getDouble(CONSTANTS.c_str(), "MAX_ASYM_LS");
-  maxAsymSL = ifile.getDouble(CONSTANTS.c_str(), "MAX_ASYM_SL");
-  maxAsymSS = ifile.getDouble(CONSTANTS.c_str(), "MAX_ASYM_SS");
-  minAsymLL = ifile.getDouble(CONSTANTS.c_str(), "MIN_ASYM_LL");
-  minAsymLS = ifile.getDouble(CONSTANTS.c_str(), "MIN_ASYM_LS");
-  minAsymSL = ifile.getDouble(CONSTANTS.c_str(), "MIN_ASYM_SL");
-  minAsymSS = ifile.getDouble(CONSTANTS.c_str(), "MIN_ASYM_SS");
-  
   // SECTION: GENERAL
   nEvtRoughPed = ifile.getInt(GENERAL.c_str(), "NEVENTS_ROUGHPED");
   nEvtPed  = ifile.getInt(GENERAL.c_str(), "NEVENTS_PED");

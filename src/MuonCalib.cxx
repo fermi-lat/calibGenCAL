@@ -107,10 +107,10 @@ void MuonCalib::flushHists() {
   // clear pointer arrays
   m_roughPedHists.clear();
   m_pedHists.clear();
-  m_asymProfsLL.clear();
-  m_asymProfsLS.clear();
-  m_asymProfsSL.clear();
-  m_asymProfsSS.clear();
+  m_asymHistsLL.clear();
+  m_asymHistsLS.clear();
+  m_asymHistsSL.clear();
+  m_asymHistsSS.clear();
   m_dacL2SProfs.clear();
   m_dacLLHists.clear();
   m_asymDACHists.clear();
@@ -801,11 +801,11 @@ void MuonCalib::summarizeHits(HitSummary &hs) {
 
 void MuonCalib::initAsymHists(bool genOptHists) {
   // DEJA VU?
-  if (m_asymProfsLL.size() == 0) {
-    m_asymProfsLL.resize(tXtalIdx::N_VALS);
-    m_asymProfsLS.resize(tXtalIdx::N_VALS);
-    m_asymProfsSL.resize(tXtalIdx::N_VALS);
-    m_asymProfsSS.resize(tXtalIdx::N_VALS);
+  if (m_asymHistsLL.size() == 0) {
+    m_asymHistsLL.resize(tXtalIdx::N_VALS);
+    m_asymHistsLS.resize(tXtalIdx::N_VALS);
+    m_asymHistsSL.resize(tXtalIdx::N_VALS);
+    m_asymHistsSS.resize(tXtalIdx::N_VALS);
     if (genOptHists) {
       m_asymDACHists.resize(tDiodeIdx::N_VALS);
       m_logratHistsLL.resize(tXtalIdx::N_VALS);
@@ -821,30 +821,34 @@ void MuonCalib::initAsymHists(bool genOptHists) {
       tmpLL <<  "asymLL_" << xtalIdx;
       // columns are #'d 0-11, hist contains 1-10. 
       // .5 & 10.5 limit puts 1-10 at center of bins
-      m_asymProfsLL[xtalIdx] = new TProfile(tmpLL.str().c_str(),
-                                            tmpLL.str().c_str(),
-                                            N_ASYM_PTS,.5,10.5);
+      m_asymHistsLL[xtalIdx] = new TH2F(tmpLL.str().c_str(),
+                                        tmpLL.str().c_str(),
+                                        N_ASYM_PTS, .5, 10.5,
+                                        400, -2, 2);
 
       // LARGE-SMALL ASYM
       ostringstream tmpLS;
       tmpLS << "asymLS_" << xtalIdx;
-      m_asymProfsLS[xtalIdx] = new TProfile(tmpLS.str().c_str(),
-                                            tmpLS.str().c_str(),
-                                            N_ASYM_PTS,.5,10.5);
+      m_asymHistsLS[xtalIdx] = new TH2F(tmpLS.str().c_str(),
+                                        tmpLS.str().c_str(),
+                                        N_ASYM_PTS, .5, 10.5,
+                                        800, -1, 7);
 
       // SMALL-LARGE ASYM
       ostringstream tmpSL;
       tmpSL <<  "asymSL_" << xtalIdx;
-      m_asymProfsSL[xtalIdx] = new TProfile(tmpSL.str().c_str(),
-                                            tmpSL.str().c_str(),
-                                            N_ASYM_PTS,.5,10.5);
+      m_asymHistsSL[xtalIdx] = new TH2F(tmpSL.str().c_str(),
+                                        tmpSL.str().c_str(),
+                                        N_ASYM_PTS, .5, 10.5,
+                                        800, -7,1);
 
       // SMALL-SMALL ASYM
       ostringstream tmpSS;
       tmpSS << "asymSS_" << xtalIdx;
-      m_asymProfsSS[xtalIdx] = new TProfile(tmpSS.str().c_str(),
-                                            tmpSS.str().c_str(),
-                                            N_ASYM_PTS,.5,10.5);
+      m_asymHistsSS[xtalIdx] = new TH2F(tmpSS.str().c_str(),
+                                        tmpSS.str().c_str(),
+                                        N_ASYM_PTS, .5, 10.5,
+                                        400, -2, 2);
 
       // Optional logratHists
       if (genOptHists) {
@@ -855,7 +859,7 @@ void MuonCalib::initAsymHists(bool genOptHists) {
         // .5 & 10.5 limit puts 1-10 at center of bins
         m_logratHistsLL[xtalIdx] = new TH2F(tmpLL.str().c_str(),
                                             tmpLL.str().c_str(),
-                                            N_ASYM_PTS,.5,10.5,
+                                            N_ASYM_PTS, .5, 10.5,
                                             100,-.1,.1);
         m_logratHistsLL[xtalIdx]->SetBit(TH1::kCanRebin);
         
@@ -864,7 +868,7 @@ void MuonCalib::initAsymHists(bool genOptHists) {
         tmpLS << "logratLS_" << xtalIdx;
         m_logratHistsLS[xtalIdx] = new TH2F(tmpLS.str().c_str(),
                                             tmpLS.str().c_str(),
-                                            N_ASYM_PTS,.5,10.5,
+                                            N_ASYM_PTS, .5, 10.5,
                                             100,1.5,1.6);
         m_logratHistsLS[xtalIdx]->SetBit(TH1::kCanRebin);
 
@@ -873,7 +877,7 @@ void MuonCalib::initAsymHists(bool genOptHists) {
         tmpSL << "logratSL_" << xtalIdx;
         m_logratHistsSL[xtalIdx] = new TH2F(tmpSL.str().c_str(),
                                             tmpSL.str().c_str(),
-                                            N_ASYM_PTS,.5,10.5,
+                                            N_ASYM_PTS, .5, 10.5,
                                             100,-2.0,-1.9);
         m_logratHistsSL[xtalIdx]->SetBit(TH1::kCanRebin);
 
@@ -882,7 +886,7 @@ void MuonCalib::initAsymHists(bool genOptHists) {
         tmpSS << "logratSS_" << xtalIdx;
         m_logratHistsSS[xtalIdx] = new TH2F(tmpSS.str().c_str(),
                                             tmpSS.str().c_str(),
-                                            N_ASYM_PTS,.5,10.5,
+                                            N_ASYM_PTS, .5, 10.5,
                                             100,-.1,.1);
         m_logratHistsSS[xtalIdx]->SetBit(TH1::kCanRebin);
       }
@@ -901,10 +905,10 @@ void MuonCalib::initAsymHists(bool genOptHists) {
     }
   } else // clear existing histsograms
     for (tXtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
-      m_asymProfsLL[xtalIdx]->Reset();
-      m_asymProfsLS[xtalIdx]->Reset();
-      m_asymProfsSL[xtalIdx]->Reset();
-      m_asymProfsSS[xtalIdx]->Reset();
+      m_asymHistsLL[xtalIdx]->Reset();
+      m_asymHistsLS[xtalIdx]->Reset();
+      m_asymHistsSL[xtalIdx]->Reset();
+      m_asymHistsSS[xtalIdx]->Reset();
       if (genOptHists) {
         m_logratHistsLL[xtalIdx]->Reset();
         m_logratHistsLS[xtalIdx]->Reset();
@@ -936,10 +940,6 @@ void MuonCalib::fillAsymHists(int nEvts, bool genOptHists) {
   int  nYDirs     = 0;
   long nHits      = 0; // count total # of xtals measured
   int  nBadHits   = 0;
-  int  nBadAsymSS = 0;
-  int  nBadAsymLL = 0;
-  int  nBadAsymSL = 0;
-  int  nBadAsymLS = 0;
   int  nBadDACs   = 0;
 
   // Basic digi-event loop
@@ -1048,62 +1048,12 @@ void MuonCalib::fillAsymHists(int nEvts, bool genOptHists) {
           m_logratHistsSL[xtalIdx]->Fill(pos, asymSL);
           m_logratHistsSS[xtalIdx]->Fill(pos, asymSS);
         }
-   
-        // check for asym vals which are way out of range
-        
-        // test LL first since it is most likely
-        if (asymLL < m_cfg.minAsymLL || asymLL > m_cfg.maxAsymLL) {
-          if (m_cfg.verbose)
-            m_ostrm << " **AsymLL out-of-range evt=" << m_evtId
-                    << " nXtal=" << xtalIdx.getInt()
-                    << " pos=" << pos
-                    << " dacP=" << dacPL << " dacN=" << dacNL
-                    << " asym=" << asymLL << endl;
-          nBadHits++;
-          nBadAsymLL++;
-          continue;
-        }
-        // test SS 2nd since bad LL or bad SS should leave  only small #
-        // of bad LS & SL's
-        if (asymSS < m_cfg.minAsymSS || asymSS > m_cfg.maxAsymSS) {
-          if (m_cfg.verbose)
-            m_ostrm << " **AsymSS out-of-range evt=" << m_evtId
-                    << " nXtal=" << xtalIdx.getInt()
-                    << " pos=" << pos
-                    << " dacP=" << dacPS << " dacN=" << dacNS
-                    << " asym=" << asymSS << endl;
-          nBadHits++;
-          nBadAsymSS++;
-          continue;
-        }
-        if (asymLS < m_cfg.minAsymLS || asymLS > m_cfg.maxAsymLS) {
-          if (m_cfg.verbose)
-            m_ostrm << " **AsymLS out-of-range evt=" << m_evtId
-                    << " nXtal=" << xtalIdx.getInt()
-                    << " pos=" << pos
-                    << " dacP=" << dacPL << " dacN=" << dacNS
-                    << " asym=" << asymLS << endl;
-          nBadHits++;
-          nBadAsymLS++;
-          continue;
-        }
-        if (asymSL < m_cfg.minAsymSL || asymSL > m_cfg.maxAsymSL) {
-          if (m_cfg.verbose)
-            m_ostrm << " **AsymSL out-of-range evt=" << m_evtId
-                    << " nXtal=" << xtalIdx.getInt()
-                    << " pos=" << pos
-                    << " dacP=" << dacPS << " dacN=" << dacNS
-                    << " asym=" << asymSL << endl;
-          nBadHits++;
-          nBadAsymSL++;
-          continue;
-        }
       
         // pos - 5.5 value will range from -4.5 to +4.5 in xtal width units
-        m_asymProfsLL[xtalIdx]->Fill(pos, asymLL);
-        m_asymProfsLS[xtalIdx]->Fill(pos, asymLS);
-        m_asymProfsSL[xtalIdx]->Fill(pos, asymSL);
-        m_asymProfsSS[xtalIdx]->Fill(pos, asymSS);
+        m_asymHistsLL[xtalIdx]->Fill(pos, asymLL);
+        m_asymHistsLS[xtalIdx]->Fill(pos, asymLS);
+        m_asymHistsSL[xtalIdx]->Fill(pos, asymSL);
+        m_asymHistsSS[xtalIdx]->Fill(pos, asymSS);
 
         nHits++;
       } // per hit loop
@@ -1115,65 +1065,70 @@ void MuonCalib::fillAsymHists(int nEvts, bool genOptHists) {
           << " nYDirs="               << nYDirs << endl;
   m_ostrm << " nHits measured="       << nHits
           << " Bad hits="             << nBadHits
-          << " asym out-of-range LL=" << nBadAsymLL
-          << " SS=" << nBadAsymSS
-          << " SL=" << nBadAsymSL
-          << " LS=" << nBadAsymLS
           << endl;
 }
 
 void MuonCalib::populateAsymArrays() {
-  m_calAsymLL.resize(tXtalIdx::N_VALS);
-  m_calAsymLS.resize(tXtalIdx::N_VALS);
-  m_calAsymSL.resize(tXtalIdx::N_VALS);
-  m_calAsymSS.resize(tXtalIdx::N_VALS);
+  m_calAsymLL.resize(tXtalIdx::N_VALS,vector<float>(10));
+  m_calAsymLS.resize(tXtalIdx::N_VALS,vector<float>(10));
+  m_calAsymSL.resize(tXtalIdx::N_VALS,vector<float>(10));
+  m_calAsymSS.resize(tXtalIdx::N_VALS,vector<float>(10));
 
-  m_calAsymLLErr.resize(tXtalIdx::N_VALS);
-  m_calAsymLSErr.resize(tXtalIdx::N_VALS);
-  m_calAsymSLErr.resize(tXtalIdx::N_VALS);
-  m_calAsymSSErr.resize(tXtalIdx::N_VALS);
+  m_calAsymLLErr.resize(tXtalIdx::N_VALS,vector<float>(10));
+  m_calAsymLSErr.resize(tXtalIdx::N_VALS,vector<float>(10));
+  m_calAsymSLErr.resize(tXtalIdx::N_VALS,vector<float>(10));
+  m_calAsymSSErr.resize(tXtalIdx::N_VALS,vector<float>(10));
 
   // PER XTAL LOOP
   for (tXtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
-
-    // retrieve profile objects for this xtal
-    TProfile &profLL = *m_asymProfsLL[xtalIdx];
-    TProfile &profLS = *m_asymProfsLS.at(xtalIdx);
-    TProfile &profSL = *m_asymProfsSL[xtalIdx];
-    TProfile &profSS = *m_asymProfsSS.at(xtalIdx);
-
-    if (m_cfg.verbose) {
-      m_ostrm << "Asym entries nXtal=" << xtalIdx.getInt()
-              << " LL=" << profLL.GetEntries() << endl;
-      m_ostrm << " per bin ";
-      for (int i = 0; i < N_ASYM_PTS; i++)
-        m_ostrm << " " << i << "," << profLL.GetBinEntries(i+1);
-      m_ostrm << endl;
-    }
-
-    // ensure proper vector size
-    m_calAsymLL[xtalIdx].resize(N_ASYM_PTS);
-    m_calAsymLS[xtalIdx].resize(N_ASYM_PTS);
-    m_calAsymSL[xtalIdx].resize(N_ASYM_PTS);
-    m_calAsymSS[xtalIdx].resize(N_ASYM_PTS);
-
-    m_calAsymLLErr[xtalIdx].resize(N_ASYM_PTS);
-    m_calAsymLSErr[xtalIdx].resize(N_ASYM_PTS);
-    m_calAsymSLErr[xtalIdx].resize(N_ASYM_PTS);
-    m_calAsymSSErr[xtalIdx].resize(N_ASYM_PTS);
-
     // loop through all N_ASYM_PTS bins in asymmetry profile
     for (int i = 0; i < N_ASYM_PTS; i++) {
-      // HISTOGRAM BINS START AT 1 NOT ZERO! (hence 'i+1')
-      m_calAsymLL[xtalIdx][i] = profLL.GetBinContent(i+1); 
-      m_calAsymLS[xtalIdx][i] = profLS.GetBinContent(i+1);
-      m_calAsymSL[xtalIdx][i] = profSL.GetBinContent(i+1);
-      m_calAsymSS[xtalIdx][i] = profSS.GetBinContent(i+1);
+      // get slice of 2D histogram for each X bin
+      // HISTOGRAM BINS START AT 1 NOT ZERO! (hence 'i+1')        
+      TH1D &sliceLL = *(m_asymHistsLL[xtalIdx]->ProjectionY("sliceLL", i+1,i+1));
+      TH1D &sliceLS = *(m_asymHistsLS[xtalIdx]->ProjectionY("sliceLS", i+1,i+1));
+      TH1D &sliceSL = *(m_asymHistsSL[xtalIdx]->ProjectionY("sliceSL", i+1,i+1));
+      TH1D &sliceSS = *(m_asymHistsSS[xtalIdx]->ProjectionY("sliceSS", i+1,i+1));
 
-      m_calAsymLLErr[xtalIdx][i] = profLL.GetBinError(i+1);
-      m_calAsymLSErr[xtalIdx][i] = profLS.GetBinError(i+1);
-      m_calAsymSLErr[xtalIdx][i] = profSL.GetBinError(i+1);
-      m_calAsymSSErr[xtalIdx][i] = profSS.GetBinError(i+1);
+      // point local references to output values
+      float &avLL = m_calAsymLL[xtalIdx][i];
+      float &avLS = m_calAsymLS[xtalIdx][i];
+      float &avSL = m_calAsymSL[xtalIdx][i];
+      float &avSS = m_calAsymSS[xtalIdx][i];
+      
+      float &rmsLL = m_calAsymLLErr[xtalIdx][i];
+      float &rmsLS = m_calAsymLSErr[xtalIdx][i];
+      float &rmsSL = m_calAsymSLErr[xtalIdx][i];
+      float &rmsSS = m_calAsymSSErr[xtalIdx][i];
+
+      // trim outliers - 3 times cut out anything outside 3 sigma
+      for (short iter = 0; iter < 3; iter++) {
+        // get current mean & RMS
+        avLL  = sliceLL.GetMean(); rmsLL = sliceLL.GetRMS();
+        avLS  = sliceLS.GetMean(); rmsLS = sliceLS.GetRMS();
+        avSL  = sliceSL.GetMean(); rmsSL = sliceSL.GetRMS();
+        avSS  = sliceSS.GetMean(); rmsSS = sliceSS.GetRMS();
+        
+        // trim new histogram limits
+        sliceLL.SetAxisRange(avLL - 3*rmsLL, avLL + 3*rmsLL);
+        sliceLS.SetAxisRange(avLS - 3*rmsLS, avLS + 3*rmsLS);
+        sliceSL.SetAxisRange(avSL - 3*rmsSL, avSL + 3*rmsSL);
+        sliceSS.SetAxisRange(avSS - 3*rmsSS, avSS + 3*rmsSS);
+      }
+
+      // update new mean & sigma
+      avLL = sliceLL.GetMean(); rmsLL = sliceLL.GetRMS();
+      avLS = sliceLS.GetMean(); rmsLS = sliceLS.GetRMS();
+      avSL = sliceSL.GetMean(); rmsSL = sliceSL.GetRMS();
+      avSS = sliceSS.GetMean(); rmsSS = sliceSS.GetRMS();
+
+      // evidently ROOT doesn't like reusing the slice 
+      // histograms as much as they claim they do.
+      sliceLL.Delete();
+      sliceLS.Delete();
+      sliceSL.Delete();
+      sliceSS.Delete();
+
     }
   }
 }
@@ -1241,15 +1196,15 @@ void MuonCalib::readAsymTXT(const string &filenameLL,
                             const string &filenameSL,
                             const string &filenameSS) {
 
-  m_calAsymLL.resize(tXtalIdx::N_VALS);
-  m_calAsymLS.resize(tXtalIdx::N_VALS);
-  m_calAsymSL.resize(tXtalIdx::N_VALS);
-  m_calAsymSS.resize(tXtalIdx::N_VALS);
+  m_calAsymLL.resize(tXtalIdx::N_VALS,vector<float>(10));
+  m_calAsymLS.resize(tXtalIdx::N_VALS,vector<float>(10));
+  m_calAsymSL.resize(tXtalIdx::N_VALS,vector<float>(10));
+  m_calAsymSS.resize(tXtalIdx::N_VALS,vector<float>(10));
 
-  m_calAsymLLErr.resize(tXtalIdx::N_VALS);
-  m_calAsymLSErr.resize(tXtalIdx::N_VALS);
-  m_calAsymSLErr.resize(tXtalIdx::N_VALS);
-  m_calAsymSSErr.resize(tXtalIdx::N_VALS);
+  m_calAsymLLErr.resize(tXtalIdx::N_VALS,vector<float>(10));
+  m_calAsymLSErr.resize(tXtalIdx::N_VALS,vector<float>(10));
+  m_calAsymSLErr.resize(tXtalIdx::N_VALS,vector<float>(10));
+  m_calAsymSSErr.resize(tXtalIdx::N_VALS,vector<float>(10));
 
   // ASYM (4-TYPES) //
 

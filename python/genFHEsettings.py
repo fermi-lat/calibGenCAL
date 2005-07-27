@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate FHE Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2005/06/20 13:37:23 $"
-__version__     = "$Revision: 1.7 $, $Author: dwood $"
+__date__        = "$Date: 2005/06/20 14:36:25 $"
+__version__     = "$Revision: 1.8 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
