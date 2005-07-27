@@ -1,4 +1,20 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Jul 27 12:46:43 PDT 2005
+calibGenCAL/src
+
+Modified Files:
+	CGCUtil.h CalDefs.h McCfg.cxx McCfg.h MuTrigEff_option.xml 
+	MuonCalib.cxx MuonCalib.h ThreshEvol_option.xml 
+	ciFit_option.xml ciFit_option_badCalibGen.xml 
+	muonCalib_option.xml 
+Removed Files:
+	muonCalib_option_badCalibGen.xml 
+Log Message:
+assymetry data now auto removes outliers, no need for hard coded limits which change based on gain.
+so no need for muonCalib_badCalibGen.xml cfg file.
+also, muonCalib theoretically supports autoranging 4-range data as well as lex8 1st 4 range data
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Jul 27 12:46:42 PDT 2005
 calibGenCAL/python/cfg
 
