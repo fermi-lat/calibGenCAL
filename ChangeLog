@@ -1,4 +1,19 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Jul 28 15:38:30 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py calConstant.py calDacXML.py calExcept.py 
+	calFitsIO.py calFitsXML.py calXML.py fits2xml.py 
+	genFHEsettings.py genFLEsettings.py genLACsettings.py 
+	genULDsettings.py intNonlinMerge.py intNonlinVal.py 
+	mevPerDacMerge.py mevPerDacVal.py pedMerge.py pedVal.py 
+	tholdCIVal.py 
+Log Message:
+was assuming presense of certain env vars that are not present on all systems
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r6p15, operation: add
 Package: calibGenCAL
