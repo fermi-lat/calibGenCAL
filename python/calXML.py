@@ -6,9 +6,9 @@ CAL XML base classes
 __facility__  = "Offline"
 __abstract__  = "CAL XML base classes"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/04/12 13:58:31 $"
-__version__   = "$Revision: 1.1 $, $Author: dwood $"
-__release__   = "$Name:  $"
+__date__      = "$Date: 2005/07/27 19:46:42 $"
+__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
+__release__   = "$Name: v3r6p15 $"
 __credits__   = "NRL code 7650"
 
 

@@ -85,17 +85,6 @@ namespace CGCUtil {
   }
 
   void output_env_banner(ostream &ostr) {
-    
-    // USERNAME & HOSTNAME ARE DIFFERENT FROM WINDOWS 
-    // TO UNIX (getenv returns NULL on failure)
-    string host = (getenv("HOSTNAME") != 0)
-      ? getenv("HOSTNAME")      // UNIX
-      : getenv("COMPUTERNAME"); // WINDOWS
-
-    string user = (getenv("USER") != 0)
-      ? getenv("USER")          // UNIX
-      : getenv("USERNAME");    // WINDOWS
-
     // GENERATE TIME STRING
     char time_str[128];
     time_t tmt = time(NULL);
@@ -111,8 +100,6 @@ namespace CGCUtil {
 
     ostr << "************** ENVIRONMENT SUMMARY *****************" << endl;
     ostr << " RUNTIME : " << time_str << endl;
-    ostr << " HOSTNAME: " << host     << endl;
-    ostr << " USER    : " << user     << endl;
     ostr << endl;
 
     // test that enviroment variables are present

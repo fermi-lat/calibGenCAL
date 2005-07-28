@@ -16,7 +16,7 @@ using namespace std;
 
 namespace CGCUtil {
 
-  const string CVS_TAG("$Name:  $");
+  const string CVS_TAG("$Name: v3r6p15 $");
 
   /// Template function fills any STL type container with zero values
   template <class T> static void fill_zero(T &container) {
