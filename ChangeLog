@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Aug  4 08:55:59 PDT 2005
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+added runSuiteParallel.py
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r6p16, operation: add
 Package: calibGenCAL
