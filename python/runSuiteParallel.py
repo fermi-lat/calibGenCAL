@@ -120,7 +120,9 @@ for tower in tower_bays:
     os.environ['CGC_INL_TXT'] = inl_txtname
     # - specify output xml filename b/c it will be needed in later stages
     inl_xmlname = gen_inl_output_path(input_rootfile_le, output_dir, tower,'xml')
-    os.environ['CGC_INL_XML']
+    os.environ['CGC_INL_XML'] = inl_xmlname
+
+    # - run ciFit
     os.system('runCIFit.exe %CALIBGENCALROOT%\python\cfg\ciFit_option_template.xml')
 
 
@@ -131,7 +133,7 @@ section = 'runMuonCalib'
 muon_timestamp      = getcfg_def(configFile,section,'muon_timestamp',dflt_timestamp)
 input_rootfile_list = getcfg_nodef(configFile,section,'input_rootfile_list')
 input_rootfiles     = input_rootfile_list.split()
-first_rootfile        = input_rootfiles[0]
+first_rootfile      = input_rootfiles[0]
 
 os.environ['CGC_CALIBGEN_TIMESTAMP'] = calibGen_timestamp
 os.environ['CGC_MUON_ROOT_FILELIST'] = input_rootfile_list
@@ -140,9 +142,11 @@ os.environ['CGC_MUON_ROOT_FILELIST'] = input_rootfile_list
 for tower in tower_bays:
     # - set current tower environment variable
     os.environ['CGC_TOWER'] = tower
+
     # - use same output txt intlin filename from intNonlin phase
     inl_txtname = gen_inl_output_path(input_rootfile_le, output_dir, tower,'txt')
     os.environ['CGC_INL_TXT'] = inl_txtname
+
     # - specify output xml files b/c they will be used in later stages
     ped_xmlname = gen_mc_output_path(first_rootfile, output_dir, tower, 'mc_ped', 'xml')
     os.environ['CGC_PED_XML'] = ped_xmlname
@@ -150,6 +154,8 @@ for tower in tower_bays:
     os.environ['CGC_ASYM_XML'] = asym_xmlname
     mpd_xmlname = gen_mc_output_path(first_rootfile, output_dir, tower, 'mc_mpd', 'xml')
     os.environ['CGC_MPD_XML'] = mpd_xmlname
+
+    # - run muonCalib
     os.system('runMuonCalib.exe %CALIBGENCALROOT%\python\cfg\muonCalib_option_template.xml')
 
 ######################################
