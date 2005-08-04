@@ -9,6 +9,7 @@
 // EXTLIB INCLUDES
 
 // STD INCLUDES
+#include <sstream>
 
 using namespace CGCUtil;
 
@@ -24,8 +25,12 @@ void TeCfg::readCfgFile(const string& path) {
   // TEST INFO
   timestamp  = ifile.getString(TEST_INFO.c_str(), "TIMESTAMP");
   instrument = ifile.getString(TEST_INFO.c_str(), "INSTRUMENT");
-  twrBay   = ifile.getInt(TEST_INFO.c_str(),    "TOWER_BAY");
-
+  // TOWER BAY MAY BE SET BY AN ENVIRONMENT VARYABLE
+  using facilities::Util;
+  string tmpStr = ifile.getString(TEST_INFO.c_str(), "TOWER_BAY");
+  Util::expandEnvVar(&tmpStr);
+  istringstream twrBayStrm(tmpStr);
+  twrBayStrm >> twrBay;
   nTimePoints  = ifile.getInt(TEST_INFO.c_str(), "N_TIME_POINTS");
   nEvtsPerPoint  = ifile.getInt(TEST_INFO.c_str(), "N_EVENTS_PER_POINT");
 

@@ -26,7 +26,12 @@ void MtCfg::readCfgFile(const string& path) {
   // TEST INFO
   timestamp  = ifile.getString(TEST_INFO.c_str(), "TIMESTAMP");
   instrument = ifile.getString(TEST_INFO.c_str(), "INSTRUMENT");
-  twrBay   = ifile.getInt(TEST_INFO.c_str(),    "TOWER_BAY"); 
+  // TOWER BAY MAY BE SET BY AN ENVIRONMENT VARYABLE
+  using facilities::Util;
+  string tmpStr = ifile.getString(TEST_INFO.c_str(), "TOWER_BAY");
+  Util::expandEnvVar(&tmpStr);
+  istringstream twrBayStrm(tmpStr);
+  twrBayStrm >> twrBay;
 
   dacVals    = ifile.getIntVector(TEST_INFO.c_str(), "DAC_SETTINGS");
   nPulsesPerDAC  = ifile.getInt(TEST_INFO.c_str(), "N_PULSES_PER_DAC");

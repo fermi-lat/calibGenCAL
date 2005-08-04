@@ -1,0 +1,76 @@
+<?xml version="1.0" ?>
+<!-- Little test ifile -->
+
+<!DOCTYPE ifile SYSTEM "$(XMLBASEROOT)/xml/ifile.dtd" >
+
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/muonCalib_option.xml,v 1.15 2005/07/27 19:46:43 fewtrell Exp $"
+ cvs_Revision="$Revision: 1.15 $" >
+
+  <section name="TEST_INFO"> Test configuration info.
+    <item name="TIMESTAMP" 			value="$(CGC_MUON_TIMESTAMP)"> Timestamp for test run.</item>
+    <item name="INSTRUMENT" 			value="$(CGC_INSTRUMENT)"> Instrument name</item>
+    <item name="TOWER_BAY" 			value="$(CGC_TOWER)"> Work on single tower (0-15) </item>
+  </section>
+
+  <section name="PATHS"> Intput/Output file paths
+    NOTE: All environment variables will be expanded with facilities::Util::expandEnvVar()
+    <item name="INPUTFILE_LIST" 		value="$(CGC_MUON_ROOT_FILELIST)"> Space delimited list of input ROOT digi files </item>
+    
+    <item name="INTNONLINFILE_TXT" 		value="$(CGC_INL_TXT)"> Input integral non-linearity text file</item>
+    <item name="DTD_FILE" 			value="$(CALIBUTILROOT)/xml/calCalib_v2r2.dtd"> Data description file for XML ouptut ).</item>
+
+    <item name="OUTPUT_FOLDER" 			value="$(CGC_OUTPUT_DIR)"> Folder for auto-named output files </item>
+ 
+    <item name="PEDFILE_XML" 			value="$(CGC_PED_XML)"> Optional path for output ADC pedestal xml file (default "" autogenerates filename from input filename) </item>
+    <item name="ASYMFILE_XML" 			value="$(CGC_ASYM_XML)"> Optional path for output asymmetry xml file (default "" autogenerates filename from input filename)    </item>
+    <item name="MPDFILE_XML" 			value="$(CGC_MPD_XML)"> Optional path for output MevPerDac  xml  file (default "" autogenerates filename from input filename)  </item>
+    <item name="ADC2NRGFILE_XML" 		value=""> Optional path for output adc2nrg  xml  file (default "" autogenerates filename from input filename)    </item>
+
+
+    <item name="PED_HISTFILE" 			value=""> Optional path for ROOT histogram filename for pedestal calibration phase. (default "" autogenerates filename from input filename)</item>
+    <item name="ASYM_HISTFILE" 			value=""> Optional path for ROOT histogram filename (default "" autogenerates filename from input filename)</item>
+    <item name="MPD_HISTFILE" 			value=""> Optional path for ROOT histogram filename (default "" autogenerates filename from input filename)</item>
+    
+    <item name="PEDFILE_TXT" 			value=""> Optional path for output ADC pedestal text file (default "" autogenerates filename from input filename)  </item>
+    <item name="ASYMFILELL_TXT" 		value=""> Optional path for output LL asymmetry text file  (default "" autogenerates filename from input filename) </item>
+    <item name="ASYMFILELS_TXT" 		value=""> Optional path for output LS asymmetry text file (default "" autogenerates filename from input filename)  </item>
+    <item name="ASYMFILESL_TXT" 		value=""> Optional path for output SL asymmetry text file (default "" autogenerates filename from input filename)  </item>
+    <item name="ASYMFILESS_TXT" 		value=""> Optional path for output SS asymmetry text file (default "" autogenerates filename from input filename)  </item>
+    <item name="LARGEMPD_TXT" 			value=""> Optional path for output mev/dac conversion text file (Large diodes)  (default "" autogenerates filename from input filename)</item>
+    <item name="SMALLMPD_TXT" 			value=""> Optional path for output mev/dac conversion text file (Small diodes)  (default "" autogenerates filename from input filename)</item>
+
+    <item name="LOGFILE" 			value=""> application log file duplicates stdout (default "" autogenerates filename from input filename)</item>
+  </section>
+
+  <section name="CONSTANTS"> Constants
+    <item name="HIT_THRESH" 			value="100"> Threshold val for counting a 'hit xtal'.  (ADCM + ADCP) </item>
+    
+    <item name="CELL_VERT_PITCH" 		value="21.35"> Horizontal pitch (in mm) between 2 neighboring xtals mounted in the Cal structure</item>
+    <item name="CELL_HOR_PITCH" 		value="27.84"> Horizontal pitch (in mm) between 2 neighboring xtals mounted in the Cal structure</item>
+    <item name="CSI_LENGTH" 			value="326.0"> Length (in mm) of one Cal CsI crystal </item>
+    
+  </section>
+    
+  <section name="GENERAL"> General program options
+    <item name="NEVENTS_ROUGHPED" 		value="10000"> Number of events to run for rough pedestal calibration </item>
+    <item name="NEVENTS_PED" 			value="10000"> Number of events to run for final pedestal calibration</item>
+    <item name="NEVENTS_ASYM" 			value="1000000"> Number of events to run for asymmetry calibration</item>
+    <item name="NEVENTS_MPD" 			value="1000000"> Number of events to run for MevPerDac calibration</item>
+    
+    <item name="READ_IN_PEDS" 			value="false"> (boolean) Skip pedestal analysis and read pedestal .txt file from previous run</item>
+    <item name="PEDS_ONLY" 			value="false"> (boolean) Stop processing after pedestal phase</item>
+    <item name="READ_IN_ASYM" 			value="false"> (boolean) Skip asymmetry analysis and read asym .txt file from previous run</item>
+    <item name="SKIP_MPD" 			value="false"> (boolean) Skip MevPerDac analysis pass.</item>
+
+    <item name="GENERATE_XML" 			value="true"> (boolean) generate xml output</item>
+    <item name="GENERATE_TXT" 			value="true"> (boolean) generate text output</item>
+    <item name="GENERATE_HISTOGRAM_FILES"       value="true"> (boolean) generate histogram output</item>
+    <item name="GENERATE_LOGFILE" 		value="true"> (boolean) generate logfile which duplicates stdout </item>
+    
+    <item name="GEN_OPT_ASYM_HISTS"             value="false"> (boolean) generate optional asymmetry histograms</item>
+
+    <item name="VERBOSE"                        value="false"> (boolean) verbose debugging output to log </item>
+
+  </section>
+
+</ifile>
