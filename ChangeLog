@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: fewtrell  Thu Aug  4 08:56:00 PDT 2005
+calibGenCAL/python
+
+Added Files:
+	runSuiteParallel runSuiteParallel.bat runSuiteParallel.py 
+Log Message:
+added runSuiteParallel.py
+    *
+------------------------------------------------------------
+User: fewtrell  Thu Aug  4 08:56:00 PDT 2005
 calibGenCAL/doc
 
 Modified Files:
