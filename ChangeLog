@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Aug  4 08:56:01 PDT 2005
+calibGenCAL/python/cfg
+
+Added Files:
+	ciFit_option_template.xml muTrigEff_option_template.xml 
+	muonCalib_option_template.xml runSuiteParallel.cfg 
+Log Message:
+added runSuiteParallel.py
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Aug  4 08:56:00 PDT 2005
 calibGenCAL/python
 
