@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Aug  4 08:56:02 PDT 2005
+calibGenCAL/src
+
+Modified Files:
+	CfCfg.cxx McCfg.cxx MtCfg.cxx TeCfg.cxx ThreshEvol_option.xml 
+	ciFit_option_badCalibGen.xml muonCalib_option.xml 
+Log Message:
+added runSuiteParallel.py
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Aug  4 08:56:01 PDT 2005
 calibGenCAL/python/cfg
 
