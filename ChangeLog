@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Aug  4 08:56:00 PDT 2005
+calibGenCAL/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+added runSuiteParallel.py
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Aug  4 08:55:59 PDT 2005
 calibGenCAL/cmt
 
