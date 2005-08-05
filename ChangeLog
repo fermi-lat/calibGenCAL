@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Aug  4 23:29:24 PDT 2005
+calibGenCAL/src
+
+Modified Files:
+	CGCUtil.cxx 
+Log Message:
+made it build on gcc/linux
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Aug  4 22:59:09 PDT 2005
 calibGenCAL/src
 
