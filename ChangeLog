@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Aug  5 10:52:14 PDT 2005
+calibGenCAL/src
+
+Modified Files:
+	MuTrigEff_option.xml 
+Log Message:
+default output folder is now current directory
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Aug  5 10:37:58 PDT 2005
 calibGenCAL/src
 
