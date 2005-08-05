@@ -164,6 +164,8 @@ os.environ['CGC_MUON_TIMESTAMP'] = calibGen_timestamp
 os.environ['CGC_MUON_ROOT_FILELIST'] = muped_rootfile_list
 os.environ['CGC_READ_IN_PEDS']       = "0"
 os.environ['CGC_PEDS_ONLY']          = "1"
+os.environ['CGC_NEVT_ROUGHPED']      = 10000
+os.environ['CGC_NEVT_PED']           = 10000
 
 # - emulate
 if int(muped_enabled):
@@ -201,6 +203,8 @@ muopt_rootfile_list = getcfg_nodef(configFile,section,'muopt_rootfiles')
 muopt_rootfiles     = muopt_rootfile_list.split()
 first_muoptfile     = muopt_rootfiles[0]
 muopt_enabled       = getcfg_def(configFile,section,'enable_section',1)
+n_evt_asym          = getcfg_nodef(configFile,section,'n_evt_asym')
+n_evt_mpd           = getcfg_nodef(configFile,section,'n_evt_mpd')
 
 os.environ['CGC_MUON_TIMESTAMP'] = calibGen_timestamp
 os.environ['CGC_MUON_ROOT_FILELIST'] = muopt_rootfile_list
