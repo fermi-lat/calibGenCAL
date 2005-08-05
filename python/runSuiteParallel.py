@@ -76,13 +76,13 @@ log.setLevel(logging.DEBUG)
 
 # get environment settings
 try:
-    calibUtilROOT = os.environ["CALIBUTILROOT"]
+    calibUtilRoot = os.environ["CALIBUTILROOT"]
 except:
     log.error('CALIBUTILROOT must be defined')
     sys.exit(1)
 
 try:
-    calibGenCALROOT = os.environ["CALIBGENCALROOT"]
+    calibGenCALRoot = os.environ["CALIBGENCALROOT"]
 except:
     log.error('CALIBGENCALROOT must be defined')
     sys.exit(1)
@@ -147,7 +147,7 @@ if int(cifit_enabled):
         os.environ['CGC_INL_XML'] = inl_xmlname
         
         # - run ciFit
-        os.system('runCIFit.exe %CALIBGENCALROOT%\python\cfg\ciFit_option_template.xml')
+        os.system('runCIFit.exe %s/python/cfg/ciFit_option_template.xml'%calibGenCALRoot)
 
 
 ##################################################
@@ -189,7 +189,7 @@ if int(muped_enabled):
         os.environ['CGC_MPD_XML']  = mpd_xmlname
         
         # - run muonCalib
-        os.system('runMuonCalib.exe %CALIBGENCALROOT%\python\cfg\muonCalib_option_template.xml')
+        os.system('runMuonCalib.exe %s/python/cfg/muonCalib_option_template.xml'%calibGenCALRoot)
 
 
 ##################################################
@@ -229,7 +229,7 @@ if int(muopt_enabled):
         os.environ['CGC_MPD_XML'] = mpd_xmlname
         
         # - run muonCalib
-        os.system('runMuonCalib.exe %CALIBGENCALROOT%\python\cfg\muonCalib_option_template.xml')
+        os.system('runMuonCalib.exe %s/python/cfg/muonCalib_option_template.xml'%calibGenCALRoot)
 
 
 ######################################
@@ -256,7 +256,7 @@ if int(mutrig_enabled):
         ped_txtname = gen_mc_output_path(first_mupedfile, output_dir, tower, 'mc_peds', 'txt')
         os.environ['CGC_PED_TXT']  = ped_txtname
 
-        os.system('runMuTrigEff.exe %CALIBGENCALROOT%\python\cfg\muTrigEff_option_template.xml')
+        os.system('runMuTrigEff.exe %s/python/cfg/muTrigEff_option_template.xml'%calibGenCALRoot)
 
 ######################################
 ###### PHASE 5: merge ################
