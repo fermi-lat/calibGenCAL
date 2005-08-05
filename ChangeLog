@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Aug  5 10:37:52 PDT 2005
+calibGenCAL/python/cfg
+
+Modified Files:
+	muTrigEff_option_template.xml 
+Log Message:
+edited comments in muTrig config files (they were lying about the input_pedfile)
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r7, operation: add
 Package: calibGenCAL
