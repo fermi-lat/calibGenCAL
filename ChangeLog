@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Aug  5 14:08:23 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	runSuiteParallel.py 
+Log Message:
+bad variable names in linux fix
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Aug  5 13:21:58 PDT 2005
 calibGenCAL/src
 
