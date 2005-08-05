@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Aug  5 15:49:44 PDT 2005
+calibGenCAL/python/cfg
+
+Modified Files:
+	runSuiteParallel.cfg 
+Log Message:
+altered ideal muon optical event count
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Aug  5 14:42:21 PDT 2005
 calibGenCAL/python
 
