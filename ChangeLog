@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Aug  5 13:21:58 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	runSuiteParallel.py 
+Log Message:
+added option to load muonCalib nEvents per test by environment variable
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Aug  5 12:46:16 PDT 2005
 calibGenCAL/python
 
