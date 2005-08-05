@@ -1,5 +1,16 @@
 ------------------------------------------------------------
 User: fewtrell  Thu Aug  4 22:59:09 PDT 2005
+calibGenCAL/python/cfg
+
+Modified Files:
+	muTrigEff_option_template.xml muonCalib_option_template.xml 
+	runSuiteParallel.cfg 
+Log Message:
+runSuiteParallel now works
+had to add extra environment variable processing to c++ cfg files
+    *
+------------------------------------------------------------
+User: fewtrell  Thu Aug  4 22:59:09 PDT 2005
 calibGenCAL/python
 
 Modified Files:
