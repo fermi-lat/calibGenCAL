@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Aug  5 14:42:21 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	runSuiteParallel.py 
+Log Message:
+still setting up the muon num_evt variables.
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r7p1, operation: add
 Package: calibGenCAL
