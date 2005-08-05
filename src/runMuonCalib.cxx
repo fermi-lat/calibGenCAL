@@ -80,8 +80,11 @@ int main(int argc, char** argv) {
       if (cfg.genHistfiles) appData.flushHists();
     } else {
       // ALTERNATE SHORTCUT TO CALCULATING PEDS
-      cfg.ostrm << "Reading pedestals from " << cfg.pedFileTXT << endl;
-      appData.readCalPeds(cfg.pedFileTXT);
+      string file_to_read = (cfg.inputPedFile.length()) ?
+        cfg.inputPedFile :
+        cfg.pedFileTXT;
+      cfg.ostrm << "Reading pedestals from " << file_to_read << endl;
+      appData.readCalPeds(file_to_read);
     }
 
     if (cfg.pedsOnly) return 0;

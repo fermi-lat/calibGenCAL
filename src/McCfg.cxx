@@ -26,17 +26,17 @@ void McCfg::readCfgFile(const string& cfgPath) {
   clear();
 
   xmlBase::IFile ifile(cfgPath.c_str());
-  
-  
+  using facilities::Util;
+ 
   // SECTION: TEST INFO
   timestamp        = ifile.getString(TEST_INFO.c_str(), "TIMESTAMP");
   instrument       = ifile.getString(TEST_INFO.c_str(), "INSTRUMENT");
-  // TOWER BAY MAY BE SET BY AN ENVIRONMENT VARYABLE
-  using facilities::Util;
+  Util::expandEnvVar(&timestamp);
+  Util::expandEnvVar(&instrument);
+
   string tmpStr = ifile.getString(TEST_INFO.c_str(), "TOWER_BAY");
   Util::expandEnvVar(&tmpStr);
-  istringstream twrBayStrm(tmpStr);
-  twrBayStrm >> twrBay;
+  twrBay = Util::stringToInt(tmpStr);
 
   // SECTION: PATHS
   rootFileListStr = ifile.getString(PATHS.c_str(), "INPUTFILE_LIST");
@@ -98,17 +98,39 @@ void McCfg::readCfgFile(const string& cfgPath) {
   nEvtMPD  = ifile.getInt(GENERAL.c_str(), "NEVENTS_MPD");
 
   // ridiculous comparison elminates cast warning in msvc
-  readInPeds = ifile.getBool(GENERAL.c_str(), "READ_IN_PEDS") != 0;
-  pedsOnly   = ifile.getBool(GENERAL.c_str(), "PEDS_ONLY")    != 0;
-  readInAsym = ifile.getBool(GENERAL.c_str(), "READ_IN_ASYM") != 0;
-  skipMPD    = ifile.getBool(GENERAL.c_str(), "SKIP_MPD")     != 0;
+  // MAY BE SET BY ENVIRONMENT VARIABLES
+  tmpStr = ifile.getString(GENERAL.c_str(), "READ_IN_PEDS");
+  Util::expandEnvVar(&tmpStr);
+  readInPeds = stringToBool(tmpStr);
+  inputPedFile = ifile.getString(GENERAL.c_str(), "INPUT_PEDFILE");
+  Util::expandEnvVar(&inputPedFile);
+  tmpStr = ifile.getString(GENERAL.c_str(), "PEDS_ONLY")   ;
+  Util::expandEnvVar(&tmpStr);
+  pedsOnly   = stringToBool(tmpStr);
+  Util::expandEnvVar(&tmpStr);
+  tmpStr = ifile.getString(GENERAL.c_str(), "READ_IN_ASYM");
+  Util::expandEnvVar(&tmpStr);
+  readInAsym = stringToBool(tmpStr);
+  tmpStr = ifile.getString(GENERAL.c_str(), "SKIP_MPD")    ;
+  Util::expandEnvVar(&tmpStr);
+  skipMPD    = stringToBool(tmpStr);
 
   // ridiculous comparison elminates cast warning in msvc
-  genXML = ifile.getBool(GENERAL.c_str(), "GENERATE_XML") != 0;
-  genTXT = ifile.getBool(GENERAL.c_str(), "GENERATE_TXT") != 0;
-  genHistfiles = ifile.getBool(GENERAL.c_str(), "GENERATE_HISTOGRAM_FILES")!=0;
-  genLogfile   = ifile.getBool(GENERAL.c_str(), "GENERATE_LOGFILE")        !=0;
-  verbose      = ifile.getBool(GENERAL.c_str(), "VERBOSE") != 0;
+  tmpStr = ifile.getString(GENERAL.c_str(), "GENERATE_XML");
+  Util::expandEnvVar(&tmpStr);
+  genXML = stringToBool(tmpStr);
+  tmpStr = ifile.getString(GENERAL.c_str(), "GENERATE_TXT");
+  Util::expandEnvVar(&tmpStr);
+  genTXT = stringToBool(tmpStr);
+  tmpStr = ifile.getString(GENERAL.c_str(), "GENERATE_HISTOGRAM_FILES");
+  Util::expandEnvVar(&tmpStr);
+  genHistfiles = stringToBool(tmpStr);
+  tmpStr = ifile.getString(GENERAL.c_str(), "GENERATE_LOGFILE")        ;
+  Util::expandEnvVar(&tmpStr);
+  genLogfile   = stringToBool(tmpStr);
+  tmpStr = ifile.getString(GENERAL.c_str(), "VERBOSE");
+  Util::expandEnvVar(&tmpStr);
+  verbose      = stringToBool(tmpStr);
 
   // only asign genOptAsymHists is genHistfiles is also enabled.
   genOptAsymHists = false;

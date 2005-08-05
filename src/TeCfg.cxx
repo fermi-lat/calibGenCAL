@@ -21,16 +21,18 @@ void TeCfg::readCfgFile(const string& path) {
   clear();
 
   xmlBase::IFile ifile(path.c_str());
+    using facilities::Util;
   
   // TEST INFO
   timestamp  = ifile.getString(TEST_INFO.c_str(), "TIMESTAMP");
   instrument = ifile.getString(TEST_INFO.c_str(), "INSTRUMENT");
-  // TOWER BAY MAY BE SET BY AN ENVIRONMENT VARYABLE
-  using facilities::Util;
+  Util::expandEnvVar(&timestamp);
+  Util::expandEnvVar(&instrument);
+
   string tmpStr = ifile.getString(TEST_INFO.c_str(), "TOWER_BAY");
   Util::expandEnvVar(&tmpStr);
-  istringstream twrBayStrm(tmpStr);
-  twrBayStrm >> twrBay;
+  twrBay = Util::stringToInt(tmpStr);
+  
   nTimePoints  = ifile.getInt(TEST_INFO.c_str(), "N_TIME_POINTS");
   nEvtsPerPoint  = ifile.getInt(TEST_INFO.c_str(), "N_EVENTS_PER_POINT");
 
