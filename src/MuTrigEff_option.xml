@@ -3,8 +3,8 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLBASEROOT)/xml/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/MuTrigEff_option.xml,v 1.4 2005/04/27 18:09:59 chehtman Exp $"
-       cvs_Revision="$Revision: 1.4 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/MuTrigEff_option.xml,v 1.5 2005/07/27 19:46:43 fewtrell Exp $"
+       cvs_Revision="$Revision: 1.5 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP"      value="2004-11-11-14:39"> Timestamp for test run.</item>
@@ -23,7 +23,7 @@
     <item name="XMLPATH"     value=""> Optional path for output .xml file (default "" autogenerates filename from input filename)</item>
     <item name="TXTPATH"     value=""> Optional path for output .txt file (default "" autogenerates filename from input filename)</item>
 
-    <item name="PEDFILE_TXT"       value="D:\EM_v4r060302p10\calibGenCAL\v3r6p1\output\mc_peds.050302002801_0_FM110_EMI_calu_collect_mu.T00.txt"> Optional path for output ADC pedestal text file (default "" autogenerates filename from input filename)</item>
+    <item name="PEDFILE_TXT"       value="D:\EM_v4r060302p10\calibGenCAL\v3r6p1\output\mc_peds.050302002801_0_FM110_EMI_calu_collect_mu.T00.txt"> Input ADC pedestal text file </item>
 
     <item name="HISTFILE"      value=""> Optional path for ROOT histogram file. (default "" autogenerates filename from input filename)</item>
 
