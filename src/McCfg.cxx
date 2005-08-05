@@ -92,10 +92,18 @@ void McCfg::readCfgFile(const string& cfgPath) {
   csiLength     = ifile.getDouble(CONSTANTS.c_str(), "CSI_LENGTH");
 
   // SECTION: GENERAL
-  nEvtRoughPed = ifile.getInt(GENERAL.c_str(), "NEVENTS_ROUGHPED");
-  nEvtPed  = ifile.getInt(GENERAL.c_str(), "NEVENTS_PED");
-  nEvtAsym = ifile.getInt(GENERAL.c_str(), "NEVENTS_ASYM");
-  nEvtMPD  = ifile.getInt(GENERAL.c_str(), "NEVENTS_MPD");
+  tmpStr = ifile.getString(GENERAL.c_str(), "NEVENTS_ROUGHPED");
+  Util::expandEnvVar(&tmpStr);
+  nEvtRoughPed = Util::stringToInt(tmpStr);
+  tmpStr = ifile.getString(GENERAL.c_str(), "NEVENTS_PED");
+  Util::expandEnvVar(&tmpStr);
+  nEvtPed  = Util::stringToInt(tmpStr);
+  tmpStr = ifile.getString(GENERAL.c_str(), "NEVENTS_ASYM");
+  Util::expandEnvVar(&tmpStr);
+  nEvtAsym = Util::stringToInt(tmpStr);
+  tmpStr = ifile.getString(GENERAL.c_str(), "NEVENTS_MPD");
+  Util::expandEnvVar(&tmpStr);
+  nEvtMPD  = Util::stringToInt(tmpStr);
 
   // ridiculous comparison elminates cast warning in msvc
   // MAY BE SET BY ENVIRONMENT VARIABLES

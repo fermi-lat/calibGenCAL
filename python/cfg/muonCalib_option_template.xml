@@ -3,8 +3,8 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLBASEROOT)/xml/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/cfg/muonCalib_option_template.xml,v 1.1 2005/08/04 15:56:01 fewtrell Exp $"
- cvs_Revision="$Revision: 1.1 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/cfg/muonCalib_option_template.xml,v 1.2 2005/08/05 05:59:09 fewtrell Exp $"
+ cvs_Revision="$Revision: 1.2 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP" 			value="$(CGC_MUON_TIMESTAMP)"> Timestamp for test run.</item>
@@ -52,10 +52,10 @@
   </section>
     
   <section name="GENERAL"> General program options
-    <item name="NEVENTS_ROUGHPED" 		value="10000"> Number of events to run for rough pedestal calibration </item>
-    <item name="NEVENTS_PED" 			value="10000"> Number of events to run for final pedestal calibration</item>
-    <item name="NEVENTS_ASYM" 			value="1000000"> Number of events to run for asymmetry calibration</item>
-    <item name="NEVENTS_MPD" 			value="1000000"> Number of events to run for MevPerDac calibration</item>
+    <item name="NEVENTS_ROUGHPED" 		value="$(CGC_NEVT_ROUGHPED)"> Number of events to run for rough pedestal calibration </item>
+    <item name="NEVENTS_PED" 			value="$(CGC_NEVT_PED)"> Number of events to run for final pedestal calibration</item>
+    <item name="NEVENTS_ASYM" 			value="$(CGC_NEVT_ASYM)"> Number of events to run for asymmetry calibration</item>
+    <item name="NEVENTS_MPD" 			value="$(CGC_NEVT_MPD)"> Number of events to run for MevPerDac calibration</item>
     
     <item name="READ_IN_PEDS" 			value="$(CGC_READ_IN_PEDS)"> (boolean) Skip pedestal analysis and read pedestal .txt file from previous run</item>
     <item name="INPUT_PEDFILE"                  value="$(CGC_PED_TXT)"> (optional) txt pedestal file to be read in </item>
