@@ -111,3 +111,5 @@ v3r6p15 muonCalib calib now automatically removes outliers from asymetry data.  
 v3r7    runSuiteParallel script added which runs ciFit, muonCalib, muTrig, ***Merge.py, ***Validate.py on a full set of parallel calibration data.  Also the C++ applications now expand more environment variables in the config options file in order to support the runSuiteParallel script.
 
 v3r7p1  runSuiteParallel script tested on linux.  now support setting mounCalib n_evt_asym & n_evt_mpd via environment variable
+
+v3r7p2  little more tinkering to get it to work on linux
