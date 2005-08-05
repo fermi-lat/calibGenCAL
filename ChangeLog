@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: fewtrell  Fri Aug  5 13:21:58 PDT 2005
+calibGenCAL/src
+
+Modified Files:
+	McCfg.cxx 
+Log Message:
+added option to load muonCalib nEvents per test by environment variable
+    *
+------------------------------------------------------------
+User: fewtrell  Fri Aug  5 13:21:58 PDT 2005
 calibGenCAL/python/cfg
 
 Modified Files:
