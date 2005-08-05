@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Aug  5 12:46:16 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	runSuiteParallel.py 
+Log Message:
+made script work better on linux
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Aug  5 10:52:14 PDT 2005
 calibGenCAL/src
 
