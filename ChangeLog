@@ -1,22 +1,4 @@
 ------------------------------------------------------------
-User: fewtrell  Fri Aug  5 06:08:50 PDT 2005
-calibGenCAL/python/cfg
-
-Modified Files:
-	runSuiteParallel.cfg 
-Log Message:
-preparing for v3r7 release
-    *
-------------------------------------------------------------
-User: fewtrell  Fri Aug  5 06:08:50 PDT 2005
-calibGenCAL/doc
-
-Modified Files:
-	release.notes 
-Log Message:
-preparing for v3r7 release
-    *
-------------------------------------------------------------
 User: fewtrell  Thu Aug  4 23:29:24 PDT 2005
 calibGenCAL/src
 
