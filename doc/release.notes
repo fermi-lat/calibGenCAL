@@ -108,4 +108,4 @@ v3r6p14 ciFit & runMuTrigEff will now accept CI files w/ any multiple of nXtalsP
 
 v3r6p15 muonCalib calib now automatically removes outliers from asymetry data.  no more min/max asym cfg needed.  no more separated cfg for bad_calibGen.  also muon calib now theoretically accepts autoranging 4-range data.  before only accepted fixed-range 4-range data.
 
-v3r7    runSuiteParallel script added which runs ciFit, muonCalib, muTrig, ***Merge.py, ***Validate.py on a full set of parallel calibration data.
+v3r7    runSuiteParallel script added which runs ciFit, muonCalib, muTrig, ***Merge.py, ***Validate.py on a full set of parallel calibration data.  Also the C++ applications now expand more environment variables in the config options file in order to support the runSuiteParallel script.
