@@ -3,8 +3,8 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLBASEROOT)/xml/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/MuTrigEff_option.xml,v 1.5 2005/07/27 19:46:43 fewtrell Exp $"
-       cvs_Revision="$Revision: 1.5 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/cfg/muTrigEff_option_template.xml,v 1.1 2005/08/04 15:56:01 fewtrell Exp $"
+       cvs_Revision="$Revision: 1.1 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP" 		value="$(CGC_MUTRIG_TIMESTAMP)"> Timestamp for test run.</item>
@@ -23,7 +23,7 @@
     <item name="XMLPATH" 		value=""> Optional path for output .xml file (default "" autogenerates filename from input filename)</item>
     <item name="TXTPATH" 		value=""> Optional path for output .txt file (default "" autogenerates filename from input filename)</item>
 
-    <item name="PEDFILE_TXT" 		value=""> Optional path for output ADC pedestal text file (default "" autogenerates filename from input filename)</item>
+    <item name="PEDFILE_TXT" 		value="$(CGC_PED_TXT)"> Optional path for output ADC pedestal text file (default "" autogenerates filename from input filename)</item>
 
     <item name="HISTFILE" 		value=""> Optional path for ROOT histogram file. (default "" autogenerates filename from input filename)</item>
 

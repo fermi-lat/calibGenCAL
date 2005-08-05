@@ -16,7 +16,7 @@ using namespace std;
 
 namespace CGCUtil {
 
-  const string CVS_TAG("$Name: v3r6p15 $");
+  const string CVS_TAG("$Name: HEAD $");
 
   /// Template function fills any STL type container with zero values
   template <class T> static void fill_zero(T &container) {
@@ -78,5 +78,20 @@ namespace CGCUtil {
   /// to ostream
   /// output is in multi line text format
   void output_env_banner(ostream &ostr);
+
+  /** \brief convert string to uppercase
+      \return ref to converted string
+      \note operates in place on given string.
+  */
+  string &str_toupper(string &str);
+
+  /** convert string to boolean.
+      \return boolean interperetation of value
+      \throws exception if value is not properly formatted.
+
+      to be interpereted as boolean, value must be '1', '0', '[t]rue', '[f]alse', '[y]es', '[n]o'
+      \note interperetation is case-insensitive.
+  */
+  bool stringToBool(const string &str);
 };
 #endif // CGCUtil_H

@@ -10,6 +10,8 @@
 #include <ctime>
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
+#include <sstream>
 
 namespace CGCUtil {
 
@@ -122,4 +124,38 @@ namespace CGCUtil {
     }
     ostr << "****************************************************" << endl;
   }
+
+  string &str_toupper(string &str) {
+  //transform(str.begin(),str.end(), str.begin(), toupper<char>);
+  std::transform(str.begin(), str.end(), str.begin(), 
+                 (int(*)(int)) toupper);
+	return str;
+  }
+
+  bool stringToBool(const string &str) {
+    // non const for modification
+    string tmpStr = str;
+  
+    // convert all to uppper case
+    str_toupper(tmpStr);
+
+    if (tmpStr == "1")    return true;
+    if (tmpStr == "T")    return true;
+    if (tmpStr == "TRUE") return true;
+    if (tmpStr == "Y")    return true;
+    if (tmpStr == "YES")  return true;
+  
+    if (tmpStr == "0")     return false;
+    if (tmpStr == "F")     return false;
+    if (tmpStr == "FALSE") return false;
+    if (tmpStr == "N")     return false;
+    if (tmpStr == "NO")    return false;
+
+    // bad format, throw exception
+    ostringstream tmp;
+    tmp << '"' << tmpStr << '"' << " not a boolean string.";
+
+    throw runtime_error(tmp.str());
+  }
+
 };

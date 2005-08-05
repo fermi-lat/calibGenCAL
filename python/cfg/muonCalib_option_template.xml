@@ -3,8 +3,8 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLBASEROOT)/xml/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/muonCalib_option.xml,v 1.15 2005/07/27 19:46:43 fewtrell Exp $"
- cvs_Revision="$Revision: 1.15 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/cfg/muonCalib_option_template.xml,v 1.1 2005/08/04 15:56:01 fewtrell Exp $"
+ cvs_Revision="$Revision: 1.1 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP" 			value="$(CGC_MUON_TIMESTAMP)"> Timestamp for test run.</item>
@@ -57,8 +57,9 @@
     <item name="NEVENTS_ASYM" 			value="1000000"> Number of events to run for asymmetry calibration</item>
     <item name="NEVENTS_MPD" 			value="1000000"> Number of events to run for MevPerDac calibration</item>
     
-    <item name="READ_IN_PEDS" 			value="false"> (boolean) Skip pedestal analysis and read pedestal .txt file from previous run</item>
-    <item name="PEDS_ONLY" 			value="false"> (boolean) Stop processing after pedestal phase</item>
+    <item name="READ_IN_PEDS" 			value="$(CGC_READ_IN_PEDS)"> (boolean) Skip pedestal analysis and read pedestal .txt file from previous run</item>
+    <item name="INPUT_PEDFILE"                  value="$(CGC_PED_TXT)"> (optional) txt pedestal file to be read in </item>
+    <item name="PEDS_ONLY" 			value="$(CGC_PEDS_ONLY)"> (boolean) Stop processing after pedestal phase</item>
     <item name="READ_IN_ASYM" 			value="false"> (boolean) Skip asymmetry analysis and read asym .txt file from previous run</item>
     <item name="SKIP_MPD" 			value="false"> (boolean) Skip MevPerDac analysis pass.</item>
 

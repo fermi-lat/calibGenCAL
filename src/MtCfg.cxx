@@ -22,23 +22,22 @@ void MtCfg::readCfgFile(const string& path) {
   clear();
 
   xmlBase::IFile ifile(path.c_str());
+  using facilities::Util;
   
   // TEST INFO
   timestamp  = ifile.getString(TEST_INFO.c_str(), "TIMESTAMP");
   instrument = ifile.getString(TEST_INFO.c_str(), "INSTRUMENT");
-  // TOWER BAY MAY BE SET BY AN ENVIRONMENT VARYABLE
-  using facilities::Util;
+  Util::expandEnvVar(&timestamp);
+  Util::expandEnvVar(&instrument);
+
   string tmpStr = ifile.getString(TEST_INFO.c_str(), "TOWER_BAY");
   Util::expandEnvVar(&tmpStr);
-  istringstream twrBayStrm(tmpStr);
-  twrBayStrm >> twrBay;
-
+  twrBay = Util::stringToInt(tmpStr);
+  
   dacVals    = ifile.getIntVector(TEST_INFO.c_str(), "DAC_SETTINGS");
   nPulsesPerDAC  = ifile.getInt(TEST_INFO.c_str(), "N_PULSES_PER_DAC");
 
-
   // PATHS
-  using facilities::Util;  
   outputDir = ifile.getString(PATHS.c_str(), "OUTPUT_FOLDER");
   Util::expandEnvVar(&outputDir);
 
