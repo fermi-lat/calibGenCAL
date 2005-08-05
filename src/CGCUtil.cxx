@@ -12,6 +12,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <sstream>
+#include <stdexcept>
 
 namespace CGCUtil {
 
