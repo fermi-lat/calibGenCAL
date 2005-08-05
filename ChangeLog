@@ -1,5 +1,16 @@
 ------------------------------------------------------------
 User: fewtrell  Thu Aug  4 22:59:09 PDT 2005
+calibGenCAL/src
+
+Modified Files:
+	CGCUtil.cxx CGCUtil.h CfCfg.cxx McCfg.cxx McCfg.h MtCfg.cxx 
+	TeCfg.cxx muonCalib_option.xml runMuonCalib.cxx 
+Log Message:
+runSuiteParallel now works
+had to add extra environment variable processing to c++ cfg files
+    *
+------------------------------------------------------------
+User: fewtrell  Thu Aug  4 22:59:09 PDT 2005
 calibGenCAL/python/cfg
 
 Modified Files:
