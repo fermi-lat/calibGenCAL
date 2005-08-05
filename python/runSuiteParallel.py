@@ -314,10 +314,10 @@ if int(merge_enabled):
         
     # - run merge scripts
     
-    os.system('python %s/python/pedMerge.py %s %s'%(calibGenCALROOT, mergeCfgFilename, pedFinalXML));
-    os.system('python %s/python/intNonlinMerge.py %s %s'%(calibGenCALROOT, mergeCfgFilename, inlFinalXML));
-    os.system('python %s/python/asymMerge.py %s %s'%(calibGenCALROOT, mergeCfgFilename, asymFinalXML));
-    os.system('python %s/python/mevPerDacMerge.py %s %s'%(calibGenCALROOT, mergeCfgFilename, mpdFinalXML));
+    os.system('python %s/python/pedMerge.py %s %s'%(calibGenCALRoot, mergeCfgFilename, pedFinalXML));
+    os.system('python %s/python/intNonlinMerge.py %s %s'%(calibGenCALRoot, mergeCfgFilename, inlFinalXML));
+    os.system('python %s/python/asymMerge.py %s %s'%(calibGenCALRoot, mergeCfgFilename, asymFinalXML));
+    os.system('python %s/python/mevPerDacMerge.py %s %s'%(calibGenCALRoot, mergeCfgFilename, mpdFinalXML));
 
 
 ######################################
@@ -336,9 +336,9 @@ mpdValLog  = gen_mc_final_path(first_muoptfile, output_dir, 'mc_mpd', 'val.log')
 
 if int(validate_enabled):
     # - run val scripts
-    os.system('python %s/python/pedVal.py -L%s %s'%(calibGenCALROOT, pedValLog, pedFinalXML));
-    os.system('python %s/python/intNonlinVal.py -L%s %s'%(calibGenCALROOT, inlValLog, inlFinalXML));
-    os.system('python %s/python/asymVal.py -L%s %s'%(calibGenCALROOT, asymValLog, asymFinalXML));
-    os.system('python %s/python/mevPerDacVal.py -L%s %s'%(calibGenCALROOT, mpdValLog, mpdFinalXML));
+    os.system('python %s/python/pedVal.py -L%s %s'%(calibGenCALRoot, pedValLog, pedFinalXML));
+    os.system('python %s/python/intNonlinVal.py -L%s %s'%(calibGenCALRoot, inlValLog, inlFinalXML));
+    os.system('python %s/python/asymVal.py -L%s %s'%(calibGenCALRoot, asymValLog, asymFinalXML));
+    os.system('python %s/python/mevPerDacVal.py -L%s %s'%(calibGenCALRoot, mpdValLog, mpdFinalXML));
 
 
