@@ -164,8 +164,8 @@ os.environ['CGC_MUON_TIMESTAMP'] = calibGen_timestamp
 os.environ['CGC_MUON_ROOT_FILELIST'] = muped_rootfile_list
 os.environ['CGC_READ_IN_PEDS']       = "0"
 os.environ['CGC_PEDS_ONLY']          = "1"
-os.environ['CGC_NEVT_ROUGHPED']      = 10000
-os.environ['CGC_NEVT_PED']           = 10000
+os.environ['CGC_NEVT_ROUGHPED']      = "10000"
+os.environ['CGC_NEVT_PED']           = "10000"
 
 # - emulate
 if int(muped_enabled):
