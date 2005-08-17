@@ -6,9 +6,9 @@ Classes and functions to read and write CAL XML files derived from FITS data set
 __facility__  = "Offline"
 __abstract__  = "Class to read and write CAL XML files derived from FITS data sets"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/07/27 19:46:41 $"
-__version__   = "$Revision: 1.8 $, $Author: fewtrell $"
-__release__   = "$Name: v3r6p15 $"
+__date__      = "$Date: 2005/07/28 22:38:29 $"
+__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
+__release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 
@@ -486,7 +486,7 @@ class calFitsXML(object):
 
         self.__xmlVersion = int(d.getAttribute('version'))
         err = "XML format version %d not supported for file type %s" % (self.__xmlVersion, self.__type)  
-        if self.__xmlVersion > 1:
+        if self.__xmlVersion > 2:
             raise calFileReadExcept, err
         if self.__type == 'rng_uld_dac' and self.__xmlVersion < 1:
             raise calFileReadExcept, err
