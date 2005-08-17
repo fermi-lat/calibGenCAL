@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Wed Aug 17 10:17:01 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calFitsXML.py 
+Log Message:
+Fixed format version check in method calFitsXML.read(); only allowed up to version 1; should allow up to version 2.
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Aug  5 16:58:12 PDT 2005
 calibGenCAL/doc
 
