@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Aug 19 16:04:36 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	genFHEsettings genFLEsettings genLACsettings genULDsettings 
+	runSuiteParallel tholdCIGen 
+Log Message:
+made script files executable permissions
+
+    *
+------------------------------------------------------------
 User: dwood  Wed Aug 17 10:17:01 PDT 2005
 calibGenCAL/python
 
