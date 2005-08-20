@@ -33,6 +33,7 @@ void MtCfg::readCfgFile(const string& path) {
   string tmpStr = ifile.getString(TEST_INFO.c_str(), "TOWER_BAY");
   Util::expandEnvVar(&tmpStr);
   twrBay = Util::stringToInt(tmpStr);
+  CAL_LO_enabled = ifile.getBool(TEST_INFO.c_str(), "CAL_LO_TRIGGER_ENABLED") != 0;
   
   dacVals    = ifile.getIntVector(TEST_INFO.c_str(), "DAC_SETTINGS");
   nPulsesPerDAC  = ifile.getInt(TEST_INFO.c_str(), "N_PULSES_PER_DAC");
