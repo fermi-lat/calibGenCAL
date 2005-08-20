@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: chehtman  Sat Aug 20 04:29:19 PDT 2005
+calibGenCAL/src
+
+Modified Files:
+	runMuTrigEff.cxx MuTrigEff_option.xml MtCfg.h MtCfg.cxx 
+Log Message:
+Made runMuTrigEff working with zero suppressed tracker triggered data from parallelized muTrig (with multiple towers)-fixed few bugs.
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r7p4, operation: add
 Package: calibGenCAL
