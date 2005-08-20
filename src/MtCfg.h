@@ -42,6 +42,7 @@ class MtCfg : ICfg {
   string timestamp;    ///< time of measurement
   string instrument;   ///< instrument name "LAT", "EM", etc...
   int    twrBay;     ///< work on any single tower bay #(0-15)
+  bool CAL_LO_enabled; /// CAL_LO trigger enabled
 
   vector<int> dacVals;
   int nPulsesPerDAC;

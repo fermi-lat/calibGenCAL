@@ -481,6 +481,8 @@ void RootCiTrig::DigiCal() {
   CalDiagnosticData *pdiag = 0;
   while ((pdiag = (CalDiagnosticData*)calDiagIter.Next())) {  //loop through each 'hit' in one event
     CalDiagnosticData &cdiag = *pdiag; // use ref to reduce '->'
+    int tower = cdiag.tower();
+    if (tower != m_cfg.twrBay) continue;  //skip diagnostics if it is wrong tower.
   
     int layer = cdiag.layer();
     for (int side=0;side<2;side++)m_fle[side][layer] = cdiag.low(side);  
@@ -648,6 +650,9 @@ void RootMuTrig::DigiCal() {
   CalDiagnosticData *pdiag = 0;
   while ((pdiag = (CalDiagnosticData*)calDiagIter.Next())) {  //loop through each 'hit' in one event
     CalDiagnosticData &cdiag = *pdiag; // use ref to reduce '->'
+    int tower = cdiag.tower();
+    if (tower != m_cfg.twrBay) continue;  //skip diagnostics if it is wrong tower.
+
   
     int layer = cdiag.layer();
     for (int side=0;side<2;side++) m_fle[side][layer] = cdiag.low(side);  
@@ -663,7 +668,9 @@ void RootMuTrig::DigiCal() {
   if (m_adc.size() == 0) 
     m_adc.resize(tFaceIdx::N_VALS);
 
-  // Loop through each xtal interaction
+  for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) m_adc[faceIdx]=0;
+
+  // Loop through each digi
   CalDigi *pdig = 0;
   while ((pdig = (CalDigi*)calDigiIter.Next())) {  //loop through each 'hit' in one event
     CalDigi &cdig = *pdig; // use ref to reduce '->'
@@ -687,10 +694,9 @@ void RootMuTrig::DigiCal() {
           float ped = m_mtData.getPed(rng);
           m_adc[faceIdx]  = acRo.getAdc((CalXtalId::XtalFace)(short)face)-ped;
         }
-
       } // foreach face
     } // foreach readout
-  } // foreach xtal
+  } // foreach digi
 
   bool odd = !m_trigConfig;
   for (int l = 0;l<8;l++){
@@ -698,26 +704,34 @@ void RootMuTrig::DigiCal() {
     if ( (l+1) % 2) odd = !odd;
     int st = odd;
     for (int c = st;c<12;c=c+2){
-      bool trg_other_layers = false;
-      for (int s=0;s<2;s++)
-        for(int ll=0;ll<8;ll++)
-          if(l != ll)trg_other_layers = trg_other_layers || m_fle[s][ll];
-      for (int s=0;s<2;s++){
-        bool no_trg_layer = trg_other_layers;
-        for (int cc = st;cc<12;cc=cc+2){
-          if (cc != c){
-            tFaceIdx face(l,cc,s);
-            no_trg_layer = no_trg_layer && (m_adc[face] < 50);
-          }
-        }
-        tFaceIdx faceIdx(l,c,s);
-        if(no_trg_layer){
-          m_mtData.fillMuHist(faceIdx,m_adc[faceIdx]);
-          if(m_fle[s][l])m_mtData.fillTrigHist(faceIdx,m_adc[faceIdx]);
-        }
-      }
-    }
-  }
+
+	  bool trg_other_layers = true;
+
+	  // if CAL_LO trigger was enabled, to avoid a bias in trigger efficiency calculation
+	  // we require the presence of FLE trigger bit
+	  // in some layer other than the one we are looking at
+	  if(m_cfg.CAL_LO_enabled){
+		trg_other_layers = false;
+		for (int s=0;s<2;s++)
+		  for(int ll=0;ll<8;ll++)
+			if(l != ll)trg_other_layers = trg_other_layers || m_fle[s][ll];
+	  }
+		  for (int s=0;s<2;s++){
+			bool no_trg_layer = trg_other_layers;
+			for (int cc = st;cc<12;cc=cc+2){
+			  if (cc != c){
+                 tFaceIdx face(l,cc,s);
+                 no_trg_layer = no_trg_layer && (m_adc[face] < 50);
+			  }
+			}
+			tFaceIdx faceIdx(l,c,s);
+			if(no_trg_layer){
+				m_mtData.fillMuHist(faceIdx,m_adc[faceIdx]);
+				if(m_fle[s][l])m_mtData.fillTrigHist(faceIdx,m_adc[faceIdx]);
+			}
+		  } // for each face
+	} // for each crystal
+  } // for each layer
 }
 
 void RootMuTrig::Go()
@@ -741,7 +755,6 @@ void RootMuTrig::Go()
   m_cfg.ostr << "\nNum Events in File is: " << nEvts << endl;
   Int_t curI=0;
  
-
   // BEGINNING OF EVENT LOOP
   for (Int_t iEvt=m_startEvt; iEvt<nEvts; iEvt++, curI=iEvt) {
     if (m_digiEvt) m_digiEvt->Clear();
@@ -790,7 +803,9 @@ int main(int argc, char **argv) {
     
     MtData data(cfg);
     // reading charge injection file with diagnostic information (tack delay = 70)
-    {
+   
+	
+	{
       vector<string> digiFileNames;
       digiFileNames.push_back(cfg.rootFileCI);
       RootCiTrig rd(digiFileNames,data,cfg);  
@@ -807,7 +822,8 @@ int main(int argc, char **argv) {
     }
 
     //  trigger configuration B :   Even Rows Odd Columns
-    {
+  
+	{
       vector<string> digiFileNames;
       digiFileNames.push_back(cfg.rootFileB);
       RootMuTrig rd(digiFileNames, data,cfg,RootMuTrig::OddRowsEvenColumns);
