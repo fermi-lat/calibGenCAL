@@ -14,9 +14,9 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate LAC Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2005/07/27 19:46:42 $"
-__version__     = "$Revision: 1.10 $, $Author: fewtrell $"
-__release__     = "$Name: v3r6p15 $"
+__date__        = "$Date: 2005/07/28 22:38:29 $"
+__version__     = "$Revision: 1.11 $, $Author: fewtrell $"
+__release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
 
@@ -236,9 +236,10 @@ if __name__ == '__main__':
     log.info('Writing output file %s', outName)
     tlist = (destTwr,)
     fio = calDacXML.calDacXML(outName, 'log_acpt', calDacXML.MODE_CREATE)
-    fio.write(nomSetting, lrefgain = leGain, tems = tlist)
+    fio.write(nomSetting, leGain = leGain, energy = MeV, filename = outName, cfgfilename = configName,
+              adcfilename = lacName, relgainfilename = relName,
+              engfilename = adc2nrgName, method = 'genLACsettings:%s' % __release__, tems = tlist)
     fio.close()
 
     sys.exit(0)
-    
 
