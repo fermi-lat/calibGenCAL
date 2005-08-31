@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Wed Aug 31 04:50:43 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calDacXML.py genFHEsettings.py genFLEsettings.py 
+	genLACsettings.py genULDsettings.py 
+Log Message:
+Added annotation info to <configuration> output element; added additional paramters to calDacXML.write() method.
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r7p5, operation: add
 Package: calibGenCAL
