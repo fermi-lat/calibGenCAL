@@ -6,9 +6,9 @@ Classes to represent CAL hardware settings XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL DAC settings XML documents"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/07/27 19:46:41 $"
-__version__   = "$Revision: 1.10 $, $Author: fewtrell $"
-__release__   = "$Name: v3r6p15 $"
+__date__      = "$Date: 2005/07/28 22:38:29 $"
+__version__   = "$Revision: 1.11 $, $Author: fewtrell $"
+__release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 
@@ -200,13 +200,25 @@ class calDacXML(calSnapshotXML):
         return calSnapshotXML.read(self, self.__dacName)
 
 
-    def write(self, dacData, lrefgain = None, hrefgain = None, tems = (0,)):
+    def write(self, dacData, filename = None, cfgfilename = None, leGain = None, heGain = None,
+              energy = None, adcfilename = None, relgainfilename = None, engfilename = None,
+              biasfilename = None, adcmargin = None, method = None, tems = (0,)):
         """
         Write CAL data to a snapshot fragment XML file
 
         Param: dacData - A Numeric array of data (16, 8, 2, 12) to write to the
         XML file.
-        Param: hrefgain 
+        Param: filename - <configuration> element filename value
+        Param: cfgfilename - <configuration> element cfgfilename value 
+        Param: leGain - <configuration> element heGain value
+        Param: heGain - <configuration> element heGain value
+        Param: energy - <configuration> element heGain value
+        Param: adcfilename - <configuration> element adcfilename value
+        Param: relgainfilename - <configuration> element relgainfilename value
+        Param: engfilename = <configuration> element engfilename value
+        Param: biasfilename = <configuration> element engfilename value
+        Param: adcmargin = <configuration> element adcmargin value
+        Param: method = <configuration> element method value
         Param: tems - A list of TEM ID values to include in the output data set.
         """
 
@@ -221,18 +233,47 @@ class calDacXML(calSnapshotXML):
         # insert <configuration> element
 
         ce = doc.createElement('configuration')
-        ce.setAttribute('name', '')
-        s = '[\'GCCC\',\'GCRC\',\'GCFE\',\'%s\']' % self.__dacName  
+        
+        s = '[\'GTEM\',\'GCCC\',\'GCRC\',\'GCFE\',\'%s\']' % self.__dacName  
         ce.setAttribute('hierarchy', s)
         ce.setAttribute('type', 's')
-        ce.setAttribute('shape', '(8,2,12)')
-        ce.setAttribute('version', 'NA')
-        if lrefgain is not None:
-            ce.setAttribute('leRefGain', str(lrefgain))
-        if hrefgain is not None:
-            ce.setAttribute('heRefGain', str(hrefgain))
-        ld.appendChild(ce)           
+        ce.setAttribute('shape', '(%d,8,2,12)' % len(tems))
 
+        if filename is not None:
+            ce.setAttribute('filename', filename)
+
+        if cfgfilename is not None:
+            ce.setAttribute('cfgfilename', cfgfilename)
+        
+        if leGain is not None:
+            ce.setAttribute('leGain', str(leGain))
+            
+        if heGain is not None:
+            ce.setAttribute('heGain', str(heGain))
+
+        if energy is not None:
+            ce.setAttribute('energy', "%s MeV" % str(energy))
+
+        if adcfilename is not None:
+            ce.setAttribute('adcfilename', adcfilename)
+            
+        if relgainfilename is not None:
+            ce.setAttribute('relgainfilename', relgainfilename)
+            
+        if engfilename is not None:
+            ce.setAttribute('engfilename', engfilename)
+            
+        if biasfilename is not None:
+            ce.setAttribute('biasfilename', biasfilename)
+
+        if adcmargin is not None:
+            ce.setAttribute('adcmargin', int(adcmargin))
+
+        if method is not None:
+            ce.setAttribute('method', method)            
+            
+        ld.appendChild(ce)
+        
         # insert <GLAT> element  
             
         gl = doc.createElement('GLAT')

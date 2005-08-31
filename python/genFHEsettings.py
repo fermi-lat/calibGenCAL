@@ -14,9 +14,9 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate FHE Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2005/07/27 19:46:42 $"
-__version__     = "$Revision: 1.9 $, $Author: fewtrell $"
-__release__     = "$Name: v3r6p15 $"
+__date__        = "$Date: 2005/07/28 22:38:29 $"
+__version__     = "$Revision: 1.10 $, $Author: fewtrell $"
+__release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
 
@@ -213,7 +213,8 @@ if __name__ == '__main__':
 
     # calculate thresholds in ADC units from energy
 
-    adcs = Numeric.ones((8,2,12),Numeric.Float) * float(GeV) * 1000
+    MeV = float(GeV) * 1000
+    adcs = Numeric.ones((8,2,12),Numeric.Float) * MeV
     adcs = adcs * relgain[heGainIdx,nrgIdx,srcTwr,...] / relgain[8,nrgIdx,srcTwr,...]
     log.debug('adcs[0,0,0]:%6.3f relgain[%d,0,%d,0,0,0]:%6.3f relgain[8,0,%d,0,0,0]:%6.3f', \
                      adcs[0,0,0], heGainIdx, nrgIdx, relgain[heGainIdx,nrgIdx,srcTwr,0,0,0], nrgIdx, \
@@ -244,7 +245,10 @@ if __name__ == '__main__':
     log.info('Writing output file %s', outName)
     fio = calDacXML.calDacXML(outName, 'fhe_dac', calDacXML.MODE_CREATE)
     tlist = (destTwr,)
-    fio.write(nomSetting, hrefgain = heGain, tems = tlist)
+    fio.write(nomSetting, heGain = heGain, energy = MeV, filename = outName, cfgfilename = configName,
+              adcfilename = fheName, relgainfilename = relName,
+              engfilename = adc2nrgName, biasfilename = biasName, method = 'genFHEsettings:%s' % __release__,
+              tems = tlist)
     fio.close()
 
     sys.exit(0)
