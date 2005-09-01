@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Sep  1 08:41:00 PDT 2005
+calibGenCAL/python/cfg
+
+Modified Files:
+	runSuiteParallel.cfg 
+Log Message:
+better default values
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Sep  1 08:13:34 PDT 2005
 calibGenCAL/python
 
