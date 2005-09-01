@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Sep  1 08:13:34 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calDacXML.py 
+Log Message:
+Added utility function ccToRow() to translate GCCC and GCRC numbers to CAL row and end numbers.
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Sep  1 08:07:23 PDT 2005
 calibGenCAL/python/cfg
 
