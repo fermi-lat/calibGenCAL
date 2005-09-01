@@ -6,8 +6,8 @@ Classes to represent CAL hardware settings XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL DAC settings XML documents"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/08/31 11:50:43 $"
-__version__   = "$Revision: 1.12 $, $Author: dwood $"
+__date__      = "$Date: 2005/08/31 12:06:50 $"
+__version__   = "$Revision: 1.13 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -143,14 +143,7 @@ class calSnapshotXML(calXML.calXML):
                         d = dacList[0]
                         dd = d.childNodes[0]
                         dac = int(dd.data.strip(), 16)
-                        if (ccc % 2) != 0:
-                            row = (rc + 4)
-                        else:
-                            row = rc
-                        if ccc < 2:
-                            end = 1
-                        else:
-                            end = 0
+                        (row, end) = ccToRow(ccc, rc)
                         dacData[tem, row, end, fe] = dac
 
         return dacData
@@ -301,14 +294,7 @@ class calDacXML(calSnapshotXML):
                 
                     # translate index
 
-                    if (ccc % 2) != 0:
-                        row = (rc + 4)
-                    else:
-                        row = rc
-                    if ccc < 2:
-                        end = 1
-                    else:
-                        end = 0                                            
+                    (row, end) = ccToRow(ccc, rc)                                            
 
                     for fe in range(12):
 
@@ -464,15 +450,32 @@ class calEnergyXML(calXML.calXML):
                             d = dacList[0]
                             dd = d.childNodes[0]
                             dac = float(dd.data.strip())
-                            if (ccc % 2) != 0:
-                                row = (rc + 4)
-                            else:
-                                row = rc
-                            if ccc < 2:
-                                end = 1
-                            else:
-                                end = 0
+                            (row, end) = ccToRow(ccc, rc)
                             engData[tem, row, end, fe, eng] = dac
 
         return engData
 
+
+
+def ccToRow(ccc, rc):
+    """
+    Translate GCCC and GCRC numbers to CAL row and end numbers
+
+    Param: ccc - The GCCC number (0 - 4)
+    Param: rc - The GCRC number (0 - 4)
+
+    Returns: (row, end)
+        row - The row number (0 - 7)
+        end - The end number (0 - 1)
+    """
+
+    if (ccc % 2) != 0:
+        row = (rc + 4)
+    else:
+        row = rc
+    if ccc < 2:
+        end = 1
+    else:
+        end = 0
+
+    return(row, end)
