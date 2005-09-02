@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri Sep  2 09:58:53 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calDacXML.py 
+Log Message:
+Allow calDacXML class to support config_0 fragement types.
+    *
+------------------------------------------------------------
 User: dwood  Fri Sep  2 08:23:54 PDT 2005
 calibGenCAL/python
 
