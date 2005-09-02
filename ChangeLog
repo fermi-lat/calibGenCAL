@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Sep  2 14:03:22 PDT 2005
+calibGenCAL/python
+
+Added Files:
+	asymVal intNonlinVal mevPerDacVal pedVal 
+Log Message:
+adding XXXVal launcher scripts for linux
+
+
+
+    *
+------------------------------------------------------------
 User: dwood  Fri Sep  2 12:00:06 PDT 2005
 calibGenCAL/python
 
