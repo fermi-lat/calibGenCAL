@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri Sep  2 10:28:58 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calDacXML.py 
+Log Message:
+Added time and version attributes to <configurations> element.
+    *
+------------------------------------------------------------
 User: dwood  Fri Sep  2 10:15:01 PDT 2005
 calibGenCAL/python
 
