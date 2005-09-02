@@ -6,13 +6,14 @@ Classes to represent CAL hardware settings XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL DAC settings XML documents"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/01 15:13:34 $"
-__version__   = "$Revision: 1.14 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/02 16:58:53 $"
+__version__   = "$Revision: 1.15 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 
 
+import time
 import logging
 import xml.dom.minidom
 
@@ -227,6 +228,9 @@ class calDacXML(calSnapshotXML):
         ce.setAttribute('hierarchy', s)
         ce.setAttribute('type', 's')
         ce.setAttribute('shape', '(%d,8,2,12)' % len(tems))
+        ce.setAttribute('version', 'NA')
+        ts = time.strftime('%Y-%m-%d-%H:%M', time.gmtime())
+        ce.setAttribute('time', ts)
 
         if filename is not None:
             ce.setAttribute('filename', filename)
