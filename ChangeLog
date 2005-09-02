@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri Sep  2 12:00:06 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	intNonlinMerge.py 
+Log Message:
+Added check to make sure DAC data points match at beginning of arrays for each erng; added more debug logging output.
+    *
+------------------------------------------------------------
 User: dwood  Fri Sep  2 10:28:58 PDT 2005
 calibGenCAL/python
 
