@@ -20,9 +20,9 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL IntNonlin calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/07/27 19:46:42 $"
-__version__   = "$Revision: 1.11 $, $Author: fewtrell $"
-__release__   = "$Name: v3r6p15 $"
+__date__      = "$Date: 2005/07/28 22:38:29 $"
+__version__   = "$Revision: 1.12 $, $Author: fewtrell $"
+__release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 
@@ -327,7 +327,7 @@ if __name__ == '__main__':
     # setup logger
 
     logging.basicConfig()
-    log = logging.getLogger()
+    log = logging.getLogger('intNonlinVal')
     log.setLevel(logging.INFO)
 
     # check command line
