@@ -6,8 +6,8 @@ Classes to represent CAL hardware settings XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL DAC settings XML documents"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/08/31 12:06:50 $"
-__version__   = "$Revision: 1.13 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/01 15:13:34 $"
+__version__   = "$Revision: 1.14 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -27,7 +27,7 @@ MODE_CREATE     = calXML.MODE_CREATE
 MODE_READONLY   = calXML.MODE_READONLY
 
 
-DAC_FILE_TYPES = ('fle_dac', 'fhe_dac', 'log_acpt', 'rng_uld_dac')
+DAC_FILE_TYPES = ('fle_dac', 'fhe_dac', 'log_acpt', 'rng_uld_dac', 'config_0')
 ENG_FILE_TYPES = ('thrBias', 'adc2nrg')
 
 
@@ -310,7 +310,7 @@ class calDacXML(calSnapshotXML):
                         t = doc.createTextNode('0x%x' % int(dacData[tem, row, end, fe]))
                         dv.appendChild(t)
                         gf.appendChild(dv)
-          
+                        
         
         # write output XML file
 
