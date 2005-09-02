@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri Sep  2 08:23:54 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	intNonlinVal.py 
+Log Message:
+Added application name to logger output.
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Sep  1 08:41:00 PDT 2005
 calibGenCAL/python/cfg
 
