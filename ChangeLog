@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri Sep  2 09:59:46 PDT 2005
+calibGenCAL/python
+
+Added Files:
+	genGainSettings.bat genGainSettings.py 
+Log Message:
+New tool to generate template snapshot file with just config_0 register settings values.
+    *
+------------------------------------------------------------
 User: dwood  Fri Sep  2 09:58:53 PDT 2005
 calibGenCAL/python
 
