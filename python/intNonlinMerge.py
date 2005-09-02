@@ -14,9 +14,9 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to merge mutilple CAL IntNonlin calibration XML files."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/07/27 19:46:42 $"
-__version__   = "$Revision: 1.13 $, $Author: fewtrell $"
-__release__   = "$Name: v3r6p15 $"
+__date__      = "$Date: 2005/07/28 22:38:29 $"
+__version__   = "$Revision: 1.14 $, $Author: fewtrell $"
+__release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 
@@ -183,15 +183,31 @@ if __name__ == '__main__':
     
     for erng in range(4):
         maxX = 0
+        maxFile = None
         for f in inFiles:
             s = len(f.dacData[erng])
             if s > maxX:
                 maxX = s
+                maxFile = f.name
                 dacDataOut[erng] = f.dacData[erng]
                 dacDataLen[erng] = s
-                log.debug('Using ouput DAC values for range %s:\n%s', calConstant.CRNG[erng], \
-                          dacDataOut[erng])
-            
+                
+        log.debug('From file %s, using ouput DAC values for range %s:\n%s', maxFile, calConstant.CRNG[erng],
+            dacDataOut[erng])
+        
+
+    # verify that DAC values for each tower match at beginning of list
+
+    for f in inFiles:
+        for erng in range(4):
+            oData = dacDataOut[erng]
+            iData = f.dacData[erng]
+            n = len(iData)
+            if oData[0:n] != iData[0:n]:
+                log.error('File %s DAC values do not match for range %s\n:%s', f.name, calConstant.CRNG[erng],
+                            iData)
+                sys.exit(1)
+                                      
 
     # create empty output ADC data array
 
