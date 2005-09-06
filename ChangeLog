@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Tue Sep  6 06:28:12 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	asymMerge.py calCalibXML.py intNonlinMerge.py 
+	mevPerDacMerge.py pedMerge.py tholdCIGen.py 
+Log Message:
+Added function calCalibXML.insertDTD() which consolidates file fixup code.
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Sep  2 14:03:22 PDT 2005
 calibGenCAL/python
 
