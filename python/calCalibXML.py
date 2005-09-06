@@ -6,9 +6,9 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/07/27 19:46:41 $"
-__version__   = "$Revision: 1.25 $, $Author: fewtrell $"
-__release__   = "$Name: v3r6p15 $"
+__date__      = "$Date: 2005/07/28 22:38:28 $"
+__version__   = "$Revision: 1.26 $, $Author: fewtrell $"
+__release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 
@@ -1632,3 +1632,32 @@ def temToTower(temNum):
     twrRow = (temNum / 4)
     return (twrCol, twrRow)
 
+
+
+def insertDTD(outName, dtdName):
+    """
+    Fixup calibration XML file - insert DTD info
+
+    Param: outName - XML output file name
+    Param: dtdName - DTD file name
+    """
+
+    outFile = open(outName, 'r')
+    lines = outFile.readlines()
+    outFile.close()
+
+    dtdStr = '<!DOCTYPE calCalib ['
+    dtdFile = open(dtdName, 'r')
+    dtdLines = dtdFile.readlines()
+    dtdFile.close()
+    for l in dtdLines:
+        dtdStr += l
+    dtdStr += ']>\n'
+
+    outFile = open(outName, 'w')
+    outFile.write(lines[0])
+    outFile.write(dtdStr)
+    outFile.writelines(lines[1:])
+    outFile.close()
+
+    
