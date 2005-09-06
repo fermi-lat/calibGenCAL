@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/07/28 22:38:28 $"
-__version__   = "$Revision: 1.26 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/09/06 13:28:12 $"
+__version__   = "$Revision: 1.27 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -15,7 +15,6 @@ __credits__   = "NRL code 7650"
 
 import sys, time
 import logging
-import xml.dom.minidom
 
 import Numeric
 
