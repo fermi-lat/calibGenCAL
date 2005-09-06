@@ -6,33 +6,32 @@ Classes and functions to read and write CAL XML files derived from FITS data set
 __facility__  = "Offline"
 __abstract__  = "Class to read and write CAL XML files derived from FITS data sets"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/07/28 22:38:29 $"
-__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/08/17 17:17:01 $"
+__version__   = "$Revision: 1.10 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 
 import sys, os, time
 import logging
-
 import xml.dom.minidom
-import xml.dom.ext
 
 import Numeric
 
+import calXML
 from calExcept import *
 from calConstant import CFACE, CROW, CPM, CRNG
 
 
-MODE_CREATE = 0
-MODE_READONLY = 2
+MODE_CREATE = calXML.MODE_CREATE
+MODE_READONLY = calXML.MODE_READONLY
 
 FILE_TYPES = ('fhe_dac', 'fle_dac', 'log_acpt', 'pedestal value', 'relative gain factor', 'rng_uld_dac')
 
 
 
 
-class calFitsXML(object):
+class calFitsXML(calXML.calXML):
     """
     CAL FITS/XML ancillary data file class.
 
@@ -48,7 +47,7 @@ class calFitsXML(object):
     """
     
   
-    def __init__(self, filePath = None, fileName = None, mode = MODE_CREATE, labels = None, \
+    def __init__(self, filePath = None, fileName = None, mode = MODE_READONLY, labels = None, \
                 calSNs = None, dataset = None, lrefgain = None, hrefgain = None, pedFile = None, \
                 erng = None, reportName = None, runId = None, comment = None, fitsName = None, \
                 fitsTime = None):
@@ -83,7 +82,6 @@ class calFitsXML(object):
         self.__log = logging.getLogger()    
 
         self.__doc = None
-        self.__xmlFile = None
         self.__type = None
         self.__rootNode = None
 
@@ -110,29 +108,10 @@ class calFitsXML(object):
 
         path = os.path.join(self.__filePath, self.__fileName)    
 
-        # open existing file in read-only mode
+        # open file
 
-        if mode == MODE_READONLY:
-
-            self.__xmlFile = file(path, "r")         
-            self.__doc = xml.dom.minidom.parse(self.__xmlFile)            
-
-        # create a new file        
-
-        elif mode == MODE_CREATE:  
-
-            self.__type = labels[-1]
-            if self.__type not in FILE_TYPES:
-                raise calFileOpenExcept, "invalid file type: %s" % self.__type
-
-            self.__xmlFile = file(path, "w")
-            impl = xml.dom.minidom.getDOMImplementation()
-            self.__doc = impl.createDocument(None, None, None)            
-            
-        # file access mode not supported    
-         
-        else:
-          raise calFileOpenExcept, "Invalid FITS file mode: %s" % str(mode)
+        calXML.calXML.__init__(self, path, mode)        
+        self.__doc = self.getDoc()           
 
 
     def write(self, data):
@@ -160,7 +139,7 @@ class calFitsXML(object):
         else:
             raise calFileWriteExcept, "invalid file type: %s" % self.__type
 
-        xml.dom.ext.PrettyPrint(self.__doc, self.__xmlFile)            
+        self.writeFile()            
             
 
     def __writeDAC(self, data):            
@@ -817,19 +796,6 @@ class calFitsXML(object):
                 self.__log.warning("calFitsXML: unknown <key> element name: %s", name)
         
         return i    
-
-                    
-    def close(self):
-        """
-        Close a CAL FITS/XML file.
-        """
-        
-        self.__xmlFile.close()
-        try:
-          self.__doc.unlink()
-        except:
-          self.__log.warning("calFitsXML: XML document unlink failed")
-        self.__doc = None
 
 
 
