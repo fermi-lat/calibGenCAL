@@ -422,32 +422,10 @@ if __name__ == '__main__':
                     biasAdcData, tems = tlist)
     calibFile.close()
 
-    # make copy of XML output file
-
-    calibFile = open(calibName, 'r')
-    lines = calibFile.readlines()
-    calibFile.close()
 
     # fixup calibration XML file - insert DTD info
 
-    dtdStr = '<!DOCTYPE calCalib ['
-    dtdFile = open(dtdName, 'r')
-    dtdLines = dtdFile.readlines()
-    dtdFile.close()
-    for l in dtdLines:
-        dtdStr += l
-    dtdStr += ']>\n'
-
-    calibFile = open(calibName, 'w')
-    calibFile.write(lines[0])
-    calibFile.write(dtdStr)
-    calibFile.writelines(lines[1:])
-    calibFile.close()
-
-    calibFile = calCalibXML.calTholdCICalibXML(calibName)
-    info = calibFile.info()
-    (adcData, uldData, pedData) = calibFile.read()
-    calibFile.close()
+    calCalibXML.insertDTD(calibName, dtdName)
 
     sys.exit(0)
 

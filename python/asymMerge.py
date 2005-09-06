@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to merge mutilple CAL Asym calibration XML files."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/06/20 14:36:25 $"
-__version__   = "$Revision: 1.5 $, $Author: dwood $"
+__date__      = "$Date: 2005/07/27 19:46:41 $"
+__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -204,23 +204,7 @@ if __name__ == '__main__':
 
     # fixup calibration XML file - insert DTD info
 
-    outFile = open(outName, 'r')
-    lines = outFile.readlines()
-    outFile.close()
-
-    dtdStr = '<!DOCTYPE calCalib ['
-    dtdFile = open(dtdName, 'r')
-    dtdLines = dtdFile.readlines()
-    dtdFile.close()
-    for l in dtdLines:
-        dtdStr += l
-    dtdStr += ']>\n'
-
-    outFile = open(outName, 'w')
-    outFile.write(lines[0])
-    outFile.write(dtdStr)
-    outFile.writelines(lines[1:])
-    outFile.close()
+    calCalibXML.insertDTD(outName, dtdName)
 
     sys.exit(0)
 
