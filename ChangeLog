@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Tue Sep  6 06:37:57 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calFitsXML.py 
+Log Message:
+Derived class calFitsXML.calFitsXML from calXML.calXML; consolidates a bit of code.
+    *
+------------------------------------------------------------
 User: dwood  Tue Sep  6 06:28:12 PDT 2005
 calibGenCAL/python
 
