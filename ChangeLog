@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Tue Sep  6 06:41:08 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py calFitsXML.py 
+Log Message:
+Removed unnecessary imports of xml package; covered by import calXML.
+    *
+------------------------------------------------------------
 User: dwood  Tue Sep  6 06:37:57 PDT 2005
 calibGenCAL/python
 
