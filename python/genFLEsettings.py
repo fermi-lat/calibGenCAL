@@ -15,8 +15,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate FLE Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2005/07/28 22:38:29 $"
-__version__     = "$Revision: 1.8 $, $Author: fewtrell $"
+__date__        = "$Date: 2005/08/31 11:50:43 $"
+__version__     = "$Revision: 1.9 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -244,12 +244,23 @@ if __name__ == '__main__':
 
     # create output file
 
+    log.info('Writing output file %s', outName)
+
     fio = calDacXML.calDacXML(outName, 'fle_dac', calDacXML.MODE_CREATE)
+    
     tlist = (destTwr,)
+    outName = os.path.basename(outName)
+    configName = os.path.basename(configName)
+    fleName = os.path.basename(fleName)
+    relName = os.path.basename(relName)
+    adc2nrgName = os.path.basename(adc2nrgName)
+    biasName = os.path.basename(biasName)
+    
     fio.write(nomSetting, leGain = leGain, energy = MeV, filename = outName, cfgfilename = configName,
               adcfilename = fleName, relgainfilename = relName,
               engfilename = adc2nrgName, biasfilename = biasName, method = 'genFLEsettings:%s' % __release__,
               tems = tlist)
+    
     fio.close()
 
     sys.exit(0)

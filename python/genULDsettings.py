@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate ULD Discriminator settings selected by Energy"
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2005/07/28 22:38:29 $"
-__version__     = "$Revision: 1.6 $, $Author: fewtrell $"
+__date__        = "$Date: 2005/08/31 11:50:43 $"
+__version__     = "$Revision: 1.7 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -172,10 +172,17 @@ if __name__ == '__main__':
     # write output file                    
 
     log.info('Writing ULD settings file %s', outName)
+    
     fio = calDacXML.calDacXML(outName, 'rng_uld_dac', calDacXML.MODE_CREATE)
+    
     tlist = (destTwr,)
+    outName = os.path.basename(outName)
+    configName = os.path.basename(configName)
+    uldName = os.path.basename(uldName)
+    
     fio.write(dacData, adcmargin = margin, filename = outName, cfgfilename = configName,
               adcfilename = uldName, method = 'genULDsettings:%s' % __release__, tems = tlist)
+
     fio.close()
     
     sys.exit(0)
