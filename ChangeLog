@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Sep  8 07:59:10 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	genFHEsettings.py genFLEsettings.py genLACsettings.py 
+	genULDsettings.py 
+Log Message:
+Removed path components from file name annotation values passed to XML output file write method.
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Sep  6 12:22:38 PDT 2005
 calibGenCAL/python
 
