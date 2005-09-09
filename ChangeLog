@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri Sep  9 09:25:28 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	adcsmooth.py 
+Log Message:
+Added command line doc comments.
+    *
+------------------------------------------------------------
 User: dwood  Fri Sep  9 09:23:30 PDT 2005
 calibGenCAL/python
 
