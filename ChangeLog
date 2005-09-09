@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri Sep  9 10:59:18 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calFitsXML.py 
+Log Message:
+Use calConstant.NUM_xxx values instead of numerical constants.
+    *
+------------------------------------------------------------
 User: dwood  Fri Sep  9 10:43:25 PDT 2005
 calibGenCAL/python
 
