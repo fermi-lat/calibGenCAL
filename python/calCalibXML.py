@@ -1526,7 +1526,7 @@ class calPedCalibXML(calCalibXML):
         # create empty data array
 
         pedData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                 calConstant.NUM_FE, calConstant.NUM_RNG, 3), Numeric.Float32)
+                                 calConstant.NUM_FE, calConstant.NUM_SRNG, 3), Numeric.Float32)
 
         # find <tower> elements
 
