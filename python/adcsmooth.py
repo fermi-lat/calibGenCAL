@@ -1,18 +1,14 @@
 """
-adcsmooth
 Tool to smooth CAL XML file ADC/DAC characterization data.    The command
 line is:
 """
 
-##
-## \file fitssmooth.py
-##
 
 __facility__  = "Offline"
 __abstract__  = "Tool to smooth CAL XML file ADC/DAC characterization data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/03/24 17:49:56 $"
-__version__   = "$Revision: 1.5 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/09 16:22:35 $"
+__version__   = "$Revision: 1.1 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
