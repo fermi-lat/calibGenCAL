@@ -6,8 +6,8 @@ Classes and functions to read and write CAL XML files derived from FITS data set
 __facility__  = "Offline"
 __abstract__  = "Class to read and write CAL XML files derived from FITS data sets"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/09 15:32:15 $"
-__version__   = "$Revision: 1.13 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/09 16:19:13 $"
+__version__   = "$Revision: 1.14 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -18,8 +18,8 @@ import logging
 import Numeric
 
 import calXML
+import calConstant
 from calExcept import *
-from calConstant import CFACE, CROW, CPM, CRNG
 
 
 MODE_CREATE = calXML.MODE_CREATE
@@ -177,7 +177,7 @@ class calFitsXML(calXML.calXML):
 
         # verify ADC data array shape
 
-        shape = (16, 8, 2, 12, 128)
+        shape = (calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END, calConstant.NUM_FE, 128)
         if data.shape != shape:
             raise calFileWriteExcept, "ADC data wrong shape: %s (expected %s)" % (data.shape, shape)
 
@@ -194,16 +194,16 @@ class calFitsXML(calXML.calXML):
         self.__rootNode.appendChild(a)
 
         for tem in tems:        
-            for layer in range(8):
-                for end in range(2):
+            for layer in range(calConstant.NUM_LAYER):
+                for end in range(calConstant.NUM_END):
             
                     l = self.__doc.createElement('row')
                     l.setAttribute('num', str(layer))
                     l.setAttribute('end', str(end))
-                    l.setAttribute('name', '%s%s' % (CROW[layer], CPM[end]))
+                    l.setAttribute('name', '%s%s' % (calConstant.CROW[layer], calConstant.CPM[end]))
                     t.appendChild(l)
 
-                    for fe in range(12):
+                    for fe in range(calConstant.NUM_FE):
 
                         f = self.__doc.createElement('fe')
                         f.setAttribute('num', str(fe))
@@ -218,7 +218,7 @@ class calFitsXML(calXML.calXML):
 
     def __writePED(self, data, tems):
 
-        shape = (9, 4, 8, 2, 12)
+        shape = (9, calConstant.NUM_RNG, calConstant.NUM_ROW, calConstant.NUM_END, calConstant.NUM_FE)
         if data.shape != shape:
             raise calFileWriteExcept, "ADC data wrong shape: %s (expected %s)" % (data.shape, shape)
 
@@ -235,26 +235,26 @@ class calFitsXML(calXML.calXML):
         self.__rootNode.appendChild(a)        
 
         for tem in tems:
-            for layer in range(8):
-                for end in range(2):
+            for layer in range(calConstant.NUM_LAYER):
+                for end in range(calConstant.NUM_END):
                 
                     l = self.__doc.createElement('row')
                     l.setAttribute('num', str(layer))
                     l.setAttribute('end', str(end))
-                    l.setAttribute('name', '%s%s' % (CROW[layer], CPM[end]))
+                    l.setAttribute('name', '%s%s' % (calConstant.CROW[layer], calConstant.CPM[end]))
                     t.appendChild(l)
 
-                    for fe in range(12):
+                    for fe in range(calConstant.NUM_FE):
 
                         f = self.__doc.createElement('fe')
                         f.setAttribute('num', str(fe))
                         l.appendChild(f)
 
-                        for erng in range(4):
+                        for erng in range(calConstant.NUM_ERNG):
 
                             e = self.__doc.createElement('erng')
                             e.setAttribute('num', str(erng))
-                            e.setAttribute('name', CRNG[erng])
+                            e.setAttribute('name', calConstant.CRNG[erng])
                             f.appendChild(e)
 
                             s = ''                        
@@ -266,7 +266,7 @@ class calFitsXML(calXML.calXML):
 
     def __writeREL(self, data, tems):
 
-        shape = (9, 1, 4, 8, 2, 12)
+        shape = (9, 1, calConstant.NUM_ERNG, calConstant.NUM_ROW, calConstant.NUM_END, calConstant.NUM_FE)
         if data.shape != shape:
             raise calFileWriteExcept, "ADC data wrong shape: %s (expected %s)" % (data.shape, shape)
 
@@ -283,26 +283,26 @@ class calFitsXML(calXML.calXML):
         self.__rootNode.appendChild(g)        
 
         for tem in tems:
-            for layer in range(8):
-                for end in range(2):
+            for layer in range(calConstant.NUM_LAYER):
+                for end in range(calConstant.NUM_END):
                 
                     l = self.__doc.createElement('row')
                     l.setAttribute('num', str(layer))
                     l.setAttribute('end', str(end))
-                    l.setAttribute('name', '%s%s' % (CROW[layer], CPM[end]))
+                    l.setAttribute('name', '%s%s' % (calConstant.CROW[layer], calConstant.CPM[end]))
                     t.appendChild(l)
 
-                    for fe in range(12):
+                    for fe in range(calConstant.NUM_FE):
 
                         f = self.__doc.createElement('fe')
                         f.setAttribute('num', str(fe))
                         l.appendChild(f)
 
-                        for erng in range(4):
+                        for erng in range(calConstant.NUM_RNG):
 
                             e = self.__doc.createElement('erng')
                             e.setAttribute('num', str(erng))
-                            e.setAttribute('name', CRNG[erng])
+                            e.setAttribute('name', calConstant.CRNG[erng])
                             f.appendChild(e)
 
                             s = ''                        
@@ -316,7 +316,7 @@ class calFitsXML(calXML.calXML):
 
         # verify ADC data array shape
 
-        shape = (3, 16, 8, 2, 12, 128)
+        shape = (3, calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END, calConstant.NUM_FE, 128)
         if data.shape != shape:
             raise calFileWriteExcept, "ADC data wrong shape: %s (expected %s)" % (data.shape, shape)
 
@@ -333,16 +333,16 @@ class calFitsXML(calXML.calXML):
         self.__rootNode.appendChild(a)
 
         for tem in tems:
-            for layer in range(8):
-                for end in range(2):
+            for layer in range(calConstant.NUM_LAYER):
+                for end in range(calConstant.NUM_END):
                 
                     l = self.__doc.createElement('row')
                     l.setAttribute('num', str(layer))
                     l.setAttribute('end', str(end))
-                    l.setAttribute('name', '%s%s' % (CROW[layer], CPM[end]))
+                    l.setAttribute('name', '%s%s' % (calConstant.CROW[layer], calConstant.CPM[end]))
                     t.appendChild(l)
 
-                    for fe in range(12):
+                    for fe in range(calConstant.NUM_FE):
 
                         f = self.__doc.createElement('fe')
                         f.setAttribute('num', str(fe))
@@ -352,7 +352,7 @@ class calFitsXML(calXML.calXML):
 
                             e = self.__doc.createElement('erng')
                             e.setAttribute('num', str(erng))
-                            e.setAttribute('name', CRNG[erng])
+                            e.setAttribute('name', calConstant.CRNG[erng])
                             f.appendChild(e)
 
                             s = ''
@@ -429,8 +429,8 @@ class calFitsXML(calXML.calXML):
         except:
           temId =""
         for n in range(self.__numSn):
-            key = '%s%s' %(temId,CFACE[n])
-            name = 'CALSN%s' %(CFACE[n])
+            key = '%s%s' %(temId,calConstant.CFACE[n])
+            name = 'CALSN%s' %(calConstant.CFACE[n])
             try:
                 sn = self.__calSNs[key]
             except:
@@ -525,7 +525,8 @@ class calFitsXML(calXML.calXML):
 
     def __readDAC(self):        
 
-        data = Numeric.zeros((16, 8, 2, 12, 128), Numeric.Float32)
+        data = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                              calConstant.NUM_FE, 128), Numeric.Float32)
 
         if self.__xmlVersion >= 1:
             elName = 'row'
@@ -591,7 +592,8 @@ class calFitsXML(calXML.calXML):
 
     def __readPED(self):       
 
-        data = Numeric.zeros((9, 4, 8, 2, 12), Numeric.Float32)
+        data = Numeric.zeros((9, calConstant.NUM_RNG, calConstant.NUM_ROW, calConstant.NUM_END,
+                              calConstant.NUM_FE), Numeric.Float32)
 
         if self.__xmlVersion >= 1:
             elName = 'row'
@@ -665,7 +667,8 @@ class calFitsXML(calXML.calXML):
 
     def __readREL(self):       
 
-        data = Numeric.zeros((9, 4, 16, 8, 2, 12), Numeric.Float32)
+        data = Numeric.zeros((9, calConstant.NUM_RNG, calConstant.NUM_TEM, calConstant.NUM_ROW,
+                              calConstant.NUM_END, calConstant.NUM_FE), Numeric.Float32)
 
         if self.__xmlVersion >= 1:
             elName = 'row'
@@ -739,7 +742,8 @@ class calFitsXML(calXML.calXML):
 
     def __readULD(self):        
 
-        data = Numeric.zeros((3, 16, 8, 2, 12, 128), Numeric.Float32)
+        data = Numeric.zeros((3, calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                              calConstant.NUM_FE, 128), Numeric.Float32)
 
         if self.__xmlVersion >= 1:
             elName = 'row'
@@ -862,7 +866,7 @@ class calFitsXML(calXML.calXML):
             name = 'LAXIS%d' % (n + 1)
             i[name] = None
         for n in range(self.__numSn):
-            name = 'CALSN%s' %CFACE[n]
+            name = 'CALSN%s' % calConstant.CFACE[n]
             i[name] = None
 
         ikeys = i.keys()            
@@ -895,9 +899,9 @@ def adcExtrapolate(adcData):
     values in the range.  The data is changed in place.
     """
 
-    for row in range(8):
-        for end in range(2):
-            for fe in range(12):
+    for row in range(calConstant.NUM_ROW):
+        for end in range(calConstant.NUM_END):
+            for fe in range(calConstant.NUM_FE):
                 
                 # find data before saturation
 
