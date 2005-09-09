@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri Sep  9 09:21:26 PDT 2005
+calibGenCAL/python
+
+Added Files:
+	calADCSmooth.py 
+Log Message:
+Classes to implement ADC/DAC table filtering and smoothing algoritms.
+    *
+------------------------------------------------------------
 User: dwood  Fri Sep  9 09:19:13 PDT 2005
 calibGenCAL/python
 
