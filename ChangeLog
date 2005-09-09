@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri Sep  9 09:37:49 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calConstant.py 
+Log Message:
+Removed un-used constant definitions from LATTE.
+    *
+------------------------------------------------------------
 User: dwood  Fri Sep  9 09:36:29 PDT 2005
 calibGenCAL/python
 
