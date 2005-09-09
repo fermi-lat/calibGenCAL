@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri Sep  9 09:22:35 PDT 2005
+calibGenCAL/python
+
+Added Files:
+	adcsmooth.bat adcsmooth.py 
+Log Message:
+Application to smooth CAL ADC/DAC characterization XML file.
+    *
+------------------------------------------------------------
 User: dwood  Fri Sep  9 09:21:26 PDT 2005
 calibGenCAL/python
 
