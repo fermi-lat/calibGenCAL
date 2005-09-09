@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri Sep  9 08:32:15 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calFitsXML.py 
+Log Message:
+Added type parameter to calFitsXML.__init__() method for setting write type output; made calFitsXML logging namespace.
+    *
+------------------------------------------------------------
 User: dwood  Thu Sep  8 07:59:10 PDT 2005
 calibGenCAL/python
 
