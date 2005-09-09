@@ -20,9 +20,9 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Thold_CI calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/07/27 19:46:42 $"
-__version__   = "$Revision: 1.8 $, $Author: fewtrell $"
-__release__   = "$Name: v3r6p15 $"
+__date__      = "$Date: 2005/07/28 22:38:29 $"
+__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
+__release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 
@@ -73,7 +73,7 @@ def rootHists(adcData, uldData):
         xtalLeg = ROOT.TLegend(0.88, 0.88, 0.99, 0.99)
         hists = [None, None, None, None]
                         
-        for erng in range(4):
+        for erng in range(calConstant.NUM_RNG):
                             
             hName = "h_%s_%d_%s" % (title, tem, calConstant.CRNG[erng])
             hx = ROOT.TH1F(hName, 'TholdCI_ULD_%s' % title, 100, uldErrLimit, 4095)
@@ -81,9 +81,9 @@ def rootHists(adcData, uldData):
             hx.SetLineColor(erng + 1)
             hx.SetStats(False)
             
-            for row in range(8):
-                for end in range(2):
-                    for fe in range(12):
+            for row in range(calConstant.NUM_ROW):
+                for end in range(calConstant.NUM_END):
+                    for fe in range(calConstant.NUM_FE):
                         uld = uldData[tem, row, end, fe, erng]                        
                         hx.Fill(uld)
                         hs.Fill(uld)
@@ -93,12 +93,12 @@ def rootHists(adcData, uldData):
             cx.Update()
 
         hMax = 0
-        for erng in range(4):
+        for erng in range(calConstant.NUM_RNG):
             hx = hists[erng]
             if hx.GetMaximum() > hMax:
                 hMax = hx.GetMaximum()
 
-        for erng in range(4):
+        for erng in range(calConstant.NUM_RNG):
             if erng == 0:
                 dopt = ''
             else:
@@ -115,12 +115,12 @@ def rootHists(adcData, uldData):
     cs.cd()
 
     hMax = 0
-    for erng in range(4):
+    for erng in range(calConstant.NUM_RNG):
         hs = sumHists[erng]
         if hs.GetMaximum() > hMax:
             hMax = hs.GetMaximum()    
         
-    for erng in range(4):
+    for erng in range(calConstant.NUM_RNG):
 
         hs = sumHists[erng]
         if erng == 0:
@@ -173,9 +173,9 @@ def rootHists(adcData, uldData):
             hx.SetLineColor(val + 1)
             hx.SetStats(False)
             
-            for row in range(8):
-                for end in range(2):
-                    for fe in range(12):
+            for row in range(calConstant.NUM_ROW):
+                for end in range(calConstant.NUM_END):
+                    for fe in range(calConstant.NUM_FE):
                     
                         if val == 3:
                             adc = uldData[tem, row, end, fe, calConstant.CRNG_LEX8]
@@ -242,10 +242,10 @@ def calcError(adcData, uldData, pedData):
     # validate ULD values    
 
     for tem in towers:
-        for row in range(8):
-            for end in range(2):
-                for fe in range(12):
-                    for erng in range(4):
+        for row in range(calConstant.NUM_ROW):
+            for end in range(calConstant.NUM_END):
+                for fe in range(calConstant.NUM_FE):
+                    for erng in range(calConstant.NUM_RNG):
 
                             uld = uldData[tem, row, end, fe, erng]
                             ped = pedData[tem, row, end, fe, erng]

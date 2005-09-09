@@ -20,9 +20,9 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL MevPerDac calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/07/27 19:46:42 $"
-__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
-__release__   = "$Name: v3r6p15 $"
+__date__      = "$Date: 2005/07/28 22:38:29 $"
+__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 
@@ -52,8 +52,8 @@ def rootHists(errData):
     hs = ROOT.TH1F(hName, 'MevPerDac_Big', 100, 0.0, bigErrLim)
 
     for tem in towers:
-        for row in range(8):
-            for fe in range(12):
+        for row in range(calConstant.NUM_ROW):
+            for fe in range(calConstant.NUM_FE):
                     err = errData[tem, row, fe, 0]
                     hs.Fill(err)
                     cs.Update()                       
@@ -74,8 +74,8 @@ def rootHists(errData):
     hs = ROOT.TH1F(hName, 'MevPerDac_Small', 100, 0.0, smallErrLim)
 
     for tem in towers:
-        for row in range(8):
-            for fe in range(12):
+        for row in range(calConstant.NUM_ROW):
+            for fe in range(calConstant.NUM_FE):
                     err = errData[tem, row, fe, 1]
                     hs.Fill(err)
                     cs.Update()                       
@@ -89,12 +89,12 @@ def rootHists(errData):
 
 def calcError(energyData):
 
-    errs = Numeric.zeros((16, 8, 12, 2), Numeric.PyObject)
+    errs = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_FE, 2), Numeric.PyObject)
     status = 0
 
     for tem in towers:
-        for row in range(8):
-            for fe in range(12):
+        for row in range(calConstant.NUM_ROW):
+            for fe in range(calConstant.NUM_FE):
                 for val in range(2):
 
                     if val == 0:

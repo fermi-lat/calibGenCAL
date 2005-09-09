@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to merge mutilple CAL Asym calibration XML files."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/07/27 19:46:41 $"
-__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/09/06 13:28:12 $"
+__version__   = "$Revision: 1.7 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -179,12 +179,13 @@ if __name__ == '__main__':
     # merge tower asymmetry data
 
     xposLen = len(xposData)
-    outData = Numeric.zeros((16, 8, 12, 8, xposLen), Numeric.Float32)
+    outData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_FE, 8, xposLen),
+                            Numeric.Float32)
 
     for f in inFiles:
         asymData = f.asymData
-        for row in range(8):
-            for fe in range(12):
+        for row in range(calConstant.NUM_ROW):
+            for fe in range(calConstant.NUM_FE):
                 for val in range(8):
                     for pos in range(xposLen):
                         x = asymData[f.srcTwr, row, fe, val, pos]

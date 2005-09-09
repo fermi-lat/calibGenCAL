@@ -286,12 +286,18 @@ if __name__ == '__main__':
 
     # create empty ADC data arrays
 
-    pedData = Numeric.zeros((16, 9, 4, 8, 2, 12), Numeric.Float32)
-    uldAdcData = Numeric.zeros((3, 16, 8, 2, 12, 128), Numeric.Float32)
-    lacAdcData = Numeric.zeros((16, 8, 2, 12, 128), Numeric.Float32)
-    fleAdcData = Numeric.zeros((16, 8, 2, 12, 128), Numeric.Float32)
-    fheAdcData = Numeric.zeros((16, 8, 2, 12, 128), Numeric.Float32)
-    biasAdcData = Numeric.zeros((16, 8, 2, 12, 2), Numeric.Float32)
+    pedData = Numeric.zeros((calConstant.NUM_TEM, 9, calConstant.NUM_RNG, calConstant.NUM_ROW,
+                             calConstant.NUM_END, calConstant.NUM_FE), Numeric.Float32)
+    uldAdcData = Numeric.zeros((3, calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                calConstant.NUM_FE, 128), Numeric.Float32)
+    lacAdcData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                calConstant.NUM_FE, 128), Numeric.Float32)
+    fleAdcData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                calConstant.NUM_FE, 128), Numeric.Float32)
+    fheAdcData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                calConstant.NUM_FE, 128), Numeric.Float32)
+    biasAdcData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                 calConstant.NUM_FE, 2), Numeric.Float32)
 
     # read LAC/ADC characterization file
     
@@ -375,9 +381,9 @@ if __name__ == '__main__':
         if uldAdcData[0, f.destTwr, 0, 0, 0, -1] == 4095.0:
             log.debug("Implementing pedestal subtraction for file %s, ver %d",
                       f.name, f.version)
-            for row in range(8):
-                for end in range(2):
-                    for fe in range(12):
+            for row in range(calConstant.NUM_ROW):
+                for end in range(calConstant.NUM_END):
+                    for fe in range(calConstant.NUM_FE):
                         for erng in range(3):
                             if erng < erng < calConstant.CRNG_HEX8:
                                 gData = int(leGainData[f.destTwr, row, end, fe])
@@ -395,9 +401,9 @@ if __name__ == '__main__':
         elif f.version <= 1:
             log.debug("Correcting pedestal subtraction for file %s, ver %d",
                       f.name, f.version)
-            for row in range(8):
-                for end in range(2):
-                    for fe in range(12):
+            for row in range(calConstant.NUM_ROW):
+                for end in range(calConstant.NUM_END):
+                    for fe in range(calConstant.NUM_FE):
                         for erng in range(3):
                             if erng < calConstant.CRNG_HEX8:
                                 gData = int(leGainData[f.destTwr, row, end, fe])
