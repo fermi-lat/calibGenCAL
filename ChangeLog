@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri Sep  9 12:11:30 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	genULDsettings.py 
+Log Message:
+Added missing import statement.
+    *
+------------------------------------------------------------
 User: dwood  Fri Sep  9 12:10:02 PDT 2005
 calibGenCAL/python
 
