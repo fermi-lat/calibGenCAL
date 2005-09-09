@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/06 13:41:07 $"
-__version__   = "$Revision: 1.28 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/09 17:39:24 $"
+__version__   = "$Revision: 1.29 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -1526,7 +1526,7 @@ class calPedCalibXML(calCalibXML):
         # create empty data array
 
         pedData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                 calConstant.NUM_FE, calConstant.NUM_ERNG, 3), Numeric.Float32)
+                                 calConstant.NUM_FE, calConstant.NUM_RNG, 3), Numeric.Float32)
 
         # find <tower> elements
 
