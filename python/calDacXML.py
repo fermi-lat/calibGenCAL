@@ -6,8 +6,8 @@ Classes to represent CAL hardware settings XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL DAC settings XML documents"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/02 17:28:58 $"
-__version__   = "$Revision: 1.16 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/09 17:39:24 $"
+__version__   = "$Revision: 1.17 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -20,6 +20,7 @@ import xml.dom.minidom
 import Numeric
 
 import calXML
+import calConstant
 from calExcept import *
 
 
@@ -51,6 +52,8 @@ class calSnapshotXML(calXML.calXML):
         """
         
         calXML.calXML.__init__(self, fileName, mode)
+
+        self.__log = logging.getLogger('calSnapshotXML')        
 
 
     def getTowers(self):
@@ -140,7 +143,9 @@ class calSnapshotXML(calXML.calXML):
                             raise calFileReadExcept, "<GCFE> ID attribute value %d, expected (0 - 11)" % fe
                         dacList = f.getElementsByTagName(dacName)
                         dacLen = len(dacList)
-                        if dacLen != 1:
+                        if dacLen == 0:
+                            continue
+                        elif dacLen > 1:
                             raise calFileReadExcept, "found %d %s elements, expected 1" % (dacLen, dacName)
                         d = dacList[0]
                         dd = d.childNodes[0]
