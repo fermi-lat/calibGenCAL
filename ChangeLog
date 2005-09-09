@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri Sep  9 10:43:25 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calDacXML.py 
+Log Message:
+For calSnapshotXML.read(), allow element to be missing from file.
+    *
+------------------------------------------------------------
 User: dwood  Fri Sep  9 10:39:25 PDT 2005
 calibGenCAL/python
 
