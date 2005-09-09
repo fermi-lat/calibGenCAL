@@ -6,8 +6,8 @@ Classes and functions to read and write CAL XML files derived from FITS data set
 __facility__  = "Offline"
 __abstract__  = "Class to read and write CAL XML files derived from FITS data sets"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/06 13:37:57 $"
-__version__   = "$Revision: 1.11 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/06 13:41:07 $"
+__version__   = "$Revision: 1.12 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -49,7 +49,7 @@ class calFitsXML(calXML.calXML):
     def __init__(self, filePath = None, fileName = None, mode = MODE_READONLY, labels = None, \
                 calSNs = None, dataset = None, lrefgain = None, hrefgain = None, pedFile = None, \
                 erng = None, reportName = None, runId = None, comment = None, fitsName = None, \
-                fitsTime = None):
+                fitsTime = None, type = None):
         """
         Open a CAL FITS data XML file
 
@@ -78,10 +78,9 @@ class calFitsXML(calXML.calXML):
         self.__numAxes = 7
         self.__numSn = 4
 
-        self.__log = logging.getLogger()    
+        self.__log = logging.getLogger('calFitsXML')    
 
         self.__doc = None
-        self.__type = None
         self.__rootNode = None
 
         self.__fileName = fileName      
@@ -104,6 +103,7 @@ class calFitsXML(calXML.calXML):
         self.__reportName = reportName
         self.__runId = runId
         self.__comment = comment
+        self.__type = type
 
         path = os.path.join(self.__filePath, self.__fileName)    
 
@@ -792,7 +792,7 @@ class calFitsXML(calXML.calXML):
             if name in ikeys:
                 i[name] = str(s)
             else:
-                self.__log.warning("calFitsXML: unknown <key> element name: %s", name)
+                self.__log.warning("unknown <key> element name: %s", name)
         
         return i    
 
