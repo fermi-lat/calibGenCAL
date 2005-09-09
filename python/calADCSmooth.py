@@ -6,8 +6,8 @@ Tool to smooth CAL ADC/DAC data.
 __facility__  = "Offline"
 __abstract__  = "Tool to smooth CAL ADC/DAC data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/09 16:21:26 $"
-__version__   = "$Revision: 1.1 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/09 16:28:29 $"
+__version__   = "$Revision: 1.2 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -16,7 +16,7 @@ import os, copy
 import Numeric
 import logging
 
-from calConstant import CROW, CPM
+import calConstant
 
 
 
@@ -91,12 +91,13 @@ class calADCSmooth:
         removePoints = []
 
         for tem in tems:
-            for layer in range(8):
-                for end in range(2):
+            for layer in range(calConstant.NUM_LAYER):
+                for end in range(calConstant.NUM_END):
 
-                    self.__log.debug("filter: Tower=%d Layer=%s%s", tem, CROW[layer], CPM[end])
+                    self.__log.debug("filter: Tower=%d Layer=%s%s", tem, calConstant.CROW[layer],
+                                     calConstant.CPM[end])
                     
-                    for fe in range(12):
+                    for fe in range(calConstant.NUM_FE):
 
                         # fine DAC settings
 
@@ -116,7 +117,8 @@ class calADCSmooth:
                                  p = removePoint(tem, layer, end, fe, dac)
                                  removePoints.append(p)
                                  self.__log.debug('filter: twr=%d,layer=%s%s,fe=%d, removing seg %s (%d,%d)-(%d,%d)', \
-                                     tem, CROW[layer], CPM[end], fe, str(m), d0, a0, d1, a1)
+                                        tem, calConstant.CROW[layer], calConstant.CPM[end], fe, str(m),
+                                        d0, a0, d1, a1)
 
                         # coarse DAC settings
 
@@ -136,7 +138,8 @@ class calADCSmooth:
                                  p = removePoint(tem, layer, end, fe, dac)
                                  removePoints.append(p)
                                  self.__log.debug('filter: twr=%d,layer=%s%s,fe=%d, removing seg %s (%d,%d)-(%d,%d)', \
-                                    tem, CROW[layer], CPM[end], fe, str(m), d0, a0, d1, a1)                             
+                                        tem, calConstant.CROW[layer], calConstant.CPM[end], fe, str(m),
+                                        d0, a0, d1, a1)                             
 
         # replace outlying points with linear interpolation
 
@@ -146,8 +149,8 @@ class calADCSmooth:
             a1 = self.__inData[p.tem, p.layer, p.end, p.fe, (p.dac + 1)]
             a = (a0 + a1) / 2
             self.__tmpData[p.tem, p.layer, p.end, p.fe, p.dac] = a
-            self.__log.debug('filter: twr=%d,layer=%s%s,fe=%d, new point (%d,%d)', p.tem, CROW[p.layer], CPM[p.end], \
-                p.fe, p.dac, a)
+            self.__log.debug('filter: twr=%d,layer=%s%s,fe=%d, new point (%d,%d)', p.tem,
+                             calConstant.CROW[p.layer], calConstant.CPM[p.end], p.fe, p.dac, a)
             
 
     def __mean(self, points):
@@ -169,12 +172,13 @@ class calADCSmooth:
         # run smoothing filter on data        
 
         for tem in tems:
-            for layer in range(8):
-                for end in range(2):
+            for layer in range(calConstant.NUM_LAYER):
+                for end in range(calConstant.NUM_END):
 
-                    self.__log.debug("smooth: Tower=%d Layer=%s%s", tem, CROW[layer], CPM[end])
+                    self.__log.debug("smooth: Tower=%d Layer=%s%s", tem, calConstant.CROW[layer],
+                                     calConstant.CPM[end])
 
-                    for fe in range(12):
+                    for fe in range(calConstant.NUM_FE):
 
                         # find pedestal for fine DAC settings
 

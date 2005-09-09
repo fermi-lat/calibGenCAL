@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to merge mutilple CAL IntNonlin calibration XML files."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/02 19:00:06 $"
-__version__   = "$Revision: 1.15 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/06 13:28:12 $"
+__version__   = "$Revision: 1.16 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -181,7 +181,7 @@ if __name__ == '__main__':
     dacDataOut = [None, None, None, None]
     dacDataLen = [None, None, None, None]
     
-    for erng in range(4):
+    for erng in range(calConstant.NUM_RNG):
         maxX = 0
         maxFile = None
         for f in inFiles:
@@ -199,7 +199,7 @@ if __name__ == '__main__':
     # verify that DAC values for each tower match at beginning of list
 
     for f in inFiles:
-        for erng in range(4):
+        for erng in range(calConstant.NUM_RNG):
             oData = dacDataOut[erng]
             iData = f.dacData[erng]
             n = len(iData)
@@ -212,22 +212,23 @@ if __name__ == '__main__':
     # create empty output ADC data array
 
     adcDataOut = [None, None, None, None]
-    for erng in range(4):
-        adcDataOut[erng] = Numeric.zeros((16, 8, 2, 12, dacDataLen[erng]), Numeric.Float32)
+    for erng in range(calConstant.NUM_RNG):
+        adcDataOut[erng] = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                          calConstant.NUM_FE, dacDataLen[erng]), Numeric.Float32)
         log.debug('Using output ADC array shape %s for range %s', str(adcDataOut[erng].shape),
                   calConstant.CRNG[erng])
                 
 
     # merge tower ADC data
 
-    for erng in range(4):
+    for erng in range(calConstant.NUM_RNG):
         for f in inFiles:
             adcData = f.adcData
             inData = adcData[erng]
             outData = adcDataOut[erng]
-            for row in range(8):
-                for end in range(2):
-                    for fe in range(12):
+            for row in range(calConstant.NUM_ROW):
+                for end in range(calConstant.NUM_END):
+                    for fe in range(calConstant.NUM_FE):
                         inSize = inData.shape[-1]
                         outSize = outData.shape[-1]
                         for dac in range(inSize):

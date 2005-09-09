@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate FHE Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2005/08/31 11:50:43 $"
-__version__     = "$Revision: 1.11 $, $Author: dwood $"
+__date__        = "$Date: 2005/09/08 14:59:10 $"
+__version__     = "$Revision: 1.12 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -214,7 +214,7 @@ if __name__ == '__main__':
     # calculate thresholds in ADC units from energy
 
     MeV = float(GeV) * 1000
-    adcs = Numeric.ones((8,2,12),Numeric.Float) * MeV
+    adcs = Numeric.ones((calConstant.NUM_ROW,calConstant.NUM_END,calConstant.NUM_FE),Numeric.Float) * MeV
     adcs = adcs * relgain[heGainIdx,nrgIdx,srcTwr,...] / relgain[8,nrgIdx,srcTwr,...]
     log.debug('adcs[0,0,0]:%6.3f relgain[%d,0,%d,0,0,0]:%6.3f relgain[8,0,%d,0,0,0]:%6.3f', \
                      adcs[0,0,0], heGainIdx, nrgIdx, relgain[heGainIdx,nrgIdx,srcTwr,0,0,0], nrgIdx, \
@@ -230,7 +230,7 @@ if __name__ == '__main__':
     # use fine DAC settings unless threshold is out of range
     # use coarse DAC settings for high thresholds
 
-    nomSetting = Numeric.zeros((16,8,2,12))
+    nomSetting = Numeric.zeros((calConstant.NUM_TEM,calConstant.NUM_ROW,calConstant.NUM_END,calConstant.NUM_FE))
     q = Numeric.choose(Numeric.less(fineThresholds,adcs[...,Numeric.NewAxis]),(0,1))
     q1 = 64 - Numeric.argmax(q[:,:,:,::-1], axis = 3)
     q1 = Numeric.choose(Numeric.equal(q1,64),(q1,0))

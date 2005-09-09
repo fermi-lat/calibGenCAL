@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Asym calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/06/20 14:36:25 $"
-__version__   = "$Revision: 1.8 $, $Author: dwood $"
+__date__      = "$Date: 2005/07/27 19:46:41 $"
+__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -48,8 +48,8 @@ def rootGraphs(xposData, asymData):
     # create ROOT plots XML IntNonlin data
 
     for tem in towers:
-        for row in range(8):
-            for fe in range(12):
+        for row in range(calConstant.NUM_ROW):
+            for fe in range(calConstant.NUM_FE):
 
                 # create frame                        
 
@@ -122,8 +122,8 @@ def rootHists(errData):
     # create ROOT histograms of sec deriv data per channel
 
     for tem in towers:
-        for row in range(8):
-            for fe in range(12):      
+        for row in range(calConstant.NUM_ROW):
+            for fe in range(calConstant.NUM_FE):      
 
                 title = "T%d_%s_%d" % (tem, calConstant.CROW[row], fe)
                 cName = "ch_%s" % title
@@ -195,12 +195,13 @@ def deriv2(p, a):
 
 def calcError(xposData, asymData):
 
-    errs = Numeric.zeros((16, 8, 12, 4), Numeric.PyObject)
+    errs = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_FE, 4),
+                         Numeric.PyObject)
     status = 0
 
     for tem in towers:
-        for row in range(8):
-            for fe in range(12):
+        for row in range(calConstant.NUM_ROW):
+            for fe in range(calConstant.NUM_FE):
                 for val in range(4):
 
                     err = []

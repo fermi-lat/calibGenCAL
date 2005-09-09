@@ -6,8 +6,8 @@ Classes to represent CAL hardware settings XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL DAC settings XML documents"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/02 16:58:53 $"
-__version__   = "$Revision: 1.15 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/02 17:28:58 $"
+__version__   = "$Revision: 1.16 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -95,7 +95,8 @@ class calSnapshotXML(calXML.calXML):
 
         # create empty DAC data array
 
-        dacData = Numeric.zeros((16, 8, 2, 12), Numeric.Int16)
+        dacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                 calConstant.NUM_FE), Numeric.Int16)
 
         # find <fle_dac> elements
 
@@ -395,7 +396,8 @@ class calEnergyXML(calXML.calXML):
 
         # create empty energy data array
 
-        engData = Numeric.zeros((16, 8, 2, 12, 2), Numeric.Float32)
+        engData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                 calConstant.NUM_FE, 2), Numeric.Float32)
 
         # find elements
 

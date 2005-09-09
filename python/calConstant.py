@@ -6,8 +6,8 @@ Global calorimeter constant values
 __facility__      = "Online"
 __abstract__      = "Global calorimeter constant values"
 __author__        = "D.L. Wood"
-__date__          = "$Date: 2005/09/09 16:36:29 $"
-__version__       = "$Revision: 1.6 $, $Author: dwood $"
+__date__          = "$Date: 2005/09/09 16:37:49 $"
+__version__       = "$Revision: 1.7 $, $Author: dwood $"
 __release__       = "$Name:  $"
 __credits__       = "NRL code 7650"
 
@@ -79,5 +79,9 @@ NUM_FE = 12
 # Number of possible calorimeters TEM's
 
 NUM_TEM = 16
+
+# Number of calorimeter energy ranges
+
+NUM_RNG = 4
 
 

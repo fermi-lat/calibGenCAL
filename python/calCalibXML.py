@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/06 13:28:12 $"
-__version__   = "$Revision: 1.27 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/06 13:41:07 $"
+__version__   = "$Revision: 1.28 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -301,7 +301,7 @@ class calTholdCICalibXML(calCalibXML):
             t.setAttribute('iCol', str(iCol))
             r.appendChild(t)
             
-            for layer in range(8):
+            for layer in range(calConstant.NUM_LAYER):
 
                 row = layerToRow(layer) 
 
@@ -314,7 +314,7 @@ class calTholdCICalibXML(calCalibXML):
                 c = doc.createComment('layer name = %s' % calConstant.CROW[row])
                 l.appendChild(c)
                     
-                for fe in range(12):
+                for fe in range(calConstant.NUM_FE):
 
                     # insert <xtal> elements
 
@@ -322,7 +322,7 @@ class calTholdCICalibXML(calCalibXML):
                     x.setAttribute('iXtal', str(fe))
                     l.appendChild(x)
                         
-                    for end in range(2):
+                    for end in range(calConstant.NUM_END):
 
                         # insert <face> elements
 
@@ -466,9 +466,12 @@ class calTholdCICalibXML(calCalibXML):
 
         # create empty data arrays        
         
-        adcData = Numeric.zeros((16, 8, 2, 12, 3), Numeric.Float32)
-        uldData = Numeric.zeros((16, 8, 2, 12, 4), Numeric.Float32)
-        pedData = Numeric.zeros((16, 8, 2, 12, 4), Numeric.Float32)
+        adcData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                 calConstant.NUM_FE, 3), Numeric.Float32)
+        uldData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                 calConstant.NUM_FE, 4), Numeric.Float32)
+        pedData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                 calConstant.NUM_FE, 4), Numeric.Float32)
 
         # find <tower> elements
 
@@ -606,7 +609,7 @@ class calIntNonlinCalibXML(calCalibXML):
 
         # insert <dac> elements
 
-        for erng in range(4):
+        for erng in range(calConstant.NUM_RNG):
 
             dr = doc.createElement('dac')
             dr.setAttribute('range', calConstant.CRNG[erng])
@@ -628,7 +631,7 @@ class calIntNonlinCalibXML(calCalibXML):
             t.setAttribute('iCol', str(iCol))
             r.appendChild(t)
             
-            for layer in range(8):
+            for layer in range(calConstant.NUM_LAYER):
 
                 # translate index
 
@@ -643,7 +646,7 @@ class calIntNonlinCalibXML(calCalibXML):
                 c = doc.createComment('layer name = %s' % calConstant.CROW[row])
                 l.appendChild(c)
                     
-                for fe in range(12):
+                for fe in range(calConstant.NUM_FE):
 
                     # insert <xtal> elements
 
@@ -651,7 +654,7 @@ class calIntNonlinCalibXML(calCalibXML):
                     x.setAttribute('iXtal', str(fe))
                     l.appendChild(x)
                         
-                    for end in range(2):
+                    for end in range(calConstant.NUM_END):
 
                         # insert <face> elements
 
@@ -659,7 +662,7 @@ class calIntNonlinCalibXML(calCalibXML):
                         f.setAttribute('end', POSNEG[end])
                         x.appendChild(f)
 
-                        for erng in range(4):
+                        for erng in range(calConstant.NUM_RNG):
 
                             # insert <intNonlin> elements
 
@@ -726,9 +729,10 @@ class calIntNonlinCalibXML(calCalibXML):
 
         # create empty ADC data arrays
 
-        for erng in range(4):
+        for erng in range(calConstant.NUM_RNG):
             size = dataSize[erng]
-            data = Numeric.zeros((16, 8, 2, 12, size), Numeric.Float32)
+            data = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                  calConstant.NUM_FE, size), Numeric.Float32)
             adcData[erng] = data
 
         # find <tower> elements
@@ -929,7 +933,7 @@ class calAsymCalibXML(calCalibXML):
             t.setAttribute('iCol', str(iCol))
             r.appendChild(t)
             
-            for layer in range(8):
+            for layer in range(calConstant.NUM_LAYER):
 
                 # translate index
 
@@ -944,7 +948,7 @@ class calAsymCalibXML(calCalibXML):
                 c = doc.createComment('layer name = %s' % calConstant.CROW[row])
                 l.appendChild(c)
                     
-                for fe in range(12):
+                for fe in range(calConstant.NUM_FE):
 
                     # insert <xtal> elements
 
@@ -1061,7 +1065,8 @@ class calAsymCalibXML(calCalibXML):
 
         # create empty asymmetry data array
 
-        asymData = Numeric.zeros((16, 8, 12, 8, len(xposData)), Numeric.Float32)           
+        asymData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_FE,
+                                  8, len(xposData)), Numeric.Float32)           
         
         # find <tower> elements
 
@@ -1226,7 +1231,7 @@ class calMevPerDacCalibXML(calCalibXML):
             t.setAttribute('iCol', str(iCol))
             r.appendChild(t)
             
-            for layer in range(8):
+            for layer in range(calConstant.NUM_LAYER):
 
                 # translate index
 
@@ -1241,7 +1246,7 @@ class calMevPerDacCalibXML(calCalibXML):
                 c = doc.createComment('layer name = %s' % calConstant.CROW[row])
                 l.appendChild(c)
                     
-                for fe in range(12):
+                for fe in range(calConstant.NUM_FE):
 
                     # insert <xtal> elements
 
@@ -1272,7 +1277,7 @@ class calMevPerDacCalibXML(calCalibXML):
 
                     # insert <bigSmall> elements
 
-                    for end in range(2):
+                    for end in range(calConstant.NUM_END):
 
                         bs = doc.createElement('bigSmall')
 
@@ -1315,7 +1320,8 @@ class calMevPerDacCalibXML(calCalibXML):
 
         # create empty data array        
 
-        energyData = Numeric.zeros((16, 8, 12, 8), Numeric.Float32)
+        energyData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_FE, 8),
+                                   Numeric.Float32)
 
         # find <tower> elements
 
@@ -1448,7 +1454,7 @@ class calPedCalibXML(calCalibXML):
             t.setAttribute('iCol', str(iCol))
             r.appendChild(t)
             
-            for layer in range(8):
+            for layer in range(calConstant.NUM_LAYER):
 
                 # translate index
 
@@ -1463,7 +1469,7 @@ class calPedCalibXML(calCalibXML):
                 c = doc.createComment('layer name = %s' % calConstant.CROW[row])
                 l.appendChild(c)
                     
-                for fe in range(12):
+                for fe in range(calConstant.NUM_FE):
 
                     # insert <xtal> elements
 
@@ -1481,7 +1487,7 @@ class calPedCalibXML(calCalibXML):
 
                         # insert <calPed> elements
 
-                        for erng in range(4):
+                        for erng in range(calConstant.NUM_RNG):
 
                             p = doc.createElement('calPed')
                             p.setAttribute('range', calConstant.CRNG[erng])
@@ -1519,7 +1525,8 @@ class calPedCalibXML(calCalibXML):
 
         # create empty data array
 
-        pedData = Numeric.zeros((16, 8, 2, 12, 4, 3), Numeric.Float32)
+        pedData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                 calConstant.NUM_FE, calConstant.NUM_ERNG, 3), Numeric.Float32)
 
         # find <tower> elements
 

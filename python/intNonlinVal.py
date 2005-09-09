@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL IntNonlin calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/07/28 22:38:29 $"
-__version__   = "$Revision: 1.12 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/09/02 15:23:54 $"
+__version__   = "$Revision: 1.13 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -44,9 +44,9 @@ def rootGraphs(dacData, adcData):
     # create ROOT plots XML IntNonlin data
 
     for tem in towers:
-        for row in range(8):
-            for end in range(2):
-                for fe in range(12):
+        for row in range(calConstant.NUM_ROW):
+            for end in range(calConstant.NUM_END):
+                for fe in range(calConstant.NUM_FE):
 
                     # create frame                        
 
@@ -177,7 +177,7 @@ def rootHists(errData):
     cs.SetLogy()
     sumLeg = ROOT.TLegend(0.88, 0.88, 0.99, 0.99)
 
-    for erng in range(4):
+    for erng in range(calConstant.NUM_RNG):
 
         hName = "h_Summary_%s" % calConstant.CRNG[erng]       
         hs = ROOT.TH1F(hName, 'IntNonlin_Summary', 100, 0.0, errLimit)
@@ -190,9 +190,9 @@ def rootHists(errData):
     # create ROOT histograms of sec deriv data per channel
 
     for tem in towers:
-        for row in range(8):
-            for end in range(2):
-                for fe in range(12):      
+        for row in range(calConstant.NUM_ROW):
+            for end in range(calConstant.NUM_END):
+                for fe in range(calConstant.NUM_FE):      
 
                     title = "T%d_%s%s_%d" % (tem, calConstant.CROW[row], calConstant.CPM[end], fe)
                     cName = "ch_%s" % title
@@ -203,7 +203,7 @@ def rootHists(errData):
                     chanLeg = ROOT.TLegend(0.88, 0.88, 0.99, 0.99)
                     hists = [None, None, None, None]
                     
-                    for erng in range(4):
+                    for erng in range(calConstant.NUM_RNG):
                         
                         hName = "h_%s_%s" % (title, calConstant.CRNG[erng])
                         hc = ROOT.TH1F(hName, 'IntNonlin_%s' % title, 100, 0.0, errLimit)
@@ -220,7 +220,7 @@ def rootHists(errData):
                         chanLeg.AddEntry(hc, calConstant.CRNG[erng], 'L')
                         cc.Update()                       
 
-                    for erng in range(4):
+                    for erng in range(calConstant.NUM_RNG):
                         if erng == 0:
                             dopt = ''
                         else:
@@ -235,7 +235,7 @@ def rootHists(errData):
 
     cs.cd()
     
-    for erng in range(4):
+    for erng in range(calConstant.NUM_RNG):
 
         hs = sumHists[erng]
         if erng == 0:
@@ -264,14 +264,15 @@ def deriv2(d, a):
 
 def calcError(dacData, adcData):
 
-    errs = Numeric.zeros((16, 8, 2, 12, 4), Numeric.PyObject)
+    errs = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END, calConstant.NUM_FE,
+                          calConstant.NUM_RNG), Numeric.PyObject)
     status = 0
 
     for tem in towers:
-        for row in range(8):
-            for end in range(2):
-                for fe in range(12):
-                    for erng in range(4):
+        for row in range(calConstant.NUM_ROW):
+            for end in range(calConstant.NUM_END):
+                for fe in range(calConstant.NUM_FE):
+                    for erng in range(calConstant.NUM_RNG):
 
                         err = []
                         dac = dacData[erng]

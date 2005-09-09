@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate ULD Discriminator settings selected by Energy"
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2005/08/31 11:50:43 $"
-__version__     = "$Revision: 1.7 $, $Author: dwood $"
+__date__        = "$Date: 2005/09/08 14:59:10 $"
+__version__     = "$Revision: 1.8 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -154,11 +154,12 @@ if __name__ == '__main__':
     # find saturation values    
 
     sat = [127, 127, 127]
-    dacData = Numeric.zeros((16, 8, 2, 12), Numeric.Int16)
+    dacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END, calConstant.NUM_FE),
+                            Numeric.Int16)
 
-    for row in range(8):
-        for end in range(2):
-            for fe in range(12):
+    for row in range(calConstant.NUM_ROW):
+        for end in range(calConstant.NUM_END):
+            for fe in range(calConstant.NUM_FE):
                 for erng in range(3):
                     adcmax = adcData[erng, srcTwr, row, end, fe, 127]
                     for dac in range(126, 64, -1):

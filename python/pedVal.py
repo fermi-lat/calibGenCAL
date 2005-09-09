@@ -20,9 +20,9 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Ped calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/07/27 19:46:42 $"
-__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
-__release__   = "$Name: v3r6p15 $"
+__date__      = "$Date: 2005/07/28 22:38:29 $"
+__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
+__release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 
@@ -58,9 +58,9 @@ def rootHists(errData):
         cs.Update()
 
     for tem in towers:
-        for row in range(8):
-            for end in range(2):
-                for fe in range(12):             
+        for row in range(calConstant.NUM_ROW):
+            for end in range(calConstant.NUM_END):
+                for fe in range(calConstant.NUM_FE):             
                     for erng in range(0, 4, 2):
                         hs = sumHists[erng]
                         eStr = errData[tem, row, end, fe, erng]
@@ -103,9 +103,9 @@ def rootHists(errData):
         cs.Update()
 
     for tem in towers:
-        for row in range(8):
-            for end in range(2):
-                for fe in range(12):             
+        for row in range(calConstant.NUM_ROW):
+            for end in range(calConstant.NUM_END):
+                for fe in range(calConstant.NUM_FE):             
                     for erng in range(1, 4, 2):
                         hs = sumHists[erng]
                         eStr = errData[tem, row, end, fe, erng]
@@ -132,14 +132,15 @@ def rootHists(errData):
 
 def calcError(pedData):
 
-    errs = Numeric.zeros((16, 8, 2, 12, 4), Numeric.PyObject)
+    errs = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END, calConstant.NUM_FE,
+                          calConstant.NUM_RNG), Numeric.PyObject)
     status = 0
 
     for tem in towers:
-        for row in range(8):
-            for end in range(2):
-                for fe in range(12):
-                    for erng in range(4):
+        for row in range(calConstant.NUM_ROW):
+            for end in range(calConstant.NUM_END):
+                for fe in range(calConstant.NUM_FE):
+                    for erng in range(calConstant.NUM_RNG):
 
                         err = []
                             

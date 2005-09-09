@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to merge mutilple CAL Ped calibration XML files."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/07/28 22:38:29 $"
-__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/09/06 13:28:12 $"
+__version__   = "$Revision: 1.8 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -170,14 +170,15 @@ if __name__ == '__main__':
 
     log.debug('Using ouput info:\n%s', str(info))
 
-    outData = Numeric.zeros((16, 8, 2, 12, 4, 3), Numeric.Float32)
+    outData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END, calConstant.NUM_FE,
+                             calConstant.NUM_RNG, 3), Numeric.Float32)
 
     for f in inFiles:
         pedData = f.pedData
-        for row in range(8):
-            for end in range(2):
-                for fe in range(12):
-                    for erng in range(4):
+        for row in range(calConstant.NUM_ROW):
+            for end in range(calConstant.NUM_END):
+                for fe in range(calConstant.NUM_FE):
+                    for erng in range(calConstant.NUM_RNG):
                         for val in range(3):
                             x = pedData[f.srcTwr, row, end, fe, erng, val]
                             outData[f.destTwr, row, end, fe, erng, val] = x
