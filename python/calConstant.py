@@ -6,9 +6,9 @@ Global calorimeter constant values
 __facility__      = "Online"
 __abstract__      = "Global calorimeter constant values"
 __author__        = "D.L. Wood"
-__date__          = "$Date: 2005/07/27 19:46:41 $"
-__version__       = "$Revision: 1.4 $, $Author: fewtrell $"
-__release__       = "$Name: v3r6p15 $"
+__date__          = "$Date: 2005/07/28 22:38:29 $"
+__version__       = "$Revision: 1.5 $, $Author: fewtrell $"
+__release__       = "$Name:  $"
 __credits__       = "NRL code 7650"
 
 
@@ -37,22 +37,6 @@ CXY = ('X','Y','X','Y')
 
 CPM = ('-','+','-/+')
 
-# Caliormeter charge inject DAC name to value mapping
-
-CI_IDX = {'L':0x18,'H':0x28,'B':0x38}
-
-# Caliormeter CCC ASIC name to number mapping
-
-CC_IDX = {'X+':0,'Y+':1,'X-':2,'Y-':3,'Al':255}
-
-# Caliormeter CRC ASIC name to number mapping
-
-RC_IDX = {'0':0,'1':1,'2':2,'3':3,'A':255}
-
-# Caliormeter CFE ASIC name to number mapping
-
-FE_IDX = {'0':0,'1':1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,'11':11,'All':255}
-
 # Calorimeter range number to name mapping
 
 CRNG = ('LEX8','LEX1','HEX8','HEX1')
@@ -76,10 +60,6 @@ CROW = ('X0','X1','X2','X3','Y0','Y1','Y2','Y3')
 
 CLOG = ('0','1','2','3','4','5','6','7','8','9','10','11')
 
-# Calorimeter tower number to TEM name mapping
-
-CTEM = ('TWR0','TWR1','TWR2','TWR3','TWR4','TWR5','TWR6','TWR7','TWR8','TWR9','TWR10','TWR11','TWR12','TWR13','TWR14','TWR15')
-
 # Calorimeter energy range number to name mapping
 
 CLEHE = ('LE','HE', 'BOTH')
@@ -88,14 +68,28 @@ CLEHE = ('LE','HE', 'BOTH')
 
 CDAC = ('FINE', 'COARSE')
 
-# Nominal calorimeter system clock frequency
+# Number of calorimeter faces
 
-NOMCLOCKFREQ = 20000000.
+NUM_FACE = 8
 
-# Value to string mapping
+# Number of calorimeter layers
 
-CYESNO = ('YES','NO')
+NUM_LAYER = 8
 
-# Temperature region names
+# Number of calorimeter rows
 
-TEMP_REGIONS = ('HOT','ROOM','COLD')
+NUM_ROW = 8
+
+# Number of calorimeter ends
+
+NUM_END = 2
+
+# Number of calorimeter FE's
+
+NUM_FE = 12
+
+# Number of possible calorimeters TEM's
+
+NUM_TEM = 16
+
+
