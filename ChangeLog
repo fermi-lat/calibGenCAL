@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri Sep  9 12:10:02 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Fixed symbol name bug.
+    *
+------------------------------------------------------------
 User: dwood  Fri Sep  9 12:08:14 PDT 2005
 calibGenCAL/python
 
