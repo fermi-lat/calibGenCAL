@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri Sep  9 09:19:13 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calFitsXML.py 
+Log Message:
+Added calFitsXML.getTowers(); added comments.
+    *
+------------------------------------------------------------
 User: dwood  Fri Sep  9 08:32:15 PDT 2005
 calibGenCAL/python
 
