@@ -6,8 +6,8 @@ Classes and functions to read and write CAL XML files derived from FITS data set
 __facility__  = "Offline"
 __abstract__  = "Class to read and write CAL XML files derived from FITS data sets"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/06 13:41:07 $"
-__version__   = "$Revision: 1.12 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/09 15:32:15 $"
+__version__   = "$Revision: 1.13 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -110,30 +110,62 @@ class calFitsXML(calXML.calXML):
         # open file
 
         calXML.calXML.__init__(self, path, mode)        
-        self.__doc = self.getDoc()           
+        self.__doc = self.getDoc()
+        
+
+    def getTowers(self):
+        """
+        Get the ID's of towers contributing to the data file.
+
+        Returns: A list of tower ID's.        
+        """
+
+        towers = []
+
+        # find <adc_table> element
+
+        aList = self.__doc.getElementsByTagName('adc_table')
+        aNum = len(aList)
+        if aNum != 1:
+            raise calFileReadExcept, "wrong number of <adc_table> elements: %u (expected 1)" % aNum
+
+        # find <tem> elements
+            
+        tList = aList[0].getElementsByTagName('tem')
+        tNum = len(tList)
+        if tNum == 0 or tNum > 16:
+            raise calFileReadExcept, "wrong number of <tem> elements: %u (expected 1-16)" % tNum 
+        for t in tList:
+            tem = int(t.getAttribute('num'))
+            if tem < 0 or tem > 15:
+                raise calFileReadExcept, "read <tem> element attribute \'num\' value %d (expected 0-15)" % tem
+            towers.append(tem)
+
+        return(towers)        
 
 
-    def write(self, data):
+    def write(self, data, tems = (0,)):
         """
         Write data to a CAL FITS file
 
-        Param: rawEventData A Numeric array of data to be written in the FITS table.
+        Param: rawEventData - A Numeric array of data to be written in the FITS table.
+        Param: tems - A list of TEM ID values to include in the output.
         """
         
         if self.__mode == MODE_READONLY:
             raise calFileWriteExcept, "XML file %s opened in read-only mode" % self.__fileName
 
         if self.__type == 'fhe_dac' or self.__type == 'fle_dac' or self.__type == 'log_acpt':
-            self.__writeDAC(data)
+            self.__writeDAC(data, tems)
             
         elif self.__type == 'pedestal value':
-            self.__writePED(data)
+            self.__writePED(data, tems)
 
         elif self.__type == 'relative gain factor':
-            self.__writeREL(data)
+            self.__writeREL(data, tems)
 
         elif self.__type == 'rng_uld_dac':
-            self.__writeULD(data)
+            self.__writeULD(data, tems)
 
         else:
             raise calFileWriteExcept, "invalid file type: %s" % self.__type
@@ -141,7 +173,7 @@ class calFitsXML(calXML.calXML):
         self.writeFile()            
             
 
-    def __writeDAC(self, data):            
+    def __writeDAC(self, data, tems):            
 
         # verify ADC data array shape
 
@@ -161,29 +193,30 @@ class calFitsXML(calXML.calXML):
         a.appendChild(t)
         self.__rootNode.appendChild(a)
 
-        for layer in range(8):
-            for end in range(2):
+        for tem in tems:        
+            for layer in range(8):
+                for end in range(2):
             
-                l = self.__doc.createElement('row')
-                l.setAttribute('num', str(layer))
-                l.setAttribute('end', str(end))
-                l.setAttribute('name', '%s%s' % (CROW[layer], CPM[end]))
-                t.appendChild(l)
+                    l = self.__doc.createElement('row')
+                    l.setAttribute('num', str(layer))
+                    l.setAttribute('end', str(end))
+                    l.setAttribute('name', '%s%s' % (CROW[layer], CPM[end]))
+                    t.appendChild(l)
 
-                for fe in range(12):
+                    for fe in range(12):
 
-                    f = self.__doc.createElement('fe')
-                    f.setAttribute('num', str(fe))
-                    l.appendChild(f)
-                    
-                    s = ''
-                    for dac in range(128):               
-                        s += '%0.03f,' % data[0, layer, end, fe, dac]
+                        f = self.__doc.createElement('fe')
+                        f.setAttribute('num', str(fe))
+                        l.appendChild(f)
                         
-                    f.appendChild(self.__doc.createTextNode(s.rstrip(',')))
+                        s = ''
+                        for dac in range(128):               
+                            s += '%0.03f,' % data[tem, layer, end, fe, dac]
+                            
+                        f.appendChild(self.__doc.createTextNode(s.rstrip(',')))
 
 
-    def __writePED(self, data):
+    def __writePED(self, data, tems):
 
         shape = (9, 4, 8, 2, 12)
         if data.shape != shape:
@@ -201,36 +234,37 @@ class calFitsXML(calXML.calXML):
         a.appendChild(t)
         self.__rootNode.appendChild(a)        
 
-        for layer in range(8):
-            for end in range(2):
-            
-                l = self.__doc.createElement('row')
-                l.setAttribute('num', str(layer))
-                l.setAttribute('end', str(end))
-                l.setAttribute('name', '%s%s' % (CROW[layer], CPM[end]))
-                t.appendChild(l)
+        for tem in tems:
+            for layer in range(8):
+                for end in range(2):
+                
+                    l = self.__doc.createElement('row')
+                    l.setAttribute('num', str(layer))
+                    l.setAttribute('end', str(end))
+                    l.setAttribute('name', '%s%s' % (CROW[layer], CPM[end]))
+                    t.appendChild(l)
 
-                for fe in range(12):
+                    for fe in range(12):
 
-                    f = self.__doc.createElement('fe')
-                    f.setAttribute('num', str(fe))
-                    l.appendChild(f)
+                        f = self.__doc.createElement('fe')
+                        f.setAttribute('num', str(fe))
+                        l.appendChild(f)
 
-                    for erng in range(4):
+                        for erng in range(4):
 
-                        e = self.__doc.createElement('erng')
-                        e.setAttribute('num', str(erng))
-                        e.setAttribute('name', CRNG[erng])
-                        f.appendChild(e)
+                            e = self.__doc.createElement('erng')
+                            e.setAttribute('num', str(erng))
+                            e.setAttribute('name', CRNG[erng])
+                            f.appendChild(e)
 
-                        s = ''                        
-                        for gain in range(9):
-                            s += '%0.03f,' % data[gain, erng, layer, end, fe]
-                        
-                        e.appendChild(self.__doc.createTextNode(s.rstrip(',')))
+                            s = ''                        
+                            for gain in range(9):
+                                s += '%0.03f,' % data[gain, erng, layer, end, fe]
+                            
+                            e.appendChild(self.__doc.createTextNode(s.rstrip(',')))
                                                         
 
-    def __writeREL(self, data):
+    def __writeREL(self, data, tems):
 
         shape = (9, 1, 4, 8, 2, 12)
         if data.shape != shape:
@@ -248,36 +282,37 @@ class calFitsXML(calXML.calXML):
         g.appendChild(t)
         self.__rootNode.appendChild(g)        
 
-        for layer in range(8):
-            for end in range(2):
-            
-                l = self.__doc.createElement('row')
-                l.setAttribute('num', str(layer))
-                l.setAttribute('end', str(end))
-                l.setAttribute('name', '%s%s' % (CROW[layer], CPM[end]))
-                t.appendChild(l)
+        for tem in tems:
+            for layer in range(8):
+                for end in range(2):
+                
+                    l = self.__doc.createElement('row')
+                    l.setAttribute('num', str(layer))
+                    l.setAttribute('end', str(end))
+                    l.setAttribute('name', '%s%s' % (CROW[layer], CPM[end]))
+                    t.appendChild(l)
 
-                for fe in range(12):
+                    for fe in range(12):
 
-                    f = self.__doc.createElement('fe')
-                    f.setAttribute('num', str(fe))
-                    l.appendChild(f)
+                        f = self.__doc.createElement('fe')
+                        f.setAttribute('num', str(fe))
+                        l.appendChild(f)
 
-                    for erng in range(4):
+                        for erng in range(4):
 
-                        e = self.__doc.createElement('erng')
-                        e.setAttribute('num', str(erng))
-                        e.setAttribute('name', CRNG[erng])
-                        f.appendChild(e)
+                            e = self.__doc.createElement('erng')
+                            e.setAttribute('num', str(erng))
+                            e.setAttribute('name', CRNG[erng])
+                            f.appendChild(e)
 
-                        s = ''                        
-                        for gain in range(9):
-                            s += '%0.03f,' % data[gain, 0, erng, layer, end, fe]
-                        
-                        e.appendChild(self.__doc.createTextNode(s.rstrip(',')))
+                            s = ''                        
+                            for gain in range(9):
+                                s += '%0.03f,' % data[gain, tem, erng, layer, end, fe]
+                            
+                            e.appendChild(self.__doc.createTextNode(s.rstrip(',')))
 
 
-    def __writeULD(self, data):            
+    def __writeULD(self, data, tems):            
 
         # verify ADC data array shape
 
@@ -297,33 +332,34 @@ class calFitsXML(calXML.calXML):
         a.appendChild(t)
         self.__rootNode.appendChild(a)
 
-        for layer in range(8):
-            for end in range(2):
-            
-                l = self.__doc.createElement('row')
-                l.setAttribute('num', str(layer))
-                l.setAttribute('end', str(end))
-                l.setAttribute('name', '%s%s' % (CROW[layer], CPM[end]))
-                t.appendChild(l)
+        for tem in tems:
+            for layer in range(8):
+                for end in range(2):
+                
+                    l = self.__doc.createElement('row')
+                    l.setAttribute('num', str(layer))
+                    l.setAttribute('end', str(end))
+                    l.setAttribute('name', '%s%s' % (CROW[layer], CPM[end]))
+                    t.appendChild(l)
 
-                for fe in range(12):
+                    for fe in range(12):
 
-                    f = self.__doc.createElement('fe')
-                    f.setAttribute('num', str(fe))
-                    l.appendChild(f)
-                    
-                    for erng in range(3):
-
-                        e = self.__doc.createElement('erng')
-                        e.setAttribute('num', str(erng))
-                        e.setAttribute('name', CRNG[erng])
-                        f.appendChild(e)
-
-                        s = ''
-                        for dac in range(128):               
-                            s += '%0.03f,' % data[erng, 0, layer, end, fe, dac]
+                        f = self.__doc.createElement('fe')
+                        f.setAttribute('num', str(fe))
+                        l.appendChild(f)
                         
-                        e.appendChild(self.__doc.createTextNode(s.rstrip(',')))
+                        for erng in range(3):
+
+                            e = self.__doc.createElement('erng')
+                            e.setAttribute('num', str(erng))
+                            e.setAttribute('name', CRNG[erng])
+                            f.appendChild(e)
+
+                            s = ''
+                            for dac in range(128):               
+                                s += '%0.03f,' % data[erng, tem, layer, end, fe, dac]
+                            
+                            e.appendChild(self.__doc.createTextNode(s.rstrip(',')))
                     
 
                     
@@ -496,46 +532,59 @@ class calFitsXML(calXML.calXML):
         else:
             elName = 'layer'
 
+        # find <adc_table> element
+
         aList = self.__doc.getElementsByTagName('adc_table')
         aNum = len(aList)
         if aNum != 1:
             raise calFileReadExcept, "wrong number of <adc_table> elements: %u (expected 1)" % aNum
-        for a in aList:
-            tList = a.getElementsByTagName('tem')
-            tNum = len(tList)
-            if tNum == 0 or tNum > 16:
-                raise calFileReadExcept, "wrong number of <tem> elements: %u (expected 1-16)" % tNum 
-            for t in tList:
-                tem = int(t.getAttribute('num'))
-                if tem < 0 or tem > 15:
-                  raise calFileReadExcept, "read <tem> element attribute \'num\' value %d (expected 0-15)" % tem
-                lList = t.getElementsByTagName(elName)
-                lNum = len(lList)
-                if lNum != 16:
-                    raise calFileReadExcept, "wrong number of <%s> elements: %u (expected 16)" % (elName, lNum)
-                for l in lList:
-                    layer = int(l.getAttribute('num'))
-                    end = int(l.getAttribute('end'))
-                    if layer < 0 or layer > 7:
-                      raise calFileReadExcept, "read <%s> element attribute \'num\' value %d (expected 0-7)" % (elName, layer)
-                    if end < 0 or end > 1:
-                      raise calFileReadExcept, "read <%s> element attribute \'end\' value %d (expected 0-1)" % (elName, end)
-                    fList = l.getElementsByTagName('fe')
-                    fNum = len(fList)
-                    if fNum != 12:
-                        raise calFileReadExcept, "wrong number of <fe> elements: %u (expected 11)" % fNum
-                    for f in fList:
-                        fe = int(f.getAttribute('num'))
-                        if fe < 0 or fe > 11:
-                          raise calFileReadExcept, "read <fe> element attribute \'num\' value %d (expected 0-11)" % fe
-                        d = f.childNodes[0]
-                        s = d.data.strip()
-                        adcList = s.split(',')
-                        dNum = len(adcList)
-                        if dNum != 128:
-                            raise calFileReadExcept, "wrong number of data points: %u (expected 128)" % dNum
-                        for dac in range(128):
-                            data[tem, layer, end, fe, dac] = float(adcList[dac])
+
+        # find <tem> elements
+
+        tList = aList[0].getElementsByTagName('tem')
+        tNum = len(tList)
+        if tNum == 0 or tNum > 16:
+            raise calFileReadExcept, "wrong number of <tem> elements: %u (expected 1-16)" % tNum        
+        
+        for t in tList:
+            
+            tem = int(t.getAttribute('num'))
+            if tem < 0 or tem > 15:
+                raise calFileReadExcept, "read <tem> element attribute \'num\' value %d (expected 0-15)" % tem
+
+            # find <layer> or <row> elements
+            
+            lList = t.getElementsByTagName(elName)
+            lNum = len(lList)
+            if lNum != 16:
+                raise calFileReadExcept, "wrong number of <%s> elements: %u (expected 16)" % (elName, lNum)
+            
+            for l in lList:
+                layer = int(l.getAttribute('num'))
+                end = int(l.getAttribute('end'))
+                if layer < 0 or layer > 7:
+                    raise calFileReadExcept, "read <%s> element attribute \'num\' value %d (expected 0-7)" % (elName, layer)
+                if end < 0 or end > 1:
+                    raise calFileReadExcept, "read <%s> element attribute \'end\' value %d (expected 0-1)" % (elName, end)
+
+                # find <fe> elements
+                
+                fList = l.getElementsByTagName('fe')
+                fNum = len(fList)
+                if fNum != 12:
+                    raise calFileReadExcept, "wrong number of <fe> elements: %u (expected 11)" % fNum
+                for f in fList:
+                    fe = int(f.getAttribute('num'))
+                    if fe < 0 or fe > 11:
+                        raise calFileReadExcept, "read <fe> element attribute \'num\' value %d (expected 0-11)" % fe
+                    d = f.childNodes[0]
+                    s = d.data.strip()
+                    adcList = s.split(',')
+                    dNum = len(adcList)
+                    if dNum != 128:
+                        raise calFileReadExcept, "wrong number of data points: %u (expected 128)" % dNum
+                    for dac in range(128):
+                        data[tem, layer, end, fe, dac] = float(adcList[dac])
                             
         return data
 
@@ -549,54 +598,67 @@ class calFitsXML(calXML.calXML):
         else:
             elName = 'layer'        
 
+        # find <adc_table> element
+
         aList = self.__doc.getElementsByTagName('adc_table')
         aNum = len(aList)
         if aNum != 1:
             raise calFileReadExcept, "wrong number of <adc_table> elements: %u (expected 1)" % aNum
-        for a in aList:
-            tList = a.getElementsByTagName('tem')
-            tNum = len(tList)
-            if tNum != 1:
-                raise calFileReadExcept, "wrong number of <tem> elements: %u (expected 1)" % tNum 
-            for t in tList:
-                tem = int(t.getAttribute('num'))
-                if tem < 0 or tem > 15:
-                  raise calFileReadExcept, "read <tem> element attribute \'num\' value %d (expected 0-15)" % tem
-                lList = t.getElementsByTagName(elName)
-                lNum = len(lList)
-                if lNum != 16:
-                    raise calFileReadExcept, "wrong number of <%s> elements: %u (expected 16)" % (elName, lNum)
-                for l in lList:
-                    layer = int(l.getAttribute('num'))
-                    if layer < 0 or layer > 7:
-                      raise calFileReadExcept, "read <%s> element attribute \'num\' value %d (expected 0-7)" % (elName, layer)
-                    end = int(l.getAttribute('end'))
-                    if end < 0 or end > 1:
-                      raise calFileReadExcept, "read <%s> element attribute \'end\' value %d (expected 0-1)" % (elName, end)
-                    fList = l.getElementsByTagName('fe')
-                    fNum = len(fList)
-                    if fNum != 12:
-                        raise calFileReadExcept, "wrong number of <fe> elements: %u (expected 11)" % fNum
-                    for f in fList:
-                        fe = int(f.getAttribute('num'))
-                        if fe < 0 or fe > 11:
-                          raise calFileReadExcept, "read <fe> element attribute \'num\' value %d (expected 0-11)" % fe
-                        eList = f.getElementsByTagName('erng')
-                        eLen = len(eList)
-                        if eLen != 4:
-                            raise calFileReadExcept, "wrong number of <erng> elments: %u (expected 4" % eNum
-                        for e in eList:
-                            erng = int(e.getAttribute('num'))
-                            if erng < 0 or erng > 3:
-                              raise calFileReadExcept, "read <erng> element attribute \'num\' value %d (expected 1-3)" % erng
-                            d = e.childNodes[0]
-                            s = d.data.strip()
-                            adcList = s.split(',')
-                            dNum = len(adcList)
-                            if dNum != 9:
-                                raise calFileReadExcept, "wrong number of data points: %u (expected 9)" % dNum
-                            for gain in range(9):
-                                data[gain, erng, layer, end, fe] = float(adcList[gain])   
+
+        # find <tem> elements
+        
+        tList = aList[0].getElementsByTagName('tem')
+        tNum = len(tList)
+        if tNum != 1:
+            raise calFileReadExcept, "wrong number of <tem> elements: %u (expected 1)" % tNum 
+        for t in tList:
+            tem = int(t.getAttribute('num'))
+            if tem < 0 or tem > 15:
+                raise calFileReadExcept, "read <tem> element attribute \'num\' value %d (expected 0-15)" % tem
+
+            # find <row> or <layer> elements
+            
+            lList = t.getElementsByTagName(elName)
+            lNum = len(lList)
+            if lNum != 16:
+                raise calFileReadExcept, "wrong number of <%s> elements: %u (expected 16)" % (elName, lNum)
+            for l in lList:
+                layer = int(l.getAttribute('num'))
+                if layer < 0 or layer > 7:
+                    raise calFileReadExcept, "read <%s> element attribute \'num\' value %d (expected 0-7)" % (elName, layer)
+                end = int(l.getAttribute('end'))
+                if end < 0 or end > 1:
+                    raise calFileReadExcept, "read <%s> element attribute \'end\' value %d (expected 0-1)" % (elName, end)
+
+                # find <fe> elements                
+                
+                fList = l.getElementsByTagName('fe')
+                fNum = len(fList)
+                if fNum != 12:
+                    raise calFileReadExcept, "wrong number of <fe> elements: %u (expected 11)" % fNum
+                for f in fList:
+                    fe = int(f.getAttribute('num'))
+                    if fe < 0 or fe > 11:
+                        raise calFileReadExcept, "read <fe> element attribute \'num\' value %d (expected 0-11)" % fe
+
+                    # find <erng> elements
+                    
+                    eList = f.getElementsByTagName('erng')
+                    eLen = len(eList)
+                    if eLen != 4:
+                        raise calFileReadExcept, "wrong number of <erng> elments: %u (expected 4" % eNum
+                    for e in eList:
+                        erng = int(e.getAttribute('num'))
+                        if erng < 0 or erng > 3:
+                            raise calFileReadExcept, "read <erng> element attribute \'num\' value %d (expected 1-3)" % erng
+                        d = e.childNodes[0]
+                        s = d.data.strip()
+                        adcList = s.split(',')
+                        dNum = len(adcList)
+                        if dNum != 9:
+                            raise calFileReadExcept, "wrong number of data points: %u (expected 9)" % dNum
+                        for gain in range(9):
+                            data[gain, erng, layer, end, fe] = float(adcList[gain])   
 
         return data                        
 
@@ -608,56 +670,69 @@ class calFitsXML(calXML.calXML):
         if self.__xmlVersion >= 1:
             elName = 'row'
         else:
-            elName = 'layer'        
+            elName = 'layer'
+
+        # find <gain_table> element            
 
         gList = self.__doc.getElementsByTagName('gain_table')
         gNum = len(gList)
         if gNum != 1:
             raise calFileReadExcept, "wrong number of <gain_table> elements: %u (expected 1)" % gNum
-        for g in gList:
-            tList = g.getElementsByTagName('tem')
-            tNum = len(tList)
-            if tNum != 1:
-                raise calFileReadExcept, "wrong number of <tem> elements: %u (expected 1)" % tNum 
-            for t in tList:
-                tem = int(t.getAttribute('num'))
-                if tem < 0 or tem > 15:
-                  raise calFileReadExcept, "read <tem> element attribute \'num\' value %d (expected 0-15)" % tem
-                lList = t.getElementsByTagName(elName)
-                lNum = len(lList)
-                if lNum != 16:
-                    raise calFileReadExcept, "wrong number of <%s> elements: %u (expected 16)" % (elName, lNum)
-                for l in lList:
-                    layer = int(l.getAttribute('num'))
-                    if layer < 0 or layer > 7:
-                      raise calFileReadExcept, "read <%s> element attribute \'num\' value %d (expected 0-7)" % (elName, layer)
-                    end = int(l.getAttribute('end'))
-                    if end < 0 or end > 1:
-                      raise calFileReadExcept, "read <%s> element attribute \'end\' value %d (expected 0-1)" % (elName, end)
-                    fList = l.getElementsByTagName('fe')
-                    fNum = len(fList)
-                    if fNum != 12:
-                        raise calFileReadExcept, "wrong number of <fe> elements: %u (expected 11)" % fNum
-                    for f in fList:
-                        fe = int(f.getAttribute('num'))
-                        if fe < 0 or fe > 11:
-                          raise calFileReadExcept, "read <fe> element attribute \'num\' value %d (expected 0-11)" % fe
-                        eList = f.getElementsByTagName('erng')
-                        eLen = len(eList)
-                        if eLen != 4:
-                            raise calFileReadExcept, "wrong number of <erng> elments: %u (expected 4" % eNum
-                        for e in eList:
-                            erng = int(e.getAttribute('num'))
-                            if erng < 0 or erng > 3:
-                              raise calFileReadExcept, "read <erng> element attribute \'num\' value %d (expected 0-3)" % erng
-                            d = e.childNodes[0]
-                            s = d.data.strip()
-                            adcList = s.split(',')
-                            dNum = len(adcList)
-                            if dNum != 9:
-                                raise calFileReadExcept, "wrong number of data points: %u (expected 9)" % dNum
-                            for gain in range(9):
-                                data[gain, erng, tem, layer, end, fe] = float(adcList[gain])
+
+        # find <tem> elements
+        
+        tList = gList[0].getElementsByTagName('tem')
+        tNum = len(tList)
+        if tNum != 1:
+            raise calFileReadExcept, "wrong number of <tem> elements: %u (expected 1)" % tNum 
+        for t in tList:
+            tem = int(t.getAttribute('num'))
+            if tem < 0 or tem > 15:
+                raise calFileReadExcept, "read <tem> element attribute \'num\' value %d (expected 0-15)" % tem
+
+            # find <row> or <layer> elements            
+
+            lList = t.getElementsByTagName(elName)
+            lNum = len(lList)
+            if lNum != 16:
+                raise calFileReadExcept, "wrong number of <%s> elements: %u (expected 16)" % (elName, lNum)
+            for l in lList:
+                layer = int(l.getAttribute('num'))
+                if layer < 0 or layer > 7:
+                    raise calFileReadExcept, "read <%s> element attribute \'num\' value %d (expected 0-7)" % (elName, layer)
+                end = int(l.getAttribute('end'))
+                if end < 0 or end > 1:
+                    raise calFileReadExcept, "read <%s> element attribute \'end\' value %d (expected 0-1)" % (elName, end)
+
+                # find <fe> elements            
+                
+                fList = l.getElementsByTagName('fe')
+                fNum = len(fList)
+                if fNum != 12:
+                    raise calFileReadExcept, "wrong number of <fe> elements: %u (expected 11)" % fNum
+                for f in fList:
+                    fe = int(f.getAttribute('num'))
+                    if fe < 0 or fe > 11:
+                        raise calFileReadExcept, "read <fe> element attribute \'num\' value %d (expected 0-11)" % fe
+
+                    # find <erng> elements                    
+                    
+                    eList = f.getElementsByTagName('erng')
+                    eLen = len(eList)
+                    if eLen != 4:
+                        raise calFileReadExcept, "wrong number of <erng> elments: %u (expected 4" % eNum
+                    for e in eList:
+                        erng = int(e.getAttribute('num'))
+                        if erng < 0 or erng > 3:
+                            raise calFileReadExcept, "read <erng> element attribute \'num\' value %d (expected 0-3)" % erng
+                        d = e.childNodes[0]
+                        s = d.data.strip()
+                        adcList = s.split(',')
+                        dNum = len(adcList)
+                        if dNum != 9:
+                            raise calFileReadExcept, "wrong number of data points: %u (expected 9)" % dNum
+                        for gain in range(9):
+                            data[gain, erng, tem, layer, end, fe] = float(adcList[gain])
 
         return data
 
@@ -671,54 +746,67 @@ class calFitsXML(calXML.calXML):
         else:
             elName = 'layer'        
 
+        # find <adc_table> element
+
         aList = self.__doc.getElementsByTagName('adc_table')
         aNum = len(aList)
         if aNum != 1:
             raise calFileReadExcept, "wrong number of <adc_table> elements: %u (expected 1)" % aNum
-        for a in aList:
-            tList = a.getElementsByTagName('tem')
-            tNum = len(tList)
-            if tNum == 0 or tNum > 16:
-                raise calFileReadExcept, "wrong number of <tem> elements: %u (expected 1-16)" % tNum 
-            for t in tList:
-                tem = int(t.getAttribute('num'))
-                if tem < 0 or tem > 15:
-                  raise calFileReadExcept, "read <tem> element attribute \'num\' value %d (expected 0-15)" % tem
-                lList = t.getElementsByTagName(elName)
-                lNum = len(lList)
-                if lNum != 16:
-                    raise calFileReadExcept, "wrong number of <%s> elements: %u (expected 16)" % (elName, lNum)
-                for l in lList:
-                    layer = int(l.getAttribute('num'))
-                    if layer < 0 or layer > 7:
-                      raise calFileReadExcept, "read <%s> element attribute \'num\' value %d (expected 0-7)" % (elName, layer)
-                    end = int(l.getAttribute('end'))
-                    if end < 0 or end > 1:
-                      raise calFileReadExcept, "read <%s> element attribute \'end\' value %d (expected 0-1)" % (elName, end)
-                    fList = l.getElementsByTagName('fe')
-                    fNum = len(fList)
-                    if fNum != 12:
-                        raise calFileReadExcept, "wrong number of <fe> elements: %u (expected 11)" % fNum
-                    for f in fList:
-                        fe = int(f.getAttribute('num'))
-                        if fe < 0 or fe > 11:
-                          raise calFileReadExcept, "read <fe> element attribute \'num\' value %d (expected 0-11)" % fe
-                        eList = f.getElementsByTagName('erng')
-                        eLen = len(eList)
-                        if eLen != 3:
-                            raise calFileReadExcept, "wrong number of <erng> elments: %u (expected 3)" % eNum
-                        for e in eList:
-                            erng = int(e.getAttribute('num'))
-                            if erng < 0 or erng > 2:
-                              raise calFileReadExcept, "read <erng> element attribute \'num\' value %d (expected 0-3)" % (erng + 1)
-                            d = e.childNodes[0]
-                            s = d.data.strip()
-                            adcList = s.split(',')
-                            dNum = len(adcList)
-                            if dNum != 128:
-                                raise calFileReadExcept, "wrong number of data points: %u (expected 128)" % dNum
-                            for dac in range(128):
-                                data[erng, tem, layer, end, fe, dac] = float(adcList[dac])
+
+        # find <tem> elements
+ 
+        tList = aList[0].getElementsByTagName('tem')
+        tNum = len(tList)
+        if tNum == 0 or tNum > 16:
+            raise calFileReadExcept, "wrong number of <tem> elements: %u (expected 1-16)" % tNum 
+        for t in tList:
+            tem = int(t.getAttribute('num'))
+            if tem < 0 or tem > 15:
+                raise calFileReadExcept, "read <tem> element attribute \'num\' value %d (expected 0-15)" % tem
+
+            # find <row> or <layer> elements
+
+            lList = t.getElementsByTagName(elName)
+            lNum = len(lList)
+            if lNum != 16:
+                raise calFileReadExcept, "wrong number of <%s> elements: %u (expected 16)" % (elName, lNum)
+            for l in lList:
+                layer = int(l.getAttribute('num'))
+                if layer < 0 or layer > 7:
+                    raise calFileReadExcept, "read <%s> element attribute \'num\' value %d (expected 0-7)" % (elName, layer)
+                end = int(l.getAttribute('end'))
+                if end < 0 or end > 1:
+                    raise calFileReadExcept, "read <%s> element attribute \'end\' value %d (expected 0-1)" % (elName, end)
+
+                # find <fe> elements
+                
+                fList = l.getElementsByTagName('fe')
+                fNum = len(fList)
+                if fNum != 12:
+                    raise calFileReadExcept, "wrong number of <fe> elements: %u (expected 11)" % fNum
+                for f in fList:
+                    fe = int(f.getAttribute('num'))
+                    if fe < 0 or fe > 11:
+                        raise calFileReadExcept, "read <fe> element attribute \'num\' value %d (expected 0-11)" % fe
+
+                    # find <erng> elements
+            
+                    eList = f.getElementsByTagName('erng')
+                    eLen = len(eList)
+                    if eLen != 3:
+                        raise calFileReadExcept, "wrong number of <erng> elments: %u (expected 3)" % eNum
+                    for e in eList:
+                        erng = int(e.getAttribute('num'))
+                        if erng < 0 or erng > 2:
+                            raise calFileReadExcept, "read <erng> element attribute \'num\' value %d (expected 0-3)" % (erng + 1)
+                        d = e.childNodes[0]
+                        s = d.data.strip()
+                        adcList = s.split(',')
+                        dNum = len(adcList)
+                        if dNum != 128:
+                            raise calFileReadExcept, "wrong number of data points: %u (expected 128)" % dNum
+                        for dac in range(128):
+                            data[erng, tem, layer, end, fe, dac] = float(adcList[dac])
                             
         return data
     
