@@ -6,23 +6,11 @@ Global calorimeter constant values
 __facility__      = "Online"
 __abstract__      = "Global calorimeter constant values"
 __author__        = "D.L. Wood"
-__date__          = "$Date: 2005/07/28 22:38:29 $"
-__version__       = "$Revision: 1.5 $, $Author: fewtrell $"
+__date__          = "$Date: 2005/09/09 16:36:29 $"
+__version__       = "$Revision: 1.6 $, $Author: dwood $"
 __release__       = "$Name:  $"
 __credits__       = "NRL code 7650"
 
-
-
-
-# Boolean string to type mapping.
-
-CAL_BOOLEAN = {'FALSE':False,'TRUE':True}
-
-
-# Suite statii
-
-SUITE_STATUS = ('FAILED','PASSED','PASSED Conditionally','FAILED','FAILED')
-SUITE_CSTATUS = ('<b><font color="Red">FAILED</font></b>','<b><font color="Green">PASSED</font></b>','<b><font color="Orange">PASSED Conditionally</font></b>','<b><font color="Red">ABORTED</font></b>','<b><font color="Red">Terminated</font></b>','<b><font color="Orange">PASSED with Exceptions</font></b>')
 
 
 # Calorimeter face number to name mapping.
