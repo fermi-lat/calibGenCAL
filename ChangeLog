@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: dwood  Mon Sep 12 10:44:28 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	asymMerge.py genFHEsettings.py genFLEsettings.py 
+	genLACsettings.py genULDsettings.py intNonlinMerge.py 
+	mevPerDacMerge.py pedMerge.py tholdCIGen.py 
+Log Message:
+Added check in applications to make sure source tower indicated in config is actually present in input data files.
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Sep 12 08:06:20 PDT 2005
 calibGenCAL/python
 
