@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Sep 12 13:15:18 PDT 2005
+calibGenCAL/python
+
+Added Files:
+	tholdCIVal 
+Log Message:
+adding sh launcher script for tholdCIVal.py
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Sep 12 13:12:58 PDT 2005
 calibGenCAL/python
 
