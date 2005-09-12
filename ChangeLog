@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Sep 12 08:06:20 PDT 2005
+calibGenCAL/python
+
+Added Files:
+	adcsmooth 
+Log Message:
+added sh launcher for adcsmooth python script.
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Sep 12 07:55:21 PDT 2005
 calibGenCAL/python
 
