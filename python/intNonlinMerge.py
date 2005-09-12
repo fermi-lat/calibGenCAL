@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to merge mutilple CAL IntNonlin calibration XML files."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/06 13:28:12 $"
-__version__   = "$Revision: 1.16 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/09 17:39:24 $"
+__version__   = "$Revision: 1.17 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -165,6 +165,10 @@ if __name__ == '__main__':
     for f in inFiles:
         log.info('Reading file %s', f.name)
         inFile = calCalibXML.calIntNonlinCalibXML(f.name)
+        twrs = inFile.getTowers()
+        if f.srcTwr not in twrs:
+            log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
+            sys.exit(1)
         (dacData, adcData) = inFile.read()
         f.adcData = adcData
         f.dacData = dacData

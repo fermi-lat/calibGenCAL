@@ -251,6 +251,10 @@ if __name__ == '__main__':
 
         log.info("Reading file %s", f.name)
         uldDacFile = calDacXML.calDacXML(f.name, 'rng_uld_dac')
+        twrs = uldDacFile.getTowers()
+        if f.srcTwr not in twrs:
+            log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
+            sys.exit(1)
         dacData = uldDacFile.read()
         uldDacData[f.destTwr,...] = dacData[f.srcTwr,...]
         uldDacFile.close()
@@ -259,6 +263,10 @@ if __name__ == '__main__':
 
         log.info("Reading file %s", f.name)
         lacDacFile = calDacXML.calDacXML(f.name, 'log_acpt')
+        twrs = lacDacFile.getTowers()
+        if f.srcTwr not in twrs:
+            log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
+            sys.exit(1)
         dacData = lacDacFile.read()
         lacDacData[f.destTwr,...] = dacData[f.srcTwr,...]
         lacDacFile.close()
@@ -267,6 +275,10 @@ if __name__ == '__main__':
 
         log.info("Reading file %s", f.name)
         fleDacFile = calDacXML.calDacXML(f.name, 'fle_dac')
+        twrs = fleDacFile.getTowers()
+        if f.srcTwr not in twrs:
+            log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
+            sys.exit(1)
         dacData = fleDacFile.read()
         fleDacData[f.destTwr,...] = dacData[f.srcTwr,...]
         fleDacFile.close()
@@ -275,6 +287,10 @@ if __name__ == '__main__':
 
         log.info("Reading file %s", f.name)
         fheDacFile = calDacXML.calDacXML(f.name, 'fhe_dac')
+        twrs = fheDacFile.getTowers()
+        if f.srcTwr not in twrs:
+            log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
+            sys.exit(1)
         dacData = fheDacFile.read()
         fheDacData[f.destTwr,...] = dacData[f.srcTwr,...]
         fheDacFile.close()        
@@ -305,6 +321,10 @@ if __name__ == '__main__':
 
         log.info("Reading file %s", f.name)
         lacAdcFile = calFitsXML.calFitsXML(fileName = f.name, mode = calFitsXML.MODE_READONLY)
+        twrs = lacAdcFile.getTowers()
+        if f.srcTwr not in twrs:
+            log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
+            sys.exit(1)
         adcData = lacAdcFile.read()
         lacAdcData[f.destTwr,...] = adcData[f.srcTwr,...]
         lacAdcFile.close()
@@ -315,6 +335,10 @@ if __name__ == '__main__':
     
         log.info("Reading file %s", f.name)
         uldAdcFile = calFitsXML.calFitsXML(fileName = f.name, mode = calFitsXML.MODE_READONLY)
+        twrs = uldAdcFile.getTowers()
+        if f.srcTwr not in twrs:
+            log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
+            sys.exit(1)
         adcData = uldAdcFile.read()
         f.version = uldAdcFile.getVersion()
         uldAdcData[:,f.destTwr,...] = adcData[:,f.srcTwr,...]
@@ -326,6 +350,10 @@ if __name__ == '__main__':
         
         log.info("Reading file %s", f.name)
         fleAdcFile = calFitsXML.calFitsXML(fileName = f.name, mode = calFitsXML.MODE_READONLY)
+        twrs = fleAdcFile.getTowers()
+        if f.srcTwr not in twrs:
+            log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
+            sys.exit(1)
         adcData = fleAdcFile.read()
         fleAdcData[f.destTwr,...] = adcData[f.srcTwr,...]
         fleAdcFile.close()
@@ -342,6 +370,10 @@ if __name__ == '__main__':
 
         log.info("Reading file %s", f.name)
         fheAdcFile = calFitsXML.calFitsXML(fileName = f.name, mode = calFitsXML.MODE_READONLY)
+        twrs = fheAdcFile.getTowers()
+        if f.srcTwr not in twrs:
+            log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
+            sys.exit(1)
         adcData = fheAdcFile.read()
         fheAdcData[f.destTwr,...] = adcData[f.srcTwr,...]
         fheAdcFile.close()
@@ -352,6 +384,10 @@ if __name__ == '__main__':
 
         log.info("Reading file %s", f.name)
         pedFile = calFitsXML.calFitsXML(fileName = f.name, mode = calFitsXML.MODE_READONLY)
+        twrs = pedFile.getTowers()
+        if f.srcTwr not in twrs:
+            log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
+            sys.exit(1)
         pedData[f.destTwr,...] = pedFile.read()
         pedFile.close()
 
@@ -361,6 +397,10 @@ if __name__ == '__main__':
 
         log.info("Reading file %s", f.name)
         biasFile = calDacXML.calEnergyXML(f.name, 'thrBias')
+        twrs = biasFile.getTowers()
+        if f.srcTwr not in twrs:
+            log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
+            sys.exit(1)
         adcData = biasFile.read()
         biasAdcData[f.destTwr,...] = adcData[f.srcTwr,...]
         biasFile.close()
