@@ -6,8 +6,8 @@ Classes and functions to read and write CAL XML files derived from FITS data set
 __facility__  = "Offline"
 __abstract__  = "Class to read and write CAL XML files derived from FITS data sets"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/09 16:19:13 $"
-__version__   = "$Revision: 1.14 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/09 17:59:18 $"
+__version__   = "$Revision: 1.15 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -838,6 +838,7 @@ class calFitsXML(calXML.calXML):
           - RPTNAME - The name of the associated test report file.
           - RUNID - The run collection ID for the data.
           - COMMENT - A general comment and notes string for the FITS file.
+          - INSTRUMENT - A summary name for the instrument under test.
           
         Returns: A dictionary of <table header key>:<value> pairs.
         """
@@ -861,6 +862,7 @@ class calFitsXML(calXML.calXML):
         i['RPTNAME'] = None
         i['RUNID'] = None
         i['COMMENT'] = None
+        i['INSTRUMENT'] = None
         
         for n in range(self.__numAxes):
             name = 'LAXIS%d' % (n + 1)
