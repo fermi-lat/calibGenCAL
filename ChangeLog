@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon Sep 12 13:12:58 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calFitsXML.py 
+Log Message:
+Added recoginition of <key> name INSTRUMENT
+    *
+------------------------------------------------------------
 User: dwood  Mon Sep 12 13:08:25 PDT 2005
 calibGenCAL/python
 
