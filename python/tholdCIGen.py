@@ -385,7 +385,7 @@ if __name__ == '__main__':
                 for end in range(calConstant.NUM_END):
                     for fe in range(calConstant.NUM_FE):
                         for erng in range(3):
-                            if erng < erng < calConstant.CRNG_HEX8:
+                            if erng < calConstant.CRNG_HEX8:
                                 gData = int(leGainData[f.destTwr, row, end, fe])
                             else:
                                 gData = int(heGainData[f.destTwr, row, end, fe])
