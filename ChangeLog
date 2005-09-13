@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Tue Sep 13 15:56:14 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calFitsXML.py 
+Log Message:
+Fixed tower numbering in output of calFitsXML.write() method.
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Sep 12 14:32:57 PDT 2005
 calibGenCAL/python
 
