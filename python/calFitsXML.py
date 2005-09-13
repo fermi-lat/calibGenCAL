@@ -6,8 +6,8 @@ Classes and functions to read and write CAL XML files derived from FITS data set
 __facility__  = "Offline"
 __abstract__  = "Class to read and write CAL XML files derived from FITS data sets"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/09 17:59:18 $"
-__version__   = "$Revision: 1.15 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/12 20:12:58 $"
+__version__   = "$Revision: 1.16 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -188,12 +188,14 @@ class calFitsXML(calXML.calXML):
         # write ADC data into XML text
 
         a = self.__doc.createElement('adc_table')
-        t = self.__doc.createElement('tem')
-        t.setAttribute('num', '0')
-        a.appendChild(t)
         self.__rootNode.appendChild(a)
+        
+        for tem in tems:
 
-        for tem in tems:        
+            t = self.__doc.createElement('tem')
+            t.setAttribute('num', str(tem))
+            a.appendChild(t)
+            
             for layer in range(calConstant.NUM_LAYER):
                 for end in range(calConstant.NUM_END):
             
@@ -229,12 +231,14 @@ class calFitsXML(calXML.calXML):
         # write ADC data into XML text
 
         a = self.__doc.createElement('adc_table')
-        t = self.__doc.createElement('tem')
-        t.setAttribute('num', '0')
-        a.appendChild(t)
-        self.__rootNode.appendChild(a)        
+        self.__rootNode.appendChild(a)
 
         for tem in tems:
+
+            t = self.__doc.createElement('tem')
+            t.setAttribute('num', str(tem))
+            a.appendChild(t)
+            
             for layer in range(calConstant.NUM_LAYER):
                 for end in range(calConstant.NUM_END):
                 
@@ -277,12 +281,14 @@ class calFitsXML(calXML.calXML):
         # write ADC data into XML text
 
         g = self.__doc.createElement('gain_table')
-        t = self.__doc.createElement('tem')
-        t.setAttribute('num', '0')
-        g.appendChild(t)
-        self.__rootNode.appendChild(g)        
+        self.__rootNode.appendChild(g)
 
         for tem in tems:
+
+            t = self.__doc.createElement('tem')
+            t.setAttribute('num', str(tem))
+            g.appendChild(t)
+        
             for layer in range(calConstant.NUM_LAYER):
                 for end in range(calConstant.NUM_END):
                 
@@ -327,12 +333,14 @@ class calFitsXML(calXML.calXML):
         # write ADC data into XML text
 
         a = self.__doc.createElement('adc_table')
-        t = self.__doc.createElement('tem')
-        t.setAttribute('num', '0')
-        a.appendChild(t)
         self.__rootNode.appendChild(a)
 
         for tem in tems:
+            
+            t = self.__doc.createElement('tem')
+            t.setAttribute('num', str(tem))
+            a.appendChild(t)
+            
             for layer in range(calConstant.NUM_LAYER):
                 for end in range(calConstant.NUM_END):
                 
