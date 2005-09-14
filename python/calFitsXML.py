@@ -6,8 +6,8 @@ Classes and functions to read and write CAL XML files derived from FITS data set
 __facility__  = "Offline"
 __abstract__  = "Class to read and write CAL XML files derived from FITS data sets"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/12 20:12:58 $"
-__version__   = "$Revision: 1.16 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/13 22:56:14 $"
+__version__   = "$Revision: 1.17 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -120,14 +120,41 @@ class calFitsXML(calXML.calXML):
         Returns: A list of tower ID's.        
         """
 
+        # get XML document type
+
+        dList = self.__doc.getElementsByTagName('CALdoc')
+        dLen = len(dList)
+        if dLen != 1:
+            raise calFileReadExcept, "wrong number of <CAL_doc> elements: %u (expected 1)" % dLen
+        d = dList[0]
+        type = d.getAttribute('type')
+        if len(type) == 0:
+            raise calFileReadExcept, "<CALdoc> element requires type attribute"
+        tList = type.split(':')
+        if len(tList) != 2 or tList[0] != 'FITS' or tList[1] not in FILE_TYPES:
+            raise calFileReadExcept, "<CALdoc> type attribute %s not recognized" % type 
+        self.__type = tList[1]
+
+        # determine table element name
+
+        if self.__type == 'fhe_dac' or self.__type == 'fle_dac' or self.__type == 'log_acpt' or \
+           self.__type == 'rng_uld_dac' or self.__type == 'pedestal value':
+            tableName = 'adc_table'
+
+        elif self.__type == 'relative gain factor':
+            tableName = 'gain_table'
+
+        else:
+            raise calFileReadExcept, "invalid file type: %s" % self.__type        
+
         towers = []
 
         # find <adc_table> element
 
-        aList = self.__doc.getElementsByTagName('adc_table')
+        aList = self.__doc.getElementsByTagName(tableName)
         aNum = len(aList)
         if aNum != 1:
-            raise calFileReadExcept, "wrong number of <adc_table> elements: %u (expected 1)" % aNum
+            raise calFileReadExcept, "wrong number of <%s> elements: %u (expected 1)" % (tableName, aNum)
 
         # find <tem> elements
             
