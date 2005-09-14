@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Wed Sep 14 09:53:08 PDT 2005
+calibGenCAL/python
+
+Removed Files:
+	fits2xml.bat 
+Log Message:
+Removed LATTE carryover files.
+    *
+------------------------------------------------------------
 User: dwood  Wed Sep 14 06:48:56 PDT 2005
 calibGenCAL/python
 
