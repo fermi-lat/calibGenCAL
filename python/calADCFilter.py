@@ -6,8 +6,8 @@ Tool to smooth CAL ADC/DAC data.
 __facility__  = "Offline"
 __abstract__  = "Tool to smooth CAL ADC/DAC data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/09 17:39:24 $"
-__version__   = "$Revision: 1.3 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/14 13:48:56 $"
+__version__   = "$Revision: 1.1 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -61,7 +61,7 @@ class calADCFilter:
                         containing CAL ADC data.
         Param: tems - A list of TEM ID's to run the smoothing on.
 
-        Returns: A Numeric array of shape (16,8,2,12,128) or (16,8,2,12,128)
+        Returns: A Numeric array of shape (16,8,2,12,128) or (3,16,8,2,12,128)
                  containing smoothed CAL ADC data.        
         """
         
