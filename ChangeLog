@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Wed Sep 14 06:48:56 PDT 2005
+calibGenCAL/python
+
+Added Files:
+	calADCFilter.py 
+Log Message:
+New filter/smoothing class to deal with ADC/DAC characterization tables.
+    *
+------------------------------------------------------------
 User: dwood  Wed Sep 14 06:48:03 PDT 2005
 calibGenCAL/python
 
