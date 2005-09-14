@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Wed Sep 14 11:20:20 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calFitsXML.py 
+Log Message:
+Fixed calFitsXML.getTowers() method for reading relgain <gain_table> elements.
+    *
+------------------------------------------------------------
 User: dwood  Wed Sep 14 09:53:08 PDT 2005
 calibGenCAL/python
 
