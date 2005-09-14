@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Wed Sep 14 11:20:55 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	adcsmooth.py calADCFilter.py 
+Log Message:
+Made boxcar smoothing option dependent on DAC type.
+    *
+------------------------------------------------------------
 User: dwood  Wed Sep 14 11:20:20 PDT 2005
 calibGenCAL/python
 
