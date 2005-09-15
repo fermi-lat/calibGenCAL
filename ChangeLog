@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Sep 15 05:52:44 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	calFitsXML.py genFLEsettings.py tholdCIGen.py 
+Log Message:
+Removed calFitsXML.adcExtrapolate() functions; will be replaced by intermediate file produced by adcsmooth.
+    *
+------------------------------------------------------------
 User: dwood  Thu Sep 15 05:50:30 PDT 2005
 calibGenCAL/python
 
