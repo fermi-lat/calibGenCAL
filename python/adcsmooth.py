@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to smooth CAL XML file ADC/DAC characterization data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/14 13:48:03 $"
-__version__   = "$Revision: 1.4 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/14 18:20:55 $"
+__version__   = "$Revision: 1.5 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -79,15 +79,14 @@ if __name__ == '__main__':
     inFile.close()
 
     type = info['TTYPE1']
-    if type == 'fhe_dac' or type == 'fle_dac':
-        fileType = calADCFilter.FILE_TYPE_DAC
-        smooth = False
+    if type == 'fhe_dac':
+        fileType = calADCFilter.DAC_TYPE_FHE
+    elif type == 'fle_dac':
+        fileType = calADCFilter.DAC_TYPE_FLE
     elif type == 'log_acpt':
-        fileType = calADCFilter.FILE_TYPE_DAC
-        smooth = True
+        fileType = calADCFilter.DAC_TYPE_LAC
     elif type == 'rng_uld_dac':
-        fileType = calADCFilter.FILE_TYPE_ULD
-        smooth = False
+        fileType = calADCFilter.DAC_TYPE_ULD
     else:
         log.error('file type %s not supported', str(type))
         sys.exit(1)
@@ -96,7 +95,7 @@ if __name__ == '__main__':
 
     log.info("smoothing data for towers: %s", str(tlist))
 
-    filter = calADCFilter.calADCFilter(type = fileType, smoothing = smooth,
+    filter = calADCFilter.calADCFilter(type = fileType, smoothing = True,
                                        verbose = debug)
     outData = filter.run(inData, tlist)
 
