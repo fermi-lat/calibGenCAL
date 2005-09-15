@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Sep 15 05:50:30 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	adcsmooth.py calADCFilter.py 
+Log Message:
+Added FHE extrapolation to smoothing tool; added removal of first noise point in pedestal.
+    *
+------------------------------------------------------------
 User: dwood  Wed Sep 14 11:20:55 PDT 2005
 calibGenCAL/python
 
