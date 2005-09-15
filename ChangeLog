@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Sep 15 11:15:08 PDT 2005
+calibGenCAL/python
+
+Added Files:
+	asymTXT2XML asymTXT2XML.bat asymTXT2XML.py mpdTXT2XML 
+	mpdTXT2XML.bat mpdTXT2XML.py pedTXT2XML pedTXT2XML.bat 
+	pedTXT2XML.py 
+Log Message:
+added TXT2XML converter scripts for offline calibration xml files
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Sep 15 05:52:44 PDT 2005
 calibGenCAL/python
 
