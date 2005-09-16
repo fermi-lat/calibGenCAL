@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Sep 16 06:38:12 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	pedTXT2XML.py 
+Log Message:
+fixed little undeclared var
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Sep 15 11:15:08 PDT 2005
 calibGenCAL/python
 
