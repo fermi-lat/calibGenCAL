@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL Ped calibration XML files from TXT."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2005/09/12 17:44:28 $"
-__version__   = "$Revision: 1.10 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/15 18:15:08 $"
+__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -35,8 +35,9 @@ import calConstant
 if __name__ == '__main__':
 
     # constants
-    usage = "pedTXT2XML [-doptional.dtd] input.txt output.xml"
-    dtdName = "calCalib_v2r2.dtd" #default value
+    usage      = "pedTXT2XML [-doptional.dtd] input.txt output.xml"
+    dtdName    = "calCalib_v2r2.dtd" #default value
+    nTXTFields = 7
 
     # setup logger
     logging.basicConfig()
