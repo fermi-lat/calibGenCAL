@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Tue Sep 20 14:11:13 PDT 2005
+calibGenCAL/python
+
+Added Files:
+	adc2nrgVal.bat adc2nrgVal.py biasVal.bat biasVal.py 
+Log Message:
+New tools for validating ADC/energy and threshold bias intermediate calibration files.
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Sep 19 15:00:18 PDT 2005
 calibGenCAL/python
 
