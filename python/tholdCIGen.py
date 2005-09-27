@@ -9,6 +9,17 @@ where:
     <out_xml_file>  = The merged CAL TholdCI calibration XML file to output.
 """
 
+
+__facility__  = "Offline"
+__abstract__  = "Tool to produce CAL TholdCI XML calibration data files"
+__author__    = "D.L.Wood"
+__date__      = "$Date: 2005/09/09 17:39:24 $"
+__version__   = "$Revision: 1.10 $, $Author: dwood $"
+__release__   = "$Name:  $"
+__credits__   = "NRL code 7650"
+
+
+
 import sys, os
 import logging
 import ConfigParser
@@ -20,6 +31,7 @@ import calDacXML
 import calFitsXML
 import calCalibXML
 import calConstant
+
 
 
 
@@ -451,6 +463,29 @@ if __name__ == '__main__':
                             for dac in range(128):
                                uldAdcData[erng, f.destTwr, row, end, fe, dac] += paData
                                uldAdcData[erng, f.destTwr, row, end, fe, dac] -= psData
+
+
+    # do warning check of intNonlin saturation against ULD saturation
+
+    for f in uldAdcFiles:
+
+        for row in range(calConstant.NUM_ROW):
+            for end in range(calConstant.NUM_END):
+                for fe in range(calConstant.NUM_FE):
+                    for erng in range(3):
+
+                        intData = intNonlinAdcData[erng]
+                        dLen = len(intNonlinDacData[erng])
+                        id = -1
+                        while id < 0:
+                            id = intData[f.destTwr, row, end, fe, (dLen - 1)]
+                            dLen -= 1
+                        uld = uldAdcData[erng, f.destTwr, row, end, fe, -1]
+                        if uld > id:
+                            log.warning("ULD %0.3f > INTNONLIN %0.3f for T%d,%s%s,%d,%s", uld, id, f.destTwr,
+                                        calConstant.CROW[row], calConstant.CPM[end], fe, calConstant.CRNG[erng])
+                
+                               
 
     # create CAL calibration output XML file
 
