@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Tue Sep 27 13:41:55 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	tholdCIGen.py 
+Log Message:
+Added warning check if ULD saturation is greater than intNonlin saturation.
+    *
+------------------------------------------------------------
 User: dwood  Tue Sep 20 14:11:13 PDT 2005
 calibGenCAL/python
 
