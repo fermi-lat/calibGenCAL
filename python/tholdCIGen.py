@@ -13,8 +13,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL TholdCI XML calibration data files"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/09 17:39:24 $"
-__version__   = "$Revision: 1.10 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/27 20:41:55 $"
+__version__   = "$Revision: 1.18 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -480,7 +480,8 @@ if __name__ == '__main__':
                         while id < 0:
                             id = intData[f.destTwr, row, end, fe, (dLen - 1)]
                             dLen -= 1
-                        uld = uldAdcData[erng, f.destTwr, row, end, fe, -1]
+                        dac = int(uldDacData[f.destTwr, row, end, fe])
+                        uld = uldAdcData[erng, f.destTwr, row, end, fe, dac]
                         if uld > id:
                             log.warning("ULD %0.3f > INTNONLIN %0.3f for T%d,%s%s,%d,%s", uld, id, f.destTwr,
                                         calConstant.CROW[row], calConstant.CPM[end], fe, calConstant.CRNG[erng])
