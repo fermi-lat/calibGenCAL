@@ -1,5 +1,19 @@
 ------------------------------------------------------------
 User: fewtrell  Thu Sep 29 13:53:40 PDT 2005
+calibGenCAL/src
+
+Modified Files:
+	CalDefs.h CfCfg.cxx CfCfg.h ICfg.h ThreshEvol_option.xml 
+	ciFit_option.xml ciFit_option_badCalibGen.xml 
+	muonCalib_option.xml runCIFit.cxx 
+Added Files:
+	CfData.cxx CfData.h CfRoot.cxx CfRoot.h 
+Log Message:
+updated ciFit to generate profile histogram of ADC value -vs- nth DAC setting
+
+    *
+------------------------------------------------------------
+User: fewtrell  Thu Sep 29 13:53:40 PDT 2005
 calibGenCAL/python/cfg
 
 Modified Files:
