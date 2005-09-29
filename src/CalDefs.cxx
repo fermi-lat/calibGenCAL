@@ -1,3 +1,7 @@
+/** @file CalDefs.cxx
+    \brief Glast Calorimeter array code.
+ */
+
 // LOCAL INCLUDES
 #include "CalDefs.h"
 

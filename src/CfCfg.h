@@ -18,6 +18,10 @@
 using namespace std;
 using namespace CalDefs;
 
+/** @class CfCfg
+    @author Zachary Fewtrell
+    @brief Configuration settings for runCIFit application
+*/
 class CfCfg : ICfg {
  public:
   // basic ctor

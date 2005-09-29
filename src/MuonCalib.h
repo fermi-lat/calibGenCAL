@@ -21,6 +21,9 @@
 using namespace std;
 using namespace CalDefs;
 
+/** @class MuonCalib 
+    @brief GLAST Calorimeter values extracted from muons.
+*/
 class MuonCalib : public RootFileAnalysis {
  public:
 

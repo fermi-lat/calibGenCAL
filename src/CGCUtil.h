@@ -12,11 +12,16 @@
 #include <vector>
 #include <ostream>
 
+/** @file CGCUtil.h
+    @author Zachary Fewtrell
+    \brief Generic utility functions for calibGenCAL pkg
+*/
+
 using namespace std;
 
 namespace CGCUtil {
 
-  const string CVS_TAG("$Name: HEAD $");
+  const string CVS_TAG("$Name:  $");
 
   /// Template function fills any STL type container with zero values
   template <class T> static void fill_zero(T &container) {
