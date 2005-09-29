@@ -1,5 +1,16 @@
 ------------------------------------------------------------
 User: fewtrell  Thu Sep 29 15:08:26 PDT 2005
+calibGenCAL/python/cfg
+
+Added Files:
+	get_slac_calibdac.cfg 
+Log Message:
+new top level scripts for generating online DAC settings
+
+
+    *
+------------------------------------------------------------
+User: fewtrell  Thu Sep 29 15:08:26 PDT 2005
 calibGenCAL/python
 
 Added Files:
