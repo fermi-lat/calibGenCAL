@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Sep 29 13:53:40 PDT 2005
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+updated ciFit to generate profile histogram of ADC value -vs- nth DAC setting
+
+    *
+------------------------------------------------------------
 User: dwood  Tue Sep 27 13:41:55 PDT 2005
 calibGenCAL/python
 
