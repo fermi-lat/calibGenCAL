@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Sep 29 15:08:26 PDT 2005
+calibGenCAL/python
+
+Added Files:
+	build_adcsmooth.py build_gensettings_cfg 
+	build_gensettings_cfg.py gensettings gensettings.py 
+	get_slac_calibdac.py 
+Log Message:
+new top level scripts for generating online DAC settings
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Sep 29 15:07:22 PDT 2005
 calibGenCAL/src
 
