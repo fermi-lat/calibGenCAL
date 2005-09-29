@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Sep 29 15:07:22 PDT 2005
+calibGenCAL/src
+
+Modified Files:
+	CGCUtil.cxx CGCUtil.h CalDefs.cxx CalDefs.h CfCfg.h 
+	MuonCalib.h RootFileAnalysis.cxx runCIFit.cxx runMuonCalib.cxx 
+Log Message:
+preparing for new tag.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Sep 29 15:07:21 PDT 2005
 calibGenCAL/python
 
