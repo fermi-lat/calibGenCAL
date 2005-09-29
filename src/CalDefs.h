@@ -1,5 +1,5 @@
 #ifndef CalDefs_H
-#define CalDefs_H 1
+#define CalDefs_H
 
 // LOCAL
 
@@ -73,9 +73,9 @@ namespace CalDefs {
       parent_type::resize(sz);
     }
 
-	void resize(size_type sz, const value_type &val) {
-		parent_type::resize(sz,val);
-	}
+    void resize(size_type sz, const value_type &val) {
+      parent_type::resize(sz,val);
+    }
 
     void clear() {
       parent_type::clear();
@@ -94,6 +94,9 @@ namespace CalDefs {
 
     const_iterator end() const {return parent_type::end();}
     iterator end() {return parent_type::end();}
+
+    void push_back(const value_type &val) {
+      parent_type::push_back(val);}
     
   };
 
@@ -387,7 +390,7 @@ namespace CalDefs {
     static const int N_VALS = tXtalIdx::N_VALS*FaceNum::N_VALS;
 
     tXtalIdx getTXtalIdx() const {return tXtalIdx(getLyr(),
-                                                 getCol());}
+                                                  getCol());}
 
     short getLyr()  const {return (m_data)/LYR_BASE;}
     short getCol()  const {return (m_data%LYR_BASE)/COL_BASE;}
@@ -447,11 +450,11 @@ namespace CalDefs {
     friend ostream& operator<< (ostream &stream, const tDiodeIdx &idx);
 
     tXtalIdx getTXtalIdx() const {return tXtalIdx(getLyr(),
-                                                 getCol());}
+                                                  getCol());}
 
     tFaceIdx getTFaceIdx() const {return tFaceIdx(getLyr(),
-                                                 getCol(),
-                                                 getFace());}
+                                                  getCol(),
+                                                  getFace());}
 
     
     bool isValid() const {return m_data < N_VALS;}
@@ -513,11 +516,11 @@ namespace CalDefs {
     friend ostream& operator<< (ostream &stream, const tRngIdx &idx);
     
     tXtalIdx getTXtalIdx() const {return tXtalIdx(getLyr(),
-                                                 getCol());}
+                                                  getCol());}
 
     tFaceIdx getTFaceIdx() const {return tFaceIdx(getLyr(),
-                                                 getCol(),
-                                                 getFace());}
+                                                  getCol(),
+                                                  getFace());}
 
     bool isValid() const {return m_data < N_VALS;}
   private:

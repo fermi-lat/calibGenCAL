@@ -3,8 +3,8 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLBASEROOT)/xml/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/muonCalib_option.xml,v 1.16 2005/08/04 15:56:02 fewtrell Exp $"
- cvs_Revision="$Revision: 1.16 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/muonCalib_option.xml,v 1.17 2005/08/05 05:59:09 fewtrell Exp $"
+ cvs_Revision="$Revision: 1.17 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP" 		value="2004-07-31-06:50"> Timestamp for test run.</item>
@@ -19,7 +19,7 @@
     <item name="INTNONLINFILE_TXT" 	value="D:\GLAST\DEV\TEMP\calibGenCAL\v3r5p5\output\ci_intnonlin.050414193500_FM115_TVAC_calu_collect_ci_singlex16.T00.txt"> Input integral non-linearity text file</item>
     <item name="DTD_FILE" 		value="$(CALIBUTILROOT)/xml/calCalib_v2r2.dtd"> Data description file for XML ouptut ).</item>
 
-    <item name="OUTPUT_FOLDER" 		value="../output/"> Folder for auto-named output files </item>
+    <item name="OUTPUT_FOLDER" 		value="./"> Folder for auto-named output files </item>
  
     <item name="PEDFILE_XML" 		value=""> Optional path for output ADC pedestal xml file (default "" autogenerates filename from input filename) </item>
     <item name="ASYMFILE_XML" 		value=""> Optional path for output asymmetry xml file (default "" autogenerates filename from input filename)    </item>

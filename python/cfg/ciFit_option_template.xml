@@ -3,8 +3,8 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLBASEROOT)/xml/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit_option.xml,v 1.12 2005/07/27 19:46:43 fewtrell Exp $"
-       cvs_Revision="$Revision: 1.12 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/cfg/ciFit_option_template.xml,v 1.1 2005/08/04 15:56:01 fewtrell Exp $"
+       cvs_Revision="$Revision: 1.1 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP" 		value="$(CGC_CALIBGEN_TIMESTAMP)"> Timestamp for test run.</item>
@@ -28,6 +28,9 @@
     
     <item name="ROOTFILE_LE1" 		value="$(CGC_INTLIN_ROOT_LE)"> input DIGIROOT file LE </item>
     <item name="ROOTFILE_HE1" 		value="$(CGC_INTLIN_ROOT_HE)"> input DIGIROOT file HE </item>
+
+    <item name="HISTPATH_LE"            value=""> Optional path for output .root LE histograms (default "" autogenerates filename from input filename)</item>
+    <item name="HISTPATH_HE"            value=""> Optional path for output .root HE histograms (default "" autogenerates filename from input filename)</item>
   </section>
 
   <section name="SPLINE_CFG">
@@ -42,6 +45,7 @@
     <item name="GENERATE_XML" 		value="true"> (boolean) generate xml output</item>
     <item name="GENERATE_TXT" 		value="true"> (boolean) generate text output</item>
     <item name="GENERATE_LOGFILE" 	value="true"> (boolean) generate logfile which duplicates stdout </item>
+    <item name="GENERATE_HISTOGRAM_FILES" value="true"> (boolean) generate histogram rootfiles w/ adc2dac profiles for each channel</item>
   </section>  
 </ifile>
 
