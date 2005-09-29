@@ -3,8 +3,8 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLBASEROOT)/xml/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit_option_badCalibGen.xml,v 1.3 2005/07/27 19:46:43 fewtrell Exp $"
-       cvs_Revision="$Revision: 1.3 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit_option_badCalibGen.xml,v 1.4 2005/08/04 15:56:01 fewtrell Exp $"
+       cvs_Revision="$Revision: 1.4 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP" 		value="2004-11-11-14:39"> Timestamp for test run.</item>
@@ -18,11 +18,14 @@
 
   <section name="PATHS"> Intput/Output file paths
     NOTE: All environment variables will be expanded with facilities::Util::expandEnvVar()
-    <item name="OUTPUT_FOLDER" 		value="..\output\"> Folder for auto-named output files </item>
+    <item name="OUTPUT_FOLDER" 		value="./"> Folder for auto-named output files </item>
     
     <item name="DTD_FILE" 		value="$(CALIBUTILROOT)/xml/calCalib_v2r1.dtd"> description file for output .xml file </item>
     <item name="XMLPATH" 		value=""> Optional path for output .xml file (default "" autogenerates filename from input filename)</item>
-    <item name="TXTPATH" 		value=""> Optoinal path for output .txt file (default "" autogenerates filename from input filename)</item>
+    <item name="TXTPATH" 		value=""> Optional path for output .txt file (default "" autogenerates filename from input filename)</item>
+    <item name="HISTPATH_LE"            value=""> Optional path for output .root LE histograms (default "" autogenerates filename from input filename)</item>
+    <item name="HISTPATH_HE"            value=""> Optional path for output .root HE histograms (default "" autogenerates filename from input filename)</item>
+    
 
     <item name="LOGFILE" 		value=""> application log file duplicates stdout (default "" autogenerates filename from input filename)</item>
     
@@ -42,6 +45,7 @@
     <item name="GENERATE_XML" 		value="true"> (boolean) generate xml output</item>
     <item name="GENERATE_TXT" 		value="true"> (boolean) generate text output</item>
     <item name="GENERATE_LOGFILE" 	value="true"> (boolean) generate logfile which duplicates stdout </item>
+    <item name="GENERATE_HISTOGRAM_FILES" value="true"> (boolean) generate histogram rootfiles w/ adc2dac profiles for each channel</item>
   </section>  
 </ifile>
 

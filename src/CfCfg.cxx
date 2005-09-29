@@ -22,8 +22,6 @@ const string CfCfg::SPLINE_CFG("SPLINE_CFG");
 const string CfCfg::GENERAL("GENERAL");
 
 void CfCfg::readCfgFile(const string& path) {
-  clear();
-
   xmlBase::IFile ifile(path.c_str());
   using facilities::Util;
   
@@ -53,6 +51,10 @@ void CfCfg::readCfgFile(const string& path) {
   Util::expandEnvVar(&outputXMLPath);
   outputTXTPath = ifile.getString(PATHS.c_str(), "TXTPATH");
   Util::expandEnvVar(&outputTXTPath);
+  outputHistPathLE = ifile.getString(PATHS.c_str(), "HISTPATH_LE");
+  Util::expandEnvVar(&outputHistPathLE);
+  outputHistPathLE = ifile.getString(PATHS.c_str(), "HISTPATH_HE");
+  Util::expandEnvVar(&outputHistPathLE);
   
   rootFileLE1 = ifile.getString(PATHS.c_str(), "ROOTFILE_LE1");
   Util::expandEnvVar(&rootFileLE1);
@@ -62,10 +64,18 @@ void CfCfg::readCfgFile(const string& path) {
   logfile = ifile.getString(PATHS.c_str(), "LOGFILE");
   Util::expandEnvVar(&logfile);
 
-  // ridiculous comparison elminates cast warning in msvc
-  genXML = ifile.getBool(GENERAL.c_str(), "GENERATE_XML") != 0;
-  genTXT = ifile.getBool(GENERAL.c_str(), "GENERATE_TXT") != 0;
-  genLogfile = ifile.getBool(GENERAL.c_str(), "GENERATE_LOGFILE") != 0;
+  tmpStr = ifile.getString(GENERAL.c_str(), "GENERATE_XML") ;
+  Util::expandEnvVar(&tmpStr);
+  genXML = stringToBool(tmpStr);
+  tmpStr = ifile.getString(GENERAL.c_str(), "GENERATE_TXT") ;
+  Util::expandEnvVar(&tmpStr);
+  genTXT = stringToBool(tmpStr);
+  tmpStr = ifile.getString(GENERAL.c_str(), "GENERATE_LOGFILE") ;
+  Util::expandEnvVar(&tmpStr);
+  genLogfile = stringToBool(tmpStr);
+  tmpStr = ifile.getString(GENERAL.c_str(), "GENERATE_HISTOGRAM_FILES") ;
+  Util::expandEnvVar(&tmpStr);
+  genHistfile = stringToBool(tmpStr);
 
   // SPLINE CFG
   splineEnableGrp  = ifile.getIntVector(SPLINE_CFG.c_str(), "ENABLE_GRP");
@@ -97,6 +107,12 @@ void CfCfg::readCfgFile(const string& path) {
   if (outputTXTPath.length() == 0)
     outputTXTPath = outputDir + "ci_intnonlin." + baseFilename
       + '.' + twrBayStr + ".txt";
+  if (outputHistPathLE.length() == 0)
+    outputHistPathLE = outputDir + "ci_intnonlin." + baseFilename
+      + '.' + twrBayStr + ".LE.root";
+  if (outputHistPathHE.length() == 0)
+    outputHistPathHE = outputDir + "ci_intnonlin." + baseFilename
+      + '.' + twrBayStr + ".HE.root";
   if (logfile.length() == 0)
     logfile = outputDir + "ci_logfile." + baseFilename
       + '.' + twrBayStr + ".txt";
@@ -120,8 +136,3 @@ void CfCfg::readCfgFile(const string& path) {
   replace(creator.begin(),creator.end(),' ','_');
 }
 
-void CfCfg::clear() {  
-}
-
-void CfCfg::summarize() {
-}

@@ -3,8 +3,8 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLBASEROOT)/xml/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ThreshEvol_option.xml,v 1.4 2005/07/27 19:46:43 fewtrell Exp $"
-       cvs_Revision="$Revision: 1.4 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ThreshEvol_option.xml,v 1.5 2005/08/04 15:56:01 fewtrell Exp $"
+       cvs_Revision="$Revision: 1.5 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP" 		value="2004-11-11-14:39"> Timestamp for test run.</item>
@@ -19,7 +19,7 @@
 
   <section name="PATHS"> Intput/Output file paths
     NOTE: All environment variables will be expanded with facilities::Util::expandEnvVar()
-    <item name="OUTPUT_FOLDER" 		value="..\output\"> Folder for auto-named output files </item>
+    <item name="OUTPUT_FOLDER" 		value="./"> Folder for auto-named output files </item>
     
     <item name="DTD_FILE" 		value="$(CALIBUTILROOT)/xml/calCalib_v2r1.dtd"> description file for output .xml file </item>
     <item name="XMLPATH" 		value=""> Optional path for output .xml file (default "" autogenerates filename from input filename)</item>

@@ -1,5 +1,5 @@
-#ifndef cfCfg_H
-#define cfCfg_H 1
+#ifndef CfCfg_H
+#define CfCfg_H
 
 // LOCAL INCLUDES
 #include "ICfg.h"
@@ -21,44 +21,52 @@ using namespace CalDefs;
 class CfCfg : ICfg {
  public:
   // basic ctor
-  CfCfg() : valid(false) {};
+  CfCfg() {};
   virtual ~CfCfg() {};
-
-  // clear all values, delete all pointers
-  void clear();
 
   // read in config data from config file, calculate dependent vars
   void readCfgFile(const string& path);
 
-  // return data valid flag.
-  bool isValid() {return valid;}
-
-  // print summary to ostream
-  void summarize();
  public:  // i know, don't make members public, but it's just easier this way!
   // CONFIGURABLE PARAMETERS //
 
   // SECTION: TEST_INFO //
-  string timestamp;    ///< time of measurement
-  string instrument;   ///< instrument name "LAT", "EM", etc... 
-  int    twrBay;     ///< work on any single tower bay (0-15)
+  /// time of measurement
+  string timestamp;    
+  /// instrument name "LAT", "EM", etc... 
+  string instrument;   
+  /// work on any single tower bay (0-15)
+  int    twrBay;     
 
+  /// sequence of test DAC values
   vector<int> dacVals;
+  /// number of pules for each DAC value
   int nPulsesPerDAC;
 
   // SECTION: PATHS //
-  // current setup has us reading in 6 input files 2 rngs each and 3 different FLE settings
-  string outputDir; ///< folder for autonamed output files
+  /// folder for autonamed output files
+  string outputDir; 
+  /// override output XML path
   string outputXMLPath;   
+  /// override output TXT path
   string outputTXTPath;
+  /// override output histogram path LE diode
+  string outputHistPathLE;
+  /// override output histogram path HE diode
+  string outputHistPathHE; 
 
-  string dtdPath; ///< Data descriptoin file for .xml output
-  string dtdFilename; ///< filename only
+  /// Data descriptoin file for .xml output
+  string dtdPath; 
+  /// filename only
+  string dtdFilename; 
 
+  /// LE input singlex16 digi event file (ROOT format)
   string rootFileLE1;
+  /// HE input singlex16 digi event file (ROOT format)
   string rootFileHE1;
 
-  string logfile; ///< duplicate of stdout log
+  /// duplicate of stdout log
+  string logfile; 
 
 
   // SECTION: SPLINE CONFIG //
@@ -69,14 +77,22 @@ class CfCfg : ICfg {
   vector<int>  splineNPtsMin;
 
   // DERIVED FROM CONFIG PARMS //
+  /// number of pulses per xtal
   int nPulsesPerXtal;
+  /// number of pulses per singlex16 run
   int nPulsesPerRun;
+  /// number of DAC values pulsed
   int nDACs;
 
   // SECTION: GENERAL //
-  bool genXML; ///< generate xml output
-  bool genTXT; ///< generate text output
-  bool genLogfile; ///< clone stdout stream to a logfile
+  /// generate xml output
+  bool genXML; 
+  /// generate text output
+  bool genTXT; 
+  /// clone stdout stream to a logfile
+  bool genLogfile; 
+  /// generate optional histogram output
+  bool genHistfile;
 
   /// multiplexing output stream will contain at least cout, but
   /// may also contain a logfile stream if the user requests it.
@@ -87,9 +103,8 @@ class CfCfg : ICfg {
   string creator;  
 
  private:
-  bool valid;   // set to false member data is incomplete/invalid.
-
-  string baseFilename; ///< used as the base for auto-generating output filenames.  derived from input root filename.
+  /// used as the base for auto-generating output filenames.  derived from input root filename.
+  string baseFilename; 
 
   // Section decription strings
   static const string TEST_INFO;
