@@ -1,3 +1,10 @@
+/** @file CGCUtil.cxx
+
+    @author Zachary Fewtrell
+
+    \brief generic utility functions used in calibGenCAL pkg
+ */
+
 // LOCAL INCLUDES
 #include "CGCUtil.h"
 

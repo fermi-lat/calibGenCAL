@@ -1,6 +1,13 @@
 #ifndef CalDefs_H
 #define CalDefs_H
 
+/** @file CalDefs.h
+    
+    @author Zachary Fewtrell
+
+    \brief Glast Calorimeter array classes
+*/
+
 // LOCAL
 
 // GLAST

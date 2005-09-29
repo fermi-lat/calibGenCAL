@@ -13,9 +13,13 @@
 #include <string>
 #include <vector>
 
+/** @file runCIFit.cxx
+    @author Zachary Fewtrell
+    \brief Generate GLAST Calorimeter integral non-linearity (ADC->CIDAC) calibration from singlex16 event files.
+ */
+
 using namespace std;
 using namespace CalDefs;
-
 
 int main(int argc, char **argv) {
   // Load xml config file

@@ -1,5 +1,3 @@
-/// @todo added ROOT version checking into mc & recon chains as well as digi.
-
 // LOCAL INCLUDES
 #include "RootFileAnalysis.h"
 

@@ -13,6 +13,11 @@
 
 using namespace std;
 
+/** @file runMuonCalib.cxx
+    @author Zachary Fewtrell
+    \brief Generate GLAST Calorimeter pedestal, asymmetry, and mevPerDAC calibrations from ground muon event files.
+ */
+
 int main(int argc, char** argv) {
   string cfgPath;
   if(argc > 1) cfgPath = argv[1];
