@@ -1,3 +1,19 @@
+/"""/
+/Builds configuration file for each gensettings run (for each setting and module).  Builds batch file of commands to run gensettings scripts/
+
+/note:/
+/    currently only runs on windows/
+/"""/
+
+__facility__  = "Offline"
+__abstract__  = "Prepares config and commands to run gensettings scripts"
+__author__    = "M.Strickman"
+__date__      = "$Date: 2005/09/29 22:08:26 $"
+__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__release__   = "$Name:  $"
+__credits__   = "NRL code 7650"
+
+
 import sys, os
 import logging
 import string
