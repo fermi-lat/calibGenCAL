@@ -1,15 +1,15 @@
-/"""/
-/Identifies files required for each gensettings script and uses the filenames to build the configuration file for the gensettings.py script/
+"""
+Identifies files required for each gensettings script and uses the filenames to build the configuration file for the gensettings.py script
 
-/note:/
-/    currently only runs on windows/
-/"""/
+note:
+    currently only runs on windows
+"""
 
 __facility__  = "Offline"
 __abstract__  = "Identifies files and builds config file for gensettings.py"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2005/09/29 22:08:26 $"
-__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/09/30 19:09:08 $"
+__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
