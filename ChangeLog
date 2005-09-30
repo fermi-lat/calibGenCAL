@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Sep 30 13:30:44 PDT 2005
+calibGenCAL/python
+
+Added Files:
+	build_adcsmooth build_adcsmooth.bat build_gensettings_cfg.bat 
+	gensettings.bat get_slac_calibdac get_slac_calibdac.bat 
+Log Message:
+adding launcher scripts
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Sep 30 13:22:07 PDT 2005
 calibGenCAL/python
 
