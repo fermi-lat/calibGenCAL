@@ -1,15 +1,15 @@
-/"""/
-/given the calibDAC suitesummary run number for each module of interest, retrieve all calibDAC files from slac using scp/
+"""
+given the calibDAC suitesummary run number for each module of interest, retrieve all calibDAC files from slac using scp
 
-/note:/
-/    currently only runs on windows/
-/"""/
+note:
+    currently only runs on windows
+"""
 
 __facility__  = "Offline"
 __abstract__  = "Retrieve DAC settings files from SLAC using SCP"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2005/09/29 22:08:26 $"
-__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/09/30 19:09:08 $"
+__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
