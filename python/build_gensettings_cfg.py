@@ -2,14 +2,16 @@
 Identifies files required for each gensettings script and uses the filenames to build the configuration file for the gensettings.py script
 
 note:
-    currently only runs on windows
+    Linux use currently 'unsupported'
+    see calibGenCAL/doc/gensettings_scripts.html for more information.
+
 """
 
 __facility__  = "Offline"
 __abstract__  = "Identifies files and builds config file for gensettings.py"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2005/09/30 20:22:07 $"
-__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/09/30 20:40:28 $"
+__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
