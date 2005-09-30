@@ -40,7 +40,21 @@ launch the tools.
 - \b genFHEsettings [-V] <GeV> <cfg_file> <out_xml_file>
 - \b genULDsettings [-V] <cfg_file> <out_xml_file>
 
+- \b genGainSettings [-V] <leGain> <heGain> <out_xml_file>
+
 - \b tholdCIGen [-V] <cfg_file> <out_xml_file>
+
+- \b asymVal      [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file>
+- \b adc2nrgVal   [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file>
+- \b biasVal      [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file>
+- \b intNonlinVal [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file>
+- \b mevPerDacVal [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file>
+- \b pedVal       [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file>
+- \b tholdCIVal   [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file>
+
+- \b adcplot [-V] <xml_file> <root_file>
+
+- \b adcsmooth [-V] <in_file> <out_file>
 
 The merge tools take multiple single-tower CAL calibration XML files and produce 
 a single output file of the same type, with the option to specify the source and
@@ -53,10 +67,29 @@ to configure each channel.  The DAC settings tools take a configuration file
 and possibly (except for ULD) a threshold energy as input.  TThe -V option increases 
 the verbosity of the diagnostic output.
 
+The genGainSettings tool is useful for producing a base CAL snapshot fragment which
+only contains the gain settings in <config_0> elements.
+
 The tholdCIGen application produces a CAL threshold calibration XML file using
 information from numerous input files.  A snapshot file provides the configuration
 of the CAL for each calibration desired.  A set of characterization files produced
 by the CI tests provide the ADC threshold data lookup for each configuration.
+
+The validation scripts perform simple checks on the values and formats of the various CAL calibration
+XML file types.  The checks are usually nothing more than limit and consitency checks.  Warnings or
+errors generated may be benign.  The '-R' produces plots and histograms in ROOT format to help diagnose
+any issues with failures.  This requires a working implementation of PyROOT.
+
+The adcplot utility will generate ROOT plots of the CAL DAC/ADC characterization tables. This requires a 
+working implementation of PyROOT. 
+
+The adcsmooth tool performs various fixups of the DAC/ADC characterization data XML files:
+	* Remove sparse and dropout data points
+	* Remove outlying data points
+	* Perform linear extrapolation for FLE LEX8 characterization data; needed for higher FLE thresholds
+	* Digital smoothing filter as final processing
+This tool can be used as a pre-processor for other tools which require clean characterization tables
+to work well (e.g. genXXXsettings).
 
 Sample configuration scripts for these tools are included in the 
 python/cfg folder.  
