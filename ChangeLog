@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Sep 30 13:22:07 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	build_adcsmooth.py build_gensettings_cfg.py gensettings.py 
+	get_slac_calibdac.py 
+Log Message:
+fixed comment formatting
+
+    *
+------------------------------------------------------------
 User: dwood  Fri Sep 30 12:50:24 PDT 2005
 calibGenCAL/src
 
