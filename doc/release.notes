@@ -118,3 +118,19 @@ v3r7p4  small bug fix allows python scripts to use ULD characterization files v2
 
 v3r7p5 fixed few bugs in runMuTrigEff to make it working properly with zero suppressed tracker triggered data collected with parallelized (multitower) muTrig 
 
+-----------------------------------------------------------------------------------------------------------------------
+v3r8
+-----------------------------------------------------------------------------------------------------------------------
+
+- Added tools 'adc2nrgVal' and 'biasVal'; perform basic validation of intermediate calibration XML files
+- Added utility 'adcplot' to generate ROOT plots of characterization data; requires a working PyROOT implementation
+- Added tool 'adcsmooth' to handle clean-up of characterization data tables:
+	* Remove sparse and dropout data points
+	* Remove outlying data points
+	* Perform linear extrapolation for FLE LEX8 characterization data; needed for higher FLE thresholds
+	* Digital smoothing filter as final processing
+- Removed linear FLE LEX8 extrapolation from genFLEsettings tool; this is now handled by adcsmooth as pre-processing
+- For tool intNonlinMerge, added an error check when attempting to merge files with mismatched DAC arrays
+- Added tool 'genGainSettings' for generating minimal snapshot fragments with just <config_0> elements
+- For all genXXXsettings tools, the XML output no longer contains <LATdoc> elements; added annotation attributes to <configurations> element	
+	
