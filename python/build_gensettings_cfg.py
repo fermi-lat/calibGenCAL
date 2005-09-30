@@ -1,3 +1,19 @@
+/"""/
+/Identifies files required for each gensettings script and uses the filenames to build the configuration file for the gensettings.py script/
+
+/note:/
+/    currently only runs on windows/
+/"""/
+
+__facility__  = "Offline"
+__abstract__  = "Identifies files and builds config file for gensettings.py"
+__author__    = "M.Strickman"
+__date__      = "$Date: 2005/09/29 22:08:26 $"
+__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__release__   = "$Name:  $"
+__credits__   = "NRL code 7650"
+
+
 import sys, os
 import logging
 import string
@@ -292,3 +308,4 @@ outcfg.write(gensetout)
 gensetout.close()
 
 sys.exit(0)
+

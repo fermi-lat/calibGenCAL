@@ -1,3 +1,20 @@
+/"""/
+/build batch file containing commands to run adcsmooth script for filtering configuration files for each module and setting specified in setup file/
+
+/note:/
+/    currently only runs on windows/
+/"""/
+
+__facility__  = "Offline"
+__abstract__  = "Build batch file containing commands to run adcsmooth filtering script"
+__author__    = "M.Strickman"
+__date__      = "$Date: 2005/09/29 22:08:26 $"
+__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__release__   = "$Name:  $"
+__credits__   = "NRL code 7650"
+
+
+
 import sys, os
 import logging
 import string
@@ -147,3 +164,4 @@ for idet in detsections:
 cmdbat.close()
 
 sys.exit(0)
+
