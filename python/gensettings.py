@@ -8,8 +8,8 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Prepares config and commands to run gensettings scripts"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2005/09/30 19:09:08 $"
-__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/09/30 20:22:07 $"
+__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -21,6 +21,8 @@ import ConfigParser
 from optparse import OptionParser
 from time import gmtime,strftime
 
+usage = 'gensettings [-f fileroot][--file fileroot]'
+
 # create time tag for this run
 
 timetag = strftime('%y%m%d%H%M%S',gmtime())
@@ -29,6 +31,7 @@ timetag = strftime('%y%m%d%H%M%S',gmtime())
 logging.basicConfig()
 log = logging.getLogger('gensettings')
 log.setLevel(logging.INFO)
+
 # see if cfg file for input is specified in cmd line
 parser = OptionParser()
 parser.add_option('-f','--file',dest='fileroot')
@@ -47,6 +50,7 @@ cfile = ConfigParser.SafeConfigParser()
 cfile.read(cfilename)
 sections = cfile.sections()
 log.info(sections)
+
 # find detector sections
 detsections=[]
 for isec in sections:
@@ -56,6 +60,7 @@ log.info(detsections)
 if len(detsections) == 0:
     log.error('No det sections')
     sys.exit(1)
+
 #find config sections
 configsections=[]
 for isec in sections:
@@ -65,6 +70,7 @@ log.info(configsections)
 if len(configsections) == 0:
     log.error('No config sections')
     sys.exit(1)
+
 # open batch file for run commands
 cmdbat = open(fileroot+".bat","w")
 cmdbat.write("if not defined CALIBGENCALROOT goto :ERROR\n")
@@ -146,6 +152,7 @@ for idet in detsections:
     if not cfile.has_section(config):
         log.error('%s config section %s',idet,config)
         sys.exit(1)
+
 # read in configuration parameters
     legain = None
     hegain = None
@@ -192,6 +199,7 @@ for idet in detsections:
     if adcmargin is None:
         log.error('%s adcmargin missing', config)
         sys.exit(1)
+
 # In the following, if characterization file == "skip", skip test
 # Build genFLE config file
     if flename != "skip":

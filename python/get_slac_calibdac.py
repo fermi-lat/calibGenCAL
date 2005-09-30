@@ -8,19 +8,17 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Retrieve DAC settings files from SLAC using SCP"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2005/09/30 19:09:08 $"
-__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/09/30 20:22:07 $"
+__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
-
-
-
-
 
 import sys, os
 import logging
 import string
 import ConfigParser
+
+usage = 'get_slac_calibdac'
 
 # given the calibDAC suitesummary run number for each module of interest,
 # retreive all calibDAC files from slac using scp and build gensettings.py
