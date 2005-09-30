@@ -133,4 +133,6 @@ v3r8
 - For tool intNonlinMerge, added an error check when attempting to merge files with mismatched DAC arrays
 - Added tool 'genGainSettings' for generating minimal snapshot fragments with just <config_0> elements
 - For all genXXXsettings tools, the XML output no longer contains <LATdoc> elements; added annotation attributes to <configurations> element	
-	
+- added gensettings top-level scripts
+- ciFit now outputs profile histogram of adc -vs- nth DAC setting.
+- added TXT2XML scripts for asym, pedestal & mevperdac calibrations
