@@ -8,8 +8,8 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Identifies files and builds config file for gensettings.py"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2005/09/30 19:09:08 $"
-__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/09/30 20:22:07 $"
+__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -20,6 +20,8 @@ import string
 import ConfigParser
 import glob
 from optparse import OptionParser
+
+usage = 'build_gensettings_cfg [-f fileroot][--file fileroot]'
 
 # finds files for gensettings and creates cfg file
 # NOTE:  folder must contain only one file for ea module and type
