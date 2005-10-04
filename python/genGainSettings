@@ -3,5 +3,5 @@
 PYTHONPATH=${CALIBGENCALROOT}/python:${PYTHONPATH}
 export PYTHONPATH
 
-python ${CALIBGENCALROOT}/python/genGainsettings.py "$@"
+python ${CALIBGENCALROOT}/python/genGainSettings.py "$@"
 
