@@ -10,8 +10,8 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Prepares config and commands to run gensettings scripts"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2005/09/30 20:40:28 $"
-__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/09/30 20:58:34 $"
+__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -78,6 +78,12 @@ cmdbat = open(fileroot+".bat","w")
 cmdbat.write("if not defined CALIBGENCALROOT goto :ERROR\n")
 cmdbat.write("setlocal\n")
 cmdbat.write(r"set PYTHONROOT=%CALIBGENCALROOT%\python;%PYTHONROOT%;"+"\n")
+
+# open .sh file for run commands
+cmdsh = open(fileroot+".sh", "w")
+cmdsh.write("#! /bin/sh\n")
+cmdsh.write("PYTHONPATH=${CALIBGENCALROOT}/python:${PYTHONPATH}\n")
+cmdsh.write("export PYTHONPATH\n")
 
 # loop over detectors
 for idet in detsections:
@@ -226,6 +232,12 @@ for idet in detsections:
                   fle+" "+fileroot+'_'+idet+"genFLE.cfg "+timetag+"_G"+legain.strip()+\
                   "_MeV"+fle.strip()+"_"+idet+"_CAL_fle.xml\n"
         cmdbat.write(cmdline)
+# Write out run command to .sh file
+        cmdline = r"python $CALIBGENCALROOT/python/genFLEsettings.py -V "+\
+                  fle+" "+fileroot+'_'+idet+"genFLE.cfg "+timetag+"_G"+legain.strip()+\
+                  "_MeV"+fle.strip()+"_"+idet+"_CAL_fle.xml\n"
+        cmdsh.write(cmdline)
+
 
 # Build genFHE config file
     if fhename != "skip":
@@ -250,6 +262,13 @@ for idet in detsections:
                   fhe+" "+fileroot+'_'+idet+"genFHE.cfg "+timetag+"_G"+hegain.strip()+\
                   "_GeV"+fhe.strip()+"_"+idet+"_CAL_fhe.xml\n"
         cmdbat.write(cmdline)
+# Write out run command to .shfile
+        cmdline = r"python $CALIBGENCALROOT/python/genFHEsettings.py -V "+\
+                  fhe+" "+fileroot+'_'+idet+"genFHE.cfg "+timetag+"_G"+hegain.strip()+\
+                  "_GeV"+fhe.strip()+"_"+idet+"_CAL_fhe.xml\n"
+        cmdsh.write(cmdline)
+
+
 # Do FHE again with muon gain (only script we do this with)
         fhecfg.remove_option("gains","hegain")
         fhecfg.set("gains","hegain",hegainmu)
@@ -263,6 +282,11 @@ for idet in detsections:
                   fhe+" "+fileroot+'_'+idet+"genFHE_muon.cfg "+timetag+"_G"+hegainmu.strip()+\
                   "_GeV"+fhe.strip()+"_"+idet+"_CAL_fhe.xml\n"
         cmdbat.write(cmdline)
+# Write out run command to .sh file
+        cmdline = r"python $CALIBGENCALROOT/python/genFHEsettings.py -V "+\
+                  fhe+" "+fileroot+'_'+idet+"genFHE_muon.cfg "+timetag+"_G"+hegainmu.strip()+\
+                  "_GeV"+fhe.strip()+"_"+idet+"_CAL_fhe.xml\n"
+        cmdsh.write(cmdline)
         
 # Build genLAC config file
     if lacname != "skip":
@@ -286,6 +310,11 @@ for idet in detsections:
                   lac+" "+fileroot+'_'+idet+"genLAC.cfg "+timetag+"_G"+legain.strip()+\
                   "_MeV"+lac.strip()+"_"+idet+"_CAL_lac.xml\n"
         cmdbat.write(cmdline)
+# Write out run command to shfile
+        cmdline = r"python $CALIBGENCALROOT/python/genLACsettings.py -V "+\
+                  lac+" "+fileroot+'_'+idet+"genLAC.cfg "+timetag+"_G"+legain.strip()+\
+                  "_MeV"+lac.strip()+"_"+idet+"_CAL_lac.xml\n"
+        cmdsh.write(cmdline)
 
 # Build genULD config file
     if uldname != "skip":
@@ -307,6 +336,12 @@ for idet in detsections:
                   fileroot+'_'+idet+"genULD.cfg "+timetag+"_adc"+adcmargin.strip()+"_"+\
                   idet+"_CAL_uld.xml\n"
         cmdbat.write(cmdline)
+# Write out run command to shfile
+        cmdline = r"python $CALIBGENCALROOT/python/genULDsettings.py -V "+\
+                  fileroot+'_'+idet+"genULD.cfg "+timetag+"_adc"+adcmargin.strip()+"_"+\
+                  idet+"_CAL_uld.xml\n"
+        cmdsh.write(cmdline)
+        
 
 # Close batch file and end
 cmdbat.write("endlocal\n")
@@ -315,4 +350,5 @@ cmdbat.write(":ERROR\n")
 cmdbat.write("echo ERROR: CALIBGENCALROOT must be defined\n")
 cmdbat.write(":EXIT\n")
 cmdbat.close()
+cmdsh.close()
 sys.exit(0)
