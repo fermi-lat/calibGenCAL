@@ -4,3 +4,4 @@ PYTHONPATH=${CALIBGENCALROOT}/python:${PYTHONPATH}
 export PYTHONPATH
 
 python ${CALIBGENCALROOT}/python/gensettings.py "$@"
+
