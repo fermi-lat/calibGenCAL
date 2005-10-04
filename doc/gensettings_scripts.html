@@ -412,8 +412,7 @@ folder<b>. </b>The following is a sample config file:</p>
 config. Items are described below:</p>
 <ul style="margin-left: 80px;">
   <li>
-    <p class="western" style="margin-top: 0.08in; margin-bottom: 0in;">
-[FMXXX]</p>
+    <p class="western" style="margin-top: 0.08in; margin-bottom: 0in;">[FMXXX]</p>
     <ul>
       <li>
         <p class="western"
@@ -453,8 +452,7 @@ files.</p>
     </ul>
   </li>
   <li>
-    <p class="western" style="margin-top: 0.08in; margin-bottom: 0in;">
-[CFGX]</p>
+    <p class="western" style="margin-top: 0.08in; margin-bottom: 0in;">[CFGX]</p>
     <ul>
       <li>
         <p class="western"
@@ -505,8 +503,7 @@ threshold setting in GeV</p>
     </ul>
   </li>
   <li>
-    <p class="western" style="margin-top: 0.08in; margin-bottom: 0in;">
-[OUTPUT]</p>
+    <p class="western" style="margin-top: 0.08in; margin-bottom: 0in;">[OUTPUT]</p>
     <ul>
       <li>
         <p class="western"
@@ -607,8 +604,7 @@ will only require one [CFGX] section for all modules.</p>
 config. Items are described below:</p>
 <ul style="margin-left: 80px;">
   <li>
-    <p class="western" style="margin-top: 0.08in; margin-bottom: 0in;">
-[FMXXX]</p>
+    <p class="western" style="margin-top: 0.08in; margin-bottom: 0in;">[FMXXX]</p>
     <ul>
       <li>
         <p class="western"
@@ -652,8 +648,7 @@ module. If set to 1, configuration section is labeled [CFG1], etc.</p>
     </ul>
   </li>
   <li>
-    <p class="western" style="margin-top: 0.08in; margin-bottom: 0in;">
-[CFGX]</p>
+    <p class="western" style="margin-top: 0.08in; margin-bottom: 0in;">[CFGX]</p>
     <ul>
       <li>
         <p class="western"
@@ -713,7 +708,12 @@ file. If all four settings files are requested for 16 modules, the
 output would consist of 64 configuration files (4 x 16) and one batch
 file with 64 command lines. As mentioned above, the batch file must
 be executed from an environment in which the CALIBGENCAL environment
-variable is defined.</p>
+variable is defined.<br>
+</p>
+<p class="western"
+ style="margin-top: 0.08in; margin-bottom: 0in; margin-left: 80px;">A
+sh script is generated in parallel w/ the batch file for use on Linux<br>
+</p>
 <p class="western"
  style="margin-top: 0.08in; margin-bottom: 0in; margin-left: 80px;">The
 output configuration files are defined (for example, in the case of
@@ -723,7 +723,9 @@ variable passed in the <b>gensettings.p</b>y command line and idet is
 the module number expressed as, for example, FM104.</p>
 <p class="western"
  style="margin-top: 0.08in; margin-bottom: 0in; margin-left: 80px;">The
-batch file containing the command lines is named fileroot+”.bat”.</p>
+batch file containing the command lines is named fileroot+”.bat”, the
+sh script is fileroot+".sh"<br>
+</p>
 <p class="western"
  style="margin-top: 0.08in; margin-bottom: 0in; margin-left: 80px;">A
 sample command line from a batch file output looks like:</p>
