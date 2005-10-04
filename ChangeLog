@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Oct  4 11:58:42 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	genFHEsettings genFLEsettings genLACsettings gensettings 
+	genULDsettings 
+Log Message:
+attempting to enable 'executable' permissions.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Sep 30 13:58:47 PDT 2005
 calibGenCAL/src
 
