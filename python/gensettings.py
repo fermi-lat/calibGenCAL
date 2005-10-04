@@ -1,8 +1,7 @@
 """
-Builds configuration file for each gensettings run (for each setting and module).  Builds batch file of commands to run gensettings scripts
+Builds configuration file for each gensettings run (for each setting and module).  Builds .bat && .sh file of commands to run gensettings scripts
 
 note:
-    Linux use currently 'unsupported'
     see calibGenCAL/doc/gensettings_scripts.html for more information.
 
 """
@@ -10,8 +9,8 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Prepares config and commands to run gensettings scripts"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2005/09/30 20:58:34 $"
-__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/10/04 19:41:48 $"
+__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
