@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Oct  4 12:41:48 PDT 2005
+calibGenCAL/python
+
+Modified Files:
+	gensettings.py 
+Log Message:
+added .sh script output along w/ .bat file.
+gensettings is now officially supported under Linux
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Oct  4 12:40:54 PDT 2005
 calibGenCAL/python
 
