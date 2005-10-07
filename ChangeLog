@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Fri Oct  7 15:25:43 PDT 2005
+calibGenCAL/python/cfg
+
+Modified Files:
+	ciFit_option_template.xml 
+Log Message:
+ciFit now extrapolates up to adc saturation point in each channel
+
+    *
+------------------------------------------------------------
+User: fewtrell  Fri Oct  7 15:25:43 PDT 2005
 calibGenCAL/doc
 
 Modified Files:
