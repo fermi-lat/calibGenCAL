@@ -54,10 +54,8 @@ class CfCfg : ICfg {
   string outputXMLPath;   
   /// override output TXT path
   string outputTXTPath;
-  /// override output histogram path LE diode
-  string outputHistPathLE;
-  /// override output histogram path HE diode
-  string outputHistPathHE; 
+  /// override output histogram path diode
+  string outputHistPath;
 
   /// Data descriptoin file for .xml output
   string dtdPath; 
@@ -65,9 +63,9 @@ class CfCfg : ICfg {
   string dtdFilename; 
 
   /// LE input singlex16 digi event file (ROOT format)
-  string rootFileLE1;
+  string rootFileLE;
   /// HE input singlex16 digi event file (ROOT format)
-  string rootFileHE1;
+  string rootFileHE;
 
   /// duplicate of stdout log
   string logfile; 
@@ -78,7 +76,6 @@ class CfCfg : ICfg {
   vector<int>  splineGroupWidth;
   vector<int>  splineSkipLow;
   vector<int>  splineSkipHigh;
-  vector<int>  splineNPtsMin;
 
   // DERIVED FROM CONFIG PARMS //
   /// number of pulses per xtal

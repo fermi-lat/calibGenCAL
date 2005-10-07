@@ -13,35 +13,80 @@
 // CONSTANTS //
 const double mu2ci_thr_rat = 1.7;
 
-CfData::CfData(CfCfg &cfg) :
+CfData::CfData(CfCfg &cfg,
+               const string &histFilename) :
   splineFunc("spline_fitter","pol2",0,4095),
-  m_adcSum(tRngIdx::N_VALS, vector<float>(cfg.nDACs,0)),
-  m_adcN(tRngIdx::N_VALS, vector<float>(cfg.nDACs,0)),
   m_adcMean(tRngIdx::N_VALS, vector<float>(cfg.nDACs,0)),
   m_splineADC(tRngIdx::N_VALS),
-  m_splineDAC(RngNum::N_VALS),
+  m_splineDAC(tRngIdx::N_VALS),
   m_cfg(cfg),
-  m_dacArr(0)
+  m_testDAC(0),
+  m_histFilename(histFilename)
 {
-
   // need a c-style array of floats for DAC values.
-  m_dacArr = new float[m_cfg.nDACs];
-  copy(m_cfg.dacVals.begin(), m_cfg.dacVals.begin()+m_cfg.nDACs, m_dacArr);
+  m_testDAC = new float[m_cfg.nDACs];
+  copy(m_cfg.dacVals.begin(), m_cfg.dacVals.begin()+m_cfg.nDACs, m_testDAC);
+
+  if (m_cfg.genHistfile) {
+    openHistfile();
+    createHists();
+  }
 }
 
-// smooth test lines & print output.
+CfData::~CfData() {
+  closeHistfile();
+
+  delete m_testDAC;
+}
+
+void CfData::createHists() {
+  // profiles owned by current ROOT directory/m_histFile.
+  for (tRngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
+    ostringstream tmp;
+    tmp << "ciRaw_" << rngIdx;
+    m_ciRawProfs.push_back(new TProfile(tmp.str().c_str(), 
+                                        tmp.str().c_str(),
+                                        m_cfg.nDACs,0, m_cfg.nDACs));
+
+    ostringstream mgName;
+    mgName << "ciOverlay_" << rngIdx;
+    TMultiGraph *mg = new TMultiGraph();
+    mg->SetNameTitle(mgName.str().c_str(),
+                     mgName.str().c_str());
+    
+
+    m_ciGraphs.push_back(mg);
+
+    // add graph to file so it will be written out.
+    m_histFile->Add(mg);
+  }
+}
+
+/** Generate spline points for each channel from raw data.
+    END POINT
+    - In all circumstances, the
+
+    RAW MODE
+    - save w/out alteration all points in raw data
+    SMOOTHING MODE
+    - save w/out alteration skipLow points from beginning of raw data
+    - save w/out alteration skipHigh points from end of raw data
+    - group middle points in sets of groupWidth
+    - fit a quadratic to each group & save the midpoint.
+    
+*/
 void CfData::FitData() {
   // 2 dimensional poly line f() to use for spline fitting.
   float *tmpADC(new float[m_cfg.nDACs]);
 
+  // Loop through all 4 energy ranges
   for (RngNum rng; rng.isValid(); rng++) {
     // following vals only change w/ rng, so i get them outside the other loops.
     int grpWid  = m_cfg.splineGroupWidth[rng];
-    //int splLen  = grpWid*2 + 1;
     int skpLo   = m_cfg.splineSkipLow[rng];
     int skpHi   = m_cfg.splineSkipHigh[rng];
-    int nPtsMin = m_cfg.splineNPtsMin[rng];
 
+    // loop through each xtal face.
     for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
       tRngIdx rngIdx(faceIdx,rng);
 
@@ -65,28 +110,25 @@ void CfData::FitData() {
       }
       last_idx--;
       
-      adc_max = curADC[last_idx]; 
-
       // set up new graph object for fitting.
-      for (unsigned i = 0; i < curADC.size(); i++) tmpADC[i] = curADC[i];
+      copy(curADC.begin(),
+           curADC.begin() + curADC.size(),
+           tmpADC);
+
       TGraph myGraph(last_idx+1,
-                     m_dacArr,
+                     m_testDAC,
                      tmpADC);
 
       if (!m_cfg.splineEnableGrp[rng]) {
         ////////////////////////
-        // GROUPING DISNABLED //
+        // GROUPING DISABLED  //
         ////////////////////////
         for (int i = 0; i <= last_idx; i++) {
-          // quit past the max_value
-          if (curADC[i] > adc_max) break; 
-          
           // put new ADC val on list
           m_splineADC[rngIdx].push_back(curADC[i]);
 
-          // put new DAC val on global output list if needed
-          if (m_splineADC[rngIdx].size() >  m_splineDAC[rng].size())
-            m_splineDAC[rng].push_back((int)m_dacArr[i]);
+          // put new DAC val on global output list
+          m_splineDAC[rngIdx].push_back(m_testDAC[i]);
         }
       } else {
 
@@ -97,113 +139,71 @@ void CfData::FitData() {
         // PART I: NO SMOOTHING/GROUPING FOR SKIPLO PTS ////////////////////////
         // copy SKPLO points directly from beginning of array.
 
-        int spl_idx = 0;
-        for (int i = 0; i < skpLo; i++,spl_idx++) {
-          // quit past the max_value- unlikely
-          if (curADC[i] > adc_max) break; 
-          
+        for (int i = 0; i < skpLo; i++) {
           // put new ADC val on list
           m_splineADC[rngIdx].push_back(curADC[i]);
 
-          // put new DAC val on global output list if needed
-          if (m_splineADC[rngIdx].size() >  m_splineDAC[rng].size())
-            m_splineDAC[rng].push_back((int)m_dacArr[i]);
+          // put new DAC val on global output list
+          m_splineDAC[rngIdx].push_back(m_testDAC[i]);
         }
 
         // PART II: GROUP & SMOOTH MIDDLE RANGE  ///////////////////////////////
         // start one grp above skiplo & go as hi as you can w/out entering skpHi
-        for (int cp = skpLo + grpWid - 1; // cp = 'center point'
-             cp < (nPtsMin-skpLo-skpHi)*grpWid + skpLo;
-             cp += grpWid, spl_idx++) {
-          int lp = cp - grpWid; // 1st point in group
-          int hp  = cp + grpWid; // last point in group
+        for (int ctrIdx = skpLo + grpWid - 1; 
+             ctrIdx <= last_idx - max(skpHi,grpWid-1); // allow last group to overlap skpHi section.
+             ctrIdx += grpWid) {
+
+          int lp = ctrIdx - grpWid; // 1st point in group
+          int hp  = ctrIdx + grpWid; // last point in group
 
           // fit curve to grouped points
-          myGraph.Fit(&splineFunc,"QN","",m_dacArr[lp],m_dacArr[hp]);
+          myGraph.Fit(&splineFunc,"QN","",m_testDAC[lp],m_testDAC[hp]);
           float myPar1 = splineFunc.GetParameter(0);
           float myPar2 = splineFunc.GetParameter(1);
           float myPar3 = splineFunc.GetParameter(2);
 
           // use DAC value from center point
-          int   fitDAC = (int)m_dacArr[cp];
+          float fitDAC = m_testDAC[ctrIdx];
           // eval smoothed ADC value
           float fitADC = myPar1 + fitDAC*(myPar2 + fitDAC*myPar3);
-
-          // quit if we have past the max_adc_value
-          if (fitADC > adc_max) break;
 
           // put new ADC val on list
           m_splineADC[rngIdx].push_back(fitADC);
 
-          // put new DAC val on global output list if needed
-          if (m_splineADC[rngIdx].size() > m_splineDAC[rng].size())
-            m_splineDAC[rng].push_back(fitDAC);
+          // put new DAC val on global output list
+          m_splineDAC[rngIdx].push_back(fitDAC);
         }
 
         // PART III: NO SMOOTHING/GROUPING FOR LAST SKPHI PTS //////////////////
         // copy SKPHI points directly from face of array.
-        for (int i = (nPtsMin-skpLo-skpHi)*grpWid + skpLo;
+        for (int i = last_idx+1 - skpHi;
              i <= last_idx;
-             i++,spl_idx++) {
-          // quit if past the max_adc_value
-          if (curADC[i] > adc_max) break;
-
+             i++) {
           // put new ADC val on list
           m_splineADC[rngIdx].push_back(curADC[i]); 
 
-          // put new DAC val on global output list if needed
-          if (m_splineADC[rngIdx].size() >  m_splineDAC[rng].size())
-            m_splineDAC[rng].push_back((int)m_dacArr[i]);
+          // put new DAC val on global output list
+          m_splineDAC[rngIdx].push_back(m_testDAC[i]);
         }
-      }
-    }
-  }
+
+      } // grouping enabled
+
+      //-- EXTRAPOLATE FINAL POINT --//
+      int nPts    = m_splineADC[rngIdx].size();
+      float dac1  = m_splineDAC[rngIdx][nPts-2];
+      float dac2  = m_splineDAC[rngIdx][nPts-1];
+      float adc1  = m_splineADC[rngIdx][nPts-2];
+      float adc2  = m_splineADC[rngIdx][nPts-1];
+      float slope = (dac2 - dac1)/(adc2 - adc1);
+      float dac_max = dac2 + (adc_max - adc2)*slope;
+
+      // put final point on the list.
+      m_splineADC[rngIdx].push_back(adc_max);
+      m_splineDAC[rngIdx].push_back(dac_max);
+    } // xtalFace lop
+  } // range loop
+
   delete tmpADC;
-}
-
-void CfData::corr_FLE_Thresh(CfData& data_high_thresh){
-  RngNum rng;  // we correct LEX8 rng only
-
-  for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
-    tRngIdx rngIdx(faceIdx,rng);
-
-    int nSpline = m_splineADC[rngIdx].size();
-    double* arrADC = new double(nSpline);
-    double* arrDAC = new double(nSpline);
-    for (int i = 0; i<nSpline; i++){
-      arrADC[i] = m_splineADC[rngIdx][i];
-      arrDAC[i] = m_splineDAC[rng][i];
-    }
-    int nSpline_hi_thr = data_high_thresh.getNSplineADC(rngIdx);
-    double* arrADC_hi_thr = new double(nSpline_hi_thr);
-    double* arrDAC_hi_thr = new double(nSpline_hi_thr);
-    const vector<float>& splineADC = data_high_thresh.getSplineADC(rngIdx);
-    const vector<int>& splineDAC = data_high_thresh.getSplineDAC(rng);
-
-
-    for (int i = 0; i<nSpline_hi_thr; i++){
-      arrADC_hi_thr[i] = splineADC[i];
-      arrDAC_hi_thr[i] = splineDAC[i];
-    }
-
-    TSpline3* spl = new TSpline3("spl",arrDAC,arrADC,nSpline); 
-    TSpline3* spl_hi_thr = new TSpline3("spl_hi_thr",arrDAC_hi_thr,
-                                        arrADC_hi_thr,nSpline_hi_thr); 
-
-    for (int i = 0; i<nSpline;i++){
-      float dac_corr = arrDAC[i]/mu2ci_thr_rat;
-      m_splineADC[rngIdx][i] = arrADC_hi_thr[i] + 
-        spl->Eval(dac_corr)-spl_hi_thr->Eval(dac_corr);
-    }
-
-    delete spl;
-    delete spl_hi_thr;
-    delete arrADC;
-    delete arrDAC;
-    delete arrADC_hi_thr;
-    delete arrDAC_hi_thr;
-
-  }
 }
 
 void CfData::WriteSplinesTXT(const string &filename) {
@@ -224,7 +224,7 @@ void CfData::WriteSplinesTXT(const string &filename) {
               << rngIdx.getCol()  << " "
               << rngIdx.getFace() << " "
               << rng  << " "
-              << m_splineDAC[rng][n] << " "
+              << m_splineDAC[rngIdx][n] << " "
               << m_splineADC[rngIdx][n]
               << endl;
     }
@@ -258,8 +258,7 @@ void CfData::ReadSplinesTXT (const string &filename) {
     tRngIdx rngIdx(lyr,col,face,rng);
 
     m_splineADC[rngIdx].push_back(tmpADC);
-    if (m_splineADC[rngIdx].size() > m_splineDAC[rng].size()) 
-      m_splineDAC[rng].push_back(tmpDAC);
+    m_splineDAC[rngIdx].push_back(tmpDAC);
   }
 }
 
@@ -286,7 +285,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runCIFit.cxx,v 1.17 2005/07/07 23:43:49 fewtrell Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CfData.cxx,v 1.1 2005/09/29 20:53:40 fewtrell Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
@@ -317,21 +316,8 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
           << "\" nXtal=\""         << ColNum::N_VALS 
           << "\" nFace=\""         << FaceNum::N_VALS 
           << "\" nRange=\""        << RngNum::N_VALS << "\"" << endl;
-  xmlFile << "           nDacCol=\"" << RngNum::N_VALS << "\" />" << endl;
+  xmlFile << "           nDacCol=\"" << 0 << "\" />" << endl;
 
-  //
-  // DAC values for rest of file.
-  //
-  xmlFile << endl;
-  for (RngNum rng; rng.isValid(); rng++) {
-    xmlFile << " <dac range=\"" << RngNum::MNEM[rng] << "\"" << endl;
-    xmlFile << "     values=\"";
-    for (unsigned i = 0; i < m_splineDAC[rng].size(); i++) 
-      xmlFile << m_splineDAC[rng][i] << " ";
-    xmlFile << "\"" << endl;
-    xmlFile << "     error=\"" << 0.1 << "\" />" << endl;
-  }
-  
   //
   // main data loop
   //
@@ -363,9 +349,16 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
             xmlFile << "             values=\"";
             for (unsigned i = 0; i < m_splineADC[rngIdx].size(); i++)
               xmlFile << fixed << m_splineADC[rngIdx][i] << " ";
-
             xmlFile << "\"" << endl;
+
+            // DAC VALS //
+            xmlFile << "             sdac=\"";
+            for (unsigned i = 0; i < m_splineDAC[rngIdx].size(); i++)
+              xmlFile << fixed << m_splineDAC[rngIdx][i] << " ";
+            xmlFile << "\"" << endl;
+
             xmlFile << "             error=\"" << 0.1 << "\" />" << endl;
+
           }
           xmlFile << "    </face>" << endl;
         }
@@ -376,4 +369,78 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
     xmlFile << " </tower>" << endl;
   }
   xmlFile << "</calCalib>" << endl;
+}
+
+
+void CfData::makeGraphs() {
+  // reuse to create each graphs, set to max possible size
+  float *tmpADC = new float[m_cfg.nDACs];
+  float *tmpDAC = new float[m_cfg.nDACs];
+
+  for (tRngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
+
+    //-- FIRST GRAPH: ALL INPUT DATA POINTS, POST OUTLIER REJECTION --//
+    // generate plot name
+    ostringstream cleanName;
+    cleanName << "ciCleanInput_" << rngIdx;
+
+    // copy ADC points into temp array
+    copy(m_adcMean[rngIdx].begin(),
+         m_adcMean[rngIdx].begin() + m_adcMean[rngIdx].size(),
+         tmpADC);
+    
+    // no need to retain graph pointer as ROOT handles my memory for me
+    TGraph *tmpGrClean = new TGraph(m_adcMean[rngIdx].size(),
+                                    m_testDAC, tmpADC);
+
+    tmpGrClean->SetNameTitle(cleanName.str().c_str(),
+                             cleanName.str().c_str());
+
+    //-- SECOND GRAPH: OUTPUT SPLINE POINTS --//
+    // generate plot name
+    ostringstream splineName;
+    splineName << "ciSpline_" << rngIdx;
+
+    // copy ADC & DAC points into temp arrays
+    copy(m_splineADC[rngIdx].begin(), 
+         m_splineADC[rngIdx].begin() + m_splineADC[rngIdx].size(), 
+         tmpADC);
+    copy(m_splineDAC[rngIdx].begin(), 
+         m_splineDAC[rngIdx].begin() + m_splineDAC[rngIdx].size(), 
+         tmpDAC);
+
+    // no need to retain graph pointer as ROOT handles my memory for me
+    TGraph *tmpGrSpline = new TGraph(getNSplineADC(rngIdx),
+                                     tmpDAC,
+                                     tmpADC);
+             
+    tmpGrSpline->SetNameTitle(splineName.str().c_str(),
+                              splineName.str().c_str());
+
+             
+
+    m_ciGraphs[rngIdx]->Add(tmpGrClean);
+    m_ciGraphs[rngIdx]->Add(tmpGrSpline);
+  }
+
+  // clean up memory
+  delete tmpADC;
+  delete tmpDAC;
+}
+
+void CfData::closeHistfile() {
+  // write current histograms to file & close if we have an open file.
+  if (m_histFile.get()) {
+    m_histFile->Write();
+    m_histFile->Close(); // all histograms deleted.
+    delete m_histFile.release();
+  }
+
+}
+
+void CfData::openHistfile() {
+  m_histFile.reset(new TFile(m_histFilename.c_str(), 
+                             "RECREATE", 
+                             "IntNonlinHists",
+                             9));
 }

@@ -5,8 +5,17 @@
 
 // GLAST INCLUDES
 #include "digiRootData/DigiEvent.h"
+
+// SET TO '1' TO ENABLE RECON/MC
+#define CGC_USE_RECON 0
+#define CGC_USE_MC    0
+
+#if CGC_USE_RECON
 #include "reconRootData/ReconEvent.h"
+#endif
+#if CGC_USE_MC
 #include "mcRootData/McEvent.h"
+#endif
 
 // EXTLIB INCLUDES
 #include "TChain.h"
@@ -45,35 +54,46 @@ class RootFileAnalysis {
   UInt_t getEvent(UInt_t ievt);
 
  protected:
+#if CGC_USE_MC
   /// Chains store event data for all files
-  TChain      m_mcChain, m_digiChain, m_recChain;
-
+  TChain      m_mcChain;
   /// Pointer to current McEvent
   McEvent     *m_mcEvt;
+  /// true if MC data stream is enabled
+  bool m_mcEnabled;
+  /// list of filenames for mc data
+  vector<string> m_mcFilenames;
+#endif
+
+  /// Chains store event data for all files
+  TChain      m_digiChain;
   /// pointer to current DigiEvent
   DigiEvent   *m_digiEvt;
+  /// true if Digi data stream is enabled
+  bool m_digiEnabled;
+  /// list of input files for digi data
+  vector<string> m_digiFilenames;
+
+#if CGC_USE_RECON
+  /// Chains store event data for all files
+  TCain       m_recChain;
   /// pointer to current ReconEvent
   ReconEvent  *m_recEvt;
+  /// true if Recon data stream is enabled
+  bool m_recEnabled;
+  /// list of input file for recon data
+  vector<string> m_recFilenames;
+#endif
+
 
   /// helpful list of all 3 TChains
   TObjArray   m_chainArr;
-
-  /// true if MC data stream is enabled
-  bool m_mcEnabled;
-  /// true if Digi data stream is enabled
-  bool m_digiEnabled;
-  /// true if Recon data stream is enabled
-  bool m_recEnabled;
 
   /// current event number
   Int_t m_startEvt;
 
   /// Zeros out all member vars, does NOT free memory, for use in constructor
   void zeroMembers();
-
-  vector<string> m_mcFilenames;
-  vector<string> m_digiFilenames;
-  vector<string> m_recFilenames;
 
   ostream &m_ostrm;
 

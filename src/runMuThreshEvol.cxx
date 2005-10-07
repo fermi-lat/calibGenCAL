@@ -284,7 +284,7 @@ public:
 
   // processes one 'event', as a collection of interactions.
   // loads up histograms.
-  void DigiCal();
+  void ProcessEvt();
 
   // loops through all events in file
   void fillThreshHists();  // filling threshold histograms

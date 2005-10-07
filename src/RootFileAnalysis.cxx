@@ -19,17 +19,22 @@ RootFileAnalysis::RootFileAnalysis(const vector<string> &mcFilenames,
                                    const vector<string> &digiFilenames,
                                    const vector<string> &recFilenames,
                                    ostream &ostr) :
+#if CGC_USE_MC
   m_mcChain("mc"),
-  m_digiChain("Digi"),
-  m_recChain("rec"),
   m_mcFilenames(mcFilenames),
+#endif
+  m_digiChain("Digi"),
   m_digiFilenames(digiFilenames),
+#if CGC_USE_RECON
+  m_recChain("rec"),
   m_recFilenames(recFilenames),
+#endif
   m_ostrm(ostr)
 {
   
   zeroMembers();
 
+#if CGC_USE_MC
   // add mc file list into mc ROOT chain
   if (mcFilenames.size() != 0) {
     m_mcEnabled = true;
@@ -42,6 +47,7 @@ RootFileAnalysis::RootFileAnalysis(const vector<string> &mcFilenames,
     m_mcChain.SetBranchAddress("McEvent",&m_mcEvt);
     m_chainArr.Add(&m_mcChain);
   }
+#endif
 
   // add digi file list into mc ROOT chain
   if (digiFilenames.size() != 0) {
@@ -73,6 +79,7 @@ RootFileAnalysis::RootFileAnalysis(const vector<string> &mcFilenames,
     }
   }
 
+#if CGC_USE_RECON
   // add recon file list into mc ROOT chain
   if (recFilenames.size() != 0) {
     m_recEnabled = true;
@@ -85,14 +92,17 @@ RootFileAnalysis::RootFileAnalysis(const vector<string> &mcFilenames,
     m_recChain.SetBranchAddress("RecEvent",&m_recEvt);
     m_chainArr.Add(&m_recChain);
   }
+#endif
 }
 
 RootFileAnalysis::~RootFileAnalysis() {
+#if CGC_USE_MC
   if (m_mcEvt) {
     m_mcEvt->Clear();
     delete m_mcEvt;
     m_mcEvt = 0;
   }
+#endif
 
   if (m_digiEvt) {
     m_digiEvt->Clear();
@@ -100,11 +110,13 @@ RootFileAnalysis::~RootFileAnalysis() {
     m_digiEvt = 0;
   }
    
+#if CGC_USE_RECON
   if (m_recEvt) {
     m_recEvt->Clear();
     delete m_recEvt;
     m_recEvt = 0;
   }
+#endif
 }
 
 UInt_t RootFileAnalysis::getEvent(UInt_t iEvt) {
@@ -135,9 +147,18 @@ UInt_t RootFileAnalysis::getEntries() const {
 
 // Initializes all members to zero, does NOT free memory, for use in constructor.
 void RootFileAnalysis::zeroMembers() {
-  m_mcEnabled    = m_digiEnabled = m_recEnabled = false;
-  m_startEvt   = 0;
-  m_digiEvt = 0;
+#if CGC_USE_MC
+  m_mcEnabled = false;
   m_mcEvt = 0;
+#endif
+
+  m_digiEnabled = false;
+  m_digiEvt = 0;
+
+#if CGC_USE_RECON
+  m_recEnabled = false;
   m_recEvt = 0;
+#endif
+
+  m_startEvt   = 0;
 }

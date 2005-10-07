@@ -49,26 +49,23 @@ int main(int argc, char **argv) {
     cfg.ostrm << endl;
     
     
-    CfData cfData(cfg);
+    CfData cfData(cfg, cfg.outputHistPath);
     
 
     // LE PASS
     {
       vector<string> digiFilenames;
-      digiFilenames.push_back(cfg.rootFileLE1);
-      CfRoot cfRoot(digiFilenames, cfData, cfg, cfg.outputHistPathLE);  
-      // set HE/LE rng
-      cfRoot.SetDiode(CfRoot::LE);
-      cfRoot.Go(cfg.nPulsesPerRun);
+      digiFilenames.push_back(cfg.rootFileLE);
+      CfRoot cfRoot(digiFilenames, cfData, cfg, LARGE_DIODE);  
+      cfRoot.EvtLoop(cfg.nPulsesPerRun);
     }
 
     // HE PASS
     {
       vector<string> digiFilenames;
-      digiFilenames.push_back(cfg.rootFileHE1);
-      CfRoot cfRoot(digiFilenames,cfData,cfg, cfg.outputHistPathHE);  
-      cfRoot.SetDiode(CfRoot::HE);
-      cfRoot.Go(cfg.nPulsesPerRun);
+      digiFilenames.push_back(cfg.rootFileHE);
+      CfRoot cfRoot(digiFilenames,cfData,cfg, SMALL_DIODE);  
+      cfRoot.EvtLoop(cfg.nPulsesPerRun);
     }
 
     cfData.FitData();
@@ -77,6 +74,8 @@ int main(int argc, char **argv) {
     //data.ReadSplinesTXT("../output/ciSplines.txt");
     if (cfg.genTXT) cfData.WriteSplinesTXT(cfg.outputTXTPath);
     if (cfg.genXML) cfData.WriteSplinesXML(cfg.outputXMLPath, cfg.dtdPath);
+    // generate optional plots of each spline
+    if (cfg.genHistfile) cfData.makeGraphs();
   } catch (string s) {
     // generic exception handler...  all my exceptions are simple C++ strings
     cfg.ostrm << "ciFit:  exception thrown: " << s << endl;
