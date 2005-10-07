@@ -142,3 +142,15 @@ v3r8p1 - fewtrell
 ------------------------------------------------------------------------------------------------------------------------
 - gensettings & build_gensettings_cfg tools are now 'officially' supported under linux 
         * specifically gensettings.py now generates sh script in parallel w/ bat file
+
+
+-------------------------------------------------------------------------------------------------------------------------
+v3r8p2 - fewtrell
+-------------------------------------------------------------------------------------------------------------------------
+- ciFit
+        - extrapolate all ciFit splines to saturation point.
+        - ciFit now generates graphs w/ clean adc -vs- dac input points overlayed w/ the output spline points.
+- RootFileAnalysis
+        - recon & mc trees are now optionally #defined.   default is disabled.
+        - also 'cmt use' of reconRootData & commonRootData is also optional.
+        - if you want to expand calibGenCAL to see recon & mc, you need to uncomment/#define this code back in.

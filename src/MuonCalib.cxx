@@ -79,9 +79,11 @@ MuonCalib::MuonCalib(McCfg &cfg) :
   }
 
   // configure ROOT Tree - enable only branches we are going to use.
+#if CGC_USE_MC
   if (m_mcEnabled) 
     // disable all branches
     m_mcChain.SetBranchStatus("*", 0);
+#endif
 
   if (m_digiEnabled) {
     // disable all branches - opt in
@@ -93,7 +95,9 @@ MuonCalib::MuonCalib(McCfg &cfg) :
   }
 
   // disable all branches
+#if CGC_USE_RECON
   if (m_recEnabled) m_recChain.SetBranchStatus("*",0);
+#endif
 }
 
 void MuonCalib::flushHists() {

@@ -51,15 +51,13 @@ void CfCfg::readCfgFile(const string& path) {
   Util::expandEnvVar(&outputXMLPath);
   outputTXTPath = ifile.getString(PATHS.c_str(), "TXTPATH");
   Util::expandEnvVar(&outputTXTPath);
-  outputHistPathLE = ifile.getString(PATHS.c_str(), "HISTPATH_LE");
-  Util::expandEnvVar(&outputHistPathLE);
-  outputHistPathLE = ifile.getString(PATHS.c_str(), "HISTPATH_HE");
-  Util::expandEnvVar(&outputHistPathLE);
+  outputHistPath = ifile.getString(PATHS.c_str(), "HISTPATH");
+  Util::expandEnvVar(&outputHistPath);
   
-  rootFileLE1 = ifile.getString(PATHS.c_str(), "ROOTFILE_LE1");
-  Util::expandEnvVar(&rootFileLE1);
-  rootFileHE1 = ifile.getString(PATHS.c_str(), "ROOTFILE_HE1");
-  Util::expandEnvVar(&rootFileHE1);
+  rootFileLE = ifile.getString(PATHS.c_str(), "ROOTFILE_LE");
+  Util::expandEnvVar(&rootFileLE);
+  rootFileHE = ifile.getString(PATHS.c_str(), "ROOTFILE_HE");
+  Util::expandEnvVar(&rootFileHE);
 
   logfile = ifile.getString(PATHS.c_str(), "LOGFILE");
   Util::expandEnvVar(&logfile);
@@ -82,14 +80,13 @@ void CfCfg::readCfgFile(const string& path) {
   splineGroupWidth = ifile.getIntVector(SPLINE_CFG.c_str(),  "GROUP_WIDTH");
   splineSkipLow    = ifile.getIntVector(SPLINE_CFG.c_str(),  "SKIP_LOW"  );
   splineSkipHigh   = ifile.getIntVector(SPLINE_CFG.c_str(),  "SKIP_HIGH" );
-  splineNPtsMin    = ifile.getIntVector(SPLINE_CFG.c_str(),  "N_PTS_MIN" );
   
   // Geneate derived config quantities.
   nDACs          = dacVals.size();
   nPulsesPerXtal = nPulsesPerDAC * nDACs;
   nPulsesPerRun  = ColNum::N_VALS*nPulsesPerXtal;
 
-  baseFilename = rootFileLE1;
+  baseFilename = rootFileLE;
   path_remove_dir(baseFilename);
   path_remove_ext(baseFilename);
 
@@ -107,12 +104,9 @@ void CfCfg::readCfgFile(const string& path) {
   if (outputTXTPath.length() == 0)
     outputTXTPath = outputDir + "ci_intnonlin." + baseFilename
       + '.' + twrBayStr + ".txt";
-  if (outputHistPathLE.length() == 0)
-    outputHistPathLE = outputDir + "ci_intnonlin." + baseFilename
-      + '.' + twrBayStr + ".LE.root";
-  if (outputHistPathHE.length() == 0)
-    outputHistPathHE = outputDir + "ci_intnonlin." + baseFilename
-      + '.' + twrBayStr + ".HE.root";
+  if (outputHistPath.length() == 0)
+    outputHistPath = outputDir + "ci_intnonlin." + baseFilename
+      + '.' + twrBayStr + ".root";
   if (logfile.length() == 0)
     logfile = outputDir + "ci_logfile." + baseFilename
       + '.' + twrBayStr + ".txt";

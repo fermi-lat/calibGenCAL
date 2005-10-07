@@ -421,10 +421,10 @@ public:
 
   // processes one 'event', as a collection of interactions.
   // loads up histograms.
-  void DigiCal();
+  void ProcessEvt();
 
   // loops through all events in file
-  void Go(Int_t nEvtAsked);
+  void EvtLoop(Int_t nEvtAsked);
 
   void SetDiode(RootCiTrig::Diode d) {m_curDiode = d;}
 
@@ -467,7 +467,7 @@ bool  RootCiTrig::isRngEnabled(RngNum rng) {
 }
 
 // compiles stats for each test type.
-void RootCiTrig::DigiCal() {
+void RootCiTrig::ProcessEvt() {
   // Determine test config for this event (which xtal?, which dac?)
   // only count good events
   int testCol   = m_iGoodEvt/m_cfg.nPulsesPerXtal;
@@ -545,7 +545,7 @@ void RootCiTrig::DigiCal() {
 
 }
 
-void RootCiTrig::Go(Int_t nEvtAsked)
+void RootCiTrig::EvtLoop(Int_t nEvtAsked)
 {
   // Purpose and Method:  Event Loop
 
@@ -586,7 +586,7 @@ void RootCiTrig::Go(Int_t nEvtAsked)
         m_cfg.ostr.flush();
       }
 
-      DigiCal();
+      ProcessEvt();
     }
   }  // end analysis code in event loop
 
@@ -612,10 +612,10 @@ public:
 
   // processes one 'event', as a collection of interactions.
   // loads up histograms.
-  void DigiCal();
+  void ProcessEvt();
 
   // loops through all events in file
-  void Go();
+  void EvtLoop();
 
 
 private:
@@ -642,7 +642,7 @@ RootMuTrig::~RootMuTrig() {
 }
 
 // compiles stats for each test type.
-void RootMuTrig::DigiCal() {
+void RootMuTrig::ProcessEvt() {
   for(int layer=0;layer<8;layer++)for(int side=0;side<2;side++)m_fle[side][layer]=false;
   const TClonesArray* calDiagCol = m_digiEvt->getCalDiagnosticCol();
   TIter calDiagIter(calDiagCol);
@@ -734,7 +734,7 @@ void RootMuTrig::DigiCal() {
   } // for each layer
 }
 
-void RootMuTrig::Go()
+void RootMuTrig::EvtLoop()
 {
   // Purpose and Method:  Event Loop
 
@@ -768,7 +768,7 @@ void RootMuTrig::Go()
         m_cfg.ostr.flush();
       }
 
-      DigiCal();
+      ProcessEvt();
     }
   }  // end analysis code in event loop
 
@@ -810,7 +810,7 @@ int main(int argc, char **argv) {
       digiFileNames.push_back(cfg.rootFileCI);
       RootCiTrig rd(digiFileNames,data,cfg);  
       rd.SetDiode(RootCiTrig::LE);
-      rd.Go(cfg.nPulsesPerRun);
+      rd.EvtLoop(cfg.nPulsesPerRun);
     }
 
     // trigger configuration A :  Even Rows Even Columns
@@ -818,7 +818,7 @@ int main(int argc, char **argv) {
       vector<string> digiFileNames;
       digiFileNames.push_back(cfg.rootFileA);
       RootMuTrig rd(digiFileNames,data,cfg,RootMuTrig::EvenRowsEvenColumns);  
-      rd.Go();
+      rd.EvtLoop();
     }
 
     //  trigger configuration B :   Even Rows Odd Columns
@@ -827,7 +827,7 @@ int main(int argc, char **argv) {
       vector<string> digiFileNames;
       digiFileNames.push_back(cfg.rootFileB);
       RootMuTrig rd(digiFileNames, data,cfg,RootMuTrig::OddRowsEvenColumns);
-      rd.Go();
+      rd.EvtLoop();
     }
 
     data.FitData();

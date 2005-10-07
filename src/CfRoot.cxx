@@ -11,45 +11,22 @@
 CfRoot::CfRoot(const vector<string> &digiFileNames, 
                CfData  &data, 
                CfCfg &cfg,
-               const string &histFilename) :
+               DiodeNum diode) :
   RootFileAnalysis(vector<string>(0), digiFileNames, vector<string>(0)),
-  m_curDiode(BOTH_DIODES),
-  m_CfData(data),
+  m_curDiode(diode),
+  m_cfData(data),
   m_cfg(cfg),
   m_evtId(0),
   m_nEvtMax(0),
   m_iGoodEvt(0),
   m_ciHists(tRngIdx::N_VALS)
 {
-  if (m_cfg.genHistfile) openHistfile(histFilename);
   createHists();
 }
 
 CfRoot::~CfRoot() {
-	// delete internal histograms.
-	m_ciHists.Delete();
-
-	closeHistfile();
-}
-
-void CfRoot::closeHistfile() {
-  // write current histograms to file & close if we have an open file.
-  if (m_cfg.genHistfile) {
-    if (m_histFile.get()) {
-      m_histFile->Write();
-      m_histFile->Close(); // all histograms deleted.
-      delete m_histFile.release();
-    }
-  }
-}
-
-void CfRoot::openHistfile(const string &filename) {
-  if (m_histFile.get()) closeHistfile();
-  
-  m_histFilename = filename;
-
-  m_histFile.reset(new TFile(m_histFilename.c_str(), 
-                             "RECREATE", "IntNonlinHists",9));
+  // delete internal histograms.
+  m_ciHists.Delete();
 }
 
 void CfRoot::createHists() {
@@ -65,26 +42,14 @@ void CfRoot::createHists() {
                                            4100,0,4100);
   }
 
-  if (m_cfg.genHistfile) 
-    // profiles owned by current ROOT directory/m_histFile.
-    for (tRngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
-      ostringstream tmp;
-      tmp << "ciProf_" << rngIdx;
-      m_ciProfs.push_back(new TProfile(tmp.str().c_str(), 
-                                       tmp.str().c_str(),
-                                       m_cfg.nDACs,0, m_cfg.nDACs));
-      
-    }
 }
 
 bool  CfRoot::isRngEnabled(RngNum rng) {
-  if (m_curDiode == BOTH_DIODES) return true;
-  if (m_curDiode == LE && (rng == LEX8 || rng == LEX1)) return true;
-  if (m_curDiode == HE && (rng == HEX8 || rng == HEX1)) return true;
+  if (rng.getDiode() == m_curDiode) return true;
   return false;
 }
 
-void CfRoot::DigiCal() {
+void CfRoot::ProcessEvt() {
 
   // -- Determine test config for this event -- //
   //    note: only count good events            //
@@ -155,7 +120,7 @@ void CfRoot::DigiCal() {
           h.Fill(adc);
           // oh yeah, also fill up profile histograms
           if (m_cfg.genHistfile)
-            m_ciProfs[rngIdx]->Fill(testDAC, adc);
+            m_cfData.m_ciRawProfs[rngIdx]->Fill(testDAC, adc);
 
           // save histogram data if we're on last sample for current
           // dac settigns
@@ -170,9 +135,7 @@ void CfRoot::DigiCal() {
               err = h.GetRMS();
             }
             // assign to table
-            m_CfData.m_adcMean[rngIdx][testDAC] = av;
-            m_CfData.m_adcN[rngIdx][testDAC] = h.Integral();     
-
+            m_cfData.m_adcMean[rngIdx][testDAC] = av;
           }
         } // foreach face
       } // foreach readout
@@ -185,7 +148,7 @@ void CfRoot::DigiCal() {
   }
 }
 
-void CfRoot::Go(Int_t nEvtAsked)
+void CfRoot::EvtLoop(Int_t nEvtAsked)
 {
   // Purpose and Method:  Event Loop
 
@@ -227,7 +190,7 @@ void CfRoot::Go(Int_t nEvtAsked)
         m_cfg.ostrm.flush();
       }
 
-      DigiCal();
+      ProcessEvt();
     }
   }  // end analysis code in event loop
 
