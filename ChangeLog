@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Oct  7 15:25:44 PDT 2005
+calibGenCAL/src
+
+Modified Files:
+	CfCfg.cxx CfCfg.h CfData.cxx CfData.h CfRoot.cxx CfRoot.h 
+	MuonCalib.cxx RootFileAnalysis.cxx RootFileAnalysis.h 
+	ciFit_option.xml ciFit_option_badCalibGen.xml runCIFit.cxx 
+	runMuThreshEvol.cxx runMuTrigEff.cxx 
+Log Message:
+ciFit now extrapolates up to adc saturation point in each channel
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Oct  7 15:25:43 PDT 2005
 calibGenCAL/python/cfg
 
