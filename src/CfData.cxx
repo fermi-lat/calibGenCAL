@@ -25,7 +25,7 @@ CfData::CfData(CfCfg &cfg,
 {
   // need a c-style array of floats for DAC values.
   m_testDAC = new float[m_cfg.nDACs];
-  copy(m_cfg.dacVals.begin(), m_cfg.dacVals.begin()+m_cfg.nDACs, m_testDAC);
+  copy(m_cfg.dacVals.begin(), m_cfg.dacVals.end(), m_testDAC);
 
   if (m_cfg.genHistfile) {
     openHistfile();
@@ -112,7 +112,7 @@ void CfData::FitData() {
       
       // set up new graph object for fitting.
       copy(curADC.begin(),
-           curADC.begin() + curADC.size(),
+           curADC.end(),
            tmpADC);
 
       TGraph myGraph(last_idx+1,
@@ -285,7 +285,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CfData.cxx,v 1.1 2005/09/29 20:53:40 fewtrell Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CfData.cxx,v 1.2 2005/10/07 22:25:44 fewtrell Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
@@ -386,7 +386,7 @@ void CfData::makeGraphs() {
 
     // copy ADC points into temp array
     copy(m_adcMean[rngIdx].begin(),
-         m_adcMean[rngIdx].begin() + m_adcMean[rngIdx].size(),
+         m_adcMean[rngIdx].end(),
          tmpADC);
     
     // no need to retain graph pointer as ROOT handles my memory for me
@@ -403,10 +403,10 @@ void CfData::makeGraphs() {
 
     // copy ADC & DAC points into temp arrays
     copy(m_splineADC[rngIdx].begin(), 
-         m_splineADC[rngIdx].begin() + m_splineADC[rngIdx].size(), 
+         m_splineADC[rngIdx].end(), 
          tmpADC);
     copy(m_splineDAC[rngIdx].begin(), 
-         m_splineDAC[rngIdx].begin() + m_splineDAC[rngIdx].size(), 
+         m_splineDAC[rngIdx].end(), 
          tmpDAC);
 
     // no need to retain graph pointer as ROOT handles my memory for me
