@@ -36,70 +36,111 @@ class McCfg : ICfg {
   // CONFIGURABLE PARAMETERS //
 
   // SECTION: TEST_INFO //
-  string timestamp;     ///< time of observation/measurement
-  string instrument;    ///< instrument name "EM", "FM101", etc...
-  int    twrBay;      ///< work on any single tower bay # 
+  /// time of observation/measurement
+  string timestamp;     
+  /// instrument name "EM", "FM101", etc...
+  string instrument;    
+  /// work on any single tower bay # 
+  int    twrBay;      
 
   // SECTION: PATHS //
-  string rootFileListStr; ///< list of input root files
+  /// list of input root files
+  string rootFileListStr; 
 
-  string intNonlinFile; ///< input txt filename for integral non-linearity
-  string dtdPath;       ///< Data descriptoin file for .xml output
-  string dtdFilename;   ///< 
+  /// input txt filename for integral non-linearity
+  string intNonlinFile; 
+  /// Data descriptoin file for .xml output
+  string dtdPath;       
+  /// 
+  string dtdFilename;   
 
-  string outputDir;     ///< folder for autonamed output files
+  /// folder for autonamed output files
+  string outputDir;     
 
-  string pedFileXML;    ///< output xml filename for pedestals
-  string asymFileXML;   ///< output xml filename for asym calibrations
-  string mpdFileXML;    ///< output xml filename for MevPerDAC calibrations
-  string adc2nrgFileXML; ///< output xml filename for adc2nrg table
+  /// output xml filename for pedestals
+  string pedFileXML;    
+  /// output xml filename for asym calibrations
+  string asymFileXML;   
+  /// output xml filename for MevPerDAC calibrations
+  string mpdFileXML;    
+  /// output xml filename for adc2nrg table
+  string adc2nrgFileXML; 
 
 
-  string pedHistFile;   ///< output ROOT histogram file - pedestal phase
-  string asymHistFile;  ///< output ROOT histogram file - asym phase
-  string mpdHistFile;   ///< output ROOT histogram file - MevPerDAC phase
+  /// output ROOT histogram file - pedestal phase
+  string pedHistFile;   
+  /// output ROOT histogram file - asym phase
+  string asymHistFile;  
+  /// output ROOT histogram file - MevPerDAC phase
+  string mpdHistFile;   
 
-  string pedFileTXT;    ///< output txt filename for pedestals
-  string asymFileLLTXT; ///< output txt filename for asym Large Diode Pos face 2 Large Diode Neg face
-  string asymFileLSTXT; ///< output txt filename for asym Large Diode Pos face 2 Small Diode Neg face 
-  string asymFileSLTXT; ///< output txt filename for asym Small Diode Pos face 2 Large Diode Neg face 
-  string asymFileSSTXT; ///< output txt filename for asym Small Diode Pos face 2 Small Diode Neg face 
-  string largeMPDFileTXT; ///< output txt filename for Mev per DAC Large Diode
-  string smallMPDFileTXT; ///< output txt filename for Mev per DAC Small Diode
+  /// output txt filename for pedestals
+  string pedFileTXT;    
+  /// output txt filename for asym Large Diode Pos face 2 Large Diode Neg face
+  string asymFileLLTXT; 
+  /// output txt filename for asym Large Diode Pos face 2 Small Diode Neg face 
+  string asymFileLSTXT; 
+  /// output txt filename for asym Small Diode Pos face 2 Large Diode Neg face 
+  string asymFileSLTXT; 
+  /// output txt filename for asym Small Diode Pos face 2 Small Diode Neg face 
+  string asymFileSSTXT; 
+  /// output txt filename for Mev per DAC Large Diode
+  string largeMPDFileTXT; 
+  /// output txt filename for Mev per DAC Small Diode
+  string smallMPDFileTXT; 
 
-  string logfile;       ///< duplicate of stdout log
+  /// duplicate of stdout log
+  string logfile;       
     
   // SECTION: CONSTANTS //
-  double hitThresh;     ///< threshold to count a hit 
+  /// threshold to count a hit 
+  double hitThresh;     
   
-  double cellHorPitch;  ///< horizontal pitch between 2 cal xtals
-  double cellVertPitch; ///< vertical pitch between 2 cal xtals
-  double csiLength;     ///< length of one cal CsI crystal
+  /// horizontal pitch between 2 cal xtals
+  double cellHorPitch;  
+  /// vertical pitch between 2 cal xtals
+  double cellVertPitch; 
+  /// length of one cal CsI crystal
+  double csiLength;     
 
   // SECTION: GENERAL //
-  int nEvtRoughPed;     ///< number of events for rough pedestal calibration
-  int nEvtPed;          ///< number of events for Pedestal calibration
-  int nEvtAsym;         ///< number of events for Asym calibration
-  int nEvtMPD;          ///< number of events for MevPerDAC calibration
+  /// number of events for rough pedestal calibration
+  int nEvtRoughPed;     
+  /// number of events for Pedestal calibration
+  int nEvtPed;          
+  /// number of events for Asym calibration
+  int nEvtAsym;         
+  /// number of events for MevPerDAC calibration
+  int nEvtMPD;          
 
-  bool readInPeds;      ///< skip ped calib and read in prev results from .txt
-  bool readInAsym;      ///< skip Asym calib and read in prev results from .txt
-  bool skipMPD;         ///< skip MevPerDAC calibration entirely
-  bool pedsOnly;        ///< stop after pedestal calibration
+  /// skip ped calib and read in prev results from .txt
+  bool readInPeds;      
+  /// skip Asym calib and read in prev results from .txt
+  bool readInAsym;      
+  /// skip MevPerDAC calibration entirely
+  bool skipMPD;         
+  /// stop after pedestal calibration
+  bool pedsOnly;        
 
   /// \brief (optional) txt pedestal file to read in 
   /// default uses autogenerated name from input root file
   string inputPedFile;  
 
 
-  bool genXML;          ///< generate xml output
-  bool genTXT;          ///< generate text output
-  bool genHistfiles;    ///< generate histogram output
-  bool genLogfile;      ///< clone stdout stream to a logfile
+  /// generate xml output
+  bool genXML;          
+  /// generate text output
+  bool genTXT;          
+  /// generate histogram output
+  bool genHistfiles;    
+  /// clone stdout stream to a logfile
+  bool genLogfile;      
 
-  bool genOptAsymHists; ///< generate optional asym histograms
+  /// generate optional asym histograms
+  bool genOptAsymHists; 
 
-  bool verbose;         ///< verbose debugging output to log.
+  /// verbose debugging output to log.
+  bool verbose;         
 
   // DERIVED FROM CFG PARAMES //
   vector<string> rootFileList;
@@ -113,13 +154,18 @@ class McCfg : ICfg {
   string creator;  
 
  private:
-  string baseFilename;  ///< string shared by all autogenerated output filenames 
+  /// string shared by all autogenerated output filenames 
+  string baseFilename;  
 
   // Section decription strings
-  static const string TEST_INFO; ///< TEST_INFO xml IFile section name
-  static const string PATHS;     ///< PATHS xml IFile section name
-  static const string CONSTANTS; ///< CONSTANTS xml IFile section name
-  static const string GENERAL;   ///< GENERAL xml IFile section name
+  /// TEST_INFO xml IFile section name
+  static const string TEST_INFO; 
+  /// PATHS xml IFile section name
+  static const string PATHS;     
+  /// CONSTANTS xml IFile section name
+  static const string CONSTANTS; 
+  /// GENERAL xml IFile section name
+  static const string GENERAL;   
 
   bool valid;   // set to false member data is incomplete/invalid.
 };

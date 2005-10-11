@@ -215,7 +215,7 @@ class MuonCalib : public RootFileAnalysis {
   /// list of profiles for logratio values Small diode vs Small diode over position 1 per xtal
   CalVec<tXtalIdx, TH2F*> m_asymHistsSS; 
   
-  /// profile X=bigdioedac Y=smalldioedac 1 per xtal
+  /// profile X=bigdiodedac Y=smalldiodedac 1 per xtal
   CalVec<tXtalIdx, TProfile*> m_dacL2SProfs;  
 
   /// Collection of integral non-linearity splines, 1 per diode
