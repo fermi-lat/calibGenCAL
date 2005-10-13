@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Oct 13 16:41:02 PDT 2005
+calibGenCAL/python/cfg
+
+Modified Files:
+	ciFit_option_template.xml 
+Log Message:
+using new .dtd file for inlin output
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Oct 11 16:25:03 PDT 2005
 calibGenCAL/src
 
