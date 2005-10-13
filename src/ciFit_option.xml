@@ -3,8 +3,8 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLBASEROOT)/xml/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit_option.xml,v 1.13 2005/09/29 20:53:40 fewtrell Exp $"
-       cvs_Revision="$Revision: 1.13 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/ciFit_option.xml,v 1.14 2005/10/07 22:25:44 fewtrell Exp $"
+       cvs_Revision="$Revision: 1.14 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP"      value="2004-11-11-14:39"> Timestamp for test run.</item>
@@ -20,7 +20,7 @@
     NOTE: All environment variables will be expanded with facilities::Util::expandEnvVar()
     <item name="OUTPUT_FOLDER" value="./"> Folder for auto-named output files </item>
     
-    <item name="DTD_FILE"    value="$(CALIBUTILROOT)/xml/calCalib_v2r1.dtd"> description file for output .xml file </item>
+    <item name="DTD_FILE"    value="$(CALIBUTILROOT)/xml/calCalib_v2r3.dtd"> description file for output .xml file </item>
     <item name="XMLPATH"     value=""> Optional path for output .xml file (default "" autogenerates filename from input filename)</item>
     <item name="TXTPATH"     value=""> Optoinal path for output .txt file (default "" autogenerates filename from input filename)</item>
     <item name="HISTPATH"    value=""> Optional path for output .root histograms (default "" autogenerates filename from input filename)</item>
