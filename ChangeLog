@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Oct 13 16:41:03 PDT 2005
+calibGenCAL/src
+
+Modified Files:
+	ciFit_option.xml ciFit_option_badCalibGen.xml 
+Log Message:
+using new .dtd file for inlin output
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Oct 13 16:41:02 PDT 2005
 calibGenCAL/python/cfg
 
