@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: fewtrell  Thu Oct 13 17:14:23 PDT 2005
+calibGenCAL/src
+
+Modified Files:
+	CfData.cxx 
+Log Message:
+still tweaking intLin format
+    *
+------------------------------------------------------------
+User: fewtrell  Thu Oct 13 17:14:23 PDT 2005
 calibGenCAL/cmt
 
 Modified Files:
