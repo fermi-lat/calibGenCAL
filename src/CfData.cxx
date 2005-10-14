@@ -285,7 +285,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CfData.cxx,v 1.2 2005/10/07 22:25:44 fewtrell Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CfData.cxx,v 1.3 2005/10/11 23:25:02 fewtrell Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
@@ -352,7 +352,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
             xmlFile << "\"" << endl;
 
             // DAC VALS //
-            xmlFile << "             sdac=\"";
+            xmlFile << "             sdacs=\"";
             for (unsigned i = 0; i < m_splineDAC[rngIdx].size(); i++)
               xmlFile << fixed << m_splineDAC[rngIdx][i] << " ";
             xmlFile << "\"" << endl;
