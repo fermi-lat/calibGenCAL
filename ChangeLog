@@ -1,4 +1,19 @@
 ------------------------------------------------------------
+User: fewtrell  Sat Oct 29 19:02:20 PDT 2005
+calibGenCAL/src
+
+Modified Files:
+	CGCUtil.cxx CGCUtil.h CfRoot.cxx CfRoot.h MtCfg.cxx MtCfg.h 
+	MuonCalib.cxx RootFileAnalysis.cxx RootFileAnalysis.h 
+	TeCfg.cxx TeCfg.h mainpage.h runMuThreshEvol.cxx 
+	runMuTrigEff.cxx 
+Log Message:
+updated RootFileAnalysis w/ optional MC & RECON suport.
+
+minor variable name & doxygen comment updates.
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r8p2, operation: add
 Package: calibGenCAL
