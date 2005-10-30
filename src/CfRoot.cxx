@@ -12,7 +12,7 @@ CfRoot::CfRoot(const vector<string> &digiFileNames,
                CfData  &data, 
                CfCfg &cfg,
                DiodeNum diode) :
-  RootFileAnalysis(vector<string>(0), digiFileNames, vector<string>(0)),
+  RootFileAnalysis(digiFileNames),
   m_curDiode(diode),
   m_cfData(data),
   m_cfg(cfg),

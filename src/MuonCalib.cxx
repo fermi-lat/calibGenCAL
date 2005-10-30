@@ -66,9 +66,7 @@ float MuonCalib::getADCByRng(const CalDigi &calDigi, XtalRng xRng) {
 }
 
 MuonCalib::MuonCalib(McCfg &cfg) : 
-  RootFileAnalysis(vector<string>(0),  // no mc files
-                   cfg.rootFileList,   // input digi files
-                   vector<string>(0),  // no recon files
+  RootFileAnalysis(cfg.rootFileList,   // input digi files
                    cfg.ostrm),
   m_cfg(cfg)
 {

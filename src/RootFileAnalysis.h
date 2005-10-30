@@ -1,5 +1,5 @@
 #ifndef RootFileAnalysis_h
-#define RootFileAnalysis_h 1
+#define RootFileAnalysis_h
 
 // LOCAL INCLUDES
 
@@ -13,6 +13,7 @@
 #if CGC_USE_RECON
 #include "reconRootData/ReconEvent.h"
 #endif
+
 #if CGC_USE_MC
 #include "mcRootData/McEvent.h"
 #endif
@@ -27,20 +28,41 @@
 
 /** \brief Makes a VCR for GLAST root event files
 
-  RootFileAnalysis contains the following features...
+RootFileAnalysis contains the following features...
 
-  1) ability to read in one or more GLAST digi, recon and/or mc root files.
-  2) ability to step/rewind through events in those files
+1) ability to read in one or more GLAST digi, recon and/or mc root files.
+2) ability to step/rewind through events in those files
 */
 
 using namespace std;
 
 class RootFileAnalysis {
-  public :
-    RootFileAnalysis(const vector<string> &mcFilenames,
-                     const vector<string> &digiFilenames,
-                     const vector<string> &recFilenames,
-                     ostream &ostr = cout);
+public :
+  RootFileAnalysis(
+#if CGC_USE_MC
+                   const vector<string> &mcFilenames,
+#endif
+                   const vector<string> &digiFilenames,
+#if CGC_USE_RECON
+                   const vector<string> &recFilenames,
+#endif
+                   ostream &ostrm = cout);
+
+#if (CGC_USE_MC || CGC_USE_RECON)
+  /// for digi only use.
+  RootFileAnalysis(const vector<string> &digiFilenames,
+                   ostream &ostrm = cout) :
+    RootFileAnalysis(
+#if CGC_USE_MC
+                     vector<string>(0),  // no mc files
+#endif
+                     digiFilenames,
+#if CGC_USE_RECON
+                     vector<string>(0),  // no recon files
+#endif
+                     ostrm);
+#endif
+
   ~RootFileAnalysis();
 
   /// Manually set next event to be read.  fseek() of sorts
@@ -53,7 +75,7 @@ class RootFileAnalysis {
   /// Retrieve pointers to given event #.
   UInt_t getEvent(UInt_t ievt);
 
- protected:
+protected:
 #if CGC_USE_MC
   /// Chains store event data for all files
   TChain      m_mcChain;

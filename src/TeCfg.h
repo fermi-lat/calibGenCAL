@@ -67,7 +67,7 @@ class TeCfg : ICfg {
 
   /// multiplexing output stream will contain at least cout, but
   /// may also contain a logfile stream if the user requests it.
-  CGCUtil::multiplexor_ostream ostr;
+  CGCUtil::multiplexor_ostream ostrm;
   ofstream logstr;
 
  private:

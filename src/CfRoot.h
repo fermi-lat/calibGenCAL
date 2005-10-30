@@ -16,7 +16,8 @@
 /** @class CfRoot
     \brief populates CfData class from singlex16 charge injection event file
 
-    \note CfRoot functions process one diode at a time, use SetDiode() to  alternate
+    \note CfRoot functions process one diode at a time, use SetDiode()
+    to  alternate
 */
 class CfRoot : public RootFileAnalysis {
 public:

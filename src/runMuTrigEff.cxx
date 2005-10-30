@@ -218,7 +218,7 @@ MtData::MtData(MtCfg &cfg) :
   // open new histogram file
   if (m_cfg.genHistfile) openHistFile(m_cfg.histFile);
   initHists();
-  m_cfg.ostr << "Reading pedestals from " << m_cfg.pedFileTXT << endl;
+  m_cfg.ostrm << "Reading pedestals from " << m_cfg.pedFileTXT << endl;
   readCalPeds(m_cfg.pedFileTXT);
 
 }
@@ -444,7 +444,7 @@ private:
 
 
 RootCiTrig::RootCiTrig(vector<string> &digiFileNames, MtData  &data, MtCfg &cfg) :
-  RootFileAnalysis(vector<string>(0), digiFileNames, vector<string>(0)),
+  RootFileAnalysis(digiFileNames),
   m_curDiode(LE),
   m_mtData(data),
   m_cfg(cfg),
@@ -538,7 +538,7 @@ void RootCiTrig::ProcessEvt() {
     } // foreach xtal
   } // if nDigis
   else {
-    m_cfg.ostr << " event " << m_evtId << " contains " 
+    m_cfg.ostrm << " event " << m_evtId << " contains " 
                 << nDigis << " digis - skipped" << endl;
     m_nEvtMax++;
   }
@@ -563,7 +563,7 @@ void RootCiTrig::EvtLoop(Int_t nEvtAsked)
   // DO WE HAVE ENOUGH EVENTS IN FILE?
   //
   Int_t nEvts = getEntries();
-  m_cfg.ostr << "\nNum Events in File is: " << nEvts << endl;
+  m_cfg.ostrm << "\nNum Events in File is: " << nEvts << endl;
   Int_t curI=0;
   m_nEvtMax = min(nEvtAsked+m_startEvt,nEvts);
 
@@ -582,8 +582,8 @@ void RootCiTrig::EvtLoop(Int_t nEvtAsked)
     if (m_digiEvt) {
       m_evtId = m_digiEvt->getEventId();
       if(m_evtId%1000 == 0) {
-        m_cfg.ostr << " event " << m_evtId << '\r';
-        m_cfg.ostr.flush();
+        m_cfg.ostrm << " event " << m_evtId << '\r';
+        m_cfg.ostrm.flush();
       }
 
       ProcessEvt();
@@ -631,7 +631,7 @@ private:
 
 RootMuTrig::RootMuTrig(vector<string> &digiFileNames, MtData  &data, MtCfg &cfg,
                        RootMuTrig::TRIGCONFIG trigConf) :
-  RootFileAnalysis(vector<string>(0), digiFileNames, vector<string>(0)),
+  RootFileAnalysis(digiFileNames),
   m_mtData(data),
   m_cfg(cfg),
   m_trigConfig(trigConf)
@@ -752,7 +752,7 @@ void RootMuTrig::EvtLoop()
   // DO WE HAVE ENOUGH EVENTS IN FILE?
   //
   Int_t nEvts = getEntries();
-  m_cfg.ostr << "\nNum Events in File is: " << nEvts << endl;
+  m_cfg.ostrm << "\nNum Events in File is: " << nEvts << endl;
   Int_t curI=0;
  
   // BEGINNING OF EVENT LOOP
@@ -764,8 +764,8 @@ void RootMuTrig::EvtLoop()
     if (m_digiEvt) {
       m_evtId = m_digiEvt->getEventId();
       if(m_evtId%1000 == 0) {
-        m_cfg.ostr << " event " << m_evtId << endl;
-        m_cfg.ostr.flush();
+        m_cfg.ostrm << " event " << m_evtId << endl;
+        m_cfg.ostrm.flush();
       }
 
       ProcessEvt();
@@ -786,19 +786,19 @@ int main(int argc, char **argv) {
     cfg.readCfgFile(cfgPath);
 
     // ID calibGenCAL package version
-    cfg.ostr << "calibGenCAL CVS Tag: " << CGCUtil::CVS_TAG << endl << endl;
+    cfg.ostrm << "calibGenCAL CVS Tag: " << CGCUtil::CVS_TAG << endl << endl;
     
     // insert quoted config file into log stream //
     { 
       string temp;
       ifstream cfgFile(cfgPath.c_str());
-      cfg.ostr << "--- Begin cfg_file: " << cfgPath << " ---" << endl;
+      cfg.ostrm << "--- Begin cfg_file: " << cfgPath << " ---" << endl;
       while (cfgFile.good()) {
         getline(cfgFile, temp);
         if (cfgFile.fail()) continue; // bad get
-        cfg.ostr << "> " << temp << endl;
+        cfg.ostrm << "> " << temp << endl;
       }
-      cfg.ostr << "--- End " << cfgPath << " ---" << endl << endl;
+      cfg.ostrm << "--- End " << cfgPath << " ---" << endl << endl;
     }
     
     MtData data(cfg);
@@ -838,7 +838,7 @@ int main(int argc, char **argv) {
   
   } catch (string s) {
     // generic exception handler...  all my exceptions are simple C++ strings
-    cfg.ostr << "MuTrigEff:  exception thrown: " << s << endl;
+    cfg.ostrm << "MuTrigEff:  exception thrown: " << s << endl;
     return -1;
   }
 
