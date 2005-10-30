@@ -94,7 +94,7 @@ namespace CGCUtil {
     return path;
   }
 
-  void output_env_banner(ostream &ostr) {
+  void output_env_banner(ostream &ostrm) {
     // GENERATE TIME STRING
     char time_str[128];
     time_t tmt = time(NULL);
@@ -108,9 +108,9 @@ namespace CGCUtil {
     
     // GENERATE PACKAGE PATH STRINGS
 
-    ostr << "************** ENVIRONMENT SUMMARY *****************" << endl;
-    ostr << " RUNTIME : " << time_str << endl;
-    ostr << endl;
+    ostrm << "************** ENVIRONMENT SUMMARY *****************" << endl;
+    ostrm << " RUNTIME : " << time_str << endl;
+    ostrm << endl;
 
     // test that enviroment variables are present
     if (!getenv("CALIBGENCALROOT") ||
@@ -122,15 +122,15 @@ namespace CGCUtil {
       cerr << __FILE__  << ":"     << __LINE__ << " " 
            << "WARNING. error retrieveing packageROOT paths" << endl;
     } else {
-      ostr << " PACKAGE      "  << "PATH" << endl;
-      ostr << " calibGenCAL  "  << getenv("CALIBGENCALROOT")  << endl;  
-      ostr << " ROOT         "  << getenv("ROOTROOT")         << endl;
-      ostr << " digiRootData "  << getenv("DIGIROOTDATAROOT") << endl;
-      ostr << " Event        "  << getenv("EVENTROOT")        << endl;
-      ostr << " idents       "  << getenv("IDENTSROOT")       << endl;
-      ostr << " calibUtil    "  << getenv("CALIBUTILROOT")    << endl;
+      ostrm << " PACKAGE      "  << "PATH" << endl;
+      ostrm << " calibGenCAL  "  << getenv("CALIBGENCALROOT")  << endl;  
+      ostrm << " ROOT         "  << getenv("ROOTROOT")         << endl;
+      ostrm << " digiRootData "  << getenv("DIGIROOTDATAROOT") << endl;
+      ostrm << " Event        "  << getenv("EVENTROOT")        << endl;
+      ostrm << " idents       "  << getenv("IDENTSROOT")       << endl;
+      ostrm << " calibUtil    "  << getenv("CALIBUTILROOT")    << endl;
     }
-    ostr << "****************************************************" << endl;
+    ostrm << "****************************************************" << endl;
   }
 
   string &str_toupper(string &str) {

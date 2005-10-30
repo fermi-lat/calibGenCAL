@@ -15,10 +15,15 @@
 
 using namespace std;
 
-RootFileAnalysis::RootFileAnalysis(const vector<string> &mcFilenames,
+RootFileAnalysis::RootFileAnalysis(
+#if CGC_USE_MC
+                                   const vector<string> &mcFilenames,
+#endif
                                    const vector<string> &digiFilenames,
+#if CGC_USE_RECON
                                    const vector<string> &recFilenames,
-                                   ostream &ostr) :
+#endif 
+                                   ostream &ostrm) :
 #if CGC_USE_MC
   m_mcChain("mc"),
   m_mcFilenames(mcFilenames),
@@ -29,7 +34,7 @@ RootFileAnalysis::RootFileAnalysis(const vector<string> &mcFilenames,
   m_recChain("rec"),
   m_recFilenames(recFilenames),
 #endif
-  m_ostrm(ostr)
+  m_ostrm(ostrm)
 {
   
   zeroMembers();
@@ -73,8 +78,8 @@ RootFileAnalysis::RootFileAnalysis(const vector<string> &mcFilenames,
 
       if (fileDigiEvtVer != codeDigiEvtVer) {
         m_ostrm << "WARNING: digFile=" << curFilenames << " created with DigiEvent version"
-               << fileDigiEvtVer << " code is linked to DigiEvent version"
-               << codeDigiEvtVer << endl;
+                << fileDigiEvtVer << " code is linked to DigiEvent version"
+                << codeDigiEvtVer << endl;
       }
     }
   }

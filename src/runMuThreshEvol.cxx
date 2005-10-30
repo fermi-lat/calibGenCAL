@@ -308,7 +308,7 @@ private:
 
 
 RootThreshEvol::RootThreshEvol(vector<string> &digiFileNames, TeData  &data, TeCfg &cfg)
-  : RootFileAnalysis(vector<string>(0), digiFileNames, vector<string>(0)),
+  : RootFileAnalysis(digiFileNames),
     m_teData(data),
     m_cfg(cfg)
 {
@@ -527,19 +527,19 @@ int main(int argc, char **argv) {
     cfg.readCfgFile(cfgPath);
 
     // ID calibGenCAL package version
-    cfg.ostr << "calibGenCAL CVS Tag: " << CGCUtil::CVS_TAG << endl << endl;
+    cfg.ostrm << "calibGenCAL CVS Tag: " << CGCUtil::CVS_TAG << endl << endl;
     
     // insert quoted config file into log stream //
     { 
       string temp;
       ifstream cfgFile(cfgPath.c_str());
-      cfg.ostr << "--- Begin cfg_file: " << cfgPath << " ---" << endl;
+      cfg.ostrm << "--- Begin cfg_file: " << cfgPath << " ---" << endl;
       while (cfgFile.good()) {
         getline(cfgFile, temp);
         if (cfgFile.fail()) continue; // bad get
-        cfg.ostr << "> " << temp << endl;
+        cfg.ostrm << "> " << temp << endl;
       }
-      cfg.ostr << "--- End " << cfgPath << " ---" << endl << endl;
+      cfg.ostrm << "--- End " << cfgPath << " ---" << endl << endl;
     }
     
     TeData data(cfg);
@@ -566,7 +566,7 @@ int main(int argc, char **argv) {
   
   } catch (string s) {
     // generic exception handler...  all my exceptions are simple C++ strings
-    cfg.ostr << "ThreshEvol:  exception thrown: " << s << endl;
+    cfg.ostrm << "ThreshEvol:  exception thrown: " << s << endl;
     return -1;
   }
 

@@ -80,11 +80,11 @@ void TeCfg::readCfgFile(const string& path) {
 
   // setup output stream
   // add cout by default
-  ostr.getostreams().push_back(&cout);
+  ostrm.getostreams().push_back(&cout);
   // add user Req logfile
   if (genLogfile) {
     logstr.open(logfile.c_str());
-    ostr.getostreams().push_back(&logstr);
+    ostrm.getostreams().push_back(&logstr);
   }
 }
 
