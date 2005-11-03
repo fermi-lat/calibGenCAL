@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL IntNonlin calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/02 15:23:54 $"
-__version__   = "$Revision: 1.13 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/09 17:39:24 $"
+__version__   = "$Revision: 1.14 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -39,7 +39,7 @@ import calConstant
     
 
 
-def rootGraphs(dacData, adcData):
+def rootGraphs(lengthData, dacData, adcData):
 
     # create ROOT plots XML IntNonlin data
 
@@ -69,19 +69,19 @@ def rootGraphs(dacData, adcData):
                         
                     for erng in range(0, 4, 2):                
 
-                        n = 0
                         adc = adcData[erng]
                         dac = dacData[erng]
+                        length = lengthData[erng]
                             
                         x = array.array('f')
                         y = array.array('f')                        
                             
-                        for d in dac:
+                        for n in range(length[tem, row, end, fe, 0]):
+                            d = dac[tem, row, end, fe, n]
                             a = adc[tem, row, end, fe, n]
                             if a >= 0:
                                 x.append(d)
                                 y.append(a)
-                            n += 1
                             
                         g = ROOT.TGraph(len(x), x, y)
                         if erng < 2:
@@ -109,21 +109,21 @@ def rootGraphs(dacData, adcData):
                     
                     x1Leg = ROOT.TLegend(0.91, 0.50, 0.98, 0.60)
                         
-                    for erng in range(1, 4, 2):                
-
-                        n = 0
+                    for erng in range(1, 4, 2):
+                        
                         adc = adcData[erng]
                         dac = dacData[erng]
+                        length = lengthData[erng]
                             
                         x = array.array('f')
                         y = array.array('f')                        
                             
-                        for d in dac:
+                        for n in range(length[tem, row, end, fe, 0]):
+                            d = dac[tem, row, end, fe, n]
                             a = adc[tem, row, end, fe, n]
                             if a >= 0:
                                 x.append(d)
                                 y.append(a)
-                            n += 1
                             
                         g = ROOT.TGraph(len(x), x, y)
                         if erng < 2:
@@ -262,7 +262,7 @@ def deriv2(d, a):
 
 
 
-def calcError(dacData, adcData):
+def calcError(lengthData, dacData, adcData):
 
     errs = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END, calConstant.NUM_FE,
                           calConstant.NUM_RNG), Numeric.PyObject)
@@ -277,20 +277,19 @@ def calcError(dacData, adcData):
                         err = []
                         dac = dacData[erng]
                         adc = adcData[erng]
-                        dLen = len(dac) - 2
+                        length = lengthData[erng]
+                        dLen = length[tem, row, end, fe, 0] - 2
                         
                         for n in range(dLen):
                             
                             d = [0, 0, 0]
                             a = [0, 0, 0]
-                            d[0] = dac[n + 0]
-                            d[1] = dac[n + 1]
-                            d[2] = dac[n + 2]
+                            d[0] = dac[tem, row, end, fe, n + 0]
+                            d[1] = dac[tem, row, end, fe, n + 1]
+                            d[2] = dac[tem, row, end, fe, n + 2]
                             a[0] = adc[tem, row, end, fe, n + 0]
                             a[1] = adc[tem, row, end, fe, n + 1]
                             a[2] = adc[tem, row, end, fe, n + 2]
-                            if a[0] < 0 or a[1] < 0 or a[2] < 0:
-                                continue
 
                             ex = deriv2(d, a)
                             err.append(ex)
@@ -373,14 +372,14 @@ if __name__ == '__main__':
     # open and read XML IntNonlin file
 
     xmlFile = calCalibXML.calIntNonlinCalibXML(xmlName)
-    (dacData, adcData) = xmlFile.read()
+    (lengthData, dacData, adcData) = xmlFile.read()
     info = xmlFile.info()
     towers = xmlFile.getTowers()
     xmlFile.close()
 
     # calculate deviations from linearity
 
-    (valStatus, errData) = calcError(dacData, adcData)    
+    (valStatus, errData) = calcError(lengthData, dacData, adcData)    
 
     # create ROOT output file
     
@@ -393,7 +392,7 @@ if __name__ == '__main__':
 
         # write plots
 
-        rootGraphs(dacData, adcData)
+        rootGraphs(lengthData, dacData, adcData)
 
         # write error histograms
 
