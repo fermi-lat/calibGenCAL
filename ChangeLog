@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Nov  3 14:01:33 PST 2005
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py intNonlinMerge.py intNonlinVal.py 
+Log Message:
+Upgraded calIntNonlinCalibXML class and client applications to support DTD v2r3 version format.
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Nov  3 08:15:14 PST 2005
 calibGenCAL/src
 
