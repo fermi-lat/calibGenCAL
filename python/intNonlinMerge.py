@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to merge mutilple CAL IntNonlin calibration XML files."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/09 17:39:24 $"
-__version__   = "$Revision: 1.17 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/12 17:44:28 $"
+__version__   = "$Revision: 1.18 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -37,7 +37,7 @@ class inputFile:
     Represents one intNonlinMerge input XML file.
     """
     
-    def __init__(self, srcTwr, destTwr, name, dacData, adcData):
+    def __init__(self, srcTwr, destTwr, name, lengthData, dacData, adcData):
         """
         inputFile constructor
 
@@ -51,6 +51,7 @@ class inputFile:
         self.srcTwr = srcTwr
         self.destTwr = destTwr
         self.name = name
+        self.lengthData = lengthData
         self.dacData = dacData
         self.adcData = adcData
 
@@ -146,7 +147,7 @@ if __name__ == '__main__':
         if srcTwr < 0 or srcTwr > 15:
             log.error("Src index for [infiles] option %s out of range (0 - 15)", opt)
             sys.exit(1)    
-        inFile = inputFile(srcTwr, destTwr, name, None, None)
+        inFile = inputFile(srcTwr, destTwr, name, None, None, None)
         inFiles.append(inFile)
         log.debug('Adding file %s to input as tower %d', name, destTwr)
 
@@ -156,7 +157,11 @@ if __name__ == '__main__':
     if not configFile.has_option('dtdfiles', 'dtdfile'):
         log.error("Config file %s missing [dtdfiles]:dtdfile option" % configName)
         sys.exit(1)
-    dtdName = os.path.join(calibUtilRoot, 'xml', configFile.get('dtdfiles', 'dtdfile'))
+    dtdBase = configFile.get('dtdfiles', 'dtdfile')
+    if dtdBase != 'calCalib_v2r3.dtd':
+        log.error("DTD file %s version is not supported", dtdBase)
+        sys.exit(1)
+    dtdName = os.path.join(calibUtilRoot, 'xml', dtdBase)
     
 
     # read input files
@@ -169,7 +174,8 @@ if __name__ == '__main__':
         if f.srcTwr not in twrs:
             log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
             sys.exit(1)
-        (dacData, adcData) = inFile.read()
+        (lengthData, dacData, adcData) = inFile.read()
+        f.lengthData = lengthData
         f.adcData = adcData
         f.dacData = dacData
         if firstFile:
@@ -178,69 +184,75 @@ if __name__ == '__main__':
         inFile.close()
 
     log.debug('Using ouput info:\n%s', str(info))
-
-
-    # merge tower DAC data
-
-    dacDataOut = [None, None, None, None]
-    dacDataLen = [None, None, None, None]
-    
-    for erng in range(calConstant.NUM_RNG):
-        maxX = 0
-        maxFile = None
-        for f in inFiles:
-            s = len(f.dacData[erng])
-            if s > maxX:
-                maxX = s
-                maxFile = f.name
-                dacDataOut[erng] = f.dacData[erng]
-                dacDataLen[erng] = s
-                
-        log.debug('From file %s, using ouput DAC values for range %s:\n%s', maxFile, calConstant.CRNG[erng],
-            dacDataOut[erng])
-        
-
-    # verify that DAC values for each tower match at beginning of list
-
-    for f in inFiles:
-        for erng in range(calConstant.NUM_RNG):
-            oData = dacDataOut[erng]
-            iData = f.dacData[erng]
-            n = len(iData)
-            if oData[0:n] != iData[0:n]:
-                log.error('File %s DAC values do not match for range %s\n:%s', f.name, calConstant.CRNG[erng],
-                            iData)
-                sys.exit(1)
                                       
 
-    # create empty output ADC data array
+    # create empty output data arrays
 
+    lengthDataOut = [None, None, None, None]
+    dacDataOut = [None, None, None, None]
     adcDataOut = [None, None, None, None]
+    
     for erng in range(calConstant.NUM_RNG):
+
+        lengthDataOut[erng] = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                          calConstant.NUM_FE, 1), Numeric.Int16)
+
+        dacDataOut[erng] = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                          calConstant.NUM_FE, calCalibXML.INTNONLIN_MAX_DATA), Numeric.Float32)
+        
         adcDataOut[erng] = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                          calConstant.NUM_FE, dacDataLen[erng]), Numeric.Float32)
-        log.debug('Using output ADC array shape %s for range %s', str(adcDataOut[erng].shape),
-                  calConstant.CRNG[erng])
+                                          calConstant.NUM_FE, calCalibXML.INTNONLIN_MAX_DATA), Numeric.Float32)
                 
 
-    # merge tower ADC data
-
     for erng in range(calConstant.NUM_RNG):
+        
         for f in inFiles:
-            adcData = f.adcData
-            inData = adcData[erng]
-            outData = adcDataOut[erng]
+
+            # merge tower length data
+
+            lengthData = f.lengthData
+            inData = lengthData[erng]
+            outData = lengthDataOut[erng]
+
             for row in range(calConstant.NUM_ROW):
                 for end in range(calConstant.NUM_END):
                     for fe in range(calConstant.NUM_FE):
-                        inSize = inData.shape[-1]
-                        outSize = outData.shape[-1]
-                        for dac in range(inSize):
-                            x = inData[f.srcTwr, row, end, fe, dac]
-                            outData[f.destTwr, row, end, fe, dac] = x
-                        if outSize > inSize:
-                            for dac in range(inSize, outSize):
-                               outData[f.destTwr, row, end, fe, dac] = -1.0 
+
+                        x = inData[f.srcTwr, row, end, fe, 0]
+                        outData[f.destTwr, row, end, fe, 0] = x
+
+            # merge tower DAC data
+            
+            dacData = f.dacData
+            inData = dacData[erng]
+            outData = dacDataOut[erng]            
+            
+            for row in range(calConstant.NUM_ROW):
+                for end in range(calConstant.NUM_END):
+                    for fe in range(calConstant.NUM_FE):
+
+                        length = f.lengthData[erng]                        
+    
+                        for n in range(length[f.srcTwr, row, end, fe, 0]):
+                            x = inData[f.srcTwr, row, end, fe, n]
+                            outData[f.destTwr, row, end, fe, n] = x
+
+
+            # merge tower ADC data
+            
+            adcData = f.adcData
+            inData = adcData[erng]
+            outData = adcDataOut[erng]            
+            
+            for row in range(calConstant.NUM_ROW):
+                for end in range(calConstant.NUM_END):
+                    for fe in range(calConstant.NUM_FE):
+
+                        length = f.lengthData[erng]                        
+    
+                        for n in range(length[f.srcTwr, row, end, fe, 0]):
+                            x = inData[f.srcTwr, row, end, fe, n]
+                            outData[f.destTwr, row, end, fe, n] = x
                             
             
 
@@ -251,7 +263,7 @@ if __name__ == '__main__':
         temList.append(f.destTwr)
 
     outFile = calCalibXML.calIntNonlinCalibXML(outName, calCalibXML.MODE_CREATE)
-    outFile.write(dacDataOut, adcDataOut, inputSample = None, tems = temList)
+    outFile.write(lengthDataOut, dacDataOut, adcDataOut, inputSample = None, tems = temList)
     outFile.close()
 
 

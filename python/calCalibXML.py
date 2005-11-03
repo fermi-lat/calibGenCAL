@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/09 19:08:14 $"
-__version__   = "$Revision: 1.31 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/09 19:10:02 $"
+__version__   = "$Revision: 1.32 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -32,6 +32,8 @@ POSNEG = ('NEG', 'POS')
 ERNG_MAP = {'LEX8' : 0, 'LEX1' : 1, 'HEX8' : 2, 'HEX1' : 3}
 POSNEG_MAP = {'NEG' : 0, 'POS' : 1}
 
+
+INTNONLIN_MAX_DATA = 256
 
 
 class calCalibXML(calXML.calXML):
@@ -549,11 +551,148 @@ class calIntNonlinCalibXML(calCalibXML):
         """
         
         calCalibXML.__init__(self, fileName, mode)
-        
 
-    def write(self, dacData, adcData, inputSample = None, tems = (0,)):             
+
+    def write(self, lengthData, dacData, adcData, inputSample = None, tems = (0,)):
         """
         Write data to a CAL IntNonlin XML file
+
+        Param: lengthData - A list of 4 elements, each a reference to a Numeric
+                            array of DAC values. The shape of each array is
+                            (16, 8, 2, 12, 1), where the last dimension holds
+                            the length of the ADC and DAC value lists for that
+                            channel.
+        Param: dacData - A list of 4 elements, each a reference to a Numeric
+                         array of DAC values. The shape of each array is
+                         (16, 8, 2, 12, <size>), where <size> is the length of
+                         the corresponding dacData array for that energy range.
+        Param: adcData - A list of 4 elements, each a reference to a Numeric
+                         array of ADC values. The shape of each array is
+                         (16, 8, 2, 12, <size>), where <size> is the length of
+                         the corresponding dacData array for that energy range.
+        Param: inputSample - A dictionary of <inputSample> values:
+            'startTime' - The <inputSample> 'startTime' attribute value.
+            'stopTime' - The <inputSample> 'stopTime' attribute value.
+            'trigger' - The <inputSample> 'trigger' attribute value.
+            'mode' - The <inputSample> 'mode' attribute value.
+            'source' - The <inputSample> 'source' attribute value.
+        Param: tems - A list of TEM ID values to include in the output data set.
+        """
+
+        doc = self.getDoc()        
+
+        # insert root document element <calCalib>
+
+        r = doc.createElement('calCalib')
+        doc.appendChild(r)
+
+        # insert <generic> element
+
+        g = self.genericWrite('CAL_IntNonlin')
+        r.appendChild(g)
+
+        # insert <inputSample> element
+
+        if inputSample is not None:
+            s = doc.createElement('inputSample')
+            if startTime is not None:
+                s.setAttribute('startTime', inputSample['startTime'])
+            if stopTime is not None:
+                s.setAttribute('stopTime', inputSample['stopTime'])
+            if triggers is not None:
+                s.setAttribute('triggers', inputSample['triggers'])
+            if mode is not None:
+                s.setAttribute('mode', inputSample['mode'])
+            if source is not None:
+                s.setAttribute('source', inputSample['source'])
+            g.appendChild(s)
+
+        # insert <dimension> element  
+            
+        d = self.dimensionWrite(nRange = 4)
+        r.appendChild(d)
+
+        for tem in tems:
+            
+            # insert <tower> elements
+
+            (iCol, iRow) = temToTower(tem)
+            t = doc.createElement('tower')
+            t.setAttribute('iRow', str(iRow))
+            t.setAttribute('iCol', str(iCol))
+            r.appendChild(t)
+            
+            for layer in range(calConstant.NUM_LAYER):
+
+                # translate index
+
+                row = layerToRow(layer) 
+
+                # insert <layer> elements
+
+                l = doc.createElement('layer')
+                l.setAttribute('iLayer', str(layer))
+                t.appendChild(l)
+
+                c = doc.createComment('layer name = %s' % calConstant.CROW[row])
+                l.appendChild(c)
+                    
+                for fe in range(calConstant.NUM_FE):
+
+                    # insert <xtal> elements
+
+                    x = doc.createElement('xtal')
+                    x.setAttribute('iXtal', str(fe))
+                    l.appendChild(x)
+                        
+                    for end in range(calConstant.NUM_END):
+
+                        # insert <face> elements
+
+                        f = doc.createElement('face')
+                        f.setAttribute('end', POSNEG[end])
+                        x.appendChild(f)
+
+                        for erng in range(calConstant.NUM_RNG):
+
+                            # insert <intNonlin> elements
+
+                            n = doc.createElement('intNonlin')
+                            n.setAttribute('range', calConstant.CRNG[erng])
+
+                            # get length of data lists for this channel
+
+                            length = lengthData[erng]                            
+
+                            # insert 'values' attribute holding ADC data
+                            
+                            s = ''
+                            data = adcData[erng]
+                            for xi in range(length[tem, row, end, fe, 0]): 
+                                adc = data[tem, row, end, fe, xi]               
+                                s += '%0.2f ' % float(adc)
+                            n.setAttribute('values', s.rstrip(' '))
+
+                            # insert 'sdacs' attribute holding DAC data
+                            
+                            s = ''
+                            data = dacData[erng]
+                            for xi in range(length[tem, row, end, fe, 0]): 
+                                dac = data[tem, row, end, fe, xi]               
+                                s += '%0.2f ' % float(dac)
+                            n.setAttribute('sdacs', s.rstrip(' '))                            
+                            
+                            n.setAttribute('error', '0.10')
+                            f.appendChild(n)
+    
+        # write output XML file
+
+        self.writeFile()
+        
+
+    def __write_v2r2(self, dacData, adcData, inputSample = None, tems = (0,)):             
+        """
+        Write data to a CAL IntNonlin XML file, version v2r2
 
         Param: dacData - A list of DAC values. The length of this array is the
                          number of data points for that energy range.
@@ -681,11 +820,93 @@ class calIntNonlinCalibXML(calCalibXML):
         # write output XML file
 
         self.writeFile()
-
+        
 
     def read(self):
         """
         Read data from a CAL IntNonlin XML file
+
+        Returns: A tuple of references to Numeric arrays and containing the
+        calibration data (dacData, adcData):
+            lengthData - A list of 4 elements, each a reference to a Numeric
+                         array of length values.  The shape of each array
+                         is (16, 8, 2, 12, 1), where the last dimension
+                         contains the length of the DAC list for that
+                         channel.  This value may be used to determine the
+                         number of valid data values in the following
+                         dacData and adcData arrays.
+            dacData -   A list of 4 elements, each a reference to a Numeric
+                        array of DAC values. The shape of each array is
+                        (16, 8, 2, 12, 256)  The last dimension contains the
+                        DAC values.  The number of valid values is determined
+                        by the corresponding value from the lengthData arrays.
+            adcData -   A list of 4 elements, each a reference to a Numeric
+                        array of ADC values. The shape of each array is
+                        (16, 8, 2, 12, 256).  The last dimension contains the
+                        ADC values.  The number of valid values is determined
+                        by the corresponding value from the lengthData arrays.
+        """
+        
+        # verify file type
+
+        type =  self.getType()
+        if type != 'CAL_IntNonlin':
+            raise calFileReadExcept, "XML file is type %s (expected CAL_IntNonlin)" % type        
+
+        # find <generic> element
+
+        gList = self.getDoc().getElementsByTagName('generic')
+        gLen = len(gList)
+        if gLen != 1:
+            raise calFileReadExcept, "found %d <generic> elements (expected 1)" % gLen
+        g = gList[0]
+
+        # get format version
+
+        value = g.getAttribute('fmtVersion')
+        if len(value) == 0:
+            raise calFileReadExcept, "cannot find fmtVersion attribute of <generic> element"
+        version = str(value)
+
+        if version == 'v2r2':
+
+            # copy old format data into new format arrays
+            
+            (dacDataOld, adcData) = self.__read_v2r2()
+
+            lengthData = [None, None, None, None]
+            dacData = [None, None, None, None]
+
+            for erng in range(calConstant.NUM_RNG):
+                
+                size = len(dacDataOld[erng])
+                dacData[erng] = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                  calConstant.NUM_FE, size), Numeric.Float32)
+                lengthData[erng] = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                  calConstant.NUM_FE, 1), Numeric.Float32)
+
+                length = lengthData[erng]
+                length[...] = size
+                
+                for n in range(size):
+                    
+                    data = dacData[erng]
+                    oldData = dacDataOld[erng]
+                    data[...,n] = oldData[n]
+
+            return (lengthData, dacData, adcData)                    
+                    
+                                                
+        elif version == 'v2r3':
+            return self.__read_v2r3()
+        
+        else:
+            raise calFileReadExcept, "fmtVersion %s not supported" % version
+
+
+    def __read_v2r2(self):
+        """
+        Read data from a CAL IntNonlin XML file, format version v2r2
 
         Returns: A tuple of references to Numeric arrays and containing the
         calibration data (dacData, adcData):
@@ -699,12 +920,6 @@ class calIntNonlinCalibXML(calCalibXML):
                         correspoding DAC values array, the extra ADC values at
                         the end are set to '-1'.
         """
-        
-        # verify file type
-
-        type =  self.getType()
-        if type != 'CAL_IntNonlin':
-            raise calFileReadExcept, "XML file is type %s (expected CAL_IntNonlin)" % type
 
         # create empty data arrays
         
@@ -786,6 +1001,111 @@ class calIntNonlinCalibXML(calCalibXML):
                                     data[tem, row, end, fe, xi] = -1
                                 
         return (dacData, adcData)
+
+
+    def __read_v2r3(self):
+        """
+        Read data from a CAL IntNonlin XML file, format version v2r3
+
+        Returns: A tuple of references to Numeric arrays and containing the
+        calibration data (dacData, adcData):
+            lengthData - A list of 4 elements, each a reference to a Numeric
+                         array of length values.  The shape of each array
+                         is (16, 8, 2, 12, 1), where the last dimension
+                         contains the length of the DAC list for that
+                         channel.  This value may be used to determine the
+                         number of valid data values in the following
+                         dacData and adcData arrays.
+            dacData -   A list of 4 elements, each a reference to a Numeric
+                        array of DAC values. The shape of each array is
+                        (16, 8, 2, 12, 256)  The last dimension contains the
+                        DAC values.  The number of valid values is determined
+                        by the corresponding value from the lengthData arrays.
+            adcData -   A list of 4 elements, each a reference to a Numeric
+                        array of ADC values. The shape of each array is
+                        (16, 8, 2, 12, 256).  The last dimension contains the
+                        ADC values.  The number of valid values is determined
+                        by the corresponding value from the lengthData arrays.
+        """
+        
+        # create empty data arrays
+
+        lengthData = [None, None, None, None]
+        dacData = [None, None, None, None]
+        adcData = [None, None, None, None]
+
+        for erng in range(calConstant.NUM_RNG):        
+
+            lengthData[erng] = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                  calConstant.NUM_FE, 1), Numeric.Int16)
+            dacData[erng] = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                  calConstant.NUM_FE, INTNONLIN_MAX_DATA), Numeric.Float32)
+            adcData[erng] = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                  calConstant.NUM_FE, INTNONLIN_MAX_DATA), Numeric.Float32)
+
+        # find <tower> elements
+
+        tList = self.getDoc().getElementsByTagName('tower')
+        for t in tList:
+
+            tRow = int(t.getAttribute('iRow'))
+            tCol = int(t.getAttribute('iCol'))
+            tem = towerToTem(tCol, tRow)
+
+            # find <layer> elements
+
+            lList = t.getElementsByTagName('layer')
+            for l in lList:
+
+                layer = int(l.getAttribute('iLayer'))
+                row = layerToRow(layer)
+
+                # find <xtal> elements
+
+                xList = l.getElementsByTagName('xtal')
+                for x in xList:
+
+                    fe = int(x.getAttribute('iXtal'))
+
+                    # find <face> elements
+
+                    fList = x.getElementsByTagName('face')
+                    for f in fList:
+
+                        face = f.getAttribute('end')
+                        end = POSNEG_MAP[face]
+
+                        # find <intNonlin> elements
+
+                        nList = f.getElementsByTagName('intNonlin')
+                        for n in nList:
+
+                            erngName = n.getAttribute('range')
+                            erng = ERNG_MAP[erngName]
+                            
+                            adata = adcData[erng]
+                            ddata = dacData[erng]
+                            ldata = lengthData[erng]
+                            
+                            valueStr = n.getAttribute('values')
+                            valueList = valueStr.split()
+
+                            sdacStr = n.getAttribute('sdacs')
+                            sdacList = sdacStr.split()
+
+                            if len(valueList) != len(sdacList):
+                                raise calFileReadExcept, "<intNonlin> sdac and value lists different lengths"
+
+                            ldata[tem, row, end, fe, 0] = len(valueList)
+                                                    
+                            x = 0
+                            for adc in valueList:
+                                adata[tem, row, end, fe, x] = float(adc)
+                                d = sdacList[x]
+                                ddata[tem, row, end, fe, x] = float(d)
+                                x += 1
+                                
+        return (lengthData, dacData, adcData)            
 
 
     def info(self):
