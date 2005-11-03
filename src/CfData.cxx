@@ -285,8 +285,8 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CfData.cxx,v 1.3 2005/10/11 23:25:02 fewtrell Exp $  -->" << endl;
-  xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r1.dtd -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CfData.cxx,v 1.4 2005/10/14 00:14:23 fewtrell Exp $  -->" << endl;
+  xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r3.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
   string tmpStr;
@@ -300,7 +300,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   xmlFile << "<calCalib>" << endl;
   xmlFile << "  <generic instrument=\"" << m_cfg.instrument
           << "\" timestamp=\"" << m_cfg.timestamp << "\"" << endl;
-  xmlFile << "           calibType=\"CAL_IntNonlin\" fmtVersion=\"v2r2\" >" << endl;
+  xmlFile << "           calibType=\"CAL_IntNonlin\" fmtVersion=\"v2r3\" >" << endl;
 
   xmlFile << endl;
   xmlFile << "  </generic>" << endl;
