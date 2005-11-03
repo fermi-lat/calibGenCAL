@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Nov  3 08:15:14 PST 2005
+calibGenCAL/src
+
+Modified Files:
+	CfData.cxx 
+Log Message:
+updated some references to new calCalib_v2r3.dtd file for new intlin format.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Sat Oct 29 19:02:20 PDT 2005
 calibGenCAL/src
 
