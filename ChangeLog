@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon Nov  7 08:23:46 PST 2005
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Corrected calIntNonlinCalibXML.read() for old format files - needs to account for short ADC lists; added lengthData array parameter to calTholdCICalibXML.write() method to allow for new intnonlin data format.
+    *
+------------------------------------------------------------
 User: dwood  Thu Nov  3 14:01:33 PST 2005
 calibGenCAL/python
 
