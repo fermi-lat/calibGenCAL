@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/09 19:10:02 $"
-__version__   = "$Revision: 1.32 $, $Author: dwood $"
+__date__      = "$Date: 2005/11/03 22:01:32 $"
+__version__   = "$Revision: 1.33 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -233,8 +233,8 @@ class calTholdCICalibXML(calCalibXML):
         calCalibXML.__init__(self, fileName, mode)
         
 
-    def write(self, dacData, adcData, intNonlinData, pedData, lrefGain, hrefGain,
-              biasData, tems = (0,)):
+    def write(self, dacData, adcData, intNonlinData, intNonlinLength, pedData,
+              lrefGain, hrefGain, biasData, tems = (0,)):
         """
         Write data to a CAL TholdCI XML file
 
@@ -255,6 +255,8 @@ class calTholdCICalibXML(calCalibXML):
                 (16, 8, 2, 12, 128). \n
         Param: intNonlinData - A Numeric array of ADC non-linearity characterization
             data for HEX1 energy range (16, 8, 2, 12, <N>).
+        Param: intNonlinLength = A Numeric array of ADC intnonlin data lengths for
+            HEX1 energy range (16, 8, 2, 12, 1)
         Param: pedData - A Numeric array of pedestal value data
             (16, 9, 4, 8, 2, 12).
         Param: lrefGain A Numeric array of LE gain index settings data
@@ -412,11 +414,8 @@ class calTholdCICalibXML(calCalibXML):
                         
                         tcr.setAttribute('range', 'HEX1')
 
-                        size = intNonlinData.shape[-1]
+                        size = intNonlinLength[tem, row, end, fe, 0]
                         adc = intNonlinData[tem, row, end, fe, (size - 1)]
-                        while adc < 0:
-                            size -= 1
-                            adc = intNonlinData[tem, row, end, fe, (size - 1)]
                         tcr.setAttribute('ULDVal', '%0.3f' % adc)
                         tcr.setAttribute('ULDSig', '30')
 
@@ -827,7 +826,7 @@ class calIntNonlinCalibXML(calCalibXML):
         Read data from a CAL IntNonlin XML file
 
         Returns: A tuple of references to Numeric arrays and containing the
-        calibration data (dacData, adcData):
+        calibration data (lengthData, dacData, adcData):
             lengthData - A list of 4 elements, each a reference to a Numeric
                          array of length values.  The shape of each array
                          is (16, 8, 2, 12, 1), where the last dimension
@@ -883,7 +882,7 @@ class calIntNonlinCalibXML(calCalibXML):
                 dacData[erng] = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
                                   calConstant.NUM_FE, size), Numeric.Float32)
                 lengthData[erng] = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                  calConstant.NUM_FE, 1), Numeric.Float32)
+                                  calConstant.NUM_FE, 1), Numeric.Int16)
 
                 length = lengthData[erng]
                 length[...] = size
@@ -893,6 +892,19 @@ class calIntNonlinCalibXML(calCalibXML):
                     data = dacData[erng]
                     oldData = dacDataOld[erng]
                     data[...,n] = oldData[n]
+
+                # fixup lengths for short ADC lists
+
+                for tem in range(calConstant.NUM_TEM):
+                    for row in range(calConstant.NUM_ROW):
+                        for end in range(calConstant.NUM_END):
+                            for fe in range(calConstant.NUM_FE):
+                                n = size
+                                data = adcData[erng]
+                                while data[tem, row, end, fe, (n - 1)] < 0:
+                                    n -= 1
+                                length[tem, row, end, fe, 0] = n
+                                
 
             return (lengthData, dacData, adcData)                    
                     
