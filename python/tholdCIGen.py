@@ -13,8 +13,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL TholdCI XML calibration data files"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/27 20:41:55 $"
-__version__   = "$Revision: 1.18 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/29 21:32:22 $"
+__version__   = "$Revision: 1.19 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -415,7 +415,7 @@ if __name__ == '__main__':
 
     log.info("Reading file %s", intNonlinName)
     intNonlinFile = calCalibXML.calIntNonlinCalibXML(intNonlinName)
-    (intNonlinDacData, intNonlinAdcData) = intNonlinFile.read()
+    (intNonlinLengthData, intNonlinDacData, intNonlinAdcData) = intNonlinFile.read()
     intNonlinFile.close()
 
     # do pedestal corrections for ULD ADC data
@@ -437,7 +437,7 @@ if __name__ == '__main__':
                                 gData = int(heGainData[f.destTwr, row, end, fe])
                                 gData -= 8
                                 if gData < 0:
-                                    gData = 8
+                                   gData = 8
                             psData = pedData[f.destTwr, gData, erng, row, end, fe]
                             for dac in range(128):
                                uldAdcData[erng, f.destTwr, row, end, fe, dac] -= psData
@@ -475,11 +475,9 @@ if __name__ == '__main__':
                     for erng in range(3):
 
                         intData = intNonlinAdcData[erng]
-                        dLen = len(intNonlinDacData[erng])
-                        id = -1
-                        while id < 0:
-                            id = intData[f.destTwr, row, end, fe, (dLen - 1)]
-                            dLen -= 1
+                        lenData = intNonlinLengthData[erng]
+                        dLen = int(lenData[f.destTwr, row, end, fe, 0])
+                        id = intData[f.destTwr, row, end, fe, (dLen - 1)]
                         dac = int(uldDacData[f.destTwr, row, end, fe])
                         uld = uldAdcData[erng, f.destTwr, row, end, fe, dac]
                         if uld > id:
@@ -494,8 +492,8 @@ if __name__ == '__main__':
     calibFile = calCalibXML.calTholdCICalibXML(calibName, mode = calCalibXML.MODE_CREATE)
     dacData = (uldDacData, lacDacData, fleDacData, fheDacData)
     adcData = (uldAdcData, lacAdcData, fleAdcData, fheAdcData)
-    calibFile.write(dacData, adcData, intNonlinAdcData[calConstant.CRNG_HEX1], pedData, leGainData, heGainData,
-                    biasAdcData, tems = tlist)
+    calibFile.write(dacData, adcData, intNonlinAdcData[calConstant.CRNG_HEX1], intNonlinLengthData[calConstant.CRNG_HEX1],
+                    pedData, leGainData, heGainData, biasAdcData, tems = tlist)
     calibFile.close()
 
 

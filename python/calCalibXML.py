@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/11/03 22:01:32 $"
-__version__   = "$Revision: 1.33 $, $Author: dwood $"
+__date__      = "$Date: 2005/11/07 16:23:46 $"
+__version__   = "$Revision: 1.34 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -414,7 +414,7 @@ class calTholdCICalibXML(calCalibXML):
                         
                         tcr.setAttribute('range', 'HEX1')
 
-                        size = intNonlinLength[tem, row, end, fe, 0]
+                        size = int(intNonlinLength[tem, row, end, fe, 0])
                         adc = intNonlinData[tem, row, end, fe, (size - 1)]
                         tcr.setAttribute('ULDVal', '%0.3f' % adc)
                         tcr.setAttribute('ULDSig', '30')
