@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Mon Nov 14 10:59:47 PST 2005
+calibGenCAL/python/cfg
+
+Modified Files:
+	intNonlinMerge.cfg tholdCIGen.cfg 
+Log Message:
+updating dtd version # for intlin related scripts
+
+    *
+------------------------------------------------------------
+User: fewtrell  Mon Nov 14 10:59:47 PST 2005
 calibGenCAL/python
 
 Modified Files:
