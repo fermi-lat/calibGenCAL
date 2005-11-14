@@ -11,8 +11,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Process full set of GLAST CAL ground calibration event files."
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2005/09/09 17:39:24 $"
-__version__   = "$Revision: 1.14 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/29 22:07:20 $"
+__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -297,7 +297,7 @@ if int(merge_enabled):
     mergeConfig = ConfigParser.SafeConfigParser()
     # - defaults
     mergeConfig.add_section('dtdfiles')
-    mergeConfig.set('dtdfiles','dtdfile','calCalib_v2r2.dtd')
+    mergeConfig.set('dtdfiles','dtdfile','calCalib_v2r3.dtd')
     
     mergeConfig.add_section('infiles')
     for tower in tower_bays:
