@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/11/07 16:23:46 $"
-__version__   = "$Revision: 1.34 $, $Author: dwood $"
+__date__      = "$Date: 2005/11/07 16:55:49 $"
+__version__   = "$Revision: 1.35 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -86,7 +86,7 @@ class calCalibXML(calXML.calXML):
         g = self.getDoc().createElement('generic')
         g.setAttribute('instrument', 'LAT')
         g.setAttribute('calibType', str(type))
-        g.setAttribute('fmtVersion', 'v2r2')
+        g.setAttribute('fmtVersion', 'v2r3')
         g.setAttribute('creator', 'myname')
         ts = time.strftime('%Y-%m-%d-%H:%M', time.gmtime())
         g.setAttribute('timestamp', ts)
