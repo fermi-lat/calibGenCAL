@@ -515,8 +515,12 @@ void MuonCalib::readIntNonlin(const string &filename) {
                >> rng
                >> dac
                >> adc; // first 4 columns in file id the xtal & adc range
-    if (lineStream.fail())
-      throw string("Inl file '" + filename + "' is incomplete.");
+    if (lineStream.fail()) {
+      ostringstream nLineStr;
+      nLineStr << nLine;
+      throw string("Inl file '" + filename + "' is incomplete. (line "
+                   + nLineStr.str() + ")");
+    }
 
     // we are only interested in X8 splines for MuonCalibration
     if (rng == LEX8 || rng == HEX8) {
