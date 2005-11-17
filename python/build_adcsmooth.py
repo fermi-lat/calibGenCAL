@@ -10,8 +10,8 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Build batch file containing commands to run adcsmooth filtering script"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2005/09/30 20:40:28 $"
-__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/09/30 20:58:34 $"
+__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -74,6 +74,7 @@ if len(detsections) == 0:
 # open batch file to receive adcsmooth commands
 
 cmdbat = open('adcsmooth.bat','w')
+cmdsh  = open('adcsmooth.sh','w')
 
 # loop over modules
 
@@ -145,27 +146,53 @@ for idet in detsections:
 			flename+" "+filesplit[0]+"_filtered.xml\n"
 		log.info(cmdline)
 		cmdbat.write(cmdline)
+# Write out run command to .sh file
+		filesplit = os.path.splitext(flename)
+		cmdline = r"python $CALIBGENCALROOT/python/adcsmooth.py -V "+\
+			flename+" "+filesplit[0]+"_filtered.xml\n"
+		log.info(cmdline)
+		cmdsh.write(cmdline)
+
 	if fhename != 'skip':
 # Write out run command to batch file
 		filesplit = os.path.splitext(fhename)
 		cmdline = r"python %CALIBGENCALROOT%/python/adcsmooth.py -V "+\
 			fhename+" "+filesplit[0]+"_filtered.xml\n"
 		cmdbat.write(cmdline)
+# Write out run command to .sh file
+		filesplit = os.path.splitext(fhename)
+		cmdline = r"python $CALIBGENCALROOT/python/adcsmooth.py -V "+\
+			fhename+" "+filesplit[0]+"_filtered.xml\n"
+		cmdsh.write(cmdline)
+
+
 	if lacname != 'skip':
 # Write out run command to batch file
 		filesplit = os.path.splitext(lacname)
 		cmdline = r"python %CALIBGENCALROOT%/python/adcsmooth.py -V "+\
 			lacname+" "+filesplit[0]+"_filtered.xml\n"
 		cmdbat.write(cmdline)
+# Write out run command to .sh file
+		filesplit = os.path.splitext(lacname)
+		cmdline = r"python $CALIBGENCALROOT/python/adcsmooth.py -V "+\
+			lacname+" "+filesplit[0]+"_filtered.xml\n"
+		cmdsh.write(cmdline)
+
 	if uldname != 'skip':
 # Write out run command to batch file
 		filesplit = os.path.splitext(uldname)
 		cmdline = r"python %CALIBGENCALROOT%/python/adcsmooth.py -V "+\
 			uldname+" "+filesplit[0]+"_filtered.xml\n"
 		cmdbat.write(cmdline)
+# Write out run command to .sh file
+		filesplit = os.path.splitext(uldname)
+		cmdline = r"python $CALIBGENCALROOT/python/adcsmooth.py -V "+\
+			uldname+" "+filesplit[0]+"_filtered.xml\n"
+		cmdsh.write(cmdline)
 
 # close output file and terminate
 cmdbat.close()
+cmdsh.close()
 
 sys.exit(0)
 

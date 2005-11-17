@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to smooth CAL XML file ADC/DAC characterization data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/14 18:20:55 $"
-__version__   = "$Revision: 1.5 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/15 12:50:30 $"
+__version__   = "$Revision: 1.6 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
