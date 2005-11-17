@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Nov 17 13:49:32 PST 2005
+calibGenCAL/unit_test
+
+Added Files:
+	README build_adcsmooth.cfg build_gensettings_cfg.cfg 
+	get_slac_calibdac.cfg 
+Log Message:
+setting up cfg files for a comprehensive calibGenCAL unit test.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Nov 17 13:48:07 PST 2005
 calibGenCAL/python/cfg
 
