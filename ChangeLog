@@ -1,4 +1,26 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Nov 17 13:48:06 PST 2005
+calibGenCAL/python
+
+Modified Files:
+	adcsmooth.py build_adcsmooth.py build_gensettings_cfg.py 
+	genFLEsettings.py get_slac_calibdac.py 
+Log Message:
+small improvements to genjsettings scripts....
+mostly to allow the to run better on linux.
+
+adcsmooth.py - now generates a .sh file a long w/ .bat file
+
+build_gensettings.py - now can find bias files w/out uneeded CAL serial#
+embedded in filenames
+
+get_slac_calibdac.py - now retrieves pedestal files as well as the dac
+files.
+
+unit_test
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Nov 17 13:45:22 PST 2005
 calibGenCAL/unit_test
 
