@@ -13,8 +13,8 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Retrieve DAC settings files from SLAC using SCP"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2005/09/30 20:40:28 $"
-__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/09/30 20:58:34 $"
+__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -82,6 +82,7 @@ for isec in modsections:
     fhe2adcrun = None
     lac2adcrun = None
     uld2adcrun = None
+    pedestalrun = None
     disk = None
 
     options = icfile.options(isec)
@@ -98,6 +99,8 @@ for isec in modsections:
             lac2adcrun = icfile.get(isec,opt)
         elif opt == 'uld2adc':
             uld2adcrun = icfile.get(isec,opt)
+        elif opt == 'pedestal':
+            pedestalrun = icfile.get(isec,opt)
         elif opt == 'disk':
             disk = icfile.get(isec,opt)
 
@@ -115,31 +118,37 @@ for isec in modsections:
             fle2adcrun = str(srint-4)
         if relgainrun is None:
             relgainrun = str(srint-5)
+        if pedestalrun is None:
+            pedestalrun = str(srint-6)
         if disk is None:
             disk = 'u21'
 
 # add scp commands to output batch file
 
     if relgainrun != 'skip':
-        cmdbat.write(r'scp '+slacuser+'@glast01.slac.stanford.edu:'+\
+        cmdbat.write(r'scp "'+slacuser+'@glast01.slac.stanford.edu:'+\
                  '/nfs/farm/g/glast/'+disk+'/Integration/rawData/'+\
-                 relgainrun+r'/*relgain*.xml .'+'\n')
+                 relgainrun+r'/*relgain*.xml" .'+'\n')
+    if pedestalrun != 'skip':
+        cmdbat.write(r'scp "'+slacuser+'@glast01.slac.stanford.edu:'+\
+                 '/nfs/farm/g/glast/'+disk+'/Integration/rawData/'+\
+                 pedestalrun+r'/*pedestal*.xml" .'+'\n')
     if fle2adcrun != 'skip':
-            cmdbat.write(r'scp '+slacuser+'@glast01.slac.stanford.edu:'+\
+            cmdbat.write(r'scp "'+slacuser+'@glast01.slac.stanford.edu:'+\
                  '/nfs/farm/g/glast/'+disk+'/Integration/rawData/'+\
-                 fle2adcrun+r'/*fle2adc*.xml .'+'\n')
+                 fle2adcrun+r'/*fle2adc*.xml" .'+'\n')
     if fhe2adcrun != 'skip':
-            cmdbat.write(r'scp '+slacuser+'@glast01.slac.stanford.edu:'+\
+            cmdbat.write(r'scp "'+slacuser+'@glast01.slac.stanford.edu:'+\
                  '/nfs/farm/g/glast/'+disk+'/Integration/rawData/'+\
-                 fhe2adcrun+r'/*fhe2adc*.xml .'+'\n')
+                 fhe2adcrun+r'/*fhe2adc*.xml" .'+'\n')
     if lac2adcrun != 'skip':
-            cmdbat.write(r'scp '+slacuser+'@glast01.slac.stanford.edu:'+\
+            cmdbat.write(r'scp "'+slacuser+'@glast01.slac.stanford.edu:'+\
                  '/nfs/farm/g/glast/'+disk+'/Integration/rawData/'+\
-                 lac2adcrun+r'/*[0-9]_FM*lac2adc*.xml .'+'\n')        #ignore smooth files
+                 lac2adcrun+r'/*[0-9]_FM*lac2adc*.xml" .'+'\n')        #ignore smooth files
     if uld2adcrun != 'skip':
-            cmdbat.write(r'scp '+slacuser+'@glast01.slac.stanford.edu:'+\
+            cmdbat.write(r'scp "'+slacuser+'@glast01.slac.stanford.edu:'+\
                  '/nfs/farm/g/glast/'+disk+'/Integration/rawData/'+\
-                 uld2adcrun+r'/*uld2adc*.xml .'+'\n')
+                 uld2adcrun+r'/*uld2adc*.xml" .'+'\n')
 cmdbat.close()
 os.system(batfileroot+'.bat > '+batfileroot+'.log 2>&1')
 sys.exit(0)    

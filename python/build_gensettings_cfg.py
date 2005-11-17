@@ -9,8 +9,8 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Identifies files and builds config file for gensettings.py"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2005/09/30 20:58:34 $"
-__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/10/04 21:52:18 $"
+__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -85,12 +85,12 @@ outfilepath = None
 outfilename = None
 
 if cfile.has_section(outputsection):
-	outoptions = cfile.options(outputsection)
-	for opt in outoptions:
-		if opt == 'outfilepath':
-			outfilepath = cfile.get(outputsection,opt)
-		if opt == 'outfilename':
-			outfilename = cfile.get(outputsection,opt)
+    outoptions = cfile.options(outputsection)
+    for opt in outoptions:
+        if opt == 'outfilepath':
+            outfilepath = cfile.get(outputsection,opt)
+        if opt == 'outfilename':
+           outfilename = cfile.get(outputsection,opt)
 
 if outfilepath is None:
     outfilepath = '.'
@@ -176,14 +176,16 @@ for idet in detsections:
 # either change them or use override
 
     if biasname is None:
-        biasname = glob.glob(filepath+'/*'+idet+'*[bB]ias*.xml')
+        biasname = glob.glob(filepath+'/*T'+towerstr+'*[bB]ias*.xml')
     if adc2nrgname is None:
         adc2nrgname = glob.glob(filepath+'/*T'+towerstr+'*adc2nrg*.xml')
 
 # in case adc2nrg uses module number rather than tower...
 
-        if len(adc2nrgname) == 0:
-            adc2nrgname = glob.glob(filepath+'/*'+idet+'*adc2nrg*.xml')    
+    if len(biasname) == 0:
+        biasname = glob.glob(filepath+'/*'+idet+'*[bB]ias*.xml')
+    if len(adc2nrgname) == 0:
+        adc2nrgname = glob.glob(filepath+'/*'+idet+'*adc2nrg*.xml')    
     if relgainname is None:
         relgainname = glob.glob(filepath+'/*'+idet+'*relgain*.xml')
     if flename is None:
