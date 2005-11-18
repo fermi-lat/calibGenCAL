@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Nov 18 10:38:33 PST 2005
+calibGenCAL/unit_test
+
+Added Files:
+	tholdCIGen.cfg 
+Log Message:
+first calibGenCAL unit test
+    *
+------------------------------------------------------------
 User: dwood  Fri Nov 18 09:21:17 PST 2005
 calibGenCAL/python
 
