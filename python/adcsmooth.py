@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to smooth CAL XML file ADC/DAC characterization data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/15 12:50:30 $"
-__version__   = "$Revision: 1.6 $, $Author: dwood $"
+__date__      = "$Date: 2005/11/17 21:48:06 $"
+__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -76,6 +76,7 @@ if __name__ == '__main__':
     inData = inFile.read()
     tlist = inFile.getTowers()
     info = inFile.info()
+    version = inFile.getVersion()
     inFile.close()
 
     type = info['TTYPE1']
@@ -121,7 +122,7 @@ if __name__ == '__main__':
     outFile = calFitsXML.calFitsXML(fileName = outName, mode = calFitsXML.MODE_CREATE, labels = la, \
         calSNs = sn, dataset = info['DATASET'], lrefgain = info['LREFGAIN'], hrefgain = info['HREFGAIN'], \
         pedFile = info['PEDFILE'], erng = info['ERNG'], reportName = info['RPTNAME'], runId = info['RUNID'], \
-        comment = info['COMMENT'], type = info['TTYPE1'])
+        comment = info['COMMENT'], type = info['TTYPE1'], version = version)
 
     outFile.write(outData, tems = tlist)
     outFile.close()
