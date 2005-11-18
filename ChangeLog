@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Nov 18 10:38:34 PST 2005
+calibGenCAL/unit_test/output
+
+Added Files:
+	8tower_unittest_tholdci.xml 
+	ci_intnonlin.digitization-v3r3p0_135004329_digi_DIGI.xml 
+Log Message:
+first calibGenCAL unit test
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Nov 18 10:38:33 PST 2005
 calibGenCAL/unit_test
 
