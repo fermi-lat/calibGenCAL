@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Thold_CI calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/07/28 22:38:29 $"
-__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/09/09 17:39:24 $"
+__version__   = "$Revision: 1.10 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -249,11 +249,16 @@ def calcError(adcData, uldData, pedData):
 
                             uld = uldData[tem, row, end, fe, erng]
                             ped = pedData[tem, row, end, fe, erng]
+
+                            if erng == calConstant.CRNG_HEX1:
+                                uldHighLimit = 4096.0
+                            else:
+                                uldHighLimit = 4095.0
                             
-                            if (uld + ped) > 4095.0:
+                            if (uld + ped) > uldHighLimit:
                                 
-                                log.error('ULD + PED %0.3f > 4095.0 for T%d,%s%s,%d,%s',
-                                          (uld + ped), tem, calConstant.CROW[row], calConstant.CPM[end],
+                                log.error('ULD + PED %0.3f > %0.1f for T%d,%s%s,%d,%s',
+                                          (uld + ped), uldHighLimit, tem, calConstant.CROW[row], calConstant.CPM[end],
                                           fe, calConstant.CRNG[erng])
                                 status = 1
 
