@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Nov 18 10:42:52 PST 2005
+calibGenCAL/unit_test/output
+
+Added Files:
+	mc_asym.digitization-v3r3p1_135004384_digi_DIGI.xml 
+	mc_mpd.digitization-v3r3p1_135004384_digi_DIGI.xml 
+	mc_peds.digitization-v3r3p1_135004367_digi_DIGI.xml 
+Log Message:
+sucessful unit test outputs
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Nov 18 10:38:34 PST 2005
 calibGenCAL/unit_test/output
 
