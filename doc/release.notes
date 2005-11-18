@@ -154,3 +154,24 @@ v3r8p2 - fewtrell
         - recon & mc trees are now optionally #defined.   default is disabled.
         - also 'cmt use' of reconRootData & commonRootData is also optional.
         - if you want to expand calibGenCAL to see recon & mc, you need to uncomment/#define this code back in.
+
+--------------------------------------------------------------------------------------------------------------------------
+v3r8p3 - fewtrell / dwood
+--------------------------------------------------------------------------------------------------------------------------
+python scripts now support new intNonlin format (calCalib_v2r3.dtd)
+python 'gensettings' scripts now support linux
+
+- unit_test 
+        - set of cfg files for running full calibGenCAL suite on 8 tower calibration data 
+        - environment is expected to be SLAC linux as data files are available via nfs
+        - correct output is saved in unit_test/output
+- adcsmooth.py 
+        - fixed 'issue' w/ uld file version #'s.
+- build_adcsmooth.py
+        - now builds .sh file along w/ .bat file for linux support.
+- build_gensettings.py
+        - can find bias files w/out redundant CAL serial # in filename
+- get_slac_calibdac.py 
+        - retrieves pedestal files along w/ other files.
+- tholdCIGen.py
+        - now supports new intNonlin format
