@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Jan 12 10:48:36 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	calADCFilter.py 
+Log Message:
+Changed calADCFilter.__fleExtrapolate() method to look further back for a segment to extrapolate from; new sparse data contains 7 missing points, making the old backtrack value of 5 a bad choice; using a backtrack value of 10 seems to run the extrapolation from a good line segment.
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Jan  3 11:21:51 PST 2006
 calibGenCAL/src
 
