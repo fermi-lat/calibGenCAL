@@ -175,3 +175,13 @@ python 'gensettings' scripts now support linux
         - retrieves pedestal files along w/ other files.
 - tholdCIGen.py
         - now supports new intNonlin format
+
+--------------------------------
+v3r8p4 - fewtrell
+python - fixed a few dos/unix newline screw ups that were breaking things
+--------------------------------
+
+-------------------------------
+v3r8p5 - dwood
+adcsmooth - lengthened lookback for fle2adc extrapolation.  this will work better w/ new sparser data.  avoids 'knee' in output curve
+-------------------------------
