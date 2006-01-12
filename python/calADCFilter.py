@@ -6,9 +6,9 @@ Tool to smooth CAL ADC/DAC data.
 __facility__  = "Offline"
 __abstract__  = "Tool to smooth CAL ADC/DAC data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/15 12:50:30 $"
-__version__   = "$Revision: 1.3 $, $Author: dwood $"
-__release__   = "$Name: v3r8p3 $"
+__date__      = "$Date: 2005/12/20 20:07:50 $"
+__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 
@@ -242,7 +242,7 @@ class calADCFilter:
         while adc == sat:
             dac -= 1
             adc = data[dac]
-        dac -= 5
+        dac -= 10
 
         # get slope of last good segment
                     
