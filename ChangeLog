@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Jan 13 09:20:11 PST 2006
+calibGenCAL/unit_test
+
+Modified Files:
+	build_adcsmooth.cfg build_gensettings_cfg.cfg 
+	get_slac_calibdac.cfg runSuiteParallel.cfg tholdCIGen.cfg 
+Log Message:
+added cvs header field
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Jan 13 09:18:00 PST 2006
 calibGenCAL/python/cfg
 
