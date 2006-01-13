@@ -1,4 +1,21 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Jan 13 09:17:58 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	adc2nrgVal.bat adcplot.bat adcsmooth.bat asymMerge.bat 
+	asymTXT2XML.bat asymVal.bat biasVal.bat build_adcsmooth.bat 
+	build_gensettings_cfg.bat genFHEsettings.bat 
+	genFLEsettings.bat genGainSettings.bat genLACsettings.bat 
+	genULDsettings.bat gensettings.bat get_slac_calibdac.bat 
+	intNonlinMerge.bat intNonlinVal.bat mevPerDacMerge.bat 
+	mevPerDacVal.bat mpdTXT2XML.bat pedMerge.bat pedTXT2XML.bat 
+	pedVal.bat runSuiteParallel.bat tholdCIGen.bat tholdCIVal.bat 
+Log Message:
+added cvs header tags
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Jan 13 09:15:52 PST 2006
 calibGenCAL/doc
 
