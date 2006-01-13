@@ -1,6 +1,10 @@
 #ifndef CfData_h
 #define CfData_h
 
+/** @file
+    $Header$
+ */
+
 // LOCAL INCLUDES
 #include "CalDefs.h"
 #include "CfCfg.h"

@@ -1,3 +1,6 @@
+/** @file
+    $Header$
+ */
 // LOCAL INCLUDES
 #include "CfCfg.h"
 #include "CalDefs.h"
