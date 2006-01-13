@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Jan 13 09:25:59 PST 2006
+calibGenCAL/src
+
+Modified Files:
+	CGCUtil.cxx CGCUtil.h CalDefs.cxx CfCfg.cxx CfData.cxx 
+	CfData.h 
+Log Message:
+add cvs header tag.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Jan 13 09:20:11 PST 2006
 calibGenCAL/unit_test
 
