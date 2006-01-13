@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri Jan 13 15:38:06 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	calADCFilter.py 
+Log Message:
+Added extrapolation for low end (find and coarse ranges) data in characterization tables; eliminates problems with data near pedestal noise at the expense of making more of the characterization data fake.
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Jan 13 09:25:59 PST 2006
 calibGenCAL/src
 
