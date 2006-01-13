@@ -1,3 +1,4 @@
+REM $Header$
 @echo off
 
 if not defined CALIBGENCALROOT goto :ERROR
