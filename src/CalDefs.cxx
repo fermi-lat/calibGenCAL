@@ -1,5 +1,6 @@
 /** @file CalDefs.cxx
     \brief Glast Calorimeter array code.
+    $Header$
  */
 
 // LOCAL INCLUDES

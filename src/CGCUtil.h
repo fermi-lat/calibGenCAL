@@ -1,6 +1,10 @@
 #ifndef CGCUtil_H
 #define CGCUtil_H
 
+/** @file
+    $Header$
+ */
+
 // LOCAL INCLUDES
 
 // GLAST INCLUDES
@@ -21,7 +25,7 @@ using namespace std;
 
 namespace CGCUtil {
 
-  const string CVS_TAG("$Name: v3r8p2 $");
+  const string CVS_TAG("$Name: v3r8p3 $");
 
   /// Template function fills any STL type container with zero values
   template <class T> static void fill_zero(T &container) {

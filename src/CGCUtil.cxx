@@ -3,6 +3,8 @@
     @author Zachary Fewtrell
 
     \brief generic utility functions used in calibGenCAL pkg
+
+    $Header$
  */
 
 // LOCAL INCLUDES
