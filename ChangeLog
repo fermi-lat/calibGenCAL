@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Jan 13 09:15:52 PST 2006
+calibGenCAL/doc
+
+Modified Files:
+	gensettings_scripts.html release.notes 
+Log Message:
+added cvs header tag to top of file
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r8p5, operation: add
 Package: calibGenCAL
