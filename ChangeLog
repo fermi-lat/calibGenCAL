@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Jan 13 09:18:00 PST 2006
+calibGenCAL/python/cfg
+
+Modified Files:
+	asymMerge.cfg build_gensettings_cfg.cfg genFHEsettings.cfg 
+	genFLEsettings.cfg genLACsettings.cfg genULDsettings.cfg 
+	get_slac_calibdac.cfg intNonlinMerge.cfg mevPerDacMerge.cfg 
+	pedMerge.cfg runSuiteParallel.cfg tholdCIGen.cfg 
+Log Message:
+added cvs header tags
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Jan 13 09:17:58 PST 2006
 calibGenCAL/python
 
