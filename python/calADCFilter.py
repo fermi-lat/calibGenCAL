@@ -6,8 +6,8 @@ Tool to smooth CAL ADC/DAC data.
 __facility__  = "Offline"
 __abstract__  = "Tool to smooth CAL ADC/DAC data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/12/20 20:07:50 $"
-__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/01/12 18:48:36 $"
+__version__   = "$Revision: 1.5 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -89,16 +89,20 @@ class calADCFilter:
                                          (tem, calConstant.CROW[row], calConstant.CPM[end], fe))
                         
                         self.__floor(outData[tem,row,end,fe,0:64])
-                        self.__floor(outData[tem,row,end,fe,64:128]) 
+                        self.__floor(outData[tem,row,end,fe,64:128])
+
+                        if self.__type == DAC_TYPE_FLE or self.__type == DAC_TYPE_FHE:
+                            self.__extrapolateLow(outData[tem, row, end, fe, 0:64])
+                            self.__extrapolateLow(outData[tem, row, end, fe, 64:128])
 
                         self.__restore(outData[tem,row,end,fe,0:64])
                         self.__restore(outData[tem,row,end,fe,64:128])                    
 
                         self.__filter(outData[tem,row,end,fe,0:64])
-                        self.__filter(outData[tem,row,end,fe,64:128])
+                        self.__filter(outData[tem,row,end,fe,64:128])                        
 
                         if self.__type == DAC_TYPE_FLE:
-                            self.__fleExtrapolate(outData[tem,row,end,fe,64:128])
+                            self.__extrapolateHigh(outData[tem,row,end,fe,64:128])
                     
                         if self.__smoothing:
                             self.__smooth(outData[tem,row,end,fe,0:64])
@@ -223,10 +227,54 @@ class calADCFilter:
                         aa = ax
                         self.__log.debug("new point (%d,%f)" % (d, ax))
                     dList = []
-                    da = d + 1   
+                    da = d + 1
 
 
-    def __fleExtrapolate(self, data):
+    def __extrapolateLow(self, data):
+        """
+        Extrapolate FLE/FHE ADC values beyond noise range.
+
+        Param: data - A Numeric array containing one range of ADC data.  The first good
+        segment after pedestal noise is used to extrapolate the remaining values in the range.
+        The data is changed in place.
+        """
+        
+        # find first two good data points
+
+        for d in range(0, 64):
+            a = data[d]
+            if a > 0:
+                d0 = d
+                break
+
+        for d in range((d0 + 1), 64):
+            a = data[d]
+            if a > 0:
+                d1 = d
+                break
+            
+        # get slope of first good segment
+
+        a0 = data[d0]
+        a1 = data[d1]
+        m = (a1 - a0) / (d1 - d0)
+
+        self.__log.debug('extrapolate: %d %f', d0, m)        
+
+        # extrapolate preceding values
+
+        for d in range((d0 - 1), -1, -1):
+
+            a = a0 - m
+            if a < 0:
+                a = 0
+            data[d] = a
+            a0 = a
+                
+            
+
+
+    def __extrapolateHigh(self, data):
         """
         Extrapolate FLE ADC values beyond testing range.
 
