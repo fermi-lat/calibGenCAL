@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Sat Jan 21 09:43:50 PST 2006
+calibGenCAL/python
+
+Added Files:
+	reverse_uld.py 
+Log Message:
+quick script to fix uld files that have data in wrong order.
+hopefully this will be a one time problem & we don't have to officially support & maintain this hack.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Sat Jan 21 09:13:59 PST 2006
 calibGenCAL/python
 
