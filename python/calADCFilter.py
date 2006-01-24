@@ -6,8 +6,8 @@ Tool to smooth CAL ADC/DAC data.
 __facility__  = "Offline"
 __abstract__  = "Tool to smooth CAL ADC/DAC data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/01/12 18:48:36 $"
-__version__   = "$Revision: 1.5 $, $Author: dwood $"
+__date__      = "$Date: 2006/01/13 23:38:05 $"
+__version__   = "$Revision: 1.6 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -91,22 +91,21 @@ class calADCFilter:
                         self.__floor(outData[tem,row,end,fe,0:64])
                         self.__floor(outData[tem,row,end,fe,64:128])
 
-                        if self.__type == DAC_TYPE_FLE or self.__type == DAC_TYPE_FHE:
-                            self.__extrapolateLow(outData[tem, row, end, fe, 0:64])
-                            self.__extrapolateLow(outData[tem, row, end, fe, 64:128])
+                        self.__extrapolateLow(outData[tem, row, end, fe, 0:64])
+                        self.__extrapolateLow(outData[tem, row, end, fe, 64:128])
 
                         self.__restore(outData[tem,row,end,fe,0:64])
                         self.__restore(outData[tem,row,end,fe,64:128])                    
 
                         self.__filter(outData[tem,row,end,fe,0:64])
-                        self.__filter(outData[tem,row,end,fe,64:128])                        
+                        self.__filter(outData[tem,row,end,fe,64:128])
 
                         if self.__type == DAC_TYPE_FLE:
                             self.__extrapolateHigh(outData[tem,row,end,fe,64:128])
                     
                         if self.__smoothing:
                             self.__smooth(outData[tem,row,end,fe,0:64])
-                            self.__smooth(outData[tem,row,end,fe,64:128])
+                            self.__smooth(outData[tem,row,end,fe,64:128])                            
 
 
     def __runULD(self, outData, tems):
@@ -132,13 +131,17 @@ class calADCFilter:
                             if self.__smoothing:
                                 self.__smooth(outData[erng,tem,row,end,fe,0:64])
                                 self.__smooth(outData[erng,tem,row,end,fe,64:128])                            
+
         
     def __floor(self, data):
         """
         Look for outlying data in pedestal zero data.  The characteristic is point before = 0
         and the point after is less.  Only the first point meeting these criteria is removed.
         Also check for zero response in the last data point.
+        Next the pedestal floor is scanned for and set to 0.
         """
+
+        slopes = [75.0, 125.0, 0, 150.0, 125.0]        
 
         if data[-1] == 0.0:
             dac = 63
@@ -147,16 +150,35 @@ class calADCFilter:
             data[-1] = data[dac]
             self.__log.debug('floor: replacing (63,%f)', data[dac])
 
-        for dac in range(1, 63):
-
-            a0 = data[dac - 1]
+        for dac in range(0, 63):
+            if dac == 0:
+                a0 = 0.0
+            else:
+                a0 = data[dac - 1]
             a1 = data[dac]            
             a2 = data[dac + 1]
                               
             if a1 != 0.0 and a0 == 0.0 and a1 > a2:
                 data[dac] = 0.0
                 self.__log.debug('floor: replacing (%d,%f)', dac, a1)
-                return
+                break
+
+        for dac in range(0, 64):
+            if data[dac] == 0.0:
+                continue
+            d0 = dac
+            for dac in range(d0 + 1, 64):
+                if data[dac] == 0.0:
+                    continue
+                d1 = dac
+                a0 = data[d0]
+                a1 = data[d1]
+                y = (a1 - a0)
+                if y < slopes[self.__type] and a1 < 100.0:
+                    data[d0] = 0.0
+                    self.__log.debug('floor: replacing %d,%d,%f', d0, d1, y)
+                    break
+                    
 
 
     def __filter(self, data):
@@ -202,10 +224,14 @@ class calADCFilter:
         interpolation end points.
         """
 
+        for d in range(0, 64):
+            if data[d] > 0.0:
+                da = d
+                break
+
         dList = []
-        da = 0
-        aa = data[0]
-        for dx in range(0, 64):
+        aa = data[da]
+        for dx in range(da, 64):
             if data[dx] == 0:
                 if len(dList) == 0:
                     if dx != 0:
@@ -232,11 +258,11 @@ class calADCFilter:
 
     def __extrapolateLow(self, data):
         """
-        Extrapolate FLE/FHE ADC values beyond noise range.
+        Extrapolate ADC values beyond noise range.
 
         Param: data - A Numeric array containing one range of ADC data.  The first good
-        segment after pedestal noise is used to extrapolate the remaining values in the range.
-        The data is changed in place.
+                      segment after pedestal noise is used to extrapolate the remaining
+                      values in the range. The data is changed in place.              
         """
         
         # find first two good data points
@@ -247,11 +273,14 @@ class calADCFilter:
                 d0 = d
                 break
 
+        d1 = None
         for d in range((d0 + 1), 64):
             a = data[d]
             if a > 0:
                 d1 = d
                 break
+        if d1 is None:
+            return
             
         # get slope of first good segment
 
@@ -271,8 +300,6 @@ class calADCFilter:
             data[d] = a
             a0 = a
                 
-            
-
 
     def __extrapolateHigh(self, data):
         """
@@ -290,8 +317,8 @@ class calADCFilter:
         while adc == sat:
             dac -= 1
             adc = data[dac]
-        dac -= 10
-
+        dac -= 15
+        
         # get slope of last good segment
                     
         a0 = data[dac - 1]
@@ -304,7 +331,7 @@ class calADCFilter:
 
         for d in range((dac + 1), 64):
             data[d] = a1 + m
-            a1 = data[d]
+            a1 = data[d]            
             
 
     def __mean(self, points):
@@ -322,30 +349,30 @@ class calADCFilter:
         Run 5-point boxcar digital filter on data.
         """
                         
-        for dac in range(0, 64):
+        for dac in range(2, 62):
 
             a = []
             adc = data[dac]
+            if adc == 0.0:
+                continue
             a.append(adc)
                             
-            if dac > 0:
-                adc = data[dac - 1]
-                a.append(adc)
-            if dac < 63:
-                adc = data[dac + 1]
-                a.append(adc)   
-            if dac > 1:
-                adc = data[dac - 2]
-                a.append(adc)
-            if dac < 62:
-                adc = data[dac + 2]
-                a.append(adc)
+            adc = data[dac - 1]
+            a.append(adc)
+            
+            adc = data[dac + 1]
+            a.append(adc)   
+
+            adc = data[dac - 2]
+            a.append(adc)
+
+            adc = data[dac + 2]
+            a.append(adc)
                                                 
             adc = self.__mean(a)
             data[dac] = adc
 
-                 
-
+    
                         
 
     
