@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Tue Jan 24 13:58:40 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	calADCFilter.py 
+Log Message:
+Added calADCFilter.__extrapolateLow() call to LAC processing; added more logic to calADCFilter.__floor() and calADCFilter.__restore() to zero out pedestal noise region of curves (especially LAC); improved calADCFilter.__smooth() method so that the endpoints of the curve are not processed.
+    *
+------------------------------------------------------------
 User: fewtrell  Sat Jan 21 14:34:40 PST 2006
 calibGenCAL/python/cfg
 
