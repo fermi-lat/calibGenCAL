@@ -138,6 +138,7 @@ files produced by the CI tests provide the ADC threshold data lookup for each co
 - <tt> mevPerDacVal [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
 - <tt> pedVal       [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
 - <tt> tholdCIVal   [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> charVal      [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
 
 The validation scripts perform simple checks on the values and formats
 of the various CAL calibration XML file types.  The checks are usually nothing more than limit and
