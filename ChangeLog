@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Wed Jan 25 09:59:10 PST 2006
+calibGenCAL/python
+
+Added Files:
+	mpfit.py 
+Log Message:
+Mark Rivers function fit module mpfit.py
+    *
+------------------------------------------------------------
 User: dwood  Wed Jan 25 07:58:32 PST 2006
 calibGenCAL/python
 
