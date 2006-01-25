@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Wed Jan 25 07:58:32 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	calADCFilter.py 
+Log Message:
+Cleaned up calADCFilter.__runDAC() and calADCFilter.__runULD() methods.
+    *
+------------------------------------------------------------
 User: dwood  Tue Jan 24 13:58:40 PST 2006
 calibGenCAL/python
 
