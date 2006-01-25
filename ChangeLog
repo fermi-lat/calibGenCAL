@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Wed Jan 25 14:49:15 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	calADCFilter.py 
+Log Message:
+Added method calADCFilter.__fillLAC() to handle very sparse data case where only one point of data survives the floor cut (at DAC value 63); uses extrapolation and default slope of 11 to reconstruct the fine range LAC curve.
+    *
+------------------------------------------------------------
 User: dwood  Wed Jan 25 09:59:10 PST 2006
 calibGenCAL/python
 
