@@ -6,8 +6,8 @@ Tool to smooth CAL ADC/DAC data.
 __facility__  = "Offline"
 __abstract__  = "Tool to smooth CAL ADC/DAC data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/01/24 21:58:40 $"
-__version__   = "$Revision: 1.7 $, $Author: dwood $"
+__date__      = "$Date: 2006/01/25 15:58:32 $"
+__version__   = "$Revision: 1.8 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -85,7 +85,7 @@ class calADCFilter:
                     for fe in range(calConstant.NUM_FE):
 
                         self.__log.debug("T%d,%s%s,%d" %
-                                         (tem, calConstant.CROW[row], calConstant.CPM[end], fe))
+                                         (tem, calConstant.CROW[row], calConstant.CPM[end], fe))                        
 
                         fineData = outData[tem,row,end,fe,0:64]
                         coarseData = outData[tem,row,end,fe,64:128]
@@ -93,13 +93,24 @@ class calADCFilter:
                         self.__floor(fineData)
                         self.__floor(coarseData)
 
-                        self.__extrapolateLow(fineData)
+                        fillLAC = False
+                        if self.__type == DAC_TYPE_LAC:
+                            z = Numeric.nonzero(fineData)
+                            if len(z) < 2:
+                                fillLAC = True                        
+
+                        if not fillLAC:
+                            self.__extrapolateLow(fineData)
+                        else:
+                            self.__fillLAC(fineData)
                         self.__extrapolateLow(coarseData)
 
-                        self.__restore(fineData)
+                        if not fillLAC:
+                            self.__restore(fineData)
                         self.__restore(coarseData)                    
 
-                        self.__filter(fineData)
+                        if not fillLAC:
+                            self.__filter(fineData)
                         self.__filter(coarseData)
 
                         if self.__type == DAC_TYPE_FLE:
@@ -336,7 +347,31 @@ class calADCFilter:
 
         for d in range((dac + 1), 64):
             data[d] = a1 + m
-            a1 = data[d]            
+            a1 = data[d]
+
+
+    def __fillLAC(self, data):
+        """
+        Extrapolate LAC values from very sparse data (single point at DAC 63).
+
+        Param: data - A Numeric array containing one range of ADC data.  The last good
+                      point is used to extrapolate the remaining values in the range.
+                      The data is changed in place.              
+        """
+            
+        m = 11.0
+        a0 = data[63]
+        self.__log.debug('LAC fill: %d %f', a0, m)
+        
+        # extrapolate preceding values
+
+        for d in range(63, -1, -1):
+
+            a = a0 - m
+            if a < 0:
+                a = 0
+            data[d] = a
+            a0 = a
             
 
     def __mean(self, points):
