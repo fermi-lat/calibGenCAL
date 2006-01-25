@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Wed Jan 25 15:28:53 PST 2006
+calibGenCAL/src
+
+Modified Files:
+	mainpage.h 
+Log Message:
+Added charVal application to validate DAC/ADC characterization table files; currently works for FLE, FHE, and LAC; still needs work for ULD.
+    *
+------------------------------------------------------------
 User: dwood  Wed Jan 25 15:28:52 PST 2006
 calibGenCAL/python
 
