@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Jan 26 11:18:54 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	calADCFilter.py 
+Log Message:
+Fixed extrapolation in calADCFilter.__fillLAC(); added comments.
+    *
+------------------------------------------------------------
 User: dwood  Thu Jan 26 09:37:40 PST 2006
 calibGenCAL/python
 
