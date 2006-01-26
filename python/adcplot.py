@@ -1,12 +1,19 @@
 """
 Generate ROOT plots for CAL ADC/DAC characerization data.
+
+adcplot [-V] <xml_file> <root_file>
+
+Where:
+    -V          = if present, run in verbose mode
+    xml_file    = DAC/ADC characterization table XML data file
+    root_file   = ROOT file to store output graphs
 """
 
 
 __facility__  = "Offline"
 __abstract__  = "Generate ROOT plots for CAL ADC/DAC characerization data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/03/30 17:35:57 $"
+__date__      = "$Date: 2005/09/12 20:08:25 $"
 __version__   = "$Revision: 1.1 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"

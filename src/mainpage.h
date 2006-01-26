@@ -148,9 +148,11 @@ This requires a working implementation of PyROOT.
 
 
 - <tt> adcplot [-V] <xml_file> <root_file> </tt>
+- <tt> charplot [-V] <raw_xml_file> <filtered_xml_file> <root_file> </tt>
 
 The adcplot utility will generate ROOT plots of the CAL DAC/ADC
-characterization tables. This requires a working implementation of PyROOT. 
+characterization tables. The charplot utility overlays raw, fitered, and linear model characterization
+data plots.  These require a working implementation of PyROOT. 
 
 
 - <tt> adcsmooth [-V] <in_file> <out_file> </tt>
