@@ -6,8 +6,8 @@ Tool to smooth CAL ADC/DAC data.
 __facility__  = "Offline"
 __abstract__  = "Tool to smooth CAL ADC/DAC data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/01/26 22:38:51 $"
-__version__   = "$Revision: 1.12 $, $Author: dwood $"
+__date__      = "$Date: 2006/01/26 23:13:41 $"
+__version__   = "$Revision: 1.13 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -170,14 +170,14 @@ class calADCFilter:
 
         # look for outlying noise point in pedestal range, set to 0
 
-        for dac in range(0, 63):
+        for dac in range(0, 64):
             if dac == 0:
                 a0 = 0.0
             else:
                 a0 = data[dac - 1]
             a1 = data[dac]
 
-            for d in range(dac + 1, 63):
+            for d in range(dac + 1, 64):
                 a2 = data[d]
                 if a2 > 0.0:
                     break
