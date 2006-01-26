@@ -17,7 +17,7 @@ Where:
 __facility__  = "Offline"
 __abstract__  = "Generate ROOT plots for CAL ADC/DAC characerization data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/12 20:08:25 $"
+__date__      = "$Date: 2006/01/26 19:38:12 $"
 __version__   = "$Revision: 1.1 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
@@ -106,7 +106,7 @@ def plotDAC(rawData, filterData, info, twrs):
 
                     g = ROOT.TGraph(len(x), x, y)
 
-                    g.SetLineColor(3)
+                    g.SetLineColor(4)
                     g.SetLineStyle(2)
                     g.SetLineWidth(2)
                     lineGraph.append(g)
@@ -138,7 +138,7 @@ def plotDAC(rawData, filterData, info, twrs):
 
                     g = ROOT.TGraph(len(x), x, y)
 
-                    g.SetLineColor(3)
+                    g.SetLineColor(4)
                     g.SetLineStyle(2)
                     g.SetLineWidth(2)
                     lineGraph.append(g)                    
