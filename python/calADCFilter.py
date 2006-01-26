@@ -6,8 +6,8 @@ Tool to smooth CAL ADC/DAC data.
 __facility__  = "Offline"
 __abstract__  = "Tool to smooth CAL ADC/DAC data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/01/26 17:37:39 $"
-__version__   = "$Revision: 1.10 $, $Author: dwood $"
+__date__      = "$Date: 2006/01/26 19:18:53 $"
+__version__   = "$Revision: 1.11 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -157,9 +157,7 @@ class calADCFilter:
         and the point after is less.  Only the first point meeting these criteria is removed.
         Also check for zero response in the last data point.
         Next the pedestal floor is scanned for and set to 0.
-        """
-
-        slopes = [75.0, 125.0, 0, 150.0, 125.0]        
+        """     
 
         # fix zero response in last data point
 
@@ -177,8 +175,12 @@ class calADCFilter:
                 a0 = 0.0
             else:
                 a0 = data[dac - 1]
-            a1 = data[dac]            
-            a2 = data[dac + 1]
+            a1 = data[dac]
+
+            for d in range(dac + 1, 63):
+                a2 = data[d]
+                if a2 > 0.0:
+                    break
                               
             if a1 != 0.0 and a0 == 0.0 and a1 > a2:
                 data[dac] = 0.0
@@ -197,10 +199,10 @@ class calADCFilter:
                 d1 = dac
                 a0 = data[d0]
                 a1 = data[d1]
-                y = (a1 - a0)
-                if y < slopes[self.__type] and a1 < 100.0:
+                m = (a1 - a0) / (d1 - d0)
+                if m < 20.0 and a0 < 100.0:
                     data[d0] = 0.0
-                    self.__log.debug('floor: replacing %d,%d,%f', d0, d1, y)
+                    self.__log.debug('floor: replacing %d,%d,%f', d0, d1, m)
                     break
                     
 
