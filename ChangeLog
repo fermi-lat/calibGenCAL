@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Jan 26 14:38:51 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	calADCFilter.py 
+Log Message:
+Corrected screening of low slopes in pedestal noise region for calADCFilter.__floor() method; a global value of 20 is now used in all cases.
+    *
+------------------------------------------------------------
 User: dwood  Thu Jan 26 14:34:51 PST 2006
 calibGenCAL/python
 
