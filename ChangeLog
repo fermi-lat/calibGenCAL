@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Jan 26 15:20:28 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	calADCFilter.py 
+Log Message:
+Fixed bug in calADCFilter.__floor() which was causing the removal of the next-to-last data point when scanning for electronics noise.
+    *
+------------------------------------------------------------
 User: dwood  Thu Jan 26 15:13:41 PST 2006
 calibGenCAL/python
 
