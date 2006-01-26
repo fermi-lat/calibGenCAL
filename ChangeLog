@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: dwood  Thu Jan 26 11:38:12 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	adcplot.py 
+Added Files:
+	charplot charplot.bat charplot.py 
+Log Message:
+Added charplot utility to give more detailed look at DAC/ADC characterization files and their processing.
+    *
+------------------------------------------------------------
 User: dwood  Thu Jan 26 11:21:59 PST 2006
 calibGenCAL/python
 
