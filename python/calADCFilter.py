@@ -6,8 +6,8 @@ Tool to smooth CAL ADC/DAC data.
 __facility__  = "Offline"
 __abstract__  = "Tool to smooth CAL ADC/DAC data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/01/25 22:49:14 $"
-__version__   = "$Revision: 1.9 $, $Author: dwood $"
+__date__      = "$Date: 2006/01/26 17:37:39 $"
+__version__   = "$Revision: 1.10 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -149,6 +149,7 @@ class calADCFilter:
                                 self.__smooth(fineData)
                                 self.__smooth(coarseData)                            
 
+
         
     def __floor(self, data):
         """
@@ -160,12 +161,16 @@ class calADCFilter:
 
         slopes = [75.0, 125.0, 0, 150.0, 125.0]        
 
+        # fix zero response in last data point
+
         if data[-1] == 0.0:
             dac = 63
             while data[dac] == 0.0:
                 dac -= 1
             data[-1] = data[dac]
             self.__log.debug('floor: replacing (63,%f)', data[dac])
+
+        # look for outlying noise point in pedestal range, set to 0
 
         for dac in range(0, 63):
             if dac == 0:
@@ -179,6 +184,8 @@ class calADCFilter:
                 data[dac] = 0.0
                 self.__log.debug('floor: replacing (%d,%f)', dac, a1)
                 break
+
+        # zero out pedestal range by looking for segments with nil slope
 
         for dac in range(0, 64):
             if data[dac] == 0.0:
@@ -202,6 +209,8 @@ class calADCFilter:
         """
         Look for segments with very large slopes.  Replace them with linear interpolation.
         """
+
+        # find excessive segement slopes
             
         dList = []
 
@@ -234,6 +243,7 @@ class calADCFilter:
             self.__log.debug('new point (%d,%d)' % (dac, a))
 
 
+
     def __restore(self, data):
         """
         Replace zero points with interpolation when the points occur in groups.  The last
@@ -241,26 +251,44 @@ class calADCFilter:
         interpolation end points.
         """
 
+        # find first non-zero point
+
         for d in range(0, 64):
             if data[d] > 0.0:
                 da = d
                 break
 
+        # start search for strings of zero data
+
         dList = []
         aa = data[da]
         for dx in range(da, 64):
+            
             if data[dx] == 0:
+                
                 if len(dList) == 0:
+
+                    # start new list
+                                        
                     if dx != 0:
                         aa = data[dx - 1]
                         da = (dx - 1)
                     else:
                         aa = data[dx]
                         da = dx
+
+                # add point to segement list
+                        
                 dList.append(dx)
                 continue
+            
             else:
+                
                 if len(dList) > 0:
+
+                    # end of list
+                    # go back and interpolate points of gathered segements
+                    
                     ax = data[dx]
                     m = (ax - aa) / (dx - da)
                     self.__log.debug("interp  (%d,%f):(%d,%f):%d" % (da, aa, dx, ax, m))
@@ -269,8 +297,12 @@ class calADCFilter:
                         data[d] = ax
                         aa = ax
                         self.__log.debug("new point (%d,%f)" % (d, ax))
+                        
+                    # reset segment list
+                        
                     dList = []
                     da = d + 1
+
 
 
     def __extrapolateLow(self, data):
@@ -318,6 +350,7 @@ class calADCFilter:
             a0 = a
                 
 
+
     def __extrapolateHigh(self, data):
         """
         Extrapolate FLE ADC values beyond testing range.
@@ -351,6 +384,7 @@ class calADCFilter:
             a1 = data[d]
 
 
+
     def __fillLAC(self, data):
         """
         Extrapolate LAC values from very sparse data (single point at DAC 63).
@@ -366,7 +400,7 @@ class calADCFilter:
         
         # extrapolate preceding values
 
-        for d in range(63, -1, -1):
+        for d in range(62, -1, -1):
 
             a = a0 - m
             if a < 0:
