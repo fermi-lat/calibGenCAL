@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Jan 26 15:13:41 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	calADCFilter.py 
+Log Message:
+More tweaks to improve LAC pedestal noise rejection.
+    *
+------------------------------------------------------------
 User: dwood  Thu Jan 26 14:38:51 PST 2006
 calibGenCAL/python
 
