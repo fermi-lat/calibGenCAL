@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Jan 26 11:38:13 PST 2006
+calibGenCAL/src
+
+Modified Files:
+	mainpage.h 
+Log Message:
+Added charplot utility to give more detailed look at DAC/ADC characterization files and their processing.
+    *
+------------------------------------------------------------
 User: dwood  Thu Jan 26 11:38:12 PST 2006
 calibGenCAL/python
 
