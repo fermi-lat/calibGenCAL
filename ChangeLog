@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Jan 26 09:37:40 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	calADCFilter.py 
+Log Message:
+Removed calADCFilter.__mean() method, use Numeric.average() instead; make init error exceptions.
+    *
+------------------------------------------------------------
 User: dwood  Wed Jan 25 15:28:53 PST 2006
 calibGenCAL/src
 
