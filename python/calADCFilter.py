@@ -6,8 +6,8 @@ Tool to smooth CAL ADC/DAC data.
 __facility__  = "Offline"
 __abstract__  = "Tool to smooth CAL ADC/DAC data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/01/26 19:18:53 $"
-__version__   = "$Revision: 1.11 $, $Author: dwood $"
+__date__      = "$Date: 2006/01/26 22:38:51 $"
+__version__   = "$Revision: 1.12 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -200,7 +200,7 @@ class calADCFilter:
                 a0 = data[d0]
                 a1 = data[d1]
                 m = (a1 - a0) / (d1 - d0)
-                if m < 20.0 and a0 < 100.0:
+                if m < 20.0 and (a0 < 30.0 or a1 < 100.0):
                     data[d0] = 0.0
                     self.__log.debug('floor: replacing %d,%d,%f', d0, d1, m)
                     break
