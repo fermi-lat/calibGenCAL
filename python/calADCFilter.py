@@ -6,8 +6,8 @@ Tool to smooth CAL ADC/DAC data.
 __facility__  = "Offline"
 __abstract__  = "Tool to smooth CAL ADC/DAC data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/01/25 15:58:32 $"
-__version__   = "$Revision: 1.8 $, $Author: dwood $"
+__date__      = "$Date: 2006/01/25 22:49:14 $"
+__version__   = "$Revision: 1.9 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -49,7 +49,8 @@ class calADCFilter:
 
         if type != DAC_TYPE_FLE and type != DAC_TYPE_FHE and type != DAC_TYPE_LAC \
            and type != DAC_TYPE_ULD:
-            self.__log.error("type %d not supported", type)
+            raise TypeError, "type %d not supported" % type
+        
         self.__smoothing = smoothing
         self.__type = type
 
@@ -373,15 +374,6 @@ class calADCFilter:
             data[d] = a
             a0 = a
             
-
-    def __mean(self, points):
-
-        N = len(points)
-        M = 0
-        for p in points:
-            M = (M + p)
-        return (M / N)    
-            
                 
 
     def __smooth(self, data):        
@@ -391,25 +383,13 @@ class calADCFilter:
                         
         for dac in range(2, 62):
 
-            a = []
             adc = data[dac]
             if adc == 0.0:
                 continue
-            a.append(adc)
-                            
-            adc = data[dac - 1]
-            a.append(adc)
-            
-            adc = data[dac + 1]
-            a.append(adc)   
 
-            adc = data[dac - 2]
-            a.append(adc)
-
-            adc = data[dac + 2]
-            a.append(adc)
+            a = data[dac - 2 : dac + 3]            
                                                 
-            adc = self.__mean(a)
+            adc = Numeric.average(a)
             data[dac] = adc
 
     
