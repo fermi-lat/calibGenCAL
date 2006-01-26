@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Jan 26 14:34:51 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	charplot.py 
+Log Message:
+Made fit data plot blue instead of green.
+    *
+------------------------------------------------------------
 User: dwood  Thu Jan 26 11:38:13 PST 2006
 calibGenCAL/src
 
