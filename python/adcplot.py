@@ -13,8 +13,8 @@ Where:
 __facility__  = "Offline"
 __abstract__  = "Generate ROOT plots for CAL ADC/DAC characerization data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/12 20:08:25 $"
-__version__   = "$Revision: 1.1 $, $Author: dwood $"
+__date__      = "$Date: 2006/01/26 19:38:11 $"
+__version__   = "$Revision: 1.2 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -87,7 +87,10 @@ def plotULD(data, info, twrs):
                     graphs = []
                     leg = ROOT.TLegend(0.91, 0.50, 0.98, 0.60)
 
+                    gMax = []
                     for erng in range(3):                    
+
+                        gMax.append(max(data[erng, tem, layer, end, fe, :]))
                         
                         x = array.array('f')
                         y = array.array('f')
@@ -105,6 +108,7 @@ def plotULD(data, info, twrs):
 
                     hist = g.GetHistogram()
                     hist.SetTitle(title)
+                    hist.SetMaximum(max(gMax) + 200)
                     hist.Draw()
                     leg.Draw()
                     c.Update()
