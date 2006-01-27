@@ -18,8 +18,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL adc2nrg calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/01/25 23:28:51 $"
-__version__   = "$Revision: 1.1 $, $Author: dwood $"
+__date__      = "$Date: 2006/01/26 19:21:58 $"
+__version__   = "$Revision: 1.2 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -96,8 +96,8 @@ if __name__ == '__main__':
 
     rootOutput = False
     valStatus = 0
-    dnormWarnLimit = 400.0
-    dnormErrLimit = 800.0
+    dnormWarnLimit = None
+    dnormErrLimit = None
 
     # setup logger
 
@@ -155,7 +155,20 @@ if __name__ == '__main__':
         log.error('XML file type %s not supported', type)
         sys.exit(1)
 
+    if dnormWarnLimit is None:
+        if type == 'log_acpt':
+            dnormWarnLimit = 80.0
+        else:
+            dnormWarnLimit = 400.0
+    if dnormErrLimit is None:
+        if type == 'log_acpt':
+            dnormErrLimit = 100.0
+        else:
+            dnormErrLimit = 800.0
+            
     log.debug('Validating file type %s', type)
+    log.debug('Using error limit %f', dnormErrLimit)
+    log.debug('Using warning limit %f', dnormWarnLimit)
 
     pi = {'fixed' : 0, 'limited' : (0, 0), 'mpprint' : 0}
     pinfo = [pi, pi]
