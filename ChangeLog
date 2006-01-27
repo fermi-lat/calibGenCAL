@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri Jan 27 10:07:49 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	charVal.py 
+Log Message:
+Made warn/err limits defaults dependent on the characterization file type.
+    *
+------------------------------------------------------------
 User: dwood  Fri Jan 27 08:12:03 PST 2006
 calibGenCAL/python
 
