@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Jan 30 12:47:39 PST 2006
+calibGenCAL/unit_test
+
+Modified Files:
+	README build_adcsmooth.cfg build_gensettings_cfg.cfg 
+	get_slac_calibdac.cfg runSuiteParallel.cfg tholdCIGen.cfg 
+Log Message:
+unit test now supports only 2 towers (saves time)
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Jan 30 12:47:23 PST 2006
 calibGenCAL/python
 
