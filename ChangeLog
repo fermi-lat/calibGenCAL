@@ -1,4 +1,33 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Jan 30 12:47:47 PST 2006
+calibGenCAL/unit_test/output
+
+Modified Files:
+	ci_intnonlin.digitization-v3r3p0_135004329_digi_DIGI.xml 
+	mc_asym.digitization-v3r3p1_135004384_digi_DIGI.xml 
+	mc_mpd.digitization-v3r3p1_135004384_digi_DIGI.xml 
+	mc_peds.digitization-v3r3p1_135004367_digi_DIGI.xml 
+Added Files:
+	135004348_T01_FMxxx_cal_bias.xml 
+	135004348_T04_FMxxx_cal_bias.xml 
+	135004384_T01_FMxxx_cal_adc2nrg.xml 
+	135004384_T04_FMxxx_cal_adc2nrg.xml 
+	ci_intnonlin.digitization-v3r3p0_135004329_digi_DIGI.T01.xml 
+	ci_intnonlin.digitization-v3r3p0_135004329_digi_DIGI.T04.xml 
+	mc_asym.digitization-v3r3p1_135004384_digi_DIGI.T01.xml 
+	mc_asym.digitization-v3r3p1_135004384_digi_DIGI.T04.xml 
+	mc_mpd.digitization-v3r3p1_135004384_digi_DIGI.T01.xml 
+	mc_mpd.digitization-v3r3p1_135004384_digi_DIGI.T04.xml 
+	mc_peds.digitization-v3r3p1_135004367_digi_DIGI.T01.xml 
+	mc_peds.digitization-v3r3p1_135004367_digi_DIGI.T04.xml 
+	tholdci_unit_test.xml 
+Removed Files:
+	8tower_unittest_tholdci.xml 
+Log Message:
+unit test now supports only 2 towers (saves time)
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Jan 30 12:47:39 PST 2006
 calibGenCAL/unit_test
 
