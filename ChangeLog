@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Jan 30 13:57:20 PST 2006
+calibGenCAL/python
+
+Added Files:
+	tholdci2CSV.py 
+Log Message:
+new script converts tholdCI xml to csv text file
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Jan 30 12:47:47 PST 2006
 calibGenCAL/unit_test/output
 
