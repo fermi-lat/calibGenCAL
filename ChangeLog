@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon Jan 30 10:12:32 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	charplot.py 
+Log Message:
+Added capability to plot ULD characterization tables.
+    *
+------------------------------------------------------------
 User: dwood  Fri Jan 27 11:18:09 PST 2006
 calibGenCAL/python
 
