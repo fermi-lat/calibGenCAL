@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon Jan 30 12:05:37 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	charplot.py 
+Log Message:
+Added plot of mpfit data to ULD displays
+    *
+------------------------------------------------------------
 User: dwood  Mon Jan 30 12:04:56 PST 2006
 calibGenCAL/python
 
