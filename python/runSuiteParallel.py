@@ -1,18 +1,13 @@
 """
 This script will run calibGenCAL C++ analysis on parallel calibration data.
 
-runSuiteParallel <cfg_file>
-
-where:
-    <cfg_file>      = .ini style configuration file.  see calibGenCAL/python/cfg/runSuiteParallel.cfg for example/documentation
-
 """
 
 __facility__  = "Offline"
 __abstract__  = "Process full set of GLAST CAL ground calibration event files."
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2005/09/29 22:07:20 $"
-__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/11/14 18:59:47 $"
+__version__   = "$Revision: 1.10 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -20,8 +15,8 @@ __credits__   = "NRL code 7650"
 import sys, os
 import ConfigParser
 import logging
+from optparse import OptionParser
 
-usage = 'runSuiteParallel <cfg_file>'
 # a timestamp no one would take seriously
 dflt_timestamp = '2000-1-1-00-00:00'
 
@@ -96,11 +91,57 @@ except:
     log.error('CALIBGENCALROOT must be defined')
     sys.exit(1)
 
-# check command line
-if len(sys.argv) != 2:
-    log.error(usage)
-    sys.exit(1)
-configName = sys.argv[1]
+
+# parse command line
+usage = "usage: %prog [options] [cfgfile]"
+parser = OptionParser(usage)
+parser.add_option("-b", "--batch-mode", action="store_true", dest="batch_mode",
+                  help="batch mode. do not run other apps, just generate a batch script")
+parser.add_option("--batch-file", dest="batch_file", type="string",
+                  help="specify batch file name", default="runSuiteParallel.bat")
+parser.add_option("-c", "--no-cifit", action="store_true", dest="no_cifit",
+                  help="disable cifit.  override cfg file")
+parser.add_option("-m", "--no-merge", action="store_true", dest="no_merge",
+                  help="disable merge. override cfg file")
+parser.add_option("-o", "--no-muopt", action="store_true", dest="no_muopt",
+                  help="disable muopt. override cfg file")
+parser.add_option("-p", "--no-muped", action="store_true", dest="no_muped",
+                  help="disable muped. override cfg file")
+parser.add_option("-r", "--no-mutrig", action="store_true", dest="no_mutrig",
+                  help="disable mutrig. override cfg file")
+parser.add_option("-t", "--tower", type="int", dest="single_tower", metavar="TOWER_ID",
+                  help="process single tower..  override cfg file")
+parser.add_option("-v", "--no-validate", action="store_true", dest="no_validate",
+                  help="disable validation.  override cfg file")
+
+parser.set_defaults(batch_mode=False,
+                    batch_file="runSuiteParallel.bat",
+                    no_cifit=False,
+                    no_merge=False,
+                    no_muopt=False,
+                    no_muped=False,
+                    no_mutrig=False,
+                    no_validate=False)
+
+(options, args) = parser.parse_args()
+if (options.batch_mode):
+    batch_file = open(options.batch_file, 'w')
+
+def run_cmd(cmdline):
+    """ either run cmdline in shell or print it to batch file, depending on cfg """
+    if (options.batch_mode):
+        print>>batch_file, cmdline
+    else:
+        os.system(cmdline)
+
+
+if (len(args) > 1):
+    parser.error("incorrect number of arguments")
+
+if (len(args) == 0):
+    configName = "runSuiteParallel.cfg"
+else:
+    configName = args[0]
 
 # read config file settings
 log.info('Reading file %s', configName)
@@ -113,6 +154,7 @@ if len(sections) == 0:
             
 # retrieve shared cfg
 section = 'shared'
+
 # - required parameters
 tower_bay_list = getcfg_nodef(configFile,section,'tower_bay_list')
 # - optional parameters
@@ -123,14 +165,16 @@ output_dir = getcfg_def(configFile, section, 'output_dir','./')
 os.environ['CGC_INSTRUMENT'] = instrument
 os.environ['CGC_OUTPUT_DIR'] = output_dir
 
-
 tower_bays = tower_bay_list.split()
+
+# - overwrite shared cfg w/ cmdline options
+if options.single_tower != None:
+    tower_bays = [str(options.single_tower)]
 
 
 ######################################
 ####### PHASE 1: runCIFit ############
 ######################################
-
 # retrieve ciFit cfg
 section = 'runCIFit'
 # - required parameters
@@ -138,6 +182,10 @@ calibGen_timestamp = getcfg_def(configFile,section,'calibGen_timestamp',dflt_tim
 ci_rootfile_le  = getcfg_nodef(configFile,section,'ci_rootfile_le')
 ci_rootfile_he  = getcfg_nodef(configFile,section,'ci_rootfile_he')
 cifit_enabled   = getcfg_def(configFile,section,'enable_section',1)
+
+# - overwrite cfg file w/ cmd line options
+if options.no_cifit:
+    cifit_enabled = False
 
 # - setup environment for template config files
 os.environ['CGC_CALIBGEN_TIMESTAMP'] = calibGen_timestamp
@@ -156,18 +204,25 @@ if int(cifit_enabled):
         os.environ['CGC_INL_XML'] = inl_xmlname
         
         # - run ciFit
-        os.system('runCIFit.exe %s/python/cfg/ciFit_option_template.xml'%calibGenCALRoot)
+        run_cmd('runCIFit.exe %s/python/cfg/ciFit_option_template.xml'%calibGenCALRoot)
 
 
 ##################################################
 ####### PHASE 2: muonCalib (pedestals) ###########
 ##################################################
+
+# retrieve muped cfg
 section = 'muon_peds'
 muped_timestamp     = getcfg_def(configFile,section,'muped_timestamp',dflt_timestamp)
 muped_rootfile_list = getcfg_nodef(configFile,section,'muped_rootfiles')
 muped_rootfiles     = muped_rootfile_list.split()
 first_mupedfile     = muped_rootfiles[0]
 muped_enabled       = getcfg_def(configFile,section,'enable_section',1)
+
+# overwrite cfg file w/ cmdline options
+if options.no_muped:
+    muped_enabled= False
+
 
 # - need to fill in these settings to keep template file happy even
 #   tho they are used only in the optical section
@@ -182,6 +237,8 @@ os.environ['CGC_NEVT_ROUGHPED']      = "10000"
 os.environ['CGC_NEVT_PED']           = "10000"
 os.environ['CGC_NEVT_ASYM']          = n_evt_asym
 os.environ['CGC_NEVT_MPD']           = n_evt_mpd
+
+
 
 # - emulate
 if int(muped_enabled):
@@ -207,18 +264,26 @@ if int(muped_enabled):
         os.environ['CGC_MPD_XML']  = mpd_xmlname
         
         # - run muonCalib
-        os.system('runMuonCalib.exe %s/python/cfg/muonCalib_option_template.xml'%calibGenCALRoot)
+        run_cmd('runMuonCalib.exe %s/python/cfg/muonCalib_option_template.xml'%calibGenCALRoot)
 
 
 ##################################################
 ####### PHASE 3: muonCalib (optical) #############
 ##################################################
+
+
+# retrieve muopt_cfg 
 section = 'muon_optical'
 muopt_timestamp     = getcfg_def(configFile,section,'muopt_timestamp',dflt_timestamp)
 muopt_rootfile_list = getcfg_nodef(configFile,section,'muopt_rootfiles')
 muopt_rootfiles     = muopt_rootfile_list.split()
 first_muoptfile     = muopt_rootfiles[0]
 muopt_enabled       = getcfg_def(configFile,section,'enable_section',1)
+
+
+# overwrite cfg w/ cmdline
+if options.no_muopt:
+    muopt_enabled= False
 
 
 os.environ['CGC_MUON_TIMESTAMP'] = calibGen_timestamp
@@ -248,18 +313,24 @@ if int(muopt_enabled):
         os.environ['CGC_MPD_XML'] = mpd_xmlname
         
         # - run muonCalib
-        os.system('runMuonCalib.exe %s/python/cfg/muonCalib_option_template.xml'%calibGenCALRoot)
+        run_cmd('runMuonCalib.exe %s/python/cfg/muonCalib_option_template.xml'%calibGenCALRoot)
 
 
 ######################################
 ####### PHASE 4: muTrig ##############
 ######################################
+# get cfg
 section = 'runMuTrigEff'
 muTrig_timestamp   = getcfg_nodef(configFile,section,  'muTrig_timestamp')
 mt_rootfile_muon_A = getcfg_nodef(configFile,section,  'mt_rootfile_muon_A')
 mt_rootfile_muon_B = getcfg_nodef(configFile,section,  'mt_rootfile_muon_B')
 mt_rootfile_ci     = getcfg_nodef(configFile,section,  'mt_rootfile_ci')
 mutrig_enabled     = getcfg_def(configFile,section, 'enable_section',1)
+
+# overwrite cfg file w/ cmdline
+if options.no_mutrig:
+    mutrig_enabled= False
+
 
 os.environ['CGC_MUTRIG_TIMESTAMP'] = muTrig_timestamp
 os.environ['CGC_MT_MUON_A'] = mt_rootfile_muon_A
@@ -275,7 +346,7 @@ if int(mutrig_enabled):
         ped_txtname = gen_mc_output_path(first_mupedfile, output_dir, tower, 'mc_peds', 'txt')
         os.environ['CGC_PED_TXT']  = ped_txtname
 
-        os.system('runMuTrigEff.exe %s/python/cfg/muTrigEff_option_template.xml'%calibGenCALRoot)
+        run_cmd('runMuTrigEff.exe %s/python/cfg/muTrigEff_option_template.xml'%calibGenCALRoot)
 
 ######################################
 ###### PHASE 5: merge ################
@@ -285,6 +356,10 @@ if int(mutrig_enabled):
 # - get cfg
 section = 'merge'
 merge_enabled = getcfg_def(configFile, section, 'enable_section', 1)
+
+# overwrite cfg w/ cmdline
+if options.no_merge:
+    merge_enabled = False
 
 # - generate final xml filenames
 inlFinalXML  = gen_inl_final_path(ci_rootfile_le, output_dir, 'xml')
@@ -324,16 +399,12 @@ if int(merge_enabled):
     mergeConfigFile = open(mergeCfgFilename, 'w')
     mergeConfig.write(mergeConfigFile)
     mergeConfigFile.close()
-
-    
         
     # - run merge scripts
-    
-    os.system('python %s/python/pedMerge.py %s %s'%(calibGenCALRoot, mergeCfgFilename, pedFinalXML));
-    os.system('python %s/python/intNonlinMerge.py %s %s'%(calibGenCALRoot, mergeCfgFilename, inlFinalXML));
-    os.system('python %s/python/asymMerge.py %s %s'%(calibGenCALRoot, mergeCfgFilename, asymFinalXML));
-    os.system('python %s/python/mevPerDacMerge.py %s %s'%(calibGenCALRoot, mergeCfgFilename, mpdFinalXML));
-
+    run_cmd('python %s/python/pedMerge.py %s %s'%(calibGenCALRoot, mergeCfgFilename, pedFinalXML))
+    run_cmd('python %s/python/intNonlinMerge.py %s %s'%(calibGenCALRoot, mergeCfgFilename, inlFinalXML))
+    run_cmd('python %s/python/asymMerge.py %s %s'%(calibGenCALRoot, mergeCfgFilename, asymFinalXML));
+    run_cmd('python %s/python/mevPerDacMerge.py %s %s'%(calibGenCALRoot, mergeCfgFilename, mpdFinalXML));
 
 ######################################
 ###### PHASE 7: validate #############
@@ -341,6 +412,10 @@ if int(merge_enabled):
 # - get cfg
 section = 'validate'
 validate_enabled = getcfg_def(configFile, section, 'enable_section', 1)
+
+# - overwrite cfg w/ cmdline
+if options.no_validate:
+    validate_enabled = False
 
 # - generate validation logfiles
 inlValLog  = gen_inl_final_path(ci_rootfile_le, output_dir, 'val.log')
@@ -351,9 +426,9 @@ mpdValLog  = gen_mc_final_path(first_muoptfile, output_dir, 'mc_mpd', 'val.log')
 
 if int(validate_enabled):
     # - run val scripts
-    os.system('python %s/python/pedVal.py -L%s %s'%(calibGenCALRoot, pedValLog, pedFinalXML));
-    os.system('python %s/python/intNonlinVal.py -L%s %s'%(calibGenCALRoot, inlValLog, inlFinalXML));
-    os.system('python %s/python/asymVal.py -L%s %s'%(calibGenCALRoot, asymValLog, asymFinalXML));
-    os.system('python %s/python/mevPerDacVal.py -L%s %s'%(calibGenCALRoot, mpdValLog, mpdFinalXML));
+    run_cmd('python %s/python/pedVal.py -L%s %s'%(calibGenCALRoot, pedValLog, pedFinalXML));
+    run_cmd('python %s/python/intNonlinVal.py -L%s %s'%(calibGenCALRoot, inlValLog, inlFinalXML));
+    run_cmd('python %s/python/asymVal.py -L%s %s'%(calibGenCALRoot, asymValLog, asymFinalXML));
+    run_cmd('python %s/python/mevPerDacVal.py -L%s %s'%(calibGenCALRoot, mpdValLog, mpdFinalXML));
 
 
