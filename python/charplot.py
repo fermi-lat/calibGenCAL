@@ -17,8 +17,8 @@ Where:
 __facility__  = "Offline"
 __abstract__  = "Generate ROOT plots for CAL ADC/DAC characerization data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/01/26 19:38:12 $"
-__version__   = "$Revision: 1.1 $, $Author: dwood $"
+__date__      = "$Date: 2006/01/26 22:34:50 $"
+__version__   = "$Revision: 1.2 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -158,7 +158,7 @@ def plotDAC(rawData, filterData, info, twrs):
                     g.SetTitle(title)       
                     markerGraph.append(g)
 
-                    # plot fitered data
+                    # plot filtered data
                     
                     x = array.array('f')
                     y = array.array('f')
@@ -185,7 +185,98 @@ def plotDAC(rawData, filterData, info, twrs):
                     for g in markerGraph:                    
                         g.Draw('P')
                         c.Update()
+                        
                     c.Write()
+
+
+
+def plotULD(rawData, filterData, info, twrs):
+    """
+    Create ROOT plots from ADC/ULD data
+    """
+
+    pi = {'fixed' : 0, 'limited' : (0, 0), 'mpprint' : 0}
+    pinfo = [pi, pi]
+    x0 = Numeric.arange(0.0, 64.0, 1.0)
+    
+    for tem in twrs:
+        for layer in range(calConstant.NUM_LAYER):
+            for end in range(calConstant.NUM_END):
+                for fe in range(calConstant.NUM_FE):
+
+                    # create frame 
+
+                    title = "%s_T%d_%s%s_%d" % (info['TTYPE1'], tem, calConstant.CROW[layer],
+                                                calConstant.CPM[end], fe)
+                    cName = "c_%s" % title
+
+                    c = ROOT.TCanvas(cName, title, -1)
+                    c.SetGridx()
+                    c.SetGridy()
+
+                    leg = ROOT.TLegend(0.91, 0.50, 0.98, 0.60)                    
+
+                    lineGraph = []
+                    markerGraph = []
+                    gMax = []
+
+                    for erng in range(3):                    
+
+                        # plot fine fit data
+
+
+                        # plot coarse fit data
+
+                        # plot raw data
+                    
+                        x = array.array('f')
+                        y = array.array('f')
+                        for dac in range(0, 128):
+                            x.append(dac)
+                            y.append(rawData[erng, tem, layer, end, fe, dac])
+                        
+                        g = ROOT.TGraph(128, x, y)
+
+                        g.SetMarkerColor(1)                    
+                        g.SetMarkerStyle(4)
+                        g.SetTitle(title)       
+                        markerGraph.append(g)
+
+                        # plot filtered data
+
+                        gMax.append(max(filterData[erng, tem, layer, end, fe, :]))
+                    
+                        x = array.array('f')
+                        y = array.array('f')
+                        for dac in range(0, 128):
+                            x.append(dac)
+                            y.append(filterData[erng, tem, layer, end, fe, dac])
+                        
+                        g = ROOT.TGraph(128, x, y)
+
+                        g.SetMarkerColor(erng + 1)                            
+                        g.SetMarkerStyle(5)
+                        g.SetTitle(title)       
+                        markerGraph.append(g)
+
+                        leg.AddEntry(g, calConstant.CRNG[erng], 'P')                        
+                        
+
+                    # display plots
+
+                    h = markerGraph[-1].GetHistogram()
+                    h.SetMaximum(max(gMax) + 200)
+                    h.Draw()
+
+                    for g in lineGraph:
+                        g.Draw('L')
+                        c.Update
+                    
+                    for g in markerGraph:                    
+                        g.Draw('P')
+                        c.Update()
+                        
+                    c.Write()                    
 
 
 
@@ -248,6 +339,8 @@ if __name__ == '__main__':
     type = filterInfo['TTYPE1']
     if type == 'fhe_dac' or type == 'fle_dac' or type == 'log_acpt':
         plotDAC(rawData, filterData, filterInfo, filterTwrs)
+    elif type == 'rng_uld_dac':
+        plotULD(rawData, filterData, filterInfo, filterTwrs)
     else:
         log.error("file type %s not supported", type)
         sys.exit(1)
