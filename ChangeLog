@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon Jan 30 12:04:56 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	calADCFilter.py 
+Log Message:
+Added method calADCFilter.__saturateULD() to handle restoration of coarse range plateau at upper end.
+    *
+------------------------------------------------------------
 User: dwood  Mon Jan 30 10:12:32 PST 2006
 calibGenCAL/python
 
