@@ -1,0 +1,1250 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<LATdoc name=''>
+  <declarations>
+    <options>
+      <explicitBroadcastNodes>0</explicitBroadcastNodes>
+    </options>
+  </declarations>
+  <configuration hierarchy="['low_hi_nrg', 'GCCC', 'GCRC', 'GCFE', 'adc2nrg']" shape='(2, 8, 2, 12)' version='NA' type='d' name=''>
+    <GLAT>
+      <GTEM ID='1'>
+        <low_hi_nrg ID='0'>
+          <GCCC ID='0'>
+            <GCRC ID='0'>
+              <GCFE ID='0'>
+                <adc2nrg>0.031227</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.031601</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.031954</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.031142</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.032426</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.030764</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.030902</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.031102</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.030575</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.031213</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.031808</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.031646</adc2nrg>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='1'>
+              <GCFE ID='0'>
+                <adc2nrg>0.029921</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.031641</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.031754</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.031663</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.031138</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.031528</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.030675</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.031431</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.030683</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.030899</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.031595</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.030644</adc2nrg>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='2'>
+              <GCFE ID='0'>
+                <adc2nrg>0.029598</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.029074</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.029436</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.030948</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.030949</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.030123</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.030763</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.030887</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.030646</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.029295</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.030452</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.030460</adc2nrg>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='3'>
+              <GCFE ID='0'>
+                <adc2nrg>0.030555</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.030355</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.031522</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.031146</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.031973</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.030610</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.031531</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.031786</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.031554</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.031586</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.031154</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.030368</adc2nrg>
+              </GCFE>
+            </GCRC>
+          </GCCC>
+          <GCCC ID='2'>
+            <GCRC ID='0'>
+              <GCFE ID='0'>
+                <adc2nrg>0.030058</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.031884</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.031359</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.032133</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.031718</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.029035</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.029810</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.030764</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.030393</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.030561</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.031488</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.030487</adc2nrg>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='1'>
+              <GCFE ID='0'>
+                <adc2nrg>0.031190</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.029723</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.029722</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.031252</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.031132</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.030600</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.030696</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.030493</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.031020</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.030224</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.030994</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.030015</adc2nrg>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='2'>
+              <GCFE ID='0'>
+                <adc2nrg>0.029788</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.030823</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.030458</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.030499</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.030933</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.030515</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.031256</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.030398</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.030087</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.029961</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.029678</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.030106</adc2nrg>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='3'>
+              <GCFE ID='0'>
+                <adc2nrg>0.029281</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.029905</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.030595</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.030476</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.030781</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.030340</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.030174</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.031341</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.031758</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.032455</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.032184</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.028935</adc2nrg>
+              </GCFE>
+            </GCRC>
+          </GCCC>
+          <GCCC ID='1'>
+            <GCRC ID='0'>
+              <GCFE ID='0'>
+                <adc2nrg>0.031395</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.031840</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.032269</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.031513</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.030343</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.030295</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.030630</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.031028</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.029810</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.030749</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.031698</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.028883</adc2nrg>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='1'>
+              <GCFE ID='0'>
+                <adc2nrg>0.030544</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.029274</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.029036</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.031679</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.030095</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.031702</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.030598</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.031778</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.031636</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.030902</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.032381</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.031808</adc2nrg>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='2'>
+              <GCFE ID='0'>
+                <adc2nrg>0.029900</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.028741</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.031081</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.030261</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.029170</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.029711</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.030764</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.030704</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.031452</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.030936</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.029622</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.030201</adc2nrg>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='3'>
+              <GCFE ID='0'>
+                <adc2nrg>0.031106</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.029790</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.030542</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.030148</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.030442</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.030566</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.030696</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.030610</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.030240</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.030222</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.033037</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.031467</adc2nrg>
+              </GCFE>
+            </GCRC>
+          </GCCC>
+          <GCCC ID='3'>
+            <GCRC ID='0'>
+              <GCFE ID='0'>
+                <adc2nrg>0.031255</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.031058</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.030552</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.032167</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.030999</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.031198</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.030134</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.030209</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.030073</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.030978</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.030945</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.029352</adc2nrg>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='1'>
+              <GCFE ID='0'>
+                <adc2nrg>0.029443</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.029867</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.028073</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.030936</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.029471</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.030967</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.031202</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.030380</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.029723</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.029821</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.030058</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.029466</adc2nrg>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='2'>
+              <GCFE ID='0'>
+                <adc2nrg>0.029770</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.029671</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.029573</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.030865</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.028886</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.029479</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.030832</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.030690</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.031274</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.030661</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.028990</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.029507</adc2nrg>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='3'>
+              <GCFE ID='0'>
+                <adc2nrg>0.031373</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.030182</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.029994</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.030154</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.030473</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.031343</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.030596</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.031123</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.029114</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.028777</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.031653</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.030674</adc2nrg>
+              </GCFE>
+            </GCRC>
+          </GCCC>
+        </low_hi_nrg>
+        <low_hi_nrg ID='1'>
+          <GCCC ID='0'>
+            <GCRC ID='0'>
+              <GCFE ID='0'>
+                <adc2nrg>0.167349</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.170837</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.172739</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.175172</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.177860</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.174364</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.168109</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.163301</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.170887</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.169438</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.166447</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.169785</adc2nrg>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='1'>
+              <GCFE ID='0'>
+                <adc2nrg>0.166996</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.184798</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.174949</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.167372</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.165145</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.168927</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.162773</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.178956</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.169465</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.175347</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.167417</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.159524</adc2nrg>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='2'>
+              <GCFE ID='0'>
+                <adc2nrg>0.162241</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.161838</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.164088</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.174535</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.168577</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.167516</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.165864</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.168174</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.172473</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.163340</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.171146</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.169975</adc2nrg>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='3'>
+              <GCFE ID='0'>
+                <adc2nrg>0.171748</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.160238</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.174380</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.161660</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.176608</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.161983</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.167926</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.168310</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.169042</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.170361</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.163628</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.162837</adc2nrg>
+              </GCFE>
+            </GCRC>
+          </GCCC>
+          <GCCC ID='2'>
+            <GCRC ID='0'>
+              <GCFE ID='0'>
+                <adc2nrg>0.169322</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.175330</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.173006</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.176948</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.179619</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.164072</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.163943</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.162795</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.173519</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.161583</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.170771</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.163590</adc2nrg>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='1'>
+              <GCFE ID='0'>
+                <adc2nrg>0.166701</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.170656</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.164407</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.165310</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.163914</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.166124</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.162281</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.165608</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.172220</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.178941</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.171027</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.158715</adc2nrg>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='2'>
+              <GCFE ID='0'>
+                <adc2nrg>0.160050</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.165860</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.171237</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.173306</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.165877</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.167995</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.170086</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.172440</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.171382</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.168224</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.168613</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.168091</adc2nrg>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='3'>
+              <GCFE ID='0'>
+                <adc2nrg>0.158955</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.162064</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.176770</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.161771</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.170047</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.162840</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.164809</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.167078</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.166910</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.175032</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.172141</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.158733</adc2nrg>
+              </GCFE>
+            </GCRC>
+          </GCCC>
+          <GCCC ID='1'>
+            <GCRC ID='0'>
+              <GCFE ID='0'>
+                <adc2nrg>0.170016</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.176944</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.176872</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.169465</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.160646</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.167580</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.172201</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.174546</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.162376</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.161958</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.170235</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.156760</adc2nrg>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='1'>
+              <GCFE ID='0'>
+                <adc2nrg>0.170154</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.162849</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.156070</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.176200</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.156557</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.174084</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.163809</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.168508</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.173311</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.168914</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.186402</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.168581</adc2nrg>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='2'>
+              <GCFE ID='0'>
+                <adc2nrg>0.161582</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.167501</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.170965</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.168112</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.163021</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.159828</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.179968</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.161362</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.175749</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.174544</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.159799</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.169131</adc2nrg>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='3'>
+              <GCFE ID='0'>
+                <adc2nrg>0.169824</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.164119</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.162548</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.163573</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.160868</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.161593</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.162920</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.172277</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.164120</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.163102</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.178218</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.172381</adc2nrg>
+              </GCFE>
+            </GCRC>
+          </GCCC>
+          <GCCC ID='3'>
+            <GCRC ID='0'>
+              <GCFE ID='0'>
+                <adc2nrg>0.169717</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.174968</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.168004</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.176709</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.168732</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.164048</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.170971</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.176242</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.159742</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.161035</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.167676</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.163418</adc2nrg>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='1'>
+              <GCFE ID='0'>
+                <adc2nrg>0.169607</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.167150</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.157292</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.173556</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.152289</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.163031</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.167254</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.173986</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.166814</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.163928</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.174294</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.162680</adc2nrg>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='2'>
+              <GCFE ID='0'>
+                <adc2nrg>0.162037</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.171393</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.169213</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.169614</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.155920</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.161357</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.174504</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.161040</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.184877</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.169650</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.151574</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.169846</adc2nrg>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='3'>
+              <GCFE ID='0'>
+                <adc2nrg>0.172530</adc2nrg>
+              </GCFE>
+              <GCFE ID='1'>
+                <adc2nrg>0.162509</adc2nrg>
+              </GCFE>
+              <GCFE ID='2'>
+                <adc2nrg>0.161801</adc2nrg>
+              </GCFE>
+              <GCFE ID='3'>
+                <adc2nrg>0.162336</adc2nrg>
+              </GCFE>
+              <GCFE ID='4'>
+                <adc2nrg>0.166277</adc2nrg>
+              </GCFE>
+              <GCFE ID='5'>
+                <adc2nrg>0.163870</adc2nrg>
+              </GCFE>
+              <GCFE ID='6'>
+                <adc2nrg>0.161785</adc2nrg>
+              </GCFE>
+              <GCFE ID='7'>
+                <adc2nrg>0.175428</adc2nrg>
+              </GCFE>
+              <GCFE ID='8'>
+                <adc2nrg>0.155098</adc2nrg>
+              </GCFE>
+              <GCFE ID='9'>
+                <adc2nrg>0.159653</adc2nrg>
+              </GCFE>
+              <GCFE ID='10'>
+                <adc2nrg>0.172834</adc2nrg>
+              </GCFE>
+              <GCFE ID='11'>
+                <adc2nrg>0.166164</adc2nrg>
+              </GCFE>
+            </GCRC>
+          </GCCC>
+        </low_hi_nrg>
+      </GTEM>
+    </GLAT>
+  </configuration>
+</LATdoc>

@@ -1,0 +1,1250 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<LATdoc name=''>
+  <declarations>
+    <options>
+      <explicitBroadcastNodes>0</explicitBroadcastNodes>
+    </options>
+  </declarations>
+  <configuration hierarchy="['fle_fhe','GCCC', 'GCRC', 'GCFE', 'thrBias']" shape='(2, 8, 2, 12)' version='NA' type='d' name='' usage='add the constant from this table to the charge injection FLE threshold to get the corresponding FLE threshold for muons'>
+    <GLAT>
+      <GTEM ID='1'>
+        <fle_fhe ID='0'>
+          <GCCC ID='0'>
+            <GCRC ID='0'>
+              <GCFE ID='0'>
+                <thrBias>85.659</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>76.6084</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>86.1452</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>118.127</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>93.5678</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>63.1919</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>89.9136</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>99.8324</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>91.1118</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>104.36</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>67.6162</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>78.6844</thrBias>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='1'>
+              <GCFE ID='0'>
+                <thrBias>81.3345</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>72.1496</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>55.1119</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>53.8775</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>98.7982</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>76.716</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>75.9523</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>52.968</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>85.1301</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>108.059</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>80.6457</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>91.6238</thrBias>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='2'>
+              <GCFE ID='0'>
+                <thrBias>97.7844</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>69.2552</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>104.854</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>79.7025</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>98.3588</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>55.0398</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>101.442</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>90.2809</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>91.3972</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>91.0877</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>92.3726</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>101.008</thrBias>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='3'>
+              <GCFE ID='0'>
+                <thrBias>57.0365</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>85.8849</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>91.4759</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>67.1017</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>103.515</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>87.5027</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>63.9832</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>93.9975</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>57.7874</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>93.1297</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>68.772</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>54.6399</thrBias>
+              </GCFE>
+            </GCRC>
+          </GCCC>
+          <GCCC ID='2'>
+            <GCRC ID='0'>
+              <GCFE ID='0'>
+                <thrBias>85.2293</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>83.2007</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>63.6591</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>76.2903</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>70.2661</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>114.25</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>85.1873</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>64.261</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>108.672</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>79.6615</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>67.3361</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>80.9493</thrBias>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='1'>
+              <GCFE ID='0'>
+                <thrBias>99.466</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>100.598</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>87.1754</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>102.25</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>89.7627</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>76.0506</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>72.1971</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>59.1736</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>87.6776</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>79.9627</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>93.9728</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>100.248</thrBias>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='2'>
+              <GCFE ID='0'>
+                <thrBias>98.6266</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>60.9903</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>66.3909</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>83.0773</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>56.9329</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>78.2127</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>91.1689</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>59.522</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>51.9913</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>51.6236</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>53.7971</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>70.6221</thrBias>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='3'>
+              <GCFE ID='0'>
+                <thrBias>80.6524</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>87.3882</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>86.6459</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>81.5811</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>111.258</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>82.5845</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>91.5152</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>84.854</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>83.4984</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>83.4019</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>116.846</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>106.001</thrBias>
+              </GCFE>
+            </GCRC>
+          </GCCC>
+          <GCCC ID='1'>
+            <GCRC ID='0'>
+              <GCFE ID='0'>
+                <thrBias>82.6995</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>84.042</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>49.6708</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>51.1981</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>95.6573</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>80.1506</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>76.45</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>63.9371</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>65.3382</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>80.2615</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>47.0799</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>95.5149</thrBias>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='1'>
+              <GCFE ID='0'>
+                <thrBias>89.9815</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>92.1536</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>100.673</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>73.8429</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>46.142</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>60.0737</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>83.3717</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>75.5854</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>72.8256</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>90.5244</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>79.7292</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>99.6645</thrBias>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='2'>
+              <GCFE ID='0'>
+                <thrBias>57.2271</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>81.8862</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>57.6334</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>106.382</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>65.7024</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>100.18</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>89.0592</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>62.093</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>76.7834</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>86.209</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>97.4262</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>103.745</thrBias>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='3'>
+              <GCFE ID='0'>
+                <thrBias>57.7707</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>89.521</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>26.5668</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>90.7532</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>67.0827</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>59.1605</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>86.4575</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>67.6463</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>70.9853</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>95.3906</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>68.3876</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>57.9616</thrBias>
+              </GCFE>
+            </GCRC>
+          </GCCC>
+          <GCCC ID='3'>
+            <GCRC ID='0'>
+              <GCFE ID='0'>
+                <thrBias>54.3512</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>102.214</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>100.969</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>42.878</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>82.9877</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>62.5327</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>85.0686</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>87.6588</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>80.7026</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>61.2954</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>74.3991</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>64.1306</thrBias>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='1'>
+              <GCFE ID='0'>
+                <thrBias>104.303</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>55.2427</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>94.2853</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>94.0637</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>116.642</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>92.7318</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>80.7632</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>93.8569</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>99.0612</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>75.2141</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>120.004</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>91.6509</thrBias>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='2'>
+              <GCFE ID='0'>
+                <thrBias>93.2303</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>75.8786</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>90.5486</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>57.8978</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>70.6431</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>65.7343</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>67.6771</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>72.3836</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>64.6333</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>72.2613</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>115.787</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>68.9757</thrBias>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='3'>
+              <GCFE ID='0'>
+                <thrBias>64.6242</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>78.0737</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>73.238</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>102.585</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>102.587</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>78.6119</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>84.3892</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>89.726</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>92.9295</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>59.0786</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>102.216</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>74.1024</thrBias>
+              </GCFE>
+            </GCRC>
+          </GCCC>
+        </fle_fhe>
+        <fle_fhe ID='1'>
+          <GCCC ID='0'>
+            <GCRC ID='0'>
+              <GCFE ID='0'>
+                <thrBias>85.659</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>76.6084</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>86.1452</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>118.127</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>93.5678</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>63.1919</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>89.9136</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>99.8324</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>91.1118</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>104.36</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>67.6162</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>78.6844</thrBias>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='1'>
+              <GCFE ID='0'>
+                <thrBias>81.3345</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>72.1496</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>55.1119</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>53.8775</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>98.7982</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>76.716</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>75.9523</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>52.968</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>85.1301</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>108.059</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>80.6457</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>91.6238</thrBias>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='2'>
+              <GCFE ID='0'>
+                <thrBias>97.7844</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>69.2552</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>104.854</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>79.7025</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>98.3588</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>55.0398</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>101.442</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>90.2809</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>91.3972</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>91.0877</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>92.3726</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>101.008</thrBias>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='3'>
+              <GCFE ID='0'>
+                <thrBias>57.0365</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>85.8849</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>91.4759</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>67.1017</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>103.515</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>87.5027</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>63.9832</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>93.9975</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>57.7874</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>93.1297</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>68.772</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>54.6399</thrBias>
+              </GCFE>
+            </GCRC>
+          </GCCC>
+          <GCCC ID='2'>
+            <GCRC ID='0'>
+              <GCFE ID='0'>
+                <thrBias>85.2293</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>83.2007</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>63.6591</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>76.2903</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>70.2661</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>114.25</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>85.1873</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>64.261</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>108.672</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>79.6615</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>67.3361</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>80.9493</thrBias>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='1'>
+              <GCFE ID='0'>
+                <thrBias>99.466</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>100.598</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>87.1754</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>102.25</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>89.7627</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>76.0506</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>72.1971</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>59.1736</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>87.6776</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>79.9627</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>93.9728</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>100.248</thrBias>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='2'>
+              <GCFE ID='0'>
+                <thrBias>98.6266</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>60.9903</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>66.3909</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>83.0773</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>56.9329</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>78.2127</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>91.1689</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>59.522</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>51.9913</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>51.6236</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>53.7971</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>70.6221</thrBias>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='3'>
+              <GCFE ID='0'>
+                <thrBias>80.6524</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>87.3882</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>86.6459</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>81.5811</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>111.258</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>82.5845</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>91.5152</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>84.854</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>83.4984</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>83.4019</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>116.846</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>106.001</thrBias>
+              </GCFE>
+            </GCRC>
+          </GCCC>
+          <GCCC ID='1'>
+            <GCRC ID='0'>
+              <GCFE ID='0'>
+                <thrBias>82.6995</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>84.042</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>49.6708</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>51.1981</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>95.6573</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>80.1506</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>76.45</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>63.9371</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>65.3382</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>80.2615</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>47.0799</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>95.5149</thrBias>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='1'>
+              <GCFE ID='0'>
+                <thrBias>89.9815</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>92.1536</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>100.673</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>73.8429</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>46.142</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>60.0737</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>83.3717</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>75.5854</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>72.8256</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>90.5244</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>79.7292</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>99.6645</thrBias>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='2'>
+              <GCFE ID='0'>
+                <thrBias>57.2271</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>81.8862</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>57.6334</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>106.382</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>65.7024</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>100.18</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>89.0592</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>62.093</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>76.7834</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>86.209</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>97.4262</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>103.745</thrBias>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='3'>
+              <GCFE ID='0'>
+                <thrBias>57.7707</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>89.521</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>26.5668</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>90.7532</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>67.0827</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>59.1605</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>86.4575</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>67.6463</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>70.9853</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>95.3906</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>68.3876</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>57.9616</thrBias>
+              </GCFE>
+            </GCRC>
+          </GCCC>
+          <GCCC ID='3'>
+            <GCRC ID='0'>
+              <GCFE ID='0'>
+                <thrBias>54.3512</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>102.214</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>100.969</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>42.878</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>82.9877</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>62.5327</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>85.0686</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>87.6588</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>80.7026</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>61.2954</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>74.3991</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>64.1306</thrBias>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='1'>
+              <GCFE ID='0'>
+                <thrBias>104.303</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>55.2427</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>94.2853</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>94.0637</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>116.642</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>92.7318</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>80.7632</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>93.8569</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>99.0612</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>75.2141</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>120.004</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>91.6509</thrBias>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='2'>
+              <GCFE ID='0'>
+                <thrBias>93.2303</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>75.8786</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>90.5486</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>57.8978</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>70.6431</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>65.7343</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>67.6771</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>72.3836</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>64.6333</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>72.2613</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>115.787</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>68.9757</thrBias>
+              </GCFE>
+            </GCRC>
+            <GCRC ID='3'>
+              <GCFE ID='0'>
+                <thrBias>64.6242</thrBias>
+              </GCFE>
+              <GCFE ID='1'>
+                <thrBias>78.0737</thrBias>
+              </GCFE>
+              <GCFE ID='2'>
+                <thrBias>73.238</thrBias>
+              </GCFE>
+              <GCFE ID='3'>
+                <thrBias>102.585</thrBias>
+              </GCFE>
+              <GCFE ID='4'>
+                <thrBias>102.587</thrBias>
+              </GCFE>
+              <GCFE ID='5'>
+                <thrBias>78.6119</thrBias>
+              </GCFE>
+              <GCFE ID='6'>
+                <thrBias>84.3892</thrBias>
+              </GCFE>
+              <GCFE ID='7'>
+                <thrBias>89.726</thrBias>
+              </GCFE>
+              <GCFE ID='8'>
+                <thrBias>92.9295</thrBias>
+              </GCFE>
+              <GCFE ID='9'>
+                <thrBias>59.0786</thrBias>
+              </GCFE>
+              <GCFE ID='10'>
+                <thrBias>102.216</thrBias>
+              </GCFE>
+              <GCFE ID='11'>
+                <thrBias>74.1024</thrBias>
+              </GCFE>
+            </GCRC>
+          </GCCC>
+        </fle_fhe>
+      </GTEM>
+    </GLAT>
+  </configuration>
+</LATdoc>
