@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Jan 30 12:47:23 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	runSuiteParallel.py 
+Log Message:
+each subsection is now optional from commandline.
+each tower can now be selected individually from commandline.
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Jan 30 12:05:37 PST 2006
 calibGenCAL/python
 
