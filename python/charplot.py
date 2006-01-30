@@ -17,8 +17,8 @@ Where:
 __facility__  = "Offline"
 __abstract__  = "Generate ROOT plots for CAL ADC/DAC characerization data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/01/26 22:34:50 $"
-__version__   = "$Revision: 1.2 $, $Author: dwood $"
+__date__      = "$Date: 2006/01/30 18:12:30 $"
+__version__   = "$Revision: 1.3 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -224,8 +224,73 @@ def plotULD(rawData, filterData, info, twrs):
 
                         # plot fine fit data
 
+                        fineData = filterData[erng, tem, layer, end, fe, 0:64]
+                        z = Numeric.nonzero(fineData)
+                        yn = Numeric.take(fineData, z)
+                        xn = Numeric.take(x0, z)
+                        
+                        p0 = (20.0, -200.0)
+                        fkw = {'x': xn, 'y' : yn}
+
+                        fit = mpfit.mpfit(residuals, p0, functkw = fkw, parinfo = pinfo, quiet = 1)
+                        if fit.status <= 0:
+                            log.error('mpfit error - %s', fit.errmsg)
+                            sys.exit(1)
+
+                        a = fit.params[0]
+                        b = fit.params[1]
+                        x = array.array('f')
+                        y = array.array('f')
+                        for dac in range(0, 64):
+                            adc = linear(a, b, dac)
+                            if adc < 0.0:
+                                continue
+                            x.append(dac)
+                            y.append(adc)
+
+                        g = ROOT.TGraph(len(x), x, y)
+
+                        g.SetLineColor(4)
+                        g.SetLineStyle(2)
+                        g.SetLineWidth(2)
+                        lineGraph.append(g)
 
                         # plot coarse fit data
+
+                        coarseData = filterData[erng, tem, layer, end, fe, 64:128]
+                        sat = coarseData[-1]
+                        z = Numeric.nonzero(coarseData)
+                        yn = Numeric.take(coarseData, z)
+                        xn = Numeric.take(x0, z)
+                        s = Numeric.less(yn, sat)
+                        yn = Numeric.compress(s, yn)
+                        xn = Numeric.compress(s, xn)
+        
+                        p0 = (40.0, -400.0)
+                        fkw = {'x': xn, 'y' : yn}
+
+                        fit = mpfit.mpfit(residuals, p0, functkw = fkw, parinfo = pinfo, quiet = 1)
+                        if fit.status <= 0:
+                            log.error('mpfit error - %s', fit.errmsg)
+                            sys.exit(1)
+
+                        a = fit.params[0]
+                        b = fit.params[1]
+                        x = array.array('f')
+                        y = array.array('f')
+                        for dac in range(0, 64):
+                            adc = linear(a, b, dac)
+                            if adc < 0.0:
+                                continue
+                            x.append(dac + 64)
+                            y.append(adc)
+
+                        g = ROOT.TGraph(len(x), x, y)
+
+                        g.SetLineColor(4)
+                        g.SetLineStyle(2)
+                        g.SetLineWidth(2)
+                        lineGraph.append(g)                        
 
                         # plot raw data
                     
@@ -260,7 +325,7 @@ def plotULD(rawData, filterData, info, twrs):
                         markerGraph.append(g)
 
                         leg.AddEntry(g, calConstant.CRNG[erng], 'P')                        
-                        
+                       
 
                     # display plots
 
