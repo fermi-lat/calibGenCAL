@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Tue Jan 31 07:25:16 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	charplot.py 
+Log Message:
+Added legend to ULD plots.
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Jan 30 13:57:26 PST 2006
 calibGenCAL/src
 
