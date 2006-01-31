@@ -17,8 +17,8 @@ Where:
 __facility__  = "Offline"
 __abstract__  = "Generate ROOT plots for CAL ADC/DAC characerization data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/01/30 18:12:30 $"
-__version__   = "$Revision: 1.3 $, $Author: dwood $"
+__date__      = "$Date: 2006/01/30 20:05:35 $"
+__version__   = "$Revision: 1.4 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -332,6 +332,8 @@ def plotULD(rawData, filterData, info, twrs):
                     h = markerGraph[-1].GetHistogram()
                     h.SetMaximum(max(gMax) + 200)
                     h.Draw()
+                    leg.Draw()
+                    c.Update()
 
                     for g in lineGraph:
                         g.Draw('L')
