@@ -6,15 +6,15 @@ CAL XML base classes
 __facility__  = "Offline"
 __abstract__  = "CAL XML base classes"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/07/27 19:46:42 $"
-__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
-__release__   = "$Name: v3r6p15 $"
+__date__      = "$Date: 2005/07/28 22:38:29 $"
+__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
+__release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 
 import logging
-import xml.dom.minidom
 import xml.dom.ext
+import xml.dom.ext.reader.Sax2
 
 from calExcept import *
 
@@ -32,12 +32,13 @@ class calXML:
     """
 
     
-    def __init__(self, fileName, mode = MODE_READONLY):
+    def __init__(self, fileName, mode = MODE_READONLY, validating = False):
         """
         Open a CAL XML file
 
-        \param fileName The XML file name.
-        \param mode The file access mode (MODE_READONLY or MODE_CREATE).
+        Param: fileName The XML file name.
+        Param: mode The file access mode (MODE_READONLY or MODE_CREATE).
+        Param: validating - True/False do document DTD validation.
         """
 
         self.__log = logging.getLogger()    
@@ -55,7 +56,7 @@ class calXML:
             
             # create output XML document
 
-            impl = xml.dom.minidom.getDOMImplementation()
+            impl = xml.dom.getDOMImplementation()
             self.__doc = impl.createDocument(None, None, None)
 
         elif mode == MODE_READONLY:
@@ -66,7 +67,11 @@ class calXML:
 
             # parse into DOM document
 
-            self.__doc = xml.dom.minidom.parse(self.__xmlFile)
+            reader = xml.dom.ext.reader.Sax2.Reader(validate = validating)
+            try:
+                self.__doc = reader.fromStream(self.__xmlFile)
+            except Exception, e:
+                raise calFileOpenExcept, "XML parse error: %s" % e
 
         else:
             raise calFileOpenExcept, "calCalibXML: mode %s not supported" % str(mode)            
@@ -78,7 +83,6 @@ class calXML:
         """
         
         self.__xmlFile.close()
-        self.__doc.unlink()
     
 
     def getDoc(self):
@@ -136,6 +140,8 @@ class calXML:
         Write the XML document data to the file.
         """
 
+        if self.__mode == MODE_READONLY:
+            raise calFileWriteExcept, "File %s opened in READONLY mode" % self.__xmlName
         xml.dom.ext.PrettyPrint(self.__doc, self.__xmlFile)
 
         

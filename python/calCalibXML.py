@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/11/07 16:55:49 $"
-__version__   = "$Revision: 1.35 $, $Author: dwood $"
+__date__      = "$Date: 2005/11/16 17:48:07 $"
+__version__   = "$Revision: 1.36 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -52,7 +52,7 @@ class calCalibXML(calXML.calXML):
         \param mode The file access mode (MODE_READONLY or MODE_CREATE).
         """
 
-        calXML.calXML.__init__(self, fileName, mode)
+        calXML.calXML.__init__(self, fileName, mode, validating = True)
 
 
     def info(self):
