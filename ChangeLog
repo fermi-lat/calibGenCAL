@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon Feb  6 09:22:17 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py calXML.py 
+Log Message:
+Switched XML parser to xml.dom.ext.reader.Sax2 (4DOM); enabled DTD validation when opening calibGenCAL output XML files (class calCalibXML).
+    *
+------------------------------------------------------------
 User: dwood  Tue Jan 31 07:25:16 PST 2006
 calibGenCAL/python
 
