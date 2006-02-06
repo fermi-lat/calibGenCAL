@@ -6,8 +6,8 @@ CAL XML base classes
 __facility__  = "Offline"
 __abstract__  = "CAL XML base classes"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/02/06 17:22:17 $"
-__version__   = "$Revision: 1.4 $, $Author: dwood $"
+__date__      = "$Date: 2006/02/06 17:23:24 $"
+__version__   = "$Revision: 1.5 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -78,7 +78,8 @@ class calXML:
         """
         Close a CAL XML file
         """
-        
+
+        xml.dom.ext.ReleaseNode(self.__doc)        
         self.__xmlFile.close()
     
 
