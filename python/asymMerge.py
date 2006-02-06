@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to merge mutilple CAL Asym calibration XML files."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/09 17:39:24 $"
-__version__   = "$Revision: 1.8 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/12 17:44:28 $"
+__version__   = "$Revision: 1.9 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -188,12 +188,7 @@ if __name__ == '__main__':
 
     for f in inFiles:
         asymData = f.asymData
-        for row in range(calConstant.NUM_ROW):
-            for fe in range(calConstant.NUM_FE):
-                for val in range(8):
-                    for pos in range(xposLen):
-                        x = asymData[f.srcTwr, row, fe, val, pos]
-                        outData[f.destTwr, row, fe, val, pos] = x
+        outData[f.destTwr, :] = asymData[f.srcTwr, :]
                             
             
     log.info('Writing output file %s', outName)

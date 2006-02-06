@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to merge mutilple CAL IntNonlin calibration XML files."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/12 17:44:28 $"
-__version__   = "$Revision: 1.18 $, $Author: dwood $"
+__date__      = "$Date: 2005/11/03 22:01:32 $"
+__version__   = "$Revision: 1.19 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -214,12 +214,7 @@ if __name__ == '__main__':
             inData = lengthData[erng]
             outData = lengthDataOut[erng]
 
-            for row in range(calConstant.NUM_ROW):
-                for end in range(calConstant.NUM_END):
-                    for fe in range(calConstant.NUM_FE):
-
-                        x = inData[f.srcTwr, row, end, fe, 0]
-                        outData[f.destTwr, row, end, fe, 0] = x
+            outData[f.destTwr, :] = inData[f.srcTwr, :]
 
             # merge tower DAC data
             
@@ -227,16 +222,7 @@ if __name__ == '__main__':
             inData = dacData[erng]
             outData = dacDataOut[erng]            
             
-            for row in range(calConstant.NUM_ROW):
-                for end in range(calConstant.NUM_END):
-                    for fe in range(calConstant.NUM_FE):
-
-                        length = f.lengthData[erng]                        
-    
-                        for n in range(length[f.srcTwr, row, end, fe, 0]):
-                            x = inData[f.srcTwr, row, end, fe, n]
-                            outData[f.destTwr, row, end, fe, n] = x
-
+            outData[f.destTwr, :] = inData[f.srcTwr, :]
 
             # merge tower ADC data
             
@@ -244,16 +230,7 @@ if __name__ == '__main__':
             inData = adcData[erng]
             outData = adcDataOut[erng]            
             
-            for row in range(calConstant.NUM_ROW):
-                for end in range(calConstant.NUM_END):
-                    for fe in range(calConstant.NUM_FE):
-
-                        length = f.lengthData[erng]                        
-    
-                        for n in range(length[f.srcTwr, row, end, fe, 0]):
-                            x = inData[f.srcTwr, row, end, fe, n]
-                            outData[f.destTwr, row, end, fe, n] = x
-                            
+            outData[f.destTwr, :] = inData[f.srcTwr, :]
             
 
     log.info('Writing output file %s', outName)
