@@ -6,15 +6,15 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/11/16 17:48:07 $"
-__version__   = "$Revision: 1.36 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/02/06 17:22:17 $"
+__version__   = "$Revision: 1.37 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 
 
-import sys, time
-import logging
+import sys
+import time
 
 import Numeric
 

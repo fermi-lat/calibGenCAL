@@ -6,13 +6,12 @@ CAL XML base classes
 __facility__  = "Offline"
 __abstract__  = "CAL XML base classes"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/07/28 22:38:29 $"
-__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/02/06 17:22:17 $"
+__version__   = "$Revision: 1.4 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 
-import logging
 import xml.dom.ext
 import xml.dom.ext.reader.Sax2
 
@@ -40,8 +39,6 @@ class calXML:
         Param: mode The file access mode (MODE_READONLY or MODE_CREATE).
         Param: validating - True/False do document DTD validation.
         """
-
-        self.__log = logging.getLogger()    
 
         self.__xmlName = fileName
         self.__doc = None
