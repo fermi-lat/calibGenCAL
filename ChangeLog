@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon Feb  6 10:13:32 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	calXML.py 
+Log Message:
+Added call to xml.dom.ext.ReleaseNode() in method calXML.close(); this releases the DOM tree memory when the user is done reading the file data.
+    *
+------------------------------------------------------------
 User: dwood  Mon Feb  6 09:48:17 PST 2006
 calibGenCAL/python
 
