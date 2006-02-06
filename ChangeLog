@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon Feb  6 09:48:17 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	asymMerge.py intNonlinMerge.py mevPerDacMerge.py pedMerge.py 
+Log Message:
+Removed array loops from merge source code; use Numeric slices to do the same job in much less code
+    *
+------------------------------------------------------------
 User: dwood  Mon Feb  6 09:25:47 PST 2006
 calibGenCAL/python
 
