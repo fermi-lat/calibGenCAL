@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Wed Feb  8 11:20:27 PST 2006
+calibGenCAL/python
+
+Added Files:
+	dacVal dacVal.bat dacVal.py 
+Log Message:
+Added dacVal validation application to check DAC settings files values for FLE, FHE, and LAC.
+    *
+------------------------------------------------------------
 User: dwood  Mon Feb  6 10:13:32 PST 2006
 calibGenCAL/python
 
