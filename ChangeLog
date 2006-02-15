@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Feb 15 15:38:38 PST 2006
+calibGenCAL/python
+
+Added Files:
+	dacDiff.py 
+Log Message:
+dacDiff.py takes 2 xml dac settings files & plots root histograms so you can see how they
+cahnged.
+
+    *
+------------------------------------------------------------
 User: dwood  Wed Feb  8 11:20:29 PST 2006
 calibGenCAL/src
 
