@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Feb 16 12:15:38 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	adc2nrgVal.py 
+Log Message:
+Fixed bug in rootHists() function.
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Feb 16 09:25:05 PST 2006
 calibGenCAL/python
 
