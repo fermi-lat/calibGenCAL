@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Feb 16 09:25:05 PST 2006
+calibGenCAL/python
+
+Added Files:
+	dumpROOTPlots.py 
+Log Message:
+dumps all plots & histograms in root file to ps files.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Feb 15 15:38:38 PST 2006
 calibGenCAL/python
 
