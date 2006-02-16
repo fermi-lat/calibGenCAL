@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL adc2nrg calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/09 17:39:24 $"
-__version__   = "$Revision: 1.5 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/20 21:11:13 $"
+__version__   = "$Revision: 1.1 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -52,7 +52,7 @@ def rootHists(energyData):
     for eng in range(2):
 
         hName = "h_Summary_%s" % calConstant.CLEHE[eng]      
-        hs = ROOT.TH1F(hName, 'adc2nrg', 100, 0.0, errLimit)
+        hs = ROOT.TH1F(hName, 'adc2nrg', 100, 0.0, heErrLimit)
         hs.SetLineColor(eng + 1)
         hs.SetStats(False)
         
