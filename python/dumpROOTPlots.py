@@ -1,51 +1,106 @@
 """
-Loop throough all TCanvas & TH* objects in ROOT file & save ps plots to file
+Loop throough all TCanvas & TH* objects in ROOT file & save plots to image file
 
-python dumpROOTPlots.py <rootFile>
+python dumpROOTPlots.py [-f ps|pdf|gif|png] <rootFile>
 
 where:
-       <rootFile> = input root file from which plots to print.
+       -f ps|pdf|gif|png = specify output image file type (default = pdf)
+       <rootFile>        = input root file from which plots to print.
 """
+
 __facility__    = "Offline"
 __abstract__    = "Plot all TCanvas & TH?? objects in ROOT file"
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/02/15 23:38:38 $"
+__date__        = "$Date: 2006/02/16 17:25:04 $"
 __version__     = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
+usage = "python dumpROOTPlots.py [-f ps|pdf|gif|png] <rootFile>"
+
+
+### IMPORTS ###
 import sys
+import logging
+import getopt
+
 from ROOT import TFile, TCanvas, TH1, gROOT
 
-usage = "python dumpROOTPlots.py <rootFile>"
 
-# check command line
-if len(sys.argv) != 2:
-    print usage
+### SUBROUTINES ###
+def print_canvas(cvs):
+    """ save ROOT.TCanvas object to file of type imgType """
+
+    # bitmap type files need a Draw() first...
+    if (imgType in bmpImgTypes):
+        cvs.Draw()
+
+    plotname = rootFile.GetName() + "." + cvs.GetName() + "." + imgType
+    cvs.Print(plotname)
+
+# setup logger
+logging.basicConfig()
+log = logging.getLogger('charVal')
+log.setLevel(logging.INFO)
+
+
+### COMMANDLINE ARGS ####
+# 1st check for optional args
+try:
+    opts, args = getopt.getopt(sys.argv[1:], "-f:")
+except getopt.GetoptError:
+    log.error(usage)
+    sys.ext(1)
+
+imgType = "pdf" #default 
+for o, a in opts:
+    if o == "-f":
+        imgType = a
+    
+        
+
+# now check for req'd params
+if len(args) != 1:
+    log.error("bad n args: " + str(len(args)) + " " + usage)
     sys.exit(1)
 
 # get filenames
-rootPath = sys.argv[1]
+rootPath = args[0]
 
+# list of all valid image types
+imgTypes = set(['ps','pdf','gif','png'])
+# list of all bitmap-type image types
+bmpImgTypes = set(['png','gif'])
+
+if imgType not in imgTypes:
+    log.error("bad imgType: " + imgType + " " + usage)
+
+        
+
+### MAIN LOOP ###
+# setup ROOT
 gROOT.Reset()
 rootFile = TFile(rootPath)
 
 for k in rootFile.GetListOfKeys():
-    cl = gROOT.GetClass(k.GetClassName());
+    cls = gROOT.GetClass(k.GetClassName());
 
     # HISTOGRAMS:
-    if cl.InheritsFrom("TH1"):
+    if cls.InheritsFrom("TH1"):
         hist = k.ReadObj()
-        plotname = rootPath + "." + hist.GetName() + ".ps"
-        canvas = TCanvas(rootPath, hist.GetName(),-1)
-
+        # Draw me to a canvas before printing....
+        cvs = TCanvas(rootPath, hist.GetName(),-1)
         hist.Draw()
-        canvas.Update()
-        canvas.Print(plotname)
+        cvs.Update()
 
-    # TCANVAS (plain ol' plots are stored in TCanvas
-    if cl.InheritsFrom("TCanvas"):
-        canvas = k.ReadObj()
-        plotname = rootPath + "." + canvas.GetName() + ".ps"
-        canvas.Print(plotname)
+        print_canvas(cvs)
+
+    # TCVS (plain ol' plots are stored in TCanvas
+    if cls.InheritsFrom("TCanvas"):
+        cvs = k.ReadObj()
+
+        print_canvas(cvs)
+
+
+
 
