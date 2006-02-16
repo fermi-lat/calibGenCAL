@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Feb 16 13:04:37 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	dumpROOTPlots.py 
+Log Message:
+now supports multiple image file output types
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Feb 16 12:15:38 PST 2006
 calibGenCAL/python
 
