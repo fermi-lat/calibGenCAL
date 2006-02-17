@@ -186,3 +186,36 @@ python - fixed a few dos/unix newline screw ups that were breaking things
 v3r8p5 - dwood
 adcsmooth - lengthened lookback for fle2adc extrapolation.  this will work better w/ new sparser data.  avoids 'knee' in output curve
 -------------------------------
+
+
+--------------------------------------------------------------------------------------------------------------------------
+v3r9 - fewtrell / dwood
+--------------------------------------------------------------------------------------------------------------------------
+
+XML parser - switched base XML parser from python standard (minidom) to PyXML pacakage (4DOM)
+	* allows for DTD validation
+	* DTD validation is now enabled for XML files required to have DTD information prefixed
+	* DTD validation still disabled for XML files which have no DTD yet
+	* better for quality control, but quite a bit slower
+
+adcsmooth - numerous changes to work correctly with sparsely sampled characterization data
+	* extrapolate data near the pedestal noise region; promotes sharp cutoff at low end of curves
+	* LAC pedestal noise is zeroed out
+	* smoothing filter does not run at endpoints of curves; promotes sharp cutoff
+	* better extrapolation of FLE coarse range values past measurement range
+	* special processing for ULD data to reconstruct saturation plateau with sparse data
+	
+charplot - new utility to plot raw and smoothed characterization data
+	* mainly a tool to diagnose the output of adcsmooth
+	
+charVal - new validation application for characterization data XML files
+	* will catch gross errors, but probably still needs work to improve validation criteria
+	
+dacVal - new validation application for DAC settings XML files
+	* works backwards from DAC setttings to calculate threshold in energy units
+	* requires a complete set of files to run
+	* nothing yet for ULD
+	
+adc2nrgVal - fixed bug with ROOT output option
+
+	
