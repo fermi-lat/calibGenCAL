@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Feb 21 06:49:21 PST 2006
+calibGenCAL/python
+
+Added Files:
+	tholdCI2TXT.py 
+Removed Files:
+	tholdci2CSV.py 
+Log Message:
+renamed tholdci2CSV.py 2 tholdCI2TXT.py
+
+    *
+------------------------------------------------------------
 User: dwood  Fri Feb 17 07:09:47 PST 2006
 calibGenCAL/doc
 
