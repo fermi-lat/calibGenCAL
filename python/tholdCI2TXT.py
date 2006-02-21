@@ -11,8 +11,8 @@ tholdci2CSV <input_xml_file>
 __facility__  = "Offline"
 __abstract__  = "Dump tholdci file to .csv file"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/11/18 17:21:17 $"
-__version__   = "$Revision: 1.11 $, $Author: dwood $"
+__date__      = "$Date: 2006/01/30 21:57:20 $"
+__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
