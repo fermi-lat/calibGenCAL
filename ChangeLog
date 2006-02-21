@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Feb 21 15:37:19 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	mpdXML2TXT.py tholdCIXML2TXT.py 
+Log Message:
+fixed a teeny bug or two, diff the files if you really care.
+i bet you don't whoever 'you' are.  if that really is your name. ;:
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Feb 21 14:50:48 PST 2006
 calibGenCAL/python
 
