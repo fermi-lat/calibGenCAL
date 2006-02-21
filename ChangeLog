@@ -1,4 +1,19 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Feb 21 14:41:14 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	pedTXT2XML.py 
+Added Files:
+	asymXML2TXT.py inlXML2TXT.py mpdXML2TXT.py pedXML2TXT.py 
+	tholdCIXML2TXT.py 
+Removed Files:
+	tholdCI2TXT.py 
+Log Message:
+new xml->txt converters for all offline calibration types
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Feb 21 06:49:21 PST 2006
 calibGenCAL/python
 
