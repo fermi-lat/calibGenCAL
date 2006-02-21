@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL Ped calibration XML files from TXT."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2005/09/16 13:38:11 $"
-__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/09/19 22:00:18 $"
+__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -106,11 +106,11 @@ if __name__ == '__main__':
         (twr, lyr, col, face, rng, ped, sig) = vals
         
         # convert array index values to integer.
-        twr = int(twr)
-        lyr = int(lyr)
-        col = int(col)
+        twr  = int(twr)
+        lyr  = int(lyr)
+        col  = int(col)
         face = int(face)
-        rng = int(rng)
+        rng  = int(rng)
 
         # convert offline face numbering to online face numbering
         face = offline_face_to_online[face]
