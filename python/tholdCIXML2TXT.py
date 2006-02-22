@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Dump tholdci file to .txt file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2006/02/21 22:41:14 $"
-__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/02/21 23:37:19 $"
+__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -63,6 +63,9 @@ if __name__ == '__main__':
     towers = xmlFile.getTowers()
     xmlFile.close()
 
+    # Convert offline xtal face indexing to online xtal face indexing  (they're reversed, don't blame me :)
+    offline_face_to_online = {0:1,1:0}
+
     # print out txt file.
     for twr in towers:
         for lyr in range(0,8):
@@ -70,18 +73,19 @@ if __name__ == '__main__':
             row = calCalibXML.layerToRow(lyr)
             for col in range(0,12):
                 for face in range(0,2):
+                    online_face = offline_face_to_online[face]
                     print delim.join([str(x) for x in twr, lyr, col, face,\
-                                     adcData[twr][row][face][col][0],
-                                     adcData[twr][row][face][col][1],\
-                                     adcData[twr][row][face][col][2],\
-                                     uldData[twr][row][face][col][0],\
-                                     uldData[twr][row][face][col][1],\
-                                     uldData[twr][row][face][col][2],\
-                                     uldData[twr][row][face][col][3],\
-                                     pedData[twr][row][face][col][0],\
-                                     pedData[twr][row][face][col][1],\
-                                     pedData[twr][row][face][col][2],\
-                                     pedData[twr][row][face][col][3]])
+                                     adcData[twr][row][online_face][col][0],
+                                     adcData[twr][row][online_face][col][1],\
+                                     adcData[twr][row][online_face][col][2],\
+                                     uldData[twr][row][online_face][col][0],\
+                                     uldData[twr][row][online_face][col][1],\
+                                     uldData[twr][row][online_face][col][2],\
+                                     uldData[twr][row][online_face][col][3],\
+                                     pedData[twr][row][online_face][col][0],\
+                                     pedData[twr][row][online_face][col][1],\
+                                     pedData[twr][row][online_face][col][2],\
+                                     pedData[twr][row][online_face][col][3]])
 
  
 
