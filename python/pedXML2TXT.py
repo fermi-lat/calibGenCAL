@@ -15,7 +15,7 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Dump offline pedestal xml file to .txt file"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/02/21 14:49:21 $"
+__date__      = "$Date: 2006/02/21 22:41:14 $"
 __version__   = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
@@ -63,6 +63,9 @@ if __name__ == '__main__':
     towers = xmlFile.getTowers()
     xmlFile.close()
 
+    # Convert offline xtal face indexing to online xtal face indexing  (they're reversed, don't blame me :)
+    offline_face_to_online = {0:1,1:0}
+
     # print out txt file.
     for twr in towers:
         for lyr in range(8):
@@ -70,10 +73,11 @@ if __name__ == '__main__':
             row = calCalibXML.layerToRow(lyr)
             for col in range(12):
                 for face in range(2):
+                    online_face = offline_face_to_online[face]
                     for rng in range(4):
                         print delim.join([str(x) for x in twr, lyr, col, face, rng,
-                                          pedData[twr][row][face][col][rng][0],
-                                          pedData[twr][row][face][col][rng][1]])
+                                          pedData[twr][row][online_face][col][rng][0],
+                                          pedData[twr][row][online_face][col][rng][1]])
                                           
 
  

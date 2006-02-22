@@ -9,9 +9,7 @@ where:
     -d           = specify which dtd file to load from calibUtil/xml folder (default = 'calCalib_v2r2.dtd')
 
     input.txt    = asymmetry input txt file, space delimited in following format:
-                   twr lyr col diode_mnem asym0 sig0 asym1 sig1 ... asym9 sig9
-
-                   where diode_mnem = 'LL'|'LS'|'SL'|'SS'
+                   twr lyr col pos_diode neg_diode xpos asym asig
         
     output.xml = properly formatted offline CAL asymmetry XML file
 """
@@ -19,8 +17,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL Asymmetry calibration XML files from TXT."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2005/09/12 17:44:28 $"
-__version__   = "$Revision: 1.10 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/15 18:15:08 $"
+__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -42,7 +40,6 @@ if __name__ == '__main__':
     usage      = "asymTXT2XML [-doptional.dtd] input.txt output.xml"
     dtdName    = "calCalib_v2r2.dtd" #default value
     xpos_pts   = (-122.25, -95.0833, -67.9167, -40.75, -13.5833, 13.5833, 40.75, 67.9167, 95.0833, 122.25)
-    nTXTFields = 24
 
     # setup logger
     logging.basicConfig()
@@ -86,10 +83,6 @@ if __name__ == '__main__':
                              8,
                              len(xpos_pts)),
                             Numeric.Float32)
-    # indeces for outData
-    valIdx = {'LL':0, 'SS':1, 'LS':2, 'SL':3}
-    sigIdx = {'LL':4, 'SS':5, 'LS':6, 'SL':7}
-
     # keep track of active towers
     twrSet = set()
 
@@ -97,35 +90,75 @@ if __name__ == '__main__':
     inFile = open(inPath, 'r')
     lines = inFile.readlines()
 
+    # associate pos_diode, big_diode & val_or_sigma
+    # to index into calAsymCalibXML array as spec'd as
+    # follows (from calCalibXML.py)
+
+    #     The next-to-last
+    #     dimension contains the following data:
+    #     0 = bigVals value
+    #     1 = smallVals value
+    #     2 = NsmallPbigVals value
+    #     3 = PsmallNbigVals value
+    #     4 = bigSigs value
+    #     5 = smallSigs value
+    #     6 = NsmallPbigSigs value
+    #     7 = PsmallNbigSigs value
+
+    # tuple idx keys are (pos_diode, neg_diode, sigma)
+    asymIdx = {
+        (0,0,False):0,\
+        (1,1,False):1,\
+        (0,1,False):2,\
+        (1,0,False):3,\
+        (0,0,True):4,\
+        (1,1,True):5,\
+        (0,1,True):6,\
+        (1,0,True):7}
+
+    # keep track of which curve we're plotting
+    # use tuple as key of (twr,lyr,col,pdiode,ndiode)
+    # increment value for each new point.
+    curveDict = {}
+    
+
     nLine = -1
     for line in lines:
         nLine+=1
-        vals = line.split()
-        if (len(vals) != nTXTFields):
-            log.error("input line# %d expecting %d column input, got %d" % (nLine, nTXTFields, len(vals)) +
-                      "fmt=[twr lyr col diode_mnem asym0 sig0 asym1 sig1 ... asym9 sig9]")
-            sys.exit(-1)
+        [twr,lyr,col,pdiode,ndiode,xpos,asym,sig] = line.split()
 
         # convert array index values to integer.
-        twr = int(vals[0])
-        lyr = int(vals[1])
-        col = int(vals[2])
-        diode_set = vals[3]
+        twr = int(twr)
+        lyr = int(lyr)
+        col = int(col)
+        pdiode = int(pdiode)
+        ndiode = int(ndiode)
+        xpos   = float(xpos)
+        asym   = float(asym)
+        sig    = float(sig)
 
-        data_pts = vals[4:]
-        # convert vals array to floats instead of stringns
-        for i in range(len(data_pts)):
-            data_pts[i] = float(data_pts[i])
+        curveId = (twr,lyr,col,pdiode,ndiode)
+
+        # keep track of which curve we're on
+        if curveDict.has_key(curveId):
+            curveDict[curveId] += 1
+        else:
+            curveDict[curveId] = 0
+
+        nPt = curveDict[curveId]
 
         # make sure current tower is on list
         twrSet.add(twr)
 
         row = calCalibXML.layerToRow(int(lyr))
 
+        # calculate index for asym_type
+        valIdx = asymIdx[(pdiode,ndiode,False)]
+        sigIdx = asymIdx[(pdiode,ndiode,True)]
+
         # set asym & sigma for each point alon xtal
-        for i in range(len(xpos_pts)):
-            outData[twr, row, col, valIdx[diode_set],i] = data_pts[i*2]
-            outData[twr, row, col, sigIdx[diode_set],i] = data_pts[i*2+1]
+        outData[twr, row, col, valIdx, nPt] = asym
+        outData[twr, row, col, sigIdx, nPt] = sig
 
     log.info('Writing output file %s', outPath)
 

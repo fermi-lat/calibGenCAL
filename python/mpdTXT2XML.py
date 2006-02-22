@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL mevPerDAC calibration XML files from TXT."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2005/09/12 17:44:28 $"
-__version__   = "$Revision: 1.10 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/15 18:15:08 $"
+__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -94,24 +94,14 @@ if __name__ == '__main__':
     nLine = -1
     for line in lines:
         nLine+=1
-        vals = line.split()
-        if (len(vals) != nTXTFields):
-            log.error("input line# %d expecting %d column input, got %d" % (nLine, nTXTFields, len(vals)) +
-                      "fmt=[twr lyr col diode mevPerDAC sigma]")
-            sys.exit(-1)
-
-        # convert vals array to floats instead of strings
-        for i in range(len(vals)):
-            vals[i] = float(vals[i])
-
-        (twr, lyr, col, diode, mpd, sig) = vals
-
-        
+        (twr, lyr, col, diode, mpd, sig)= line.split()
         # convert array index values to integer.
         twr = int(twr)
         lyr = int(lyr)
         col = int(col)
         diode = int(diode)
+        mpd = float(mpd)
+        sig = float(sig)
 
         # make sure current tower is on list
         twrSet.add(twr)
