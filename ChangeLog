@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Feb 22 13:20:07 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	asymTXT2XML.py asymXML2TXT.py inlXML2TXT.py mpdTXT2XML.py 
+	pedXML2TXT.py tholdCIXML2TXT.py 
+Log Message:
+TXT2XML & XML2TXT scripts now support same txt format.
+
+bug where online vs offline  face indexes were getting mixed up is fixed
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Feb 21 15:37:19 PST 2006
 calibGenCAL/python
 
