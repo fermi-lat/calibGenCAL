@@ -189,7 +189,7 @@ adcsmooth - lengthened lookback for fle2adc extrapolation.  this will work bette
 
 
 --------------------------------------------------------------------------------------------------------------------------
-v3r9 - fewtrell / dwood
+v3r9 - dwood / fewtrell
 --------------------------------------------------------------------------------------------------------------------------
 
 XML parser - switched base XML parser from python standard (minidom) to PyXML pacakage (4DOM)
@@ -217,5 +217,16 @@ dacVal - new validation application for DAC settings XML files
 	* nothing yet for ULD
 	
 adc2nrgVal - fixed bug with ROOT output option
+
+xxxXML2TXT.py - new scripts generate collumnar text files from offline Cal calibration files
+
+dacDiff.py - generates per channel differences between any 2 cal dac settings snapshot files.
+
+roothist2csv.py - generates collumnar text files from all histograms in ROOT file.
+
+dumpROOTPlots.py - generates images files for all histograms & Canvases in ROOT file.
+
+C++ - TXT format output now supports new format used by python scripts. improved format includes tower information & contains all 4 asym types & both MeVPerDAC types into single file each.
+
 
 	
