@@ -89,7 +89,7 @@ int main(int argc, char** argv) {
         cfg.inputPedFile :
         cfg.pedFileTXT;
       cfg.ostrm << "Reading pedestals from " << file_to_read << endl;
-      appData.readCalPeds(file_to_read);
+      appData.readPedsTXT(file_to_read);
     }
 
     if (cfg.pedsOnly) return 0;
@@ -114,16 +114,13 @@ int main(int argc, char** argv) {
       if (cfg.genHistfiles) appData.openHistFile(cfg.asymHistFile);
       
       // retrieve asymmetry data from events
-      appData.fillAsymHists(cfg.nEvtAsym, cfg.genOptAsymHists); // otherwise it's too many zeros
+      appData.fillAsymHists(cfg.nEvtAsym); // otherwise it's too many zeros
       
       // fit for asymmetry results
-      appData.populateAsymArrays();
+      appData.fitAsymHists();
 
       // output asymmetry TXT file(s)
-      if (cfg.genTXT) appData.writeAsymTXT(cfg.asymFileLLTXT,
-                                           cfg.asymFileLSTXT,
-                                           cfg.asymFileSLTXT,
-                                           cfg.asymFileSSTXT);
+      if (cfg.genTXT) appData.writeAsymTXT(cfg.asymFileTXT);
       
       // output asymmetry XML file
       if (cfg.genXML) appData.writeAsymXML(cfg.asymFileXML,cfg.dtdPath);
@@ -132,15 +129,8 @@ int main(int argc, char** argv) {
       if (cfg.genHistfiles) appData.flushHists();
     } else {
       // ALTERNATE SHORTCUT TO CALCULATING ASYM
-      cfg.ostrm << "Reading asymmetry from " << cfg.asymFileLLTXT << " "
-                << cfg.asymFileLSTXT << " "
-                << cfg.asymFileSLTXT << " "
-                << cfg.asymFileSSTXT << " "
-                << endl;
-      appData.readAsymTXT(cfg.asymFileLLTXT,
-                          cfg.asymFileLSTXT,
-                          cfg.asymFileSLTXT,
-                          cfg.asymFileSSTXT);
+      cfg.ostrm << "Reading asymmetry from " << cfg.asymFileTXT << endl;
+      appData.readAsymTXT(cfg.asymFileTXT);
     }
 
     //////////////////////////////////
@@ -162,7 +152,7 @@ int main(int argc, char** argv) {
       appData.fitMPDHists();
       
       // write MPD TXT files.
-      if (cfg.genTXT) appData.writeMPDTXT(cfg.largeMPDFileTXT, cfg.smallMPDFileTXT);
+      if (cfg.genTXT) appData.writeMPDTXT(cfg.mpdFileTXT);
       
       // write MPD XML file
       if (cfg.genXML) appData.writeMPDXML(cfg.mpdFileXML, cfg.dtdPath);

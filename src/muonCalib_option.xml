@@ -3,8 +3,8 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLBASEROOT)/xml/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/muonCalib_option.xml,v 1.17 2005/08/05 05:59:09 fewtrell Exp $"
- cvs_Revision="$Revision: 1.17 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/muonCalib_option.xml,v 1.18 2005/09/29 20:53:40 fewtrell Exp $"
+ cvs_Revision="$Revision: 1.18 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP" 		value="2004-07-31-06:50"> Timestamp for test run.</item>
@@ -32,12 +32,8 @@
     <item name="MPD_HISTFILE" 		value=""> Optional path for ROOT histogram filename (default "" autogenerates filename from input filename)</item>
     
     <item name="PEDFILE_TXT" 		value=""> Optional path for output ADC pedestal text file (default "" autogenerates filename from input filename)  </item>
-    <item name="ASYMFILELL_TXT" 	value=""> Optional path for output LL asymmetry text file  (default "" autogenerates filename from input filename) </item>
-    <item name="ASYMFILELS_TXT" 	value=""> Optional path for output LS asymmetry text file (default "" autogenerates filename from input filename)  </item>
-    <item name="ASYMFILESL_TXT" 	value=""> Optional path for output SL asymmetry text file (default "" autogenerates filename from input filename)  </item>
-    <item name="ASYMFILESS_TXT" 	value=""> Optional path for output SS asymmetry text file (default "" autogenerates filename from input filename)  </item>
-    <item name="LARGEMPD_TXT" 		value=""> Optional path for output mev/dac conversion text file (Large diodes)  (default "" autogenerates filename from input filename)</item>
-    <item name="SMALLMPD_TXT" 		value=""> Optional path for output mev/dac conversion text file (Small diodes)  (default "" autogenerates filename from input filename)</item>
+    <item name="ASYMFILE_TXT" 	        value=""> Optional path for output asymmetry text file  (default "" autogenerates filename from input filename) </item>
+    <item name="MPDFILE_TXT" 		value=""> Optional path for output mev/dac conversion text file (default "" autogenerates filename from input filename)</item>
 
     <item name="LOGFILE" 		value=""> application log file duplicates stdout (default "" autogenerates filename from input filename)</item>
   </section>
@@ -68,10 +64,6 @@
     <item name="GENERATE_HISTOGRAM_FILES" value="true"> (boolean) generate histogram output</item>
     <item name="GENERATE_LOGFILE" 	value="true"> (boolean) generate logfile which duplicates stdout </item>
     
-    <item name="GEN_OPT_ASYM_HISTS"     value="false"> (boolean) generate optional asymmetry histograms</item>
-
-    <item name="VERBOSE"                value="false"> (boolean) verbose debugging output to log </item>
-
   </section>
 
 </ifile>

@@ -1,5 +1,5 @@
 /** @file
-    $Header$
+    $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CfData.cxx,v 1.6 2006/01/13 17:25:58 fewtrell Exp $
 */
 // LOCAL INCLUDES
 #include "CfData.h"
@@ -223,7 +223,8 @@ void CfData::WriteSplinesTXT(const string &filename) {
   for (tRngIdx rngIdx; rngIdx.isValid(); rngIdx++)
     for (unsigned n = 0; n < m_splineADC[rngIdx].size(); n++) {
       RngNum rng = rngIdx.getRng();
-      outFile << rngIdx.getLyr() << " "
+      outFile << m_cfg.twrBay     << " "
+              << rngIdx.getLyr()  << " "
               << rngIdx.getCol()  << " "
               << rngIdx.getFace() << " "
               << rng  << " "
@@ -242,7 +243,7 @@ void CfData::ReadSplinesTXT (const string &filename) {
     throw tmp.str();
   }
 
-  //short twr = m_cfg.twrBay;
+  short twr;
   short lyr;
   short col;
   short face;
@@ -251,12 +252,16 @@ void CfData::ReadSplinesTXT (const string &filename) {
   float tmpADC;
   while (inFile.good()) {
     // load in one spline val w/ coords
-    inFile >> lyr 
+    inFile >> twr
+           >> lyr 
            >> col
            >> face
            >> rng
            >> tmpDAC
            >> tmpADC;
+    if (inFile.fail()) break; // quit once we can't read any more values
+    // skip if not for current tower
+    if ((int)twr != m_cfg.twrBay) continue;
     
     tRngIdx rngIdx(lyr,col,face,rng);
 
@@ -288,7 +293,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CfData.cxx,v 1.5 2005/11/03 16:15:13 fewtrell Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CfData.cxx,v 1.6 2006/01/13 17:25:58 fewtrell Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r3.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
@@ -330,7 +335,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   // TOWER // currently only using 1 tower.
   xmlFile << endl;
   // only using 1 tower right now
-  for (TwrNum twr = m_cfg.twrBay; twr == m_cfg.twrBay; twr++) {
+  for (TwrNum twr = m_cfg.twrBay; (int)twr == m_cfg.twrBay; twr++) {
     xmlFile << " <tower iRow=\"" << twr.getRow() 
             << "\" iCol=\"" << twr.getCol() << "\">" << endl;
     // LAYER //
@@ -345,9 +350,9 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
           xmlFile << "    <face end=\"" << facestr << "\">" << endl;
           // RNG //
           for (RngNum rng; rng.isValid(); rng++) {
-            tRngIdx rngIdx(lyr,col,face,rng);
+            tRngIdx rngIdx(lyr, col, face, rng);
 
-            xmlFile << "     <intNonlin range=\"" << RngNum::MNEM[rng] << "\"" << endl;
+            xmlFile << "     <intNonlin range=\"" << rng.getMnem() << "\"" << endl;
             // ADC VALS //
             xmlFile << "             values=\"";
             for (unsigned i = 0; i < m_splineADC[rngIdx].size(); i++)

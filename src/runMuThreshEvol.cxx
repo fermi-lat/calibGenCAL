@@ -3,6 +3,7 @@
 
 #include "TeCfg.h"
 #include "CalDefs.h"
+#include "CalVec.h"
 
 // GLAST INCLUDES
 
@@ -380,7 +381,7 @@ void RootThreshEvol::fillThreshHists()
           ColNum col = id.getColumn();
 
           TwrNum twr = id.getTower();
-          if (twr != m_cfg.twrBay) continue; // skip events not for current tower.
+          if ((int)twr != m_cfg.twrBay) continue; // skip events not for current tower.
 
           LyrNum lyr = id.getLayer();
           // Loop through each readout on current xtal
@@ -388,12 +389,12 @@ void RootThreshEvol::fillThreshHists()
           for (int iRo=0; iRo<numRo; iRo++){
             const CalXtalReadout &acRo = *(cdig.getXtalReadout(iRo));
             for (FaceNum face; face.isValid(); face++) {
-              RngNum rng = acRo.getRange((CalXtalId::XtalFace)(short)face);
+              RngNum rng = acRo.getRange((CalXtalId::XtalFace)(unsigned short)face);
               // only interested in LEX8 range
               if(rng == 0){
                 tFaceIdx faceIdx(lyr,col,face);
                 float ped = m_teData.getPed(faceIdx,itp);
-                m_adc[faceIdx]  = acRo.getAdc((CalXtalId::XtalFace)(short)face)-ped;
+                m_adc[faceIdx]  = acRo.getAdc((CalXtalId::XtalFace)(unsigned short)face)-ped;
               }
 
             } // foreach face

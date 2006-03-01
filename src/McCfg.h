@@ -76,18 +76,10 @@ class McCfg : ICfg {
 
   /// output txt filename for pedestals
   string pedFileTXT;    
-  /// output txt filename for asym Large Diode Pos face 2 Large Diode Neg face
-  string asymFileLLTXT; 
-  /// output txt filename for asym Large Diode Pos face 2 Small Diode Neg face 
-  string asymFileLSTXT; 
-  /// output txt filename for asym Small Diode Pos face 2 Large Diode Neg face 
-  string asymFileSLTXT; 
-  /// output txt filename for asym Small Diode Pos face 2 Small Diode Neg face 
-  string asymFileSSTXT; 
-  /// output txt filename for Mev per DAC Large Diode
-  string largeMPDFileTXT; 
-  /// output txt filename for Mev per DAC Small Diode
-  string smallMPDFileTXT; 
+  /// output txt filename for asymmetry
+  string asymFileTXT; 
+  /// output txt filename for Mev per DAC Lrg Diode
+  string mpdFileTXT; 
 
   /// duplicate of stdout log
   string logfile;       
@@ -135,12 +127,6 @@ class McCfg : ICfg {
   bool genHistfiles;    
   /// clone stdout stream to a logfile
   bool genLogfile;      
-
-  /// generate optional asym histograms
-  bool genOptAsymHists; 
-
-  /// verbose debugging output to log.
-  bool verbose;         
 
   // DERIVED FROM CFG PARAMES //
   vector<string> rootFileList;

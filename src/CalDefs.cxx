@@ -1,7 +1,7 @@
 /** @file CalDefs.cxx
     \brief Glast Calorimeter array code.
-    $Header$
- */
+    $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CalDefs.cxx,v 1.6 2006/01/13 17:25:58 fewtrell Exp $
+*/
 
 // LOCAL INCLUDES
 #include "CalDefs.h"
@@ -20,25 +20,21 @@ using namespace std;
 //populate static arrays.
 
 namespace CalDefs {
-  static const string _face_mnem[]= {"POS",
-                                     "NEG"};
+  const string FaceNum::m_str[]= {"POS",
+                                         "NEG"};
 
-  const vector<string> FaceNum::MNEM(_face_mnem,_face_mnem + 
-                                     sizeof(_face_mnem)/sizeof(string));
+  const string DiodeNum::m_str[] = {"LRG",
+                                           "SM"};
 
-  static const string _diode_mnem[] = {"LARGE",
-                                       "SMALL"};
+  const string RngNum::m_str[] = {"LEX8",
+                                         "LEX1",
+                                         "HEX8",
+                                         "HEX1"};
 
-  const vector<string> DiodeNum::MNEM(_diode_mnem,_diode_mnem + 
-                                      sizeof(_diode_mnem)/sizeof(string));
-
-  static const string _rng_mnem[] = {"LEX8",
-                                     "LEX1",
-                                     "HEX8",
-                                     "HEX1"};
-
-  const vector<string> RngNum::MNEM(_rng_mnem, _rng_mnem + 
-                                    sizeof(_rng_mnem)/sizeof(string));
+  const string AsymType::m_str[] = {"LL",
+                                           "LS",
+                                           "SL",
+                                           "SS"};
 
   ostream& operator<< (ostream &strm, const XtalIdx &idx) {
     strm << "T" << setfill('0') << setw(2) << idx.getTwr();

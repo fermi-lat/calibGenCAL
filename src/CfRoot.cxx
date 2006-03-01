@@ -37,7 +37,7 @@ void CfRoot::createHists() {
     // delete histograms w/ TObjArray, do not save in file...
     m_ciHists.SetOwner(1);
 
-    m_ciHists[rngIdx.getInt()] =  new TH1F(tmp.str().c_str(),
+    m_ciHists[rngIdx.val()] =  new TH1F(tmp.str().c_str(),
                                            tmp.str().c_str(),
                                            4100,0,4100);
   }
@@ -55,7 +55,7 @@ void CfRoot::ProcessEvt() {
   //    note: only count good events            //
 
   // which column are we testing?
-  int testCol = m_iGoodEvt/m_cfg.nPulsesPerXtal;
+  ColNum testCol = m_iGoodEvt/m_cfg.nPulsesPerXtal;
   // which DAC setting are we on?
   int testDAC = (m_iGoodEvt%m_cfg.nPulsesPerXtal)/m_cfg.nPulsesPerDAC;
   // how many samples for current DAC setting?
@@ -91,7 +91,7 @@ void CfRoot::ProcessEvt() {
 
       // skip if not for current tower
       TwrNum twr = id.getTower();
-      if (twr != m_cfg.twrBay) continue;
+      if ((int)twr != m_cfg.twrBay) continue;
 
       LyrNum lyr = id.getLayer();
 
@@ -100,16 +100,16 @@ void CfRoot::ProcessEvt() {
       for (int iRo=0; iRo<numRo; iRo++){
         const CalXtalReadout &acRo = *(cdig.getXtalReadout(iRo));
         for (FaceNum face; face.isValid(); face++) {
-          RngNum rng = acRo.getRange((CalXtalId::XtalFace)(short)face);
+          RngNum rng = acRo.getRange((CalXtalId::XtalFace)(unsigned short)face);
           // only interested in current diode!
           if (!isRngEnabled(rng)) continue;
 
           // retrieve adc value
-          int adc = acRo.getAdc((CalXtalId::XtalFace)(short)face);
+          int adc = acRo.getAdc((CalXtalId::XtalFace)(unsigned short)face);
 
           // fill histogram
           tRngIdx rngIdx(lyr,col,face,rng);
-          TH1F& h = *((TH1F*)m_ciHists[rngIdx.getInt()]);
+          TH1F& h = *((TH1F*)m_ciHists[rngIdx.val()]);
 
           // reset histogram if we're starting a new DAC setting
           if(iSamp == 0){

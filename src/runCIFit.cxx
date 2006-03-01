@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
     {
       vector<string> digiFilenames;
       digiFilenames.push_back(cfg.rootFileLE);
-      CfRoot cfRoot(digiFilenames, cfData, cfg, LARGE_DIODE);  
+      CfRoot cfRoot(digiFilenames, cfData, cfg, LRG_DIODE);  
       cfRoot.EvtLoop(cfg.nPulsesPerRun);
     }
 
@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
     {
       vector<string> digiFilenames;
       digiFilenames.push_back(cfg.rootFileHE);
-      CfRoot cfRoot(digiFilenames,cfData,cfg, SMALL_DIODE);  
+      CfRoot cfRoot(digiFilenames,cfData,cfg, SM_DIODE);  
       cfRoot.EvtLoop(cfg.nPulsesPerRun);
     }
 

@@ -68,18 +68,10 @@ void McCfg::readCfgFile(const string& cfgPath) {
  
   pedFileTXT      = ifile.getString(PATHS.c_str(), "PEDFILE_TXT");
   Util::expandEnvVar(&pedFileTXT);
-  asymFileLLTXT   = ifile.getString(PATHS.c_str(), "ASYMFILELL_TXT");
-  Util::expandEnvVar(&asymFileLLTXT);
-  asymFileLSTXT   = ifile.getString(PATHS.c_str(), "ASYMFILELS_TXT");
-  Util::expandEnvVar(&asymFileLSTXT);
-  asymFileSLTXT   = ifile.getString(PATHS.c_str(), "ASYMFILESL_TXT");
-  Util::expandEnvVar(&asymFileSLTXT);
-  asymFileSSTXT   = ifile.getString(PATHS.c_str(), "ASYMFILESS_TXT");
-  Util::expandEnvVar(&asymFileSSTXT);
-  largeMPDFileTXT = ifile.getString(PATHS.c_str(), "LARGEMPD_TXT");
-  Util::expandEnvVar(&largeMPDFileTXT);
-  smallMPDFileTXT = ifile.getString(PATHS.c_str(), "SMALLMPD_TXT");
-  Util::expandEnvVar(&smallMPDFileTXT);
+  asymFileTXT     = ifile.getString(PATHS.c_str(), "ASYMFILE_TXT");
+  Util::expandEnvVar(&asymFileTXT);
+  mpdFileTXT      = ifile.getString(PATHS.c_str(), "MPDFILE_TXT");
+  Util::expandEnvVar(&mpdFileTXT);
 
   logfile = ifile.getString(PATHS.c_str(), "LOGFILE");
   Util::expandEnvVar(&logfile);
@@ -136,14 +128,6 @@ void McCfg::readCfgFile(const string& cfgPath) {
   tmpStr = ifile.getString(GENERAL.c_str(), "GENERATE_LOGFILE")        ;
   Util::expandEnvVar(&tmpStr);
   genLogfile   = stringToBool(tmpStr);
-  tmpStr = ifile.getString(GENERAL.c_str(), "VERBOSE");
-  Util::expandEnvVar(&tmpStr);
-  verbose      = stringToBool(tmpStr);
-
-  // only asign genOptAsymHists is genHistfiles is also enabled.
-  genOptAsymHists = false;
-  if (genHistfiles) genOptAsymHists 
-                      = ifile.getBool(GENERAL.c_str(), "GEN_OPT_ASYM_HISTS")!=0;
 
   // *** POST PROCESS *** //
   // parse list of ROOT input files
@@ -186,23 +170,11 @@ void McCfg::readCfgFile(const string& cfgPath) {
   if (pedFileTXT.length() == 0)
     pedFileTXT = outputDir + "mc_peds." + baseFilename 
       + '.' + twrBayStr + ".txt";
-  if (asymFileLLTXT.length() == 0)
-    asymFileLLTXT = outputDir + "mc_asymLL." + baseFilename 
+  if (asymFileTXT.length() == 0)
+    asymFileTXT = outputDir + "mc_asym." + baseFilename 
       + '.' + twrBayStr + ".txt";
-  if (asymFileLSTXT.length() == 0)
-    asymFileLSTXT = outputDir + "mc_asymLS." + baseFilename 
-      + '.' + twrBayStr + ".txt";
-  if (asymFileSLTXT.length() == 0)
-    asymFileSLTXT = outputDir + "mc_asymSL." + baseFilename 
-      + '.' + twrBayStr + ".txt";
-  if (asymFileSSTXT.length() == 0)
-    asymFileSSTXT = outputDir + "mc_asymSS." + baseFilename 
-      + '.' + twrBayStr + ".txt";
-  if (largeMPDFileTXT.length() == 0)
-    largeMPDFileTXT = outputDir + "mc_mpdLarge." + baseFilename 
-      + '.' + twrBayStr + ".txt";
-  if (smallMPDFileTXT.length() == 0)
-    smallMPDFileTXT = outputDir + "mc_mpdSmall." + baseFilename 
+  if (mpdFileTXT.length() == 0)
+    mpdFileTXT = outputDir + "mc_mpd." + baseFilename 
       + '.' + twrBayStr + ".txt";
   if (logfile.length() == 0)
     logfile = outputDir + "mc_logfile." + baseFilename 
