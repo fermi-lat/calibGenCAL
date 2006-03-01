@@ -359,7 +359,7 @@ void RootThreshEvol::fillThreshHists()
           CalDiagnosticData &cdiag = *pdiag; // use ref to reduce '->'
   
           int layer = cdiag.layer();
-          for (int side=0;side<2;side++) m_fle[side][layer] = cdiag.low(side);  
+          for (int side=0;side<2;side++) m_fle[side][layer] = cdiag.low(side) != 0;  
   
         }
         const TClonesArray* calDigiCol = m_digiEvt->getCalDigiCol();

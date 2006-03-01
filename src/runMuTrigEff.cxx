@@ -490,7 +490,7 @@ void RootCiTrig::ProcessEvt() {
     if (tower != m_cfg.twrBay) continue;  //skip diagnostics if it is wrong tower.
   
     int layer = cdiag.layer();
-    for (int side=0;side<2;side++)m_fle[side][layer] = cdiag.low(side);  
+    for (int side=0;side<2;side++)m_fle[side][layer] = cdiag.low(side) != 0;  
   }
 
 
@@ -660,7 +660,7 @@ void RootMuTrig::ProcessEvt() {
 
   
     int layer = cdiag.layer();
-    for (int side=0;side<2;side++) m_fle[side][layer] = cdiag.low(side);  
+    for (int side=0;side<2;side++) m_fle[side][layer] = cdiag.low(side) != 0;  
   
   }
   const TClonesArray* calDigiCol = m_digiEvt->getCalDigiCol();
