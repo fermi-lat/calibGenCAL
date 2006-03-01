@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Mar  1 13:32:59 PST 2006
+calibGenCAL/python/cfg
+
+Modified Files:
+	muonCalib_option_template.xml 
+Log Message:
+C++ apps now generate txt files consistent w/ those used in new python XML<->TXT converters.
+- txt files contain tower info & asym & mpd files are now merged into 1 file.
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Feb 22 13:20:07 PST 2006
 calibGenCAL/python
 
