@@ -226,6 +226,11 @@ roothist2csv.py - generates collumnar text files from all histograms in ROOT fil
 
 dumpROOTPlots.py - generates images files for all histograms & Canvases in ROOT file.
 
+unit_test - now 2 tower instead of 8 to save processing time
+
+runSuiteParallel.py - now supports commandline override of twr_id as well as each individual processing phase.  
+                      allows work to be easily broken up into several threads w/ same cfg file.
+
 C++ - TXT format output now supports new format used by python scripts. improved format includes tower information & contains all 4 asym types & both MeVPerDAC types into single file each.
 
 
