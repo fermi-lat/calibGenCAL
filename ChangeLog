@@ -1,4 +1,21 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Mar  1 13:33:00 PST 2006
+calibGenCAL/src
+
+Modified Files:
+	CalDefs.cxx CalDefs.h CfData.cxx CfData.h CfRoot.cxx McCfg.cxx 
+	McCfg.h MuonCalib.cxx MuonCalib.h muonCalib_option.xml 
+	runCIFit.cxx runMuThreshEvol.cxx runMuTrigEff.cxx 
+	runMuonCalib.cxx 
+Added Files:
+	CalArray.h CalVec.h 
+Log Message:
+C++ apps now generate txt files consistent w/ those used in new python XML<->TXT converters.
+- txt files contain tower info & asym & mpd files are now merged into 1 file.
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Mar  1 13:32:59 PST 2006
 calibGenCAL/python/cfg
 
