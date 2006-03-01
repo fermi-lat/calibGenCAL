@@ -3,6 +3,7 @@
 
 #include "MtCfg.h"
 #include "CalDefs.h"
+#include "CalVec.h"
 
 // GLAST INCLUDES
 
@@ -43,7 +44,7 @@ public:
   void fillMuHist(tFaceIdx face, float adc){ (m_muHists[face])->Fill(adc);}
   void fillTrigHist(tFaceIdx face, float adc){ (m_trigHists[face])->Fill(adc);}
   float getPed(tRngIdx rng){return m_calPed[rng];}
-  void readCalPeds(const string &filename); ///< read 4-range pedestals from .txt file created in muonCalib w/ WritePedsTXT
+  void readPedsTXT(const string &filename); ///< read 4-range pedestals from .txt file created in muonCalib w/ WritePedsTXT
   void initHists();
   void FitData();
   void writeThreshTXT(const string &filename);
@@ -80,7 +81,7 @@ private:
   auto_ptr<TFile> m_histFile;  ///< Current histogram file
   string m_histFilename;  ///< name of the current output histogram ROOT file
 };
-void MtData::readCalPeds(const string &filename) {
+void MtData::readPedsTXT(const string &filename) {
   m_calPed.resize(tRngIdx::N_VALS);
   m_delPed.resize(tFaceIdx::N_VALS);
 
@@ -91,18 +92,22 @@ void MtData::readCalPeds(const string &filename) {
   unsigned nRead = 0;
   while(infile.good()) {
     float av,err;
+    short twr;
     short lyr;
     short col;
     short face;
     short rng;
     
-    infile >> lyr
+    infile >> twr
+           >> lyr
            >> col
            >> face
            >> rng
            >> av
            >> err;
     if (infile.fail()) break; // quit once we can't read any more values
+    // skip if not current tower
+    if ((int) twr != m_cfg.twrBay) continue;
     nRead++;
 
     tRngIdx rngIdx(lyr,col,face,rng);
@@ -219,7 +224,7 @@ MtData::MtData(MtCfg &cfg) :
   if (m_cfg.genHistfile) openHistFile(m_cfg.histFile);
   initHists();
   m_cfg.ostrm << "Reading pedestals from " << m_cfg.pedFileTXT << endl;
-  readCalPeds(m_cfg.pedFileTXT);
+  readPedsTXT(m_cfg.pedFileTXT);
 
 }
 
@@ -470,7 +475,7 @@ bool  RootCiTrig::isRngEnabled(RngNum rng) {
 void RootCiTrig::ProcessEvt() {
   // Determine test config for this event (which xtal?, which dac?)
   // only count good events
-  int testCol   = m_iGoodEvt/m_cfg.nPulsesPerXtal;
+  ColNum testCol   = m_iGoodEvt/m_cfg.nPulsesPerXtal;
   int testDAC   = (m_iGoodEvt%m_cfg.nPulsesPerXtal)/m_cfg.nPulsesPerDAC;
 
 
@@ -512,7 +517,7 @@ void RootCiTrig::ProcessEvt() {
       if (col != testCol) continue;
 
       TwrNum twr = id.getTower();
-      if (twr != m_cfg.twrBay) continue;  // skip hit if it is the wrong tower
+      if ((int)twr != m_cfg.twrBay) continue;  // skip hit if it is the wrong tower
       LyrNum lyr = id.getLayer();
 
       // Loop through each readout on current xtal
@@ -520,11 +525,11 @@ void RootCiTrig::ProcessEvt() {
       for (int iRo=0; iRo<numRo; iRo++){
         const CalXtalReadout &acRo = *(cdig.getXtalReadout(iRo));
         for (FaceNum face; face.isValid(); face++) {
-          RngNum rng = acRo.getRange((CalXtalId::XtalFace)(short)face);
+          RngNum rng = acRo.getRange((CalXtalId::XtalFace)(unsigned short)face);
           // only interested in current diode!
           if (!isRngEnabled(rng)) continue;
 
-          int adc    = acRo.getAdc((CalXtalId::XtalFace)(short)face);
+          int adc    = acRo.getAdc((CalXtalId::XtalFace)(unsigned short)face);
  
           tFaceIdx faceIdx(lyr,col,face);
           tRngIdx rngIdx(lyr,col,face,rng);
@@ -679,20 +684,20 @@ void RootMuTrig::ProcessEvt() {
     ColNum col = id.getColumn();
 
     TwrNum twr = id.getTower();
-    if (twr != m_cfg.twrBay) continue;  //skip hit if it is wrong tower.
+    if ((int)twr != m_cfg.twrBay) continue;  //skip hit if it is wrong tower.
     LyrNum lyr = id.getLayer();
     // Loop through each readout on current xtal
     int numRo = cdig.getNumReadouts();
     for (int iRo=0; iRo<numRo; iRo++){
       const CalXtalReadout &acRo = *(cdig.getXtalReadout(iRo));
       for (FaceNum face; face.isValid(); face++) {
-        RngNum rng = acRo.getRange((CalXtalId::XtalFace)(short)face);
+        RngNum rng = acRo.getRange((CalXtalId::XtalFace)(unsigned short)face);
         // only interested in LEX8 range
         if(rng == 0){
           tFaceIdx faceIdx(lyr,col,face);
           tRngIdx rng(faceIdx,rng);
           float ped = m_mtData.getPed(rng);
-          m_adc[faceIdx]  = acRo.getAdc((CalXtalId::XtalFace)(short)face)-ped;
+          m_adc[faceIdx]  = acRo.getAdc((CalXtalId::XtalFace)(unsigned short)face)-ped;
         }
       } // foreach face
     } // foreach readout

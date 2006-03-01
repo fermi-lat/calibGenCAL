@@ -2,11 +2,12 @@
 #define CfData_h
 
 /** @file
-    $Header$
+    $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CfData.h,v 1.3 2006/01/13 17:25:58 fewtrell Exp $
  */
 
 // LOCAL INCLUDES
 #include "CalDefs.h"
+#include "CalVec.h"
 #include "CfCfg.h"
 
 // GLAST INCLUDES
@@ -18,8 +19,8 @@
 
 // STD INCLUDES
 
-
 using namespace CalDefs;
+
 /** @class CfData One set of mean adc values & associated charge injection DAC values for GLAST Cal integral nonlinearity calibration
     
     Contains both raw input data and smoothed summary output data.
