@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Mar  1 13:42:46 PST 2006
+calibGenCAL/src
+
+Modified Files:
+	MuonCalib.cxx runMuThreshEvol.cxx runMuTrigEff.cxx 
+Log Message:
+minor syntax updates. fix to MuonCalib::readAsymTXT()
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Mar  1 13:33:00 PST 2006
 calibGenCAL/src
 
