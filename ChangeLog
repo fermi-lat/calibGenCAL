@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Mar  2 10:53:53 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	dumpROOTPlots.py 
+Log Message:
+fixed output filename in some situations
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Mar  1 14:17:09 PST 2006
 calibGenCAL/doc
 
