@@ -11,8 +11,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Plot all TCanvas & TH?? objects in ROOT file"
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/02/16 17:25:04 $"
-__version__     = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__        = "$Date: 2006/02/16 21:04:36 $"
+__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -89,7 +89,7 @@ for k in rootFile.GetListOfKeys():
     if cls.InheritsFrom("TH1"):
         hist = k.ReadObj()
         # Draw me to a canvas before printing....
-        cvs = TCanvas(rootPath, hist.GetName(),-1)
+        cvs = TCanvas(hist.GetTitle(), hist.GetName(),-1)
         hist.Draw()
         cvs.Update()
 
