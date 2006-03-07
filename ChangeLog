@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Mar  7 13:53:14 PST 2006
+calibGenCAL/src
+
+Modified Files:
+	CfData.cxx CfRoot.cxx McCfg.cxx McCfg.h MuonCalib.cxx 
+	MuonCalib.h RootFileAnalysis.cxx RootFileAnalysis.h mainpage.h 
+	runMuThreshEvol.cxx runMuTrigEff.cxx 
+Log Message:
+C++ Apps now use TH1S instead of TH1F
+unneccessary doubles converted to float
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Mar  7 13:53:11 PST 2006
 calibGenCAL/python
 
