@@ -172,8 +172,9 @@ settings files.  This can be used for trending & validation.
 - <tt> adcplot [-V] <xml_file> <root_file> </tt>
 - <tt> charplot [-V] <raw_xml_file> <filtered_xml_file> <root_file> </tt>
 
-The adcplot utility will generate ROOT plots of the CAL DAC/ADC
-characterization tables. The charplot utility overlays raw, fitered, and linear model characterization
+- The adcplot utility will generate ROOT plots of the CAL DAC/ADC
+characterization tables. 
+- The charplot utility overlays raw, fitered, and linear model characterization
 data plots.  These require a working implementation of PyROOT. 
 
 - <tt> adcsmooth [-V] <in_file> <out_file> </tt>

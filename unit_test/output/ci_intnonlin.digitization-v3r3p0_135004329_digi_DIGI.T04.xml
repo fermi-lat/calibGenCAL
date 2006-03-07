@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CfData.cxx,v 1.6 2006/01/13 17:25:58 fewtrell Exp $  -->
+<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CfData.cxx,v 1.7 2006/03/01 21:32:59 fewtrell Exp $  -->
 <!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r3.dtd -->
 
 <!DOCTYPE calCalib [

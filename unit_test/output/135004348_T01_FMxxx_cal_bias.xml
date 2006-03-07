@@ -228,7 +228,7 @@
                 <thrBias>59.1736</thrBias>
               </GCFE>
               <GCFE ID='8'>
-                <thrBias>87.6776</thrBias>
+                <thrBias>87.6778</thrBias>
               </GCFE>
               <GCFE ID='9'>
                 <thrBias>79.9627</thrBias>
@@ -588,7 +588,7 @@
             </GCRC>
             <GCRC ID='3'>
               <GCFE ID='0'>
-                <thrBias>64.6242</thrBias>
+                <thrBias>64.6221</thrBias>
               </GCFE>
               <GCFE ID='1'>
                 <thrBias>78.0737</thrBias>
@@ -846,7 +846,7 @@
                 <thrBias>59.1736</thrBias>
               </GCFE>
               <GCFE ID='8'>
-                <thrBias>87.6776</thrBias>
+                <thrBias>87.6778</thrBias>
               </GCFE>
               <GCFE ID='9'>
                 <thrBias>79.9627</thrBias>
@@ -1206,7 +1206,7 @@
             </GCRC>
             <GCRC ID='3'>
               <GCFE ID='0'>
-                <thrBias>64.6242</thrBias>
+                <thrBias>64.6221</thrBias>
               </GCFE>
               <GCFE ID='1'>
                 <thrBias>78.0737</thrBias>

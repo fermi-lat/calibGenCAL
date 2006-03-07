@@ -6,17 +6,9 @@
 // GLAST INCLUDES
 #include "digiRootData/DigiEvent.h"
 
-// SET TO '1' TO ENABLE RECON/MC
-#define CGC_USE_RECON 0
-#define CGC_USE_MC    0
-
-#if CGC_USE_RECON
 #include "reconRootData/ReconEvent.h"
-#endif
 
-#if CGC_USE_MC
 #include "mcRootData/McEvent.h"
-#endif
 
 // EXTLIB INCLUDES
 #include "TChain.h"
@@ -37,31 +29,12 @@ RootFileAnalysis contains the following features...
 using namespace std;
 
 class RootFileAnalysis {
-public :
-  RootFileAnalysis(
-#if CGC_USE_MC
-                   const vector<string> &mcFilenames,
-#endif
-                   const vector<string> &digiFilenames,
-#if CGC_USE_RECON
-                   const vector<string> &recFilenames,
-#endif
-                   ostream &ostrm = cout);
+  public :
+    RootFileAnalysis(const vector<string> &mcFilenames,
+                     const vector<string> &digiFilenames,
+                     const vector<string> &recFilenames,
+                     ostream &ostrm = cout);
 
-#if (CGC_USE_MC || CGC_USE_RECON)
-  /// for digi only use.
-  RootFileAnalysis(const vector<string> &digiFilenames,
-                   ostream &ostrm = cout) :
-    RootFileAnalysis(
-#if CGC_USE_MC
-                     vector<string>(0),  // no mc files
-#endif
-                     digiFilenames,
-#if CGC_USE_RECON
-                     vector<string>(0),  // no recon files
-#endif
-                     ostrm);
-#endif
 
   ~RootFileAnalysis();
 
@@ -75,8 +48,8 @@ public :
   /// Retrieve pointers to given event #.
   UInt_t getEvent(UInt_t ievt);
 
-protected:
-#if CGC_USE_MC
+ protected:
+
   /// Chains store event data for all files
   TChain      m_mcChain;
   /// Pointer to current McEvent
@@ -85,7 +58,6 @@ protected:
   bool m_mcEnabled;
   /// list of filenames for mc data
   vector<string> m_mcFilenames;
-#endif
 
   /// Chains store event data for all files
   TChain      m_digiChain;
@@ -96,16 +68,15 @@ protected:
   /// list of input files for digi data
   vector<string> m_digiFilenames;
 
-#if CGC_USE_RECON
+
   /// Chains store event data for all files
-  TCain       m_recChain;
+  TChain       m_recChain;
   /// pointer to current ReconEvent
   ReconEvent  *m_recEvt;
   /// true if Recon data stream is enabled
   bool m_recEnabled;
   /// list of input file for recon data
   vector<string> m_recFilenames;
-#endif
 
 
   /// helpful list of all 3 TChains

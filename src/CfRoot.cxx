@@ -12,7 +12,7 @@ CfRoot::CfRoot(const vector<string> &digiFileNames,
                CfData  &data, 
                CfCfg &cfg,
                DiodeNum diode) :
-  RootFileAnalysis(digiFileNames),
+  RootFileAnalysis(vector<string>(0), digiFileNames, vector<string>(0)),
   m_curDiode(diode),
   m_cfData(data),
   m_cfg(cfg),
@@ -37,7 +37,7 @@ void CfRoot::createHists() {
     // delete histograms w/ TObjArray, do not save in file...
     m_ciHists.SetOwner(1);
 
-    m_ciHists[rngIdx.val()] =  new TH1F(tmp.str().c_str(),
+    m_ciHists[rngIdx.val()] =  new TH1S(tmp.str().c_str(),
                                            tmp.str().c_str(),
                                            4100,0,4100);
   }
@@ -109,7 +109,7 @@ void CfRoot::ProcessEvt() {
 
           // fill histogram
           tRngIdx rngIdx(lyr,col,face,rng);
-          TH1F& h = *((TH1F*)m_ciHists[rngIdx.val()]);
+          TH1S& h = *((TH1S*)m_ciHists[rngIdx.val()]);
 
           // reset histogram if we're starting a new DAC setting
           if(iSamp == 0){

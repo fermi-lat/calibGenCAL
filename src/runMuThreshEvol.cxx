@@ -51,8 +51,8 @@ public:
 
 private:
   TeCfg &m_cfg;
-  CalVec<tFaceIdx, vector<TH1F*> > m_muHists;
-  CalVec<tFaceIdx, vector<TH1F*> > m_trigHists;
+  CalVec<tFaceIdx, vector<TH1S*> > m_muHists;
+  CalVec<tFaceIdx, vector<TH1S*> > m_trigHists;
 
   CalVec<tFaceIdx,vector<float> > m_muThresh;
   CalVec<tFaceIdx,vector<float> > m_muThreshWidth;
@@ -60,7 +60,7 @@ private:
   CalVec<tFaceIdx,vector<float> > m_muThreshErr;
   CalVec<tFaceIdx,vector<float> > m_muThreshWidthErr;
 
-  CalVec<tFaceIdx,vector<TH1F*> > m_pedHists;
+  CalVec<tFaceIdx,vector<TH1S*> > m_pedHists;
 
   CalVec<tFaceIdx, vector<float> > m_calPed; ///< pedestal values
 
@@ -101,7 +101,7 @@ void TeData::initHists() {
         ostringstream muHistName;
         muHistName << "mu_P" << itp <<"_"<< faceIdx;
 
-        m_muHists[faceIdx][itp] = new TH1F(muHistName.str().c_str(),
+        m_muHists[faceIdx][itp] = new TH1S(muHistName.str().c_str(),
                                            muHistName.str().c_str(),
                                            40,0,2000);
       }
@@ -121,7 +121,7 @@ void TeData::initHists() {
         ostringstream trigHistName;
         trigHistName << "trig_P" << itp <<"_" << faceIdx;
 
-        m_trigHists[faceIdx][itp] = new TH1F(trigHistName.str().c_str(),
+        m_trigHists[faceIdx][itp] = new TH1S(trigHistName.str().c_str(),
                                              trigHistName.str().c_str(),
                                              40,0,2000);
       }
@@ -141,7 +141,7 @@ void TeData::initHists() {
         ostringstream tmp;
         tmp << "peds_P" << itp << "_" << faceIdx;
 
-        m_pedHists[faceIdx][itp] = new TH1F(tmp.str().c_str(),
+        m_pedHists[faceIdx][itp] = new TH1S(tmp.str().c_str(),
                                             tmp.str().c_str(),
                                             500,0,1000);
  
@@ -168,7 +168,7 @@ void TeData::fitPedHists() {
     m_calPed[faceIdx].resize(m_cfg.nEvtsPerPoint);
     for (int itp=0;itp<m_cfg.nTimePoints; itp++){
       // select histogram from list
-      TH1F &h= *m_pedHists[faceIdx][itp];
+      TH1S &h= *m_pedHists[faceIdx][itp];
 
       // trim outliers
       float av = h.GetMean();float err =h.GetRMS();
@@ -208,8 +208,8 @@ void TeData::FitData() {
 
       // calculation of trigger efficiency for muons
 
-      float* ymu =(m_muHists[faceIdx][itp])->GetArray();
-      float* ytrig =(m_trigHists[faceIdx][itp])->GetArray();
+      short* ymu =(m_muHists[faceIdx][itp])->GetArray();
+      short* ytrig =(m_trigHists[faceIdx][itp])->GetArray();
       a0=0.0;
       for(int i=0;i<40;i++){
         x[i]=50*(i+0.5);
@@ -309,7 +309,7 @@ private:
 
 
 RootThreshEvol::RootThreshEvol(vector<string> &digiFileNames, TeData  &data, TeCfg &cfg)
-  : RootFileAnalysis(digiFileNames),
+  : RootFileAnalysis(vector<string>(0), digiFileNames, vector<string>(0)),
     m_teData(data),
     m_cfg(cfg)
 {

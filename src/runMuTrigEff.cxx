@@ -52,11 +52,11 @@ public:
 
 private:
   MtCfg &m_cfg;
-  CalVec<tFaceIdx, TH1F*> m_muHists;
-  CalVec<tFaceIdx, TH1F*> m_trigHists;
+  CalVec<tFaceIdx, TH1S*> m_muHists;
+  CalVec<tFaceIdx, TH1S*> m_trigHists;
 
-  CalVec<tFaceIdx, TH1F*> m_ciAdcHists;
-  CalVec<tFaceIdx, TH1F*> m_ciEffHists;
+  CalVec<tFaceIdx, TH1S*> m_ciAdcHists;
+  CalVec<tFaceIdx, TH1S*> m_ciEffHists;
 
 
   CalVec<tFaceIdx,float> m_muThresh;
@@ -152,7 +152,7 @@ void MtData::initHists() {
       ostringstream muHistName;
       muHistName << "mu_" << faceIdx;
 
-      m_muHists[faceIdx] = new TH1F(muHistName.str().c_str(),
+      m_muHists[faceIdx] = new TH1S(muHistName.str().c_str(),
                                     muHistName.str().c_str(),
                                     100,0,3000);
     }
@@ -169,7 +169,7 @@ void MtData::initHists() {
       ostringstream trigHistName;
       trigHistName << "trig_" << faceIdx;
 
-      m_trigHists[faceIdx] = new TH1F(trigHistName.str().c_str(),
+      m_trigHists[faceIdx] = new TH1S(trigHistName.str().c_str(),
                                       trigHistName.str().c_str(),
                                       100,0,3000);
     }
@@ -185,7 +185,7 @@ void MtData::initHists() {
       ostringstream ciAdcHistName;
       ciAdcHistName << "ciAdc_" << faceIdx;
 
-      m_ciAdcHists[faceIdx] = new TH1F(ciAdcHistName.str().c_str(),
+      m_ciAdcHists[faceIdx] = new TH1S(ciAdcHistName.str().c_str(),
                                        ciAdcHistName.str().c_str(),
                                        m_cfg.nDACs,0,m_cfg.nDACs);
     }
@@ -201,7 +201,7 @@ void MtData::initHists() {
       ostringstream ciEffHistName;
       ciEffHistName << "ciEff_" << faceIdx;
 
-      m_ciEffHists[faceIdx] = new TH1F(ciEffHistName.str().c_str(),
+      m_ciEffHists[faceIdx] = new TH1S(ciEffHistName.str().c_str(),
                                        ciEffHistName.str().c_str(),
                                        m_cfg.nDACs,0,m_cfg.nDACs);
     }
@@ -287,8 +287,8 @@ void MtData::FitData() {
 
     // calculation of trigger efficiency for muons
 
-    float* ymu =(m_muHists[faceIdx])->GetArray();
-    float* ytrig =(m_trigHists[faceIdx])->GetArray();
+    short* ymu =(m_muHists[faceIdx])->GetArray();
+    short* ytrig =(m_trigHists[faceIdx])->GetArray();
     a0=0.0;
     for(int i=0;i<100;i++){
       x[i]=30*(i+0.5);
@@ -449,7 +449,7 @@ private:
 
 
 RootCiTrig::RootCiTrig(vector<string> &digiFileNames, MtData  &data, MtCfg &cfg) :
-  RootFileAnalysis(digiFileNames),
+  RootFileAnalysis(vector<string>(0), digiFileNames, vector<string>(0)),
   m_curDiode(LE),
   m_mtData(data),
   m_cfg(cfg),
@@ -636,7 +636,7 @@ private:
 
 RootMuTrig::RootMuTrig(vector<string> &digiFileNames, MtData  &data, MtCfg &cfg,
                        RootMuTrig::TRIGCONFIG trigConf) :
-  RootFileAnalysis(digiFileNames),
+  RootFileAnalysis(vector<string>(0), digiFileNames, vector<string>(0)),
   m_mtData(data),
   m_cfg(cfg),
   m_trigConfig(trigConf)
