@@ -86,14 +86,14 @@ class McCfg : ICfg {
     
   // SECTION: CONSTANTS //
   /// threshold to count a hit 
-  double hitThresh;     
+  float hitThresh;     
   
   /// horizontal pitch between 2 cal xtals
-  double cellHorPitch;  
+  float cellHorPitch;  
   /// vertical pitch between 2 cal xtals
-  double cellVertPitch; 
+  float cellVertPitch; 
   /// length of one cal CsI crystal
-  double csiLength;     
+  float csiLength;     
 
   // SECTION: GENERAL //
   /// number of events for rough pedestal calibration

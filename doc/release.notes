@@ -234,4 +234,10 @@ runSuiteParallel.py - now supports commandline override of twr_id as well as eac
 C++ - TXT format output now supports new format used by python scripts. improved format includes tower information & contains all 4 asym types & both MeVPerDAC types into single file each.
 
 
-	
+--------------------
+v3r9p1 fewtrell
+--------------------
+C++ apps now use TH1S instead of TH1F across board.  
+- Results are the same & it saves memory
+- future updates w/ 16 tower support will use a lot of memory so this is important step.
+C++ apps now use float instead of double in most places.  the precision is not needed & it saves some memory, particularly in larger arrays.

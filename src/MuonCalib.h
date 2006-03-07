@@ -14,7 +14,7 @@
 #include "TFile.h"
 #include "TSpline.h"
 #include "TProfile.h"
-#include "TH2F.h"
+#include "TH2S.h"
 
 // STD INCLUDES
 #include <string>
@@ -185,12 +185,12 @@ class MuonCalib : public RootFileAnalysis {
   ///////////////////////////////////////////////////////////
 
   /// list of histograms for 'rough' pedestals
-  CalVec<tFaceIdx, TH1F*> m_roughPedHists; 
+  CalVec<tFaceIdx, TH1S*> m_roughPedHists; 
   /// list of histograms for 'final' 4-range pedestals
-  CalVec<tRngIdx,  TH1F*> m_pedHists; 
+  CalVec<tRngIdx,  TH1S*> m_pedHists; 
 
   /// list of profiles for logratio values 
-  CalVec<AsymType, CalArray<tXtalIdx, TH2F*> > m_asymHists; 
+  CalVec<AsymType, CalArray<tXtalIdx, TH2S*> > m_asymHists; 
   
   /// profile X=bigdiodedac Y=smdiodedac 1 per xtal
   CalVec<tXtalIdx, TProfile*> m_dacL2SProfs;  
@@ -203,7 +203,7 @@ class MuonCalib : public RootFileAnalysis {
   CalVec<tXtalIdx, TSpline3*> m_asym2PosSplines; 
 
   /// list of histograms of geometric mean for both ends on each xtal.
-  CalVec<tXtalIdx, TH1F*> m_dacLLHists; 
+  CalVec<tXtalIdx, TH1S*> m_dacLLHists; 
 
   ///////////////////////////////////////////////////////////
   //            CALIBRATION RESULT VECTORS                 //
@@ -249,9 +249,9 @@ class MuonCalib : public RootFileAnalysis {
   /// creates & populates INL splines from m_calIntNonlin;
   void loadInlSplines(); 
   /// uses intNonlin to convert adc 2 dac for specified xtal/adc range
-  double adc2dac(tDiodeIdx diodeIdx, double adc) const; 
+  float adc2dac(tDiodeIdx diodeIdx, float adc) const; 
   /// uses intNonlin to convert dac 2 adc for specified xtal/adc range
-  double dac2adc(tDiodeIdx diodeIdx, double dac) const; 
+  float dac2adc(tDiodeIdx diodeIdx, float dac) const; 
 
 
   //-- Asymmetry 2 Pos conversion --//
@@ -260,11 +260,11 @@ class MuonCalib : public RootFileAnalysis {
   void loadA2PSplines(); 
   /// uses asym2pos splines to convert asymmetry value to xtal position for energy centroid
   /// \note uses calibGenCAL internal xtal-pitch units w/ origin at negative face.
-  double asym2pos(tXtalIdx xtalIdx, double asym) const; 
+  float asym2pos(tXtalIdx xtalIdx, float asym) const; 
 
   /// return longitudinal position (in mm) of a crystal center along the length of an 
   /// orthogonal crystal given a cystal column numnber
-  double xtalCenterPos(short col) const {
+  float xtalCenterPos(short col) const {
     return (m_cfg.csiLength/ColNum::N_VALS)*
       ((float)col + 0.5)  // calc for middle of segment
       - 0.5*m_cfg.csiLength;     // put 0 in middle of xtal

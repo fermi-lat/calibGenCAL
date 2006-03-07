@@ -156,7 +156,7 @@ void McCfg::readCfgFile(const string& cfgPath) {
     asymFileXML = outputDir + "mc_asym." + baseFilename
       + '.' + twrBayStr + ".xml";
   if (mpdFileXML.length() == 0)
-    mpdFileXML = outputDir + "mc_mevperdac." + baseFilename
+    mpdFileXML = outputDir + "mc_mpd." + baseFilename
       + '.' + twrBayStr + ".xml";
   if (pedHistFile.length() == 0)
     pedHistFile = outputDir + "mc_peds." + baseFilename
@@ -165,7 +165,7 @@ void McCfg::readCfgFile(const string& cfgPath) {
     asymHistFile = outputDir + "mc_asym." + baseFilename
       + '.' + twrBayStr + ".root";
   if (mpdHistFile.length() == 0)
-    mpdHistFile = outputDir + "mc_mevperdac." + baseFilename
+    mpdHistFile = outputDir + "mc_mpd." + baseFilename
       + '.' + twrBayStr + ".root";
   if (pedFileTXT.length() == 0)
     pedFileTXT = outputDir + "mc_peds." + baseFilename 

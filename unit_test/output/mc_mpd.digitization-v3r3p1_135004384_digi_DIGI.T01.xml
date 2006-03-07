@@ -278,7 +278,7 @@
    </xtal>
    <xtal iXtal="2">
     <face end="NA">
-     <mevPerDac bigVal="0.366937" bigSig="0.024045" smallVal="2.006851" smallSig="0.131720">
+     <mevPerDac bigVal="0.366937" bigSig="0.024045" smallVal="2.006851" smallSig="0.131879">
       <bigSmall end="POS" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
       <bigSmall end="NEG" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
      </mevPerDac>
@@ -286,7 +286,7 @@
    </xtal>
    <xtal iXtal="3">
     <face end="NA">
-     <mevPerDac bigVal="0.367692" bigSig="0.025214" smallVal="2.049212" smallSig="0.142003">
+     <mevPerDac bigVal="0.367692" bigSig="0.025214" smallVal="2.049212" smallSig="0.141374">
       <bigSmall end="POS" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
       <bigSmall end="NEG" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
      </mevPerDac>
@@ -376,7 +376,7 @@
    </xtal>
    <xtal iXtal="2">
     <face end="NA">
-     <mevPerDac bigVal="0.361517" bigSig="0.025063" smallVal="1.980787" smallSig="0.137914">
+     <mevPerDac bigVal="0.361517" bigSig="0.025063" smallVal="1.980787" smallSig="0.137534">
       <bigSmall end="POS" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
       <bigSmall end="NEG" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
      </mevPerDac>
@@ -482,7 +482,7 @@
    </xtal>
    <xtal iXtal="3">
     <face end="NA">
-     <mevPerDac bigVal="0.362158" bigSig="0.023513" smallVal="1.937642" smallSig="0.126376">
+     <mevPerDac bigVal="0.362158" bigSig="0.023513" smallVal="1.937642" smallSig="0.126821">
       <bigSmall end="POS" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
       <bigSmall end="NEG" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
      </mevPerDac>
@@ -490,7 +490,7 @@
    </xtal>
    <xtal iXtal="4">
     <face end="NA">
-     <mevPerDac bigVal="0.357681" bigSig="0.022523" smallVal="1.913511" smallSig="0.121623">
+     <mevPerDac bigVal="0.357681" bigSig="0.022523" smallVal="1.913511" smallSig="0.121658">
       <bigSmall end="POS" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
       <bigSmall end="NEG" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
      </mevPerDac>
@@ -522,7 +522,7 @@
    </xtal>
    <xtal iXtal="8">
     <face end="NA">
-     <mevPerDac bigVal="0.352991" bigSig="0.023373" smallVal="1.928582" smallSig="0.129351">
+     <mevPerDac bigVal="0.352991" bigSig="0.023373" smallVal="1.928582" smallSig="0.128574">
       <bigSmall end="POS" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
       <bigSmall end="NEG" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
      </mevPerDac>
@@ -670,7 +670,7 @@
    </xtal>
    <xtal iXtal="2">
     <face end="NA">
-     <mevPerDac bigVal="0.346892" bigSig="0.024582" smallVal="1.894912" smallSig="0.140223">
+     <mevPerDac bigVal="0.346892" bigSig="0.024582" smallVal="1.894912" smallSig="0.139547">
       <bigSmall end="POS" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
       <bigSmall end="NEG" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
      </mevPerDac>
@@ -752,7 +752,7 @@
   <layer iLayer="5">
    <xtal iXtal="0">
     <face end="NA">
-     <mevPerDac bigVal="0.343104" bigSig="0.025375" smallVal="1.842907" smallSig="0.136598">
+     <mevPerDac bigVal="0.343104" bigSig="0.025375" smallVal="1.842907" smallSig="0.136307">
       <bigSmall end="POS" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
       <bigSmall end="NEG" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
      </mevPerDac>
@@ -874,7 +874,7 @@
    </xtal>
    <xtal iXtal="3">
     <face end="NA">
-     <mevPerDac bigVal="0.352586" bigSig="0.025350" smallVal="1.896506" smallSig="0.136518">
+     <mevPerDac bigVal="0.352586" bigSig="0.025350" smallVal="1.896506" smallSig="0.136433">
       <bigSmall end="POS" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
       <bigSmall end="NEG" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
      </mevPerDac>
@@ -972,7 +972,7 @@
    </xtal>
    <xtal iXtal="3">
     <face end="NA">
-     <mevPerDac bigVal="0.350531" bigSig="0.024866" smallVal="1.897934" smallSig="0.134845">
+     <mevPerDac bigVal="0.350531" bigSig="0.024866" smallVal="1.897934" smallSig="0.134794">
       <bigSmall end="POS" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
       <bigSmall end="NEG" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
      </mevPerDac>
@@ -980,7 +980,7 @@
    </xtal>
    <xtal iXtal="4">
     <face end="NA">
-     <mevPerDac bigVal="0.350261" bigSig="0.025887" smallVal="1.894058" smallSig="0.140346">
+     <mevPerDac bigVal="0.350261" bigSig="0.025887" smallVal="1.894058" smallSig="0.140393">
       <bigSmall end="POS" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
       <bigSmall end="NEG" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
      </mevPerDac>
@@ -988,7 +988,7 @@
    </xtal>
    <xtal iXtal="5">
     <face end="NA">
-     <mevPerDac bigVal="0.356303" bigSig="0.024628" smallVal="1.891088" smallSig="0.132392">
+     <mevPerDac bigVal="0.356303" bigSig="0.024628" smallVal="1.891088" smallSig="0.131400">
       <bigSmall end="POS" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
       <bigSmall end="NEG" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
      </mevPerDac>
@@ -996,7 +996,7 @@
    </xtal>
    <xtal iXtal="6">
     <face end="NA">
-     <mevPerDac bigVal="0.350139" bigSig="0.025087" smallVal="1.912034" smallSig="0.138883">
+     <mevPerDac bigVal="0.350139" bigSig="0.025087" smallVal="1.912034" smallSig="0.138478">
       <bigSmall end="POS" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
       <bigSmall end="NEG" bigSmallRatioVals="0" bigSmallRatioSigs="0"/>
      </mevPerDac>

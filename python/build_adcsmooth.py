@@ -1,5 +1,6 @@
 """
 build batch file containing commands to run adcsmooth script for filtering configuration files for each module and setting specified in setup file
+also runs validation & plotting scripts.
 
 note:
     Linux use currently 'unsupported'
@@ -10,8 +11,8 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Build batch file containing commands to run adcsmooth filtering script"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2006/01/13 23:51:56 $"
-__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/01/21 17:13:59 $"
+__version__   = "$Revision: 1.8 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 

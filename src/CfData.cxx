@@ -1,5 +1,5 @@
 /** @file
-    $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CfData.cxx,v 1.6 2006/01/13 17:25:58 fewtrell Exp $
+    $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CfData.cxx,v 1.7 2006/03/01 21:32:59 fewtrell Exp $
 */
 // LOCAL INCLUDES
 #include "CfData.h"
@@ -14,7 +14,7 @@
 #include <sstream>
 
 // CONSTANTS //
-const double mu2ci_thr_rat = 1.7;
+const float mu2ci_thr_rat = 1.7;
 
 CfData::CfData(CfCfg &cfg,
                const string &histFilename) :
@@ -293,7 +293,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CfData.cxx,v 1.6 2006/01/13 17:25:58 fewtrell Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CfData.cxx,v 1.7 2006/03/01 21:32:59 fewtrell Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r3.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;

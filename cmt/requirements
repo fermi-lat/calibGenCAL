@@ -10,11 +10,8 @@ use xmlBase
 use Event         
 use facilities    
 use calibUtil     
-
-##### OPTIONAL #######
-# uncomment to use Recon/MC
-# use reconRootData 
-# use mcRootData    
+use reconRootData 
+use mcRootData    
 
 # make sure we have all graphical root libraries linked (stolen from rootanalysis)
 # used for line fitting in muonCalib

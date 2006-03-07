@@ -8,7 +8,7 @@
 // EXTLIB INCLUDES
 #include "TF1.h"
 #include "TCanvas.h"
-#include "TH2F.h"
+#include "TH2S.h"
 
 // STD INCLUDES
 #include <iostream>
@@ -49,7 +49,9 @@ template<class T> void del_all_ptrs(T &container) {
 ////////////////////////////////////////////////////////////////////////////////
 
 MuonCalib::MuonCalib(McCfg &cfg) : 
-  RootFileAnalysis(cfg.rootFileList,   // input digi files
+  RootFileAnalysis(vector<string>(0),    // no mc files
+                   cfg.rootFileList,   // input digi files
+                   vector<string>(0),    // no recon files
                    cfg.ostrm),
   m_cfg(cfg)
 {
@@ -60,11 +62,10 @@ MuonCalib::MuonCalib(McCfg &cfg) :
   }
 
   // configure ROOT Tree - enable only branches we are going to use.
-#if CGC_USE_MC
   if (m_mcEnabled) 
     // disable all branches
     m_mcChain.SetBranchStatus("*", 0);
-#endif
+
 
   if (m_digiEnabled) {
     // disable all branches - opt in
@@ -76,9 +77,7 @@ MuonCalib::MuonCalib(McCfg &cfg) :
   }
 
   // disable all branches
-#if CGC_USE_RECON
   if (m_recEnabled) m_recChain.SetBranchStatus("*",0);
-#endif
 }
 
 void MuonCalib::flushHists() {
@@ -162,7 +161,7 @@ void MuonCalib::initRoughPedHists() {
       ostringstream tmp;
       tmp << "roughpeds_" << faceIdx;
 
-      m_roughPedHists[faceIdx] = new TH1F(tmp.str().c_str(),
+      m_roughPedHists[faceIdx] = new TH1S(tmp.str().c_str(),
                                           tmp.str().c_str(),
                                           500,0,1000);
     }
@@ -230,7 +229,7 @@ void MuonCalib::fitRoughPedHists() {
 
   for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
     // select histogram from list
-    TH1F &h= *m_roughPedHists[faceIdx];
+    TH1S &h= *m_roughPedHists[faceIdx];
 
     // trim outliers
     float av = h.GetMean();float err =h.GetRMS();
@@ -274,7 +273,7 @@ void MuonCalib::initPedHists() {
     for (tRngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
       ostringstream tmp;
       tmp << "peds_" << rngIdx;
-      m_pedHists[rngIdx] = new TH1F(tmp.str().c_str(),
+      m_pedHists[rngIdx] = new TH1S(tmp.str().c_str(),
                                     tmp.str().c_str(),
                                     1000,0,1000);
     }
@@ -373,7 +372,7 @@ void MuonCalib::fitPedHists() {
   
   for (tRngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
     //select histogram from list
-    TH1F &h= *m_pedHists[rngIdx];
+    TH1S &h= *m_pedHists[rngIdx];
     
     // trim outliers
     float av = h.GetMean();float err =h.GetRMS();
@@ -766,8 +765,8 @@ void MuonCalib::initAsymHists() {
     m_asymHists.resize(AsymType::N_VALS);
 
     // fill in min & max histogram levels.
-    CalArray<AsymType, double> asymMin;
-    CalArray<AsymType, double> asymMax;
+    CalArray<AsymType, float> asymMin;
+    CalArray<AsymType, float> asymMax;
 
     asymMin[ASYM_LL] = -2;
     asymMax[ASYM_LL] = 2;
@@ -785,7 +784,7 @@ void MuonCalib::initAsymHists() {
         tmp <<  "asym" + asymType.getMnem() + "_" << xtalIdx;
         // columns are #'d 0-11, hist contains 1-10. 
         // .5 & 10.5 limit puts 1-10 at center of bins
-        m_asymHists[asymType][xtalIdx] = new TH2F(tmp.str().c_str(),
+        m_asymHists[asymType][xtalIdx] = new TH2S(tmp.str().c_str(),
                                                   tmp.str().c_str(),
                                                   N_ASYM_PTS, 
                                                   .5, 
@@ -864,7 +863,7 @@ void MuonCalib::fillAsymHists(int nEvts) {
       for (unsigned i = 0; i < hitListOrtho.size(); i++) {
         tXtalIdx xtalIdx = hitListOrtho[i];
         
-        CalArray<XtalDiode, double> dac;
+        CalArray<XtalDiode, float> dac;
         bool badDAC = false;
         for (XtalDiode xDiode; xDiode.isValid(); xDiode++) {
           tDiodeIdx diodeIdx(xtalIdx, xDiode);
@@ -882,7 +881,7 @@ void MuonCalib::fillAsymHists(int nEvts) {
         
         // calcuate the 4 log ratios = log(POS/NEG)
         for (AsymType asymType; asymType.isValid(); asymType++) {
-          double asym = log(dac[XtalDiode(POS_FACE, asymType.getDiode(POS_FACE))] /
+          float asym = log(dac[XtalDiode(POS_FACE, asymType.getDiode(POS_FACE))] /
                             dac[XtalDiode(NEG_FACE, asymType.getDiode(NEG_FACE))]);
           m_asymHists[asymType][xtalIdx]->Fill(pos, asym);
         }
@@ -941,11 +940,11 @@ void MuonCalib::fitAsymHists() {
   }
 }
 
-double MuonCalib::adc2dac(tDiodeIdx diodeIdx, double adc) const {
+float MuonCalib::adc2dac(tDiodeIdx diodeIdx, float adc) const {
   return m_inlSplines[diodeIdx]->Eval(adc);
 }
 
-double MuonCalib::dac2adc(tDiodeIdx diodeIdx, double dac) const {
+float MuonCalib::dac2adc(tDiodeIdx diodeIdx, float dac) const {
   return m_inlSplinesInv[diodeIdx]->Eval(dac);
 }
 
@@ -1055,7 +1054,7 @@ void MuonCalib::loadA2PSplines() {
   }
 }
 
-double MuonCalib::asym2pos(tXtalIdx xtalIdx, double asym) const {
+float MuonCalib::asym2pos(tXtalIdx xtalIdx, float asym) const {
   return m_asym2PosSplines[xtalIdx]->Eval(asym);
 }
 
@@ -1070,7 +1069,7 @@ void MuonCalib::initMPDHists() {
       // LRG-LRG DAC
       ostringstream tmpLL;
       tmpLL << "dacLL_" << xtalIdx;
-      m_dacLLHists[xtalIdx] = new TH1F(tmpLL.str().c_str(),
+      m_dacLLHists[xtalIdx] = new TH1S(tmpLL.str().c_str(),
                                        tmpLL.str().c_str(),
                                        200,0,100);
 
@@ -1099,7 +1098,7 @@ void MuonCalib::fillMPDHists(int nEvts) {
   // INITIALIZE ROOT PLOTTING OBJECTS FOR LINE FITS //
   ////////////////////////////////////////////////////
   // viewHist is used to set scale before drawing TGraph
-  TH2F viewHist("viewHist","viewHist",
+  TH2S viewHist("viewHist","viewHist",
                 8,-0.5,7.5, //X-limits lyr
                 12,-0.5,11.5); //Y-limits col
   TCanvas canvas("canvas","event display",800,600);
@@ -1119,7 +1118,7 @@ void MuonCalib::fillMPDHists(int nEvts) {
   // NUMERIC CONSTANTS
   // converts between lyr/col units & mm
   // real trig is needed for pathlength calculation
-  double slopeFactor = m_cfg.cellHorPitch/m_cfg.cellVertPitch;
+  float slopeFactor = m_cfg.cellHorPitch/m_cfg.cellVertPitch;
 
   // Basic digi-event loop
   for (Int_t iEvt = m_startEvt; iEvt < lastEvt; iEvt++) {
@@ -1261,7 +1260,7 @@ void MuonCalib::fitMPDHists() {
   // INITIALIZE ROOT PLOTTING OBJECTS FOR LINE FITS //
   ////////////////////////////////////////////////////
   // viewHist is used to set scale before drawing TGraph
-  TH2F viewHist("viewHist","viewHist",
+  TH2S viewHist("viewHist","viewHist",
                 N_L2S_PTS, 10,60, // X-LIMITS LRG
                 N_L2S_PTS, 1,60); // Y-LIMITS SM
   TCanvas canvas("canvas","event display",800,600);
@@ -1273,7 +1272,7 @@ void MuonCalib::fitMPDHists() {
   // PER XTAL LOOP
   for (tXtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
     // retrieve Lrg diode DAC histogram
-    TH1F& h = *m_dacLLHists[xtalIdx];
+    TH1S& h = *m_dacLLHists[xtalIdx];
 
     ///////////////////////////////////
     //-- MeV Per Dac (Lrg Diode) --//
@@ -1624,6 +1623,9 @@ void MuonCalib::writeADC2NRGXML(const string &filename) {
   for (tXtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
     for (DiodeNum diode; diode.isValid(); diode++) {
       float mpd = m_calMPD[diode][xtalIdx];
+
+      // 0.25 would normally be 0.5, but it is applied equally to both sides
+      // so we split it in half.
       float asym_ctr = 0.25*(m_calAsym[AsymType(diode,diode)][xtalIdx][ic]
                              + m_calAsym[AsymType(diode,diode)][xtalIdx][ic-1]);
       
@@ -1633,7 +1635,7 @@ void MuonCalib::writeADC2NRGXML(const string &filename) {
       m_adc2nrg[diodeIdxP] = enemu/dac2adc(diodeIdxP,(enemu/mpd)*exp(asym_ctr));
 
       // NEG FACE
-      XtalDiode xDiodeN(POS_FACE,diode);
+      XtalDiode xDiodeN(NEG_FACE,diode);
       tDiodeIdx diodeIdxN(xtalIdx, xDiodeN);
       m_adc2nrg[diodeIdxN] = enemu/dac2adc(diodeIdxN,(enemu/mpd)*exp(-asym_ctr));
     }
