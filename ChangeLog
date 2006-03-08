@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Mar  8 13:46:08 PST 2006
+calibGenCAL/src
+
+Modified Files:
+	McCfg.cxx MtCfg.cxx 
+Log Message:
+adding support for runSuiteParallel & gensettings tools to generate
+validations on the fly
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Mar  8 13:46:07 PST 2006
 calibGenCAL/python/cfg
 
