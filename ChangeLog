@@ -1,4 +1,32 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Mar  8 08:07:32 PST 2006
+calibGenCAL/python
+
+Added Files:
+	adcplot.sh adcsmooth.sh asymMerge.sh asymTXT2XML.sh asymVal.sh 
+	build_adcsmooth.sh build_gensettings_cfg.sh charVal.sh 
+	charplot.sh dacVal.sh genFHEsettings.sh genFLEsettings.sh 
+	genGainSettings.sh genLACsettings.sh genULDsettings.sh 
+	gensettings.sh get_slac_calibdac.sh intNonlinMerge.sh 
+	intNonlinVal.sh mevPerDacMerge.sh mevPerDacVal.sh 
+	mpdTXT2XML.sh pedMerge.sh pedTXT2XML.sh pedVal.sh 
+	runSuiteParallel.sh tholdCIGen.sh tholdCIVal.sh 
+Removed Files:
+	adcplot adcsmooth asymMerge asymTXT2XML asymVal 
+	build_adcsmooth build_gensettings_cfg charVal charplot dacVal 
+	genFHEsettings genFLEsettings genGainSettings genLACsettings 
+	genULDsettings gensettings get_slac_calibdac intNonlinMerge 
+	intNonlinVal mevPerDacMerge mevPerDacVal mpdTXT2XML pedMerge 
+	pedTXT2XML pedVal runSuiteParallel tholdCIGen tholdCIVal 
+Log Message:
+insuring that all linux sh launcher scripts have executable permission bit
+set.
+CVS won't let me change this once the entry is made, so i'm renaming them
+all to *.sh & then setting the bit
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Mar  7 13:53:16 PST 2006
 calibGenCAL/unit_test/output
 
