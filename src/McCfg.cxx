@@ -183,11 +183,11 @@ void McCfg::readCfgFile(const string& cfgPath) {
   // generate adc2nrg output filename
   if (adc2nrgFileXML.length() == 0){
     vector<string> baseFilenameElem;
-	string moduleName = "FMxxx";
+    string moduleName = "FMxxx";
 
     // expected basefilename format has '_' delimited fields.
     tokenize_str(baseFilename,baseFilenameElem,"_");
-	string runID = baseFilenameElem[0];
+    string runID = baseFilenameElem[0];
 
     if (baseFilenameElem.size() < 2) // unexpected filename format.
       adc2nrgFileXML = outputDir  + runID

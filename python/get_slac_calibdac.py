@@ -1,11 +1,7 @@
 """
 given the calibDAC suitesummary run number for each module of interest, retrieve all calibDAC files from slac using scp
 
-
-
-
 note:
-    Linux use currently 'unsupported'
     see calibGenCAL/doc/gensettings_scripts.html for more information.
 
 """
@@ -13,8 +9,8 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Retrieve DAC settings files from SLAC using SCP"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2005/09/30 20:58:34 $"
-__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/11/17 21:48:06 $"
+__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 

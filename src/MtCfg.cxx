@@ -97,7 +97,7 @@ void MtCfg::readCfgFile(const string& path) {
     twrBayStr = tmp.str();
   }
   if (outputXMLPath.length() == 0)
-	outputXMLPath = outputDir + runID+ "_" + twrBayStr + "_" + moduleName + "_" + "cal_bias.xml";
+	outputXMLPath = outputDir + runID + "_" + twrBayStr + "_" + moduleName + "_" + "cal_bias.xml";
   if (outputTXTPath.length() == 0)
     outputTXTPath = outputDir + "muTrig." + baseFilename +'.' + twrBayStr + ".txt";
   if (logfile.length() == 0)

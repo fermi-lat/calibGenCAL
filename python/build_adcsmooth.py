@@ -3,7 +3,6 @@ build batch file containing commands to run adcsmooth script for filtering confi
 also runs validation & plotting scripts.
 
 note:
-    Linux use currently 'unsupported'
     see calibGenCAL/doc/gensettings_scripts.html for more information.
 
 """
@@ -11,8 +10,8 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Build batch file containing commands to run adcsmooth filtering script"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2006/01/21 17:13:59 $"
-__version__   = "$Revision: 1.8 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/03/07 21:53:11 $"
+__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -76,6 +75,53 @@ if len(detsections) == 0:
 
 cmdbat = open('adcsmooth.bat','w')
 cmdsh  = open('adcsmooth.sh','w')
+
+def process_file(filename, validate):
+    """ create commandlines for adcsmooth, charplot & charVal, append to both cmdbat & cmdsh scripts files """
+    filesplit = os.path.splitext(filename)
+    smoothname  = filesplit[0]+"_filtered.xml"
+    logname     = filesplit[0]+".val.log"
+    plotname    = filesplit[0]+".root"
+    valplotname = filesplit[0]+".val.root"
+
+    # adcsmooth: .bat
+    cmdline = r"python %CALIBGENCALROOT%/python/adcsmooth.py  "+\
+              filename + " " + smoothname + "\n"
+    log.info(cmdline)
+    cmdbat.write(cmdline)
+
+    # adcsmooth: .sh
+    cmdline = r"python $CALIBGENCALROOT/python/adcsmooth.py  "+\
+              filename + " " + smoothname + "\n"
+    log.info(cmdline)
+    cmdsh.write(cmdline)
+
+    # charplot: .bat
+    cmdline = r"python %CALIBGENCALROOT%/python/charplot.py  "+\
+              filename + " " + smoothname + " " + plotname + "\n"
+    log.info(cmdline)
+    cmdbat.write(cmdline)
+
+    # charplot: .sh
+    cmdline = r"python $CALIBGENCALROOT/python/charplot.py  "+\
+              filename + " " + smoothname + " " + plotname + "\n"
+    log.info(cmdline)
+    cmdsh.write(cmdline)
+
+    if (validate):
+        # charVal: .bat
+        cmdline = r"python %CALIBGENCALROOT%/python/charVal.py  "+\
+                  " -R " + valplotname + " -L " + logname + " " + smoothname + "\n"
+        log.info(cmdline)
+        cmdbat.write(cmdline)
+        
+        # charVal: .sh
+        cmdline = r"python $CALIBGENCALROOT/python/charVal.py  "+\
+                  " -R " + valplotname + " -L " + logname + " " + smoothname + "\n"
+        log.info(cmdline)
+        cmdsh.write(cmdline)
+
+    
 
 # loop over modules
 
@@ -141,56 +187,14 @@ for idet in detsections:
 # add adcsmooth commands to output batch file
 
 	if flename != 'skip':
-# Write out run command to batch file
-		filesplit = os.path.splitext(flename)
-		cmdline = r"python %CALIBGENCALROOT%/python/adcsmooth.py  "+\
-			flename+" "+filesplit[0]+"_filtered.xml\n"
-		log.info(cmdline)
-		cmdbat.write(cmdline)
-# Write out run command to .sh file
-		filesplit = os.path.splitext(flename)
-		cmdline = r"python $CALIBGENCALROOT/python/adcsmooth.py  "+\
-			flename+" "+filesplit[0]+"_filtered.xml\n"
-		log.info(cmdline)
-		cmdsh.write(cmdline)
-
+            process_file(flename, True)
 	if fhename != 'skip':
-# Write out run command to batch file
-		filesplit = os.path.splitext(fhename)
-		cmdline = r"python %CALIBGENCALROOT%/python/adcsmooth.py  "+\
-			fhename+" "+filesplit[0]+"_filtered.xml\n"
-		cmdbat.write(cmdline)
-# Write out run command to .sh file
-		filesplit = os.path.splitext(fhename)
-		cmdline = r"python $CALIBGENCALROOT/python/adcsmooth.py  "+\
-			fhename+" "+filesplit[0]+"_filtered.xml\n"
-		cmdsh.write(cmdline)
-
-
+            process_file(fhename, True)
 	if lacname != 'skip':
-# Write out run command to batch file
-		filesplit = os.path.splitext(lacname)
-		cmdline = r"python %CALIBGENCALROOT%/python/adcsmooth.py  "+\
-			lacname+" "+filesplit[0]+"_filtered.xml\n"
-		cmdbat.write(cmdline)
-# Write out run command to .sh file
-		filesplit = os.path.splitext(lacname)
-		cmdline = r"python $CALIBGENCALROOT/python/adcsmooth.py  "+\
-			lacname+" "+filesplit[0]+"_filtered.xml\n"
-		cmdsh.write(cmdline)
-
+            process_file(lacname, True)
 	if uldname != 'skip':
-# Write out run command to batch file
-		filesplit = os.path.splitext(uldname)
-		cmdline = r"python %CALIBGENCALROOT%/python/adcsmooth.py  "+\
-			uldname+" "+filesplit[0]+"_filtered.xml\n"
-		cmdbat.write(cmdline)
-# Write out run command to .sh file
-		filesplit = os.path.splitext(uldname)
-		cmdline = r"python $CALIBGENCALROOT/python/adcsmooth.py  "+\
-			uldname+" "+filesplit[0]+"_filtered.xml\n"
-		cmdsh.write(cmdline)
-
+            # disable validation b/c it is not supported for uld.
+            process_file(uldname, False)
 # close output file and terminate
 cmdbat.close()
 cmdsh.close()

@@ -3,8 +3,8 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLBASEROOT)/xml/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/cfg/muonCalib_option_template.xml,v 1.3 2005/08/05 20:21:58 fewtrell Exp $"
- cvs_Revision="$Revision: 1.3 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/cfg/muonCalib_option_template.xml,v 1.4 2006/03/01 21:32:59 fewtrell Exp $"
+ cvs_Revision="$Revision: 1.4 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP" 			value="$(CGC_MUON_TIMESTAMP)"> Timestamp for test run.</item>
@@ -24,7 +24,7 @@
     <item name="PEDFILE_XML" 			value="$(CGC_PED_XML)"> Optional path for output ADC pedestal xml file (default "" autogenerates filename from input filename) </item>
     <item name="ASYMFILE_XML" 			value="$(CGC_ASYM_XML)"> Optional path for output asymmetry xml file (default "" autogenerates filename from input filename)    </item>
     <item name="MPDFILE_XML" 			value="$(CGC_MPD_XML)"> Optional path for output MevPerDac  xml  file (default "" autogenerates filename from input filename)  </item>
-    <item name="ADC2NRGFILE_XML" 		value=""> Optional path for output adc2nrg  xml  file (default "" autogenerates filename from input filename)    </item>
+    <item name="ADC2NRGFILE_XML" 		value="$(CGC_ADC2NRG_XML)"> Optional path for output adc2nrg  xml  file (default "" autogenerates filename from input filename)    </item>
 
 
     <item name="PED_HISTFILE" 			value=""> Optional path for ROOT histogram filename for pedestal calibration phase. (default "" autogenerates filename from input filename)</item>
