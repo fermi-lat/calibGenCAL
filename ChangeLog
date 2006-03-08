@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Mar  8 13:46:07 PST 2006
+calibGenCAL/python/cfg
+
+Modified Files:
+	muTrigEff_option_template.xml muonCalib_option_template.xml 
+Log Message:
+adding support for runSuiteParallel & gensettings tools to generate
+validations on the fly
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Mar  8 13:46:06 PST 2006
 calibGenCAL/python
 
