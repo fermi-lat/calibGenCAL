@@ -6,8 +6,8 @@ This script will run calibGenCAL C++ analysis on parallel calibration data.
 __facility__  = "Offline"
 __abstract__  = "Process full set of GLAST CAL ground calibration event files."
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2005/11/14 18:59:47 $"
-__version__   = "$Revision: 1.10 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/01/30 20:47:23 $"
+__version__   = "$Revision: 1.11 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -16,6 +16,7 @@ import sys, os
 import ConfigParser
 import logging
 from optparse import OptionParser
+import re
 
 # a timestamp no one would take seriously
 dflt_timestamp = '2000-1-1-00-00:00'
@@ -38,35 +39,81 @@ def getcfg_nodef(configFile, section, name):
         sys.exit(1)
     return configFile.get(section,name)
 
-def gen_inl_output_path(infile, output_dir, tower,ext):
+def gen_inl_output_path(infile, output_dir, tower, ext):
     """ Generate intNonlin output filename from input root file & tower bay num.  Try to emulate what runCIFit.exe would do."""
     basename = os.path.basename(infile)
     (basename,tmp) = os.path.splitext(basename)
-    inl_txtname = 'ci_intnonlin.%s.T%02d.%s' % (basename, int(tower),ext)
-    return os.path.join(output_dir,inl_txtname)
+    newname = 'ci_intnonlin.%s.T%02d.%s' % (basename, int(tower),ext)
+    return os.path.join(output_dir,newname)
 
 def gen_inl_final_path(infile, output_dir, ext):
     """ Generate intNonlin output filename w/ out tower info """
     basename = os.path.basename(infile)
     (basename,tmp) = os.path.splitext(basename)
-    inl_txtname = 'ci_intnonlin.%s.%s' % (basename, ext)
-    return os.path.join(output_dir,inl_txtname)
+    newname = 'ci_intnonlin.%s.%s' % (basename, ext)
+    return os.path.join(output_dir,newname)
     
 
 def gen_mc_output_path(infile, output_dir, tower, calib_type, ext):
     """ Generate muonCalib output filename from input root file & tower bay num.  Try to emulate what runMuonCalib.exe would do."""
     basename = os.path.basename(infile)
     (basename,tmp) = os.path.splitext(basename)
-    inl_txtname = '%s.%s.T%02d.%s' % (calib_type,basename, int(tower),ext)
-    return os.path.join(output_dir,inl_txtname)
+    newname = '%s.%s.T%02d.%s' % (calib_type,basename, int(tower),ext)
+    return os.path.join(output_dir,newname)
 
 def gen_mc_final_path(infile, output_dir, calib_type, ext):
     """ Generate muonCalib output filename w/ out tower info """
     basename = os.path.basename(infile)
     (basename,tmp) = os.path.splitext(basename)
-    inl_txtname = '%s.%s.%s' % (calib_type,basename,ext)
-    return os.path.join(output_dir,inl_txtname)
+    newname = '%s.%s.%s' % (calib_type,basename,ext)
+    return os.path.join(output_dir,newname)
 
+def gen_adc2nrg_path(infile, output_dir, tower, ext):
+    """ Generate adc2nrg output filename, Try to emulate what runMuonCalib.exe would do."""
+    basename = os.path.basename(infile)
+    (basename,tmp) = os.path.splitext(basename)
+    nameparts = basename.split('_')
+
+    # find module name
+    modnames = filter(re.compile('^FM\d\d\d').match, nameparts)
+    if (len(modnames)):
+        modname = modnames[0]
+    else:
+        modname = "FMxxx"
+
+    # find SLAC runId (or NRL timestamp)
+    runidnames = filter(re.compile('^\d{9,12}$').match, nameparts)
+    if (len(runidnames)):
+        runidname = runidnames[0]
+    else:
+        runidname = "XXXXXXXXXX"
+
+    newname = '%s_T%02d_%s_cal_adc2nrg.%s' % (runidname, int(tower), modname,ext)
+    return os.path.join(output_dir, newname)
+
+def gen_bias_path(infile, output_dir, tower, ext):
+    """ Generate bias output filename. Try to emulate whate runMuonCalib.exe would do."""
+    
+    basename = os.path.basename(infile)
+    (basename,tmp) = os.path.splitext(basename)
+    nameparts = basename.split('_')
+
+    # find module name
+    modnames = filter(re.compile('^FM\d\d\d').match, nameparts)
+    if (len(modnames)):
+        modname = modnames[0]
+    else:
+        modname = "FMxxx"
+
+    # find SLAC runId (or NRL timestamp)
+    runidnames = filter(re.compile('^\d{9,12}$').match, nameparts)
+    if (len(runidnames)):
+        runidname = runidnames[0]
+    else:
+        runidname = "XXXXXXXXXX"
+
+    newname = '%s_T%02d_%s_cal_bias.%s' % (runidname, int(tower), modname, ext)
+    return os.path.join(output_dir, newname)
 
 
 ########################################
@@ -285,8 +332,7 @@ muopt_enabled       = getcfg_def(configFile,section,'enable_section',1)
 if options.no_muopt:
     muopt_enabled= False
 
-
-os.environ['CGC_MUON_TIMESTAMP'] = calibGen_timestamp
+os.environ['CGC_MUON_TIMESTAMP']     = calibGen_timestamp
 os.environ['CGC_MUON_ROOT_FILELIST'] = muopt_rootfile_list
 os.environ['CGC_READ_IN_PEDS']       = "1"
 os.environ['CGC_PEDS_ONLY']          = "0"
@@ -311,9 +357,19 @@ if int(muopt_enabled):
         os.environ['CGC_ASYM_XML'] = asym_xmlname
         mpd_xmlname = gen_mc_output_path(first_muoptfile, output_dir, tower, 'mc_mpd', 'xml')
         os.environ['CGC_MPD_XML'] = mpd_xmlname
+
+        # - specify output adc2nrg filename, it is needed for validation later
+        adc2nrg_xmlname = gen_adc2nrg_path(first_muoptfile, output_dir, tower, '.xml')
+        os.environ['CGC_ADC2NRG_XML'] = adc2nrg_xmlname
         
         # - run muonCalib
         run_cmd('runMuonCalib.exe %s/python/cfg/muonCalib_option_template.xml'%calibGenCALRoot)
+
+        # - run adc2nrgVal
+        adc2nrg_rootname = gen_adc2nrg_path(first_muoptfile, output_dir, tower, 'root')
+        adc2nrg_logname  = gen_adc2nrg_path(first_muoptfile, output_dir, tower, 'val.log')
+        run_cmd('python %s/python/adc2nrgVal.py -R %s -L %s %s' %(calibGenCALRoot, adc2nrg_rootname, \
+                                                                  adc2nrg_logname, adc2nrg_xmlname))
 
 
 ######################################
@@ -346,7 +402,17 @@ if int(mutrig_enabled):
         ped_txtname = gen_mc_output_path(first_mupedfile, output_dir, tower, 'mc_peds', 'txt')
         os.environ['CGC_PED_TXT']  = ped_txtname
 
+        bias_xmlname = gen_bias_path(first_mupedfile, output_dir, tower, 'xml')
+        os.environ['CGC_BIAS_XML'] = bias_xmlname
+
+        # run muTrigEff
         run_cmd('runMuTrigEff.exe %s/python/cfg/muTrigEff_option_template.xml'%calibGenCALRoot)
+
+        # run biasVal
+        bias_rootname = gen_bias_path(first_mupedfile, output_dir, tower, 'root')
+        bias_logname  = gen_bias_path(first_mupedfile, output_dir, tower, 'val.log')
+        run_cmd('python %s/python/biasVal.py -R %s -L %s %s'% \
+                (calibGenCALRoot,bias_rootname, bias_logname, bias_xmlname))
 
 ######################################
 ###### PHASE 5: merge ################
