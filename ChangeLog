@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Mar  8 08:16:18 PST 2006
+calibGenCAL/python
+
+Added Files:
+	adc2nrgVal.sh asymXML2TXT.bat inlXML2TXT.bat mpdXML2TXT.bat 
+	pedXML2TXT.bat tholdCIXML2TXT.bat 
+Log Message:
+adding new .bat launcher scripts.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Mar  8 08:11:37 PST 2006
 calibGenCAL/python
 
