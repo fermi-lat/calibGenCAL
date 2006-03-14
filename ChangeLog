@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Mar 14 14:42:43 PST 2006
+calibGenCAL/doc
+
+Modified Files:
+	gensettings_scripts.html 
+Added Files:
+	calibGenCAL_configurationRecord_howto.txt cgc_handbook.pdf 
+Log Message:
+gensettings & build_adcsmooth now run validation scripts.
+documentation updates.
+
+    *
+------------------------------------------------------------
 User: dwood  Tue Mar 14 13:18:11 PST 2006
 calibGenCAL/python
 
