@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Mar 14 14:42:46 PST 2006
+calibGenCAL/unit_test/output
+
+Modified Files:
+	tholdci_unit_test.xml 
+Log Message:
+gensettings & build_adcsmooth now run validation scripts.
+documentation updates.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Mar 14 14:42:45 PST 2006
 calibGenCAL/unit_test
 
