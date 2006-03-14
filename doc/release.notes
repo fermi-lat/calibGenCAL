@@ -240,4 +240,10 @@ v3r9p1 fewtrell
 C++ apps now use TH1S instead of TH1F across board.  
 - Results are the same & it saves memory
 - future updates w/ 16 tower support will use a lot of memory so this is important step.
+
 C++ apps now use float instead of double in most places.  the precision is not needed & it saves some memory, particularly in larger arrays.
+
+All python scripts now have .bat & .sh shell launcher scripts.  All .sh scripts have executable bit set.
+
+runSuiteParallel.py, gensettings.py, build_adcsmooth.py all generate appropriate validation outputs along w/ their primary output.
+
