@@ -13,8 +13,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL TholdCI XML calibration data files"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/29 21:32:22 $"
-__version__   = "$Revision: 1.19 $, $Author: dwood $"
+__date__      = "$Date: 2005/11/07 16:55:49 $"
+__version__   = "$Revision: 1.20 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -70,7 +70,7 @@ if __name__ == '__main__':
 
     logging.basicConfig()
     log = logging.getLogger('tholdCIGen')
-    log.setLevel(logging.DEBUG)
+    log.setLevel(logging.INFO)
 
     # get environment settings
 
@@ -333,6 +333,10 @@ if __name__ == '__main__':
 
         log.info("Reading file %s", f.name)
         lacAdcFile = calFitsXML.calFitsXML(fileName = f.name, mode = calFitsXML.MODE_READONLY)
+        i = lacAdcFile.info()
+        if i['TTYPE1'] != 'log_acpt':
+            log.error("File %s not a LAC ADC file", f.name)
+            sys.exit(1)
         twrs = lacAdcFile.getTowers()
         if f.srcTwr not in twrs:
             log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
@@ -347,6 +351,10 @@ if __name__ == '__main__':
     
         log.info("Reading file %s", f.name)
         uldAdcFile = calFitsXML.calFitsXML(fileName = f.name, mode = calFitsXML.MODE_READONLY)
+        i = uldAdcFile.info()
+        if i['TTYPE1'] != 'rng_uld_dac':
+            log.error("File %s not a ULD ADC file", f.name)
+            sys.exit(1)
         twrs = uldAdcFile.getTowers()
         if f.srcTwr not in twrs:
             log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
@@ -362,6 +370,10 @@ if __name__ == '__main__':
         
         log.info("Reading file %s", f.name)
         fleAdcFile = calFitsXML.calFitsXML(fileName = f.name, mode = calFitsXML.MODE_READONLY)
+        i = fleAdcFile.info()
+        if i['TTYPE1'] != 'fle_dac':
+            log.error("File %s not a FLE ADC file", f.name)
+            sys.exit(1)
         twrs = fleAdcFile.getTowers()
         if f.srcTwr not in twrs:
             log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
@@ -376,6 +388,10 @@ if __name__ == '__main__':
 
         log.info("Reading file %s", f.name)
         fheAdcFile = calFitsXML.calFitsXML(fileName = f.name, mode = calFitsXML.MODE_READONLY)
+        i = fheAdcFile.info()
+        if i['TTYPE1'] != 'fhe_dac':
+            log.error("File %s not a FHE ADC file", f.name)
+            sys.exit(1)
         twrs = fheAdcFile.getTowers()
         if f.srcTwr not in twrs:
             log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
@@ -390,6 +406,10 @@ if __name__ == '__main__':
 
         log.info("Reading file %s", f.name)
         pedFile = calFitsXML.calFitsXML(fileName = f.name, mode = calFitsXML.MODE_READONLY)
+        i = pedFile.info()
+        if i['TTYPE1'] != 'pedestal value':
+            log.error("File %s not a PED ADC file", f.name)
+            sys.exit(1)
         twrs = pedFile.getTowers()
         if f.srcTwr not in twrs:
             log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
