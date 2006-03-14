@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Tue Mar 14 13:18:11 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	tholdCIGen.py 
+Log Message:
+Put in checks for ADC file types; set default logging level to INFO.
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Mar  8 13:46:08 PST 2006
 calibGenCAL/src
 
