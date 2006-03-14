@@ -256,7 +256,7 @@
 
 ]>
 <calCalib>
-  <generic instrument='LAT' calibType='CAL_TholdCI' fmtVersion='v2r3' timestamp='2006-01-30-19:50' creator='myname'/>
+  <generic instrument='LAT' calibType='CAL_TholdCI' fmtVersion='v2r3' timestamp='2006-03-13-22:58' creator='myname'/>
   <dimension nXpos='0' nDacCol='0' nFace='2' nRow='4' exact='false' nRange='4' nCol='4' nLayer='8' nXtal='12'/>
   <tower iCol='1' iRow='0'>
     <layer iLayer='0'>
@@ -555,14 +555,14 @@
             <!--LAC DAC = 19-->
             <!--FLE DAC = 92-->
             <!--FHE DAC = 127-->
-            <!--ULD DAC = 109-->
+            <!--ULD DAC = 110-->
             <!--LE gain = 5-->
             <!--HE gain = 0-->
             <!--LE bias = 91.112-->
             <!--HE bias = 91.112-->
-            <tholdCIRange pedSig='1' range='LEX8' ULDVal='3597.279' pedVal='399.915' ULDSig='30'/>
-            <tholdCIRange pedSig='1' range='LEX1' ULDVal='3754.927' pedVal='221.791' ULDSig='30'/>
-            <tholdCIRange pedSig='1' range='HEX8' ULDVal='3342.320' pedVal='631.036' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='LEX8' ULDVal='3621.187' pedVal='399.915' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='LEX1' ULDVal='3781.934' pedVal='221.791' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='HEX8' ULDVal='3365.846' pedVal='631.036' ULDSig='30'/>
             <tholdCIRange pedSig='1' range='HEX1' ULDVal='3869.560' pedVal='224.598' ULDSig='30'/>
           </tholdCI>
         </face>
@@ -1686,14 +1686,14 @@
             <!--LAC DAC = 60-->
             <!--FLE DAC = 92-->
             <!--FHE DAC = 127-->
-            <!--ULD DAC = 115-->
+            <!--ULD DAC = 116-->
             <!--LE gain = 5-->
             <!--HE gain = 0-->
             <!--LE bias = 60.074-->
             <!--HE bias = 60.074-->
-            <tholdCIRange pedSig='1' range='LEX8' ULDVal='3283.952' pedVal='719.159' ULDSig='30'/>
-            <tholdCIRange pedSig='1' range='LEX1' ULDVal='3734.559' pedVal='219.972' ULDSig='30'/>
-            <tholdCIRange pedSig='1' range='HEX8' ULDVal='3648.618' pedVal='335.685' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='LEX8' ULDVal='3308.382' pedVal='719.159' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='LEX1' ULDVal='3757.475' pedVal='219.972' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='HEX8' ULDVal='3673.630' pedVal='335.685' ULDSig='30'/>
             <tholdCIRange pedSig='1' range='HEX1' ULDVal='3897.800' pedVal='195.898' ULDSig='30'/>
           </tholdCI>
         </face>
@@ -2322,14 +2322,14 @@
             <!--LAC DAC = 41-->
             <!--FLE DAC = 92-->
             <!--FHE DAC = 127-->
-            <!--ULD DAC = 106-->
+            <!--ULD DAC = 105-->
             <!--LE gain = 5-->
             <!--HE gain = 0-->
             <!--LE bias = 93.230-->
             <!--HE bias = 93.230-->
-            <tholdCIRange pedSig='1' range='LEX8' ULDVal='3432.033' pedVal='582.606' ULDSig='30'/>
-            <tholdCIRange pedSig='1' range='LEX1' ULDVal='3779.888' pedVal='206.569' ULDSig='30'/>
-            <tholdCIRange pedSig='1' range='HEX8' ULDVal='3569.852' pedVal='439.758' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='LEX8' ULDVal='3403.204' pedVal='582.606' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='LEX1' ULDVal='3752.135' pedVal='206.569' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='HEX8' ULDVal='3541.399' pedVal='439.758' ULDSig='30'/>
             <tholdCIRange pedSig='1' range='HEX1' ULDVal='3876.760' pedVal='216.767' ULDSig='30'/>
           </tholdCI>
         </face>
@@ -2712,14 +2712,14 @@
             <!--LAC DAC = 33-->
             <!--FLE DAC = 90-->
             <!--FHE DAC = 127-->
-            <!--ULD DAC = 104-->
+            <!--ULD DAC = 103-->
             <!--LE gain = 5-->
             <!--HE gain = 0-->
             <!--LE bias = 103.745-->
             <!--HE bias = 103.745-->
-            <tholdCIRange pedSig='1' range='LEX8' ULDVal='3489.538' pedVal='502.881' ULDSig='30'/>
-            <tholdCIRange pedSig='1' range='LEX1' ULDVal='3769.610' pedVal='195.632' ULDSig='30'/>
-            <tholdCIRange pedSig='1' range='HEX8' ULDVal='3355.536' pedVal='663.419' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='LEX8' ULDVal='3457.646' pedVal='502.881' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='LEX1' ULDVal='3738.798' pedVal='195.632' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='HEX8' ULDVal='3325.308' pedVal='663.419' ULDSig='30'/>
             <tholdCIRange pedSig='1' range='HEX1' ULDVal='3880.420' pedVal='213.312' ULDSig='30'/>
           </tholdCI>
         </face>
@@ -3140,15 +3140,15 @@
       <!--layer name = Y3-->
       <xtal iXtal='0'>
         <face end='NEG'>
-          <tholdCI LACSig='1' FHEVal='2662.355' FLESig='1' FLEVal='3293.749' LACVal='67.428' FHESig='1'>
+          <tholdCI LACSig='1' FHEVal='2662.353' FLESig='1' FLEVal='3293.747' LACVal='67.428' FHESig='1'>
             <!--LAC DAC = 48-->
             <!--FLE DAC = 91-->
             <!--FHE DAC = 127-->
             <!--ULD DAC = 105-->
             <!--LE gain = 5-->
             <!--HE gain = 0-->
-            <!--LE bias = 64.624-->
-            <!--HE bias = 64.624-->
+            <!--LE bias = 64.622-->
+            <!--HE bias = 64.622-->
             <tholdCIRange pedSig='1' range='LEX8' ULDVal='3352.931' pedVal='662.930' ULDSig='30'/>
             <tholdCIRange pedSig='1' range='LEX1' ULDVal='3752.213' pedVal='224.740' ULDSig='30'/>
             <tholdCIRange pedSig='1' range='HEX8' ULDVal='3449.586' pedVal='546.688' ULDSig='30'/>
@@ -3416,14 +3416,14 @@
             <!--LAC DAC = 30-->
             <!--FLE DAC = 95-->
             <!--FHE DAC = 127-->
-            <!--ULD DAC = 110-->
+            <!--ULD DAC = 111-->
             <!--LE gain = 5-->
             <!--HE gain = 0-->
             <!--LE bias = 92.929-->
             <!--HE bias = 92.929-->
-            <tholdCIRange pedSig='1' range='LEX8' ULDVal='3579.143' pedVal='406.758' ULDSig='30'/>
-            <tholdCIRange pedSig='1' range='LEX1' ULDVal='3760.729' pedVal='221.311' ULDSig='30'/>
-            <tholdCIRange pedSig='1' range='HEX8' ULDVal='3586.250' pedVal='405.468' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='LEX8' ULDVal='3605.816' pedVal='406.758' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='LEX1' ULDVal='3787.911' pedVal='221.311' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='HEX8' ULDVal='3614.402' pedVal='405.468' ULDSig='30'/>
             <tholdCIRange pedSig='1' range='HEX1' ULDVal='3895.380' pedVal='199.122' ULDSig='30'/>
           </tholdCI>
         </face>
@@ -3739,7 +3739,7 @@
           </tholdCI>
         </face>
         <face end='POS'>
-          <tholdCI LACSig='1' FHEVal='2621.414' FLESig='1' FLEVal='2944.147' LACVal='68.136' FHESig='1'>
+          <tholdCI LACSig='1' FHEVal='2621.414' FLESig='1' FLEVal='2944.146' LACVal='68.136' FHESig='1'>
             <!--LAC DAC = 52-->
             <!--FLE DAC = 88-->
             <!--FHE DAC = 127-->
@@ -3795,14 +3795,14 @@
             <!--LAC DAC = 51-->
             <!--FLE DAC = 90-->
             <!--FHE DAC = 127-->
-            <!--ULD DAC = 111-->
+            <!--ULD DAC = 112-->
             <!--LE gain = 5-->
             <!--HE gain = 0-->
             <!--LE bias = 111.935-->
             <!--HE bias = 111.935-->
-            <tholdCIRange pedSig='1' range='LEX8' ULDVal='3236.934' pedVal='720.383' ULDSig='30'/>
-            <tholdCIRange pedSig='1' range='LEX1' ULDVal='3732.329' pedVal='224.477' ULDSig='30'/>
-            <tholdCIRange pedSig='1' range='HEX8' ULDVal='3372.893' pedVal='631.856' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='LEX8' ULDVal='3264.419' pedVal='720.383' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='LEX1' ULDVal='3758.038' pedVal='224.477' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='HEX8' ULDVal='3396.249' pedVal='631.856' ULDSig='30'/>
             <tholdCIRange pedSig='1' range='HEX1' ULDVal='3852.300' pedVal='241.888' ULDSig='30'/>
           </tholdCI>
         </face>
@@ -4413,14 +4413,14 @@
             <!--LAC DAC = 34-->
             <!--FLE DAC = 93-->
             <!--FHE DAC = 127-->
-            <!--ULD DAC = 111-->
+            <!--ULD DAC = 112-->
             <!--LE gain = 5-->
             <!--HE gain = 0-->
             <!--LE bias = 115.527-->
             <!--HE bias = 115.527-->
-            <tholdCIRange pedSig='1' range='LEX8' ULDVal='3451.736' pedVal='546.875' ULDSig='30'/>
-            <tholdCIRange pedSig='1' range='LEX1' ULDVal='3709.952' pedVal='233.653' ULDSig='30'/>
-            <tholdCIRange pedSig='1' range='HEX8' ULDVal='3528.227' pedVal='448.888' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='LEX8' ULDVal='3478.798' pedVal='546.875' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='LEX1' ULDVal='3735.413' pedVal='233.653' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='HEX8' ULDVal='3554.662' pedVal='448.888' ULDSig='30'/>
             <tholdCIRange pedSig='1' range='HEX1' ULDVal='3853.640' pedVal='240.689' ULDSig='30'/>
           </tholdCI>
         </face>
@@ -4701,14 +4701,14 @@
             <!--LAC DAC = 39-->
             <!--FLE DAC = 91-->
             <!--FHE DAC = 127-->
-            <!--ULD DAC = 107-->
+            <!--ULD DAC = 108-->
             <!--LE gain = 5-->
             <!--HE gain = 0-->
             <!--LE bias = 67.862-->
             <!--HE bias = 67.862-->
-            <tholdCIRange pedSig='1' range='LEX8' ULDVal='3358.827' pedVal='636.619' ULDSig='30'/>
-            <tholdCIRange pedSig='1' range='LEX1' ULDVal='3764.295' pedVal='224.262' ULDSig='30'/>
-            <tholdCIRange pedSig='1' range='HEX8' ULDVal='3411.095' pedVal='577.127' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='LEX8' ULDVal='3386.189' pedVal='636.619' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='LEX1' ULDVal='3791.420' pedVal='224.262' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='HEX8' ULDVal='3439.892' pedVal='577.127' ULDSig='30'/>
             <tholdCIRange pedSig='1' range='HEX1' ULDVal='3861.200' pedVal='233.172' ULDSig='30'/>
           </tholdCI>
         </face>
@@ -5062,14 +5062,14 @@
             <!--LAC DAC = 48-->
             <!--FLE DAC = 92-->
             <!--FHE DAC = 127-->
-            <!--ULD DAC = 107-->
+            <!--ULD DAC = 106-->
             <!--LE gain = 5-->
             <!--HE gain = 0-->
             <!--LE bias = 79.825-->
             <!--HE bias = 79.825-->
-            <tholdCIRange pedSig='1' range='LEX8' ULDVal='3347.182' pedVal='670.514' ULDSig='30'/>
-            <tholdCIRange pedSig='1' range='LEX1' ULDVal='3744.812' pedVal='216.288' ULDSig='30'/>
-            <tholdCIRange pedSig='1' range='HEX8' ULDVal='3632.510' pedVal='353.660' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='LEX8' ULDVal='3319.369' pedVal='670.514' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='LEX1' ULDVal='3717.452' pedVal='216.288' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='HEX8' ULDVal='3604.434' pedVal='353.660' ULDSig='30'/>
             <tholdCIRange pedSig='1' range='HEX1' ULDVal='3903.200' pedVal='191.350' ULDSig='30'/>
           </tholdCI>
         </face>
@@ -5748,14 +5748,14 @@
             <!--LAC DAC = 36-->
             <!--FLE DAC = 91-->
             <!--FHE DAC = 127-->
-            <!--ULD DAC = 108-->
+            <!--ULD DAC = 107-->
             <!--LE gain = 5-->
             <!--HE gain = 0-->
             <!--LE bias = 83.715-->
             <!--HE bias = 83.715-->
-            <tholdCIRange pedSig='1' range='LEX8' ULDVal='3542.630' pedVal='473.746' ULDSig='30'/>
-            <tholdCIRange pedSig='1' range='LEX1' ULDVal='3755.941' pedVal='214.760' ULDSig='30'/>
-            <tholdCIRange pedSig='1' range='HEX8' ULDVal='3707.405' pedVal='285.477' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='LEX8' ULDVal='3514.830' pedVal='473.746' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='LEX1' ULDVal='3728.631' pedVal='214.760' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='HEX8' ULDVal='3680.921' pedVal='285.477' ULDSig='30'/>
             <tholdCIRange pedSig='1' range='HEX1' ULDVal='3882.420' pedVal='211.253' ULDSig='30'/>
           </tholdCI>
         </face>
@@ -6311,14 +6311,14 @@
             <!--LAC DAC = 22-->
             <!--FLE DAC = 90-->
             <!--FHE DAC = 127-->
-            <!--ULD DAC = 107-->
+            <!--ULD DAC = 106-->
             <!--LE gain = 5-->
             <!--HE gain = 0-->
             <!--LE bias = 89.421-->
             <!--HE bias = 89.421-->
-            <tholdCIRange pedSig='1' range='LEX8' ULDVal='3587.627' pedVal='426.170' ULDSig='30'/>
-            <tholdCIRange pedSig='1' range='LEX1' ULDVal='3772.939' pedVal='218.940' ULDSig='30'/>
-            <tholdCIRange pedSig='1' range='HEX8' ULDVal='3450.440' pedVal='566.104' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='LEX8' ULDVal='3559.111' pedVal='426.170' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='LEX1' ULDVal='3745.382' pedVal='218.940' ULDSig='30'/>
+            <tholdCIRange pedSig='1' range='HEX8' ULDVal='3423.726' pedVal='566.104' ULDSig='30'/>
             <tholdCIRange pedSig='1' range='HEX1' ULDVal='3850.120' pedVal='244.346' ULDSig='30'/>
           </tholdCI>
         </face>

@@ -4,4 +4,4 @@
 PYTHONPATH=${CALIBGENCALROOT}/python:${PYTHONPATH}
 export PYTHONPATH
 
-python ${CALIBGENCALROOT}/python/asymMerge.py "$@"
+python ${CALIBGENCALROOT}/python/build_tholdci_cfg.py "$@"
