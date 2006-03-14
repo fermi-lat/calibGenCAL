@@ -1,4 +1,29 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Mar 14 14:42:44 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	adc2nrgVal.py adc2nrgVal.sh adcplot.sh adcsmooth.sh 
+	asymMerge.sh asymTXT2XML.sh asymVal.sh asymXML2TXT.sh 
+	biasVal.sh build_adcsmooth.py build_adcsmooth.sh 
+	build_gensettings_cfg.sh charVal.sh charplot.sh dacVal.sh 
+	dumpROOTPlots.sh genFHEsettings.sh genFLEsettings.sh 
+	genGainSettings.sh genLACsettings.sh genULDsettings.sh 
+	gensettings.py gensettings.sh get_slac_calibdac.sh 
+	inlXML2TXT.sh intNonlinMerge.sh intNonlinVal.sh 
+	mevPerDacMerge.sh mevPerDacVal.sh mpdTXT2XML.sh mpdXML2TXT.sh 
+	pedMerge.sh pedTXT2XML.sh pedVal.sh pedXML2TXT.sh 
+	runSuiteParallel.sh tholdCIGen.py tholdCIGen.sh tholdCIVal.sh 
+	tholdCIXML2TXT.sh 
+Added Files:
+	build_tholdci_cfg.bat build_tholdci_cfg.py 
+	build_tholdci_cfg.sh 
+Log Message:
+gensettings & build_adcsmooth now run validation scripts.
+documentation updates.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Mar 14 14:42:43 PST 2006
 calibGenCAL/doc
 
