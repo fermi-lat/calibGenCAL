@@ -1,0 +1,55 @@
+calibGenCAL Configuration Record HOWTO
+Zach Fewtrell 3/13/2006
+
+
+How to generate GLAST Cal configuration record from calibration set using calibGenCAL tools.
+This is a quick reference see $CALIBGENCALROOT/doc/gensettings_scripts.hml and http://www-glast.slac.stanford.edu/IntegrationTest/SVAC/Instrument_Analysis/UsefulStuff/cgc_handbook.doc for more details.
+
+Prerequisites
+- GLAST CMT software package environment
+- current GLAST EnineeringModel release w/ current calibGenCAL pkg (file written for calibGenCAL v3r9p1)
+- python (2.3, 2.4)
+- pyROOT, pyXML, Numeric python packages.
+
+
+Windows -vs- Linux
+Each calibGenCAL python app XYZ has 2 shell launcer scripts, XYZ.bat for windows use & XYZ.sh for Linux use.  In this doc, when you see runThisScript.<bat|sh>, execute the appropriate script for your operating system.
+
+1) setup calibGenCAL CMT environment
+   - ensure that CMTPATH points to desired release of EngineeringModel suite and calibGenCAL package
+   - ensure that calibGenCAL setup scripts have been generated for these PATHS (run 'cmt config' from calibGenCAL/<version>/cmt
+   - run calibGenCAL setup script for current shell type (either calibGenCAL/<version>/cmt/setup.<bat|sh|csh>)
+
+2) retrieve calibration set files
+   - this may require running of get_slac_calibdac tool and/or runSuiteParallel tool, see above refences for usage.
+   - you will need the following files
+     1 @ XXXlac2adc.xml per tower
+     1 @ XXXfle2adc.xml per tower
+     1 @ XXXfhe2adc.xml per tower
+     1 @ XXXuld2adc.xml per tower.
+     1 @ XXXpedestals.xml per tower
+     1 @ XXXrelgain.xml per tower
+     1 @ XXXadc2nrg.xml per tower
+     1 @ XXXbias.xml per tower
+
+
+3) Smooth the raw calibration data (also perform needed interpolations & extrapolations)
+   - edit build_adcsmooth.cfg (the one in $CALIBGENCALROOT/python/cfg should work w/out edit for 16 tower lat)
+   - run build_adcsmooth.<sh|bat>
+   - at this point linux users may want to disable XWIN by unsetting DISPLAY environment var      
+   - run newly generated adcsmooth.bat in local folder (under linux type 'bash adcsmooth.bat'
+   - along w/ 'filtered' xxx2adc files, you will get full set of root plots & validation output.
+
+4) generate dac settings.
+   - edit build_gensettings_cfg.cfg (you can start w/ the one in $CALIBGENCALROOT/python/cfg)
+   - run gensettings.<bat|sh>
+   - run build_gensettings_cfg.<bat|sh>
+   - run run_gensettings.<bat|sh>
+   - along w/ <fle|fhe|lac|uld>.xml dac settings files, you will get full set of root plots & validation output.
+
+5) generate tholdci (this really an offline calibration file, but it makes sense to build it & store it along w/ the config record as it depends on each configuration record)
+   - retrieve ci_intnonlinXXX.xml file from offline calibration set.
+   - run genGainSettings.<sh|bat> <le_gain> <he_gain> base_snapshot.xml (if you name the output base_snapshot.xml you'll be happy b/c that's what future scripts will look for by default)
+   - run build_tholdci_cfg.<sh|bat> <intlinfile> tholdci.cfg (other options may be needed if you used non-standard names in previous steps)
+   - run tholdCIGen.<sh|bat> tholdci.cfg tholdci.xml
+   - run tholdCIVal.<sh|bat> -R tholdci.val.root -L tholdci.val.log tholdci.xml

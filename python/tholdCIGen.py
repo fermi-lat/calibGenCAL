@@ -13,8 +13,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL TholdCI XML calibration data files"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/11/07 16:55:49 $"
-__version__   = "$Revision: 1.20 $, $Author: dwood $"
+__date__      = "$Date: 2006/03/14 21:18:05 $"
+__version__   = "$Revision: 1.21 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -414,7 +414,8 @@ if __name__ == '__main__':
         if f.srcTwr not in twrs:
             log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
             sys.exit(1)
-        pedData[f.destTwr,...] = pedFile.read()
+        adcData = pedFile.read()
+        pedData[f.destTwr,...] = adcData
         pedFile.close()
 
     # read bias correction file

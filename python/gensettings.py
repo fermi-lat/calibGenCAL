@@ -9,8 +9,8 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Prepares config and commands to run gensettings scripts"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2005/10/04 19:41:48 $"
-__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/10/04 21:52:18 $"
+__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -21,6 +21,19 @@ import string
 import ConfigParser
 from optparse import OptionParser
 from time import gmtime,strftime
+
+
+def gen_basename(timetag, gain, mev, idet, dac_type):
+    """ generate output filename (sans extension for non-uld dac settings) """
+    return  "%s_G%d_MeV%d_%s_CAL_%s"%(timetag, int(gain), int(mev), idet, dac_type)
+    
+def gen_basename_uld(timetag, adcmargin, idet):
+    """ generate output filename (sans extension) for uld dac settings"""
+    return "%s_adc%d_%s_CAL_uld"%(timetag, int(adcmargin), idet)
+
+def gen_cfgname(fileroot, idet, dac_type):
+    """ generate cf filename for given dac type"""
+    return "%s_%sgen%s.xml"%(fileroot,idet,dac_type)
 
 usage = 'gensettings [-f fileroot][--file fileroot]'
 
@@ -73,20 +86,22 @@ if len(configsections) == 0:
     sys.exit(1)
 
 # open batch file for run commands
-cmdbat = open(fileroot+".bat","w")
+cmdbat = open("run_"+fileroot+".bat","w")
 cmdbat.write("if not defined CALIBGENCALROOT goto :ERROR\n")
 cmdbat.write("setlocal\n")
-cmdbat.write(r"set PYTHONROOT=%CALIBGENCALROOT%\python;%PYTHONROOT%;"+"\n")
+cmdbat.write("set PYTHONROOT=%CALIBGENCALROOT%\python;%PYTHONROOT%;"+"\n")
 
 # open .sh file for run commands
-cmdsh = open(fileroot+".sh", "w")
+cmdsh = open("run_"+fileroot+".sh", "w")
 cmdsh.write("#! /bin/sh\n")
 cmdsh.write("PYTHONPATH=${CALIBGENCALROOT}/python:${PYTHONPATH}\n")
 cmdsh.write("export PYTHONPATH\n")
 
+CALIBGENCALROOT = os.environ["CALIBGENCALROOT"]
+
 # loop over detectors
 for idet in detsections:
-# get input file names, src and dest towers, desired config
+    # get input file names, src and dest towers, desired config
     log.info(idet)
     biasname = None
     adc2nrgname = None
@@ -208,6 +223,7 @@ for idet in detsections:
         sys.exit(1)
 
 # In the following, if characterization file == "skip", skip test
+
 # Build genFLE config file
     if flename != "skip":
         flecfg = ConfigParser.SafeConfigParser()
@@ -221,20 +237,41 @@ for idet in detsections:
         flecfg.add_section("towers")
         flecfg.set("towers","srctower",srctower)
         flecfg.set("towers","desttower",desttower)
-# Write out genFLE config file
-        fleout = open(fileroot+'_'+idet+"genFLE.cfg","w")
+
+        # Write out genFLE config file
+        cfgname  = gen_cfgname(fileroot, idet, "FLE")
+        fleout = open(cfgname,"w")
         flecfg.write(fleout)
         fleout.close()
         log.info("genFLE")
-# Write out run command to batch file
-        cmdline = r"python %CALIBGENCALROOT%\python\genFLEsettings.py -V "+\
-                  fle+" "+fileroot+'_'+idet+"genFLE.cfg "+timetag+"_G"+legain.strip()+\
-                  "_MeV"+fle.strip()+"_"+idet+"_CAL_fle.xml\n"
+
+        # generate base filename used in all output files
+        basename    = gen_basename(timetag, legain, fle, idet, "fle")
+        latest_base = gen_basename("latest", legain, fle, idet, "fle")
+
+
+        # Write out run command to batch file
+        cmdline = "python %s/python/genFLEsettings.py -V %f %s %s.xml\n"%(CALIBGENCALROOT,
+                                                                           float(fle),
+                                                                           cfgname,
+                                                                           basename)
         cmdbat.write(cmdline)
-# Write out run command to .sh file
-        cmdline = r"python $CALIBGENCALROOT/python/genFLEsettings.py -V "+\
-                  fle+" "+fileroot+'_'+idet+"genFLE.cfg "+timetag+"_G"+legain.strip()+\
-                  "_MeV"+fle.strip()+"_"+idet+"_CAL_fle.xml\n"
+        cmdsh.write(cmdline)
+
+
+        # Write out dacVal command to batch file
+        cmdline = "python %s/python/dacVal.py -V -R %s.root -L %s.val.log FLE %f %s %s.xml\n"%(CALIBGENCALROOT,
+                                                                                                basename,
+                                                                                                basename,
+                                                                                                float(fle),
+                                                                                                cfgname,
+                                                                                                basename)
+        cmdbat.write(cmdline)
+        cmdsh.write(cmdline)
+
+        # Write out cp -> "latestXXX.xml" command to batch file
+        cmdline = "cp %s.xml %s.xml\n"%(basename, latest_base)
+        cmdbat.write(cmdline)
         cmdsh.write(cmdline)
 
 
@@ -251,41 +288,81 @@ for idet in detsections:
         fhecfg.add_section("towers")
         fhecfg.set("towers","srctower",srctower)
         fhecfg.set("towers","desttower",desttower)
-# Write out genfhe config file
-        fheout = open(fileroot+'_'+idet+"genFHE.cfg","w")
+
+        # Write out genfhe config file
+        cfgname  = gen_cfgname(fileroot, idet, "FHE")
+        fheout   = open(cfgname,"w")
         fhecfg.write(fheout)
         fheout.close()
         log.info("genFHE")
-# Write out run command to batch file
-        cmdline = r"python %CALIBGENCALROOT%\python\genFHEsettings.py -V "+\
-                  fhe+" "+fileroot+'_'+idet+"genFHE.cfg "+timetag+"_G"+hegain.strip()+\
-                  "_GeV"+fhe.strip()+"_"+idet+"_CAL_fhe.xml\n"
+
+        # generate base filename used in all output files
+        basename    = gen_basename(timetag, hegain, fhe, idet, "fhe")
+        latest_base = gen_basename("latest", hegain, fhe, idet, "fhe")
+
+        # Write out run command to batch file
+        cmdline = "python %s/python/genFHEsettings.py -V %f %s %s.xml\n"%(CALIBGENCALROOT,
+                                                                          float(fhe),
+                                                                          cfgname,
+                                                                          basename)
         cmdbat.write(cmdline)
-# Write out run command to .shfile
-        cmdline = r"python $CALIBGENCALROOT/python/genFHEsettings.py -V "+\
-                  fhe+" "+fileroot+'_'+idet+"genFHE.cfg "+timetag+"_G"+hegain.strip()+\
-                  "_GeV"+fhe.strip()+"_"+idet+"_CAL_fhe.xml\n"
+        cmdsh.write(cmdline)
+
+        # Write out dacVal command to batch file
+        cmdline = "python %s/python/dacVal.py -V -R %s.root -L %s.val.log FHE %f %s %s.xml\n"%(CALIBGENCALROOT,
+                                                                                                basename,
+                                                                                                basename,
+                                                                                                float(fhe),
+                                                                                                cfgname,
+                                                                                                basename)
+        cmdbat.write(cmdline)
+        cmdsh.write(cmdline)
+
+        # Write out cp -> "latestXXX.xml" command to batch file
+        cmdline = "cp %s.xml %s.xml\n"%(basename, latest_base)
+        cmdbat.write(cmdline)
         cmdsh.write(cmdline)
 
 
 # Do FHE again with muon gain (only script we do this with)
         fhecfg.remove_option("gains","hegain")
         fhecfg.set("gains","hegain",hegainmu)
-# Write out genfhe (muon gain) config file
-        fheout = open(fileroot+'_'+idet+"genFHE_muon.cfg","w")
+        # Write out genfhe (muon gain) config file
+        cfgname  = gen_cfgname(fileroot, idet, "FHE_muon")
+        fheout = open(cfgname,"w")
         fhecfg.write(fheout)
         fheout.close()
         log.info("genFHE_muon")
-# Write out run command to batch file
-        cmdline = r"python %CALIBGENCALROOT%\python\genFHEsettings.py -V "+\
-                  fhe+" "+fileroot+'_'+idet+"genFHE_muon.cfg "+timetag+"_G"+hegainmu.strip()+\
-                  "_GeV"+fhe.strip()+"_"+idet+"_CAL_fhe.xml\n"
+
+        # generate base filename used in all output files
+        basename    = gen_basename(timetag, hegainmu, fhe, idet, "fhe")
+        latest_base = gen_basename("latest", hegainmu, fhe, idet, "fhe")
+
+
+        # Write out run command to batch file
+        # Write out run command to batch file
+        cmdline = "python %s/python/genFHEsettings.py -V %f %s %s.xml\n"%(CALIBGENCALROOT,
+                                                                          float(fhe),
+                                                                          cfgname,
+                                                                          basename)
         cmdbat.write(cmdline)
-# Write out run command to .sh file
-        cmdline = r"python $CALIBGENCALROOT/python/genFHEsettings.py -V "+\
-                  fhe+" "+fileroot+'_'+idet+"genFHE_muon.cfg "+timetag+"_G"+hegainmu.strip()+\
-                  "_GeV"+fhe.strip()+"_"+idet+"_CAL_fhe.xml\n"
         cmdsh.write(cmdline)
+
+        # Write out dacVal command to batch file
+        cmdline = "python %s/python/dacVal.py -V -R %s.root -L %s.val.log FHE %f %s %s.xml\n"%(CALIBGENCALROOT,
+                                                                                                basename,
+                                                                                                basename,
+                                                                                                float(fhe),
+                                                                                                cfgname,
+                                                                                                basename)
+        cmdbat.write(cmdline)
+        cmdsh.write(cmdline)
+
+        # Write out cp -> "latestXXX.xml" command to batch file
+        cmdline = "cp %s.xml %s.xml\n"%(basename, latest_base)
+        cmdbat.write(cmdline)
+        cmdsh.write(cmdline)
+
         
 # Build genLAC config file
     if lacname != "skip":
@@ -299,21 +376,43 @@ for idet in detsections:
         laccfg.add_section("towers")
         laccfg.set("towers","srctower",srctower)
         laccfg.set("towers","desttower",desttower)
-# Write out genlac config file
-        lacout = open(fileroot+'_'+idet+"genLAC.cfg","w")
+
+        # Write out genlac config file
+        cfgname  = gen_cfgname(fileroot, idet, "LAC")
+        lacout = open(cfgname,"w")
         laccfg.write(lacout)
         lacout.close()
         log.info("genLAC")
-# Write out run command to batch file
-        cmdline = r"python %CALIBGENCALROOT%\python\genLACsettings.py -V "+\
-                  lac+" "+fileroot+'_'+idet+"genLAC.cfg "+timetag+"_G"+legain.strip()+\
-                  "_MeV"+lac.strip()+"_"+idet+"_CAL_lac.xml\n"
+
+        # generate base filename used in all output files
+        basename = gen_basename(timetag, legain, lac, idet, "lac")
+        latest_base = gen_basename("latest", legain, lac, idet, "lac")
+
+
+        # Write out run command to batch file
+        cmdline = "python %s/python/genLACsettings.py -V %f %s %s.xml\n"%(CALIBGENCALROOT,
+                                                                          float(lac),
+                                                                          cfgname,
+                                                                          basename)
         cmdbat.write(cmdline)
-# Write out run command to shfile
-        cmdline = r"python $CALIBGENCALROOT/python/genLACsettings.py -V "+\
-                  lac+" "+fileroot+'_'+idet+"genLAC.cfg "+timetag+"_G"+legain.strip()+\
-                  "_MeV"+lac.strip()+"_"+idet+"_CAL_lac.xml\n"
         cmdsh.write(cmdline)
+
+
+        # Write out dacVal command to batch file
+        cmdline = "python %s/python/dacVal.py -V -R %s.root -L %s.val.log LAC %f %s %s.xml\n"%(CALIBGENCALROOT,
+                                                                                                basename,
+                                                                                                basename,
+                                                                                                float(lac),
+                                                                                                cfgname,
+                                                                                                basename)
+        cmdbat.write(cmdline)
+        cmdsh.write(cmdline)
+
+        # Write out cp -> "latestXXX.xml" command to batch file
+        cmdline = "cp %s.xml %s.xml\n"%(basename, latest_base)
+        cmdbat.write(cmdline)
+        cmdsh.write(cmdline)
+
 
 # Build genULD config file
     if uldname != "skip":
@@ -325,22 +424,30 @@ for idet in detsections:
         uldcfg.add_section("towers")
         uldcfg.set("towers","srctower",srctower)
         uldcfg.set("towers","desttower",desttower)
-# Write out genuld config file
-        uldout = open(fileroot+'_'+idet+"genULD.cfg","w")
+
+        # Write out genuld config file
+        cfgname  = gen_cfgname(fileroot, idet, "ULD")
+        uldout = open(cfgname,"w")
         uldcfg.write(uldout)
         uldout.close()
         log.info("genULD")
-# Write out run command to batch file
-        cmdline = r"python %CALIBGENCALROOT%\python\genULDsettings.py -V "+\
-                  fileroot+'_'+idet+"genULD.cfg "+timetag+"_adc"+adcmargin.strip()+"_"+\
-                  idet+"_CAL_uld.xml\n"
+
+        basename    = gen_basename_uld(timetag, adcmargin, idet)
+        latest_base = gen_basename_uld("latest", adcmargin, idet)
+
+        # Write out run command to batch file
+        cmdline = "python %s/python/genULDsettings.py -V %s %s.xml\n"%(CALIBGENCALROOT,
+                                                                        cfgname,
+                                                                        basename)
         cmdbat.write(cmdline)
-# Write out run command to shfile
-        cmdline = r"python $CALIBGENCALROOT/python/genULDsettings.py -V "+\
-                  fileroot+'_'+idet+"genULD.cfg "+timetag+"_adc"+adcmargin.strip()+"_"+\
-                  idet+"_CAL_uld.xml\n"
         cmdsh.write(cmdline)
-        
+
+        # Write out cp -> "latestXXX.xml" command to batch file
+        cmdline = "cp %s.xml %s.xml\n"%(basename, latest_base)
+        cmdbat.write(cmdline)
+        cmdsh.write(cmdline)
+
+
 
 # Close batch file and end
 cmdbat.write("endlocal\n")

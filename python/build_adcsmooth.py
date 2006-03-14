@@ -10,8 +10,8 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Build batch file containing commands to run adcsmooth filtering script"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2006/03/07 21:53:11 $"
-__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/03/08 21:46:06 $"
+__version__   = "$Revision: 1.10 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -69,12 +69,12 @@ if len(detsections) == 0:
     log.error('No det sections')
     sys.exit(1)
 
+CALIBGENCALROOT = os.environ["CALIBGENCALROOT"]
 
 
 # open batch file to receive adcsmooth commands
 
 cmdbat = open('adcsmooth.bat','w')
-cmdsh  = open('adcsmooth.sh','w')
 
 def process_file(filename, validate):
     """ create commandlines for adcsmooth, charplot & charVal, append to both cmdbat & cmdsh scripts files """
@@ -85,43 +85,23 @@ def process_file(filename, validate):
     valplotname = filesplit[0]+".val.root"
 
     # adcsmooth: .bat
-    cmdline = r"python %CALIBGENCALROOT%/python/adcsmooth.py  "+\
+    cmdline = r"python %s/python/adcsmooth.py  "%CALIBGENCALROOT+\
               filename + " " + smoothname + "\n"
     log.info(cmdline)
     cmdbat.write(cmdline)
-
-    # adcsmooth: .sh
-    cmdline = r"python $CALIBGENCALROOT/python/adcsmooth.py  "+\
-              filename + " " + smoothname + "\n"
-    log.info(cmdline)
-    cmdsh.write(cmdline)
 
     # charplot: .bat
-    cmdline = r"python %CALIBGENCALROOT%/python/charplot.py  "+\
+    cmdline = r"python %s/python/charplot.py  "%CALIBGENCALROOT+\
               filename + " " + smoothname + " " + plotname + "\n"
     log.info(cmdline)
     cmdbat.write(cmdline)
-
-    # charplot: .sh
-    cmdline = r"python $CALIBGENCALROOT/python/charplot.py  "+\
-              filename + " " + smoothname + " " + plotname + "\n"
-    log.info(cmdline)
-    cmdsh.write(cmdline)
 
     if (validate):
         # charVal: .bat
-        cmdline = r"python %CALIBGENCALROOT%/python/charVal.py  "+\
+        cmdline = r"python %s/python/charVal.py  "%CALIBGENCALROOT+\
                   " -R " + valplotname + " -L " + logname + " " + smoothname + "\n"
         log.info(cmdline)
         cmdbat.write(cmdline)
-        
-        # charVal: .sh
-        cmdline = r"python $CALIBGENCALROOT/python/charVal.py  "+\
-                  " -R " + valplotname + " -L " + logname + " " + smoothname + "\n"
-        log.info(cmdline)
-        cmdsh.write(cmdline)
-
-    
 
 # loop over modules
 
@@ -197,7 +177,6 @@ for idet in detsections:
             process_file(uldname, False)
 # close output file and terminate
 cmdbat.close()
-cmdsh.close()
 
 sys.exit(0)
 
