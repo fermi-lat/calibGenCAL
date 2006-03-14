@@ -1,5 +1,16 @@
 ------------------------------------------------------------
 User: fewtrell  Tue Mar 14 14:42:45 PST 2006
+calibGenCAL/unit_test
+
+Removed Files:
+	tholdCIGen.cfg 
+Log Message:
+gensettings & build_adcsmooth now run validation scripts.
+documentation updates.
+
+    *
+------------------------------------------------------------
+User: fewtrell  Tue Mar 14 14:42:45 PST 2006
 calibGenCAL/src
 
 Modified Files:
