@@ -6,15 +6,14 @@ Classes to represent CAL hardware settings XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL DAC settings XML documents"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/09 17:43:25 $"
-__version__   = "$Revision: 1.18 $, $Author: dwood $"
+__date__      = "$Date: 2006/03/16 18:09:24 $"
+__version__   = "$Revision: 1.19 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 
 
 import time
-import logging
 
 import Numeric
 
@@ -50,9 +49,7 @@ class calSnapshotXML(calXML.calXML):
         \param mode The file access mode (MODE_READONLY or MODE_CREATE).
         """
         
-        calXML.calXML.__init__(self, fileName, mode)
-
-        self.__log = logging.getLogger('calSnapshotXML')        
+        calXML.calXML.__init__(self, fileName, mode)       
 
 
     def getTowers(self):
