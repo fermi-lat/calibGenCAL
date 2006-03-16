@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Mar 16 13:03:44 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Put all of the DAC/configuration values into one comment per channel; reduces the total size of tholdCI files and reduces the number of XML comment elements that need to be parsed.
+    *
+------------------------------------------------------------
 User: dwood  Thu Mar 16 10:11:25 PST 2006
 calibGenCAL/python
 
