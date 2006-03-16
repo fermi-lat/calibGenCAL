@@ -15,8 +15,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate FLE Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2005/09/15 12:52:44 $"
-__version__     = "$Revision: 1.13 $, $Author: dwood $"
+__date__        = "$Date: 2005/11/17 21:48:06 $"
+__version__     = "$Revision: 1.14 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -172,6 +172,10 @@ if __name__ == '__main__':
     
     log.info("reading FLE ADC file %s", fleName)
     fio = calFitsXML.calFitsXML(fileName = fleName, mode = calFitsXML.MODE_READONLY)
+    i = fio.info()
+    if i['TTYPE1'] != 'fle_dac':
+        log.error("File %s is not an FLE ADC file.", fheName)
+        sys.exit(1)
     twrs = fio.getTowers()
     if srcTwr not in twrs:
         log.error("Src twr %d data not found in file %s", srcTwr, fleName)
@@ -183,6 +187,10 @@ if __name__ == '__main__':
 
     log.info("reading relgain file %s", relName)
     fio = calFitsXML.calFitsXML(fileName = relName, mode = calFitsXML.MODE_READONLY)
+    i = fio.info()
+    if i['TTYPE1'] != 'relative gain factor':
+        log.error("File %s is not a relgain ADC file", relName)
+        sys.exit(1)
     twrs = fio.getTowers()
     if srcTwr not in twrs:
         log.error("Src twr %d data not found in file %s", srcTwr, relName)
