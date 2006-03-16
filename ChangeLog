@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Mar 16 13:04:48 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	calDacXML.py 
+Log Message:
+Reverted to allowing DAC names to not be present in XML file; some applications require that the interface silently fail when the DAC element is not found.
+    *
+------------------------------------------------------------
 User: dwood  Thu Mar 16 13:03:44 PST 2006
 calibGenCAL/python
 
