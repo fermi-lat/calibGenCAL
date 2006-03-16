@@ -6,8 +6,8 @@ Classes to represent CAL hardware settings XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL DAC settings XML documents"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/03/16 18:09:24 $"
-__version__   = "$Revision: 1.19 $, $Author: dwood $"
+__date__      = "$Date: 2006/03/16 18:11:25 $"
+__version__   = "$Revision: 1.20 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -139,10 +139,11 @@ class calSnapshotXML(calXML.calXML):
                             raise calFileReadExcept, "<GCFE> ID attribute value %d, expected (0 - 11)" % fe
                         dacList = f.getElementsByTagName(dacName)
                         dacLen = len(dacList)
-                        if dacLen == 0:
-                            continue
-                        elif dacLen > 1:
-                            raise calFileReadExcept, "found %d %s elements, expected 1" % (dacLen, dacName)
+                        if dacLen != 1:
+                            if dacLen == 0:
+                                continue
+                            else:
+                                raise calFileReadExcept, "found %d %s elements, expected 1" % (dacLen, dacName)
                         d = dacList[0]
                         dd = d.childNodes[0]
                         dac = int(dd.data.strip(), 16)
