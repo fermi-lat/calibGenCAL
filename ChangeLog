@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Mar 16 10:04:40 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	dacVal.py genFHEsettings.py genFLEsettings.py 
+	genLACsettings.py genULDsettings.py reverse_uld.py 
+Log Message:
+Put in checks on file types when reading input files.
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Mar 16 01:20:20 PST 2006
 calibGenCAL/python
 
