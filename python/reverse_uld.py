@@ -19,6 +19,11 @@ if __name__ == '__main__':
 
     inFile = calFitsXML.calFitsXML(fileName = inName, mode = calFitsXML.MODE_READONLY)
 
+    i = inFile.info()
+    if i['TTYPE1'] != 'rng_uld_dac':
+        print "file %s is not an ULD ADC file" % inName
+        sys.exit(1)
+
 
     # read input file
     inData = inFile.read()
