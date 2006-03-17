@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/02/06 17:25:46 $"
-__version__   = "$Revision: 1.38 $, $Author: dwood $"
+__date__      = "$Date: 2006/03/16 21:03:44 $"
+__version__   = "$Revision: 1.39 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -29,7 +29,9 @@ MODE_READONLY   = calXML.MODE_READONLY
 
 POSNEG = ('NEG', 'POS')
 
-ERNG_MAP = {'LEX8' : 0, 'LEX1' : 1, 'HEX8' : 2, 'HEX1' : 3}
+ERNG_MAP = {'LEX8' : calConstant.CRNG_LEX8, 'LEX1' : calConstant.CRNG_LEX1, 
+    'HEX8' : calConstant.CRNG_HEX8, 'HEX1' : calConstant.CRNG_HEX1}
+
 POSNEG_MAP = {'NEG' : 0, 'POS' : 1}
 
 
@@ -409,7 +411,7 @@ class calTholdCICalibXML(calCalibXML):
 
                         tcr = doc.createElement('tholdCIRange')
                         
-                        tcr.setAttribute('range', 'HEX1')
+                        tcr.setAttribute('range', calConstant.CRNG[calConstant.CRNG_HEX1])
 
                         size = int(intNonlinLength[tem, row, end, fe, 0])
                         adc = intNonlinData[tem, row, end, fe, (size - 1)]
