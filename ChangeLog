@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Mar 16 17:18:01 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Made more use of calConstant values.
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Mar 16 13:04:48 PST 2006
 calibGenCAL/python
 
