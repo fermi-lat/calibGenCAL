@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Wed Mar 29 14:01:38 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	adcsmooth.py genFHEsettings.py genFLEsettings.py 
+	genLACsettings.py tholdCIGen.py 
+Log Message:
+Added check of energy range for characterization files; for now, only allow LEX8 for LAC and FLE and HEX8 for FHE.
+    *
+------------------------------------------------------------
 User: dwood  Thu Mar 16 17:18:01 PST 2006
 calibGenCAL/python
 
