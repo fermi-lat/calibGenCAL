@@ -13,8 +13,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL TholdCI XML calibration data files"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/03/14 21:18:05 $"
-__version__   = "$Revision: 1.21 $, $Author: dwood $"
+__date__      = "$Date: 2006/03/14 22:42:44 $"
+__version__   = "$Revision: 1.22 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -37,7 +37,7 @@ import calConstant
 
 class inputFile:
     """
-    Represents one tho input XML file.
+    Represents one input XML file.
     """
     
     def __init__(self, srcTwr, destTwr, name, version = None):
@@ -337,6 +337,9 @@ if __name__ == '__main__':
         if i['TTYPE1'] != 'log_acpt':
             log.error("File %s not a LAC ADC file", f.name)
             sys.exit(1)
+        if i['ERNG'] != 'LEX8':
+            log.error("Only LEX8 energy range is supported for LAC DAC")
+            sys.exit(1)
         twrs = lacAdcFile.getTowers()
         if f.srcTwr not in twrs:
             log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
@@ -374,6 +377,9 @@ if __name__ == '__main__':
         if i['TTYPE1'] != 'fle_dac':
             log.error("File %s not a FLE ADC file", f.name)
             sys.exit(1)
+        if i['ERNG'] != 'LEX8':
+            log.error("Only LEX8 energy range is supported for FLE DAC")
+            sys.exit(1)
         twrs = fleAdcFile.getTowers()
         if f.srcTwr not in twrs:
             log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
@@ -391,6 +397,9 @@ if __name__ == '__main__':
         i = fheAdcFile.info()
         if i['TTYPE1'] != 'fhe_dac':
             log.error("File %s not a FHE ADC file", f.name)
+            sys.exit(1)
+        if i['ERNG'] != 'HEX8':
+            log.error("Only HEX8 energy range is supported for FHE DAC")
             sys.exit(1)
         twrs = fheAdcFile.getTowers()
         if f.srcTwr not in twrs:

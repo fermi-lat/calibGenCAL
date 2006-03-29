@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate FHE Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2005/09/12 17:44:28 $"
-__version__     = "$Revision: 1.14 $, $Author: dwood $"
+__date__        = "$Date: 2006/03/16 18:04:40 $"
+__version__     = "$Revision: 1.15 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -134,7 +134,7 @@ if __name__ == '__main__':
         sys.exit(1)
     log.debug('Using HE gain %d', heGain)
 
-       # get tower addresses
+    # get tower addresses
 
     if 'towers' not in sections:
         log.error("Config file %s missing [towers] section", configName)
@@ -172,6 +172,9 @@ if __name__ == '__main__':
     i = fio.info()
     if i['TTYPE1'] != 'fhe_dac':
         log.error("File %s is not an FHE ADC file.", fheName)
+        sys.exit(1)
+    if i['ERNG'] != 'HEX8':
+        log.error("Only HEX8 energy range is supported for FHE DAC")
         sys.exit(1)
     twrs = fio.getTowers()
     if srcTwr not in twrs:
