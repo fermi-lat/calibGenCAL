@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate LAC Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2005/09/12 17:44:28 $"
-__version__     = "$Revision: 1.15 $, $Author: dwood $"
+__date__        = "$Date: 2006/03/16 18:04:40 $"
+__version__     = "$Revision: 1.16 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -164,6 +164,9 @@ if __name__ == '__main__':
     i = fio.info()
     if i['TTYPE1'] != 'log_acpt':
         log.error("File %s is not an LAC ADC file.", lacName)
+        sys.exit(1)
+    if i['ERNG'] != 'LEX8':
+        log.error("Only LEX8 energy range is supported for LAC DAC")
         sys.exit(1)
     twrs = fio.getTowers()
     if srcTwr not in twrs:
