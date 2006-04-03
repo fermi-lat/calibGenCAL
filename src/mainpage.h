@@ -193,6 +193,7 @@ clean characterization tables to work well (e.g. genXXXsettings).
 - <tt> tholdCIVal   [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
 - <tt> charVal      [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
 - <tt> dacVal       [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC <MeV> <cfg_file> <dac_xml_file>
+- <tt> checkXML     [xml_file_0 xml_file_1 ...]
 
 The validation scripts perform simple checks on the values and formats
 of the various CAL calibration XML file types.  The checks are usually nothing more than limit and
