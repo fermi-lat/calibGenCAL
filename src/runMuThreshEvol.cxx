@@ -91,8 +91,6 @@ void TeData::openHistFile(const string &filename) {
 }
 
 void TeData::initHists() {
-  // DEJA VU?
-  if (m_muHists.size() == 0){ 
     m_muHists.resize(tFaceIdx::N_VALS);
 
     for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
@@ -106,13 +104,8 @@ void TeData::initHists() {
                                            40,0,2000);
       }
     }
-  }else // clear existing histsograms
-    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++)
-      for(int itp = 0; itp<m_cfg.nTimePoints; itp++)
-        m_muHists[faceIdx][itp]->Reset();
           
 
-  if (m_trigHists.size() == 0){ 
     m_trigHists.resize(tFaceIdx::N_VALS);
 
     for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
@@ -126,13 +119,8 @@ void TeData::initHists() {
                                              40,0,2000);
       }
     }
-  }else // clear existing histsograms
-    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++)
-      for(int itp = 0; itp<m_cfg.nTimePoints; itp++)
-        m_trigHists[faceIdx][itp]->Reset();
                         
 
-  if (m_pedHists.size() == 0) {
     m_pedHists.resize(tFaceIdx::N_VALS);
 
     for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
@@ -147,12 +135,9 @@ void TeData::initHists() {
  
       }
     }
-  }else // clear existing histsograms
-    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++)
-      for(int itp = 0; itp<m_cfg.nTimePoints; itp++)
-        m_pedHists[faceIdx][itp]->Reset();
 
 }
+
 TeData::TeData(TeCfg &cfg) :
   m_cfg(cfg)
 {

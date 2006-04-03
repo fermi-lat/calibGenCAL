@@ -144,74 +144,51 @@ void MtData::openHistFile(const string &filename) {
 }
 
 void MtData::initHists() {
-  // DEJA VU?
-  if (m_muHists.size() == 0){ 
-    m_muHists.resize(tFaceIdx::N_VALS);
+  m_muHists.resize(tFaceIdx::N_VALS);
 
-    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
-      ostringstream muHistName;
-      muHistName << "mu_" << faceIdx;
+  for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
+    ostringstream muHistName;
+    muHistName << "mu_" << faceIdx;
 
-      m_muHists[faceIdx] = new TH1S(muHistName.str().c_str(),
-                                    muHistName.str().c_str(),
+    m_muHists[faceIdx] = new TH1S(muHistName.str().c_str(),
+                                  muHistName.str().c_str(),
+                                  100,0,3000);
+  }
+
+  m_trigHists.resize(tFaceIdx::N_VALS);
+
+  for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
+    ostringstream trigHistName;
+    trigHistName << "trig_" << faceIdx;
+
+    m_trigHists[faceIdx] = new TH1S(trigHistName.str().c_str(),
+                                    trigHistName.str().c_str(),
                                     100,0,3000);
-    }
-  }else // clear existing histsograms
-    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++){
-      m_muHists[faceIdx]->Reset();
-                        
-    }
+  }
 
-  if (m_trigHists.size() == 0){ 
-    m_trigHists.resize(tFaceIdx::N_VALS);
+  m_ciAdcHists.resize(tFaceIdx::N_VALS);
 
-    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
-      ostringstream trigHistName;
-      trigHistName << "trig_" << faceIdx;
+  for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
+    ostringstream ciAdcHistName;
+    ciAdcHistName << "ciAdc_" << faceIdx;
 
-      m_trigHists[faceIdx] = new TH1S(trigHistName.str().c_str(),
-                                      trigHistName.str().c_str(),
-                                      100,0,3000);
-    }
-  }else // clear existing histsograms
-    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++){
-      m_trigHists[faceIdx]->Reset();
-                        
-    }
-  if (m_ciAdcHists.size() == 0){ 
-    m_ciAdcHists.resize(tFaceIdx::N_VALS);
+    m_ciAdcHists[faceIdx] = new TH1S(ciAdcHistName.str().c_str(),
+                                     ciAdcHistName.str().c_str(),
+                                     m_cfg.nDACs,0,m_cfg.nDACs);
+  }
 
-    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
-      ostringstream ciAdcHistName;
-      ciAdcHistName << "ciAdc_" << faceIdx;
+  m_ciEffHists.resize(tFaceIdx::N_VALS);
 
-      m_ciAdcHists[faceIdx] = new TH1S(ciAdcHistName.str().c_str(),
-                                       ciAdcHistName.str().c_str(),
-                                       m_cfg.nDACs,0,m_cfg.nDACs);
-    }
-  }else // clear existing histsograms
-    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++){
-      m_ciAdcHists[faceIdx]->Reset();
-                        
-    }
-  if (m_ciEffHists.size() == 0){ 
-    m_ciEffHists.resize(tFaceIdx::N_VALS);
+  for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
+    ostringstream ciEffHistName;
+    ciEffHistName << "ciEff_" << faceIdx;
 
-    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
-      ostringstream ciEffHistName;
-      ciEffHistName << "ciEff_" << faceIdx;
-
-      m_ciEffHists[faceIdx] = new TH1S(ciEffHistName.str().c_str(),
-                                       ciEffHistName.str().c_str(),
-                                       m_cfg.nDACs,0,m_cfg.nDACs);
-    }
-  }else // clear existing histsograms
-    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++){
-      m_ciEffHists[faceIdx]->Reset();
-                        
-    }
-
+    m_ciEffHists[faceIdx] = new TH1S(ciEffHistName.str().c_str(),
+                                     ciEffHistName.str().c_str(),
+                                     m_cfg.nDACs,0,m_cfg.nDACs);
+  }
 }
+
 MtData::MtData(MtCfg &cfg) :
   m_cfg(cfg),
   m_adcSum(tRngIdx::N_VALS, vector<float>(cfg.nDACs,0)),
@@ -710,32 +687,32 @@ void RootMuTrig::ProcessEvt() {
     int st = odd;
     for (int c = st;c<12;c=c+2){
 
-	  bool trg_other_layers = true;
+      bool trg_other_layers = true;
 
-	  // if CAL_LO trigger was enabled, to avoid a bias in trigger efficiency calculation
-	  // we require the presence of FLE trigger bit
-	  // in some layer other than the one we are looking at
-	  if(m_cfg.CAL_LO_enabled){
-		trg_other_layers = false;
-		for (int s=0;s<2;s++)
-		  for(int ll=0;ll<8;ll++)
-			if(l != ll)trg_other_layers = trg_other_layers || m_fle[s][ll];
-	  }
-		  for (int s=0;s<2;s++){
-			bool no_trg_layer = trg_other_layers;
-			for (int cc = st;cc<12;cc=cc+2){
-			  if (cc != c){
-                 tFaceIdx face(l,cc,s);
-                 no_trg_layer = no_trg_layer && (m_adc[face] < 50);
-			  }
-			}
-			tFaceIdx faceIdx(l,c,s);
-			if(no_trg_layer){
-				m_mtData.fillMuHist(faceIdx,m_adc[faceIdx]);
-				if(m_fle[s][l])m_mtData.fillTrigHist(faceIdx,m_adc[faceIdx]);
-			}
-		  } // for each face
-	} // for each crystal
+      // if CAL_LO trigger was enabled, to avoid a bias in trigger efficiency calculation
+      // we require the presence of FLE trigger bit
+      // in some layer other than the one we are looking at
+      if(m_cfg.CAL_LO_enabled){
+        trg_other_layers = false;
+        for (int s=0;s<2;s++)
+          for(int ll=0;ll<8;ll++)
+            if(l != ll)trg_other_layers = trg_other_layers || m_fle[s][ll];
+      }
+      for (int s=0;s<2;s++){
+        bool no_trg_layer = trg_other_layers;
+        for (int cc = st;cc<12;cc=cc+2){
+          if (cc != c){
+            tFaceIdx face(l,cc,s);
+            no_trg_layer = no_trg_layer && (m_adc[face] < 50);
+          }
+        }
+        tFaceIdx faceIdx(l,c,s);
+        if(no_trg_layer){
+          m_mtData.fillMuHist(faceIdx,m_adc[faceIdx]);
+          if(m_fle[s][l])m_mtData.fillTrigHist(faceIdx,m_adc[faceIdx]);
+        }
+      } // for each face
+    } // for each crystal
   } // for each layer
 }
 
@@ -809,8 +786,8 @@ int main(int argc, char **argv) {
     MtData data(cfg);
     // reading charge injection file with diagnostic information (tack delay = 70)
    
-	
-	{
+        
+    {
       vector<string> digiFileNames;
       digiFileNames.push_back(cfg.rootFileCI);
       RootCiTrig rd(digiFileNames,data,cfg);  
@@ -828,7 +805,7 @@ int main(int argc, char **argv) {
 
     //  trigger configuration B :   Even Rows Odd Columns
   
-	{
+    {
       vector<string> digiFileNames;
       digiFileNames.push_back(cfg.rootFileB);
       RootMuTrig rd(digiFileNames, data,cfg,RootMuTrig::OddRowsEvenColumns);
