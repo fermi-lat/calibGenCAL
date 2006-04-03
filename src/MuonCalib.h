@@ -32,8 +32,6 @@ class MuonCalib : public RootFileAnalysis {
   /// only one constructor, but it has defaults for many values
   MuonCalib(McCfg &cfg);
   
-  ~MuonCalib() {freeChildren();}
-
   /// Fill roughpedhist histograms w/ nEvt event data
   void fillRoughPedHists(int nEvt); 
   /// Fit roughpedhist[]'s, assign means to m_calRoughPed
@@ -100,7 +98,12 @@ class MuonCalib : public RootFileAnalysis {
   /// 1 point for the center of each orthogonal xtal excluding the two outermost xtals
   static const short N_ASYM_PTS = 10;
   /// # of bins in dacL2S profiles
-  static const short N_L2S_PTS = 20; 
+  static const short N_L2S_PTS = 20;
+  /// min LEDAC val for L2S fitting
+  static const float L2S_MIN_LEDAC = 10.0;
+  /// max LEDAC val for L2S fitting
+  static const float L2S_MAX_LEDAC = 60.0;
+
 
   ///////////////////////////////////////////
   //          HIT SUMMARY                  //
@@ -160,12 +163,6 @@ class MuonCalib : public RootFileAnalysis {
   */
   void summarizeHits(HitSummary &hs);  
 
-  // CONSTRUCTOR/DESTRUCTOR HELPERS //
-
-  /// Free any dynamic memory associated with class & other associeated resources that 
-  /// are not automatically cleared (such as file *s)
-  void freeChildren(); 
-
   // EVENT RETRIEVAL //
 
   /// check to see if there are nEvt following the current event.  
@@ -193,7 +190,10 @@ class MuonCalib : public RootFileAnalysis {
   CalVec<AsymType, CalArray<tXtalIdx, TH2S*> > m_asymHists; 
   
   /// profile X=bigdiodedac Y=smdiodedac 1 per xtal
-  CalVec<tXtalIdx, TProfile*> m_dacL2SProfs;  
+  CalVec<tXtalIdx, TH1S*> m_dacL2SHists;  
+  /// profile X=bigdiodedac Y=smdiodedac 1 per xtal (not used in main calib, only for finding extra l2s slope info)
+  CalVec<tXtalIdx, TProfile*> m_dacL2SSlopeProfs;
+
 
   /// Collection of integral non-linearity splines, 1 per diode
   CalVec<tDiodeIdx, TSpline3*> m_inlSplines; 

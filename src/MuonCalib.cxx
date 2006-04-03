@@ -98,7 +98,8 @@ void MuonCalib::flushHists() {
 
 
   // mpd
-  m_dacL2SProfs.clear();
+  m_dacL2SHists.clear();
+  m_dacL2SSlopeProfs.clear();
   m_dacLLHists.clear();
 }
 
@@ -109,11 +110,6 @@ void MuonCalib::openHistFile(const string &filename) {
 
   m_histFile.reset(new TFile(m_histFilename.c_str(), 
                              "RECREATE", "MuonCalibHistograms",9));
-}
-
-
-
-void MuonCalib::freeChildren() {
 }
 
 int MuonCalib::chkForEvts(int nEvts) {
@@ -153,21 +149,16 @@ UInt_t MuonCalib::getEvent(UInt_t ievt) {
 }
 
 void MuonCalib::initRoughPedHists() {
-  // DEJA VU?
-  if (m_roughPedHists.size() == 0) {
-    m_roughPedHists.resize(tFaceIdx::N_VALS);
+  m_roughPedHists.resize(tFaceIdx::N_VALS);
+  
+  for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
+    ostringstream tmp;
+    tmp << "roughpeds_" << faceIdx;
 
-    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
-      ostringstream tmp;
-      tmp << "roughpeds_" << faceIdx;
-
-      m_roughPedHists[faceIdx] = new TH1S(tmp.str().c_str(),
-                                          tmp.str().c_str(),
-                                          500,0,1000);
-    }
-  }else // clear existing histsograms
-    for (tFaceIdx faceIdx; faceIdx.isValid(); faceIdx++)
-      m_roughPedHists[faceIdx]->Reset();
+    m_roughPedHists[faceIdx] = new TH1S(tmp.str().c_str(),
+                                        tmp.str().c_str(),
+                                        500,0,1000);
+  }
 }
 
 void MuonCalib::fillRoughPedHists(int nEvts) {
@@ -266,21 +257,15 @@ void MuonCalib::writeRoughPedsTXT(const string &filename) const {
 }
 
 void MuonCalib::initPedHists() {
-  // DEJA VU?
-  if (m_pedHists.size() == 0) {
-    m_pedHists.resize(tRngIdx::N_VALS);
+  m_pedHists.resize(tRngIdx::N_VALS);
 
-    for (tRngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
-      ostringstream tmp;
-      tmp << "peds_" << rngIdx;
-      m_pedHists[rngIdx] = new TH1S(tmp.str().c_str(),
-                                    tmp.str().c_str(),
-                                    1000,0,1000);
-    }
+  for (tRngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
+    ostringstream tmp;
+    tmp << "peds_" << rngIdx;
+    m_pedHists[rngIdx] = new TH1S(tmp.str().c_str(),
+                                  tmp.str().c_str(),
+                                  1000,0,1000);
   }
-  else // clear existing histsograms
-    for (tRngIdx rngIdx; rngIdx.isValid(); rngIdx++)
-      m_pedHists[rngIdx]->Reset();
 }
 
 void MuonCalib::fillPedHists(int nEvts) {
@@ -760,46 +745,39 @@ void MuonCalib::summarizeHits(HitSummary &hs) {
 }
 
 void MuonCalib::initAsymHists() {
-  // DEJA VU?
-  if (m_asymHists.size() == 0) {
-    m_asymHists.resize(AsymType::N_VALS);
+  m_asymHists.resize(AsymType::N_VALS);
 
-    // fill in min & max histogram levels.
-    CalArray<AsymType, float> asymMin;
-    CalArray<AsymType, float> asymMax;
+  // fill in min & max histogram levels.
+  CalArray<AsymType, float> asymMin;
+  CalArray<AsymType, float> asymMax;
 
-    asymMin[ASYM_LL] = -2;
-    asymMax[ASYM_LL] = 2;
-    asymMin[ASYM_LS] = -1;
-    asymMax[ASYM_LS] = 7;
-    asymMin[ASYM_SL] = -7;
-    asymMax[ASYM_SL] = 1;
-    asymMin[ASYM_SS] = -2;
-    asymMax[ASYM_SS] = 2;
+  asymMin[ASYM_LL] = -2;
+  asymMax[ASYM_LL] = 2;
+  asymMin[ASYM_LS] = -1;
+  asymMax[ASYM_LS] = 7;
+  asymMin[ASYM_SL] = -7;
+  asymMax[ASYM_SL] = 1;
+  asymMin[ASYM_SS] = -2;
+  asymMax[ASYM_SS] = 2;
     
-    for (AsymType asymType; asymType.isValid(); asymType++)
-      // PER XTAL LOOP
-      for (tXtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
-        ostringstream tmp;
-        tmp <<  "asym" + asymType.getMnem() + "_" << xtalIdx;
-        // columns are #'d 0-11, hist contains 1-10. 
-        // .5 & 10.5 limit puts 1-10 at center of bins
-        m_asymHists[asymType][xtalIdx] = new TH2S(tmp.str().c_str(),
-                                                  tmp.str().c_str(),
-                                                  N_ASYM_PTS, 
-                                                  .5, 
-                                                  10.5,
-                                                  (int)(100*(asymMax[asymType] -
-                                                       asymMin[asymType])),
-                                                  asymMin[asymType],
-                                                  asymMax[asymType]);
+  for (AsymType asymType; asymType.isValid(); asymType++)
+    // PER XTAL LOOP
+    for (tXtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
+      ostringstream tmp;
+      tmp <<  "asym" + asymType.getMnem() + "_" << xtalIdx;
+      // columns are #'d 0-11, hist contains 1-10. 
+      // .5 & 10.5 limit puts 1-10 at center of bins
+      m_asymHists[asymType][xtalIdx] = new TH2S(tmp.str().c_str(),
+                                                tmp.str().c_str(),
+                                                N_ASYM_PTS, 
+                                                .5, 
+                                                10.5,
+                                                (int)(100*(asymMax[asymType] -
+                                                           asymMin[asymType])),
+                                                asymMin[asymType],
+                                                asymMax[asymType]);
       
-      } 
-  }
-  else // clear existing histsograms
-    for (tXtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++)
-      for (AsymType asymType; asymType.isValid(); asymType++)
-        m_asymHists[asymType][xtalIdx]->Reset();
+    } 
 }
 
 /** 
@@ -882,7 +860,7 @@ void MuonCalib::fillAsymHists(int nEvts) {
         // calcuate the 4 log ratios = log(POS/NEG)
         for (AsymType asymType; asymType.isValid(); asymType++) {
           float asym = log(dac[XtalDiode(POS_FACE, asymType.getDiode(POS_FACE))] /
-                            dac[XtalDiode(NEG_FACE, asymType.getDiode(NEG_FACE))]);
+                           dac[XtalDiode(NEG_FACE, asymType.getDiode(NEG_FACE))]);
           m_asymHists[asymType][xtalIdx]->Fill(pos, asym);
         }
 
@@ -1059,33 +1037,42 @@ float MuonCalib::asym2pos(tXtalIdx xtalIdx, float asym) const {
 }
 
 void MuonCalib::initMPDHists() {
-  // DEJA VU?
-  if (m_dacLLHists.size() == 0) {
-    m_dacLLHists.resize(tXtalIdx::N_VALS);
-    m_dacL2SProfs.resize(tXtalIdx::N_VALS);
+  m_dacLLHists.resize(tXtalIdx::N_VALS);
+  m_dacL2SHists.resize(tXtalIdx::N_VALS);
+  m_dacL2SSlopeProfs.resize(tXtalIdx::N_VALS);
 
-    for (tXtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
+  for (tXtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
 
+    {
       // LRG-LRG DAC
-      ostringstream tmpLL;
-      tmpLL << "dacLL_" << xtalIdx;
-      m_dacLLHists[xtalIdx] = new TH1S(tmpLL.str().c_str(),
-                                       tmpLL.str().c_str(),
+      ostringstream tmp;
+      tmp << "dacLL_" << xtalIdx;
+      m_dacLLHists[xtalIdx] = new TH1S(tmp.str().c_str(),
+                                       tmp.str().c_str(),
                                        200,0,100);
+    }
 
+    {
       // DAC L2S RATIO
-      ostringstream tmpLS;
-      tmpLS << "dacL2S_" << xtalIdx;
-      m_dacL2SProfs[xtalIdx] = new TProfile(tmpLS.str().c_str(),
-                                            tmpLS.str().c_str(),
-                                            N_L2S_PTS,10,60);
+      ostringstream tmp;
+      tmp << "dacL2S_" << xtalIdx;
+      m_dacL2SHists[xtalIdx] = new TH1S(tmp.str().c_str(),
+                                        tmp.str().c_str(),
+                                        400, 0, .4);
     }
+
+    {
+      // DAC L2S SLOPE
+      ostringstream tmp;
+      tmp << "dacL2S_slope_" << xtalIdx;
+      m_dacL2SSlopeProfs[xtalIdx] = new TProfile(tmp.str().c_str(),
+                                                 tmp.str().c_str(),
+                                                 N_L2S_PTS,
+                                                 L2S_MIN_LEDAC,
+                                                 L2S_MAX_LEDAC);
+    }
+
   }
-  else // clear existing histsograms
-    for (tXtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
-      m_dacLLHists[xtalIdx]->Reset();
-      m_dacL2SProfs[xtalIdx]->Reset();
-    }
 }
 
 void MuonCalib::fillMPDHists(int nEvts) {
@@ -1238,7 +1225,10 @@ void MuonCalib::fillMPDHists(int nEvts) {
         m_dacLLHists[xtalIdx]->Fill(meanDACLrg);
 
         // load dacL2S profile
-        m_dacL2SProfs[xtalIdx]->Fill(meanDACLrg,meanDACSm);
+        m_dacL2SHists[xtalIdx]->Fill(meanDACSm/meanDACLrg);
+        // load dacL2S profile
+        m_dacL2SSlopeProfs[xtalIdx]->Fill(meanDACLrg,meanDACSm);
+
 
         xtalIdxs++;
       } // populate histograms
@@ -1255,35 +1245,37 @@ void MuonCalib::fitMPDHists() {
   m_calMPDErr.resize(DiodeNum::N_VALS);
   m_adc2nrg.resize(tDiodeIdx::N_VALS);
 
-
   ////////////////////////////////////////////////////
   // INITIALIZE ROOT PLOTTING OBJECTS FOR LINE FITS //
   ////////////////////////////////////////////////////
   // viewHist is used to set scale before drawing TGraph
   TH2S viewHist("viewHist","viewHist",
-                N_L2S_PTS, 10,60, // X-LIMITS LRG
-                N_L2S_PTS, 1,60); // Y-LIMITS SM
+                N_L2S_PTS, 0, L2S_MAX_LEDAC, // X-LIMITS LRG
+                N_L2S_PTS, 0, L2S_MAX_LEDAC); // Y-LIMITS SM
   TCanvas canvas("canvas","event display",800,600);
   viewHist.Draw();
-  TGraph graph(N_L2S_PTS); graph.Draw("*");
+  TGraph graph(N_L2S_PTS); 
+  graph.Draw("*");
   canvas.Update();
-  TF1 lineFunc("line","pol1",0,8);
+  TF1 lineFunc("line","pol1", 
+               L2S_MIN_LEDAC, 
+               L2S_MAX_LEDAC);
 
   // PER XTAL LOOP
   for (tXtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
     // retrieve Lrg diode DAC histogram
-    TH1S& h = *m_dacLLHists[xtalIdx];
+    TH1S& histLL = *m_dacLLHists[xtalIdx];
 
     ///////////////////////////////////
     //-- MeV Per Dac (Lrg Diode) --//
     ///////////////////////////////////
     
     // LANDAU fit for muon peak (limit outliers by n*err)
-    float ave = h.GetMean();
-    float err = h.GetRMS();
-    h.Fit("landau", "Q", "", ave-2*err, ave+3*err);
-    float mean  = (h.GetFunction("landau"))->GetParameter(1);
-    float sigma = (h.GetFunction("landau"))->GetParameter(2);
+    float ave = histLL.GetMean();
+    float err = histLL.GetRMS();
+    histLL.Fit("landau", "Q", "", ave-2*err, ave+3*err);
+    float mean  = (histLL.GetFunction("landau"))->GetParameter(1);
+    float sigma = (histLL.GetFunction("landau"))->GetParameter(2);
 
     m_calMPD[LRG_DIODE][xtalIdx] = 11.2/mean;
 
@@ -1292,12 +1284,53 @@ void MuonCalib::fitMPDHists() {
       m_calMPD[LRG_DIODE][xtalIdx] * sigma/mean; 
 
     
-    ///////////////////////
+    ////////////////////
     //-- (Sm Diode) --//
-    ///////////////////////
+    ////////////////////
         
     // LRG 2 SM Ratio
-    TProfile& p = *m_dacL2SProfs[xtalIdx]; // get profile
+    TH1S &histL2S = *m_dacL2SHists[xtalIdx]; // get profile
+
+    // trim outliers - 3 times cut out anything outside 3 sigma
+    for (short iter = 0; iter < 3; iter++) {
+      // get current mean & RMS
+      float av  = histL2S.GetMean(); 
+      float rms = histL2S.GetRMS();
+      
+      // trim new histogram limits
+      histL2S.SetAxisRange(av - 3*rms, av + 3*rms);
+    }
+
+    // fit straight line to get mean ratio
+    histL2S.Fit("gaus","Q");
+    // mean ratio of smDac/lrgDac
+    float sm2lrg = ((TF1&)*histL2S.GetFunction("gaus")).GetParameter(1);
+    float s2lsig = ((TF1&)*histL2S.GetFunction("gaus")).GetParameter(2);
+    
+    //-- NOTES:
+    // MPDLrg     = MeV/LrgDAC
+    // sm2lrg  = SmDAC/LrgDAC
+    // MPDSm     = MeV/SmDAC = (MeV/LrgDAC)*(LrgDAC/SmDAC) 
+    //              = MPDLrg/sm2lrg
+    
+    m_calMPD[SM_DIODE][xtalIdx] = m_calMPD[LRG_DIODE][xtalIdx]/sm2lrg;
+    
+    //-- Propogate errors
+    // in order to combine slope & MPD error for final error
+    // I need the relative error for both values - so sayeth sasha
+    float relLineErr = s2lsig/sm2lrg;
+    float relMPDErr  = m_calMPDErr[LRG_DIODE][xtalIdx]/m_calMPD[LRG_DIODE][xtalIdx];
+
+    m_calMPDErr[SM_DIODE][xtalIdx] = m_calMPD[SM_DIODE][xtalIdx]*
+      sqrt(relLineErr*relLineErr + relMPDErr*relMPDErr);
+
+
+    ////////////////////
+    //-- L2S Slope  --//
+    ////////////////////
+
+    // LRG 2 SM Ratio
+    TProfile& p = *m_dacL2SSlopeProfs[xtalIdx]; // get profile
 
     // Fill scatter graph w/ smDAC vs lrgDAC points
     int nPts = 0;
@@ -1318,35 +1351,15 @@ void MuonCalib::fitMPDHists() {
 
     // bail if for some reason we didn't get any points
     if (!nPts) {
-      ostringstream tmp;
-      tmp << __FILE__  << ":"     << __LINE__ << " " 
-          << "Event# " << m_evtId 
-          << "Unable to find sm diode MPD for xtal=" << xtalIdx
-          << " due to empty histogram." << endl;
-      throw tmp.str();
+      cout << __FILE__  << ":"     << __LINE__ << " "
+           << "Event# " << m_evtId
+           << "Unable to find sm diode MPD for xtal=" << xtalIdx
+           << " due to empty histogram." << endl;
+      continue;
     }
 
     // fit straight line to get mean ratio
     graph.Fit(&lineFunc,"WQN");
-    // get slope = mean ratio of smDac/lrgDac
-    float sm2lrg = lineFunc.GetParameter(1);
-    
-    //-- NOTES:
-    // MPDLrg     = MeV/LrgDAC
-    // sm2lrg  = SmDAC/LrgDAC
-    // MPDSm     = MeV/SmDAC = (MeV/LrgDAC)*(LrgDAC/SmDAC) 
-    //              = MPDLrg/sm2lrg
-    
-    m_calMPD[SM_DIODE][xtalIdx] = m_calMPD[LRG_DIODE][xtalIdx]/sm2lrg;
-    
-    //-- Propogate errors
-    // in order to combine slope & MPD error for final error
-    // I need the relative error for both values - so sayeth sasha
-    float relLineErr = lineFunc.GetParError(1)/sm2lrg;
-    float relMPDErr  = m_calMPDErr[LRG_DIODE][xtalIdx]/m_calMPD[LRG_DIODE][xtalIdx];
-
-    m_calMPDErr[SM_DIODE][xtalIdx] = m_calMPD[SM_DIODE][xtalIdx]*
-      sqrt(relLineErr*relLineErr + relMPDErr*relMPDErr);
   }
 }
 
