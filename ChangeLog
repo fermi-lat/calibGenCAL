@@ -1,4 +1,18 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Apr  3 13:59:51 PDT 2006
+calibGenCAL/src
+
+Modified Files:
+	MuonCalib.cxx MuonCalib.h runMuThreshEvol.cxx runMuTrigEff.cxx 
+Log Message:
+MuonCalib now uses LargeDiode2SmalDiode dac _ratio_ instead of slope to
+calculate small diode mevperdac.
+
+this is more consistant w/ asym data & is not affected by current issues
+w/ integral non linearity.
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Apr  3 10:14:26 PDT 2006
 calibGenCAL/python
 
