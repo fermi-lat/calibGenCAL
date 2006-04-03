@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Mon Apr  3 10:05:04 PDT 2006
+calibGenCAL/src
+
+Modified Files:
+	mainpage.h 
+Log Message:
+Added simple utility to check for well-formed XML files.
+
+    *
+------------------------------------------------------------
 User: dwood  Wed Mar 29 14:01:38 PST 2006
 calibGenCAL/python
 
