@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon Apr  3 10:14:26 PDT 2006
+calibGenCAL/python
+
+Added Files:
+	checkXML.bat 
+Log Message:
+Added Win bat launch script for checkXML.py
+    *
+------------------------------------------------------------
 User: dwood  Mon Apr  3 10:05:05 PDT 2006
 calibGenCAL/python
 
