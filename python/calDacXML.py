@@ -6,8 +6,8 @@ Classes to represent CAL hardware settings XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL DAC settings XML documents"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/03/16 18:11:25 $"
-__version__   = "$Revision: 1.20 $, $Author: dwood $"
+__date__      = "$Date: 2006/03/16 21:04:48 $"
+__version__   = "$Revision: 1.21 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -226,11 +226,11 @@ class calDacXML(calSnapshotXML):
 
         ce = doc.createElement('configuration')
         
-        s = '[\'GTEM\',\'GCCC\',\'GCRC\',\'GCFE\',\'%s\']' % self.__dacName
+        s = '[\'GCCC\',\'GCRC\',\'GCFE\',\'%s\']' % self.__dacName
         ce.setAttribute('name', 'NA')
         ce.setAttribute('hierarchy', s)
         ce.setAttribute('type', 's')
-        ce.setAttribute('shape', '(%d,8,2,12)' % len(tems))
+        ce.setAttribute('shape', '(8,2,12)')
         ce.setAttribute('version', 'NA')
         ts = time.strftime('%Y-%m-%d-%H:%M', time.gmtime())
         ce.setAttribute('time', ts)
