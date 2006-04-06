@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Apr  6 06:29:53 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	calDacXML.py 
+Log Message:
+Modified attribute values for <configuration> element; removed GTEM from hierarchy attribute list; removed first dimension from shape attribute tuple.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Apr  3 13:59:51 PDT 2006
 calibGenCAL/src
 
