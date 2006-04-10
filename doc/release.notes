@@ -247,3 +247,16 @@ All python scripts now have .bat & .sh shell launcher scripts.  All .sh scripts 
 
 runSuiteParallel.py, gensettings.py, build_adcsmooth.py all generate appropriate validation outputs along w/ their primary output.
 
+
+----------------------------------
+v3r9p2 dwood/fewtrell
+----------------------------------
+
+For DAC settings XML file produced from genXXXsettings tools, modified the values of the <configuration> element
+'hierarchy' and 'shape' attributes.  Hierarchy is set to the value '['GCCC','GCRC','GCFE','<dac_type>']' and shape
+is set to the value '(8,2,12)'.
+
+Better file type checking for files which use the ADC/DAC XML tables as input.
+
+
+
