@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to smooth CAL XML file ADC/DAC characterization data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/11/18 15:09:28 $"
-__version__   = "$Revision: 1.8 $, $Author: dwood $"
+__date__      = "$Date: 2006/03/29 22:01:31 $"
+__version__   = "$Revision: 1.9 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -97,11 +97,14 @@ if __name__ == '__main__':
     # verify energy range for use as calibration data
 
     erng = info['ERNG']
-    if type == 'fle_dac' or type == 'log_acpt':
+    if type == 'fle_dac':
+        if erng != 'LEX1' and erng != 'LEX8':
+            log.error("Only LEX8 and LEX1 energy ranges supported for DAC type %s", type)
+    if type == 'log_acpt':
         if erng != 'LEX8':
             log.error("Only LEX8 energy range is supported for DAC type %s", type)
             sys.exit(1)
-    if type == 'fhe_dac':
+    elif type == 'fhe_dac':
         if erng != 'HEX8':
             log.error("Only HEX8 energy range is supported for DAC type %s", type)
             sys.exit(1)
