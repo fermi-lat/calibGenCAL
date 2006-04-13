@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Thu Apr 13 07:55:14 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacVal.py 
+Log Message:
+Fixed array index error
+    *
+------------------------------------------------------------
 User: dwood  Thu Apr 13 07:43:36 PDT 2006
 calibGenCAL/python
 
