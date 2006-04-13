@@ -6,9 +6,9 @@ This script will run calibGenCAL C++ analysis on parallel calibration data.
 __facility__  = "Offline"
 __abstract__  = "Process full set of GLAST CAL ground calibration event files."
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2006/01/30 20:47:23 $"
-__version__   = "$Revision: 1.11 $, $Author: fewtrell $"
-__release__   = "$Name:  $"
+__date__      = "$Date: 2006/03/08 21:46:06 $"
+__version__   = "$Revision: 1.12 $, $Author: fewtrell $"
+__release__   = "$Name: HEAD $"
 __credits__   = "NRL code 7650"
 
 
@@ -238,6 +238,7 @@ if options.no_cifit:
 os.environ['CGC_CALIBGEN_TIMESTAMP'] = calibGen_timestamp
 os.environ['CGC_INTLIN_ROOT_LE']     = ci_rootfile_le
 os.environ['CGC_INTLIN_ROOT_HE']     = ci_rootfile_he
+os.environ['CGC_CALIBGEN_BCAST']     = "0"
 
 if int(cifit_enabled):
     for tower in tower_bays:
