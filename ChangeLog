@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Apr 13 07:43:36 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacVal.py 
+Log Message:
+Added support for FLE characterization files in LEX1 range; conversion factor currently is simply 9.0.
+
+    *
+------------------------------------------------------------
 User: dwood  Tue Apr 11 15:49:47 PDT 2006
 calibGenCAL/python
 
