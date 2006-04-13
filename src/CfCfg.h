@@ -46,6 +46,10 @@ class CfCfg : ICfg {
   vector<int> dacVals;
   /// number of pules for each DAC value
   int nPulsesPerDAC;
+  /// use for data taken w/ calibGen broadcast mode
+  /// i.e. inject all columns simultanously instead of one column at
+  /// a time.
+  bool broadcastMode;
 
   // SECTION: PATHS //
   /// folder for autonamed output files

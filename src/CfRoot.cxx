@@ -55,7 +55,9 @@ void CfRoot::ProcessEvt() {
   //    note: only count good events            //
 
   // which column are we testing?
-  ColNum testCol = m_iGoodEvt/m_cfg.nPulsesPerXtal;
+  ColNum testCol;
+  if (m_cfg.broadcastMode)
+    testCol = m_iGoodEvt/m_cfg.nPulsesPerXtal;
   // which DAC setting are we on?
   int testDAC = (m_iGoodEvt%m_cfg.nPulsesPerXtal)/m_cfg.nPulsesPerDAC;
   // how many samples for current DAC setting?
@@ -87,7 +89,8 @@ void CfRoot::ProcessEvt() {
 
       // skip if not for current column
       ColNum col = id.getColumn();
-      if (col != testCol) continue;
+      if (col != testCol && !m_cfg.broadcastMode) 
+        continue;
 
       // skip if not for current tower
       TwrNum twr = id.getTower();
