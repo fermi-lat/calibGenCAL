@@ -21,8 +21,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/02/08 19:20:25 $"
-__version__     = "$Revision: 1.1 $, $Author: dwood $"
+__date__        = "$Date: 2006/03/16 18:04:40 $"
+__version__     = "$Revision: 1.2 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -79,6 +79,7 @@ def engVal(errData):
                         log.warning('err %0.2f > %0.2f for %s%s,%d', err, warnLimit, calConstant.CROW[row],
                                     calConstant.CPM[end], fe)
                         
+
 
 
 if __name__ == '__main__':
@@ -275,6 +276,20 @@ if __name__ == '__main__':
     if i['TTYPE1'] != type:
         log.error("File %s is not correct ADC file type", charName)
         sys.exit(1)
+    engRange = i['ERNG']
+    if dacType == 'FLE':
+        if engRange != 'LEX8' and engRange != 'LEX1':
+            log.error("Only LEX8 and LEX1 energy ranges supported for FLE DAC")
+            sys.exit(1)	
+    elif dacType == 'FHE':
+        if engRange != 'HEX8':
+	    log.error("Only HEX8 energy range supported for FHE DAC")
+            sys.exit(1)
+    elif dacType == 'LAC':
+        if engRange != 'LEX8':
+	    log.error("Only LEX8 energy range supported for LAC DAC")
+            sys.exit(1)	
+    log.debug('using energy range %s', engRange)	        		    
     twrs = fio.getTowers()
     if srcTwr not in twrs:
         log.error("Src twr %d data not found in file %s", srcTwr, charName)
@@ -347,12 +362,26 @@ if __name__ == '__main__':
         idx = 1
     else:
         idx = 0
+	
+    nrgRangeMultiplier = Numeric.ones((calConstant.NUM_ROW,calConstant.NUM_END,calConstant.NUM_FE),
+          Numeric.Float)
+	  
+    if engRange == 'LEX8':
+      nrgIdx = calConstant.CRNG_LEX8
+    else:
+      nrgIdx = calConstant.CRNG_LEX1
+      nrgRangeMultiplier *= 9.0	
                 
     # add bias correction
 
     if dacType == 'FLE' or dacType == 'FHE':  
         adcs = adcs + biasTable[srcTwr, ..., idx]
         log.debug('adcs[0,0,0]: %6.3f biasTable[0,0,0,0,%d]: %6.3f', adcs[0,0,0], idx, biasTable[srcTwr,0,0,0,idx])
+    
+    # convert to LEX8 ADC units
+    
+    adcs = adcs * nrgRangeMultiplier
+    log.debug('adcs[0,0,0]:%6.3f nrgRangeMultiplier:%6.3f', adcs[0,0,0], nrgRangeMultiplier)
     
     # convert to MeV
     
@@ -406,8 +435,6 @@ if __name__ == '__main__':
 
     log.info('Validation %s for file %s', statusStr, dacName)
     sys.exit(valStatus)    
-
-    sys.exit(0)
-    
+     
 
    
