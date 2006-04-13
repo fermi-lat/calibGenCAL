@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Thu Apr 13 14:45:29 PDT 2006
+calibGenCAL/src
+
+Modified Files:
+	ciFit_option.xml ciFit_option_badCalibGen.xml 
+Log Message:
+calibgen broadcast support
+
+    *
+------------------------------------------------------------
+User: fewtrell  Thu Apr 13 14:45:29 PDT 2006
 calibGenCAL/python
 
 Modified Files:
