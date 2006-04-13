@@ -1,5 +1,17 @@
 ------------------------------------------------------------
 User: fewtrell  Thu Apr 13 14:38:05 PDT 2006
+calibGenCAL/src
+
+Modified Files:
+	CfCfg.cxx CfCfg.h CfData.cxx CfRoot.cxx MuonCalib.h 
+	ciFit_option.xml ciFit_option_badCalibGen.xml 
+Log Message:
+
+installing broadcast mode support for cifit
+
+    *
+------------------------------------------------------------
+User: fewtrell  Thu Apr 13 14:38:05 PDT 2006
 calibGenCAL/python/cfg
 
 Modified Files:
