@@ -21,8 +21,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/03/16 18:04:40 $"
-__version__     = "$Revision: 1.2 $, $Author: dwood $"
+__date__        = "$Date: 2006/04/13 14:43:36 $"
+__version__     = "$Revision: 1.3 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -381,7 +381,7 @@ if __name__ == '__main__':
     # convert to LEX8 ADC units
     
     adcs = adcs * nrgRangeMultiplier
-    log.debug('adcs[0,0,0]:%6.3f nrgRangeMultiplier:%6.3f', adcs[0,0,0], nrgRangeMultiplier)
+    log.debug('adcs[0,0,0]:%6.3f nrgRangeMultiplier:%6.3f', adcs[0,0,0], nrgRangeMultiplier[0,0,0])
     
     # convert to MeV
     
