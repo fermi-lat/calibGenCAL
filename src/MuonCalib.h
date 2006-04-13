@@ -100,9 +100,9 @@ class MuonCalib : public RootFileAnalysis {
   /// # of bins in dacL2S profiles
   static const short N_L2S_PTS = 20;
   /// min LEDAC val for L2S fitting
-  static const float L2S_MIN_LEDAC = 10.0;
+  static const short L2S_MIN_LEDAC = 10;
   /// max LEDAC val for L2S fitting
-  static const float L2S_MAX_LEDAC = 60.0;
+  static const short L2S_MAX_LEDAC = 60;
 
 
   ///////////////////////////////////////////
