@@ -15,8 +15,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate FLE Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2006/03/16 18:04:40 $"
-__version__     = "$Revision: 1.15 $, $Author: dwood $"
+__date__        = "$Date: 2006/03/29 22:01:32 $"
+__version__     = "$Revision: 1.16 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -32,10 +32,6 @@ import Numeric
 import calFitsXML
 import calDacXML
 import calConstant
-
-
-LEX8FLAG = True
-
 
 
 
@@ -92,7 +88,8 @@ if __name__ == '__main__':
     relName = None
     adc2nrgName = None
     biasName = None
-    
+    intNonlinName = None
+
     options = configFile.options('infiles')
     for opt in options:
         if opt == 'fle2adc':
@@ -103,6 +100,8 @@ if __name__ == '__main__':
             adc2nrgName = configFile.get('infiles', opt)
         elif opt == 'bias':
             biasName = configFile.get('infiles', opt)
+        elif opt == 'intnonlin':
+            intNonlinName = configFile.get('infiles', opt)
     if fleName is None:
         log.error('config file %s missing [infiles]:fle2adc option')
         sys.exit(1)
@@ -134,7 +133,6 @@ if __name__ == '__main__':
         log.error('config file %s missing [gains]:legain option', configName)
         sys.exit(1)
     log.debug('using LE gain %d', leGain)
-
 
     # get tower addresses
 
@@ -176,9 +174,11 @@ if __name__ == '__main__':
     if i['TTYPE1'] != 'fle_dac':
         log.error("File %s is not an FLE ADC file.", fheName)
         sys.exit(1)
-    if i['ERNG'] != 'LEX8':
-        log.error("Only LEX8 energy range is supported for FLE DAC")
+    engRange = i['ERNG']
+    if engRange != 'LEX8' and engRange != 'LEX1':
+        log.error("Only LEX8 and LEX1 energy ranges supported for FLE DAC")
         sys.exit(1)
+    log.debug('using energy range %s', engRange)	    
     twrs = fio.getTowers()
     if srcTwr not in twrs:
         log.error("Src twr %d data not found in file %s", srcTwr, fleName)
@@ -188,7 +188,7 @@ if __name__ == '__main__':
 
     # read relative gain factor file     
 
-    log.info("reading relgain file %s", relName)
+    log.info("Reading relgain file %s", relName)
     fio = calFitsXML.calFitsXML(fileName = relName, mode = calFitsXML.MODE_READONLY)
     i = fio.info()
     if i['TTYPE1'] != 'relative gain factor':
@@ -203,7 +203,7 @@ if __name__ == '__main__':
 
     # read ADC to energy conversion file
     
-    log.info("reading adc2nrg file %s", adc2nrgName)
+    log.info("Reading adc2nrg file %s", adc2nrgName)
     fio = calDacXML.calEnergyXML(adc2nrgName, 'adc2nrg')
     twrs = fio.getTowers()
     if srcTwr not in twrs:
@@ -214,7 +214,7 @@ if __name__ == '__main__':
 
     # read bias settings file      
       
-    log.info("reading bias file %s", biasName)
+    log.info("Reading bias file %s", biasName)
     fio = calDacXML.calEnergyXML(biasName, 'thrBias')
     twrs = fio.getTowers()
     if srcTwr not in twrs:
@@ -223,13 +223,15 @@ if __name__ == '__main__':
     biasTable = fio.read()
     fio.close()
     
-    if LEX8FLAG:
+    nrgRangeMultiplier = Numeric.ones((calConstant.NUM_ROW,calConstant.NUM_END,calConstant.NUM_FE),
+          Numeric.Float)
+	  
+    if engRange == 'LEX8':
       nrgIdx = calConstant.CRNG_LEX8
-      nrgRangeMultiplier = 1.
     else:
       nrgIdx = calConstant.CRNG_LEX1
-      nrgRangeMultiplier = 9.
-      
+      nrgRangeMultiplier *= 9.0
+            
     # split characterization data into fine and coarse DAC ranges
 
     fineThresholds = adcThresholds[srcTwr,:,:,:,0:64]
@@ -240,29 +242,44 @@ if __name__ == '__main__':
     # calculate thresholds in ADC units from energy    
 
     adcs = Numeric.ones((calConstant.NUM_ROW,calConstant.NUM_END,calConstant.NUM_FE),Numeric.Float) * float(MeV)
-    adcs = adcs * relgain[leGain,nrgIdx,srcTwr,...]
+    log.debug('adcs[0,0,0]:%6.3f', adcs[0,0,0]) 
+    
+    # relative gain factor
+    
+    adcs *= relgain[leGain,nrgIdx,srcTwr,...]
     log.debug('adcs[0,0,0]:%6.3f relgain[%d,0,%d,0,0,0]:%6.3f', adcs[0,0,0], leGain, \
                      nrgIdx, relgain[leGain,nrgIdx,srcTwr,0,0,0])
-    adcs = adcs / adc2nrg[srcTwr,...,0]
-    log.debug('adcs[0,0,0]:%6.3f adc2nrg[0,0,0,0]:%6.3f', adcs[0,0,0], adc2nrg[srcTwr,0,0,0,0])
-    adcs = adcs / nrgRangeMultiplier
-    log.debug('adcs[0,0,0]:%6.3f nrgRangeMultiplier:%6.3f', adcs[0,0,0], nrgRangeMultiplier)
-    adcs = adcs - biasTable[srcTwr,...,0]
-    log.debug('adcs[0,0,0]:%6.3f biasTable[0,0,0,0]:%6.3f', adcs[0,0,0], biasTable[srcTwr,0,0,0,0])
 
+    # energy->ADC conversion 
+		     
+    adcs /= adc2nrg[srcTwr,...,0]
+    log.debug('adcs[0,0,0]:%6.3f adc2nrg[0,0,0,0]:%6.3f', adcs[0,0,0], adc2nrg[srcTwr,0,0,0,0])
+    
+    # trigger bias correction
+    
+    adcs -= biasTable[srcTwr,...,0]
+    log.debug('adcs[0,0,0]:%6.3f biasTable[0,0,0,0]:%6.3f', adcs[0,0,0], biasTable[srcTwr,0,0,0,0])
+    
+    # convert to LEX8 ADC units
+    
+    adcs /= nrgRangeMultiplier
+    log.debug('adcs[0,0,0]:%6.3f nrgRangeMultiplier[0,0,0]:%6.3f', adcs[0,0,0], nrgRangeMultiplier[0,0,0])
+    
     # find setting that gives threshold
     # use fine DAC settings unless threshold is out of range
     # use coarse DAC settings for high thresholds
 
     nomSetting = Numeric.zeros((calConstant.NUM_TEM,calConstant.NUM_ROW,calConstant.NUM_END,calConstant.NUM_FE))
-    q = Numeric.choose(Numeric.less(fineThresholds,adcs[...,Numeric.NewAxis]),(0,1))
+    q = Numeric.less(fineThresholds,adcs[...,Numeric.NewAxis])
     q1 = 64 - Numeric.argmax(q[:,:,:,::-1], axis = 3)
     q1 = Numeric.choose(Numeric.equal(q1,64),(q1,0))
     nomSetting[destTwr,...] = q1
-    q = Numeric.choose(Numeric.less(coarseThresholds,adcs[...,Numeric.NewAxis]),(0,1))
+    q = Numeric.less(coarseThresholds,adcs[...,Numeric.NewAxis])
     q1 = (64 - Numeric.argmax(q[:,:,:,::-1], axis = 3)) + 64
     q1 = Numeric.choose(Numeric.equal(q1,128),(q1,127))
-    nomSetting = Numeric.choose(Numeric.equal(nomSetting,0),(nomSetting,q1))     
+    nomSetting = Numeric.choose(Numeric.equal(nomSetting,0),(nomSetting,q1)) 
+    dac = int(nomSetting[destTwr,0,0,0])
+    log.debug("dac[0,0,0]:%d (%d)", dac, dac - 64)     
 
     # create output file
 
