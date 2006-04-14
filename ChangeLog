@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Apr 13 17:48:48 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacVal.py 
+Log Message:
+Corrected HEX8 validation from error in new code to handle LEX1.
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Apr 13 17:16:28 PDT 2006
 calibGenCAL/python
 
