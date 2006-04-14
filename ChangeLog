@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Apr 13 17:16:28 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacVal.py genFLEsettings.py 
+Log Message:
+Made tools work with LEX1 FLE DAC characterization data.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Apr 13 14:45:29 PDT 2006
 calibGenCAL/src
 
