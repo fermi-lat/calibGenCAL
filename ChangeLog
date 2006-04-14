@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Fri Apr 14 08:53:07 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	tholdCIGen.py tholdCIVal.py 
+Log Message:
+Added support for FLE DAC characterization data taken in LEX1 range.
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Apr 13 18:07:10 PDT 2006
 calibGenCAL/doc
 
