@@ -21,8 +21,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/04/13 14:43:36 $"
-__version__     = "$Revision: 1.3 $, $Author: dwood $"
+__date__        = "$Date: 2006/04/13 14:55:14 $"
+__version__     = "$Revision: 1.4 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -372,16 +372,16 @@ if __name__ == '__main__':
       nrgIdx = calConstant.CRNG_LEX1
       nrgRangeMultiplier *= 9.0	
                 
+    # convert to LEX8 ADC units
+    
+    adcs = adcs * nrgRangeMultiplier
+    log.debug('adcs[0,0,0]:%6.3f nrgRangeMultiplier:%6.3f', adcs[0,0,0], nrgRangeMultiplier[0,0,0])
+    
     # add bias correction
 
     if dacType == 'FLE' or dacType == 'FHE':  
         adcs = adcs + biasTable[srcTwr, ..., idx]
         log.debug('adcs[0,0,0]: %6.3f biasTable[0,0,0,0,%d]: %6.3f', adcs[0,0,0], idx, biasTable[srcTwr,0,0,0,idx])
-    
-    # convert to LEX8 ADC units
-    
-    adcs = adcs * nrgRangeMultiplier
-    log.debug('adcs[0,0,0]:%6.3f nrgRangeMultiplier:%6.3f', adcs[0,0,0], nrgRangeMultiplier[0,0,0])
     
     # convert to MeV
     
