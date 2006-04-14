@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Thold_CI calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/09 17:39:24 $"
-__version__   = "$Revision: 1.10 $, $Author: dwood $"
+__date__      = "$Date: 2005/11/18 17:21:17 $"
+__version__   = "$Revision: 1.11 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -357,6 +357,7 @@ if __name__ == '__main__':
 
     # open and read XML Thold_CI file
 
+    log.debug('Reading file %s', xmlName) 
     xmlFile = calCalibXML.calTholdCICalibXML(xmlName)
     (adcData, uldData, pedData) = xmlFile.read()
     towers = xmlFile.getTowers()

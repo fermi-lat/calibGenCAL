@@ -13,8 +13,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL TholdCI XML calibration data files"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/03/14 22:42:44 $"
-__version__   = "$Revision: 1.22 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/03/29 22:01:36 $"
+__version__   = "$Revision: 1.23 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -55,9 +55,12 @@ class inputFile:
         self.destTwr = destTwr
         self.name = name
         self.version = version
+	
+
 
 
 ##################################################################################        
+
 
 
 if __name__ == '__main__':
@@ -377,15 +380,18 @@ if __name__ == '__main__':
         if i['TTYPE1'] != 'fle_dac':
             log.error("File %s not a FLE ADC file", f.name)
             sys.exit(1)
-        if i['ERNG'] != 'LEX8':
-            log.error("Only LEX8 energy range is supported for FLE DAC")
+	erng = i['ERNG']    
+        if erng != 'LEX8' and erng != 'LEX1':
+            log.error("Only LEX8 and LEX1 energy ranges supported for FLE DAC")
             sys.exit(1)
         twrs = fleAdcFile.getTowers()
         if f.srcTwr not in twrs:
             log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
             sys.exit(1)
         adcData = fleAdcFile.read()
-        fleAdcData[f.destTwr,...] = adcData[f.srcTwr,...]
+	if erng == 'LEX1':
+	    adcData = adcData * 9.0
+        fleAdcData[f.destTwr,...] = adcData[f.srcTwr,...].astype(Numeric.Float32)
         fleAdcFile.close()
         
     # read FHE/ADC characterization files
