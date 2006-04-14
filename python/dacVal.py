@@ -21,8 +21,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/04/13 14:55:14 $"
-__version__     = "$Revision: 1.4 $, $Author: dwood $"
+__date__        = "$Date: 2006/04/14 00:16:28 $"
+__version__     = "$Revision: 1.5 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -368,7 +368,9 @@ if __name__ == '__main__':
 	  
     if engRange == 'LEX8':
       nrgIdx = calConstant.CRNG_LEX8
-    else:
+    elif engRange == 'HEX8':
+      nrgIdx = calConstant.CRNG_HEX8
+    elif engRange == 'LEX1':
       nrgIdx = calConstant.CRNG_LEX1
       nrgRangeMultiplier *= 9.0	
                 
