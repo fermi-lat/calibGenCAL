@@ -256,6 +256,10 @@ For DAC settings XML file produced from genXXXsettings tools, modified the value
 'hierarchy' and 'shape' attributes.  Hierarchy is set to the value '['GCCC','GCRC','GCFE','<dac_type>']' and shape
 is set to the value '(8,2,12)'.
 
+Added support to tools for handling LEX1 energy range FLE DAC characterization files.
+Currently, a simple scale factor is used to convert to LEX8 ADC units and process
+as before.
+
 Better file type checking for files which use the ADC/DAC XML tables as input.
 
 
