@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate LAC Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2006/03/16 18:04:40 $"
-__version__     = "$Revision: 1.16 $, $Author: dwood $"
+__date__        = "$Date: 2006/03/29 22:01:34 $"
+__version__     = "$Revision: 1.17 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -31,8 +31,6 @@ import calFitsXML
 import calDacXML
 import calConstant
 
-
-LEX8FLAG = True
 
 
 if __name__ == '__main__':
@@ -202,12 +200,8 @@ if __name__ == '__main__':
     adc2nrg = fio.read()
     fio.close()
 
-    if LEX8FLAG:
-      nrgIdx= calConstant.CRNG_LEX8
-      nrgRangeMultiplier=1.
-    else:
-      nrgIdx=calConstant.CRNG_LEX1
-      nrgRangeMultiplier=9.
+    nrgIdx= calConstant.CRNG_LEX8
+    nrgRangeMultiplier=1.
 
     # split characterization data into fine and coarse DAC ranges      
     
@@ -231,12 +225,21 @@ if __name__ == '__main__':
     log.debug('Energy: %6.3f Offset:%6.3f', MeV, offset)   
 
     adcs = Numeric.ones((calConstant.NUM_ROW,calConstant.NUM_END,calConstant.NUM_FE), Numeric.Float32) * MeV
-    adcs = adcs * relgain[leGain,nrgIdx,srcTwr,...]
+    
+    # relative gain factor
+
+    adcs *= relgain[leGain,nrgIdx,srcTwr,...]
     log.debug('adcs[0,0,0,0]:%6.3f relgain[%d,0,%d,0,0,0]:%6.3f' %(adcs[0,0,0], \
                     leGain,nrgIdx, relgain[leGain, nrgIdx,srcTwr,0,0,0]))
-    adcs = adcs / adc2nrg[srcTwr,...,0]
+    
+    # Mev to LEX8 ADC
+  
+    adcs /= adc2nrg[srcTwr,...,0]
     log.debug('adcs[0,0,0,0]:%6.3f adc2nrg[0,0,0,0]:%6.3f' %(adcs[0,0,0], adc2nrg[srcTwr,0,0,0,0]))
-    adcs = adcs / nrgRangeMultiplier
+    
+    # convert to LEX1 ADC
+
+    adcs /= nrgRangeMultiplier
     log.debug('adcs[0,0,0,0]:%6.3f nrgRangeMultiplier:%6.3f' %(adcs[0,0,0], nrgRangeMultiplier))
 
     # find setting that gives threshold
@@ -244,11 +247,11 @@ if __name__ == '__main__':
     # use coarse DAC settings for high thresholds
 
     nomSetting = Numeric.zeros((calConstant.NUM_TEM,calConstant.NUM_ROW,calConstant.NUM_END,calConstant.NUM_FE))
-    q = Numeric.choose(Numeric.less(fineThresholds,adcs[...,Numeric.NewAxis]),(0,1))
+    q = Numeric.less(fineThresholds,adcs[...,Numeric.NewAxis])
     q1 = 64 - Numeric.argmax(q[:,:,:,::-1], axis = 3)
     q1 = Numeric.choose(Numeric.equal(q1,64),(q1,0))
     nomSetting[destTwr,...] = q1
-    q = Numeric.choose(Numeric.less(coarseThresholds,adcs[...,Numeric.NewAxis]),(0,1))
+    q = Numeric.less(coarseThresholds,adcs[...,Numeric.NewAxis])
     q1 = (64 - Numeric.argmax(q[:,:,:,::-1], axis = 3)) + 64
     q1 = Numeric.choose(Numeric.equal(q1,128),(q1,127))
     nomSetting = Numeric.choose(Numeric.equal(nomSetting,0),(nomSetting,q1))
