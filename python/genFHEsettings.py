@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate FHE Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2006/03/16 18:04:40 $"
-__version__     = "$Revision: 1.15 $, $Author: dwood $"
+__date__        = "$Date: 2006/03/29 22:01:32 $"
+__version__     = "$Revision: 1.16 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -31,8 +31,6 @@ import calFitsXML
 import calDacXML
 import calConstant
 
-
-HEX8FLAG = True
 
 
 
@@ -220,12 +218,8 @@ if __name__ == '__main__':
     biasTable = fio.read()
     fio.close()
       
-    if HEX8FLAG:
-        nrgIdx = calConstant.CRNG_HEX8
-        nrgRangeMultiplier = 1.
-    else:
-        nrgIdx = calConstant.CRNG_HEX8
-        nrgRangeMultiplier=9.
+    nrgIdx = calConstant.CRNG_HEX8
+    nrgRangeMultiplier = 1.
 
     heGainIdx = max(0,heGain-8)
     if heGain == 0:
@@ -242,15 +236,27 @@ if __name__ == '__main__':
 
     MeV = float(GeV) * 1000
     adcs = Numeric.ones((calConstant.NUM_ROW,calConstant.NUM_END,calConstant.NUM_FE),Numeric.Float) * MeV
-    adcs = adcs * relgain[heGainIdx,nrgIdx,srcTwr,...] / relgain[8,nrgIdx,srcTwr,...]
+    
+    # relative gain factor
+
+    adcs *= relgain[heGainIdx,nrgIdx,srcTwr,...] / relgain[8,nrgIdx,srcTwr,...]
     log.debug('adcs[0,0,0]:%6.3f relgain[%d,0,%d,0,0,0]:%6.3f relgain[8,0,%d,0,0,0]:%6.3f', \
                      adcs[0,0,0], heGainIdx, nrgIdx, relgain[heGainIdx,nrgIdx,srcTwr,0,0,0], nrgIdx, \
                      relgain[8,nrgIdx,srcTwr,0,0,0])
-    adcs = adcs / adc2nrg[srcTwr,...,1]
+    
+    # convert Mev to LEX8 ADC
+    
+    adcs /= adc2nrg[srcTwr,...,1]
     log.debug('adcs[0,0,0]:%6.3f adc2nrg[0,0,0,0,1]:%6.3f', adcs[0,0,0], adc2nrg[srcTwr,0,0,0,1])
-    adcs = adcs / nrgRangeMultiplier
+    
+    # convert to HEX1
+
+    adcs /= nrgRangeMultiplier
     log.debug('adcs[0,0,0]:%6.3f nrgRangeMultiplier:%6.3f', adcs[0,0,0], nrgRangeMultiplier)
-    adcs = adcs - biasTable[srcTwr,...,1]
+    
+    # add bias correction
+
+    adcs -= biasTable[srcTwr,...,1]
     log.debug('adcs[0,0,0]:%6.3f biasTable[0,0,0,0,1]:%6.3f', adcs[0,0,0], biasTable[srcTwr,0,0,0,1])
 
     # find setting that gives threshold
@@ -258,11 +264,11 @@ if __name__ == '__main__':
     # use coarse DAC settings for high thresholds
 
     nomSetting = Numeric.zeros((calConstant.NUM_TEM,calConstant.NUM_ROW,calConstant.NUM_END,calConstant.NUM_FE))
-    q = Numeric.choose(Numeric.less(fineThresholds,adcs[...,Numeric.NewAxis]),(0,1))
+    q = Numeric.less(fineThresholds,adcs[...,Numeric.NewAxis])
     q1 = 64 - Numeric.argmax(q[:,:,:,::-1], axis = 3)
     q1 = Numeric.choose(Numeric.equal(q1,64),(q1,0))
     nomSetting[destTwr,...] = q1
-    q = Numeric.choose(Numeric.less(coarseThresholds,adcs[...,Numeric.NewAxis]),(0,1))
+    q = Numeric.less(coarseThresholds,adcs[...,Numeric.NewAxis])
     q1 = (64 - Numeric.argmax(q[:,:,:,::-1], axis = 3)) + 64
     q1 = Numeric.choose(Numeric.equal(q1,128),(q1,127))
     nomSetting = Numeric.choose(Numeric.equal(nomSetting,0),(nomSetting,q1))     
