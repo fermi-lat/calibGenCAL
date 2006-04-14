@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Apr 13 17:56:53 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	genFHEsettings.py genLACsettings.py 
+Log Message:
+Added comments; cleaned up Numeric code.
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Apr 13 17:48:48 PDT 2006
 calibGenCAL/python
 
