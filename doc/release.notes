@@ -262,5 +262,6 @@ as before.
 
 Better file type checking for files which use the ADC/DAC XML tables as input.
 
+Muon asymmetry now smarter for cross diode asymmetry.  Uses average ratio of Large2Small diode signal instead of the slope.  This will make energy & position response @ 1 GeV +- 100 MeV better.
 
-
+runCIFit can now process broadcast mode calibGen as well as the older, 1 column at a time method.
