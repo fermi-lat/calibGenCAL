@@ -6,8 +6,8 @@ Tool to smooth CAL ADC/DAC data.
 __facility__  = "Offline"
 __abstract__  = "Tool to smooth CAL ADC/DAC data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/01/27 16:12:02 $"
-__version__   = "$Revision: 1.15 $, $Author: dwood $"
+__date__      = "$Date: 2006/01/30 20:04:54 $"
+__version__   = "$Revision: 1.16 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -167,6 +167,8 @@ class calADCFilter:
             dac = 63
             while data[dac] == 0.0:
                 dac -= 1
+	        if dac < 0:
+	            return	
             data[-1] = data[dac]
             self.__log.debug('floor: replacing (63,%f)', data[dac])
 
