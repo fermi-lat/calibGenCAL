@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Apr 20 12:46:06 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	calADCFilter.py 
+Log Message:
+Fixed bug in calADCFilter.__floor() method where exception was caused by missing data in the LAC FINE range.
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v0r9p2, operation: add
 Package: calibGenCAL
