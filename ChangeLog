@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Tue Apr 25 06:48:39 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	calDacXML.py 
+Log Message:
+Added calEnergyXML.write() method; allows adc2nrg and bias XML file to be written from Numeric array data.Added calEnergyXML.write() method; allows adc2nrg and bias XML file to be written from Numeric array data.Added calEnergyXML.write() method; allows adc2nrg and bias XML file to be written from Numeric array data.Added calEnergyXML.write() method; allows adc2nrg and bias XML file to be written from Numeric array data.Added calEnergyXML.write() method; allows adc2nrg and bias XML file to be written from Numeric array data.Added calEnergyXML.write() method; allows adc2nrg and bias XML file to be written from Numeric array data.Added calEnergyXML.write() method; allows adc2nrg and bias XML file to be written from Numeric array data.Added calEnergyXML.write() method; allows adc2nrg and bias XML file to be written from Numeric array data.Added calEnergyXML.write() method; allows adc2nrg and bias XML file to be written from Numeric array data.
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Apr 20 12:46:06 PDT 2006
 calibGenCAL/python
 
