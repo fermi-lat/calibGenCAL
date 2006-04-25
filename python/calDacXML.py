@@ -6,8 +6,8 @@ Classes to represent CAL hardware settings XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL DAC settings XML documents"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/03/16 21:04:48 $"
-__version__   = "$Revision: 1.21 $, $Author: dwood $"
+__date__      = "$Date: 2006/04/06 13:29:53 $"
+__version__   = "$Revision: 1.22 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -174,9 +174,9 @@ class calDacXML(calSnapshotXML):
         """
         Open a CAL DAC configuration XML file
 
-        \param fileName The XML file name.
-        \param dacName The name of the bottom level XML data element.
-        \param mode The file access mode (MODE_READONLY or MODE_CREATE).
+        Param: fileName - The XML file name.
+        Param: dacName - The name of the bottom level XML data element.
+        Param: mode - The file access mode (MODE_READONLY or MODE_CREATE).
         """
 
         calSnapshotXML.__init__(self, fileName, mode)  
@@ -342,9 +342,9 @@ class calEnergyXML(calXML.calXML):
         """
         Open a CAL energy configuration XML file
 
-        \param fileName The XML file name.
-        \param engName The name of the bottom level XML data element.
-        \param mode The file access mode (MODE_READONLY or MODE_CREATE).
+        Param: fileName - The XML file name.
+        Param: engName - The name of the bottom level XML data element.
+        Param: mode - The file access mode (MODE_READONLY or MODE_CREATE).
         """
 
         calXML.calXML.__init__(self, fileName, mode)  
@@ -386,7 +386,7 @@ class calEnergyXML(calXML.calXML):
         
     def read(self):
         """
-        Read CAL data from a snapshot XML file
+        Read CAL data from a energy/bias XML file
 
         Returns: A Numeric array of data (16, 8, 2, 12, 2) read from the
         XML file.  The last dimension is as follows:
@@ -398,8 +398,7 @@ class calEnergyXML(calXML.calXML):
 
         # create empty energy data array
 
-        engData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                 calConstant.NUM_FE, 2), Numeric.Float32)
+        engData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END, calConstant.NUM_FE, 2), Numeric.Float32)
 
         # find elements
 
@@ -462,6 +461,101 @@ class calEnergyXML(calXML.calXML):
                             engData[tem, row, end, fe, eng] = dac
 
         return engData
+
+
+
+    def write(self, data, tems = (0,)):
+        """
+        Write data to a CAL energy/bias XML file.
+        Param: data - A Numeric array of data (16, 8, 2, 12, 2) to write to the
+                      XML file.  The last dimension is as follows:
+                          0 = LE conversion value
+                          1 = HE conversion value
+        Param: tems - A list of TEM ID values to include in the output data set.
+        """
+
+        doc = self.getDoc()
+
+        # insert <configuration> element
+        # this is the root element of the XML output document
+
+        ce = doc.createElement('configuration')
+
+        if self.__engName == 'adc2nrg':
+             eName = 'low_hi_nrg'
+        else:
+             eName = 'fle_fhe'
+
+        s = '[\'%s\',\'GCCC\',\'GCRC\',\'GCFE\',\'%s\']' % (eName, self.__engName)
+        ce.setAttribute('name', '')
+        ce.setAttribute('hierarchy', s)
+        ce.setAttribute('type', 's')
+        ce.setAttribute('shape', '(2,16,8,2,12)')
+        ce.setAttribute('version', 'NA')
+        ts = time.strftime('%Y-%m-%d-%H:%M', time.gmtime())
+        ce.setAttribute('time', ts)
+
+        doc.appendChild(ce)
+
+        # insert <GLAT> element
+
+        gl = doc.createElement('GLAT')
+        ce.appendChild(gl)
+
+        for tem in tems:
+
+            # insert <GTEM> elements
+
+            gt = doc.createElement('GTEM')
+            gt.setAttribute('ID', str(tem))
+            gl.appendChild(gt)
+
+            for rng in range(2): 
+
+                # insert <low_hi_nrg> or <fle_fhe> element
+
+                ee = doc.createElement(eName)
+                ee.setAttribute('ID', str(rng))
+                gt.appendChild(ee)
+
+                for ccc in range(4):
+
+                    # insert <GCCC> elements
+
+                    gc = doc.createElement('GCCC')
+                    gc.setAttribute('ID', str(ccc))
+                    ee.appendChild(gc)
+
+                    for rc in range(4):
+
+                        # insert <GCRC> elements
+
+                        gr = doc.createElement('GCRC')
+                        gr.setAttribute('ID', str(rc))
+                        gc.appendChild(gr)
+
+                        # translate index
+
+                        (row, end) = ccToRow(ccc, rc)                                   
+                        for fe in range(12):
+
+                            # insert <GCFE> elements
+            
+                            gf = doc.createElement('GCFE')
+                            gf.setAttribute('ID', str(fe))
+                            gr.appendChild(gf)
+
+                            # insert <xxx> elements
+
+                            dv = doc.createElement(self.__engName)
+                            t = doc.createTextNode('%0.3f' % data[tem, row, end, fe, rng])
+                            dv.appendChild(t)
+                            gf.appendChild(dv)
+ 
+
+        # write output XML file
+
+        self.writeFile()
 
 
 
