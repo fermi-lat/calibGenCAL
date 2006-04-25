@@ -9,8 +9,8 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Identifies files and builds config file for gensettings.py"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2005/10/04 21:52:18 $"
-__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/11/17 21:48:06 $"
+__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -249,7 +249,7 @@ for icfg in configsections:
     hegainmu = None
     lac = None
     fle = None
-    fhe = None
+    fhegev = None
     adcmargin = None
 
 # read in config information for this CFG setup
@@ -263,11 +263,11 @@ for icfg in configsections:
         elif opt == 'hegainmu':
             hegainmu = cfile.get(icfg,opt)
         elif opt == 'fle':
-            fle = cfile.get(icfg,opt)
+            fle = cfile.getfloat(icfg,opt)
         elif opt == 'fhe':
-            fhe = cfile.get(icfg,opt)
+            fhegev = cfile.getfloat(icfg,opt)
         elif opt == 'lac':
-            lac = cfile.get(icfg,opt)
+            lac = cfile.getfloat(icfg,opt)
         elif opt == 'adcmargin':
             adcmargin = cfile.get(icfg,opt)
 
@@ -285,7 +285,7 @@ for icfg in configsections:
     if fle is None:
         log.error('%s fle missing', icfg)
         sys.exit(1)
-    if fhe is None:
+    if fhegev is None:
         log.error('%s fhe missing', icfg)
         sys.exit(1)
     if lac is None:
@@ -301,9 +301,9 @@ for icfg in configsections:
     outcfg.set(icfg,'legain',legain)
     outcfg.set(icfg,'hegain',hegain)
     outcfg.set(icfg,'hegainmu',hegainmu)
-    outcfg.set(icfg,'lac',lac)
-    outcfg.set(icfg,'fle',fle)
-    outcfg.set(icfg,'fhe',fhe)
+    outcfg.set(icfg,'lac',str(lac))
+    outcfg.set(icfg,'fle',str(fle))
+    outcfg.set(icfg,'fhe',str(fhegev))
     outcfg.set(icfg,'adcmargin',adcmargin)
 
 # write output file and terminate
