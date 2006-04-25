@@ -9,8 +9,8 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Prepares config and commands to run gensettings scripts"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2005/10/04 21:52:18 $"
-__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/03/14 22:42:44 $"
+__version__   = "$Revision: 1.8 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -33,7 +33,7 @@ def gen_basename_uld(timetag, adcmargin, idet):
 
 def gen_cfgname(fileroot, idet, dac_type):
     """ generate cf filename for given dac type"""
-    return "%s_%sgen%s.xml"%(fileroot,idet,dac_type)
+    return "%s_%sgen%s.cfg"%(fileroot,idet,dac_type)
 
 usage = 'gensettings [-f fileroot][--file fileroot]'
 
@@ -180,7 +180,7 @@ for idet in detsections:
     hegain = None
     hegainmu = None
     fle = None
-    fhe = None
+    fhegev = None
     lac = None
     adcmargin = None
     
@@ -193,11 +193,11 @@ for idet in detsections:
         elif opt == 'hegainmu':
             hegainmu = cfile.get(config,opt)
         elif opt == 'fle':
-            fle = cfile.get(config,opt)
+            fle = cfile.getfloat(config,opt)
         elif opt == 'fhe':
-            fhe = cfile.get(config,opt)
+            fhegev = cfile.getfloat(config,opt)
         elif opt == 'lac':
-            lac = cfile.get(config,opt)
+            lac = cfile.getfloat(config,opt)
         elif opt == 'adcmargin':
             adcmargin = cfile.get(config,opt)
     if legain is None:
@@ -212,7 +212,7 @@ for idet in detsections:
     if fle is None:
         log.error('%s fle missing', config)
         sys.exit(1)
-    if fhe is None:
+    if fhegev is None:
         log.error('%s fhe missing', config)
         sys.exit(1)
     if lac is None:
@@ -297,12 +297,12 @@ for idet in detsections:
         log.info("genFHE")
 
         # generate base filename used in all output files
-        basename    = gen_basename(timetag, hegain, fhe, idet, "fhe")
-        latest_base = gen_basename("latest", hegain, fhe, idet, "fhe")
+        basename    = gen_basename(timetag, hegain, fhegev*1000, idet, "fhe")
+        latest_base = gen_basename("latest", hegain, fhegev*1000, idet, "fhe")
 
         # Write out run command to batch file
         cmdline = "python %s/python/genFHEsettings.py -V %f %s %s.xml\n"%(CALIBGENCALROOT,
-                                                                          float(fhe),
+                                                                          float(fhegev),
                                                                           cfgname,
                                                                           basename)
         cmdbat.write(cmdline)
@@ -312,7 +312,7 @@ for idet in detsections:
         cmdline = "python %s/python/dacVal.py -V -R %s.root -L %s.val.log FHE %f %s %s.xml\n"%(CALIBGENCALROOT,
                                                                                                 basename,
                                                                                                 basename,
-                                                                                                float(fhe),
+                                                                                                float(fhegev*1000),
                                                                                                 cfgname,
                                                                                                 basename)
         cmdbat.write(cmdline)
@@ -335,14 +335,14 @@ for idet in detsections:
         log.info("genFHE_muon")
 
         # generate base filename used in all output files
-        basename    = gen_basename(timetag, hegainmu, fhe, idet, "fhe")
-        latest_base = gen_basename("latest", hegainmu, fhe, idet, "fhe")
+        basename    = gen_basename(timetag, hegainmu, fhegev*1000, idet, "fhe")
+        latest_base = gen_basename("latest", hegainmu, fhegev*1000, idet, "fhe")
 
 
         # Write out run command to batch file
         # Write out run command to batch file
         cmdline = "python %s/python/genFHEsettings.py -V %f %s %s.xml\n"%(CALIBGENCALROOT,
-                                                                          float(fhe),
+                                                                          float(fhegev),
                                                                           cfgname,
                                                                           basename)
         cmdbat.write(cmdline)
@@ -352,7 +352,7 @@ for idet in detsections:
         cmdline = "python %s/python/dacVal.py -V -R %s.root -L %s.val.log FHE %f %s %s.xml\n"%(CALIBGENCALROOT,
                                                                                                 basename,
                                                                                                 basename,
-                                                                                                float(fhe),
+                                                                                                float(fhegev*1000),
                                                                                                 cfgname,
                                                                                                 basename)
         cmdbat.write(cmdline)
