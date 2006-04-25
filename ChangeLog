@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Tue Apr 25 06:50:40 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	calXML.py 
+Log Message:
+Cleaned up <cr> characters.
+
+    *
+------------------------------------------------------------
 User: dwood  Tue Apr 25 06:48:39 PDT 2006
 calibGenCAL/python
 
