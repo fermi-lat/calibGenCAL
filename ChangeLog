@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Apr 25 11:27:04 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	build_gensettings_cfg.py gensettings.py 
+Log Message:
+build_gensettings & gensettings now treat threholds as floats.
+gev & mev are used in proper places for fhe
+minor filename bug fixed
+
+    *
+------------------------------------------------------------
 User: dwood  Tue Apr 25 06:50:40 PDT 2006
 calibGenCAL/python
 
