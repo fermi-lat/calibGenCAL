@@ -18,8 +18,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL adc2nrg calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/04/28 04:13:00 $"
-__version__   = "$Revision: 1.4 $, $Author: dwood $"
+__date__      = "$Date: 2006/04/28 05:23:47 $"
+__version__   = "$Revision: 1.5 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -88,94 +88,13 @@ def rootHists(errData):
     cs.Update()
 
     cs.Write()
+    
+    
+    
+def charVal(data):
 
-
-
-if __name__ == '__main__':
-
-    usage = "charVal [-V] [-L <log_file>] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>"
-
-    rootOutput = False
     valStatus = 0
-    dnormWarnLimit = None
-    dnormErrLimit = None
-
-    # setup logger
-
-    logging.basicConfig()
-    log = logging.getLogger('charVal')
-    log.setLevel(logging.INFO)
-
-    # check command line
-
-    try:
-        opts = getopt.getopt(sys.argv[1:], "-R:-E:-W:-L:-V")
-    except getopt.GetoptError:
-        log.error(usage)
-        sys.exit(1)
-
-    optList = opts[0]
-    for o in optList:
-        if o[0] == '-R':
-            rootName = o[1]
-            rootOutput = True
-        elif o[0] == '-E':
-            dnormErrLimit = float(o[1])
-        elif o[0] == '-W':
-            dnormWarnLimit = float(o[1])
-        elif o[0] == '-L':
-            if os.path.exists(o[1]):
-                log.warning('Deleting old log file %s', o[1])
-                os.remove(o[1])
-            hdl = logging.FileHandler(o[1])
-            fmt = logging.Formatter('%(levelname)s %(message)s')
-            hdl.setFormatter(fmt)
-            log.addHandler(hdl)
-        elif o[0] == '-V':
-            log.setLevel(logging.DEBUG)
-        
-    args = opts[1]
-    if len(args) != 1:
-        log.error(usage)
-        sys.exit(1)    
-
-    xmlName = args[0]
-
-    log.debug('Using input file %s', xmlName)
-
-    # open and read XML adc2nrg file
-
-    log.info('Reading file %s', xmlName)
-    xmlFile = calFitsXML.calFitsXML(fileName = xmlName)
-    data = xmlFile.read()
-    towers = xmlFile.getTowers()
-    info = xmlFile.info()
-    type = info['TTYPE1']
-    xmlFile.close()
-
-    if type != 'fle_dac' and type != 'fhe_dac' and type != 'log_acpt':
-        log.error('XML file type %s not supported', type)
-        sys.exit(1)
-
-    if dnormWarnLimit is None:
-        if type == 'log_acpt':
-            dnormWarnLimit = 80.0
-        elif type == 'fhe_dac':
-            dnormWarnLimit = 500.0    
-        else:
-            dnormWarnLimit = 400.0
-    if dnormErrLimit is None:
-        if type == 'log_acpt':
-            dnormErrLimit = 100.0
-        elif type == 'fhe_dac':
-            dnormErrLimit = 1000.0    
-        else:
-            dnormErrLimit = 800.0
-            
-    log.debug('Validating file type %s', type)
-    log.debug('Using error limit %f', dnormErrLimit)
-    log.debug('Using warning limit %f', dnormWarnLimit)
-
+    
     pi = {'fixed' : 0, 'limited' : (0, 0), 'mpprint' : 0}
     pinfo = [pi, pi]
     x0 = Numeric.arange(0.0, 64.0, 1.0)
@@ -274,8 +193,193 @@ if __name__ == '__main__':
                                 valStatus = 1
                             else:
                                 log.warning('dnorm %0.2f > %0.2f for %d,%s%s,%d,COARSE', dnorm, dnormWarnLimit, tem,
-                                          calConstant.CROW[row], calConstant.CPM[end], fe)                        
+                                          calConstant.CROW[row], calConstant.CPM[end], fe) 
+    
+    return (valStatus, errData)
+    
+    
+    
+def uldVal(data):
 
+    valStatus = 0
+    
+    pi = {'fixed' : 0, 'limited' : (0, 0), 'mpprint' : 0}
+    pinfo = [pi, pi]
+    x0 = Numeric.arange(0.0, 64.0, 1.0)
+    
+    
+    # check for curve linearity
+    
+    errData = ([], [])    
+
+    for tem in towers:
+        for row in range(calConstant.NUM_ROW):
+            for end in range(calConstant.NUM_END):
+                for fe in range(calConstant.NUM_FE):
+                    for erng in range(3): 
+
+                        fineData = data[erng, tem, row, end, fe, 0:64]
+                        coarseData = data[erng, tem, row, end, fe, 64:128]                    
+
+                        # fit FINE range data                    
+                    
+                        z = Numeric.nonzero(fineData)
+                        y = Numeric.take(fineData, z)
+                        x = Numeric.take(x0, z)
+                        p0 = (20.0, -200.0)
+                        fkw = {'x': x, 'y' : y}
+
+                        if len(x) < 3:
+                            log.error('Too little data: %d,%s%s,%d,FINE', tem, calConstant.CROW[row],
+                                      calConstant.CPM[end], fe)
+                            valStatus = 1
+                        else:
+
+                            fit = mpfit.mpfit(residuals, p0, functkw = fkw, parinfo = pinfo, quiet = 1)
+                            if fit.status <= 0:
+                                log.error('mpfit error - %s', fit.errmsg)
+                                sys.exit(1)
+                            dnorm = (fit.fnorm / len(x))
+                            errData[0].append(dnorm)
+                            log.debug("%d,%s%s,%d,FINE: %0.1f %0.1f %0.2f", tem, calConstant.CROW[row],
+                                calConstant.CPM[end], fe, fit.params[0], fit.params[1], dnorm)
+
+                            if dnorm > dnormWarnLimit:
+                                if dnorm > dnormErrLimit:
+                                    log.error('dnorm %0.2f > %0.2f for %d,%s%s,%d,%s,FINE', dnorm, dnormErrLimit, tem,
+                                          calConstant.CROW[row], calConstant.CPM[end], fe, calConstant.CRNG[erng])
+                                    valStatus = 1
+                                else:
+                                    log.warning('dnorm %0.2f > %0.2f for %d,%s%s,%d,%s,FINE', dnorm, dnormWarnLimit, tem,
+                                          calConstant.CROW[row], calConstant.CPM[end], fe, calConstant.CRNG[erng])
+                                          
+                        # fit coarse range data
+
+                        sat = coarseData[-1]
+                        z = Numeric.nonzero(coarseData)
+                        y = Numeric.take(coarseData, z)
+                        x = Numeric.take(x0, z)
+                        s = Numeric.less(y, sat)
+                        y = Numeric.compress(s, y)
+                        x = Numeric.compress(s, x)
+                        
+                        p0 = (40, -400)
+                        fkw = {'x': x, 'y' : y}
+                    
+                        if len(x) < 3:
+                            log.error('Too little data: %d,%s%s,%d,COARSE', tem, calConstant.CROW[row],
+                                      calConstant.CPM[end], fe)
+                        else:
+
+                            fit = mpfit.mpfit(residuals, p0, functkw = fkw, parinfo = pinfo, quiet = 1)
+                            if fit.status <= 0:
+                                log.error('mpfit error - %s', fit.errmsg)
+                                sys.exit(1)
+                            dnorm = (fit.fnorm / len(x))
+                            errData[1].append(dnorm)
+                            log.debug("%d,%s%s,%d,COARSE: %0.1f %0.1f %0.2f", tem, calConstant.CROW[row],
+                                calConstant.CPM[end], fe, fit.params[0], fit.params[1], dnorm)
+
+                            if dnorm > dnormWarnLimit:
+                                if dnorm > dnormErrLimit:
+                                    log.error('dnorm %0.2f > %0.2f for %d,%s%s,%d,%s,COARSE', dnorm, dnormErrLimit, tem,
+                                          calConstant.CROW[row], calConstant.CPM[end], fe, calConstant.CRNG[erng])
+                                    valStatus = 1
+                                else:
+                                    log.warning('dnorm %0.2f > %0.2f for %d,%s%s,%d,%s,COARSE', dnorm, dnormWarnLimit, tem,
+                                          calConstant.CROW[row], calConstant.CPM[end], fe, calConstant.CRNG[erng]) 
+    
+    return (valStatus, errData)  
+                                                 
+
+
+
+if __name__ == '__main__':
+
+    usage = "charVal [-V] [-L <log_file>] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>"
+
+    rootOutput = False
+    dnormWarnLimit = None
+    dnormErrLimit = None
+
+    # setup logger
+
+    logging.basicConfig()
+    log = logging.getLogger('charVal')
+    log.setLevel(logging.INFO)
+
+    # check command line
+
+    try:
+        opts = getopt.getopt(sys.argv[1:], "-R:-E:-W:-L:-V")
+    except getopt.GetoptError:
+        log.error(usage)
+        sys.exit(1)
+
+    optList = opts[0]
+    for o in optList:
+        if o[0] == '-R':
+            rootName = o[1]
+            rootOutput = True
+        elif o[0] == '-E':
+            dnormErrLimit = float(o[1])
+        elif o[0] == '-W':
+            dnormWarnLimit = float(o[1])
+        elif o[0] == '-L':
+            if os.path.exists(o[1]):
+                log.warning('Deleting old log file %s', o[1])
+                os.remove(o[1])
+            hdl = logging.FileHandler(o[1])
+            fmt = logging.Formatter('%(levelname)s %(message)s')
+            hdl.setFormatter(fmt)
+            log.addHandler(hdl)
+        elif o[0] == '-V':
+            log.setLevel(logging.DEBUG)
+        
+    args = opts[1]
+    if len(args) != 1:
+        log.error(usage)
+        sys.exit(1)    
+
+    xmlName = args[0]
+
+    # open and read XML adc2nrg file
+
+    log.info('Reading file %s', xmlName)
+    xmlFile = calFitsXML.calFitsXML(fileName = xmlName)
+    data = xmlFile.read()
+    towers = xmlFile.getTowers()
+    info = xmlFile.info()
+    type = info['TTYPE1']
+    xmlFile.close()
+
+    if dnormWarnLimit is None:
+        if type == 'log_acpt':
+            dnormWarnLimit = 80.0
+        elif type == 'fhe_dac':
+            dnormWarnLimit = 500.0    
+        else:
+            dnormWarnLimit = 400.0
+    if dnormErrLimit is None:
+        if type == 'log_acpt':
+            dnormErrLimit = 100.0
+        elif type == 'fhe_dac':
+            dnormErrLimit = 1000.0    
+        else:
+            dnormErrLimit = 800.0
+            
+    log.debug('Validating file type %s', type)
+    log.debug('Using error limit %f', dnormErrLimit)
+    log.debug('Using warning limit %f', dnormWarnLimit)
+
+                            
+    # do validation
+    
+    if type == 'rng_uld_dac':
+        (valStatus, errData) = uldVal(data)
+    else:    
+        (valStatus, errData) = charVal(data)
+    
 
     # create ROOT output file
     

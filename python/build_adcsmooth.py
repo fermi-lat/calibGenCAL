@@ -10,8 +10,8 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Build batch file containing commands to run adcsmooth filtering script"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2006/03/08 21:46:06 $"
-__version__   = "$Revision: 1.10 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/03/14 22:42:43 $"
+__version__   = "$Revision: 1.11 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -76,7 +76,7 @@ CALIBGENCALROOT = os.environ["CALIBGENCALROOT"]
 
 cmdbat = open('adcsmooth.bat','w')
 
-def process_file(filename, validate):
+def process_file(filename, validate = True):
     """ create commandlines for adcsmooth, charplot & charVal, append to both cmdbat & cmdsh scripts files """
     filesplit = os.path.splitext(filename)
     smoothname  = filesplit[0]+"_filtered.xml"
@@ -167,14 +167,13 @@ for idet in detsections:
 # add adcsmooth commands to output batch file
 
 	if flename != 'skip':
-            process_file(flename, True)
+            process_file(flename)
 	if fhename != 'skip':
-            process_file(fhename, True)
+            process_file(fhename)
 	if lacname != 'skip':
-            process_file(lacname, True)
+            process_file(lacname)
 	if uldname != 'skip':
-            # disable validation b/c it is not supported for uld.
-            process_file(uldname, False)
+            process_file(uldname)
 # close output file and terminate
 cmdbat.close()
 
