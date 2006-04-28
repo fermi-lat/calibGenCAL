@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Fri Apr 28 10:10:38 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	build_adcsmooth.py charVal.py 
+Log Message:
+Added support for doing validation of ULD characterization files.
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Apr 27 22:23:47 PDT 2006
 calibGenCAL/python
 
