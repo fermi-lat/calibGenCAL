@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Apr 27 21:13:00 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	charVal.py 
+Log Message:
+Added check for incorrect pedestal subtraction on input data; lowered limits for FHE checks so that basically good channels produces less messages.
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Apr 27 21:09:49 PDT 2006
 calibGenCAL/python
 
