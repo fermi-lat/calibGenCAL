@@ -17,8 +17,8 @@ Where:
 __facility__  = "Offline"
 __abstract__  = "Generate ROOT plots for CAL ADC/DAC characerization data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/01/30 20:05:35 $"
-__version__   = "$Revision: 1.4 $, $Author: dwood $"
+__date__      = "$Date: 2006/01/31 15:25:14 $"
+__version__   = "$Revision: 1.5 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -384,12 +384,14 @@ if __name__ == '__main__':
 
     # open and read XML/FITS raw characterization file
 
+    log.info('Reading file %s' % xmlNameRaw)
     xmlFileRaw = calFitsXML.calFitsXML(fileName = xmlNameRaw, mode = calFitsXML.MODE_READONLY)
     rawData = xmlFileRaw.read()
     xmlFileRaw.close()
 
     # open and read XML/FITS filtered characterization file
 
+    log.info('Reading file %s' % xmlNameFilter)
     xmlFileFilter = calFitsXML.calFitsXML(fileName = xmlNameFilter, mode = calFitsXML.MODE_READONLY)
     filterData = xmlFileFilter.read()
     filterInfo = xmlFileFilter.info()
@@ -398,6 +400,7 @@ if __name__ == '__main__':
 
     # create ROOT output file
 
+    log.info('Creating file %s' % rootName)
     ROOT.gROOT.Reset()
     rootFile = ROOT.TFile(rootName, "recreate")
 

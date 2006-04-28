@@ -18,8 +18,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL adc2nrg calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/01/27 18:07:48 $"
-__version__   = "$Revision: 1.3 $, $Author: dwood $"
+__date__      = "$Date: 2006/04/28 04:13:00 $"
+__version__   = "$Revision: 1.4 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -145,6 +145,7 @@ if __name__ == '__main__':
 
     # open and read XML adc2nrg file
 
+    log.info('Reading file %s', xmlName)
     xmlFile = calFitsXML.calFitsXML(fileName = xmlName)
     data = xmlFile.read()
     towers = xmlFile.getTowers()
@@ -282,6 +283,7 @@ if __name__ == '__main__':
 
         import ROOT
 
+        log.info('Creating file %s' % rootName)
         ROOT.gROOT.Reset()
         rootFile = ROOT.TFile(rootName, "recreate")
 
