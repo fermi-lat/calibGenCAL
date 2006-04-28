@@ -21,8 +21,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/04/14 00:16:28 $"
-__version__     = "$Revision: 1.5 $, $Author: dwood $"
+__date__        = "$Date: 2006/04/14 00:48:48 $"
+__version__     = "$Revision: 1.6 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -65,6 +65,10 @@ def rootHists(engData):
 
 def engVal(errData):
 
+    valStatus = 0
+    
+    # check for ADC->energy conversion error
+    
     for row in range(calConstant.NUM_ROW):
         for end in range(calConstant.NUM_END):
             for fe in range(calConstant.NUM_FE):
@@ -78,6 +82,7 @@ def engVal(errData):
                     else:
                         log.warning('err %0.2f > %0.2f for %s%s,%d', err, warnLimit, calConstant.CROW[row],
                                     calConstant.CPM[end], fe)
+    return valStatus			    
                         
 
 
@@ -88,7 +93,6 @@ if __name__ == '__main__':
        FLE|FHE|LAC <MeV> <cfg_file> <dac_xml_file>"
 
     rootOutput = False
-    valStatus = 0
     warnLimit = 5.0
     errLimit = 10.0    
 
@@ -141,8 +145,8 @@ if __name__ == '__main__':
         type = 'fle_dac'
     elif dacType == 'FHE':
         type = 'fhe_dac'
-        errLimit *= 8
-        warnLimit *= 8
+        errLimit *= 10
+        warnLimit *= 10
     elif dacType == 'LAC':
         type = 'log_acpt'
     else:
@@ -408,7 +412,7 @@ if __name__ == '__main__':
 
     # do validation
 
-    engVal(err)    
+    valStatus = engVal(err)    
 
     # create ROOT output file
     
@@ -426,7 +430,6 @@ if __name__ == '__main__':
         # clean up
 
         rootFile.Close()
-        
 
     # report results
 
