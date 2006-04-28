@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Apr 27 22:23:47 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	charVal.py charplot.py 
+Log Message:
+Added info log messages to help follow progress when run in batch mode.
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Apr 27 21:13:00 PDT 2006
 calibGenCAL/python
 
