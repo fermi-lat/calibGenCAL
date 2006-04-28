@@ -18,8 +18,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL adc2nrg calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/04/28 05:23:47 $"
-__version__   = "$Revision: 1.5 $, $Author: dwood $"
+__date__      = "$Date: 2006/04/28 17:10:38 $"
+__version__   = "$Revision: 1.6 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -355,14 +355,14 @@ if __name__ == '__main__':
 
     if dnormWarnLimit is None:
         if type == 'log_acpt':
-            dnormWarnLimit = 80.0
+            dnormWarnLimit = 200.0
         elif type == 'fhe_dac':
             dnormWarnLimit = 500.0    
         else:
             dnormWarnLimit = 400.0
     if dnormErrLimit is None:
         if type == 'log_acpt':
-            dnormErrLimit = 100.0
+            dnormErrLimit = 400.0
         elif type == 'fhe_dac':
             dnormErrLimit = 1000.0    
         else:
