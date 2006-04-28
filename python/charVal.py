@@ -18,8 +18,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL adc2nrg calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/01/26 19:21:58 $"
-__version__   = "$Revision: 1.2 $, $Author: dwood $"
+__date__      = "$Date: 2006/01/27 18:07:48 $"
+__version__   = "$Revision: 1.3 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -90,6 +90,7 @@ def rootHists(errData):
     cs.Write()
 
 
+
 if __name__ == '__main__':
 
     usage = "charVal [-V] [-L <log_file>] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>"
@@ -158,11 +159,15 @@ if __name__ == '__main__':
     if dnormWarnLimit is None:
         if type == 'log_acpt':
             dnormWarnLimit = 80.0
+        elif type == 'fhe_dac':
+            dnormWarnLimit = 500.0    
         else:
             dnormWarnLimit = 400.0
     if dnormErrLimit is None:
         if type == 'log_acpt':
             dnormErrLimit = 100.0
+        elif type == 'fhe_dac':
+            dnormErrLimit = 1000.0    
         else:
             dnormErrLimit = 800.0
             
@@ -173,7 +178,30 @@ if __name__ == '__main__':
     pi = {'fixed' : 0, 'limited' : (0, 0), 'mpprint' : 0}
     pinfo = [pi, pi]
     x0 = Numeric.arange(0.0, 64.0, 1.0)
-
+    
+    
+    # check for pedestal subtraction error
+    
+    for tem in towers:
+        for row in range(calConstant.NUM_ROW):
+            for end in range(calConstant.NUM_END):
+                for fe in range(calConstant.NUM_FE):
+                    
+                    adc = data[tem, row, end, fe, 0]
+                    if adc > 100.0:
+                        log.error('pedestal err for %s%s,%d,0 - %0.3f', calConstant.CROW[row], 
+			                    calConstant.CPM[end], fe, adc)
+                        valStatus = 1
+                        
+                    adc = data[tem, row, end, fe, 64]
+                    if adc > 100.0:
+                        log.error('pedestal err for %s%s,%d,64 - %0.3f', calConstant.CROW[row], 
+			                    calConstant.CPM[end], fe, adc) 
+                        valStatus = 1                           
+                            
+    
+    # check for curve linearity
+    
     errData = ([], [])    
 
     for tem in towers:
