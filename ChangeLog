@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Apr 27 21:09:49 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacVal.py 
+Log Message:
+Corrected validation report at end; previously reported PASSED even if some of the validations failed.  Raised default FHE error limits to reduce number of failures on basically good curves.
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r9p2, operation: add
 Package: calibGenCAL
