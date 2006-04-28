@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Fri Apr 28 10:12:29 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	charVal.py 
+Log Message:
+Loosened LAC error limits to make reports only flag the worst channels.
+
+    *
+------------------------------------------------------------
 User: dwood  Fri Apr 28 10:10:38 PDT 2006
 calibGenCAL/python
 
