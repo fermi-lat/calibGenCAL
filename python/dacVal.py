@@ -1,5 +1,5 @@
 """
-Validate CAL DAC settings XML files.  The command line is:
+Validate CAL DAC (FHE, FLE, or LAC) settings XML files.  The command line is:
 
 dacVal [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>]
        FLE|FHE|LAC <MeV> <cfg_file> <dac_xml_file>
@@ -21,8 +21,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/04/14 00:48:48 $"
-__version__     = "$Revision: 1.6 $, $Author: dwood $"
+__date__        = "$Date: 2006/04/28 04:09:49 $"
+__version__     = "$Revision: 1.7 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -155,7 +155,7 @@ if __name__ == '__main__':
 
     log.debug('Using error limit %f', errLimit)
     log.debug('Using warning limit %f', warnLimit)
-    log.debug('Using DAC name %s', type)
+    log.debug('Using DAC type %s', type)
     log.debug('Using threshold %f MeV', MeV)
 
     # read config file settings
@@ -420,6 +420,7 @@ if __name__ == '__main__':
 
         import ROOT
 
+        log.info('Creating file %s' % rootName)
         ROOT.gROOT.Reset()
         rootFile = ROOT.TFile(rootName, "recreate")
 
