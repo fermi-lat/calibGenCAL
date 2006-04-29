@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: dwood  Sat Apr 29 13:33:02 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacVal.py genULDsettings.py gensettings.py 
+Added Files:
+	uldVal.bat uldVal.py uldVal.sh 
+Log Message:
+Added support for running validation on ULD DAC settings files.
+
+    *
+------------------------------------------------------------
 User: dwood  Fri Apr 28 10:12:29 PDT 2006
 calibGenCAL/python
 
