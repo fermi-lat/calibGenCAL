@@ -9,8 +9,8 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Prepares config and commands to run gensettings scripts"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2006/03/14 22:42:44 $"
-__version__   = "$Revision: 1.8 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/04/25 18:27:04 $"
+__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -439,6 +439,15 @@ for idet in detsections:
         cmdline = "python %s/python/genULDsettings.py -V %s %s.xml\n"%(CALIBGENCALROOT,
                                                                         cfgname,
                                                                         basename)
+        cmdbat.write(cmdline)
+        cmdsh.write(cmdline)
+        
+        # Write out dacVal command to batch file
+        cmdline = "python %s/python/uldVal.py -V -R %s.root -L %s.val.log %s %s.xml\n"%(CALIBGENCALROOT,
+                                                                                                basename,
+                                                                                                basename,
+                                                                                                cfgname,
+                                                                                                basename)
         cmdbat.write(cmdline)
         cmdsh.write(cmdline)
 
