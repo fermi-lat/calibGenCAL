@@ -3,7 +3,7 @@
 <head>
   <meta name="generator"
  content="HTML Tidy for Linux/x86 (vers 12 April 2005), see www.w3.org">
-<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/doc/gensettings_scripts.html,v 1.4 2006/01/13 17:15:51 fewtrell Exp $ -->
+<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/doc/gensettings_scripts.html,v 1.5 2006/03/14 22:42:43 fewtrell Exp $ -->
   <meta http-equiv="CONTENT-TYPE" content="text/html; charset=us-ascii">
   <title></title>
   <meta name="GENERATOR" content="OpenOffice.org 1.9.129 (Linux)">
@@ -566,9 +566,11 @@ configuration file for <b>gensettings.py</b>.</p>
 <p class="western"
  style="margin-left: 0.62in; margin-top: 0.08in; margin-bottom: 0in;"> <b>gensettings.py</b>
 is controlled by a configuration file as produced by <b>build_gensettings.py</b>
-and an optional command line parameter. The latter must look like <b>-f
+and optional command line parameters. The latter may be <b>-f
 fileroot</b> or <b>--file fileroot</b> where fileroot is the path and
-root of the input configuration file. If the command line parameter is
+root of the input configuration file. Also accepted as an option is <b>-m</b> or
+<b>--muon</b>, which specifies that muon gain settings should be produced for FHE DAC files in
+addition to the nominal flight gain settings. If the <b>--file</b> command line parameter is
 not specified, the input configuration file name defaults to
 gensettings.cfg. A sample configuration file looks like:</p>
 <p class="western"
