@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Mon May  1 08:46:07 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	gensettings.py 
+Log Message:
+Issue copy instead of cp command when creating windows bat scripts.
+    *
+------------------------------------------------------------
 User: dwood  Mon May  1 08:35:28 PDT 2006
 calibGenCAL/python
 
