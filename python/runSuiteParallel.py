@@ -6,9 +6,9 @@ This script will run calibGenCAL C++ analysis on parallel calibration data.
 __facility__  = "Offline"
 __abstract__  = "Process full set of GLAST CAL ground calibration event files."
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2006/03/08 21:46:06 $"
-__version__   = "$Revision: 1.12 $, $Author: fewtrell $"
-__release__   = "$Name: HEAD $"
+__date__      = "$Date: 2006/04/13 21:45:28 $"
+__version__   = "$Revision: 1.13 $, $Author: fewtrell $"
+__release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 
@@ -285,6 +285,7 @@ os.environ['CGC_NEVT_ROUGHPED']      = "10000"
 os.environ['CGC_NEVT_PED']           = "10000"
 os.environ['CGC_NEVT_ASYM']          = n_evt_asym
 os.environ['CGC_NEVT_MPD']           = n_evt_mpd
+os.environ['CGC_ADC2NRG_XML']        = ""
 
 
 
