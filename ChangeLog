@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Mon May  1 08:07:32 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	build_tholdci_cfg.py 
+Log Message:
+Make sure FHE threshold is converted to MeV for file names; allow threshold energies to be floating point.
+
+    *
+------------------------------------------------------------
 User: dwood  Sat Apr 29 13:33:02 PDT 2006
 calibGenCAL/python
 
