@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Mon May  1 10:31:55 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	runSuiteParallel.py 
+Log Message:
+undefined environment variable in runSuiteParallel.py
+
+    *
+------------------------------------------------------------
 User: dwood  Mon May  1 10:10:14 PDT 2006
 calibGenCAL/python
 
