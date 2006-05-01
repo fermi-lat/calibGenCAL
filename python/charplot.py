@@ -17,8 +17,8 @@ Where:
 __facility__  = "Offline"
 __abstract__  = "Generate ROOT plots for CAL ADC/DAC characerization data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/01/31 15:25:14 $"
-__version__   = "$Revision: 1.5 $, $Author: dwood $"
+__date__      = "$Date: 2006/04/28 05:23:47 $"
+__version__   = "$Revision: 1.6 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -90,26 +90,25 @@ def plotDAC(rawData, filterData, info, twrs):
 
                     fit = mpfit.mpfit(residuals, p0, functkw = fkw, parinfo = pinfo, quiet = 1)
                     if fit.status <= 0:
-                        log.error('mpfit error - %s', fit.errmsg)
-                        sys.exit(1)
+                        log.warning('mpfit error - %s', fit.errmsg)
+                    else:
+                        a = fit.params[0]
+                        b = fit.params[1]
+                        x = array.array('f')
+                        y = array.array('f')
+                        for dac in range(0, 64):
+                            adc = linear(a, b, dac)
+                            if adc < 0.0:
+                                continue
+                            x.append(dac)
+                            y.append(adc)
 
-                    a = fit.params[0]
-                    b = fit.params[1]
-                    x = array.array('f')
-                    y = array.array('f')
-                    for dac in range(0, 64):
-                        adc = linear(a, b, dac)
-                        if adc < 0.0:
-                            continue
-                        x.append(dac)
-                        y.append(adc)
-
-                    g = ROOT.TGraph(len(x), x, y)
-
-                    g.SetLineColor(4)
-                    g.SetLineStyle(2)
-                    g.SetLineWidth(2)
-                    lineGraph.append(g)
+                        g = ROOT.TGraph(len(x), x, y)
+    
+                        g.SetLineColor(4)
+                        g.SetLineStyle(2)
+                        g.SetLineWidth(2)
+                        lineGraph.append(g)
 
                     # plot coarse fit data
 
@@ -122,26 +121,25 @@ def plotDAC(rawData, filterData, info, twrs):
 
                     fit = mpfit.mpfit(residuals, p0, functkw = fkw, parinfo = pinfo, quiet = 1)
                     if fit.status <= 0:
-                        log.error('mpfit error - %s', fit.errmsg)
-                        sys.exit(1)
+                        log.warning('mpfit error - %s', fit.errmsg)
+                    else:
+                        a = fit.params[0]
+                        b = fit.params[1]
+                        x = array.array('f')
+                        y = array.array('f')
+                        for dac in range(0, 64):
+                            adc = linear(a, b, dac)
+                            if adc < 0.0:
+                                continue
+                            x.append(dac + 64)
+                            y.append(adc)
 
-                    a = fit.params[0]
-                    b = fit.params[1]
-                    x = array.array('f')
-                    y = array.array('f')
-                    for dac in range(0, 64):
-                        adc = linear(a, b, dac)
-                        if adc < 0.0:
-                            continue
-                        x.append(dac + 64)
-                        y.append(adc)
+                        g = ROOT.TGraph(len(x), x, y)
 
-                    g = ROOT.TGraph(len(x), x, y)
-
-                    g.SetLineColor(4)
-                    g.SetLineStyle(2)
-                    g.SetLineWidth(2)
-                    lineGraph.append(g)                    
+                        g.SetLineColor(4)
+                        g.SetLineStyle(2)
+                        g.SetLineWidth(2)
+                        lineGraph.append(g)                    
 
                     # plot raw data
                     
@@ -234,26 +232,25 @@ def plotULD(rawData, filterData, info, twrs):
 
                         fit = mpfit.mpfit(residuals, p0, functkw = fkw, parinfo = pinfo, quiet = 1)
                         if fit.status <= 0:
-                            log.error('mpfit error - %s', fit.errmsg)
-                            sys.exit(1)
+                            log.warning('mpfit error - %s', fit.errmsg)
+                        else:
+                            a = fit.params[0]
+                            b = fit.params[1]
+                            x = array.array('f')
+                            y = array.array('f')
+                            for dac in range(0, 64):
+                                adc = linear(a, b, dac)
+                                if adc < 0.0:
+                                    continue
+                                x.append(dac)
+                                y.append(adc)
 
-                        a = fit.params[0]
-                        b = fit.params[1]
-                        x = array.array('f')
-                        y = array.array('f')
-                        for dac in range(0, 64):
-                            adc = linear(a, b, dac)
-                            if adc < 0.0:
-                                continue
-                            x.append(dac)
-                            y.append(adc)
+                            g = ROOT.TGraph(len(x), x, y)
 
-                        g = ROOT.TGraph(len(x), x, y)
-
-                        g.SetLineColor(4)
-                        g.SetLineStyle(2)
-                        g.SetLineWidth(2)
-                        lineGraph.append(g)
+                            g.SetLineColor(4)
+                            g.SetLineStyle(2)
+                            g.SetLineWidth(2)
+                            lineGraph.append(g)
 
                         # plot coarse fit data
 
@@ -271,26 +268,25 @@ def plotULD(rawData, filterData, info, twrs):
 
                         fit = mpfit.mpfit(residuals, p0, functkw = fkw, parinfo = pinfo, quiet = 1)
                         if fit.status <= 0:
-                            log.error('mpfit error - %s', fit.errmsg)
-                            sys.exit(1)
+                            log.warning('mpfit error - %s', fit.errmsg)
+                        else:
+                            a = fit.params[0]
+                            b = fit.params[1]
+                            x = array.array('f')
+                            y = array.array('f')
+                            for dac in range(0, 64):
+                                adc = linear(a, b, dac)
+                                if adc < 0.0:
+                                    continue
+                                x.append(dac + 64)
+                                y.append(adc)
 
-                        a = fit.params[0]
-                        b = fit.params[1]
-                        x = array.array('f')
-                        y = array.array('f')
-                        for dac in range(0, 64):
-                            adc = linear(a, b, dac)
-                            if adc < 0.0:
-                                continue
-                            x.append(dac + 64)
-                            y.append(adc)
+                            g = ROOT.TGraph(len(x), x, y)
 
-                        g = ROOT.TGraph(len(x), x, y)
-
-                        g.SetLineColor(4)
-                        g.SetLineStyle(2)
-                        g.SetLineWidth(2)
-                        lineGraph.append(g)                        
+                            g.SetLineColor(4)
+                            g.SetLineStyle(2)
+                            g.SetLineWidth(2)
+                            lineGraph.append(g)                        
 
                         # plot raw data
                     
