@@ -9,8 +9,8 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Prepares config and commands to run gensettings scripts"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2006/04/25 18:27:04 $"
-__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/04/29 20:33:02 $"
+__version__   = "$Revision: 1.10 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -270,8 +270,9 @@ for idet in detsections:
         cmdsh.write(cmdline)
 
         # Write out cp -> "latestXXX.xml" command to batch file
-        cmdline = "cp %s.xml %s.xml\n"%(basename, latest_base)
+        cmdline = "copy %s.xml %s.xml\n"%(basename, latest_base)
         cmdbat.write(cmdline)
+        cmdline = "cp %s.xml %s.xml\n"%(basename, latest_base)
         cmdsh.write(cmdline)
 
 
@@ -319,8 +320,9 @@ for idet in detsections:
         cmdsh.write(cmdline)
 
         # Write out cp -> "latestXXX.xml" command to batch file
-        cmdline = "cp %s.xml %s.xml\n"%(basename, latest_base)
+        cmdline = "copy %s.xml %s.xml\n"%(basename, latest_base)
         cmdbat.write(cmdline)
+        cmdline = "cp %s.xml %s.xml\n"%(basename, latest_base)
         cmdsh.write(cmdline)
 
 
@@ -359,8 +361,9 @@ for idet in detsections:
         cmdsh.write(cmdline)
 
         # Write out cp -> "latestXXX.xml" command to batch file
-        cmdline = "cp %s.xml %s.xml\n"%(basename, latest_base)
+        cmdline = "copy %s.xml %s.xml\n"%(basename, latest_base)
         cmdbat.write(cmdline)
+        cmdline = "cp %s.xml %s.xml\n"%(basename, latest_base)
         cmdsh.write(cmdline)
 
         
@@ -409,8 +412,9 @@ for idet in detsections:
         cmdsh.write(cmdline)
 
         # Write out cp -> "latestXXX.xml" command to batch file
-        cmdline = "cp %s.xml %s.xml\n"%(basename, latest_base)
+        cmdline = "copy %s.xml %s.xml\n"%(basename, latest_base)
         cmdbat.write(cmdline)
+        cmdline = "cp %s.xml %s.xml\n"%(basename, latest_base)
         cmdsh.write(cmdline)
 
 
@@ -452,8 +456,9 @@ for idet in detsections:
         cmdsh.write(cmdline)
 
         # Write out cp -> "latestXXX.xml" command to batch file
-        cmdline = "cp %s.xml %s.xml\n"%(basename, latest_base)
+        cmdline = "copy %s.xml %s.xml\n"%(basename, latest_base)
         cmdbat.write(cmdline)
+        cmdline = "cp %s.xml %s.xml\n"%(basename, latest_base)
         cmdsh.write(cmdline)
 
 
