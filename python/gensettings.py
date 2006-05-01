@@ -9,8 +9,8 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Prepares config and commands to run gensettings scripts"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2006/04/29 20:33:02 $"
-__version__   = "$Revision: 1.10 $, $Author: dwood $"
+__date__      = "$Date: 2006/05/01 15:46:07 $"
+__version__   = "$Revision: 1.11 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -35,7 +35,7 @@ def gen_cfgname(fileroot, idet, dac_type):
     """ generate cf filename for given dac type"""
     return "%s_%sgen%s.cfg"%(fileroot,idet,dac_type)
 
-usage = 'gensettings [-f fileroot][--file fileroot]'
+usage = 'gensettings [-f fileroot | --file fileroot] [-m | --muon]'
 
 # create time tag for this run
 
@@ -47,8 +47,9 @@ log = logging.getLogger('gensettings')
 log.setLevel(logging.INFO)
 
 # see if cfg file for input is specified in cmd line
-parser = OptionParser()
+parser = OptionParser(usage = usage)
 parser.add_option('-f','--file',dest='fileroot')
+parser.add_option('-m','--muon',dest='muon',action='store_true',default=False)
 (options, args) = parser.parse_args()
 if options.fileroot is None:
     fileroot = 'gensettings'
@@ -326,45 +327,46 @@ for idet in detsections:
         cmdsh.write(cmdline)
 
 
-# Do FHE again with muon gain (only script we do this with)
-        fhecfg.remove_option("gains","hegain")
-        fhecfg.set("gains","hegain",hegainmu)
-        # Write out genfhe (muon gain) config file
-        cfgname  = gen_cfgname(fileroot, idet, "FHE_muon")
-        fheout = open(cfgname,"w")
-        fhecfg.write(fheout)
-        fheout.close()
-        log.info("genFHE_muon")
+# Do FHE again with muon gain (optional, only script we do this with)
+        if options.muon:
+            fhecfg.remove_option("gains","hegain")
+            fhecfg.set("gains","hegain",hegainmu)
+            # Write out genfhe (muon gain) config file
+            cfgname  = gen_cfgname(fileroot, idet, "FHE_muon")
+            fheout = open(cfgname,"w")
+            fhecfg.write(fheout)
+            fheout.close()
+            log.info("genFHE_muon")
 
-        # generate base filename used in all output files
-        basename    = gen_basename(timetag, hegainmu, fhegev*1000, idet, "fhe")
-        latest_base = gen_basename("latest", hegainmu, fhegev*1000, idet, "fhe")
+            # generate base filename used in all output files
+            basename    = gen_basename(timetag, hegainmu, fhegev*1000, idet, "fhe")
+            latest_base = gen_basename("latest", hegainmu, fhegev*1000, idet, "fhe")
 
 
-        # Write out run command to batch file
-        # Write out run command to batch file
-        cmdline = "python %s/python/genFHEsettings.py -V %f %s %s.xml\n"%(CALIBGENCALROOT,
+            # Write out run command to batch file
+            # Write out run command to batch file
+            cmdline = "python %s/python/genFHEsettings.py -V %f %s %s.xml\n"%(CALIBGENCALROOT,
                                                                           float(fhegev),
                                                                           cfgname,
                                                                           basename)
-        cmdbat.write(cmdline)
-        cmdsh.write(cmdline)
+            cmdbat.write(cmdline)
+            cmdsh.write(cmdline)
 
-        # Write out dacVal command to batch file
-        cmdline = "python %s/python/dacVal.py -V -R %s.root -L %s.val.log FHE %f %s %s.xml\n"%(CALIBGENCALROOT,
+            # Write out dacVal command to batch file
+            cmdline = "python %s/python/dacVal.py -V -R %s.root -L %s.val.log FHE %f %s %s.xml\n"%(CALIBGENCALROOT,
                                                                                                 basename,
                                                                                                 basename,
                                                                                                 float(fhegev*1000),
                                                                                                 cfgname,
                                                                                                 basename)
-        cmdbat.write(cmdline)
-        cmdsh.write(cmdline)
+            cmdbat.write(cmdline)
+            cmdsh.write(cmdline)
 
-        # Write out cp -> "latestXXX.xml" command to batch file
-        cmdline = "copy %s.xml %s.xml\n"%(basename, latest_base)
-        cmdbat.write(cmdline)
-        cmdline = "cp %s.xml %s.xml\n"%(basename, latest_base)
-        cmdsh.write(cmdline)
+            # Write out cp -> "latestXXX.xml" command to batch file
+            cmdline = "copy %s.xml %s.xml\n"%(basename, latest_base)
+            cmdbat.write(cmdline)
+            cmdline = "cp %s.xml %s.xml\n"%(basename, latest_base)
+            cmdsh.write(cmdline)
 
         
 # Build genLAC config file
