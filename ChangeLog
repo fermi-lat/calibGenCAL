@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Mon May  1 12:40:06 PDT 2006
+calibGenCAL/doc
+
+Modified Files:
+	gensettings_scripts.html 
+Log Message:
+Made processing of muon gain FHE settings optional; results should be duplicated from previous run anyway.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon May  1 10:31:55 PDT 2006
 calibGenCAL/python
 
