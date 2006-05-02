@@ -265,3 +265,34 @@ Better file type checking for files which use the ADC/DAC XML tables as input.
 Muon asymmetry now smarter for cross diode asymmetry.  Uses average ratio of Large2Small diode signal instead of the slope.  This will make energy & position response @ 1 GeV +- 100 MeV better.
 
 runCIFit can now process broadcast mode calibGen as well as the older, 1 column at a time method.
+
+
+----------------------------------
+v3r9p3 dwood/fewtrell
+----------------------------------
+
+uldVal: new application to validate ULD DAC settings XML files (from genULDsettings)
+
+dacVal:
+    - fixed report of FAILED tests
+    - relaxed FHE error and warning limits
+
+charVal:
+    - added support for ULD characterization files
+    - added check for incorrect pedestal subtraction
+    - relaxed FHE and LAC error and warning limits
+
+build_adcsmooth:
+    - added call to charVal to do validation on ULD characterization files
+
+gensettings:
+    - added call to uldVal to do validation on ULD DAC settings files
+    - fixed bug which put 'cp' instead of 'copy' in Windows BAT output files
+    - made processing of muon gain FHE files optional; command line -m or --muon
+
+build_tholdci_cfg:
+    - make sure FHE threshold is properly converted from GeV to MeV
+
+runSuiteParallel:
+    - fixed undefined environment variable error
+ 
