@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Tue May  2 15:37:26 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	genULDsettings.py 
+Log Message:
+Removed one DAC step safty margin; now output settings are closer to user requested margin.
+    *
+------------------------------------------------------------
 User: dwood  Tue May  2 15:36:35 PDT 2006
 calibGenCAL/python
 
