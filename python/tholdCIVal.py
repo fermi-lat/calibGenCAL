@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Thold_CI calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/05/01 15:35:28 $"
-__version__   = "$Revision: 1.13 $, $Author: dwood $"
+__date__      = "$Date: 2006/05/01 17:10:14 $"
+__version__   = "$Revision: 1.14 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -56,6 +56,12 @@ def rootHists(adcData, uldData):
         hs = ROOT.TH1F(hName, 'TholdCI_Summary_ULD', 100, uldErrLimit, 4095)
         hs.SetLineColor(erng + 1)
         hs.SetStats(False)
+        axis = hs.GetXaxis()
+        axis.SetTitle('Threshold (ADC)')
+        axis.CenterTitle()
+        axis = hs.GetYaxis()
+        axis.SetTitle('Counts')
+        axis.CenterTitle()
         sumHists[erng] = hs
         sumLeg.AddEntry(hs, calConstant.CRNG[erng], 'L')
         cs.Update()
@@ -80,6 +86,12 @@ def rootHists(adcData, uldData):
             hs = sumHists[erng]
             hx.SetLineColor(erng + 1)
             hx.SetStats(False)
+            axis = hx.GetXaxis()
+            axis.SetTitle('Threshold (ADC)')
+            axis.CenterTitle()
+            axis = hx.GetYaxis()
+            axis.SetTitle('Counts')
+            axis.CenterTitle()
             
             for row in range(calConstant.NUM_ROW):
                 for end in range(calConstant.NUM_END):
@@ -149,6 +161,12 @@ def rootHists(adcData, uldData):
         hs = ROOT.TH1F(hName, 'TholdCI_Summary_ADC', 100, 0, 4095)
         hs.SetLineColor(val + 1)
         hs.SetStats(False)
+        axis = hs.GetXaxis()
+        axis.SetTitle('Threshold (ADC)')
+        axis.CenterTitle()
+        axis = hs.GetYaxis()
+        axis.SetTitle('Counts')
+        axis.CenterTitle()
         sumHists[val] = hs
         sumLeg.AddEntry(hs, ADC_VALS[val], 'L')
 
@@ -172,6 +190,12 @@ def rootHists(adcData, uldData):
             hs = sumHists[val]
             hx.SetLineColor(val + 1)
             hx.SetStats(False)
+            axis = hx.GetXaxis()
+            axis.SetTitle('Threshold (ADC)')
+            axis.CenterTitle()
+            axis = hx.GetYaxis()
+            axis.SetTitle('Counts')
+            axis.CenterTitle()
             
             for row in range(calConstant.NUM_ROW):
                 for end in range(calConstant.NUM_END):
@@ -299,6 +323,7 @@ def calcError(adcData, uldData, pedData):
                                               
 
     return (status)
+
 
 
 
