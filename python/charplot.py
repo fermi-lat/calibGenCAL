@@ -17,8 +17,8 @@ Where:
 __facility__  = "Offline"
 __abstract__  = "Generate ROOT plots for CAL ADC/DAC characerization data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/04/28 05:23:47 $"
-__version__   = "$Revision: 1.6 $, $Author: dwood $"
+__date__      = "$Date: 2006/05/01 17:10:14 $"
+__version__   = "$Revision: 1.7 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -174,6 +174,12 @@ def plotDAC(rawData, filterData, info, twrs):
                     # display plots
 
                     h = markerGraph[-1].GetHistogram()
+                    axis = h.GetXaxis()
+                    axis.SetTitle('DAC')
+                    axis.CenterTitle()
+                    axis = h.GetYaxis()
+                    axis.SetTitle('ADC')
+                    axis.CenterTitle()
                     h.Draw()
 
                     for g in lineGraph:
@@ -327,6 +333,12 @@ def plotULD(rawData, filterData, info, twrs):
 
                     h = markerGraph[-1].GetHistogram()
                     h.SetMaximum(max(gMax) + 200)
+                    axis = h.GetXaxis()
+                    axis.SetTitle('DAC')
+                    axis.CenterTitle()
+                    axis = h.GetYaxis()
+                    axis.SetTitle('ADC')
+                    axis.CenterTitle()
                     h.Draw()
                     leg.Draw()
                     c.Update()
