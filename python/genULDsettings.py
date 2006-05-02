@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate ULD Discriminator settings selected by Energy"
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/04/29 20:33:02 $"
-__version__     = "$Revision: 1.13 $, $Author: dwood $"
+__date__        = "$Date: 2006/05/01 15:35:28 $"
+__version__     = "$Revision: 1.14 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -174,7 +174,7 @@ if __name__ == '__main__':
                         adc = adcData[erng, srcTwr, row, end, fe, dac] + margin
                         if adc < adcmax:
                             break
-                    sat[erng] = (dac - 1)
+                    sat[erng] = dac
 
                 dacData[destTwr, row, end, fe] = min(sat)                        
                         
