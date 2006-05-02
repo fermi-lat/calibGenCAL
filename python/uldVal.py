@@ -19,8 +19,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL ULD settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/03/16 18:04:40 $"
-__version__     = "$Revision: 1.12 $, $Author: dwood $"
+__date__        = "$Date: 2006/04/29 20:33:02 $"
+__version__     = "$Revision: 1.1 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -41,19 +41,53 @@ import calConstant
 
 def rootHists(errData):
 
-    # create summary histogram
+    leg = ROOT.TLegend(0.88, 0.88, 0.99, 0.99)
+    hists = [None, None, None]
+
+    # create summary histograms
 
     cs = ROOT.TCanvas('c_Summary', 'Summary', -1)
     cs.SetGrid()
     cs.SetLogy()
 
-    hName = "h_Summary"      
-    hs = ROOT.TH1F(hName, '', 100, 0, (errLimit * 2))
-    for e in errData:
-        hs.Fill(e)
-                    
-    hs.Draw()
-    cs.Update()
+    for erng in range(3):
+                            
+        hName = "ULD_%s" % calConstant.CRNG[erng]
+        hx = ROOT.TH1F(hName, 'ULD_Margin', 100, 0, 400)
+        hx.SetLineColor(erng + 1)
+        hx.SetStats(False)
+        axis = hx.GetXaxis()
+        axis.SetTitle('ADC Margin')
+        axis.CenterTitle()
+        axis = hx.GetYaxis()
+        axis.SetTitle('Count')
+        axis.CenterTitle()
+
+        for err in errData[erng]:                                  
+            hx.Fill(err)
+
+        hists[erng] = hx
+        leg.AddEntry(hx, calConstant.CRNG[erng], 'L')
+        cs.Update()
+
+    hMax = 0
+    for erng in range(3):
+        hx = hists[erng]
+        if hx.GetMaximum() > hMax:
+            hMax = hx.GetMaximum()
+
+    for erng in range(3):
+        if erng == 0:
+            dopt = ''
+        else:
+            dopt = 'SAME'
+        hx = hists[erng]
+        hx.SetMaximum(hMax)
+        hx.Draw(dopt)
+        cs.Update()
+
+    leg.Draw()
+    cs.Update()                    
     cs.Write()
 
 
@@ -64,8 +98,8 @@ if __name__ == '__main__':
        <cfg_file> <dac_xml_file>"
 
     rootOutput = False
-    warnLimit = 100.0
-    errLimit = 150.0 
+    warnLimit = 200.0
+    errLimit = 400.0 
     valStatus = 0
 
     # setup logger
@@ -218,44 +252,38 @@ if __name__ == '__main__':
     
     # validate data
     
-    sat = [None, None, None]
-    errData = []
+    errData = ([], [], [])
     
     for row in range(calConstant.NUM_ROW):
         for end in range(calConstant.NUM_END):
             for fe in range(calConstant.NUM_FE):
-            
-                # get minimum saturation value
-            
                 for erng in range(3):
-                    sat[erng] = adcData[erng, srcTwr, row, end, fe, -1]
+            
+                    # get saturation value for range
+            
+                    sat = adcData[erng, srcTwr, row, end, fe, -1]
                     
-                satAdc = min(sat)
-                for erng in range(3):
-                    if satAdc == sat[erng]:
-                        satRng = erng
-                        break 
-                    
-                log.debug('Saturation %0.3f (%s) for %s%s,%d', satAdc, calConstant.CRNG[satRng], 
-                    calConstant.CROW[row], calConstant.CPM[end], fe)
+                    log.debug('Saturation %0.3f for %s%s,%d,%s', sat, calConstant.CROW[row],
+                              calConstant.CPM[end], fe, calConstant.CRNG[erng])
                                   
-                # get ADC value for DAC setting
+                    # get ADC value for DAC setting
                     
-                dac = int(dacData[destTwr, row, end, fe])
-                adc = (adcData[satRng, srcTwr, row, end, fe, dac] + margin) 
+                    dac = int(dacData[destTwr, row, end, fe])
+                    adc = adcData[erng, srcTwr, row, end, fe, dac]
                     
-                # calculate error
+                    # calculate error
                     
-                err = abs(satAdc - adc)
-                if err > warnLimit:
-                    if err > errLimit:
-                        log.error('err %0.2f > %0.2f for %s%s,%d', err, errLimit, calConstant.CROW[row],
-                              calConstant.CPM[end], fe)
-                        valStatus = 1
-                    else:
-                        log.warning('err %0.2f > %0.2f for %s%s,%d', err, warnLimit, calConstant.CROW[row],
-                              calConstant.CPM[end], fe)
-                errData.append(err)               
+                    err = sat - adc
+                    if err > warnLimit or err < 0:
+                        if err > errLimit or err < 0:
+                            log.error('err %0.2f > %0.2f for %s%s,%d,%s', err, errLimit, calConstant.CROW[row],
+                                  calConstant.CPM[end], fe, calConstant.CRNG[erng])
+                            valStatus = 1
+                        else:
+                            log.warning('err %0.2f > %0.2f for %s%s,%d,%s', err, warnLimit, calConstant.CROW[row],
+                                  calConstant.CPM[end], fe, calConstant.CRNG[erng])
+                            
+                    errData[erng].append(err)               
     
     
     # create ROOT output file
