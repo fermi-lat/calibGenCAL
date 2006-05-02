@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Tue May  2 15:38:57 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	uldVal.py 
+Log Message:
+Changed validation strategy by looking at saturation margin for all energy ranges; somewhat necessary since it is difficult to tell what range was selected when generating the ULD DAC value; all energy range margins are histogrammed in ROOT output.
+    *
+------------------------------------------------------------
 User: dwood  Tue May  2 15:37:26 PDT 2006
 calibGenCAL/python
 
