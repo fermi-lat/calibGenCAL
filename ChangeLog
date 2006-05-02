@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Tue May  2 14:49:47 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	charplot.py adcplot.py 
+Log Message:
+Added titles to ROOT plot axes.
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r9p3, operation: add
 Package: calibGenCAL
