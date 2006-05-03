@@ -21,8 +21,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/04/28 04:09:49 $"
-__version__     = "$Revision: 1.7 $, $Author: dwood $"
+__date__        = "$Date: 2006/04/29 20:33:02 $"
+__version__     = "$Revision: 1.8 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -50,7 +50,14 @@ def rootHists(engData):
     cs.SetLogy()
 
     hName = "h_Summary"      
-    hs = ROOT.TH1F(hName, '', 100, MeV - (errLimit * 2), MeV + (errLimit * 2))
+    hs = ROOT.TH1F(hName, dacType, 100, MeV - (errLimit * 2), MeV + (errLimit * 2))
+    axis = hs.GetXaxis()
+    axis.SetTitle('Threshold Energy (MeV)')
+    axis.CenterTitle()
+    axis = hs.GetYaxis()
+    axis.SetTitle('Counts')
+    axis.CenterTitle()
+    
     for row in range(calConstant.NUM_ROW):
         for end in range(calConstant.NUM_END):
             for fe in range(calConstant.NUM_FE):
