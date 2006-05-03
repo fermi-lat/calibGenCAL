@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Wed May  3 10:47:01 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	tholdCIVal.py 
+Log Message:
+Removed warning check of FLE threshold verses LEX8 ULD value; this check no longer applies since the FLE characterization data is collected in range LEX1.
+
+    *
+------------------------------------------------------------
 User: dwood  Wed May  3 09:48:57 PDT 2006
 calibGenCAL/python
 
