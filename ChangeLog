@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Wed May  3 09:48:57 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	uldVal.py 
+Log Message:
+Made ULD validation check that saturation offset is not less than the requested margin.
+    *
+------------------------------------------------------------
 User: dwood  Wed May  3 09:16:30 PDT 2006
 calibGenCAL/python
 
