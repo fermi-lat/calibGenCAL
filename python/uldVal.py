@@ -19,8 +19,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL ULD settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/04/29 20:33:02 $"
-__version__     = "$Revision: 1.1 $, $Author: dwood $"
+__date__        = "$Date: 2006/05/02 22:38:57 $"
+__version__     = "$Revision: 1.2 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -274,8 +274,8 @@ if __name__ == '__main__':
                     # calculate error
                     
                     err = sat - adc
-                    if err > warnLimit or err < 0:
-                        if err > errLimit or err < 0:
+                    if err > warnLimit or err < margin:
+                        if err > errLimit or err < margin:
                             log.error('err %0.2f > %0.2f for %s%s,%d,%s', err, errLimit, calConstant.CROW[row],
                                   calConstant.CPM[end], fe, calConstant.CRNG[erng])
                             valStatus = 1
