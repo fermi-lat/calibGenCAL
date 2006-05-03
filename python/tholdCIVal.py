@@ -18,8 +18,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Thold_CI calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/05/02 22:36:35 $"
-__version__   = "$Revision: 1.15 $, $Author: dwood $"
+__date__      = "$Date: 2006/05/03 16:15:36 $"
+__version__   = "$Revision: 1.16 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -307,11 +307,7 @@ def calcError(adcData, uldData, pedData):
                                              adcData[tem, row, end, fe, 0], uld, tem, calConstant.CROW[row],
                                              calConstant.CPM[end], fe, calConstant.CRNG[erng])
                                               
-                                if adcData[tem, row, end, fe, 1] > uld:
-                                    log.warning('FLE %0.3f > %0.3f for T%d,%s%s,%d,%s',
-                                             adcData[tem, row, end, fe, 1], uld, tem, calConstant.CROW[row],
-                                             calConstant.CPM[end], fe, calConstant.CRNG[erng])
-
+                                
                             elif erng == calConstant.CRNG_HEX8:
 
                                 if adcData[tem, row, end, fe, 2] > uld:                                
@@ -321,7 +317,6 @@ def calcError(adcData, uldData, pedData):
                                               
 
     return (status)
-
 
 
 
@@ -374,7 +369,6 @@ if __name__ == '__main__':
 
     xmlName = args[0]
 
-    log.debug('Using input file %s', xmlName)
     log.debug('Using ULD lower err limit %6.3f', uldErrLimit)
     log.debug('Using ULD lower warn limit %6.3f', uldWarnLimit)
 
