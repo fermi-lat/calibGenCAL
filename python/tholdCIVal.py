@@ -7,21 +7,19 @@ tholdCIVal [-V] [-L <log_file>] [-E <err_limit>] [-W <warn_limit>] [-R <root_fil
 where:
 
     -R <root_file> - output validation diagnostics in ROOT file
-    -E <err_limit> - error limit for segment second derivative abs value
-                    (default is 0.00005)
-    -W <warn_limit> - warning limit for segment second derivative abs value
-                    (default is 0.00010)
+    -E <err_limit> - error limit for ULD threshold (default is 3000)
+    -W <warn_limit> - warning limit ULD threshold (default is 3200) 
     -L <log_file>   - save console output to log text file
     -V              - verbose; turn on debug output
-    <xml_file> The CAL Asym calibration XML file to validate.    
+    <xml_file> The CAL Thold_CI calibration XML file to validate.    
 """
 
 
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Thold_CI calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/05/01 17:10:14 $"
-__version__   = "$Revision: 1.14 $, $Author: dwood $"
+__date__      = "$Date: 2006/05/02 22:36:35 $"
+__version__   = "$Revision: 1.15 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
