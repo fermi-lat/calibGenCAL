@@ -56,7 +56,7 @@ void CfRoot::ProcessEvt() {
 
   // which column are we testing?
   ColNum testCol;
-  if (m_cfg.broadcastMode)
+  if (!m_cfg.broadcastMode)
     testCol = m_iGoodEvt/m_cfg.nPulsesPerXtal;
   // which DAC setting are we on?
   int testDAC = (m_iGoodEvt%m_cfg.nPulsesPerXtal)/m_cfg.nPulsesPerDAC;
