@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed May 10 12:20:10 PDT 2006
+calibGenCAL/src
+
+Modified Files:
+	CfRoot.cxx 
+Log Message:
+fixed bug introduced by broadcastMode in v3r9p1
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed May 10 12:20:09 PDT 2006
 calibGenCAL/doc
 
