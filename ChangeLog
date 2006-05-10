@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed May 10 12:20:09 PDT 2006
+calibGenCAL/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+fixed bug introduced by broadcastMode in v3r9p1
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r9p4, operation: add
 Package: calibGenCAL
