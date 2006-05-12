@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Fri May 12 14:31:59 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py calDacXML.py calFitsXML.py calXML.py 
+Log Message:
+Changed from using PyXML package to using 4Suite-XML package to do parsing and writing of XML files; this required changes to the implementation of the calXML family of file classes, but the interface of these classes to the applications has remained unchanged.
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r9p5, operation: add
 Package: calibGenCAL
