@@ -6,8 +6,8 @@ Classes to represent CAL hardware settings XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL DAC settings XML documents"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/04/06 13:29:53 $"
-__version__   = "$Revision: 1.22 $, $Author: dwood $"
+__date__      = "$Date: 2006/04/25 13:48:39 $"
+__version__   = "$Revision: 1.23 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -65,16 +65,16 @@ class calSnapshotXML(calXML.calXML):
 
         doc = self.getDoc()
 
-        latList = doc.getElementsByTagName('GLAT')
+        latList = doc.xpath('.//GLAT')
         latLen = len(latList)
         if latLen != 1:
             raise calFileReadExcept, "found %d <GLAT> elements, expected 1" % latLen
-        temList = latList[0].getElementsByTagName('GTEM')
+        temList = latList[0].xpath('.//GTEM')
         temLen = len(temList)
         if temLen > 16:
             raise calFileReadExcept, "found %d <GTEM> elements, expected <= 16" % temLen
         for t in temList:
-            tem = int(t.getAttribute('ID'))
+            tem = int(t.getAttributeNS(None, 'ID'))
             if tem < 0 or tem > 16:
                 raise calFileReadExcept, "<GTEM> ID attribute value %d, expected (0 - 15)" % tem
             towers.append(tem)
@@ -101,43 +101,43 @@ class calSnapshotXML(calXML.calXML):
 
         doc = self.getDoc()
 
-        latList = doc.getElementsByTagName('GLAT')
+        latList = doc.xpath('.//GLAT')
         latLen = len(latList)
         if latLen != 1:
             raise calFileReadExcept, "found %d <GLAT> elements, expected 1" % latLen
-        temList = latList[0].getElementsByTagName('GTEM')
+        temList = latList[0].xpath('.//GTEM')
         temLen = len(temList)
         if temLen > 16:
             raise calFileReadExcept, "found %d <GTEM> elements, expected <= 16" % temLen
         for t in temList:
-            tem = int(t.getAttribute('ID'))
+            tem = int(t.getAttributeNS(None, 'ID'))
             if tem < 0 or tem > 16:
                 raise calFileReadExcept, "<GTEM> ID attribute value %d, expected (0 - 15)" % tem
-            cccList = t.getElementsByTagName('GCCC')
+            cccList = t.xpath('.//GCCC')
             cccLen = len(cccList)
             if cccLen > 4:
                 raise calFileReadExcept, "found %d <GCCC> elements, expected <= 4" % cccLen
             for c in cccList:
-                ccc = int(c.getAttribute('ID'))
+                ccc = int(c.getAttributeNS(None, 'ID'))
                 if ccc < 0 or ccc > 3:
                     raise calFileReadExcept, "<GCCC> ID attribute value %d, expected (0 - 3)" % ccc
-                rcList = c.getElementsByTagName('GCRC')
+                rcList = c.xpath('.//GCRC')
                 rcLen = len(rcList)
                 if rcLen > 4:
                     raise calFileReadExcept, "found %d <GCRC> elements, expected <= 4" % rcLen
                 for r in rcList:
-                    rc = int(r.getAttribute('ID'))
+                    rc = int(r.getAttributeNS(None, 'ID'))
                     if rc < 0 or rc > 3:
                         raise calFileReadExcept, "<GCRC> ID attribute value %d, expected (0 - 3)" % rc
-                    feList = r.getElementsByTagName('GCFE')
+                    feList = r.xpath('.//GCFE')
                     feLen = len(feList)
                     if feLen > 12:
                         raise calFileReadExcept, "found %d <GCFE> elements, expected <= 12" % feLen
                     for f in feList:
-                        fe = int(f.getAttribute('ID'))
+                        fe = int(f.getAttributeNS(None, 'ID'))
                         if fe < 0 or fe > 11:
                             raise calFileReadExcept, "<GCFE> ID attribute value %d, expected (0 - 11)" % fe
-                        dacList = f.getElementsByTagName(dacName)
+                        dacList = f.xpath('.//%s' % dacName)
                         dacLen = len(dacList)
                         if dacLen != 1:
                             if dacLen == 0:
@@ -224,79 +224,79 @@ class calDacXML(calSnapshotXML):
         # insert <configuration> element
         # this is the root element of the XML output document
 
-        ce = doc.createElement('configuration')
+        ce = doc.createElementNS(None, 'configuration')
         
         s = '[\'GCCC\',\'GCRC\',\'GCFE\',\'%s\']' % self.__dacName
-        ce.setAttribute('name', 'NA')
-        ce.setAttribute('hierarchy', s)
-        ce.setAttribute('type', 's')
-        ce.setAttribute('shape', '(8,2,12)')
-        ce.setAttribute('version', 'NA')
+        ce.setAttributeNS(None, 'name', 'NA')
+        ce.setAttributeNS(None, 'hierarchy', s)
+        ce.setAttributeNS(None, 'type', 's')
+        ce.setAttributeNS(None, 'shape', '(8,2,12)')
+        ce.setAttributeNS(None, 'version', 'NA')
         ts = time.strftime('%Y-%m-%d-%H:%M', time.gmtime())
-        ce.setAttribute('time', ts)
+        ce.setAttributeNS(None, 'time', ts)
 
         if filename is not None:
-            ce.setAttribute('filename', filename)
+            ce.setAttributeNS(None, 'filename', filename)
 
         if cfgfilename is not None:
-            ce.setAttribute('cfgfilename', cfgfilename)
+            ce.setAttributeNS(None, 'cfgfilename', cfgfilename)
         
         if leGain is not None:
-            ce.setAttribute('leGain', str(leGain))
+            ce.setAttributeNS(None, 'leGain', str(leGain))
             
         if heGain is not None:
-            ce.setAttribute('heGain', str(heGain))
+            ce.setAttributeNS(None, 'heGain', str(heGain))
 
         if energy is not None:
-            ce.setAttribute('energy', "%s MeV" % str(energy))
+            ce.setAttributeNS(None, 'energy', "%s MeV" % str(energy))
 
         if adcfilename is not None:
-            ce.setAttribute('adcfilename', adcfilename)
+            ce.setAttributeNS(None, 'adcfilename', adcfilename)
             
         if relgainfilename is not None:
-            ce.setAttribute('relgainfilename', relgainfilename)
+            ce.setAttributeNS(None, 'relgainfilename', relgainfilename)
             
         if engfilename is not None:
-            ce.setAttribute('engfilename', engfilename)
+            ce.setAttributeNS(None, 'engfilename', engfilename)
             
         if biasfilename is not None:
-            ce.setAttribute('biasfilename', biasfilename)
+            ce.setAttributeNS(None, 'biasfilename', biasfilename)
 
         if adcmargin is not None:
-            ce.setAttribute('adcmargin', str(adcmargin))
+            ce.setAttributeNS(None, 'adcmargin', str(adcmargin))
 
         if method is not None:
-            ce.setAttribute('method', method)            
+            ce.setAttributeNS(None, 'method', method)            
             
         doc.appendChild(ce)
         
         # insert <GLAT> element  
             
-        gl = doc.createElement('GLAT')
+        gl = doc.createElementNS(None, 'GLAT')
         ce.appendChild(gl)     
 
         for tem in tems:
                         
             # insert <GTEM> elements
 
-            gt = doc.createElement('GTEM')
-            gt.setAttribute('ID', str(tem))
+            gt = doc.createElementNS(None, 'GTEM')
+            gt.setAttributeNS(None, 'ID', str(tem))
             gl.appendChild(gt)
             
             for ccc in range(4):
 
                 # insert <GCCC> elements
 
-                gc = doc.createElement('GCCC')
-                gc.setAttribute('ID', str(ccc))
+                gc = doc.createElementNS(None, 'GCCC')
+                gc.setAttributeNS(None, 'ID', str(ccc))
                 gt.appendChild(gc)                
 
                 for rc in range(4):
 
                     # insert <GCRC> elements
 
-                    gr = doc.createElement('GCRC')
-                    gr.setAttribute('ID', str(rc))
+                    gr = doc.createElementNS(None, 'GCRC')
+                    gr.setAttributeNS(None, 'ID', str(rc))
                     gc.appendChild(gr)
                 
                     # translate index
@@ -307,13 +307,13 @@ class calDacXML(calSnapshotXML):
 
                         # insert <GCFE> elements
 
-                        gf = doc.createElement('GCFE')
-                        gf.setAttribute('ID', str(fe))
+                        gf = doc.createElementNS(None, 'GCFE')
+                        gf.setAttributeNS(None, 'ID', str(fe))
                         gr.appendChild(gf)
 
                         # insert <xxx> elements
 
-                        dv = doc.createElement(self.__dacName)
+                        dv = doc.createElementNS(None, self.__dacName)
                         t = doc.createTextNode('0x%x' % int(dacData[tem, row, end, fe]))
                         dv.appendChild(t)
                         gf.appendChild(dv)
@@ -367,16 +367,16 @@ class calEnergyXML(calXML.calXML):
 
         doc = self.getDoc()
 
-        latList = doc.getElementsByTagName('GLAT')
+        latList = doc.xpath('.//GLAT')
         latLen = len(latList)
         if latLen != 1:
             raise calFileReadExcept, "found %d <GLAT> elements, expected 1" % latLen
-        temList = latList[0].getElementsByTagName('GTEM')
+        temList = latList[0].xpath('.//GTEM')
         temLen = len(temList)
         if temLen > 16:
             raise calFileReadExcept, "found %d <GTEM> elements, expected <= 16" % temLen
         for t in temList:
-            tem = int(t.getAttribute('ID'))
+            tem = int(t.getAttributeNS(None, 'ID'))
             if tem < 0 or tem > 16:
                 raise calFileReadExcept, "<GTEM> ID attribute value %d, expected (0 - 15)" % tem
             towers.append(tem)
@@ -402,55 +402,55 @@ class calEnergyXML(calXML.calXML):
 
         # find elements
 
-        latList = doc.getElementsByTagName('GLAT')
+        latList = doc.xpath('.//GLAT')
         latLen = len(latList)
         if latLen != 1:
             raise calFileReadExcept, "found %d <GLAT> elements, expected 1" % latLen
-        temList = latList[0].getElementsByTagName('GTEM')
+        temList = latList[0].xpath('.//GTEM')
         temLen = len(temList)
         if temLen > 16:
             raise calFileReadExcept, "found %d <GTEM> elements, expected <= 16" % temLen
         for t in temList:
-            tem = int(t.getAttribute('ID'))
+            tem = int(t.getAttributeNS(None, 'ID'))
             if tem < 0 or tem > 16:
                 raise calFileReadExcept, "<GTEM> ID attribute value %d, expected (0 - 15)" % tem
             if self.__engName == 'adc2nrg':
                 eName = 'low_hi_nrg'
             else:
                 eName = 'fle_fhe'
-            eList = t.getElementsByTagName(eName)
+            eList = t.xpath('.//%s' % eName)
             eLen = len(eList)
             if eLen != 2:
                 raise calFileReadExcept, "found %d <%s> elements, expected 2" % (eLen, eName)
             for e in eList:
-                eng = int(e.getAttribute('ID'))
+                eng = int(e.getAttributeNS(None, 'ID'))
                 if eng < 0 or eng > 1:
                     raise calFileReadExcept, "%s ID attribute value %d, expected (0 - 1)" % (eName, eng)
-                cccList = e.getElementsByTagName('GCCC')
+                cccList = e.xpath('.//GCCC')
                 cccLen = len(cccList)
                 if cccLen > 4:
                     raise calFileReadExcept, "found %d <GCCC> elements, expected <= 4" % cccLen
                 for c in cccList:
-                    ccc = int(c.getAttribute('ID'))
+                    ccc = int(c.getAttributeNS(None, 'ID'))
                     if ccc < 0 or ccc > 3:
                         raise calFileReadExcept, "<GCCC> ID attribute value %d, expected (0 - 3)" % ccc
-                    rcList = c.getElementsByTagName('GCRC')
+                    rcList = c.xpath('.//GCRC')
                     rcLen = len(rcList)
                     if rcLen > 4:
                         raise calFileReadExcept, "found %d <GCRC> elements, expected <= 4" % rcLen
                     for r in rcList:
-                        rc = int(r.getAttribute('ID'))
+                        rc = int(r.getAttributeNS(None, 'ID'))
                         if rc < 0 or rc > 3:
                             raise calFileReadExcept, "<GCRC> ID attribute value %d, expected (0 - 3)" % rc
-                        feList = r.getElementsByTagName('GCFE')
+                        feList = r.xpath('.//GCFE')
                         feLen = len(feList)
                         if feLen > 12:
                             raise calFileReadExcept, "found %d <GCFE> elements, expected <= 12" % feLen
                         for f in feList:
-                            fe = int(f.getAttribute('ID'))
+                            fe = int(f.getAttributeNS(None, 'ID'))
                             if fe < 0 or fe > 11:
                                 raise calFileReadExcept, "<GCFE> ID attribute value %d, expected (0 - 11)" % fe
-                            dacList = f.getElementsByTagName(self.__engName)
+                            dacList = f.xpath('.//%s' % self.__engName)
                             dacLen = len(dacList)
                             if dacLen != 1:
                                 raise calFileReadExcept, "found %d %s elements, expected 1" % (dacLen, self.__engName)
@@ -479,7 +479,7 @@ class calEnergyXML(calXML.calXML):
         # insert <configuration> element
         # this is the root element of the XML output document
 
-        ce = doc.createElement('configuration')
+        ce = doc.createElementNS(None, 'configuration')
 
         if self.__engName == 'adc2nrg':
              eName = 'low_hi_nrg'
@@ -487,51 +487,51 @@ class calEnergyXML(calXML.calXML):
              eName = 'fle_fhe'
 
         s = '[\'%s\',\'GCCC\',\'GCRC\',\'GCFE\',\'%s\']' % (eName, self.__engName)
-        ce.setAttribute('name', '')
-        ce.setAttribute('hierarchy', s)
-        ce.setAttribute('type', 's')
-        ce.setAttribute('shape', '(2,16,8,2,12)')
-        ce.setAttribute('version', 'NA')
+        ce.setAttributeNS(None, 'name', '')
+        ce.setAttributeNS(None, 'hierarchy', s)
+        ce.setAttributeNS(None, 'type', 's')
+        ce.setAttributeNS(None, 'shape', '(2,16,8,2,12)')
+        ce.setAttributeNS(None, 'version', 'NA')
         ts = time.strftime('%Y-%m-%d-%H:%M', time.gmtime())
-        ce.setAttribute('time', ts)
+        ce.setAttributeNS(None, 'time', ts)
 
         doc.appendChild(ce)
 
         # insert <GLAT> element
 
-        gl = doc.createElement('GLAT')
+        gl = doc.createElementNS(None, 'GLAT')
         ce.appendChild(gl)
 
         for tem in tems:
 
             # insert <GTEM> elements
 
-            gt = doc.createElement('GTEM')
-            gt.setAttribute('ID', str(tem))
+            gt = doc.createElementNS(None, 'GTEM')
+            gt.setAttributeNS(None, 'ID', str(tem))
             gl.appendChild(gt)
 
             for rng in range(2): 
 
                 # insert <low_hi_nrg> or <fle_fhe> element
 
-                ee = doc.createElement(eName)
-                ee.setAttribute('ID', str(rng))
+                ee = doc.createElementNS(None, eName)
+                ee.setAttributeNS(None, 'ID', str(rng))
                 gt.appendChild(ee)
 
                 for ccc in range(4):
 
                     # insert <GCCC> elements
 
-                    gc = doc.createElement('GCCC')
-                    gc.setAttribute('ID', str(ccc))
+                    gc = doc.createElementNS(None, 'GCCC')
+                    gc.setAttributeNS(None, 'ID', str(ccc))
                     ee.appendChild(gc)
 
                     for rc in range(4):
 
                         # insert <GCRC> elements
 
-                        gr = doc.createElement('GCRC')
-                        gr.setAttribute('ID', str(rc))
+                        gr = doc.createElementNS(None, 'GCRC')
+                        gr.setAttributeNS(None, 'ID', str(rc))
                         gc.appendChild(gr)
 
                         # translate index
@@ -541,13 +541,13 @@ class calEnergyXML(calXML.calXML):
 
                             # insert <GCFE> elements
             
-                            gf = doc.createElement('GCFE')
-                            gf.setAttribute('ID', str(fe))
+                            gf = doc.createElementNS(None, 'GCFE')
+                            gf.setAttributeNS(None, 'ID', str(fe))
                             gr.appendChild(gf)
 
                             # insert <xxx> elements
 
-                            dv = doc.createElement(self.__engName)
+                            dv = doc.createElementNS(None, self.__engName)
                             t = doc.createTextNode('%0.3f' % data[tem, row, end, fe, rng])
                             dv.appendChild(t)
                             gf.appendChild(dv)
@@ -581,3 +581,5 @@ def ccToRow(ccc, rc):
         end = 0
 
     return(row, end)
+
+
