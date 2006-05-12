@@ -6,14 +6,14 @@ CAL XML base classes
 __facility__  = "Offline"
 __abstract__  = "CAL XML base classes"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/02/06 18:13:31 $"
-__version__   = "$Revision: 1.6 $, $Author: dwood $"
+__date__      = "$Date: 2006/04/25 13:50:40 $"
+__version__   = "$Revision: 1.7 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 
-import xml.dom.ext
-import xml.dom.ext.reader.Sax2
+import Ft.Xml.Domlette 
+import Ft.Lib.Uri
 
 from calExcept import *
 
@@ -45,6 +45,8 @@ class calXML:
         self.__xmlFile = None
         self.__mode = mode
 
+        uri = Ft.Lib.Uri.OsPathToUri(fileName)
+
         if mode == MODE_CREATE:
 
             # create ouput XML file
@@ -53,8 +55,7 @@ class calXML:
             
             # create output XML document
 
-            impl = xml.dom.getDOMImplementation()
-            self.__doc = impl.createDocument(None, None, None)
+            self.__doc = Ft.Xml.Domlette.implementation.createRootNode(uri)
 
         elif mode == MODE_READONLY:
 
@@ -64,10 +65,13 @@ class calXML:
 
             # parse into DOM document
 
-            reader = xml.dom.ext.reader.Sax2.Reader(validate = validating)
+            if validating:
+                reader = Ft.Xml.Domlette.ValidatingReader
+            else:
+                reader = Ft.Xml.Domlette.NonvalidatingReader    
             try:
-                self.__doc = reader.fromStream(self.__xmlFile)
-            except Exception, e:
+                self.__doc = reader.parseUri(uri)
+            except Ft.Xml.ReaderException, e:
                 raise calFileOpenExcept, "XML parse error: %s" % e
 
         else:
@@ -79,7 +83,6 @@ class calXML:
         Close a CAL XML file
         """
 
-        xml.dom.ext.ReleaseNode(self.__doc)        
         self.__xmlFile.close()
     
 
@@ -140,6 +143,6 @@ class calXML:
 
         if self.__mode == MODE_READONLY:
             raise calFileWriteExcept, "File %s opened in READONLY mode" % self.__xmlName
-        xml.dom.ext.PrettyPrint(self.__doc, self.__xmlFile)
+        Ft.Xml.Domlette.PrettyPrint(self.__doc, self.__xmlFile)
 
         

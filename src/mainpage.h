@@ -78,7 +78,7 @@ Python 2.4.
 
 Their use also requires that the following python extensions be installed:
 - \b Numeric
-- \b PyXML
+- \b 4Suite-XML
 
 <h5> general usage: launcher scripts  </h5>
 For each calibGenCAL python script XYZ.py there exists on XYZ.bat

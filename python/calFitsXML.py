@@ -6,9 +6,9 @@ Classes and functions to read and write CAL XML files derived from FITS data set
 __facility__  = "Offline"
 __abstract__  = "Class to read and write CAL XML files derived from FITS data sets"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/11/18 15:09:28 $"
-__version__   = "$Revision: 1.20 $, $Author: dwood $"
-__release__   = "$Name: v3r8p3 $"
+__date__      = "$Date: 2005/12/20 20:07:50 $"
+__version__   = "$Revision: 1.21 $, $Author: fewtrell $"
+__release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 
@@ -123,12 +123,12 @@ class calFitsXML(calXML.calXML):
 
         # get XML document type
 
-        dList = self.__doc.getElementsByTagName('CALdoc')
+        dList = self.__doc.xpath('.//CALdoc')
         dLen = len(dList)
         if dLen != 1:
             raise calFileReadExcept, "wrong number of <CAL_doc> elements: %u (expected 1)" % dLen
         d = dList[0]
-        type = d.getAttribute('type')
+        type = d.getAttributeNS(None, 'type')
         if len(type) == 0:
             raise calFileReadExcept, "<CALdoc> element requires type attribute"
         tList = type.split(':')
@@ -152,19 +152,19 @@ class calFitsXML(calXML.calXML):
 
         # find <adc_table> element
 
-        aList = self.__doc.getElementsByTagName(tableName)
+        aList = self.__doc.xpath('.//%s' % tableName)
         aNum = len(aList)
         if aNum != 1:
             raise calFileReadExcept, "wrong number of <%s> elements: %u (expected 1)" % (tableName, aNum)
 
         # find <tem> elements
             
-        tList = aList[0].getElementsByTagName('tem')
+        tList = aList[0].xpath('.//tem')
         tNum = len(tList)
         if tNum == 0 or tNum > 16:
             raise calFileReadExcept, "wrong number of <tem> elements: %u (expected 1-16)" % tNum 
         for t in tList:
-            tem = int(t.getAttribute('num'))
+            tem = int(t.getAttributeNS(None, 'num'))
             if tem < 0 or tem > 15:
                 raise calFileReadExcept, "read <tem> element attribute \'num\' value %d (expected 0-15)" % tem
             towers.append(tem)
@@ -215,28 +215,28 @@ class calFitsXML(calXML.calXML):
 
         # write ADC data into XML text
 
-        a = self.__doc.createElement('adc_table')
+        a = self.__doc.createElementNS(None, 'adc_table')
         self.__rootNode.appendChild(a)
         
         for tem in tems:
 
-            t = self.__doc.createElement('tem')
-            t.setAttribute('num', str(tem))
+            t = self.__doc.createElementNS(None, 'tem')
+            t.setAttributeNS(None, 'num', str(tem))
             a.appendChild(t)
             
             for layer in range(calConstant.NUM_LAYER):
                 for end in range(calConstant.NUM_END):
             
-                    l = self.__doc.createElement('row')
-                    l.setAttribute('num', str(layer))
-                    l.setAttribute('end', str(end))
-                    l.setAttribute('name', '%s%s' % (calConstant.CROW[layer], calConstant.CPM[end]))
+                    l = self.__doc.createElementNS(None, 'row')
+                    l.setAttributeNS(None, 'num', str(layer))
+                    l.setAttributeNS(None, 'end', str(end))
+                    l.setAttributeNS(None, 'name', '%s%s' % (calConstant.CROW[layer], calConstant.CPM[end]))
                     t.appendChild(l)
 
                     for fe in range(calConstant.NUM_FE):
 
-                        f = self.__doc.createElement('fe')
-                        f.setAttribute('num', str(fe))
+                        f = self.__doc.createElementNS(None, 'fe')
+                        f.setAttributeNS(None, 'num', str(fe))
                         l.appendChild(f)
                         
                         s = ''
@@ -258,35 +258,35 @@ class calFitsXML(calXML.calXML):
 
         # write ADC data into XML text
 
-        a = self.__doc.createElement('adc_table')
+        a = self.__doc.createElementNS(None, 'adc_table')
         self.__rootNode.appendChild(a)
 
         for tem in tems:
 
-            t = self.__doc.createElement('tem')
-            t.setAttribute('num', str(tem))
+            t = self.__doc.createElementNS(None, 'tem')
+            t.setAttributeNS(None, 'num', str(tem))
             a.appendChild(t)
             
             for layer in range(calConstant.NUM_LAYER):
                 for end in range(calConstant.NUM_END):
                 
-                    l = self.__doc.createElement('row')
-                    l.setAttribute('num', str(layer))
-                    l.setAttribute('end', str(end))
-                    l.setAttribute('name', '%s%s' % (calConstant.CROW[layer], calConstant.CPM[end]))
+                    l = self.__doc.createElementNS(None, 'row')
+                    l.setAttributeNS(None, 'num', str(layer))
+                    l.setAttributeNS(None, 'end', str(end))
+                    l.setAttributeNS(None, 'name', '%s%s' % (calConstant.CROW[layer], calConstant.CPM[end]))
                     t.appendChild(l)
 
                     for fe in range(calConstant.NUM_FE):
 
-                        f = self.__doc.createElement('fe')
-                        f.setAttribute('num', str(fe))
+                        f = self.__doc.createElementNS(None, 'fe')
+                        f.setAttributeNS(None, 'num', str(fe))
                         l.appendChild(f)
 
                         for erng in range(calConstant.NUM_ERNG):
 
-                            e = self.__doc.createElement('erng')
-                            e.setAttribute('num', str(erng))
-                            e.setAttribute('name', calConstant.CRNG[erng])
+                            e = self.__doc.createElementNS(None, 'erng')
+                            e.setAttributeNS(None, 'num', str(erng))
+                            e.setAttributeNS(None, 'name', calConstant.CRNG[erng])
                             f.appendChild(e)
 
                             s = ''                        
@@ -308,35 +308,35 @@ class calFitsXML(calXML.calXML):
 
         # write ADC data into XML text
 
-        g = self.__doc.createElement('gain_table')
+        g = self.__doc.createElementNS(None, 'gain_table')
         self.__rootNode.appendChild(g)
 
         for tem in tems:
 
-            t = self.__doc.createElement('tem')
-            t.setAttribute('num', str(tem))
+            t = self.__doc.createElementNS(None, 'tem')
+            t.setAttributeNS(None, 'num', str(tem))
             g.appendChild(t)
         
             for layer in range(calConstant.NUM_LAYER):
                 for end in range(calConstant.NUM_END):
                 
-                    l = self.__doc.createElement('row')
-                    l.setAttribute('num', str(layer))
-                    l.setAttribute('end', str(end))
-                    l.setAttribute('name', '%s%s' % (calConstant.CROW[layer], calConstant.CPM[end]))
+                    l = self.__doc.createElementNS(None, 'row')
+                    l.setAttributeNS(None, 'num', str(layer))
+                    l.setAttributeNS(None, 'end', str(end))
+                    l.setAttributeNS(None, 'name', '%s%s' % (calConstant.CROW[layer], calConstant.CPM[end]))
                     t.appendChild(l)
 
                     for fe in range(calConstant.NUM_FE):
 
-                        f = self.__doc.createElement('fe')
-                        f.setAttribute('num', str(fe))
+                        f = self.__doc.createElementNS(None, 'fe')
+                        f.setAttributeNS(None, 'num', str(fe))
                         l.appendChild(f)
 
                         for erng in range(calConstant.NUM_RNG):
 
-                            e = self.__doc.createElement('erng')
-                            e.setAttribute('num', str(erng))
-                            e.setAttribute('name', calConstant.CRNG[erng])
+                            e = self.__doc.createElementNS(None, 'erng')
+                            e.setAttributeNS(None, 'num', str(erng))
+                            e.setAttributeNS(None, 'name', calConstant.CRNG[erng])
                             f.appendChild(e)
 
                             s = ''                        
@@ -360,35 +360,35 @@ class calFitsXML(calXML.calXML):
 
         # write ADC data into XML text
 
-        a = self.__doc.createElement('adc_table')
+        a = self.__doc.createElementNS(None, 'adc_table')
         self.__rootNode.appendChild(a)
 
         for tem in tems:
             
-            t = self.__doc.createElement('tem')
-            t.setAttribute('num', str(tem))
+            t = self.__doc.createElementNS(None, 'tem')
+            t.setAttributeNS(None, 'num', str(tem))
             a.appendChild(t)
             
             for layer in range(calConstant.NUM_LAYER):
                 for end in range(calConstant.NUM_END):
                 
-                    l = self.__doc.createElement('row')
-                    l.setAttribute('num', str(layer))
-                    l.setAttribute('end', str(end))
-                    l.setAttribute('name', '%s%s' % (calConstant.CROW[layer], calConstant.CPM[end]))
+                    l = self.__doc.createElementNS(None, 'row')
+                    l.setAttributeNS(None, 'num', str(layer))
+                    l.setAttributeNS(None, 'end', str(end))
+                    l.setAttributeNS(None, 'name', '%s%s' % (calConstant.CROW[layer], calConstant.CPM[end]))
                     t.appendChild(l)
 
                     for fe in range(calConstant.NUM_FE):
 
-                        f = self.__doc.createElement('fe')
-                        f.setAttribute('num', str(fe))
+                        f = self.__doc.createElementNS(None, 'fe')
+                        f.setAttributeNS(None, 'num', str(fe))
                         l.appendChild(f)
                         
                         for erng in range(3):
 
-                            e = self.__doc.createElement('erng')
-                            e.setAttribute('num', str(erng))
-                            e.setAttribute('name', calConstant.CRNG[erng])
+                            e = self.__doc.createElementNS(None, 'erng')
+                            e.setAttributeNS(None, 'num', str(erng))
+                            e.setAttributeNS(None, 'name', calConstant.CRNG[erng])
                             f.appendChild(e)
 
                             s = ''
@@ -405,16 +405,16 @@ class calFitsXML(calXML.calXML):
 
         # create document root node
 
-        self.__rootNode = self.__doc.createElement('CALdoc')
-        self.__rootNode.setAttribute('name', self.__fileName)
-        self.__rootNode.setAttribute('type', 'FITS:%s' % self.__type)
-        self.__rootNode.setAttribute('version', str(self.__xmlVersion))
-        self.__rootNode.setAttribute('time', ts)
+        self.__rootNode = self.__doc.createElementNS(None, 'CALdoc')
+        self.__rootNode.setAttributeNS(None, 'name', self.__fileName)
+        self.__rootNode.setAttributeNS(None, 'type', 'FITS:%s' % self.__type)
+        self.__rootNode.setAttributeNS(None, 'version', str(self.__xmlVersion))
+        self.__rootNode.setAttributeNS(None, 'time', ts)
         self.__doc.appendChild(self.__rootNode)
 
         # create 'header_keys' element to hold FITS key string values
 
-        hdrNode = self.__doc.createElement('header_keys')
+        hdrNode = self.__doc.createElementNS(None, 'header_keys')
         self.__rootNode.appendChild(hdrNode)            
 
         self.__writeKey(hdrNode, 'TTYPE1', self.__type)
@@ -482,8 +482,8 @@ class calFitsXML(calXML.calXML):
 
     def __writeKey(self, hdrNode, name, value):
 
-        k = self.__doc.createElement('key')
-        k.setAttribute('name', str(name))
+        k = self.__doc.createElementNS(None, 'key')
+        k.setAttributeNS(None, 'name', str(name))
         k.appendChild(self.__doc.createTextNode(str(value)))
         hdrNode.appendChild(k)
 
@@ -498,7 +498,7 @@ class calFitsXML(calXML.calXML):
 
         # get XML root document element
 
-        dList = self.__doc.getElementsByTagName('CALdoc')
+        dList = self.__doc.xpath('.//CALdoc')
         dLen = len(dList)
         if dLen != 1:
             raise calFileReadExcept, "wrong number of <CAL_doc> elements: %u (expected 1)" % dLen
@@ -506,7 +506,7 @@ class calFitsXML(calXML.calXML):
 
         # get XML format version
 
-        xmlVersion = int(d.getAttribute('version'))
+        xmlVersion = int(d.getAttributeNS(None, 'version'))
         return xmlVersion
 
 
@@ -519,12 +519,12 @@ class calFitsXML(calXML.calXML):
 
         # get XML document type
 
-        dList = self.__doc.getElementsByTagName('CALdoc')
+        dList = self.__doc.xpath('.//CALdoc')
         dLen = len(dList)
         if dLen != 1:
             raise calFileReadExcept, "wrong number of <CAL_doc> elements: %u (expected 1)" % dLen
         d = dList[0]
-        type = d.getAttribute('type')
+        type = d.getAttributeNS(None, 'type')
         if len(type) == 0:
             raise calFileReadExcept, "<CALdoc> element requires type attribute"
         tList = type.split(':')
@@ -534,7 +534,7 @@ class calFitsXML(calXML.calXML):
 
         # get XML format version
 
-        self.__xmlVersion = int(d.getAttribute('version'))
+        self.__xmlVersion = int(d.getAttributeNS(None, 'version'))
         err = "XML format version %d not supported for file type %s" % (self.__xmlVersion, self.__type)  
         if self.__xmlVersion > 2:
             raise calFileReadExcept, err
@@ -571,34 +571,34 @@ class calFitsXML(calXML.calXML):
 
         # find <adc_table> element
 
-        aList = self.__doc.getElementsByTagName('adc_table')
+        aList = self.__doc.xpath('.//adc_table')
         aNum = len(aList)
         if aNum != 1:
             raise calFileReadExcept, "wrong number of <adc_table> elements: %u (expected 1)" % aNum
 
         # find <tem> elements
 
-        tList = aList[0].getElementsByTagName('tem')
+        tList = aList[0].xpath('.//tem')
         tNum = len(tList)
         if tNum == 0 or tNum > 16:
             raise calFileReadExcept, "wrong number of <tem> elements: %u (expected 1-16)" % tNum        
         
         for t in tList:
             
-            tem = int(t.getAttribute('num'))
+            tem = int(t.getAttributeNS(None, 'num'))
             if tem < 0 or tem > 15:
                 raise calFileReadExcept, "read <tem> element attribute \'num\' value %d (expected 0-15)" % tem
 
             # find <layer> or <row> elements
             
-            lList = t.getElementsByTagName(elName)
+            lList = t.xpath('.//%s' % elName)
             lNum = len(lList)
             if lNum != 16:
                 raise calFileReadExcept, "wrong number of <%s> elements: %u (expected 16)" % (elName, lNum)
             
             for l in lList:
-                layer = int(l.getAttribute('num'))
-                end = int(l.getAttribute('end'))
+                layer = int(l.getAttributeNS(None, 'num'))
+                end = int(l.getAttributeNS(None, 'end'))
                 if layer < 0 or layer > 7:
                     raise calFileReadExcept, "read <%s> element attribute \'num\' value %d (expected 0-7)" % (elName, layer)
                 if end < 0 or end > 1:
@@ -606,12 +606,12 @@ class calFitsXML(calXML.calXML):
 
                 # find <fe> elements
                 
-                fList = l.getElementsByTagName('fe')
+                fList = l.xpath('.//fe')
                 fNum = len(fList)
                 if fNum != 12:
                     raise calFileReadExcept, "wrong number of <fe> elements: %u (expected 11)" % fNum
                 for f in fList:
-                    fe = int(f.getAttribute('num'))
+                    fe = int(f.getAttributeNS(None, 'num'))
                     if fe < 0 or fe > 11:
                         raise calFileReadExcept, "read <fe> element attribute \'num\' value %d (expected 0-11)" % fe
                     d = f.childNodes[0]
@@ -638,55 +638,55 @@ class calFitsXML(calXML.calXML):
 
         # find <adc_table> element
 
-        aList = self.__doc.getElementsByTagName('adc_table')
+        aList = self.__doc.xpath('.//adc_table')
         aNum = len(aList)
         if aNum != 1:
             raise calFileReadExcept, "wrong number of <adc_table> elements: %u (expected 1)" % aNum
 
         # find <tem> elements
         
-        tList = aList[0].getElementsByTagName('tem')
+        tList = aList[0].xpath('.//tem')
         tNum = len(tList)
         if tNum != 1:
             raise calFileReadExcept, "wrong number of <tem> elements: %u (expected 1)" % tNum 
         for t in tList:
-            tem = int(t.getAttribute('num'))
+            tem = int(t.getAttributeNS(None, 'num'))
             if tem < 0 or tem > 15:
                 raise calFileReadExcept, "read <tem> element attribute \'num\' value %d (expected 0-15)" % tem
 
             # find <row> or <layer> elements
             
-            lList = t.getElementsByTagName(elName)
+            lList = t.xpath('.//%s' % elName)
             lNum = len(lList)
             if lNum != 16:
                 raise calFileReadExcept, "wrong number of <%s> elements: %u (expected 16)" % (elName, lNum)
             for l in lList:
-                layer = int(l.getAttribute('num'))
+                layer = int(l.getAttributeNS(None, 'num'))
                 if layer < 0 or layer > 7:
                     raise calFileReadExcept, "read <%s> element attribute \'num\' value %d (expected 0-7)" % (elName, layer)
-                end = int(l.getAttribute('end'))
+                end = int(l.getAttributeNS(None, 'end'))
                 if end < 0 or end > 1:
                     raise calFileReadExcept, "read <%s> element attribute \'end\' value %d (expected 0-1)" % (elName, end)
 
                 # find <fe> elements                
                 
-                fList = l.getElementsByTagName('fe')
+                fList = l.xpath('.//fe')
                 fNum = len(fList)
                 if fNum != 12:
                     raise calFileReadExcept, "wrong number of <fe> elements: %u (expected 11)" % fNum
                 for f in fList:
-                    fe = int(f.getAttribute('num'))
+                    fe = int(f.getAttributeNS(None, 'num'))
                     if fe < 0 or fe > 11:
                         raise calFileReadExcept, "read <fe> element attribute \'num\' value %d (expected 0-11)" % fe
 
                     # find <erng> elements
                     
-                    eList = f.getElementsByTagName('erng')
+                    eList = f.xpath('.//erng')
                     eLen = len(eList)
                     if eLen != 4:
                         raise calFileReadExcept, "wrong number of <erng> elments: %u (expected 4" % eNum
                     for e in eList:
-                        erng = int(e.getAttribute('num'))
+                        erng = int(e.getAttributeNS(None, 'num'))
                         if erng < 0 or erng > 3:
                             raise calFileReadExcept, "read <erng> element attribute \'num\' value %d (expected 1-3)" % erng
                         d = e.childNodes[0]
@@ -713,55 +713,55 @@ class calFitsXML(calXML.calXML):
 
         # find <gain_table> element            
 
-        gList = self.__doc.getElementsByTagName('gain_table')
+        gList = self.__doc.xpath('.//gain_table')
         gNum = len(gList)
         if gNum != 1:
             raise calFileReadExcept, "wrong number of <gain_table> elements: %u (expected 1)" % gNum
 
         # find <tem> elements
         
-        tList = gList[0].getElementsByTagName('tem')
+        tList = gList[0].xpath('.//tem')
         tNum = len(tList)
         if tNum != 1:
             raise calFileReadExcept, "wrong number of <tem> elements: %u (expected 1)" % tNum 
         for t in tList:
-            tem = int(t.getAttribute('num'))
+            tem = int(t.getAttributeNS(None, 'num'))
             if tem < 0 or tem > 15:
                 raise calFileReadExcept, "read <tem> element attribute \'num\' value %d (expected 0-15)" % tem
 
             # find <row> or <layer> elements            
 
-            lList = t.getElementsByTagName(elName)
+            lList = t.xpath('.//%s' % elName)
             lNum = len(lList)
             if lNum != 16:
                 raise calFileReadExcept, "wrong number of <%s> elements: %u (expected 16)" % (elName, lNum)
             for l in lList:
-                layer = int(l.getAttribute('num'))
+                layer = int(l.getAttributeNS(None, 'num'))
                 if layer < 0 or layer > 7:
                     raise calFileReadExcept, "read <%s> element attribute \'num\' value %d (expected 0-7)" % (elName, layer)
-                end = int(l.getAttribute('end'))
+                end = int(l.getAttributeNS(None, 'end'))
                 if end < 0 or end > 1:
                     raise calFileReadExcept, "read <%s> element attribute \'end\' value %d (expected 0-1)" % (elName, end)
 
                 # find <fe> elements            
                 
-                fList = l.getElementsByTagName('fe')
+                fList = l.xpath('.//fe')
                 fNum = len(fList)
                 if fNum != 12:
                     raise calFileReadExcept, "wrong number of <fe> elements: %u (expected 11)" % fNum
                 for f in fList:
-                    fe = int(f.getAttribute('num'))
+                    fe = int(f.getAttributeNS(None, 'num'))
                     if fe < 0 or fe > 11:
                         raise calFileReadExcept, "read <fe> element attribute \'num\' value %d (expected 0-11)" % fe
 
                     # find <erng> elements                    
                     
-                    eList = f.getElementsByTagName('erng')
+                    eList = f.xpath('.//erng')
                     eLen = len(eList)
                     if eLen != 4:
                         raise calFileReadExcept, "wrong number of <erng> elments: %u (expected 4" % eNum
                     for e in eList:
-                        erng = int(e.getAttribute('num'))
+                        erng = int(e.getAttributeNS(None, 'num'))
                         if erng < 0 or erng > 3:
                             raise calFileReadExcept, "read <erng> element attribute \'num\' value %d (expected 0-3)" % erng
                         d = e.childNodes[0]
@@ -788,55 +788,55 @@ class calFitsXML(calXML.calXML):
 
         # find <adc_table> element
 
-        aList = self.__doc.getElementsByTagName('adc_table')
+        aList = self.__doc.xpath('.//adc_table')
         aNum = len(aList)
         if aNum != 1:
             raise calFileReadExcept, "wrong number of <adc_table> elements: %u (expected 1)" % aNum
 
         # find <tem> elements
  
-        tList = aList[0].getElementsByTagName('tem')
+        tList = aList[0].xpath('.//tem')
         tNum = len(tList)
         if tNum == 0 or tNum > 16:
             raise calFileReadExcept, "wrong number of <tem> elements: %u (expected 1-16)" % tNum 
         for t in tList:
-            tem = int(t.getAttribute('num'))
+            tem = int(t.getAttributeNS(None, 'num'))
             if tem < 0 or tem > 15:
                 raise calFileReadExcept, "read <tem> element attribute \'num\' value %d (expected 0-15)" % tem
 
             # find <row> or <layer> elements
 
-            lList = t.getElementsByTagName(elName)
+            lList = t.xpath('.//%s' % elName)
             lNum = len(lList)
             if lNum != 16:
                 raise calFileReadExcept, "wrong number of <%s> elements: %u (expected 16)" % (elName, lNum)
             for l in lList:
-                layer = int(l.getAttribute('num'))
+                layer = int(l.getAttributeNS(None, 'num'))
                 if layer < 0 or layer > 7:
                     raise calFileReadExcept, "read <%s> element attribute \'num\' value %d (expected 0-7)" % (elName, layer)
-                end = int(l.getAttribute('end'))
+                end = int(l.getAttributeNS(None, 'end'))
                 if end < 0 or end > 1:
                     raise calFileReadExcept, "read <%s> element attribute \'end\' value %d (expected 0-1)" % (elName, end)
 
                 # find <fe> elements
                 
-                fList = l.getElementsByTagName('fe')
+                fList = l.xpath('.//fe')
                 fNum = len(fList)
                 if fNum != 12:
                     raise calFileReadExcept, "wrong number of <fe> elements: %u (expected 11)" % fNum
                 for f in fList:
-                    fe = int(f.getAttribute('num'))
+                    fe = int(f.getAttributeNS(None, 'num'))
                     if fe < 0 or fe > 11:
                         raise calFileReadExcept, "read <fe> element attribute \'num\' value %d (expected 0-11)" % fe
 
                     # find <erng> elements
             
-                    eList = f.getElementsByTagName('erng')
+                    eList = f.xpath('.//erng')
                     eLen = len(eList)
                     if eLen != 3:
                         raise calFileReadExcept, "wrong number of <erng> elments: %u (expected 3)" % eNum
                     for e in eList:
-                        erng = int(e.getAttribute('num'))
+                        erng = int(e.getAttributeNS(None, 'num'))
                         if erng < 0 or erng > 2:
                             raise calFileReadExcept, "read <erng> element attribute \'num\' value %d (expected 0-3)" % (erng + 1)
                         d = e.childNodes[0]
@@ -909,15 +909,15 @@ class calFitsXML(calXML.calXML):
 
         ikeys = i.keys()            
 
-        hList = self.__doc.getElementsByTagName('header_keys')
+        hList = self.__doc.xpath('.//header_keys')
         hNum = len(hList)
         if hNum != 1:
             raise calFileReadExcept, "wrong number of <header_keys> elements: %u (expected 1)" % hNum            
 
-        kList = hList[0].getElementsByTagName('key')
+        kList = hList[0].xpath('.//key')
         for k in kList:
             d = k.childNodes[0]
-            name = k.getAttribute('name')
+            name = k.getAttributeNS(None, 'name')
             s = d.data.strip()
             if name in ikeys:
                 i[name] = str(s)
