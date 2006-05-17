@@ -316,3 +316,6 @@ v3r9p4 dwood
  
 v3r9p5 fewtrell
 - fixed bug introduced w/ broadcast mode in v3r9p
+
+v3r9p6 fewtrel
+- fixed stupid bug in MuonCalib::readAsymTXT(), probably introduced when I added tower info to output txt files in v3r9

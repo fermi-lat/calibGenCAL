@@ -960,7 +960,7 @@ void MuonCalib::readAsymTXT(const string &filename) {
   m_calAsymErr.resize(AsymType::N_VALS);
 
   short twr, lyr, col, pdiode, ndiode;
-  float xpos, asym, sig;
+  float asym, sig;
   unsigned nRead = 0;
 
   // open file
@@ -971,7 +971,7 @@ void MuonCalib::readAsymTXT(const string &filename) {
   // loop through each line in file
   while (infile.good()) {
     // get lyr, col (xtalId)
-    infile >> twr >> lyr >> col >> pdiode >> ndiode >> xpos >> asym >> sig;
+    infile >> twr >> lyr >> col >> pdiode >> ndiode >> asym >> sig;
     
     if (infile.fail()) break; // bad get()
 
