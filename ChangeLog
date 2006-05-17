@@ -1,14 +1,4 @@
 ------------------------------------------------------------
-User: fewtrell  Wed May 17 10:20:48 PDT 2006
-calibGenCAL/doc
-
-Modified Files:
-	release.notes 
-Log Message:
-fixed bug in readAsymTXT
-
-    *
-------------------------------------------------------------
 User: dwood  Fri May 12 14:32:00 PDT 2006
 calibGenCAL/src
 
