@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: kuss  Fri May 19 09:00:00 PDT 2006
+calibGenCAL/src
+
+Modified Files:
+	CfData.cxx 
+Log Message:
+added TFile.h for linux compile
+    *
+------------------------------------------------------------
 TAG
 Tag name: v3r9p6, operation: add
 Package: calibGenCAL
