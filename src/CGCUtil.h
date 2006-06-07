@@ -2,7 +2,7 @@
 #define CGCUtil_H
 
 /** @file
-    $Header$
+    $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CGCUtil.h,v 1.11 2006/01/13 17:25:58 fewtrell Exp $
  */
 
 // LOCAL INCLUDES
@@ -25,7 +25,7 @@ using namespace std;
 
 namespace CGCUtil {
 
-  const string CVS_TAG("$Name: v3r8p3 $");
+  const string CVS_TAG("$Name: v3r9p6 $");
 
   /// Template function fills any STL type container with zero values
   template <class T> static void fill_zero(T &container) {
@@ -80,7 +80,9 @@ namespace CGCUtil {
       multiplexor_ostream() : ios(0), ostream(new multiplexor_streambuf()){}
       virtual ~multiplexor_ostream() { delete rdbuf(); }
   
-      streamvector& getostreams() { return ((multiplexor_streambuf*)rdbuf())->_streams; }
+      streamvector& getostreams() { 
+        return ((multiplexor_streambuf*)rdbuf())->_streams; 
+      }
     };
 
   /// Output string w/ username, hostname, time, relevant CMT package versions & paths

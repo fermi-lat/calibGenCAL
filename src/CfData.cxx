@@ -1,5 +1,5 @@
 /** @file
-    $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CfData.cxx,v 1.9 2006/04/13 21:38:05 fewtrell Exp $
+    $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CfData.cxx,v 1.10 2006/05/19 16:00:00 kuss Exp $
 */
 // LOCAL INCLUDES
 #include "CfData.h"
@@ -40,7 +40,7 @@ CfData::CfData(CfCfg &cfg,
 CfData::~CfData() {
   closeHistfile();
 
-  delete m_testDAC;
+  delete [] m_testDAC;
 }
 
 void CfData::createHists() {
@@ -207,7 +207,7 @@ void CfData::FitData() {
     } // xtalFace lop
   } // range loop
 
-  delete tmpADC;
+  delete [] tmpADC;
 }
 
 void CfData::WriteSplinesTXT(const string &filename) {
@@ -294,7 +294,7 @@ void CfData::WriteSplinesXML(const string &filename, const string &dtdPath) {
   // XML file header
   //
   xmlFile << "<?xml version=\"1.0\" ?>" << endl;
-  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CfData.cxx,v 1.9 2006/04/13 21:38:05 fewtrell Exp $  -->" << endl;
+  xmlFile << "<!-- $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CfData.cxx,v 1.10 2006/05/19 16:00:00 kuss Exp $  -->" << endl;
   xmlFile << "<!-- Made-up  intNonlin XML file for EM, according to calCalib_v2r3.dtd -->" << endl;
   xmlFile << endl;
   xmlFile << "<!DOCTYPE calCalib [" << endl;
@@ -433,8 +433,8 @@ void CfData::makeGraphs() {
   }
 
   // clean up memory
-  delete tmpADC;
-  delete tmpDAC;
+  delete [] tmpADC;
+  delete [] tmpDAC;
 }
 
 void CfData::closeHistfile() {
