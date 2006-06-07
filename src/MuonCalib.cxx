@@ -550,8 +550,8 @@ void MuonCalib::loadInlSplines() {
 
     // expand arrays if necessary
     if (nDAC > arraySize) {
-      delete dacs;
-      delete adcs;
+      delete [] dacs;
+      delete [] adcs;
 
       arraySize = nDAC;
       dacs = new double[arraySize];
@@ -580,8 +580,8 @@ void MuonCalib::loadInlSplines() {
   }
 
   // cleanup
-  delete dacs;
-  delete adcs;
+  delete [] dacs;
+  delete [] adcs;
 }
 
 void MuonCalib::HitSummary::clear() {
