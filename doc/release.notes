@@ -319,3 +319,8 @@ v3r9p5 fewtrell
 
 v3r9p6 fewtrel
 - fixed stupid bug in MuonCalib::readAsymTXT(), probably introduced when I added tower info to output txt files in v3r9
+
+v3r9p7 fewtrell
+- (C++) changed 'delete' to 'delete[]' where appropriate
+- added #include "TFile.h" to CfData.h which is needed in some places
+
