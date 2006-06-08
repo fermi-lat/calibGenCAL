@@ -324,3 +324,5 @@ v3r9p7 fewtrell
 - (C++) changed 'delete' to 'delete[]' where appropriate
 - added #include "TFile.h" to CfData.h which is needed in some places
 
+v3r9p8 fewtrell
+- documentation updates
