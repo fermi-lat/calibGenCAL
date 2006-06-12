@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Mon Jun 12 12:39:41 PDT 2006
+calibGenCAL/python
+
+Added Files:
+	genFlightPed.py genFlightPed.sh 
+Log Message:
+Added application to generate FSW header files for pedestal data from CAL_Ped XML files.
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Jun 12 12:38:30 PDT 2006
 calibGenCAL/python
 
