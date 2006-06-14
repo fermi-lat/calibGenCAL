@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Jun 14 08:56:06 PDT 2006
+calibGenCAL/src
+
+Modified Files:
+	MuTrigEff_option.xml 
+Log Message:
+fixing incorrect documenation
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Jun 12 12:53:49 PDT 2006
 calibGenCAL/python
 
