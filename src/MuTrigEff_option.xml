@@ -3,8 +3,8 @@
 
 <!DOCTYPE ifile SYSTEM "$(XMLBASEROOT)/xml/ifile.dtd" >
 
-<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/MuTrigEff_option.xml,v 1.7 2005/08/05 17:52:14 fewtrell Exp $"
-       cvs_Revision="$Revision: 1.7 $" >
+<ifile cvs_Header="$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/MuTrigEff_option.xml,v 1.8 2005/08/20 11:29:19 chehtman Exp $"
+       cvs_Revision="$Revision: 1.8 $" >
 
   <section name="TEST_INFO"> Test configuration info.
     <item name="TIMESTAMP"      value="2004-11-11-14:39"> Timestamp for test run.</item>
@@ -32,7 +32,7 @@
     
     <item name="ROOTFILE_A"   value="C:\calibGenCAL_analysis\8towers\digitization-v3r3p0_135004348_digi_DIGI.root"> input DIGIROOT file trigger configuration A </item>
     <item name="ROOTFILE_B"   value="C:\calibGenCAL_analysis\8towers\digitization-v3r3p0_135004348_digi_DIGI.root"> input DIGIROOT file trigger configuration B </item>
-    <item name="ROOTFILE_CI"  value="C:\calibGenCAL_analysis\8towers\digitization-v3r3p0_135004348_digi_DIGI.root"> input DIGIROOT charge injection file with tack delay=70 (calibGen element 4) </item>
+    <item name="ROOTFILE_CI"  value="C:\calibGenCAL_analysis\8towers\digitization-v3r3p0_135004348_digi_DIGI.root"> input DIGIROOT charge injection file with tack delay=70 </item>
   </section>
   
   <section name="GENERAL"> General program options
