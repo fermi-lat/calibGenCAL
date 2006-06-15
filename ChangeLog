@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Jun 15 16:54:00 PDT 2006
+calibGenCAL/python
+
+Added Files:
+	genFlightGain.py genFlightGain.sh 
+Log Message:
+Added tool to generate CxG_DB cal_gains.h header files from CAL_MuGain XML files.
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Jun 15 16:52:42 PDT 2006
 calibGenCAL/python
 
