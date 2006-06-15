@@ -1,4 +1,20 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Jun 15 14:16:45 PDT 2006
+calibGenCAL/src
+
+Removed Files:
+	CGCUtil.cxx CGCUtil.h CalArray.h CalDefs.cxx CalDefs.h 
+	CalVec.h CfCfg.cxx CfCfg.h CfData.cxx CfData.h CfRoot.cxx 
+	CfRoot.h ICfg.h McCfg.cxx McCfg.h MtCfg.cxx MtCfg.h 
+	MuTrigEff_option.xml MuonCalib.cxx MuonCalib.h 
+	RootFileAnalysis.cxx RootFileAnalysis.h TeCfg.cxx TeCfg.h 
+	ThreshEvol_option.xml ciFit_option.xml 
+	ciFit_option_badCalibGen.xml muonCalib_option.xml runCIFit.cxx 
+	runMuThreshEvol.cxx runMuonCalib.cxx 
+Log Message:
+calibGenCAL v4r0 - see release notes for details
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Jun 15 14:16:44 PDT 2006
 calibGenCAL/python
 
