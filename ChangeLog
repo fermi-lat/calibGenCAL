@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Jun 15 07:39:46 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	genFlightPed.py 
+Log Message:
+Corrected column numbering so that it is in hex.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Jun 14 08:56:06 PDT 2006
 calibGenCAL/src
 
