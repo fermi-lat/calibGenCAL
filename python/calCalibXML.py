@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/03/17 01:18:01 $"
-__version__   = "$Revision: 1.40 $, $Author: dwood $"
+__date__      = "$Date: 2006/05/12 21:31:59 $"
+__version__   = "$Revision: 1.41 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -1906,10 +1906,191 @@ class calPedCalibXML(calCalibXML):
                             pedData[tem, row, end, fe, erng, 1] = sig
 
                             cos = float(p.getAttributeNS(None, 'cos'))
-                            pedData[tem, row, end, fe, erng, 2] = 2.0
+                            pedData[tem, row, end, fe, erng, 2] = cos
                            
                                     
-        return pedData           
+        return pedData
+        
+        
+        
+class calMuSlopeCalibXML(calCalibXML):
+    """
+    CAL MuSlope calibration XML file class.
+
+    This class provides methods for accessing CAL simplified gain
+    calibration data stored in XML format.
+    """
+
+    def __init__(self, fileName, mode = MODE_READONLY):
+        """
+        Open a CAL MuSlope calibration XML file.
+
+        Param: fileName - The XML file name.
+        Param: mode - The XML file access mode.
+        """
+        
+        calCalibXML.__init__(self, fileName, mode)
+        
+
+    def write(self, slopeData, tems = (0,)):
+        """
+        Write data to a CAL MuSlope XML file
+
+        Param: slopeData -
+            A Numeric array containing the simplified gain data
+            of shape (16, 8, 2, 12, 4, 2) The last dimension contains
+            the following data for each crystal end and energy
+            range:
+                0 = slope value
+                1 = error value
+        Param: tems - A list of TEM ID values to include in the output data set.
+        """
+
+        doc = self.getDoc()        
+
+        # insert root document element <calCalib>
+
+        r = doc.createElementNS(None, 'calCalib')
+        doc.appendChild(r)
+
+        # insert <generic> element
+
+        g = self.genericWrite('CAL_MuSlope')
+        r.appendChild(g)
+
+        # insert <dimension> element  
+            
+        d = self.dimensionWrite(nRange = 4, nFace = 2)
+        r.appendChild(d)
+
+        for tem in tems:
+            
+            # insert <tower> elements
+
+            (iCol, iRow) = temToTower(tem)
+            t = doc.createElementNS(None, 'tower')
+            t.setAttributeNS(None, 'iRow', str(iRow))
+            t.setAttributeNS(None, 'iCol', str(iCol))
+            r.appendChild(t)
+            
+            for layer in range(calConstant.NUM_LAYER):
+
+                # translate index
+
+                row = layerToRow(layer) 
+
+                # insert <layer> elements
+
+                l = doc.createElementNS(None, 'layer')
+                l.setAttributeNS(None, 'iLayer', str(layer))
+                t.appendChild(l)
+
+                c = doc.createComment('layer name = %s' % calConstant.CROW[row])
+                l.appendChild(c)
+                    
+                for fe in range(calConstant.NUM_FE):
+
+                    # insert <xtal> elements
+
+                    x = doc.createElementNS(None, 'xtal')
+                    x.setAttributeNS(None, 'iXtal', str(fe))
+                    l.appendChild(x)
+
+                    for end in range(2):
+
+                        # insert <face> elements
+
+                        f = doc.createElementNS(None, 'face')
+                        f.setAttributeNS(None, 'end', POSNEG[end])
+                        x.appendChild(f)
+
+                        # insert <muSlope> elements
+
+                        for erng in range(calConstant.NUM_RNG):
+
+                            m = doc.createElementNS(None, 'muSlope')
+                            m.setAttributeNS(None, 'range', calConstant.CRNG[erng])
+                            slope = slopeData[tem, row, end, fe, erng, 0]
+                            m.setAttributeNS(None, 'slope', '%0.6f' % slope)
+                            error = slopeData[tem, row, end, fe, erng, 1]
+                            m.setAttributeNS(None, 'error', '%0.6f' % error)
+                            f.appendChild(m)
+        
+        # write output XML file
+
+        self.writeFile()
+
+
+    def read(self):
+        """
+        Read data from a CAL MuSlope XML file
+        
+        Returns: A Numeric array containing the simplified gain data
+                 of shape (16, 8, 2, 12, 4, 2) The last dimension contains
+                 the following data for each crystal end and energy
+                 range:
+                     0 = slope value
+                     1 = error value
+        """
+        
+        # verify file type
+
+        type =  self.getType()
+        if type != 'CAL_MuSlope':
+            raise calFileReadExcept, "XML file is type %s (expected CAL_MuSlope)" % type
+
+        # create empty data array
+
+        slopeData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                 calConstant.NUM_FE, calConstant.NUM_RNG, 2), Numeric.Float32)
+
+        # find <tower> elements
+
+        tList = self.getDoc().xpath('.//tower')
+        for t in tList:
+
+            tRow = int(t.getAttributeNS(None, 'iRow'))
+            tCol = int(t.getAttributeNS(None, 'iCol'))
+            tem = towerToTem(tCol, tRow)
+
+            # find <layer> elements
+
+            lList = t.xpath('.//layer')
+            for l in lList:
+
+                layer = int(l.getAttributeNS(None, 'iLayer'))
+                row = layerToRow(layer)
+
+                # find <xtal> elements
+
+                xList = l.xpath('.//xtal')
+                for x in xList:
+
+                    fe = int(x.getAttributeNS(None, 'iXtal'))
+
+                    # find <face> elements
+
+                    fList = x.xpath('.//face')
+                    for f in fList:
+
+                        face = f.getAttributeNS(None, 'end')
+                        end = POSNEG_MAP[face]
+        
+                        # find <muSlope> elements
+
+                        mList = f.xpath('.//muSlope')
+                        for m in mList:
+
+                            erngName = m.getAttributeNS(None, 'range')
+                            erng = ERNG_MAP[erngName]
+
+                            slope = float(m.getAttributeNS(None, 'slope'))
+                            slopeData[tem, row, end, fe, erng, 0] = slope
+
+                            error = float(m.getAttributeNS(None, 'error'))
+                            slopeData[tem, row, end, fe, erng, 1] = error
+                                   
+        return slopeData                   
 
 
         
