@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Jun 15 13:58:00 PDT 2006
+calibGenCAL/src/lib
+
+Added Files:
+	CGCUtil.cxx CGCUtil.h CIDAC2ADC.cxx CIDAC2ADC.h MuTrig.cxx 
+	MuTrig.h MuonAsym.cxx MuonAsym.h MuonMPD.cxx MuonMPD.h 
+	MuonPed.cxx MuonPed.h RootFileAnalysis.cxx RootFileAnalysis.h 
+	RoughPed.cxx RoughPed.h SimpleIniFile.cxx SimpleIniFile.h 
+	TwrHodoscope.cxx TwrHodoscope.h 
+Log Message:
+calibGenCAL v4r0 - see release notes
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Jun 15 13:57:59 PDT 2006
 calibGenCAL/src
 
