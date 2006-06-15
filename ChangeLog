@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Jun 15 16:52:42 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Added calMuSlopeCalibXML class to read and write CAL_MuSlope simplified gain XML files.
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v4r0, operation: add
 Package: calibGenCAL
