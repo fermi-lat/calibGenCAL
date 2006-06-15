@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Jun 15 14:16:46 PDT 2006
+calibGenCAL/unit_test
+
+Modified Files:
+	README 
+Removed Files:
+	runSuiteParallel.cfg 
+Log Message:
+calibGenCAL v4r0 - see release notes for details
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Jun 15 14:16:45 PDT 2006
 calibGenCAL/src
 
