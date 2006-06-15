@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Jun 15 13:57:58 PDT 2006
+calibGenCAL/cfg
+
+Added Files:
+	asymMerge.cfg build_adcsmooth.cfg build_gensettings_cfg.cfg 
+	calibGenCAL_suite.cfg genFHEsettings.cfg genFLEsettings.cfg 
+	genLACsettings.cfg genULDsettings.cfg get_slac_calibdac.cfg 
+	intNonlinMerge.cfg mevPerDacMerge.cfg pedMerge.cfg 
+	runSuiteParallel.cfg tholdCIGen.cfg 
+Log Message:
+calibGenCAL v4r0 - see release notes
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Jun 15 13:57:21 PDT 2006
 calibGenCAL/src/lib
 
