@@ -1,5 +1,16 @@
 ------------------------------------------------------------
 User: fewtrell  Thu Jun 15 13:57:59 PDT 2006
+calibGenCAL/src
+
+Modified Files:
+	mainpage.h runMuTrigEff.cxx 
+Added Files:
+	genCIDAC2ADC.cxx genMuonAsym.cxx genMuonMPD.cxx genMuonPed.cxx 
+Log Message:
+calibGenCAL v4r0 - see release notes
+    *
+------------------------------------------------------------
+User: fewtrell  Thu Jun 15 13:57:59 PDT 2006
 calibGenCAL/doc
 
 Modified Files:
