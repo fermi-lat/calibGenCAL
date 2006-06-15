@@ -1,4 +1,3 @@
 calibGenCAL/unit_test contains:
-        - set of cfg files for running 2 tower calibGenCAL suite on 8 tower calibration data 
         - environment is expected to be SLAC linux as data files are available via nfs
         - correct output is saved in unit_test/output
