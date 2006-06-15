@@ -1,4 +1,18 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Jun 15 14:12:56 PDT 2006
+calibGenCAL/python/cfg
+
+Removed Files:
+	asymMerge.cfg build_adcsmooth.cfg build_gensettings_cfg.cfg 
+	ciFit_option_template.xml genFHEsettings.cfg 
+	genFLEsettings.cfg genLACsettings.cfg genULDsettings.cfg 
+	get_slac_calibdac.cfg intNonlinMerge.cfg mevPerDacMerge.cfg 
+	muTrigEff_option_template.xml muonCalib_option_template.xml 
+	pedMerge.cfg runSuiteParallel.cfg tholdCIGen.cfg 
+Log Message:
+calibGenCAL v4r0 - see release notes for details
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Jun 15 14:09:44 PDT 2006
 calibGenCAL/output
 
