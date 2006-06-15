@@ -13,7 +13,7 @@ Prerequisites
 
 
 Windows -vs- Linux
-Each calibGenCAL python app XYZ has 2 shell launcer scripts, XYZ.bat for windows use & XYZ.sh for Linux use.  In this doc, when you see runThisScript.<bat|sh>, execute the appropriate script for your operating system.
+Each calibGenCAL python app XYZ has 2 shell launcher scripts, XYZ.bat for windows use & XYZ.sh for Linux use.  In this doc, when you see runThisScript.<bat|sh>, execute the appropriate script for your operating system.
 
 1) setup calibGenCAL CMT environment
    - ensure that CMTPATH points to desired release of EngineeringModel suite and calibGenCAL package

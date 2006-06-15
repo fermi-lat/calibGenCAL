@@ -1,10 +1,16 @@
 // (Special "header" just for doxygen)
+// $Header$
 
-/*! @mainpage  package calibGenCAL
+
+/*! 
+  @mainpage  package calibGenCAL
+  @author Zach Fewtrell
+
+  <h3> Introduction </h3>
 
 This package contains codes to generate and study calibration
 constants for CAL using muon and charge injection data. The package
-generates the following calibrations for use in offline software.
+generates the following calibrations for use in offline software:
 
 
 - <b> Pedestal Noise </b> 
@@ -15,72 +21,49 @@ generates the following calibrations for use in offline software.
       10 points along each crystal length.
 
 - <b> Integral Nonlinearity </b> 
-      adc2dac conversion in all 4 ranges.
+      adc2cidac conversion in all 4 ranges.
       Corrects for nonlinearity in adc scale.
 
 - \b MevPerDAC  
-  Relationship of total energy deposited to the
+  Ratio of total energy deposited in crystal to the
   geometric mean of the DAC values at both ends of the xtal.  Onboard
-  DAC scale units are used for calculation b/c it is much more linear
-  than ADC scale.
+  Charge Injection (CIDAC) scale units are used for calculation b/c it is 
+  more linear than ADC scale.
 
 - \b Thresholds  
   Measurement of FLE & FHE triggers, ULD & LAC thresholds in ADC units.
 
  
-<h5> Applications:</h5>
+<h3> C++ Applications:</h3>
 -  \b runMuTrigEff.exe
+      calculate FLE threshold vs Muon deposit & charge injection.
+      calculate bias between the two.
 
--  \b runCIFit.exe  
-      Generates spline function points for adc2dac
-      conversions. Reads digi root files containing charge injection
+-  \b genCIDAC2ADC.exe
+      Generate spline function points for adc2cidac
+      conversions. Read digi root files containing charge injection
       calibration data. Expected test configuration is described in code.
-      Reads config in from ciFit_option.xml, use
-      ciFit_option_badCalibGen.xml if charge injection test used wrong
-      calib_gain setting.
 
--  \b runMuonCalib.exe  
-   Reads data from one or more muon collection
-   digi root files and produces calibration constant files in XML
-   format (pedestals,asymetry and MevPerDAC). It also produces root
-   histogram files for studying the quality of the calibration
-   constants. The executable takes input from muonCalib_option.xml,
-   use muonCalib_option_badCalibGen.xml for CI tests w/ wrong
-   calib_gain setting.
+- \b genMuonPed.exe
+   Generate ADC pedestals from 4-range non-zero suppressed event data.
+
+- \b genMuonAsym.exe
+   Generate light-asymmetry calibration from muon event data.
+
+- \b genMuonMPD.exe
+   Generate MeVPerDAC calibration from muon event data.
 
 
-<b> Shared Classes & Headers: </b>
-- \b CalDefs.h 
-     Collection of classes used for contiguous indexing of
-     different cal components. Supports numerous conversions, incremen, and
-     field get/set() routines.  Also contains useful Cal constant
-     definitions.
-
-- \b RootFileAnalysis 
-  This class provides generic root file playback
-  for Glast ROOT format event data.  This functionality was extracted
-  from RootAnalysis/RootFileAnalysis.cxx. It allows the user to treat
-  an arbitrary collection of digi/mc/recon GLAST root data as a
-  collection of events which may be stepped through/'seeked'/rewound,
-  etc...  Intended to be inherited by application specific class that
-  provides the data structures, event loop & output code.
-
-- \b CGCUtil.h 
-     contains generic, non-GLAST related functions which are shared 
-     throughout the calibGenCAL package. (string, stream & vector manipulation, 
-     etc...).
-
-
-<h5> Python Script Utilities: </h5>
+<h3> Python scripts: </h3>
 
 The calibGenCAL python utilites have been tested using Python 2.3 and
 Python 2.4.
 
 Their use also requires that the following python extensions be installed:
-- \b Numeric
-- \b 4Suite-XML
+- Numeric
+- 4Suite-XML
 
-<h5> general usage: launcher scripts  </h5>
+<h5> Python general usage: launcher scripts  </h5>
 For each calibGenCAL python script XYZ.py there exists on XYZ.bat
 script for windows shell use and one XYZ.sh launcher script for Linux
 shell use. The 'xxx.sh' scripts have UNIX executable permission
@@ -90,29 +73,9 @@ python script simply by typing the name of the appropriate
 launcher script into the shell. All commandline paramters to the
 launcher script will be passeed directly onto the python script.
 
-<h5> general usage: commandline usage  </h5>
+<h5> Python general usage: commandline usage  </h5>
 Most calibGenCAL python scripts will display commandline usage instructions to terminal 
 if they are invoked w/ no arguments.
-
-
-<h5> cfg files </h5>
-Sample configuration scripts for these tools are included in the 
-python/cfg folder.  
-
-<h5> runSuiteParallel </h5>
-
-This tool will run the following tools in order:
-- ciFit
-- muonCalib
-- muTrig
-- merge scripts
-- validation scripts.
-It will loop through & process multiple towers & merge their output into single file.
-It uses a config file, but each section can be disable from the commandline.  Also
-the commandline can force single tower mode.  This allows the long processing to 
-be broken up over multiple processors w/out having to write multiple cfg files.  
-
-example cfg is in python/cfg/runSuiteParallel.cfg command line usage can be obtained w/ runSuiteParallel -h.
 
 <h5> gensettings toplevel scripts </h5>
 
@@ -192,8 +155,8 @@ clean characterization tables to work well (e.g. genXXXsettings).
 - <tt> pedVal       [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
 - <tt> tholdCIVal   [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
 - <tt> charVal      [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> dacVal       [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC <MeV> <cfg_file> <dac_xml_file>
-- <tt> checkXML     [xml_file_0 xml_file_1 ...]
+- <tt> dacVal       [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC <MeV> <cfg_file> <dac_xml_file></tt>
+- <tt> checkXML     [xml_file_0 xml_file_1 ...]</tt>
 
 The validation scripts perform simple checks on the values and formats
 of the various CAL calibration XML file types.  The checks are usually nothing more than limit and
@@ -239,23 +202,16 @@ Each of the TXT2XML scripts converts one offline calibration file type
 from space delimited TXT file to proper XML file format.
 
 
-<h5> unit test </h5>
+<h3> cfg files </h3>
+Sample configuration scripts for python and C++ tools are included in the cfg folder.  
+
+<h3> unit test </h3>
 
 <p>the unit_test subfolder contains cfg files & validated output for most of the calibGenCAL applications.
-It selects 2 towers from an 8 tower data run for speed purposes, saving time but still testing  multi-tower
-functionality.</p>
-
 <p>unit_test/output contains the validated output:</p>
 
-<p>the unit test runs the following apps</p>
-- runSuiteParallel
-- ciFit
-- muonCalib
-- muTrig
-- merge
-- validation
-- tholdCIGen
-- the gensettings & adcsmooth scripts are tested indirectly as they are required to run the tholdIGen
-script successfully.
+<h3> other docs </h3>
+- \b calibGenCAL/doc/calibGenCAL_configurationRecord_howto.txt - generate online dac settings with calibGenCAL python scripts.
+- \b calibGenCAL/doc/gensettings_scripts.html - in depth description of dac settings tools
 
 */

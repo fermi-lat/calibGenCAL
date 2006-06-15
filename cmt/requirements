@@ -1,38 +1,37 @@
 package calibGenCAL
-
 private 
 
-branches src doc xml output 
+branches src doc cfg unit_test python
 
 use GlastPolicy   
 use digiRootData  
-use xmlBase      
-use Event         
 use facilities    
-use calibUtil     
 use reconRootData 
 use mcRootData    
+use CalUtil
+use calibUtil
 
 # make sure we have all graphical root libraries linked (stolen from rootanalysis)
 # used for line fitting in muonCalib
 macro_append ROOT_libs " -lHist -lGraf -lGpad " \
-             WIN32 " ${ROOT_PATH}/lib/libHist.lib ${ROOT_PATH}/lib/libGraf.lib ${ROOT_PATH}/lib/libGpad.lib "
+             WIN32 " ${ROOT_PATH}/lib/libHist.lib \
+             ${ROOT_PATH}/lib/libGraf.lib \
+             ${ROOT_PATH}/lib/libGpad.lib "
 
 # append needed executables & batch scripts to system path
 path_append PATH ${CALIBGENCALROOT}/python
-path_append PATH ${CALIBGENCALROOT}/${tag}
+path_append PATH ${CALIBGENCALROOT}/${CMTCONFIG}
 
+apply_pattern shared_library
 
+library calibGenCAL  lib/*.cxx lib/*.h 
 
-application runMuonCalib runMuonCalib.cxx MuonCalib.cxx McCfg.cxx RootFileAnalysis.cxx CGCUtil.cxx CalDefs.cxx MuonCalib.h CGCUtil.h CalDefs.h
+application genMuonPed genMuonPed.cxx
 
-application runCIFit runCIFit.cxx CfCfg.cxx RootFileAnalysis.cxx CGCUtil.cxx CalDefs.cxx CfCfg.h CGCUtil.h  CalDefs.h CfData.cxx CfData.h CfRoot.h CfRoot.cxx
+application genCIDAC2ADC genCIDAC2ADC.cxx
 
-application runMuTrigEff runMuTrigEff.cxx MtCfg.cxx RootFileAnalysis.cxx CGCUtil.cxx CalDefs.cxx CGCUtil.h MtCfg.h  CalDefs.h 
+application genMuonAsym genMuonAsym.cxx
 
-application runMuThreshEvol runMuThreshEvol.cxx TeCfg.cxx RootFileAnalysis.cxx CGCUtil.cxx CalDefs.cxx CGCUtil.h TeCfg.h  CalDefs.h
+application genMuonMPD genMuonMPD.cxx 
 
-
-
-
-
+application runMuTrigEff runMuTrigEff.cxx 

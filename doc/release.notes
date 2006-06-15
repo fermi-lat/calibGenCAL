@@ -326,3 +326,24 @@ v3r9p7 fewtrell
 
 v3r9p8 fewtrell
 - documentation updates
+
+--------------------------------------
+v4r0 fewtrell
+--------------------------------------
+* C++ apps now process 16 towers in parallel
+* Most C++ code moved to library & shared between apps
+* huge MuonCalib class broken into several smaller, more modular classes in libcalibGenCAL
+* old C++ apps replaced, new apps are:
+	- genMuonPed.exe
+	- genCIDAC2ADC.exe
+	- genMuonAsym.exe
+	- genMuonMPD.exe
+	- runMuTrigEff.exe
+* runSuiteParallel dropped as it is no longer needed
+* python/cfg folder moved to top level as cfg files are shared by both C++ and python apps
+* CalDefs, CalVec & CalArrray classes now imported from CalUtil v3r0 where they are shared w/ the Gaudi apps
+* MuonPed & CIDAC2ADC now have adc histograms bins aligned to 0.5 instead of 0.0 eliminating bias since all inputs are integer.
+* MuonMPD has slightly smarter track selection code
+* MuTrigEff has slightly smarter MuonThreshold fitting code.
+* C++ config files are now .ini format instead of .xml.  they are shorter & easier to edit and read.  in fact all the apps share the same cfg file.
+* runMuThreshEvol.exe has been removed.
