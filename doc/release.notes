@@ -347,3 +347,7 @@ v4r0 fewtrell
 * MuTrigEff has slightly smarter MuonThreshold fitting code.
 * C++ config files are now .ini format instead of .xml.  they are shorter & easier to edit and read.  in fact all the apps share the same cfg file.
 * runMuThreshEvol.exe has been removed.
+
+
+v4r0p1 chekhtman
+- added new application emiAnal to process EMI test data
