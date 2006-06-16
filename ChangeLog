@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Fri Jun 16 13:29:08 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	genFlightGain.py genFlightPed.py 
+Log Message:
+Added more ancillary information to comments put in output header.
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v4r0p1, operation: add
 Package: calibGenCAL
