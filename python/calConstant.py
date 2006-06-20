@@ -6,8 +6,8 @@ Global calorimeter constant values
 __facility__      = "Online"
 __abstract__      = "Global calorimeter constant values"
 __author__        = "D.L. Wood"
-__date__          = "$Date: 2005/09/09 17:39:24 $"
-__version__       = "$Revision: 1.8 $, $Author: dwood $"
+__date__          = "$Date: 2006/06/12 19:38:30 $"
+__version__       = "$Revision: 1.9 $, $Author: dwood $"
 __release__       = "$Name:  $"
 __credits__       = "NRL code 7650"
 
@@ -55,6 +55,11 @@ CLEHE = ('LE','HE', 'BOTH')
 # Calorimeter DAC range to name mapping
 
 CDAC = ('FINE', 'COARSE')
+
+# Calorimeter symbolic names for DAC range indicies
+
+CDAC_FINE   = 0
+CDAC_COARSE = 1
 
 # Number of calorimeter faces
 
