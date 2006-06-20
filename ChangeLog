@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Tue Jun 20 12:15:34 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	genFlightGain.py genFlightPed.py 
+Log Message:
+Improved annotation info put into output file comments.
+
+    *
+------------------------------------------------------------
 User: dwood  Tue Jun 20 08:51:34 PDT 2006
 calibGenCAL/python
 
