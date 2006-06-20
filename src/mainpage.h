@@ -1,5 +1,5 @@
 // (Special "header" just for doxygen)
-// $Header$
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/mainpage.h,v 1.33 2006/06/15 20:57:59 fewtrell Exp $
 
 
 /*! 
@@ -187,20 +187,26 @@ configuration file specifies the input data sets and tower addressing.
 The -V option increases the verbosity of the diagnostic output.
 
 <h5> conversion scripts </h5>
-For converting xml files to and from columnar text.
+For converting xml files to and from columnar text and other formats.
 
 - <tt> asymTXT2XML [-doptional.dtd] <input.txt> <output.xml> </tt>
 - <tt> pedTXT2XML [-doptional.dtd] <input.txt> <output.xml> </tt>
 - <tt> mpdTXT2XML [-doptional.dtd] <input.txt> <output.xml> </tt>
-- tholdciXML2TXT.py
-- pedXML2TXT.py
-- asymXML2TXT.py
-- mpdXML2TXT.py
-- tholdCIXML2TXT.py
+- <tt> tholdciXML2TXT.py </tt>
+- <tt> pedXML2TXT.py </tt>
+- <tt> asymXML2TXT.py </tt>
+- <tt> mpdXML2TXT.py </tt>
+- <tt> tholdCIXML2TXT.py </tt>
+- <tt> genFlightPed [-o] [-v] [-k <key>] <ped_xml_file> </tt>
+- <tt> genFlightGain [-o] [-v] [-k <key>] <gain_xml_file> </tt>
+
 
 Each of the TXT2XML scripts converts one offline calibration file type
 from space delimited TXT file to proper XML file format.
 
+The genFlightGain script converts a CAL_Ped XML file into a 'cal_pedestals.h' file for use in FSW on-board filter code
+
+The genFlightGain script converts a CAL_MuSlope XML file into a 'cal_gains.h' file for use in FSW on-board filter code
 
 <h3> cfg files </h3>
 Sample configuration scripts for python and C++ tools are included in the cfg folder.  

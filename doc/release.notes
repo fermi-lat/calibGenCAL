@@ -351,3 +351,16 @@ v4r0 fewtrell
 
 v4r0p1 chekhtman
 - added new application emiAnal to process EMI test data
+
+--------------------------------------
+v4r1 dwood
+--------------------------------------
+
+* Added tool genFlightPed to provide flight software pedestal values taken
+  from a CAL_Ped file
+* Added tool genFlightGain to provide flight software simplfied gain values taken
+  from a CAL_MuSlope file
+* Added class calMuSlopeCalibXML to library module calCalibXML to handle reading
+  and writing of CAL_MuSlope files
+  
+
