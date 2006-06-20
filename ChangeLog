@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Tue Jun 20 08:51:34 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	calConstant.py 
+Log Message:
+Added constants CDAC_FINE and CDAC_COARSE to index DAC ranges.
+
+    *
+------------------------------------------------------------
 User: dwood  Fri Jun 16 13:29:08 PDT 2006
 calibGenCAL/python
 
