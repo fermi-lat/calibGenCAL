@@ -9,8 +9,8 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Prepares config and commands to run gensettings scripts"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2006/05/01 19:40:06 $"
-__version__   = "$Revision: 1.12 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/21 18:43:13 $"
+__version__   = "$Revision: 1.13 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -90,12 +90,12 @@ if len(configsections) == 0:
 cmdbat = open("run_"+fileroot+".bat","w")
 cmdbat.write("if not defined CALIBGENCALROOT goto :ERROR\n")
 cmdbat.write("setlocal\n")
-cmdbat.write("set PYTHONPATH=%CALIBGENCALROOT%/python/lib;%PYTHONROOT%;"+"\n")
+cmdbat.write("set PYTHONPATH=%CALIBGENCALROOT%/python/lib;%ROOTSYS%/bin;%PYTHONPATH%;"+"\n")
 
 # open .sh file for run commands
 cmdsh = open("run_"+fileroot+".sh", "w")
 cmdsh.write("#! /bin/sh\n")
-cmdsh.write("PYTHONPATH=${CALIBGENCALROOT}/python/lib:${PYTHONPATH}\n")
+cmdsh.write("PYTHONPATH=${CALIBGENCALROOT}/python/lib:${ROOTSYS}/bin:${PYTHONPATH}\n")
 cmdsh.write("export PYTHONPATH\n")
 
 CALIBGENCALROOT = os.environ["CALIBGENCALROOT"]
