@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: dwood  Wed Jun 21 11:43:14 PDT 2006
+calibGenCAL/python/lib
+
+Added Files:
+	.cvsignore calADCFilter.py calCalibXML.py calConstant.py 
+	calDacXML.py calExcept.py calFitsXML.py calXML.py mpfit.py 
+Log Message:
+Put low level python modules in lib subdirectory; changed all scripts so that PYTHONPATH is set appropriately.
+
+    *
+------------------------------------------------------------
 User: dwood  Wed Jun 21 11:43:13 PDT 2006
 calibGenCAL/python
 
