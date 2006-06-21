@@ -6,8 +6,8 @@ Classes to represent CAL hardware settings XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL DAC settings XML documents"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/04/25 13:48:39 $"
-__version__   = "$Revision: 1.23 $, $Author: dwood $"
+__date__      = "$Date: 2006/05/12 21:31:59 $"
+__version__   = "$Revision: 1.24 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 

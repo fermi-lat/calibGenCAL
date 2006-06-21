@@ -6,8 +6,8 @@ Global calorimeter constant values
 __facility__      = "Online"
 __abstract__      = "Global calorimeter constant values"
 __author__        = "D.L. Wood"
-__date__          = "$Date: 2006/06/12 19:38:30 $"
-__version__       = "$Revision: 1.9 $, $Author: dwood $"
+__date__          = "$Date: 2006/06/20 15:51:34 $"
+__version__       = "$Revision: 1.10 $, $Author: dwood $"
 __release__       = "$Name:  $"
 __credits__       = "NRL code 7650"
 

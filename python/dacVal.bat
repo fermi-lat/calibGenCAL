@@ -3,7 +3,7 @@
 if not defined CALIBGENCALROOT goto :ERROR
 
 setlocal
-set PYTHONROOT=%CALIBGENCALROOT%\python;%ROOTSYS%\bin;%PYTHONROOT%;
+set PYTHONPATH=%CALIBGENCALROOT%\python\lib;%ROOTSYS%\bin;%PYTHONPATH%;
 python %CALIBGENCALROOT%\python\dacVal.py %1 %2 %3 %4 %5 %6 %7 %8 %9
 endlocal
 goto EXIT
