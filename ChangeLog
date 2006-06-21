@@ -1,4 +1,40 @@
 ------------------------------------------------------------
+User: dwood  Wed Jun 21 11:43:13 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	adc2nrgVal.bat adc2nrgVal.sh adcplot.bat adcplot.sh 
+	adcsmooth.bat adcsmooth.sh asymMerge.bat asymMerge.sh 
+	asymTXT2XML.bat asymTXT2XML.sh asymVal.bat asymVal.sh 
+	asymXML2TXT.bat asymXML2TXT.sh biasVal.bat biasVal.sh 
+	build_adcsmooth.bat build_adcsmooth.py build_adcsmooth.sh 
+	build_gensettings_cfg.bat build_gensettings_cfg.sh 
+	build_tholdci_cfg.bat build_tholdci_cfg.sh charVal.bat 
+	charVal.sh charplot.bat charplot.sh checkXML.bat checkXML.sh 
+	dacVal.bat dacVal.sh dumpROOTPlots.bat dumpROOTPlots.sh 
+	genFHEsettings.bat genFHEsettings.sh genFLEsettings.bat 
+	genFLEsettings.sh genFlightGain.sh genFlightPed.bat 
+	genFlightPed.sh genGainSettings.bat genGainSettings.sh 
+	genLACsettings.bat genLACsettings.sh genULDsettings.bat 
+	genULDsettings.sh gensettings.bat gensettings.py 
+	gensettings.sh get_slac_calibdac.bat get_slac_calibdac.sh 
+	inlXML2TXT.bat inlXML2TXT.sh intNonlinMerge.bat 
+	intNonlinMerge.sh intNonlinVal.bat intNonlinVal.sh 
+	mevPerDacMerge.bat mevPerDacMerge.sh mevPerDacVal.bat 
+	mevPerDacVal.sh mpdTXT2XML.bat mpdTXT2XML.sh mpdXML2TXT.bat 
+	mpdXML2TXT.sh pedMerge.bat pedMerge.sh pedTXT2XML.bat 
+	pedTXT2XML.sh pedVal.bat pedVal.sh pedXML2TXT.bat 
+	pedXML2TXT.sh tholdCIGen.bat tholdCIGen.sh tholdCIVal.bat 
+	tholdCIVal.sh tholdCIXML2TXT.bat tholdCIXML2TXT.sh uldVal.bat 
+	uldVal.sh 
+Removed Files:
+	calADCFilter.py calCalibXML.py calConstant.py calDacXML.py 
+	calExcept.py calFitsXML.py mpfit.py 
+Log Message:
+Put low level python modules in lib subdirectory; changed all scripts so that PYTHONPATH is set appropriately.
+
+    *
+------------------------------------------------------------
 User: dwood  Tue Jun 20 17:06:25 PDT 2006
 calibGenCAL/python/lib
 
