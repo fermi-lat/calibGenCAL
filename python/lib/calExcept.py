@@ -6,9 +6,9 @@ Calorimeter specific exception classes
 __facility__      = "Offline"
 __abstract__      = "Calorimeter specific exception classes"
 __author__        = "D.L.Wood"
-__date__          = "$Date: 2005/04/26 03:09:15 $"
-__version__       = "$Revision: 1.3 $, $Author: fewtrell $"
-__release__       = "$Name: v3r6p15 $"
+__date__          = "$Date: 2005/07/28 22:38:29 $"
+__version__       = "$Revision: 1.4 $, $Author: fewtrell $"
+__release__       = "$Name:  $"
 __credits__       = "NRL code 7650"
 
 

@@ -1,7 +1,7 @@
 #! /bin/sh
-#$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/charVal.sh,v 1.2 2006/03/14 22:42:44 fewtrell Exp $
+#$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/checkXML.sh,v 1.1 2006/04/03 17:05:05 dwood Exp $
 
-PYTHONPATH=${CALIBGENCALROOT}/python:${PYTHONPATH}
+PYTHONPATH=${CALIBGENCALROOT}/python/lib:${PYTHONPATH}
 export PYTHONPATH
 
 python ${CALIBGENCALROOT}/python/checkXML.py "$@"

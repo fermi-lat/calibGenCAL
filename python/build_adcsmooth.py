@@ -10,8 +10,8 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Build batch file containing commands to run adcsmooth filtering script"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2006/03/14 22:42:43 $"
-__version__   = "$Revision: 1.11 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/04/28 17:10:38 $"
+__version__   = "$Revision: 1.12 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -27,8 +27,8 @@ from optparse import OptionParser
 
 usage = 'build_adcsmooth [-f fileroot][--file fileroot]'
 
-# finds files for gensettings and creates bat file with adcsmooth commands to produce filtered files
-# NOTE:  folder must contain only one file for ea module and type
+# finds files for gensettings and creates bat and sh files with adcsmooth commands to produce filtered files
+# NOTE:  folder must contain only one file for each module and type
 # for the desired gensettings cfg file. Script has no way of distinguishing
 # multiple files of the same module and type but different dates
 
@@ -72,9 +72,16 @@ if len(detsections) == 0:
 CALIBGENCALROOT = os.environ["CALIBGENCALROOT"]
 
 
-# open batch file to receive adcsmooth commands
+# open batch files to receive adcsmooth commands
 
 cmdbat = open('adcsmooth.bat','w')
+cmdsh = open('adcsmooth.sh', 'w')
+
+cmdsh.write('PYTHONPATH=${CALIBGENCALROOT}/python/lib:${ROOTSYS}/bin:${PYTHONPATH}\n')
+cmdsh.write('export PYTHONPATH\n')
+
+cmdbat.write('setlocal\n')
+cmdbat.write('set PYTHONPATH=%CALIBGENCALROOT%/python/lib;%ROOTSYS%/bin;%PYTHONPATH%\n')
 
 def process_file(filename, validate = True):
     """ create commandlines for adcsmooth, charplot & charVal, append to both cmdbat & cmdsh scripts files """
@@ -89,19 +96,22 @@ def process_file(filename, validate = True):
               filename + " " + smoothname + "\n"
     log.info(cmdline)
     cmdbat.write(cmdline)
+    cmdsh.write(cmdline)
 
     # charplot: .bat
     cmdline = r"python %s/python/charplot.py  "%CALIBGENCALROOT+\
               filename + " " + smoothname + " " + plotname + "\n"
     log.info(cmdline)
     cmdbat.write(cmdline)
-
+    cmdsh.write(cmdline)
     if (validate):
         # charVal: .bat
         cmdline = r"python %s/python/charVal.py  "%CALIBGENCALROOT+\
                   " -R " + valplotname + " -L " + logname + " " + smoothname + "\n"
         log.info(cmdline)
         cmdbat.write(cmdline)
+        cmdsh.write(cmdline)
+
 
 # loop over modules
 
@@ -174,8 +184,13 @@ for idet in detsections:
             process_file(lacname)
 	if uldname != 'skip':
             process_file(uldname)
-# close output file and terminate
+            
+# close output files and terminate
+
+cmdbat.write('endlocal')
+
 cmdbat.close()
+cmdsh.close()
 
 sys.exit(0)
 
