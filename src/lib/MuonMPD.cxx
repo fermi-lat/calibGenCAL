@@ -1,7 +1,7 @@
-// $Header$
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.cxx,v 1.1 2006/06/15 20:58:00 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "MuonMPD.h"
@@ -28,7 +28,7 @@ static const float CELL_VERT_PITCH = 21.35;
 /// horizontal pitch (mm) of cal xtals
 static const float CELL_HOR_PITCH  = 27.84;
 
-  
+const float MuonMPD::MUON_ENERGY = 11.2;
 
 
 MuonMPD::MuonMPD(ostream &ostrm) :
@@ -45,7 +45,7 @@ void MuonMPD::initHists(){
   m_dacLLHists.resize(XtalIdx::N_VALS);
   m_dacL2SHists.resize(XtalIdx::N_VALS);
   m_dacL2SSlopeProfs.resize(XtalIdx::N_VALS);  
-
+  
   for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
     string tmp = genHistName("dacLL", xtalIdx);
     m_dacLLHists[xtalIdx] = new TH1S(tmp.c_str(),
@@ -69,7 +69,7 @@ void MuonMPD::initHists(){
   } 
 }
 
-void MuonMPD::fillHists(unsigned nEvents,
+void MuonMPD::fillHists(unsigned nEntries,
                         const vector<string> &rootFileList, 
                         const MuonPed &peds,
                         const MuonAsym &asym,
@@ -80,8 +80,10 @@ void MuonMPD::fillHists(unsigned nEvents,
   // enable only needed branches in root file
   rootFile.getDigiChain()->SetBranchStatus("*",0);
   rootFile.getDigiChain()->SetBranchStatus("m_calDigiCloneCol");
+  rootFile.getDigiChain()->SetBranchStatus("m_summary");
 
-  nEvents = min<unsigned>(nEvents, rootFile.getEntries());
+
+  unsigned nEvents = rootFile.getEntries();
   m_ostrm << __FILE__ << ": Processing: " << nEvents << " events." << endl;
 
   ////////////////////////////////////////////////////
@@ -115,8 +117,14 @@ void MuonMPD::fillHists(unsigned nEvents,
   // DIGI Event Loop - Fill Twr Hodoscopes //
   ///////////////////////////////////////////
   for (unsigned eventNum = 0; eventNum < nEvents; eventNum++) {
-    if (eventNum % 1000 == 0) {
-      m_ostrm << "Event: " << eventNum << endl;
+
+    if (eventNum % 10000 == 0) {
+      // quit if we have enough entries in each histogram
+      unsigned currentMin = getMinEntries();
+      if (currentMin >= nEntries) break;
+      m_ostrm << "Event: " << eventNum 
+              << " min entries per histogram: " << currentMin
+              << endl;
       m_ostrm.flush();
     }
 
@@ -125,11 +133,17 @@ void MuonMPD::fillHists(unsigned nEvents,
       continue;
     }
 
-    const DigiEvent *digiEvent = rootFile.getDigiEvent();
+    DigiEvent *digiEvent = rootFile.getDigiEvent();
     if (!digiEvent) {
       m_ostrm << __FILE__ << ": Unable to read DigiEvent " << eventNum  << endl;
       continue;
     }
+
+    // check that we are in 4 range mode
+    EventSummaryData &summary = digiEvent->getEventSummaryData();
+    if (!summary.readout4())
+      continue;
+
     const TClonesArray* calDigiCol = digiEvent->getCalDigiCol();
     if (!calDigiCol) {
       m_ostrm << "no calDigiCol found for event#" << eventNum << endl;
@@ -245,8 +259,11 @@ void MuonMPD::fillHists(unsigned nEvents,
 
           for (XtalDiode xDiode; xDiode.isValid(); xDiode++) {
             DiodeIdx diodeIdx(xtalIdx, xDiode);
+            RngNum x8Rng = diodeIdx.getDiode().getX8Rng();
+            FaceNum face = xDiode.getFace();
+            RngIdx rngIdx(xtalIdx, face, x8Rng);
             // calculate DAC vals
-            dacs[i][xDiode] = dac2adc.adc2dac(diodeIdx, 
+            dacs[i][xDiode] = dac2adc.adc2dac(rngIdx, 
                                               hscope.adc_ped[diodeIdx.getTDiodeIdx()]);
           }
         
@@ -255,7 +272,7 @@ void MuonMPD::fillHists(unsigned nEvents,
                              / dacs[i][XtalDiode(NEG_FACE,LRG_DIODE)]);
 
           // get new position from asym
-          float hitPos = asym.asym2pos(xtalIdx,asymLL);
+          float hitPos = asym.asym2pos(xtalIdx, LRG_DIODE, asymLL);
 
           graph.SetPoint(i,lyr,hitPos);
         }
@@ -340,7 +357,7 @@ void MuonMPD::fitHists() {
     float mean  = (histLL.GetFunction("landau"))->GetParameter(1);
     float sigma = (histLL.GetFunction("landau"))->GetParameter(2);
 
-    m_mpd[LRG_DIODE][xtalIdx] = 11.2/mean;
+    m_mpd[LRG_DIODE][xtalIdx] = MUON_ENERGY/mean;
 
     // keep sigma proportional to extrapolated val
     m_mpdErr[LRG_DIODE][xtalIdx] = 
@@ -530,3 +547,87 @@ string MuonMPD::genHistName(const string &type,
       << "_" << xtalIdx.val();
   return tmp.str();
 }
+
+unsigned MuonMPD::getMinEntries() {
+  unsigned retVal = ULONG_MAX;
+
+  unsigned long sum = 0;
+  unsigned n        = 0;
+  unsigned maxHits  = 0;
+
+  for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
+    unsigned nEntries = (unsigned)m_dacLLHists[xtalIdx]->GetEntries();
+    
+    // only count histograms that have been filled 
+    // (some histograms will never be filled if we are
+    // not using all 16 towers)
+    if (nEntries != 0) {
+      sum += nEntries;
+      n++;
+      retVal = min(retVal,nEntries);
+      maxHits = max(maxHits,nEntries);
+    }
+  }
+
+
+  m_ostrm << " Channels Detected: "  << n
+          << " Avg Hits/channel: " << (double)sum/n
+          << " Max: " << maxHits
+          << endl;
+
+  // case where there are no fills at all
+  if (retVal == ULONG_MAX)
+    return 0;
+
+  return retVal;
+}
+
+void MuonMPD::writeADC2NRG(const string &filename,
+                           const MuonAsym &asym,
+                           const CIDAC2ADC &dac2adc) {
+  ofstream outfile(filename.c_str());
+
+  if (!outfile.is_open())
+    throw string("Unable to open " + filename);
+
+  for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
+    TwrNum twr = rngIdx.getTwr();
+    LyrNum lyr = rngIdx.getLyr();
+    ColNum col = rngIdx.getCol();
+    FaceNum face = rngIdx.getFace();
+    RngNum rng = rngIdx.getRng();
+    DiodeNum diode = rng.getDiode();
+    XtalIdx xtalIdx = rngIdx.getXtalIdx();
+    float mpd = m_mpd[diode][xtalIdx];
+
+    if (mpd == INVALID_MPD)
+      continue;
+
+    // get asymmetry measured at ctr of xtal (gives us relative gain between xtal faces)
+
+    // 0.25 would normally be 0.5, but it is applied equally to both sides
+    // so we split it in half.
+    float asym_ctr = 0.25*asym.pos2asym(xtalIdx,
+                                        diode,
+                                        6.0); // is center of xtal, coords range from 0-12
+    asym_ctr = exp(asym_ctr);
+
+    float dac = MUON_ENERGY/mpd;
+
+    dac = (face == POS_FACE) ?
+      dac * asym_ctr :
+      dac / asym_ctr;
+
+    float adc     = dac2adc.dac2adc(rngIdx, dac*asym_ctr);
+    float adc2nrg = MUON_ENERGY/adc;
+    outfile << twr
+            << " " << lyr 
+            << " " << col
+            << " " << face.val()
+            << " " << rng.val()
+            << " " << adc2nrg
+            << " " << 0 // error calc
+            << endl;
+  }
+}
+

@@ -1,6 +1,6 @@
 #ifndef MuonPed_h
 #define MuonPed_h
-// $Header$
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.h,v 1.1 2006/06/15 20:58:00 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
  */
@@ -40,9 +40,10 @@ class MuonPed {
   /// Fill muonpedhist histograms w/ nEvt event data
   /// \param rootFilename.  input digi event file
   /// \param histFilename.  output root file for histograms.
-  void fillHists(unsigned nEvts, 
+  void fillHists(unsigned nEntries, 
                  const vector<string> &rootFileList, 
-                 const RoughPed &roughPeds); 
+                 const RoughPed &roughPeds,
+                 bool periodicTrigger); 
 
   /// Fit muonpedhist[]'s, assign means to m_calMuonPed
   void fitHists(); 
@@ -73,10 +74,13 @@ class MuonPed {
   /// allocate & create muon pedestal histograms & pointer array
   void initHists(); 
 
+  /// count min number of entries in all enable histograms
+  unsigned getMinEntries();
+
   /// list of histograms for 'muon' pedestals
   CalVec<RngIdx, TH1S*> m_histograms; 
 
-  /// 'muon' first pass cal pedestals, all signals used (i.e. 'hits' and 'misses'), indexed by RngIdx()
+  /// output pedestal data.
   CalVec<RngIdx, float> m_peds; 
   /// corresponding err values for m_calMuonPed
   CalVec<RngIdx, float> m_pedSig; 

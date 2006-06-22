@@ -1,6 +1,6 @@
 #ifndef RootFileAnalysis_h
 #define RootFileAnalysis_h
-// $Header$
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/RootFileAnalysis.h,v 1.1 2006/06/15 20:58:00 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
  */
@@ -54,9 +54,9 @@ class RootFileAnalysis {
   /// by EventID field
   UInt_t getEvent(UInt_t iEvt);
 
-  const McEvent   *getMcEvent() const {return m_mcEvt;}
-  const DigiEvent *getDigiEvent() const {return m_digiEvt;}
-  const ReconEvent  *getRecEvent() const {return m_recEvt;}
+  McEvent   *getMcEvent() const {return m_mcEvt;}
+  DigiEvent *getDigiEvent() const {return m_digiEvt;}
+  ReconEvent  *getRecEvent() const {return m_recEvt;}
 
   TChain *getMcChain()   {return &m_mcChain;}
   TChain *getDigiChain() {return &m_digiChain;}

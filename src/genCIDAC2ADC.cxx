@@ -1,4 +1,4 @@
-// $Header$
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.1 2006/06/15 20:57:59 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
  */
@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
   // broadcast mode
   bool bcastMode = cfgFile.getVal("CIDAC2ADC",
                                   "BCAST_MODE",
-                                  false);
+                                  true);
 
   // txt output filename
   string outputTXTFile;

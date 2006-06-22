@@ -1,4 +1,4 @@
-// $Header$
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CIDAC2ADC.cxx,v 1.1 2006/06/15 20:57:59 fewtrell Exp $
 /** @file
     @author fewtrell
  */
@@ -489,8 +489,8 @@ void CIDAC2ADC::makeGraphs(TFile &histFile) {
 
 
 void CIDAC2ADC::genSplines() {
-  m_splinesADC2DAC.resize(DiodeIdx::N_VALS,0);
-  m_splinesDAC2ADC.resize(DiodeIdx::N_VALS,0);
+  m_splinesADC2DAC.resize(RngIdx::N_VALS, 0);
+  m_splinesDAC2ADC.resize(RngIdx::N_VALS, 0);
 
   // ROOT functions take double arrays, not vectors 
   // so we need to copy each vector into an array
@@ -499,16 +499,12 @@ void CIDAC2ADC::genSplines() {
   double *dacs = new double[arraySize];
   double *adcs = new double[arraySize];
 
-  for (DiodeIdx diodeIdx; diodeIdx.isValid(); diodeIdx++) {
-    // get x8 range for this diode
-    RngIdx x8rngIdx(diodeIdx.getFaceIdx(), 
-                    diodeIdx.getDiode().getX8Rng());
-
-    vector<float> &adcVec = m_splinePtsADC[x8rngIdx];
+  for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
+    vector<float> &adcVec = m_splinePtsADC[rngIdx];
     int nADC = adcVec.size();
     
     // Load up
-    vector<float> &dacVec = m_splinePtsDAC[x8rngIdx];
+    vector<float> &dacVec = m_splinePtsDAC[rngIdx];
     int nDAC = dacVec.size();
     
     // skip channel if we have no data.
@@ -518,10 +514,9 @@ void CIDAC2ADC::genSplines() {
     if (nADC != nDAC) {
       ostringstream tmp;
       tmp << __FILE__  << ":"     << __LINE__ << " " 
-          << "nDAC != nADC for diodeIdx = " << diodeIdx.val();
+          << "nDAC != nADC for rngIdx = " << rngIdx.val();
       throw tmp.str();
     }
-      
 
     // expand arrays if necessary
     if (nDAC > arraySize) {
@@ -539,19 +534,19 @@ void CIDAC2ADC::genSplines() {
 
     // generate splinename
     ostringstream name;
-    name << "intNonlin_" << diodeIdx.val();
+    name << "intNonlin_" << rngIdx.val();
     ostringstream nameInv;
-    nameInv << "intNonlinInv_" << diodeIdx.val();
+    nameInv << "intNonlinInv_" << rngIdx.val();
 
     // create spline object.
     TSpline3 *mySpline    = new TSpline3(name.str().c_str(), adcs, dacs, nADC);
     TSpline3 *mySplineInv = new TSpline3(nameInv.str().c_str(), dacs, adcs, nADC);
 
     mySpline->SetName(name.str().c_str());
-    m_splinesADC2DAC[diodeIdx] = mySpline;
+    m_splinesADC2DAC[rngIdx] = mySpline;
 
     mySplineInv->SetName(name.str().c_str());
-    m_splinesDAC2ADC[diodeIdx] = mySplineInv;
+    m_splinesDAC2ADC[rngIdx] = mySplineInv;
   }
 
   // cleanup

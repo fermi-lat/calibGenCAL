@@ -1,6 +1,6 @@
 #ifndef RoughPed_h
 #define RoughPed_h
-// $Header$
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/RoughPed.h,v 1.1 2006/06/15 20:58:00 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
  */
@@ -39,8 +39,9 @@ class RoughPed {
   /// Fill roughpedhist histograms w/ nEvt event data
   /// \param rootFilename.  input digi event file
   /// \param histFilename.  output root file for histograms.
-  void fillHists(unsigned nEvts, 
-                 const vector<string> &rootFileList); 
+  void fillHists(unsigned nEntries, 
+                 const vector<string> &rootFileList,
+                 bool periodicTrigger); 
 
   /// Fit roughpedhist[]'s, assign means to m_calRoughPed
   void fitHists(); 
@@ -74,6 +75,9 @@ class RoughPed {
  private:
   /// allocate & create rough pedestal histograms & pointer array
   void initHists(); 
+
+  /// count min number of entries in all enable histograms
+  unsigned getMinEntries();
 
   /// list of histograms for 'rough' pedestals
   CalVec<FaceIdx, TH1S*> m_histograms; 
