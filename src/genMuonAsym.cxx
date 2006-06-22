@@ -1,4 +1,4 @@
-// $Header$
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.1 2006/06/15 20:57:59 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
  */
@@ -134,9 +134,9 @@ int main(int argc, char **argv) {
                               "txt",
                               outputTXTFile);
 
-  unsigned nEvents = cfgFile.getVal<unsigned>("MUON_ASYM", 
-                                              "N_EVENTS",
-                                              ULONG_MAX); // process all events by default.
+  unsigned nEntries = cfgFile.getVal<unsigned>("MUON_ASYM", 
+                                               "ENTRIES_PER_HIST",
+                                               10000);
 
   // read in Hist file?
   bool readInHists = cfgFile.getVal("MUON_ASYM",
@@ -157,13 +157,13 @@ int main(int argc, char **argv) {
     histFile.reset(new TFile(histFilename.c_str(), "RECREATE", "CAL Muon Asymmetry", 9));
     
     logStrm << __FILE__ << ": reading root event file(s) starting w/ " << rootFileList[0] << endl;
-    asym.fillHists(nEvents,
+    asym.fillHists(nEntries,
                    rootFileList,
                    peds,
                    dac2adc);
   }
-    
 
+  asym.summarizeHists(logStrm);
     
   logStrm << __FILE__ << ": fitting muon asymmmetry histograms." << endl;
   asym.fitHists();

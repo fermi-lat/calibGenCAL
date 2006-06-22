@@ -1,7 +1,7 @@
 #ifndef CGCUtil_H
 #define CGCUtil_H
 
-//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CGCUtil.h,v 1.11 2006/01/13 17:25:58 fewtrell Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CGCUtil.h,v 1.1 2006/06/15 20:57:59 fewtrell Exp $
 
 // LOCAL INCLUDES
 
@@ -26,7 +26,7 @@ using namespace std;
 
 namespace CGCUtil {
 
-  const string CVS_TAG("$Name: v0r9p2 $");
+  const string CVS_TAG("$Name:  $");
 
   /// Template function fills any STL type container with zero values
   template <class T> static void fill_zero(T &container) {
@@ -81,11 +81,13 @@ namespace CGCUtil {
       multiplexor_ostream() : ios(0), ostream(new multiplexor_streambuf()){}
       virtual ~multiplexor_ostream() { delete rdbuf(); }
   
-      streamvector& getostreams() { return ((multiplexor_streambuf*)rdbuf())->_streams; }
+      streamvector& getostreams() { 
+        return ((multiplexor_streambuf*)rdbuf())->_streams; 
+      }
     };
 
-  /// Output string w/ username, hostname, time, relevant CMT package versions & paths
-  /// to ostream
+  /// Output string w/ username, hostname, time, relevant CMT package versions 
+  /// & paths to ostream
   /// output is in multi line text format
   void output_env_banner(ostream &ostrm);
 
@@ -134,6 +136,16 @@ namespace CGCUtil {
 
     return hist_ptr;
   } 
+
+  /// return minimum value from an STL vector
+  template<typename T> const T& max_val(const vector<T> &vec) {
+    return *(max_element(vec.begin(),vec.end()));
+  }
+
+  /// return minimum value from an STL vector
+  template<typename T> const T& min_val(const vector<T> &vec) {
+    return *(min_element(vec.begin(),vec.end()));
+  }
 };
 
 #endif // CGCUtil_H

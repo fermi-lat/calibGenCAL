@@ -1,4 +1,4 @@
-// $Header$
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.1 2006/06/15 20:57:59 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
  */
@@ -161,9 +161,9 @@ int main(int argc, char **argv) {
                              "txt",
                              outputTXTFile);
 
-  unsigned nEvents = cfgFile.getVal<unsigned>("MUON_MPD", 
-                                              "N_EVENTS",
-                                              ULONG_MAX); // process all events by default.
+  unsigned nEntries = cfgFile.getVal<unsigned>("MUON_MPD", 
+                                               "ENTRIES_PER_HIST",
+                                               3000); 
 
   // read in Hist file?
   bool readInHists = cfgFile.getVal("MUON_MPD",
@@ -184,7 +184,7 @@ int main(int argc, char **argv) {
     histFile.reset(new TFile(histFilename.c_str(), "RECREATE", "CAL Muon MPD", 9));
     
     logStrm << __FILE__ << ": reading root event file(s) starting w/ " << rootFileList[0] << endl;
-    mpd.fillHists(nEvents,
+    mpd.fillHists(nEntries,
                   rootFileList,
                   peds,
                   asym,
@@ -196,6 +196,18 @@ int main(int argc, char **argv) {
 
   logStrm << __FILE__ << ": writing muon mpd: " << outputTXTFile << endl;
   mpd.writeTXT(outputTXTFile);
+
+  string adc2nrgFile;
+  MuonMPD::genOutputFilename(outputDir,
+                             rootFileList[0],
+                             "adc2nrg.txt",
+                             adc2nrgFile);
+  
+  logStrm << __FILE__ << ": writing muon adc2nrg: " << adc2nrgFile << endl;
+  mpd.writeADC2NRG(adc2nrgFile, asym, dac2adc);
+
+  
+
   if (!readInHists) {
     logStrm << __FILE__ << ": writing histogram file: " << histFilename << endl;
     histFile->Write();

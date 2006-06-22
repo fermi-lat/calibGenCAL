@@ -1,4 +1,4 @@
-// $Header$
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.cxx,v 1.1 2006/06/15 20:58:00 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
  */
@@ -41,9 +41,10 @@ void MuonPed::initHists() {
   }
 }
 
-void MuonPed::fillHists(unsigned nEvents, 
+void MuonPed::fillHists(unsigned nEntries, 
                         const vector<string> &rootFileList, 
-                        const RoughPed &roughPeds) {
+                        const RoughPed &roughPeds,
+                        bool periodicTrigger) {
 
   // build histograms
   initHists();
@@ -53,28 +54,72 @@ void MuonPed::fillHists(unsigned nEvents,
   // enable only needed branches in root file
   rootFile.getDigiChain()->SetBranchStatus("*",0);
   rootFile.getDigiChain()->SetBranchStatus("m_calDigiCloneCol");
+  if (periodicTrigger) {
+    rootFile.getDigiChain()->SetBranchStatus("m_gem");
+    rootFile.getDigiChain()->SetBranchStatus("m_summary");
+  }
 
-  nEvents = min<unsigned>(nEvents, rootFile.getEntries());
+  unsigned nEvents = rootFile.getEntries();
   m_ostrm << __FILE__ << ": Processing: " << nEvents << " events." << endl;
 
 
   // Basic digi-event loop
+  bool prev4Range = true; // in periodic trigger mode we will skip these events
+  bool fourRange  = true;
   for (unsigned eventNum = 0; eventNum < nEvents; eventNum++) {
-    if (eventNum % 1000 == 0) {
-      m_ostrm << "Event: " << eventNum << endl;
+    // save previous mode
+    prev4Range = fourRange;
+
+    if (eventNum % 2000 == 0) {
+      // quit if we have enough entries in each histogram
+      unsigned currentMin = getMinEntries();
+      if (currentMin >= nEntries) break;
+      m_ostrm << "Event: " << eventNum 
+              << " min entries per histogram: " << currentMin
+              << endl;
       m_ostrm.flush();
     }
 
     if (!rootFile.getEvent(eventNum)) {
       m_ostrm << "Warning, event " << eventNum << " not read." << endl;
+      fourRange = true;
       continue;
     }
 
-    const DigiEvent *digiEvent = rootFile.getDigiEvent();
+    DigiEvent *digiEvent = rootFile.getDigiEvent();
     if (!digiEvent) {
       m_ostrm << __FILE__ << ": Unable to read DigiEvent " << eventNum  << endl;
+      fourRange = true;
       continue;
     }
+
+    if (periodicTrigger) {
+      // quick check if we are in 4-range mode
+      EventSummaryData& summary = digiEvent->getEventSummaryData();
+      if (&summary == 0) {
+        m_ostrm << "Warning, gem data not found for event: "
+                << eventNum << endl;
+        fourRange = true;
+        continue;
+      }
+      fourRange = summary.readout4();
+
+      const Gem& gem = digiEvent->getGem();
+      if (&gem==0) {
+        m_ostrm << "Warning, gem data not found for event: "
+                << eventNum << endl;
+        continue;
+      }
+
+      float gemDeltaEventTime = gem.getDeltaEventTime()*0.05;
+      int gemConditionsWord = gem.getConditionSummary();
+      if(gemConditionsWord != 32 ||  // skip unless we are periodic trigger only
+         prev4Range              ||  // avoid bias from 4 range readout in prev event
+         gemDeltaEventTime < 2000) {   // avoid bias from shaped readout noise from adjacent event
+        continue;
+      }
+    }
+
     const TClonesArray* calDigiCol = digiEvent->getCalDigiCol();
     if (!calDigiCol) {
       m_ostrm << "no calDigiCol found for event#" << eventNum << endl;
@@ -129,8 +174,8 @@ void MuonPed::fillHists(unsigned nEvents,
             // check that we are in the expected readout mode
             RngNum rng = readout.getRange((CalXtalId::XtalFace)face.val());
             int adc = readout.getAdc((CalXtalId::XtalFace)face.val());
-            RngIdx rngIdxP(xtalIdx, face, rng);
-            m_histograms[rngIdxP]->Fill(adc);
+            RngIdx rngIdx(xtalIdx, face, rng);
+            m_histograms[rngIdx]->Fill(adc);
           }
         }
       }
@@ -242,4 +287,26 @@ string MuonPed::genHistName(RngIdx rngIdx) {
   ostringstream tmp;
   tmp << "muonpeds_" << rngIdx.val();
   return tmp.str();
+}
+
+unsigned MuonPed::getMinEntries() {
+  unsigned retVal = ULONG_MAX;
+
+  for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
+    RngIdx rngIdx(xtalIdx, POS_FACE, LEX8);
+    unsigned nEntries = (unsigned)m_histograms[rngIdx]->GetEntries();
+    
+    // only count histograms that have been filled 
+    // (some histograms will never be filled if we are
+    // not using all 16 towers)
+    if (nEntries != 0) {
+      retVal = min(retVal,nEntries);
+    }
+  }
+
+  // case where there are no fills at all
+  if (retVal == ULONG_MAX)
+    return 0;
+
+  return retVal;
 }

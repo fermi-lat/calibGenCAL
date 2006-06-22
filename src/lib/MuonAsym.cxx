@@ -1,7 +1,7 @@
-// $Header$
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.cxx,v 1.1 2006/06/15 20:58:00 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "MuonAsym.h"
@@ -65,7 +65,7 @@ void MuonAsym::initHists(){
     } 
 }
 
-void MuonAsym::fillHists(unsigned nEvents,
+void MuonAsym::fillHists(unsigned nEntries,
                          const vector<string> &rootFileList, 
                          const MuonPed &peds,
                          const CIDAC2ADC &dac2adc) {
@@ -75,8 +75,9 @@ void MuonAsym::fillHists(unsigned nEvents,
   // enable only needed branches in root file
   rootFile.getDigiChain()->SetBranchStatus("*",0);
   rootFile.getDigiChain()->SetBranchStatus("m_calDigiCloneCol");
+  rootFile.getDigiChain()->SetBranchStatus("m_summary");
 
-  nEvents = min<unsigned>(nEvents, rootFile.getEntries());
+  unsigned nEvents = rootFile.getEntries();
   m_ostrm << __FILE__ << ": Processing: " << nEvents << " events." << endl;
 
   int  nGoodDirs  = 0; // count total # of events used
@@ -90,9 +91,16 @@ void MuonAsym::fillHists(unsigned nEvents,
   CalVec<TwrNum, TwrHodoscope> hscopes(TwrNum::N_VALS, TwrHodoscope(peds));
 
   // Basic digi-event loop
+  
   for (unsigned eventNum = 0; eventNum < nEvents; eventNum++) {
-    if (eventNum % 1000 == 0) {
-      m_ostrm << "Event: " << eventNum << endl;
+    if (eventNum % 10000 == 0) {
+      // quit if we have enough entries in each histogram
+      unsigned currentMin = getMinEntries();
+      if (currentMin >= nEntries) break;
+
+      m_ostrm << "Event: " << eventNum 
+              << " min entries per histogram: " << currentMin
+              << endl;
       m_ostrm.flush();
     }
 
@@ -101,11 +109,17 @@ void MuonAsym::fillHists(unsigned nEvents,
       continue;
     }
 
-    const DigiEvent *digiEvent = rootFile.getDigiEvent();
+    DigiEvent *digiEvent = rootFile.getDigiEvent();
     if (!digiEvent) {
       m_ostrm << __FILE__ << ": Unable to read DigiEvent " << eventNum  << endl;
       continue;
     }
+
+    // check that we are in 4 range mode
+    EventSummaryData &summary = digiEvent->getEventSummaryData();
+    if (!summary.readout4())
+      continue;
+
     const TClonesArray* calDigiCol = digiEvent->getCalDigiCol();
     if (!calDigiCol) {
       m_ostrm << "no calDigiCol found for event#" << eventNum << endl;
@@ -174,7 +188,10 @@ void MuonAsym::fillHists(unsigned nEvents,
           bool badDAC = false;
           for (XtalDiode xDiode; xDiode.isValid(); xDiode++) {
             DiodeIdx diodeIdx(xtalIdx, xDiode);
-            dac[xDiode] = dac2adc.adc2dac(diodeIdx, hscope.adc_ped[diodeIdx.getTDiodeIdx()]);
+            RngNum x8Rng = xDiode.getDiode().getX8Rng();
+            FaceNum face = xDiode.getFace();
+            RngIdx rngIdx(xtalIdx, face, x8Rng);
+            dac[xDiode] = dac2adc.adc2dac(rngIdx, hscope.adc_ped[diodeIdx.getTDiodeIdx()]);
             
             // can't take log so we must quit here.
             if (dac[xDiode] <= 0) badDAC = true;
@@ -192,6 +209,11 @@ void MuonAsym::fillHists(unsigned nEvents,
                              dac[XtalDiode(NEG_FACE, asymType.getDiode(NEG_FACE))]);
             m_histograms[asymType][xtalIdx]->Fill(pos, asym);
           }
+          //           m_ostrm << "HIT: " << eventNum 
+          //                   << " " << xtalIdx.val() 
+          //                   << " " << m_histograms[ASYM_SS][xtalIdx]->GetEntries()
+          //                   << endl;
+          
           
           nHits++;
         } // per hit loop
@@ -205,6 +227,16 @@ void MuonAsym::fillHists(unsigned nEvents,
   m_ostrm << " nHits measured="       << nHits
           << " Bad hits="             << nBadHits
           << endl;
+
+}
+
+void MuonAsym::summarizeHists(ostream &ostrm) {
+  ostrm << "XTAL\tNHITS" << endl;
+  for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++)
+    ostrm << xtalIdx.val() << "\t"
+          << m_histograms[ASYM_SS][xtalIdx]->GetEntries()
+          << endl;
+  
 }
 
 void MuonAsym::fitHists() {
@@ -313,7 +345,13 @@ void MuonAsym::readTXT(const string &filename){
 
 
 void MuonAsym::buildSplines(){
-  m_a2pSplines.resize(XtalIdx::N_VALS,0);
+  m_a2pSplines.resize(DiodeNum::N_VALS);
+  m_p2aSplines.resize(DiodeNum::N_VALS);
+
+  for (DiodeNum diode; diode.isValid(); diode++) {
+    m_a2pSplines[diode].fill(0);
+    m_p2aSplines[diode].fill(0);
+  }
 
   // create position (Y-axis) array
   // linearly extrapolate for 1st and last points (+2 points)
@@ -323,31 +361,57 @@ void MuonAsym::buildSplines(){
   double asym[N_ASYM_PTS+2];
 
   // PER XTAL LOOP
-  for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
-    // skip empty channels
-    if (m_asym[ASYM_LL][xtalIdx].size() != N_ASYM_PTS)
-      continue;
+  for (DiodeNum diode; diode.isValid(); diode++) {
+    AsymType asymType(diode,diode);
+    for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
+      // skip empty channels
+      if (m_asym[asymType][xtalIdx].size() != N_ASYM_PTS)
+        continue;
     
-    // copy asym vector into middle of array
-    vector<float> &asymVec = m_asym[ASYM_LL][xtalIdx];
-    copy(asymVec.begin(), asymVec.end(), asym+1);
+      // copy asym vector into middle of array
+      vector<float> &asymVec = m_asym[asymType][xtalIdx];
+      copy(asymVec.begin(), asymVec.end(), asym+1);
 
-    // extrapolate 1st & last points
-    asym[0] = 2*asym[1] - asym[2];
-    asym[N_ASYM_PTS+1] = 2*asym[N_ASYM_PTS]-asym[N_ASYM_PTS-1];
+      // extrapolate 1st & last points
+      asym[0] = 2*asym[1] - asym[2];
+      asym[N_ASYM_PTS+1] = 2*asym[N_ASYM_PTS]-asym[N_ASYM_PTS-1];
 
-    //generate splinename
-    ostringstream name;
-    name << "asym2pos_" << xtalIdx.val();
+      { 
+        //generate splinename
+        ostringstream name;
+        name << "asym2pos_" << xtalIdx.val() << "_" << diode.val();
 
-    // create spline object
-    TSpline3 *mySpline= new TSpline3(name.str().c_str(), 
-                                     asym, pos, N_ASYM_PTS+2);
-    mySpline->SetName(name.str().c_str());
-    m_a2pSplines[xtalIdx] = mySpline;
+        // create spline object
+        TSpline3 *mySpline= new TSpline3(name.str().c_str(), 
+                                         asym, pos, N_ASYM_PTS+2);
+        mySpline->SetName(name.str().c_str());
+
+        
+        
+        m_a2pSplines[diode][xtalIdx] = mySpline;
+      }
+
+      // create inverse spline object
+      {
+        //generate splinename
+        ostringstream name;
+        name << "pos2asym_" << xtalIdx.val() << "_" << diode.val();
+
+        // create spline object
+        TSpline3 *mySpline= new TSpline3(name.str().c_str(), 
+                                         pos, asym, N_ASYM_PTS+2);
+        mySpline->SetName(name.str().c_str());
+
+//         cout << mySpline->GetName() << " ";
+//         for (int i = 0; i < N_ASYM_PTS+2; i++)
+//           cout << pos[i] << " " << asym[i] << " ";
+//         cout << endl;
+
+        m_p2aSplines[diode][xtalIdx] = mySpline;
+      }
+    }
   }
 }
-
 void MuonAsym::loadHists(const string &filename) {
   m_histograms.resize(AsymType::N_VALS);
   TFile histFile(filename.c_str(), "READ");
@@ -374,4 +438,38 @@ string MuonAsym::genHistName(AsymType asymType, XtalIdx xtalIdx) {
       << asymType.getDiode(NEG_FACE).val() 
       << "_" << xtalIdx.val();
   return tmp.str();
+}
+
+
+unsigned MuonAsym::getMinEntries() {
+  unsigned retVal = ULONG_MAX;
+
+  unsigned long sum = 0;
+  unsigned n = 0;
+  unsigned maxHits = 0;
+
+  for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
+    unsigned nEntries = (unsigned)m_histograms[ASYM_SS][xtalIdx]->GetEntries();
+
+    // only count histograms that have been filled 
+    // (some histograms will never be filled if we are
+    // not using all 16 towers)
+    if (nEntries != 0) {
+      sum += nEntries;
+      n++;
+      retVal = min(retVal,nEntries);
+      maxHits = max(maxHits,nEntries);
+    }
+  }
+
+  m_ostrm << " Channels Detected: "  << n
+          << " Avg Hits/channel: " << (double)sum/n
+          << " Max: " << maxHits
+          << endl;
+
+  // case where there are no fills at all
+  if (retVal == ULONG_MAX)
+    return 0;
+
+  return retVal;
 }
