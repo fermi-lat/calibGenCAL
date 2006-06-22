@@ -1,4 +1,19 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Jun 22 14:50:23 PDT 2006
+calibGenCAL/src/lib
+
+Modified Files:
+	CGCUtil.h CIDAC2ADC.cxx CIDAC2ADC.h MuonAsym.cxx MuonAsym.h 
+	MuonMPD.cxx MuonMPD.h MuonPed.cxx MuonPed.h RootFileAnalysis.h 
+	RoughPed.cxx RoughPed.h TwrHodoscope.cxx 
+Log Message:
+adc2nrg output
+most C++ apps now stop at min entries per histogram instead of n events
+peds can cut for periodic trigger.
+MevPerDAC & asym will skip 1 range readout.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Jun 22 14:50:22 PDT 2006
 calibGenCAL/src
 
