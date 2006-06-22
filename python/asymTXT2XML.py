@@ -17,8 +17,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL Asymmetry calibration XML files from TXT."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2005/09/15 18:15:08 $"
-__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/02/22 21:20:06 $"
+__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -125,7 +125,7 @@ if __name__ == '__main__':
     nLine = -1
     for line in lines:
         nLine+=1
-        [twr,lyr,col,pdiode,ndiode,xpos,asym,sig] = line.split()
+        [twr,lyr,col,pdiode,ndiode,asym,sig] = line.split()
 
         # convert array index values to integer.
         twr = int(twr)
@@ -133,7 +133,6 @@ if __name__ == '__main__':
         col = int(col)
         pdiode = int(pdiode)
         ndiode = int(ndiode)
-        xpos   = float(xpos)
         asym   = float(asym)
         sig    = float(sig)
 

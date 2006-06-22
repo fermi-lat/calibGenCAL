@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Ped calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/07/28 22:38:29 $"
-__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/09/09 17:39:24 $"
+__version__   = "$Revision: 1.8 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -35,6 +35,8 @@ import Numeric
 import calCalibXML
 import calConstant
 
+x8errLimit = 0.0
+x1errLimit = 0.0
 
 def rootHists(errData):
 
@@ -50,7 +52,7 @@ def rootHists(errData):
     for erng in range(0, 4, 2):
 
         hName = "h_Summary_x8_%s" % calConstant.CRNG[erng]       
-        hs = ROOT.TH1F(hName, 'Ped_x8_Summary', 100, 0.0, errLimit)
+        hs = ROOT.TH1F(hName, 'Ped_x8_Summary', 100, 0.0, x8errLimit)
         hs.SetLineColor(erng + 1)
         hs.SetStats(False)
         sumHists[erng] = hs
@@ -95,7 +97,7 @@ def rootHists(errData):
     for erng in range(1, 4, 2):
 
         hName = "h_Summary_x1_%s" % calConstant.CRNG[erng]       
-        hs = ROOT.TH1F(hName, 'Ped_x1_Summary', 100, 0.0, errLimit)
+        hs = ROOT.TH1F(hName, 'Ped_x1_Summary', 100, 0.0, x1errLimit)
         hs.SetLineColor(erng + 1)
         hs.SetStats(False)
         sumHists[erng] = hs
