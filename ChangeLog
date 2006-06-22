@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Jun 22 10:52:13 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	asymTXT2XML.py asymXML2TXT.py pedVal.py 
+Log Message:
+asym TXT format no longer has xpos field
+pedVal script had bug in rootHist() method
+
+    *
+------------------------------------------------------------
 User: dwood  Wed Jun 21 13:05:31 PDT 2006
 calibGenCAL/python
 
