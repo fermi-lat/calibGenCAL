@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Fri Jun 23 08:32:01 PDT 2006
+calibGenCAL/python
+
+Added Files:
+	dacSlopesGen.py dacSlopesGen.sh 
+Log Message:
+Added program to generate dacSlopes calib file; still in work.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Jun 22 14:50:23 PDT 2006
 calibGenCAL/src/lib
 
