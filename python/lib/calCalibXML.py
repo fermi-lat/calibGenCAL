@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/15 23:52:42 $"
-__version__   = "$Revision: 1.42 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/21 18:43:14 $"
+__version__   = "$Revision: 1.1 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -357,7 +357,7 @@ class calTholdCICalibXML(calCalibXML):
 
                         dac = int(fheDac[tem, row, end, fe])
                         adc = fheAdc[tem, row, end, fe, dac]
-                        adc += biasData[tem, row, end, fe, 0]
+                        adc += biasData[tem, row, end, fe, 1]
                         cs += 'FHE DAC = %d, ' % dac
                         tc.setAttributeNS(None, 'FHEVal', "%0.3f" % adc)
                         tc.setAttributeNS(None, 'FHESig', '1')
