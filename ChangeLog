@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Jun 26 08:08:19 PDT 2006
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+libMinuit required w/ ROOT v5r10 for certain fits to work (particularly intNonlin)
+
+    *
+------------------------------------------------------------
 User: dwood  Fri Jun 23 12:38:07 PDT 2006
 calibGenCAL/python/lib
 
