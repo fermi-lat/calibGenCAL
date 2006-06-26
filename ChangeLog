@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Mon Jun 26 13:45:20 PDT 2006
+calibGenCAL/python
+
+Added Files:
+	muSlopeVal.bat muSlopeVal.py muSlopeVal.sh 
+Log Message:
+Added application to do basic validation on CAL_MuSlope calibration XML file data.
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Jun 26 12:56:31 PDT 2006
 calibGenCAL/python
 
