@@ -6,8 +6,8 @@ Classes and functions to read and write CAL XML files derived from FITS data set
 __facility__  = "Offline"
 __abstract__  = "Class to read and write CAL XML files derived from FITS data sets"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/26 18:53:09 $"
-__version__   = "$Revision: 1.3 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/26 19:02:22 $"
+__version__   = "$Revision: 1.4 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -342,7 +342,7 @@ class calFitsXML(calXML.calXML):
 
                             s = ''                        
                             for gain in range(9):
-                                s += '%0.03f,' % data[gain, tem, erng, layer, end, fe]
+                                s += '%0.03f,' % data[gain, erng, tem, layer, end, fe]
                             
                             e.appendChild(self.__doc.createTextNode(s.rstrip(',')))
 
