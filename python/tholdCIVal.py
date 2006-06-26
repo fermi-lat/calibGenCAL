@@ -18,8 +18,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Thold_CI calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/05/03 16:15:36 $"
-__version__   = "$Revision: 1.16 $, $Author: dwood $"
+__date__      = "$Date: 2006/05/03 17:47:01 $"
+__version__   = "$Revision: 1.17 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
