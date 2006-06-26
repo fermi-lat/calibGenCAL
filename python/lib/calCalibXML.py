@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/23 19:36:33 $"
-__version__   = "$Revision: 1.2 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/23 19:38:06 $"
+__version__   = "$Revision: 1.3 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -32,6 +32,8 @@ ERNG_MAP = {'LEX8' : calConstant.CRNG_LEX8, 'LEX1' : calConstant.CRNG_LEX1,
     'HEX8' : calConstant.CRNG_HEX8, 'HEX1' : calConstant.CRNG_HEX1}
 
 POSNEG_MAP = {'NEG' : 0, 'POS' : 1}
+
+DRNG_MAP = {'COARSE' : calConstant.CDAC_COARSE, 'FINE' : calConstant.CDAC_FINE}
 
 
 INTNONLIN_MAX_DATA = 256
@@ -2092,6 +2094,329 @@ class calMuSlopeCalibXML(calCalibXML):
         return slopeData                   
 
 
+
+class calDacSlopesCalibXML(calCalibXML):
+    """
+    CAL DacSlopes calibration XML file class.
+
+    This class provides methods for accessing CAL DAC/energy
+    calibration data stored in XML format.
+    """
+
+    def __init__(self, fileName, mode = MODE_READONLY):
+        """
+        Open a CAL DacSlopes calibration XML file.
+        """
+        
+        calCalibXML.__init__(self, fileName, mode)
+        
+
+    def write(self, dacData, uldData, rangeData, tems = (0,)):
+        """
+        Write data to a CAL DacSlopes XML file
+        Param: dacData - A Numeric array of shape (16, 8, 2, 12, 12).  The last
+               dimension holds the LAC, FLE, and FHE values for the channel:
+                0  = LAC DAC/energy slope
+                1  = LAC energy offset
+                2  = FLE DAC/energy slope
+                3  = FLE energy offset
+                4  = FHE DAC/energy slope
+                5  = FHE energy offset
+                6  = LAC DAC/energy slope error
+                7  = LAC energy offset error
+                8  = FLE DAC/energy slope error
+                9  = FLE energy offset error
+                10 = FHE DAC/energy slope error
+                11 = FHE energy offset error
+                
+        Param: uldData - A Numeric array of shape (3,16, 8, 2, 12, 6).  The last
+               dimension holds the ULD values for each energy range:
+                0 = ULD DAC/energy slope
+                1 = ULD energy offset
+                2 = ULD energy saturation
+                3 = ULD DAC/energy slope error 
+                4 = ULD energy offset error
+                5 = ULD energy saturation error
+                
+        Param: rangeData - A Numeric array of shape (16, 8, 2, 12, 6).  The last
+               dimension holds the DAC range (0=COARSE,1=FINE) for each DAC:
+                0 = LAC DAC range
+                1 = FLE DAC range
+                2 = FHE DAC range
+                3 = LEX8 ULD DAC range
+                4 = LEX1 ULD DAC range
+                5 = HEX8 ULD DAC range
+                
+        Param: tems A list of TEM ID's to write out.
+        """
+
+        doc = self.getDoc()        
+
+        # insert root document element <calCalib>
+
+        r = doc.createElementNS(None, 'calCalib')
+        doc.appendChild(r)
+
+        # insert <generic> element
+
+        g = self.genericWrite('CAL_DacSlopes')
+        r.appendChild(g)
+
+        # insert <dimension> element  
+
+        d = self.dimensionWrite()            
+        r.appendChild(d)
+
+        for tem in tems:
+
+            # insert <tower> element
+
+            (iCol, iRow) = temToTower(tem)
+            t = doc.createElementNS(None, 'tower')
+            t.setAttributeNS(None, 'iRow', str(iRow))
+            t.setAttributeNS(None, 'iCol', str(iCol))
+            r.appendChild(t)
+            
+            for layer in range(calConstant.NUM_LAYER):
+
+                row = layerToRow(layer) 
+
+                # insert <layer> elements
+
+                l = doc.createElementNS(None, 'layer')
+                l.setAttributeNS(None, 'iLayer', str(layer))
+                t.appendChild(l)
+
+                c = doc.createComment('layer name = %s' % calConstant.CROW[row])
+                l.appendChild(c)
+                    
+                for fe in range(calConstant.NUM_FE):
+
+                    # insert <xtal> elements
+
+                    x = doc.createElementNS(None, 'xtal')
+                    x.setAttributeNS(None, 'iXtal', str(fe))
+                    l.appendChild(x)
+                        
+                    for end in range(calConstant.NUM_END):                      
+
+                        # insert <face> elements
+
+                        f = doc.createElementNS(None, 'face')
+                        f.setAttributeNS(None, 'end', POSNEG[end])
+                        x.appendChild(f)
+
+                        # insert <dacSlopes> element
+
+                        ds = doc.createElementNS(None, 'dacSlopes')
+                        
+                        dsVal = dacData[tem,row,end,fe,0]
+                        ds.setAttributeNS(None, 'LACSlopeVal', str(dsVal))
+                        dsVal = dacData[tem,row,end,fe,1]
+                        ds.setAttributeNS(None, 'LACOffsetVal', str(dsVal))
+                        dsVal = dacData[tem,row,end,fe,2]
+                        ds.setAttributeNS(None, 'FLESlopeVal', str(dsVal))
+                        dsVal = dacData[tem,row,end,fe,3]
+                        ds.setAttributeNS(None, 'FLEOffsetVal', str(dsVal))
+                        dsVal = dacData[tem,row,end,fe,4]
+                        ds.setAttributeNS(None, 'FHESlopeVal', str(dsVal))
+                        dsVal = dacData[tem,row,end,fe,5]
+                        ds.setAttributeNS(None, 'FHEOffsetVal', str(dsVal))
+                        dsVal = dacData[tem,row,end,fe,6]
+                        ds.setAttributeNS(None, 'LACSlopeErr', str(dsVal))
+                        dsVal = dacData[tem,row,end,fe,7]
+                        ds.setAttributeNS(None, 'LACOffsetErr', str(dsVal))
+                        dsVal = dacData[tem,row,end,fe,8]
+                        ds.setAttributeNS(None, 'FLESlopeErr', str(dsVal))
+                        dsVal = dacData[tem,row,end,fe,9]
+                        ds.setAttributeNS(None, 'FLEOffsetErr', str(dsVal))
+                        dsVal = dacData[tem,row,end,fe,10]
+                        ds.setAttributeNS(None, 'FHESlopeErr', str(dsVal))
+                        dsVal = dacData[tem,row,end,fe,11]
+                        ds.setAttributeNS(None, 'FHEOffsetErr', str(dsVal))
+                        dsVal = int(rangeData[tem,row,end,fe,0])
+                        ds.setAttributeNS(None, 'LACRange', calConstant.CDAC[dsVal])
+                        dsVal = int(rangeData[tem,row,end,fe,1])
+                        ds.setAttributeNS(None, 'FLERange', calConstant.CDAC[dsVal])
+                        dsVal = int(rangeData[tem,row,end,fe,2])
+                        ds.setAttributeNS(None, 'FHERange', calConstant.CDAC[dsVal]) 
+                        f.appendChild(ds)
+                        
+                        for erng in range(3):
+                        
+                            # insert <dacSlopesRange> element
+                        
+                            dsr = doc.createElementNS(None, 'dacSlopesRange')
+                            dsr.setAttributeNS(None, 'range', calConstant.CRNG[erng])
+                            dsrVal = uldData[erng,tem,row,end,fe,0]
+                            dsr.setAttributeNS(None, 'ULDSlopeVal', str(dsrVal))
+                            dsrVal = uldData[erng,tem,row,end,fe,1]
+                            dsr.setAttributeNS(None, 'ULDOffsetVal', str(dsrVal))
+                            dsrVal = uldData[erng,tem,row,end,fe,2]
+                            dsr.setAttributeNS(None, 'ULDSatVal', str(dsrVal))
+                            dsrVal = uldData[erng,tem,row,end,fe,3]
+                            dsr.setAttributeNS(None, 'ULDSlopeErr', str(dsrVal))
+                            dsrVal = uldData[erng,tem,row,end,fe,4]
+                            dsr.setAttributeNS(None, 'ULDOffsetErr', str(dsrVal))
+                            dsrVal = uldData[erng,tem,row,end,fe,5]
+                            dsr.setAttributeNS(None, 'ULDSatErr', str(dsrVal))
+                            dsrVal = int(rangeData[tem,row,end,fe,erng+3])
+                            dsr.setAttributeNS(None, 'ULDRange', calConstant.CDAC[dsrVal])
+                            ds.appendChild(dsr)
+                        
+
+        # write output XML file
+
+        self.writeFile()
+        
+        
+    def read(self):
+        """
+        Read data from a CAL DacSlopes XML file.
+        Returns: A tuple of references to Numeric arrays and containing the
+        calibration data (dacData, uldData, rangeData):
+        
+            dacData - A Numeric array of shape (16, 8, 2, 12, 12).  The last
+            dimension holds the LAC, FLE, and FHE values for the channel:
+                0  = LAC DAC/energy slope
+                1  = LAC energy offset
+                2  = FLE DAC/energy slope
+                3  = FLE energy offset
+                4  = FHE DAC/energy slope
+                5  = FHE energy offset
+                6  = LAC DAC/energy slope error
+                7  = LAC energy offset error
+                8  = FLE DAC/energy slope error
+                9  = FLE energy offset error
+                10 = FHE DAC/energy slope error
+                11 = FHE energy offset error
+                
+            uldData - A Numeric array of shape (3,16, 8, 2, 12, 6).  The last
+            dimension holds the ULD values for each energy range:
+                0 = ULD DAC/energy slope
+                1 = ULD energy offset
+                2 = ULD energy saturation
+                3 = ULD DAC/energy slope error 
+                4 = ULD energy offset error
+                5 = ULD energy saturation error
+                
+            rangeData - A Numeric array of shape (16, 8, 2, 12, 6).  The last
+            dimension holds the DAC range (0=COARSE,1=FINE) for each DAC:
+                0 = LAC DAC range
+                1 = FLE DAC range
+                2 = FHE DAC range
+                3 = LEX8 ULD DAC range
+                4 = LEX1 ULD DAC range
+                5 = HEX8 ULD DAC range     
+        """
+        
+        # verify file type
+
+        type =  self.getType()
+        if type != 'CAL_DacSlopes':
+            raise calFileReadExcept, "XML file is type %s (expected CAL_DacSlopes)" % type
+            
+        # create empty data arrays
+        
+        dacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW,
+            calConstant.NUM_END, calConstant.NUM_FE, 12), Numeric.Float32)
+        uldData = Numeric.zeros((3, calConstant.NUM_TEM, calConstant.NUM_ROW,
+            calConstant.NUM_END, calConstant.NUM_FE, 6), Numeric.Float32)
+        rangeData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW,
+            calConstant.NUM_END, calConstant.NUM_FE, 6), Numeric.Int16)
+
+        # find <tower> elements
+
+        tList = self.getDoc().xpath('.//tower')
+        for t in tList:
+
+            tRow = int(t.getAttributeNS(None, 'iRow'))
+            tCol = int(t.getAttributeNS(None, 'iCol'))
+            tem = towerToTem(tCol, tRow)
+
+            # find <layer> elements
+
+            lList = t.xpath('.//layer')
+            for l in lList:
+
+                layer = int(l.getAttributeNS(None, 'iLayer'))
+                row = layerToRow(layer)
+
+                # find <xtal> elements
+
+                xList = l.xpath('.//xtal')
+                for x in xList:
+
+                    fe = int(x.getAttributeNS(None, 'iXtal'))
+
+                    # find <face> elements
+
+                    fList = x.xpath('.//face')
+                    for f in fList:
+
+                        face = f.getAttributeNS(None, 'end')
+                        end = POSNEG_MAP[face]
+        
+                        # find <dacSlopes> elements
+
+                        dsList = f.xpath('.//dacSlopes')
+                        ds = dsList[0]
+                        
+                        dsVal = ds.getAttributeNS(None, 'LACSlopeVal')
+                        dacData[tem,row,end,fe,0] = float(dsVal)
+                        dsVal = ds.getAttributeNS(None, 'LACOffsetVal')
+                        dacData[tem,row,end,fe,1] = float(dsVal)
+                        dsVal = ds.getAttributeNS(None, 'FLESlopeVal')
+                        dacData[tem,row,end,fe,2] = float(dsVal)
+                        dsVal = ds.getAttributeNS(None, 'FLEOffsetVal')
+                        dacData[tem,row,end,fe,3] = float(dsVal)
+                        dsVal = ds.getAttributeNS(None, 'FHESlopeVal')
+                        dacData[tem,row,end,fe,4] = float(dsVal)
+                        dsVal = ds.getAttributeNS(None, 'FHEOffsetVal')
+                        dacData[tem,row,end,fe,5] = float(dsVal)
+                        dsVal = ds.getAttributeNS(None, 'LACSlopeErr')
+                        dacData[tem,row,end,fe,6] = float(dsVal)
+                        dsVal = ds.getAttributeNS(None, 'LACOffsetErr')
+                        dacData[tem,row,end,fe,7] = float(dsVal)
+                        dsVal = ds.getAttributeNS(None, 'FLESlopeErr')
+                        dacData[tem,row,end,fe,8] = float(dsVal)
+                        dsVal = ds.getAttributeNS(None, 'FLEOffsetErr')
+                        dacData[tem,row,end,fe,9] = float(dsVal)
+                        dsVal = ds.getAttributeNS(None, 'FHESlopeErr')
+                        dacData[tem,row,end,fe,10] = float(dsVal)
+                        dsVal = ds.getAttributeNS(None, 'FHEOffsetErr')
+                        dacData[tem,row,end,fe,11] = float(dsVal)
+                        dsVal = ds.getAttributeNS(None, 'LACRange')
+                        rangeData[tem,row,end,fe,0] = DRNG_MAP[str(dsVal)]
+                        dsVal = ds.getAttributeNS(None, 'FLERange')
+                        rangeData[tem,row,end,fe,1] = DRNG_MAP[str(dsVal)]
+                        dsVal = ds.getAttributeNS(None, 'FHERange')
+                        rangeData[tem,row,end,fe,2] = DRNG_MAP[str(dsVal)]
+
+                        # find <dacSlopesRange> elements
+
+                        dsrList = ds.xpath('.//dacSlopesRange')
+                        for dsr in dsrList:
+                            
+                            erngName = dsr.getAttributeNS(None, 'range')
+                            erng = ERNG_MAP[erngName]
+
+                            dsrVal = dsr.getAttributeNS(None, 'ULDSlopeVal')
+                            uldData[erng,tem, row, end, fe, 0] = float(dsrVal)
+                            dsrVal = dsr.getAttributeNS(None, 'ULDOffsetVal')
+                            uldData[erng,tem, row, end, fe, 1] = float(dsrVal)
+                            dsrVal = dsr.getAttributeNS(None, 'ULDSatVal')
+                            uldData[erng,tem, row, end, fe, 2] = float(dsrVal)
+                            dsrVal = dsr.getAttributeNS(None, 'ULDSlopeErr')
+                            uldData[erng,tem, row, end, fe, 3] = float(dsrVal)
+                            dsrVal = dsr.getAttributeNS(None, 'ULDOffsetErr')
+                            uldData[erng,tem, row, end, fe, 4] = float(dsrVal)
+                            dsrVal = dsr.getAttributeNS(None, 'ULDSatErr')
+                            uldData[erng,tem, row, end, fe, 5] = float(dsrVal)
+                            dsrVal = ds.getAttributeNS(None, 'ULDRange')
+                            rangeData[tem,row,end,fe,erng+3] = DRNG_MAP[str(dsrVal)]
+                                        
+        
         
 def layerToRow(layer):
     """
