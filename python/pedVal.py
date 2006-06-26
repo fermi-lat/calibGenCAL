@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Ped calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/22 17:52:13 $"
-__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/06/26 16:29:27 $"
+__version__   = "$Revision: 1.10 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -35,10 +35,66 @@ import Numeric
 import calCalibXML
 import calConstant
 
-x8errLimit = 0.0
-x1errLimit = 0.0
 
-def rootHists(errData):
+
+
+def rootHists(errData, pedData):
+
+    # create pedestal summary histogram
+    
+    sumHists = [None, None, None, None]
+    cs = ROOT.TCanvas('c_Summary_Ped', 'Summary_Ped', -1)
+    cs.cd()
+    cs.SetGrid()
+    sumLeg = ROOT.TLegend(0.88, 0.88, 0.99, 0.99)
+    
+    for erng in range(calConstant.NUM_RNG):
+    
+        hName = "h_Summary_Ped_%s" % calConstant.CRNG[erng]
+        hs = ROOT.TH1F(hName, 'Ped_Summary', 100, 0.0, 1000.0)
+        hs.SetLineColor(erng + 1)
+        hs.SetStats(False)
+        sumHists[erng] = hs
+        sumLeg.AddEntry(hs, calConstant.CRNG[erng], 'L')
+        cs.Update()  
+        
+    for tem in towers:
+        for row in range(calConstant.NUM_ROW):
+            for end in range(calConstant.NUM_END):
+                for fe in range(calConstant.NUM_FE):             
+                    for erng in range(calConstant.NUM_RNG):
+                        hs = sumHists[erng]
+                        ped = pedData[tem, row, end, fe, erng,0]
+                        hs.Fill(ped)
+                        cs.Update() 
+                        
+    hMax = 0
+    for erng in range(calConstant.NUM_RNG):
+        hs = sumHists[erng]
+        if hs.GetMaximum() > hMax:
+            hMax = hs.GetMaximum()                    
+                        
+    for erng in range(calConstant.NUM_RNG):
+
+        hs = sumHists[erng]
+        if erng == 0:
+            dopt = ''
+            axis = hs.GetXaxis()
+            axis.SetTitle('Pedestal Value (ADC)')
+            axis.CenterTitle()
+            axis = hs.GetYaxis()
+            axis.SetTitle('Counts')
+            axis.CenterTitle()
+        else:
+            dopt = 'SAME'
+            
+        hs.SetMaximum(hMax)    
+        hs.Draw(dopt)
+        cs.Update()
+
+    sumLeg.Draw()
+    cs.Update()
+    cs.Write()                         
 
     # create summary x8 sig histograms
 
@@ -52,7 +108,7 @@ def rootHists(errData):
     for erng in range(0, 4, 2):
 
         hName = "h_Summary_x8_%s" % calConstant.CRNG[erng]       
-        hs = ROOT.TH1F(hName, 'Ped_x8_Summary', 100, 0.0, x8errLimit)
+        hs = ROOT.TH1F(hName, 'Ped_x8_Summary', 100, 0.0, x8ErrLimit)
         hs.SetLineColor(erng + 1)
         hs.SetStats(False)
         sumHists[erng] = hs
@@ -65,10 +121,8 @@ def rootHists(errData):
                 for fe in range(calConstant.NUM_FE):             
                     for erng in range(0, 4, 2):
                         hs = sumHists[erng]
-                        eStr = errData[tem, row, end, fe, erng]
-                        err = eval(eStr)
-                        for e in err:
-                            hs.Fill(e)
+                        err = errData[tem, row, end, fe, erng]
+                        hs.Fill(err)
                         cs.Update()                       
     
     for erng in range(0, 4, 2):
@@ -76,6 +130,12 @@ def rootHists(errData):
         hs = sumHists[erng]
         if erng == 0:
             dopt = ''
+            axis = hs.GetXaxis()
+            axis.SetTitle('Pedestal Sigma')
+            axis.CenterTitle()
+            axis = hs.GetYaxis()
+            axis.SetTitle('Counts')
+            axis.CenterTitle()
         else:
             dopt = 'SAME'
         hs.Draw(dopt)
@@ -97,7 +157,7 @@ def rootHists(errData):
     for erng in range(1, 4, 2):
 
         hName = "h_Summary_x1_%s" % calConstant.CRNG[erng]       
-        hs = ROOT.TH1F(hName, 'Ped_x1_Summary', 100, 0.0, x1errLimit)
+        hs = ROOT.TH1F(hName, 'Ped_x1_Summary', 100, 0.0, x1ErrLimit)
         hs.SetLineColor(erng + 1)
         hs.SetStats(False)
         sumHists[erng] = hs
@@ -110,10 +170,8 @@ def rootHists(errData):
                 for fe in range(calConstant.NUM_FE):             
                     for erng in range(1, 4, 2):
                         hs = sumHists[erng]
-                        eStr = errData[tem, row, end, fe, erng]
-                        err = eval(eStr)
-                        for e in err:
-                            hs.Fill(e)
+                        err = errData[tem, row, end, fe, erng]
+                        hs.Fill(err)
                         cs.Update()                       
     
     for erng in range(1, 4, 2):
@@ -121,6 +179,12 @@ def rootHists(errData):
         hs = sumHists[erng]
         if erng == 1:
             dopt = ''
+            axis = hs.GetXaxis()
+            axis.SetTitle('Pedestal Sigma')
+            axis.CenterTitle()
+            axis = hs.GetYaxis()
+            axis.SetTitle('Counts')
+            axis.CenterTitle()
         else:
             dopt = 'SAME'
         hs.Draw(dopt)
@@ -134,8 +198,7 @@ def rootHists(errData):
 
 def calcError(pedData):
 
-    errs = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END, calConstant.NUM_FE,
-                          calConstant.NUM_RNG), Numeric.PyObject)
+    errs = pedData[...,1]
     status = 0
 
     for tem in towers:
@@ -144,34 +207,31 @@ def calcError(pedData):
                 for fe in range(calConstant.NUM_FE):
                     for erng in range(calConstant.NUM_RNG):
 
-                        err = []
-                            
-                        for ex in pedData[tem, row, end, fe, erng, 1]:
-                            
-                            err.append(ex)
-                            if erng == 0 or erng == 2:
-                                eLim = x8ErrLimit
-                                wLim = x8WarnLimit
-                            else:
-                                eLim = x1ErrLimit
-                                wLim = x1WarnLimit
+                                             
+                        ex = errs[tem, row, end, fe, erng]
+                                                   
+                        if erng == 0 or erng == 2:
+                            eLim = x8ErrLimit
+                            wLim = x8WarnLimit
+                        else:
+                            eLim = x1ErrLimit
+                            wLim = x1WarnLimit
                     
-                            if ex > wLim:
+                        if ex > wLim:
                             
-                                if ex > eLim:
-                                    msg = '%0.3f > %0.3f for %d,%s%s,%d,%s' % \
-                                        (ex, eLim, tem, calConstant.CROW[row],
-                                         calConstant.CPM[end], fe, calConstant.CRNG[erng])
-                                    log.error(msg)
-                                    status = 1
-                                else:
-                                    msg = '%0.3f > %0.3f for %d,%s%s,%d,%s' % \
-                                        (ex, wLim, tem, calConstant.CROW[row],
-                                         calConstant.CPM[end], fe, calConstant.CRNG[erng])
-                                    log.warning(msg)
+                            if ex > eLim:
+                                msg = '%0.3f > %0.3f for %d,%s%s,%d,%s' % \
+                                    (ex, eLim, tem, calConstant.CROW[row],
+                                     calConstant.CPM[end], fe, calConstant.CRNG[erng])
+                                log.error(msg)
+                                status = 1
+                            else:
+                                msg = '%0.3f > %0.3f for %d,%s%s,%d,%s' % \
+                                    (ex, wLim, tem, calConstant.CROW[row],
+                                     calConstant.CPM[end], fe, calConstant.CRNG[erng])
+                                log.warning(msg)
 
-                        errs[tem, row, end, fe, erng] = repr(err)
-
+                        
     return (status, errs)
 
 
@@ -227,7 +287,6 @@ if __name__ == '__main__':
     x1ErrLimit = (x8ErrLimit / 5.0)
     x1WarnLimit = (x8WarnLimit / 5.0)
 
-    log.debug('Using input file %s', xmlName)
     log.debug('Using sig err limit %0.3f for x8 ranges', x8ErrLimit)
     log.debug('Using sig err limit %0.3f for x1 ranges', x1ErrLimit)
     log.debug('Using sig warn limit %0.3f for x8 ranges', x8WarnLimit)
@@ -235,6 +294,7 @@ if __name__ == '__main__':
 
     # open and read XML Ped file
 
+    log.info("Reading file %s", xmlName)
     xmlFile = calCalibXML.calPedCalibXML(xmlName)
     pedData = xmlFile.read()
     towers = xmlFile.getTowers()
@@ -251,12 +311,13 @@ if __name__ == '__main__':
 
         import ROOT
 
+        log.info("Writing file %s", rootName)
         ROOT.gROOT.Reset()
         rootFile = ROOT.TFile(rootName, "recreate")
 
         # write error histograms
 
-        rootHists(errData)        
+        rootHists(errData, pedData)        
 
         # clean up
 
