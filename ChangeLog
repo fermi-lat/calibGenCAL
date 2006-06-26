@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Mon Jun 26 12:56:31 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	pedVal.py 
+Log Message:
+Removed calls to TCanvas.Update() when filling histogram; really improves performance.
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Jun 26 12:50:35 PDT 2006
 calibGenCAL/python
 
