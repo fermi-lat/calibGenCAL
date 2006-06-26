@@ -6,8 +6,8 @@ Classes and functions to read and write CAL XML files derived from FITS data set
 __facility__  = "Offline"
 __abstract__  = "Class to read and write CAL XML files derived from FITS data sets"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/05/12 21:31:59 $"
-__version__   = "$Revision: 1.22 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/21 18:43:14 $"
+__version__   = "$Revision: 1.1 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -282,7 +282,7 @@ class calFitsXML(calXML.calXML):
                         f.setAttributeNS(None, 'num', str(fe))
                         l.appendChild(f)
 
-                        for erng in range(calConstant.NUM_ERNG):
+                        for erng in range(calConstant.NUM_RNG):
 
                             e = self.__doc.createElementNS(None, 'erng')
                             e.setAttributeNS(None, 'num', str(erng))
@@ -298,7 +298,7 @@ class calFitsXML(calXML.calXML):
 
     def __writeREL(self, data, tems):
 
-        shape = (9, 1, calConstant.NUM_ERNG, calConstant.NUM_ROW, calConstant.NUM_END, calConstant.NUM_FE)
+        shape = (9, 1, calConstant.NUM_RNG, calConstant.NUM_ROW, calConstant.NUM_END, calConstant.NUM_FE)
         if data.shape != shape:
             raise calFileWriteExcept, "ADC data wrong shape: %s (expected %s)" % (data.shape, shape)
 
