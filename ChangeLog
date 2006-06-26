@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Mon Jun 26 14:27:15 PDT 2006
+calibGenCAL/python/lib
+
+Modified Files:
+	calFitsXML.py 
+Log Message:
+Fixed indexing bug in calFitsXML.__readREL() method.
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Jun 26 13:45:20 PDT 2006
 calibGenCAL/python
 
