@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Mon Jun 26 11:06:15 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	pedVal.py 
+Log Message:
+Added histogram of pedestal values in ROOT output; cleaned up code to generate pedestal sigma histograms.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Jun 26 10:01:14 PDT 2006
 calibGenCAL/python/lib
 
