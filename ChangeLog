@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Mon Jun 26 14:47:37 PDT 2006
+calibGenCAL/python/lib
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Added TEM number as part of output comments to help with debugging online/offline address translation.
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Jun 26 14:32:24 PDT 2006
 calibGenCAL/python/lib
 
