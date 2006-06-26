@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Mon Jun 26 09:29:27 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	pedVal.py 
+Log Message:
+Corrected header block comments.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Jun 26 08:08:19 PDT 2006
 calibGenCAL/cmt
 
