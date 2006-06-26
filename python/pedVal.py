@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Ped calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/26 16:29:27 $"
-__version__   = "$Revision: 1.10 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/26 18:06:15 $"
+__version__   = "$Revision: 1.11 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -242,7 +242,7 @@ if __name__ == '__main__':
 
     rootOutput = False
     x8ErrLimit = 10.0
-    x8WarnLimit = 6.0
+    x8WarnLimit = 7.0
 
     # setup logger
 
