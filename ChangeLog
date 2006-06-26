@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Jun 26 10:01:14 PDT 2006
+calibGenCAL/python/lib
+
+Modified Files:
+	calFitsXML.py 
+Log Message:
+changed calConstants.NUM_ERNG to NUM_RNG
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Jun 26 09:29:27 PDT 2006
 calibGenCAL/python
 
