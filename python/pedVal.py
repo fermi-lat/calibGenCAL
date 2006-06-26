@@ -13,15 +13,15 @@ where:
                      (default is 8.0; x1 ranges use this value / 5)
     -L <log_file>  - save console output to log text file
     -V             - verbose; turn on debug output
-    <xml_file> The CAL Int_Nonlin calibration XML file to validate.    
+    <xml_file> The CAL Ped calibration XML file to validate.    
 """
 
 
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Ped calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/09 17:39:24 $"
-__version__   = "$Revision: 1.8 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/22 17:52:13 $"
+__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
