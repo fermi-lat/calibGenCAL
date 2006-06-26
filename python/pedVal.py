@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Ped calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/26 18:06:15 $"
-__version__   = "$Revision: 1.11 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/26 18:46:17 $"
+__version__   = "$Revision: 1.12 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -66,7 +66,7 @@ def rootHists(errData, pedData):
                         hs = sumHists[erng]
                         ped = pedData[tem, row, end, fe, erng,0]
                         hs.Fill(ped)
-                        cs.Update() 
+                        
                         
     hMax = 0
     for erng in range(calConstant.NUM_RNG):
@@ -123,7 +123,7 @@ def rootHists(errData, pedData):
                         hs = sumHists[erng]
                         err = errData[tem, row, end, fe, erng]
                         hs.Fill(err)
-                        cs.Update()                       
+                                             
     
     for erng in range(0, 4, 2):
 
@@ -172,7 +172,7 @@ def rootHists(errData, pedData):
                         hs = sumHists[erng]
                         err = errData[tem, row, end, fe, erng]
                         hs.Fill(err)
-                        cs.Update()                       
+                                             
     
     for erng in range(1, 4, 2):
 
