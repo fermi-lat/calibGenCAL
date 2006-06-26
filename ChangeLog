@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Mon Jun 26 12:02:22 PDT 2006
+calibGenCAL/python/lib
+
+Modified Files:
+	calFitsXML.py 
+Log Message:
+Corrected last fix for writing relgain data.
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Jun 26 11:53:09 PDT 2006
 calibGenCAL/python/lib
 
