@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/23 19:38:06 $"
-__version__   = "$Revision: 1.3 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/26 21:30:56 $"
+__version__   = "$Revision: 1.4 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -22,8 +22,10 @@ import calConstant
 from calExcept import *
 
 
+
 MODE_CREATE     = calXML.MODE_CREATE
 MODE_READONLY   = calXML.MODE_READONLY
+
 
 
 POSNEG = ('NEG', 'POS')
@@ -37,6 +39,7 @@ DRNG_MAP = {'COARSE' : calConstant.CDAC_COARSE, 'FINE' : calConstant.CDAC_FINE}
 
 
 INTNONLIN_MAX_DATA = 256
+
 
 
 class calCalibXML(calXML.calXML):
@@ -306,6 +309,8 @@ class calTholdCICalibXML(calCalibXML):
             t = doc.createElementNS(None, 'tower')
             t.setAttributeNS(None, 'iRow', str(iRow))
             t.setAttributeNS(None, 'iCol', str(iCol))
+            c = doc.createComment('tem number = %d' % tem)
+            t.appendChild(c)
             r.appendChild(t)
             
             for layer in range(calConstant.NUM_LAYER):
@@ -619,6 +624,8 @@ class calIntNonlinCalibXML(calCalibXML):
             t = doc.createElementNS(None, 'tower')
             t.setAttributeNS(None, 'iRow', str(iRow))
             t.setAttributeNS(None, 'iCol', str(iCol))
+            c = doc.createComment('tem number = %d' % tem)
+            t.appendChild(c)
             r.appendChild(t)
             
             for layer in range(calConstant.NUM_LAYER):
@@ -767,6 +774,8 @@ class calIntNonlinCalibXML(calCalibXML):
             t = doc.createElementNS(None, 'tower')
             t.setAttributeNS(None, 'iRow', str(iRow))
             t.setAttributeNS(None, 'iCol', str(iCol))
+            c = doc.createComment('tem number = %d' % tem)
+            t.appendChild(c)
             r.appendChild(t)
             
             for layer in range(calConstant.NUM_LAYER):
@@ -1263,6 +1272,8 @@ class calAsymCalibXML(calCalibXML):
             t = doc.createElementNS(None, 'tower')
             t.setAttributeNS(None, 'iRow', str(iRow))
             t.setAttributeNS(None, 'iCol', str(iCol))
+            c = doc.createComment('tem number = %d' % tem)
+            t.appendChild(c)
             r.appendChild(t)
             
             for layer in range(calConstant.NUM_LAYER):
@@ -1561,6 +1572,8 @@ class calMevPerDacCalibXML(calCalibXML):
             t = doc.createElementNS(None, 'tower')
             t.setAttributeNS(None, 'iRow', str(iRow))
             t.setAttributeNS(None, 'iCol', str(iCol))
+            c = doc.createComment('tem number = %d' % tem)
+            t.appendChild(c)
             r.appendChild(t)
             
             for layer in range(calConstant.NUM_LAYER):
@@ -1784,6 +1797,8 @@ class calPedCalibXML(calCalibXML):
             t = doc.createElementNS(None, 'tower')
             t.setAttributeNS(None, 'iRow', str(iRow))
             t.setAttributeNS(None, 'iCol', str(iCol))
+            c = doc.createComment('tem number = %d' % tem)
+            t.appendChild(c)
             r.appendChild(t)
             
             for layer in range(calConstant.NUM_LAYER):
@@ -1972,6 +1987,8 @@ class calMuSlopeCalibXML(calCalibXML):
             t = doc.createElementNS(None, 'tower')
             t.setAttributeNS(None, 'iRow', str(iRow))
             t.setAttributeNS(None, 'iCol', str(iCol))
+            c = doc.createComment('tem number = %d' % tem)
+            t.appendChild(c)
             r.appendChild(t)
             
             for layer in range(calConstant.NUM_LAYER):
@@ -2175,6 +2192,8 @@ class calDacSlopesCalibXML(calCalibXML):
             t = doc.createElementNS(None, 'tower')
             t.setAttributeNS(None, 'iRow', str(iRow))
             t.setAttributeNS(None, 'iCol', str(iCol))
+            c = doc.createComment('tem number = %d' % tem)
+            t.appendChild(c)
             r.appendChild(t)
             
             for layer in range(calConstant.NUM_LAYER):
