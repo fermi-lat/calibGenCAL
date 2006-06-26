@@ -6,13 +6,13 @@ Classes and functions to read and write CAL XML files derived from FITS data set
 __facility__  = "Offline"
 __abstract__  = "Class to read and write CAL XML files derived from FITS data sets"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/26 19:02:22 $"
-__version__   = "$Revision: 1.4 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/26 21:27:15 $"
+__version__   = "$Revision: 1.5 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 
-import sys, os, time
+import os, time
 import logging
 
 import Numeric
@@ -22,8 +22,10 @@ import calConstant
 from calExcept import *
 
 
+
 MODE_CREATE = calXML.MODE_CREATE
 MODE_READONLY = calXML.MODE_READONLY
+
 
 FILE_TYPES = ('fhe_dac', 'fle_dac', 'log_acpt', 'pedestal value', 'relative gain factor', 'rng_uld_dac')
 
