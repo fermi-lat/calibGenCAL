@@ -13,10 +13,12 @@ use calibUtil
 
 # make sure we have all graphical root libraries linked (stolen from rootanalysis)
 # used for line fitting in muonCalib
-macro_append ROOT_libs " -lHist -lGraf -lGpad -lPostscript" \
+macro_append ROOT_libs " -lHist -lGraf -lGpad -lPostscript -lMinuit" \
              WIN32 " ${ROOT_PATH}/lib/libHist.lib \
              ${ROOT_PATH}/lib/libGraf.lib \
-             ${ROOT_PATH}/lib/libGpad.lib ${ROOT_PATH}/lib/libPostscript.lib "
+             ${ROOT_PATH}/lib/libGpad.lib \
+             ${ROOT_PATH}/lib/libPostscript.lib \
+             ${ROOT_PATH}/lib/libMinuit.lib"
 
 # append needed executables & batch scripts to system path
 path_append PATH ${CALIBGENCALROOT}/python
