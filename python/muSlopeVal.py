@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL MuSlope calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/22 17:52:13 $"
-__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/06/26 20:45:20 $"
+__version__   = "$Revision: 1.1 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -37,7 +37,7 @@ import calConstant
 
 
 
-def rootHists(slopeData):
+def rootHists(slopeData, fileName):
 
     # create gain summary histogram
     
@@ -51,7 +51,7 @@ def rootHists(slopeData):
     for erng in range(calConstant.NUM_RNG):
     
         hName = "h_Summary_MuSlope_%s" % calConstant.CRNG[erng]
-        hs = ROOT.TH1F(hName, 'MuSlope_Summary', 100, 0.0, 2.0)
+        hs = ROOT.TH1F(hName, 'MuSlope_Summary: %s' % fileName, 100, 0.0, 2.0)
         hs.SetLineColor(erng + 1)
         hs.SetStats(False)
         sumHists[erng] = hs
@@ -177,7 +177,7 @@ if __name__ == '__main__':
 
         # write error histograms
         
-        rootHists(slopeData)
+        rootHists(slopeData, xmlName)
 
         # clean up
 
