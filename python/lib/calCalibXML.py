@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/26 21:30:56 $"
-__version__   = "$Revision: 1.4 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/26 21:47:37 $"
+__version__   = "$Revision: 1.5 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -2435,26 +2435,28 @@ class calDacSlopesCalibXML(calCalibXML):
                             dsrVal = ds.getAttributeNS(None, 'ULDRange')
                             rangeData[tem,row,end,fe,erng+3] = DRNG_MAP[str(dsrVal)]
                                         
+        return (dacData, uldData, rangeData)
+        
         
         
 def layerToRow(layer):
     """
     Translate CAL layer number to CAL row number
-
+    Param: layer - Layer number (0 - 7)
     Returns: The row number (0 - 7)
     """
 
     row = (layer / 2)
-    xy = (layer % 2)
-    if xy == 1:
+    if (layer % 2):
         row += 4
     return row
+
 
 
 def rowToLayer(row):
     """
     Translate CAL row number to CAL layer number
-
+    Param: row - Row number (0 - 7)
     Returns: The layer number (0 - 7)
     """
 
@@ -2464,6 +2466,7 @@ def rowToLayer(row):
         layer = (((row - 4) * 2) + 1)
     return layer
 
+    
     
 def towerToTem(twrCol, twrRow):
     """
@@ -2476,6 +2479,7 @@ def towerToTem(twrCol, twrRow):
     """
 
     return twrCol + (4 * twrRow)
+
 
 
 def temToTower(temNum):
