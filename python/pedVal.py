@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Ped calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/26 18:46:17 $"
-__version__   = "$Revision: 1.12 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/26 19:56:31 $"
+__version__   = "$Revision: 1.13 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -38,7 +38,7 @@ import calConstant
 
 
 
-def rootHists(errData, pedData):
+def rootHists(errData, pedData, fileName):
 
     # create pedestal summary histogram
     
@@ -51,7 +51,7 @@ def rootHists(errData, pedData):
     for erng in range(calConstant.NUM_RNG):
     
         hName = "h_Summary_Ped_%s" % calConstant.CRNG[erng]
-        hs = ROOT.TH1F(hName, 'Ped_Summary', 100, 0.0, 1000.0)
+        hs = ROOT.TH1F(hName, 'Ped_Summary: %s' % fileName, 100, 0.0, 1000.0)
         hs.SetLineColor(erng + 1)
         hs.SetStats(False)
         sumHists[erng] = hs
@@ -108,7 +108,7 @@ def rootHists(errData, pedData):
     for erng in range(0, 4, 2):
 
         hName = "h_Summary_x8_%s" % calConstant.CRNG[erng]       
-        hs = ROOT.TH1F(hName, 'Ped_x8_Summary', 100, 0.0, x8ErrLimit)
+        hs = ROOT.TH1F(hName, 'Sig_x8_Summary: %s' % fileName, 100, 0.0, x8ErrLimit)
         hs.SetLineColor(erng + 1)
         hs.SetStats(False)
         sumHists[erng] = hs
@@ -157,7 +157,7 @@ def rootHists(errData, pedData):
     for erng in range(1, 4, 2):
 
         hName = "h_Summary_x1_%s" % calConstant.CRNG[erng]       
-        hs = ROOT.TH1F(hName, 'Ped_x1_Summary', 100, 0.0, x1ErrLimit)
+        hs = ROOT.TH1F(hName, 'Sig_x1_Summary: %s' % fileName, 100, 0.0, x1ErrLimit)
         hs.SetLineColor(erng + 1)
         hs.SetStats(False)
         sumHists[erng] = hs
@@ -198,6 +198,27 @@ def rootHists(errData, pedData):
 
 def calcError(pedData):
 
+    pedWarnLimit = 800.0
+
+    # check pedestal average values
+    
+    for tem in towers:
+        for row in range(calConstant.NUM_ROW):
+            for end in range(calConstant.NUM_END):
+                for fe in range(calConstant.NUM_FE):
+                    for erng in range(calConstant.NUM_RNG):
+                    
+                        ped = pedData[tem,row,end,fe,erng,0]
+                        
+                        if ped > pedWarnLimit:
+                            msg = 'average %0.3f > %0.3f for %d,%s%s,%d,%s' % \
+                                    (ped, pedWarnLimit, tem, calConstant.CROW[row],
+                                     calConstant.CPM[end], fe, calConstant.CRNG[erng])
+                            log.warning(msg)
+                            
+
+    # check pedestal sigma values
+    
     errs = pedData[...,1]
     status = 0
 
@@ -220,13 +241,13 @@ def calcError(pedData):
                         if ex > wLim:
                             
                             if ex > eLim:
-                                msg = '%0.3f > %0.3f for %d,%s%s,%d,%s' % \
+                                msg = 'sigma %0.3f > %0.3f for %d,%s%s,%d,%s' % \
                                     (ex, eLim, tem, calConstant.CROW[row],
                                      calConstant.CPM[end], fe, calConstant.CRNG[erng])
                                 log.error(msg)
                                 status = 1
                             else:
-                                msg = '%0.3f > %0.3f for %d,%s%s,%d,%s' % \
+                                msg = 'sigma %0.3f > %0.3f for %d,%s%s,%d,%s' % \
                                     (ex, wLim, tem, calConstant.CROW[row],
                                      calConstant.CPM[end], fe, calConstant.CRNG[erng])
                                 log.warning(msg)
@@ -317,11 +338,31 @@ if __name__ == '__main__':
 
         # write error histograms
 
-        rootHists(errData, pedData)        
+        rootHists(errData, pedData, xmlName)        
 
         # clean up
 
         rootFile.Close()
+        
+    # do simple stats 
+    
+    av = Numeric.average(pedData[...,calConstant.CRNG_LEX8,0], axis = None)
+    log.info("LEX8 pedestal values average=%f", av)
+    av = Numeric.average(pedData[...,calConstant.CRNG_LEX1,0], axis = None)
+    log.info("LEX1 pedestal values average=%f", av)
+    av = Numeric.average(pedData[...,calConstant.CRNG_HEX8,0], axis = None)
+    log.info("HEX8 pedestal values average=%f", av)
+    av = Numeric.average(pedData[...,calConstant.CRNG_HEX1,0], axis = None)
+    log.info("HEX1 pedestal values average=%f", av)
+    
+    av = Numeric.average(pedData[...,calConstant.CRNG_LEX8,1], axis = None)
+    log.info("LEX8 pedestal sigmas average=%f", av)
+    av = Numeric.average(pedData[...,calConstant.CRNG_LEX1,1], axis = None)
+    log.info("LEX1 pedestal sigmas average=%f", av)
+    av = Numeric.average(pedData[...,calConstant.CRNG_HEX8,1], axis = None)
+    log.info("HEX8 pedestal sigmas average=%f", av)
+    av = Numeric.average(pedData[...,calConstant.CRNG_HEX1,1], axis = None)
+    log.info("HEX1 pedestal sigmas average=%f", av)
 
     # report results
 
