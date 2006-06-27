@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Mon Jun 26 18:52:42 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	muSlopeVal.py 
+Log Message:
+Added input file name to ROOT hist plots.
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Jun 26 18:47:58 PDT 2006
 calibGenCAL/python
 
