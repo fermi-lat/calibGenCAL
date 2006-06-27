@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Mon Jun 26 18:45:32 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	pedVal.py 
+Log Message:
+Added simple stats section to output log; added input file name to ROOT histogram plots; added simple warning check of pedestal average values againt 800.0.
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Jun 26 14:47:37 PDT 2006
 calibGenCAL/python/lib
 
