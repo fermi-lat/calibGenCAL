@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.cxx,v 1.1 2006/06/15 20:58:00 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.cxx,v 1.2 2006/06/22 21:50:23 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
  */
@@ -97,7 +97,7 @@ void MuonPed::fillHists(unsigned nEntries,
       // quick check if we are in 4-range mode
       EventSummaryData& summary = digiEvent->getEventSummaryData();
       if (&summary == 0) {
-        m_ostrm << "Warning, gem data not found for event: "
+        m_ostrm << "Warning, eventSummary data not found for event: "
                 << eventNum << endl;
         fourRange = true;
         continue;

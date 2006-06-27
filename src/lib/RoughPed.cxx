@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/RoughPed.cxx,v 1.1 2006/06/15 20:58:00 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/RoughPed.cxx,v 1.2 2006/06/22 21:50:23 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -66,7 +66,7 @@ void RoughPed::fillHists(unsigned nEntries,
     // save previous mode
     prev4Range = fourRange;
 
-    if (eventNum % 2000 == 0) {
+    if (eventNum % 1000 == 0) {
       // quit if we have enough entries in each histogram
       unsigned currentMin = getMinEntries();
       if (currentMin >= nEntries) break;
