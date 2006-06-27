@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Jun 27 12:30:16 PDT 2006
+calibGenCAL/python
+
+Added Files:
+	calCalibApplyRelgain.bat calCalibApplyRelgain.py 
+	calCalibApplyRelgain.sh calFitsMerge.bat calFitsMerge.py 
+	calFitsMerge.sh 
+Log Message:
+added calFitsMerge script for merging single tower relgain.xml files into one big file
+added calCalibApplyRelgain script for apply relgain factor to MuSlope offline calibration files
+
+    *
+------------------------------------------------------------
 User: dwood  Tue Jun 27 09:08:29 PDT 2006
 calibGenCAL/python/lib
 
