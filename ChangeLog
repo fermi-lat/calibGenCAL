@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Jun 27 07:40:13 PDT 2006
+calibGenCAL/src/lib
+
+Modified Files:
+	MuonPed.cxx RoughPed.cxx 
+Log Message:
+silly print out changes
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Jun 26 18:52:42 PDT 2006
 calibGenCAL/python
 
