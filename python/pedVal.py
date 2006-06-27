@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Ped calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/26 19:56:31 $"
-__version__   = "$Revision: 1.13 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/27 01:45:32 $"
+__version__   = "$Revision: 1.14 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -131,7 +131,7 @@ def rootHists(errData, pedData, fileName):
         if erng == 0:
             dopt = ''
             axis = hs.GetXaxis()
-            axis.SetTitle('Pedestal Sigma')
+            axis.SetTitle('Pedestal Sigma (ADC)')
             axis.CenterTitle()
             axis = hs.GetYaxis()
             axis.SetTitle('Counts')
@@ -180,7 +180,7 @@ def rootHists(errData, pedData, fileName):
         if erng == 1:
             dopt = ''
             axis = hs.GetXaxis()
-            axis.SetTitle('Pedestal Sigma')
+            axis.SetTitle('Pedestal Sigma (ADC)')
             axis.CenterTitle()
             axis = hs.GetYaxis()
             axis.SetTitle('Counts')
