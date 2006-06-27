@@ -6,8 +6,8 @@ Global calorimeter constant values
 __facility__      = "Online"
 __abstract__      = "Global calorimeter constant values"
 __author__        = "D.L. Wood"
-__date__          = "$Date: 2006/06/20 15:51:34 $"
-__version__       = "$Revision: 1.10 $, $Author: dwood $"
+__date__          = "$Date: 2006/06/21 18:43:14 $"
+__version__       = "$Revision: 1.1 $, $Author: dwood $"
 __release__       = "$Name:  $"
 __credits__       = "NRL code 7650"
 
@@ -63,7 +63,7 @@ CDAC_COARSE = 1
 
 # Number of calorimeter faces
 
-NUM_FACE = 8
+NUM_FACE = 4
 
 # Number of calorimeter layers
 
