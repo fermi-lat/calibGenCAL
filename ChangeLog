@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Tue Jun 27 09:08:29 PDT 2006
+calibGenCAL/python/lib
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Added return statement to calDacSlopesCalibXML.read() method; added comments to layerToRow() and rowToLayer() functions.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Jun 27 08:50:02 PDT 2006
 calibGenCAL/python/lib
 
