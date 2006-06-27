@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Tue Jun 27 08:47:46 PDT 2006
+calibGenCAL/python/lib
+
+Modified Files:
+	calFitsXML.py 
+Log Message:
+Added support for setting INSTRUMENT header key value; added comments clarifying calSNs parameter to calFitsXML.__init__(); fixed calFitsXML.__readREL() to accept multiple tower input files.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Jun 27 08:36:25 PDT 2006
 calibGenCAL/src/lib
 
