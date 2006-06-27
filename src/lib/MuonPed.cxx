@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.cxx,v 1.2 2006/06/22 21:50:23 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.cxx,v 1.3 2006/06/27 14:40:13 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
  */
@@ -144,7 +144,7 @@ void MuonPed::fillHists(unsigned nEntries,
         ostringstream tmp;
         tmp << __FILE__  << ":"     << __LINE__ << " " 
             << "Event# " << eventNum << " Invalid nReadouts, expecting 4";
-        throw tmp.str();
+        throw runtime_error(tmp.str());
       }
 
       // 1st look at LEX8 vals
@@ -218,7 +218,7 @@ void MuonPed::fitHists() {
 void MuonPed::writeTXT(const string &filename) const {
   ofstream outfile(filename.c_str());
   if (!outfile.is_open())
-    throw string("Unable to open " + filename);
+    throw runtime_error(string("Unable to open " + filename));
 
   for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++)
     if (m_peds[rngIdx] != INVALID_PED)
@@ -236,7 +236,7 @@ void MuonPed::writeTXT(const string &filename) const {
 void MuonPed::readTXT(const string &filename) {
   ifstream infile(filename.c_str());
   if (!infile.is_open())
-    throw string("Unable to open " + filename);
+    throw runtime_error(string("Unable to open " + filename));
 
   while(infile.good()) {
     float ped, sig;

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.1 2006/06/15 20:57:59 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.2 2006/06/22 21:50:22 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
  */
@@ -25,6 +25,8 @@ using namespace std;
 const string usage_str("genMuonMPD.exe cfg_file");
 
 int main(int argc, char **argv) {
+  // libCalibGenCAL will throw runtime_error         
+  try {
           
   //-- COMMAND LINE --//
   if (argc != 2) {
@@ -212,6 +214,9 @@ int main(int argc, char **argv) {
     logStrm << __FILE__ << ": writing histogram file: " << histFilename << endl;
     histFile->Write();
     histFile->Close();
+  }
+  } catch (exception e) {
+    cout << __FILE__ << ": exception thrown: " << e.what() << endl;
   }
 
   return 0;
