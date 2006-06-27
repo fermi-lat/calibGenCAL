@@ -6,8 +6,8 @@ Classes and functions to read and write CAL XML files derived from FITS data set
 __facility__  = "Offline"
 __abstract__  = "Class to read and write CAL XML files derived from FITS data sets"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/26 21:27:15 $"
-__version__   = "$Revision: 1.5 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/26 21:32:24 $"
+__version__   = "$Revision: 1.6 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -51,7 +51,7 @@ class calFitsXML(calXML.calXML):
     def __init__(self, filePath = None, fileName = None, mode = MODE_READONLY, labels = None, \
                 calSNs = None, dataset = None, lrefgain = None, hrefgain = None, pedFile = None, \
                 erng = None, reportName = None, runId = None, comment = None, fitsName = None, \
-                fitsTime = None, type = None, version = 2):
+                fitsTime = None, type = None, instrument = None, version = 2):
         """
         Open a CAL FITS data XML file
 
@@ -59,22 +59,27 @@ class calFitsXML(calXML.calXML):
         Param: fileName The XML file name.
         Param: mode The file access mode (MODE_READONLY or MODE_CREATE).
         Param: labels A sequence of FITS table header values:
-            labels[0] = Table header \e LAXIS1 string value
-            labels[1] = Table header \e LAXIS2 string value
+            labels[0] = Table header LAXIS1 string value
+            labels[1] = Table header LAXIS2 string value
               ...
-            labels[-2] = Table header \e LAXIS<n> string value.
-            labels[-1] = Table header \e TTYPE1 string value.
-        Param: calSNs A sequence of up to table header \e CALSN<n> string values.
-        Param: dataset The table header \e DATASET string value.
-        Param: lrefgain The table header \e LREFGAIN integer value.
-        Param: hrefgain The table header \e HREFGAIN integer value.
-        Param: pedFile The table header \e PEDFILE string value.
-        Param: erng The table header \e ERNG string value.
+            labels[-2] = Table header LAXIS<n> string value.
+            labels[-1] = Table header TTYPE1 string value.
+        Param: calSNs A dictionary of up to 4 table header CALSN<n> string values:
+            calSNs['X-'] = CALSNX- header key value
+            calSNs['Y-'] = CALSNY- header key value
+            calSNs['X+'] = CALSNX+ header key value
+            calSNs['Y+'] = CALSNY+ header key value
+        Param: dataset The table header DATASET string value.
+        Param: lrefgain The table header LREFGAIN integer value.
+        Param: hrefgain The table header HREFGAIN integer value.
+        Param: pedFile The table header PEDFILE string value.
+        Param: erng The table header ERNG string value.
         Param: reportName The name of the associated test report file.
         Param: runId The run collection ID for the data.
-        Param: comment The table header \e COMMENT string value.
+        Param: comment The table header COMMENT string value.
         Param: fitsName The name of the FITS file from which the XML file is derived.
-        Param: fitsName The creation time of the FITS file from which the XML file is derived.
+        Param: fitsTime The creation time of the FITS file from which the XML file is derived.
+        Param: instrument The table header INSTRUMENT string value.
         Param: version The format version number of the CAL XML file.
         """
 
@@ -107,6 +112,7 @@ class calFitsXML(calXML.calXML):
         self.__runId = runId
         self.__comment = comment
         self.__type = type
+        self.__instrument = instrument
 
         path = os.path.join(self.__filePath, self.__fileName)    
 
@@ -460,6 +466,9 @@ class calFitsXML(calXML.calXML):
 
         if self.__comment is not None:
             self.__writeKey(hdrNode, 'COMMENT', self.__comment)
+            
+        if self.__instrument is not None:
+            self.__writeKey(hdrNode, 'INSTRUMENT', self.__instrument)    
 
         try:
           keys = self.__calSNs.keys()
@@ -476,11 +485,12 @@ class calFitsXML(calXML.calXML):
                 continue        
             self.__writeKey(hdrNode, name, sn)
 
-        n = 1
-        for l in self.__labels[:-1]:
-            name = 'LAXIS%d' % n
-            n = n + 1
-            self.__writeKey(hdrNode, name, l)
+        if self.__labels is not None:
+            n = 1
+            for l in self.__labels[:-1]:
+                name = 'LAXIS%d' % n
+                n = n + 1
+                self.__writeKey(hdrNode, name, l)
 
 
     def __writeKey(self, hdrNode, name, value):
@@ -725,8 +735,8 @@ class calFitsXML(calXML.calXML):
         
         tList = gList[0].xpath('.//tem')
         tNum = len(tList)
-        if tNum != 1:
-            raise calFileReadExcept, "wrong number of <tem> elements: %u (expected 1)" % tNum 
+        if tNum == 0 or tNum > 16:
+            raise calFileReadExcept, "wrong number of <tem> elements: %u (expected 1-16)" % tNum
         for t in tList:
             tem = int(t.getAttributeNS(None, 'num'))
             if tem < 0 or tem > 15:
