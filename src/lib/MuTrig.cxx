@@ -1,4 +1,4 @@
-// $Header$
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuTrig.cxx,v 1.1 2006/06/15 20:57:59 fewtrell Exp $
 /** @file
     @author fewtrell
  */
@@ -312,7 +312,7 @@ void MuTrig::fillCIHists(const string &filename) {
       ostringstream tmp;
       tmp << __FILE__ << ":" << __LINE__ << " " 
           << "Empty calDigiCol event #" << eventNum;
-      throw tmp.str();
+      throw runtime_error(tmp.str());
     }
     TIter calDigiIter(calDigiCol);
 
@@ -351,7 +351,7 @@ void MuTrig::fillCIHists(const string &filename) {
 void MuTrig::writeCIMetavals(const string &filename) const {
   ofstream outfile(filename.c_str());
   if (!outfile.is_open())
-    throw string("Unable to open " + filename);
+    throw runtime_error(string("Unable to open " + filename));
 
   for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
     TwrNum twr = faceIdx.getTwr();
@@ -409,7 +409,7 @@ void MuTrig::fitData(const MuonPed &ped) {
           tmp << __FILE__ << ":" << __LINE__ << " " 
               << "No hits recorded for CIDAC_IDX=" << dacIdx
               << " faceIdx=" << faceIdx.val() << endl;
-          throw tmp.str();
+          throw runtime_error(tmp.str());
         }
 
         adcMean[dacIdx] = 
@@ -533,7 +533,7 @@ string MuTrig::genHistName(const string &type,
 void MuTrig::writeTXT(const string &filename) const {
   ofstream outfile(filename.c_str());
   if (!outfile.is_open())
-    throw string("Unable to open " + filename);
+    throw runtime_error(string("Unable to open " + filename));
 
   for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
     TwrNum twr = faceIdx.getTwr();

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CIDAC2ADC.cxx,v 1.1 2006/06/15 20:57:59 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CIDAC2ADC.cxx,v 1.2 2006/06/22 21:50:22 fewtrell Exp $
 /** @file
     @author fewtrell
  */
@@ -59,7 +59,7 @@ void CIDAC2ADC::writeTXT(const string &filename) const {
     ostringstream tmp;
     tmp << __FILE__ << ":" << __LINE__ << " " 
         << "ERROR! unable to open txtFile='" << filename << "'";
-    throw tmp.str();
+    throw runtime_error(tmp.str());
   }
   outFile.precision(2);
   outFile.setf(ios_base::fixed);
@@ -85,7 +85,7 @@ void CIDAC2ADC::readTXT(const string &filename) {
     ostringstream tmp;
     tmp << __FILE__ << ":" << __LINE__ << " " 
         << "ERROR! unable to open txtFile='" << filename << "'";
-    throw tmp.str();
+    throw runtime_error(tmp.str());
   }
 
   unsigned short twr;
@@ -184,7 +184,7 @@ void CIDAC2ADC::readRootData(const string &rootFileName,
       ostringstream tmp;
       tmp << __FILE__ << ":" << __LINE__ << " " 
           << "Empty calDigiCol event #" << evtNum;
-      throw tmp.str();
+      throw runtime_error(tmp.str());
     }
 
 
@@ -515,7 +515,7 @@ void CIDAC2ADC::genSplines() {
       ostringstream tmp;
       tmp << __FILE__  << ":"     << __LINE__ << " " 
           << "nDAC != nADC for rngIdx = " << rngIdx.val();
-      throw tmp.str();
+      throw runtime_error(tmp.str());
     }
 
     // expand arrays if necessary
@@ -558,7 +558,7 @@ void CIDAC2ADC::genSplines() {
 void CIDAC2ADC::writeADCMeans(const string &filename) const {
   ofstream outfile(filename.c_str());
   if (!outfile.is_open())
-    throw string("Unable to open " + filename);
+    throw runtime_error(string("Unable to open " + filename));
 
   for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
     TwrNum twr   = rngIdx.getTwr();
@@ -599,7 +599,7 @@ void CIDAC2ADC::readADCMeans(const string &filename) {
   // open file
   ifstream infile(filename.c_str());
   if (!infile.is_open())
-    throw string("Unable to open " + filename);
+    throw runtime_error(string("Unable to open " + filename));
 
   // loop through each line in file
   while (infile.good()) {

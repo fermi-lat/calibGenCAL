@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.cxx,v 1.1 2006/06/15 20:58:00 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.cxx,v 1.2 2006/06/22 21:50:22 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -292,7 +292,7 @@ void MuonAsym::writeTXT(const string &filename) const{
   ofstream outfile(filename.c_str());
 
   if (!outfile.is_open())
-    throw string("Unable to open " + filename);
+    throw runtime_error(string("Unable to open " + filename));
 
   // PER XTAL LOOP
   for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
@@ -326,7 +326,7 @@ void MuonAsym::readTXT(const string &filename){
   // open file
   ifstream infile(filename.c_str());
   if (!infile.is_open())
-    throw string("Unable to open " + filename);
+    throw runtime_error(string("Unable to open " + filename));
 
   // loop through each line in file
   while (infile.good()) {
