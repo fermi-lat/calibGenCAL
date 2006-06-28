@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL MuSlope calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/28 15:33:10 $"
-__version__   = "$Revision: 1.3 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/28 15:57:15 $"
+__version__   = "$Revision: 1.4 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -52,7 +52,7 @@ def rootHists(slopeData, fileName):
     for erng in range(calConstant.NUM_RNG):
     
         hName = "h_Summary_MuSlope_%s" % calConstant.CRNG[erng]
-        hs = ROOT.TH1F(hName, 'MuSlope_Summary: %s' % fileName, 100, 0.0, 30.0)
+        hs = ROOT.TH1F(hName, 'MuSlope_Summary: %s' % fileName, 800, 0.0, 30.0)
         hs.SetLineColor(erng + 1)
         hs.SetStats(False)
         sumHists[erng] = hs
