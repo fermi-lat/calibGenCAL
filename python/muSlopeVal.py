@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL MuSlope calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/26 20:45:20 $"
-__version__   = "$Revision: 1.1 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/27 01:52:42 $"
+__version__   = "$Revision: 1.2 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -51,7 +51,7 @@ def rootHists(slopeData, fileName):
     for erng in range(calConstant.NUM_RNG):
     
         hName = "h_Summary_MuSlope_%s" % calConstant.CRNG[erng]
-        hs = ROOT.TH1F(hName, 'MuSlope_Summary: %s' % fileName, 100, 0.0, 2.0)
+        hs = ROOT.TH1F(hName, 'MuSlope_Summary: %s' % fileName, 100, 0.0, 30.0)
         hs.SetLineColor(erng + 1)
         hs.SetStats(False)
         sumHists[erng] = hs
@@ -182,6 +182,17 @@ if __name__ == '__main__':
         # clean up
 
         rootFile.Close()
+        
+    # do simple stats 
+    
+    av = Numeric.average(slopeData[...,calConstant.CRNG_LEX8,0], axis = None)
+    log.info("LEX8 gain values average=%f", av)
+    av = Numeric.average(slopeData[...,calConstant.CRNG_LEX1,0], axis = None)
+    log.info("LEX1 gain values average=%f", av)
+    av = Numeric.average(slopeData[...,calConstant.CRNG_HEX8,0], axis = None)
+    log.info("HEX8 gain values average=%f", av)
+    av = Numeric.average(slopeData[...,calConstant.CRNG_HEX1,0], axis = None)
+    log.info("HEX1 gain values average=%f", av)    
 
     # report results
 
