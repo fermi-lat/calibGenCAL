@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Wed Jun 28 08:33:10 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	muSlopeVal.py 
+Log Message:
+Cleaned up ROOT histogram plot output; print out simple stats to validation log.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Jun 28 08:00:44 PDT 2006
 calibGenCAL/python
 
