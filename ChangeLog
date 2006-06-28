@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Jun 28 15:08:02 PDT 2006
+calibGenCAL/python
+
+Added Files:
+	muSlopeTXT2XML.bat muSlopeTXT2XML.sh 
+Log Message:
+launcher scripts for muSlopeTXT2XML.py
+
+    *
+------------------------------------------------------------
 User: dwood  Wed Jun 28 09:05:41 PDT 2006
 calibGenCAL/python
 
