@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Jun 28 08:00:44 PDT 2006
+calibGenCAL/python
+
+Added Files:
+	adc2nrgTXT2XML.bat adc2nrgTXT2XML.sh 
+Log Message:
+launcher scripts for adc2nrgTXT2XML.py
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Jun 28 07:13:29 PDT 2006
 calibGenCAL/src/lib
 
