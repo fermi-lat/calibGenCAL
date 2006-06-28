@@ -20,8 +20,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL MuSlope calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/27 01:52:42 $"
-__version__   = "$Revision: 1.2 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/28 15:33:10 $"
+__version__   = "$Revision: 1.3 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -46,6 +46,7 @@ def rootHists(slopeData, fileName):
     cs.cd()
     cs.SetGrid()
     cs.SetLogy()
+    cs.SetLogx()
     sumLeg = ROOT.TLegend(0.88, 0.88, 0.99, 0.99)
     
     for erng in range(calConstant.NUM_RNG):
@@ -80,7 +81,7 @@ def rootHists(slopeData, fileName):
         if erng == 0:
             dopt = ''
             axis = hs.GetXaxis()
-            axis.SetTitle('Gain Value (Energy/ADC)')
+            axis.SetTitle('Gain Value (MeV/ADC)')
             axis.CenterTitle()
             axis = hs.GetYaxis()
             axis.SetTitle('Counts')
