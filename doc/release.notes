@@ -364,3 +364,23 @@ v4r1 dwood
   and writing of CAL_MuSlope files
   
 
+---------------------------------------
+v4r2 fewtrell, dwood
+----------------------------------------
+- muTrig now works w/out CI input file.
+- added muSlopeTXT2XML.py, muSlopeVal.py, adc2nrgTXT2XML.py
+  handle...
+      - offline muSlope calibration type
+      - online adc2nrg calibration type
+      - flight gain calibration type
+  ... all basically the same thing
+- added calCalibApplyRelgain.py: apply relgain factor to muSlope file
+- added calFitsMerge.py: merge single tower relgain files
+- C++ code now supports ROOT 5.10 (had to add libMinuit to linkopts)
+- most C++ apps now stop at min entries per histogram instead of n events
+- genMuonPed can use only periodic trigger.
+- genMuonMPD & genMuonAsym will quietly skip events with 1 range readout.
+- genMuonMPD regains adc2nrg output
+- inlTXT2XML script added
+- Put low level python modules in lib subdirectory; changed all scripts so that PYTHONPATH is set appropriately.
+
