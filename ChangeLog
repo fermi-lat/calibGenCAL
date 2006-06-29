@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Jun 28 17:30:54 PDT 2006
+calibGenCAL/src/lib
+
+Modified Files:
+	MuTrig.cxx 
+Log Message:
+muTrig now works w/out CI input file.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Jun 28 17:30:53 PDT 2006
 calibGenCAL/src
 
