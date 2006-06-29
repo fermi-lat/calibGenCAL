@@ -1,5 +1,5 @@
 // (Special "header" just for doxygen)
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/mainpage.h,v 1.33 2006/06/15 20:57:59 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/mainpage.h,v 1.34 2006/06/20 22:21:14 dwood Exp $
 
 
 /*! 
@@ -156,7 +156,8 @@ clean characterization tables to work well (e.g. genXXXsettings).
 - <tt> tholdCIVal   [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
 - <tt> charVal      [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
 - <tt> dacVal       [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC <MeV> <cfg_file> <dac_xml_file></tt>
-- <tt> checkXML     [xml_file_0 xml_file_1 ...]</tt>
+- <tt> checkXML     [xml_file_0 xml_file_1 ...]</tt> generic xml validator
+
 
 The validation scripts perform simple checks on the values and formats
 of the various CAL calibration XML file types.  The checks are usually nothing more than limit and
@@ -178,6 +179,7 @@ data plots.  These require a working implementation of PyROOT.
 - <tt> pedMerge       [-V] <cfg_file> <out_xml_file> </tt>
 - <tt> mevPerDacMerge [-V] <cfg_file> <out_xml_file> </tt>
 - <tt> asymMerge      [-V] <cfg_file> <out_xml_file> </tt>
+- <tt> calFitsMerge [-V] <output_xml_file> <input_xml_file1> [input_xml_fileN]* </tt> merge relgain files
 
 The merge tools take multiple single-tower CAL calibration XML files
 and produce a single output file of the same type, with the option to
@@ -199,25 +201,34 @@ For converting xml files to and from columnar text and other formats.
 - <tt> tholdCIXML2TXT.py </tt>
 - <tt> genFlightPed [-o] [-v] [-k <key>] <ped_xml_file> </tt>
 - <tt> genFlightGain [-o] [-v] [-k <key>] <gain_xml_file> </tt>
-
+- <tt> adc2nrgTXT2XML </tt>
+- <tt> adc2nrgTXT2XML input.txt output.xml </tt>
+- <tt> muSlopeTXT2XML [-doptional.dtd] input.txt output.xml </tt>
+- <tt> inlTXT2XML [-doptional.dtd] input.txt output.xml </tt>
 
 Each of the TXT2XML scripts converts one offline calibration file type
 from space delimited TXT file to proper XML file format.
 
-The genFlightGain script converts a CAL_Ped XML file into a 'cal_pedestals.h' file for use in FSW on-board filter code
+The genFlightGain script converts a CAL_Ped XML file into a 'cal_pedestals.h' 
+file for use in FSW on-board filter code
 
-The genFlightGain script converts a CAL_MuSlope XML file into a 'cal_gains.h' file for use in FSW on-board filter code
+The genFlightGain script converts a CAL_MuSlope XML file into a 'cal_gains.h' 
+file for use in FSW on-board filter code
 
 <h3> cfg files </h3>
-Sample configuration scripts for python and C++ tools are included in the cfg folder.  
+Sample configuration scripts for python and C++ tools are included in the cfg 
+folder.  
 
 <h3> unit test </h3>
 
-<p>the unit_test subfolder contains cfg files & validated output for most of the calibGenCAL applications.
+<p>the unit_test subfolder contains cfg files & validated output for most of the
+calibGenCAL applications.
 <p>unit_test/output contains the validated output:</p>
 
 <h3> other docs </h3>
-- \b calibGenCAL/doc/calibGenCAL_configurationRecord_howto.txt - generate online dac settings with calibGenCAL python scripts.
-- \b calibGenCAL/doc/gensettings_scripts.html - in depth description of dac settings tools
+- \b calibGenCAL/doc/calibGenCAL_configurationRecord_howto.txt - generate online
+dac settings with calibGenCAL python scripts.
+- \b calibGenCAL/doc/gensettings_scripts.html - in depth description of dac 
+settings tools
 
 */
