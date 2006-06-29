@@ -22,8 +22,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to convert calCalib xml file from one gain setting to another"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2006/02/06 17:48:17 $"
-__version__   = "$Revision: 1.11 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/27 19:30:16 $"
+__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -43,7 +43,7 @@ if __name__ == '__main__':
     # setup logger
 
     logging.basicConfig()
-    log = logging.getLogger('pedMerge')
+    log = logging.getLogger('calCalibApplyRelgain')
     log.setLevel(logging.INFO)
 
     # get environment settings
