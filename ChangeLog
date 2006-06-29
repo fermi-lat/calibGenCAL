@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Jun 29 09:55:28 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	muSlopeVal.py 
+Log Message:
+Added limit checks to MuSlope gain values.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Jun 29 09:02:41 PDT 2006
 calibGenCAL/python
 
