@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Jun 28 17:30:53 PDT 2006
+calibGenCAL/src
+
+Modified Files:
+	runMuTrigEff.cxx 
+Log Message:
+muTrig now works w/out CI input file.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Jun 28 15:08:02 PDT 2006
 calibGenCAL/python
 
