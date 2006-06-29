@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Jun 29 08:39:40 PDT 2006
+calibGenCAL/python
+
+Added Files:
+	inlTXT2XML.bat inlTXT2XML.sh 
+Log Message:
+trivial launcher scripts
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Jun 28 17:55:31 PDT 2006
 calibGenCAL/src
 
