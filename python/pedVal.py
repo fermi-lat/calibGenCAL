@@ -2,15 +2,11 @@
 Validate CAL Ped calibration data in XML format.  The command
 line is:
 
-pedVal [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file>
+pedVal [-V] [-R <root_file>] [-L <log_file>] <xml_file>
 
 where:
 
     -R <root_file> - output validation diagnostics in ROOT file
-    -E <err_limit> - error limit for pedestal sigma value for x8 ranges
-                    (default is 10.0; x1 ranges use this value / 5)
-    -W <warn_limit> - warning limit pedestal sigma value for x8 ranges
-                     (default is 8.0; x1 ranges use this value / 5)
     -L <log_file>  - save console output to log text file
     -V             - verbose; turn on debug output
     <xml_file> The CAL Ped calibration XML file to validate.    
@@ -20,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Ped calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/27 01:45:32 $"
-__version__   = "$Revision: 1.14 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/27 01:47:58 $"
+__version__   = "$Revision: 1.15 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -35,6 +31,19 @@ import Numeric
 import calCalibXML
 import calConstant
 
+
+
+# limit values
+
+
+pedWarnLimit = 850.0
+pedErrLimit = 1000.0
+
+x8ErrLimit = 10.0
+x8WarnLimit = 6.5
+    
+x1ErrLimit = 2.0
+x1WarnLimit = 1.0
 
 
 
@@ -51,7 +60,7 @@ def rootHists(errData, pedData, fileName):
     for erng in range(calConstant.NUM_RNG):
     
         hName = "h_Summary_Ped_%s" % calConstant.CRNG[erng]
-        hs = ROOT.TH1F(hName, 'Ped_Summary: %s' % fileName, 100, 0.0, 1000.0)
+        hs = ROOT.TH1F(hName, 'Ped_Summary: %s' % fileName, 100, 0.0, pedErrLimit)
         hs.SetLineColor(erng + 1)
         hs.SetStats(False)
         sumHists[erng] = hs
@@ -198,8 +207,6 @@ def rootHists(errData, pedData, fileName):
 
 def calcError(pedData):
 
-    pedWarnLimit = 800.0
-
     # check pedestal average values
     
     for tem in towers:
@@ -211,10 +218,18 @@ def calcError(pedData):
                         ped = pedData[tem,row,end,fe,erng,0]
                         
                         if ped > pedWarnLimit:
-                            msg = 'average %0.3f > %0.3f for %d,%s%s,%d,%s' % \
+                        
+                            if ped > pedErrLimit:
+                                msg = 'ped %0.3f > %0.3f for %d,%s%s,%d,%s' % \
+                                    (ped, pedErrLimit, tem, calConstant.CROW[row],
+                                     calConstant.CPM[end], fe, calConstant.CRNG[erng])
+                                log.error(msg)
+                                status = 1
+                            else:         
+                                msg = 'ped %0.3f > %0.3f for %d,%s%s,%d,%s' % \
                                     (ped, pedWarnLimit, tem, calConstant.CROW[row],
                                      calConstant.CPM[end], fe, calConstant.CRNG[erng])
-                            log.warning(msg)
+                                log.warning(msg)
                             
 
     # check pedestal sigma values
@@ -259,12 +274,10 @@ def calcError(pedData):
 
 if __name__ == '__main__':
 
-    usage = "pedVal [-V] [-L <log_file>] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>"
+    usage = "pedVal [-V] [-L <log_file>] [-R <root_file>] <xml_file>"
 
     rootOutput = False
-    x8ErrLimit = 10.0
-    x8WarnLimit = 7.0
-
+    
     # setup logger
 
     logging.basicConfig()
@@ -274,7 +287,7 @@ if __name__ == '__main__':
     # check command line
 
     try:
-        opts = getopt.getopt(sys.argv[1:], "-R:-E:-W:-L:-V")
+        opts = getopt.getopt(sys.argv[1:], "-R:-L:-V")
     except getopt.GetoptError:
         log.error(usage)
         sys.exit(1)
@@ -284,10 +297,6 @@ if __name__ == '__main__':
         if o[0] == '-R':
             rootName = o[1]
             rootOutput = True
-        elif o[0] == '-E':
-            x8ErrLimit = float(o[1])
-        elif o[0] == '-W':
-            x8WarnLimit = float(o[1])
         elif o[0] == '-L':
             if os.path.exists(o[1]):
                 log.warning('Deleting old log file %s', o[1])
@@ -305,13 +314,11 @@ if __name__ == '__main__':
         sys.exit(1)    
 
     xmlName = args[0]
-    x1ErrLimit = (x8ErrLimit / 5.0)
-    x1WarnLimit = (x8WarnLimit / 5.0)
-
-    log.debug('Using sig err limit %0.3f for x8 ranges', x8ErrLimit)
-    log.debug('Using sig err limit %0.3f for x1 ranges', x1ErrLimit)
-    log.debug('Using sig warn limit %0.3f for x8 ranges', x8WarnLimit)
-    log.debug('Using sig warn limit %0.3f for x1 ranges', x1WarnLimit)
+    
+    log.debug('Using sig err limit %0.3f for X8 ranges', x8ErrLimit)
+    log.debug('Using sig err limit %0.3f for X1 ranges', x1ErrLimit)
+    log.debug('Using sig warn limit %0.3f for X8 ranges', x8WarnLimit)
+    log.debug('Using sig warn limit %0.3f for X1 ranges', x1WarnLimit)
 
     # open and read XML Ped file
 
