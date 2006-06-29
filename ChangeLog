@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Jun 29 09:01:17 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	pedVal.py 
+Log Message:
+Removed command line options to set warn and err limit (the case is more complicated than one limit); changed limit values based on latest data sets.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Jun 29 08:39:40 PDT 2006
 calibGenCAL/python
 
