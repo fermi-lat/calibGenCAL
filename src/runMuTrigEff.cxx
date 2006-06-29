@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runMuTrigEff.cxx,v 1.20 2006/06/15 20:57:59 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runMuTrigEff.cxx,v 1.21 2006/06/27 15:36:25 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -39,19 +39,19 @@ int main(int argc, char **argv) {
                                       string("./"));
     // input files
     string rootFileCI = cfgFile.getVal("MU_TRIG", 
-                                       "ROOTFILE_CI", string(""));
-    if (rootFileCI.length() < 1) {
-      cout << __FILE__ << ": no CI root file specified" << endl;
-      return -1;
-    }
+                                       "ROOTFILE_CI", 
+                                       string("")); // allow for run w/out CI info
+
     string rootFileEvenEven = cfgFile.getVal("MU_TRIG", 
-                                             "ROOTFILE_EVEN_EVEN", string(""));
+                                             "ROOTFILE_EVEN_EVEN", 
+                                             string(""));
     if (rootFileEvenEven.length() < 1) {
       cout << __FILE__ << ": no even root file specified" << endl;
       return -1;
     }
     string rootFileEvenOdd = cfgFile.getVal("MU_TRIG", 
-                                            "ROOTFILE_EVEN_ODD", string(""));
+                                            "ROOTFILE_EVEN_ODD", 
+                                            string(""));
     if (rootFileEvenOdd.length() < 1) {
       cout << __FILE__ << ": no odd root file specified" << endl;
       return -1;
@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
     // generate logfile name
     string logfile;
     MuTrig::genOutputFilename(outputDir,
-                              rootFileCI,
+                              rootFileEvenEven,
                               "log.txt",
                               logfile);
     ofstream tmpStrm(logfile.c_str());
@@ -103,7 +103,7 @@ int main(int argc, char **argv) {
     // output histogram file name
     string histFilename;
     MuTrig::genOutputFilename(outputDir,
-                              rootFileCI,
+                              rootFileEvenEven,
                               "root",
                               histFilename);
     TFile histFile(histFilename.c_str(), 
@@ -116,7 +116,8 @@ int main(int argc, char **argv) {
 
     // reading charge injection file with diagnostic information (tack delay = 70)
     // input files
-    muTrig.fillCIHists(rootFileCI);
+    if (rootFileCI.length() >0)
+      muTrig.fillCIHists(rootFileCI);
 
 
     // trigger configuration A :  Even Rows Even Columns
@@ -146,7 +147,7 @@ int main(int argc, char **argv) {
     // generate txt output name
     string outputTXTFile;
     MuTrig::genOutputFilename(outputDir,
-                              rootFileCI,
+                              rootFileEvenEven,
                               "txt",
                               outputTXTFile);
     muTrig.writeTXT(outputTXTFile);

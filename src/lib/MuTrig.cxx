@@ -1,7 +1,7 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuTrig.cxx,v 1.1 2006/06/15 20:57:59 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuTrig.cxx,v 1.2 2006/06/27 15:36:25 fewtrell Exp $
 /** @file
     @author fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "RootFileAnalysis.h"
@@ -54,13 +54,13 @@ MuTrig::MuTrig(ostream &ostrm) :
 
   m_muThreshErr(FaceIdx::N_VALS, INVALID_ADC),
   m_muThreshWidthErr(FaceIdx::N_VALS, INVALID_ADC),
-  m_ciThreshErr(FaceIdx::N_VALS, INVALID_ADC),
-  m_ciThreshWidthErr(FaceIdx::N_VALS, INVALID_ADC),
+  m_ciThreshErr(FaceIdx::N_VALS,INVALID_ADC),
+  m_ciThreshWidthErr(FaceIdx::N_VALS,INVALID_ADC),
 
   m_ciTrigSum(FaceIdx::N_VALS, vector<unsigned short>(N_CIDAC_VALS)),
   m_ciAdcN(FaceIdx::N_VALS, vector<unsigned short>(N_CIDAC_VALS)),
   m_ciADCSum(FaceIdx::N_VALS, vector<unsigned int>(N_CIDAC_VALS)),
-  m_delPed(FaceIdx::N_VALS),
+  m_delPed(FaceIdx::N_VALS,0),
   
   m_ostrm(ostrm) {
   initHists();
@@ -238,9 +238,9 @@ void MuTrig::fillMuonHists(TRIG_CFG trigCfg,
           FaceIdx faceIdx(twr,lyr,col,face);
 
           m_muAdcHists[faceIdx]->Fill(adcPed[faceIdx]);
-          if (fle[lyrIdx][face])
+          if (fle[lyrIdx][face]) {
             m_muTrigHists[faceIdx]->Fill(adcPed[faceIdx]);
-
+          }
         }
       }
     }
@@ -386,15 +386,12 @@ void MuTrig::fitData(const MuonPed &ped) {
     ////////////////
     //-- CI EFF --//
     ////////////////
-    {
+    // skip empty channels
+    if (m_ciAdcN[faceIdx][0] != 0) {
       float adcMean[N_CIDAC_VALS],
         adcErr[N_CIDAC_VALS],
         effErr[N_CIDAC_VALS],
         eff[N_CIDAC_VALS];
-
-      // skip empty channels
-      if (m_ciAdcN[faceIdx][0] == 0)
-        continue;
 
       // get pedestal
       float ciPed = (float)m_ciADCSum[faceIdx][0] /
@@ -458,7 +455,7 @@ void MuTrig::fitData(const MuonPed &ped) {
     //////////////////
     //-- MUON EFF --//
     //////////////////
-    {
+    if (m_muTrigHists[faceIdx]->GetEntries() > 0) {
       // collect only non-empty bins (requires
       // variable length vectors)
       vector<float> vADCMean,
@@ -552,14 +549,17 @@ void MuTrig::writeTXT(const string &filename) const {
             << " " << m_muThresh[faceIdx]
             << " " << m_muThreshErr[faceIdx]
             << " " << m_muThreshWidth[faceIdx]
-            << " " << m_muThreshWidthErr[faceIdx]
-            << " " << m_ciThresh[faceIdx]
-            << " " << m_ciThreshErr[faceIdx]
-            << " " << m_ciThreshWidth[faceIdx]
-            << " " << m_ciThreshWidthErr[faceIdx]
-            << " " << m_muThresh[faceIdx]/m_ciThresh[faceIdx]
-            << " " << m_delPed[faceIdx]
-            << endl;
+            << " " << m_muThreshWidthErr[faceIdx];
+    // ci data is optional
+    if (m_ciThresh[faceIdx] != INVALID_ADC)
+      outfile << " " << m_ciThresh[faceIdx]
+              << " " << m_ciThreshErr[faceIdx]
+              << " " << m_ciThreshWidth[faceIdx]
+              << " " << m_ciThreshWidthErr[faceIdx]
+              << " " << m_muThresh[faceIdx]/m_ciThresh[faceIdx]
+              << " " << m_delPed[faceIdx];
+        
+    outfile << endl;
   }
 }
 
