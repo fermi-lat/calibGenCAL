@@ -2,28 +2,25 @@
 Validate CAL MevPerDac calibration data in XML format.  The command
 line is:
 
-mevPerDacVal [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file>
+mevPerDacVal [-V] [-R <root_file>] [-L <log_file>] <xml_file>
 
 where:
 
     -R <root_file> - output validation diagnostics in ROOT file
-    -E <err_limit> - error limit for pedestal sigma value for x8 ranges
-                    (default is 10.0; x1 ranges use this value / 5)
-    -W <warn_limit> - warning limit pedestal sigma value for x8 ranges
-                     (default is 8.0; x1 ranges use this value / 5)
     -L <log_file>  - save console output to log text file
     -V             - verbose; turn on debug output
-    <xml_file> The CAL Int_Nonlin calibration XML file to validate.    
+    <xml_file> The CAL MevPerDac calibration XML file to validate.    
 """
 
 
 __facility__  = "Offline"
 __abstract__  = "Validate CAL MevPerDac calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/07/28 22:38:29 $"
-__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/09/09 17:39:24 $"
+__version__   = "$Revision: 1.5 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
+
 
 
 import sys, os
@@ -36,10 +33,24 @@ import calCalibXML
 import calConstant
 
 
+
+
+# validation limits
+
+
+smallErrLim     = 5.0
+smallWarnLim    = 2.5
+bigErrLim       = 1.0
+bigWarnLim      = 0.5
+
+
+
 BIGSMALL = ('BIG', 'SMALL')
 
 
-def rootHists(errData):
+
+
+def rootHists(errData, fileName):
 
     # create summary big histogram
 
@@ -49,14 +60,21 @@ def rootHists(errData):
     cs.SetLogy()
 
     hName = "h_Summary_Big"      
-    hs = ROOT.TH1F(hName, 'MevPerDac_Big', 100, 0.0, bigErrLim)
+    hs = ROOT.TH1F(hName, 'MevPerDac_Big %s' % fileName, 100, 0.0, bigErrLim)
 
     for tem in towers:
         for row in range(calConstant.NUM_ROW):
             for fe in range(calConstant.NUM_FE):
                     err = errData[tem, row, fe, 0]
                     hs.Fill(err)
-                    cs.Update()                       
+               
+    
+    axis = hs.GetXaxis()
+    axis.SetTitle('Gain (MeV/DAC)')
+    axis.CenterTitle()
+    axis = hs.GetYaxis()
+    axis.SetTitle('Counts')
+    axis.CenterTitle()
     
     hs.Draw()
     cs.Update()
@@ -71,14 +89,20 @@ def rootHists(errData):
     cs.SetLogy()
 
     hName = "h_Summary_Small"      
-    hs = ROOT.TH1F(hName, 'MevPerDac_Small', 100, 0.0, smallErrLim)
+    hs = ROOT.TH1F(hName, 'MevPerDac_Small: %s' % fileName, 100, 0.0, smallErrLim)
 
     for tem in towers:
         for row in range(calConstant.NUM_ROW):
             for fe in range(calConstant.NUM_FE):
                     err = errData[tem, row, fe, 1]
                     hs.Fill(err)
-                    cs.Update()                       
+     
+    axis = hs.GetXaxis()
+    axis.SetTitle('Gain (MeV/DAC)')
+    axis.CenterTitle()
+    axis = hs.GetYaxis()
+    axis.SetTitle('Counts')
+    axis.CenterTitle()         
     
     hs.Draw()
     cs.Update()
@@ -126,12 +150,10 @@ def calcError(energyData):
 
 if __name__ == '__main__':
 
-    usage = "mevPerDacVal [-V] [-L <log_file>] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>"
+    usage = "mevPerDacVal [-V] [-L <log_file>] [-R <root_file>] <xml_file>"
 
     rootOutput = False
-    smallErrLim = 30.0
-    smallWarnLim = 20.0
-
+    
     # setup logger
 
     logging.basicConfig()
@@ -141,7 +163,7 @@ if __name__ == '__main__':
     # check command line
 
     try:
-        opts = getopt.getopt(sys.argv[1:], "-R:-E:-W:-L:-V")
+        opts = getopt.getopt(sys.argv[1:], "-R:-L:-V")
     except getopt.GetoptError:
         log.error(usage)
         sys.exit(1)
@@ -151,10 +173,6 @@ if __name__ == '__main__':
         if o[0] == '-R':
             rootName = o[1]
             rootOutput = True
-        elif o[0] == '-E':
-            smallErrLim = float(o[1])
-        elif o[0] == '-W':
-            smallWarnLim = float(o[1])
         elif o[0] == '-L':
             if os.path.exists(o[1]):
                 log.warning('Deleting old log file %s', o[1])
@@ -172,10 +190,7 @@ if __name__ == '__main__':
         sys.exit(1)    
 
     xmlName = args[0]
-    bigErrLim = (smallErrLim / 5)
-    bigWarnLim = (smallWarnLim / 5)
-
-    log.debug('Using input file %s', xmlName)
+    
     log.debug('Using err limit %0.3f for Big diodes', bigErrLim)
     log.debug('Using err limit %0.3f for Small diodes', smallErrLim)
     log.debug('Using warn limit %0.3f for Big diodes', bigWarnLim)
@@ -183,6 +198,7 @@ if __name__ == '__main__':
 
     # open and read XML Ped file
 
+    log.info("Reading file %s", xmlName)
     xmlFile = calCalibXML.calMevPerDacCalibXML(xmlName)
     energyData = xmlFile.read()
     towers = xmlFile.getTowers()
@@ -199,12 +215,13 @@ if __name__ == '__main__':
 
         import ROOT
 
+        log.info("Writing file %s", rootName)
         ROOT.gROOT.Reset()
         rootFile = ROOT.TFile(rootName, "recreate")
 
         # write error histograms
 
-        rootHists(errData)        
+        rootHists(errData, xmlName)        
 
         # clean up
 

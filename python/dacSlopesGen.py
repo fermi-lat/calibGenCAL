@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL DAC XML calibration data file"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/04/14 15:53:07 $"
-__version__   = "$Revision: 1.24 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/23 15:32:01 $"
+__version__   = "$Revision: 1.1 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -31,6 +31,7 @@ import mpfit
 
 import calDacXML
 import calFitsXML
+import calCalibXML
 import calConstant
 
 
@@ -383,45 +384,16 @@ if __name__ == '__main__':
         log.error("Config file %s missing [gainfiles] section" % configName)
         sys.exit(1)
 
-    adc2nrgFiles = []
-    relgainFiles = []
+    muslopeFile = None
 
     options = configFile.options('gainfiles')
     for opt in options:
-        
-        optList = opt.split('_')
-        if len(optList) != 2:
-            continue
-        
-        if optList[0] == 'adc2nrg':
-            fList = adc2nrgFiles
-        elif optList[0] == 'relgain':
-            fList = relgainFiles
-        else:
-            continue
-
-        destTwr = int(optList[1])        
-        if destTwr < 0 or destTwr > 15:
-            log.error("Index for [gainfiles] option %s out of range (0 - 15)", opt)
-            sys.exit(1)
+        if opt == 'muslope':  
+            muslopeFile = configFile.get('gainfiles', opt) 
             
-        value = configFile.get('gainfiles', opt)
-        nameList = value.split(',')
-        nameLen = len(nameList)
-        if nameLen == 2:
-            name = nameList[0]
-            srcTwr = int(nameList[1])
-        else:
-            log.error("Incorrect option format %s", value)
-            sys.exit(1)
-        if srcTwr < 0 or srcTwr > 15:
-            log.error("Src index for [gainfiles] option %s out of range (0 - 15)", opt)
-            sys.exit(1)    
-        inFile = inputFile(srcTwr, destTwr, name)
-        fList.append(inFile)
-        
-        log.debug('Adding %s file %s to input as tower %d (from %d)', optList[0], name,
-                  destTwr, srcTwr)
+    if muslopeFile is None:
+        log.error("Config file %s missing [gainfiles]:muslope option" % configName)
+        sys.exit(1)         
                   
 
     # create empty ADC data arrays
@@ -434,10 +406,6 @@ if __name__ == '__main__':
                                 calConstant.NUM_FE, 128), Numeric.Float32)
     biasAdcData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
                                  calConstant.NUM_FE, 2), Numeric.Float32)
-    relgainData = Numeric.zeros((9, calConstant.NUM_RNG, calConstant.NUM_TEM, calConstant.NUM_ROW,
-                              calConstant.NUM_END, calConstant.NUM_FE), Numeric.Float32)
-    adc2nrgData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                calConstant.NUM_FE, 2), Numeric.Float32)
     uldAdcData = Numeric.zeros((3, calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
                                 calConstant.NUM_FE, 128), Numeric.Float32)                            
                                 
@@ -529,35 +497,6 @@ if __name__ == '__main__':
         biasAdcData[f.destTwr,...] = adcData[f.srcTwr,...]
         biasFile.close()
         
-    # read relgain files
-    
-    for f in relgainFiles:
-    
-        log.info("Reading file %s", f.name)
-        relgainFile = calFitsXML.calFitsXML(fileName = f.name)
-        twrs = relgainFile.getTowers()
-        if f.srcTwr not in twrs:
-            log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
-            sys.exit(1)
-        gainData = relgainFile.read()
-        relgainData[:,:,f.destTwr,...] = gainData[:,:,f.srcTwr,...]
-        relgainFile.close()
-
-
-    # read ADC/energy files
-    
-    for f in adc2nrgFiles:
-    
-        log.info("Reading file %s", f.name)
-        adc2nrgFile = calDacXML.calEnergyXML(f.name, 'adc2nrg')
-        twrs = adc2nrgFile.getTowers()
-        if f.srcTwr not in twrs:
-            log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
-            sys.exit(1)
-        engData = adc2nrgFile.read()    
-        adc2nrgData[f.destTwr, ...] = engData[f.srcTwr, ...]
-        adc2nrgFile.close()
-        
     # read ULD/ADC characterization files
 
     for f in uldAdcFiles:        
@@ -580,6 +519,13 @@ if __name__ == '__main__':
         uldAdcData[:,f.destTwr,...] = adcData[:,f.srcTwr,...]
         uldAdcFile.close()
         
+    # read MuSlope gain file
+    
+    log.info("Reading file %s", muslopeFile)
+    fio = calCalibXML.calMuSlopeCalibXML(muslopeFile)
+    gainData = fio.read()
+    fio.close()
+    
         
     #---------------------------- do FLE processing ---------------------------------------------
     
@@ -602,10 +548,10 @@ if __name__ == '__main__':
             
     # energy->ADC conversion
     
-    adcs0 /= adc2nrgData[...,0]
-    adcs1 /= adc2nrgData[...,0]
-    log.debug("FLE adcs0[0,0,0,0]:%.3f %.3f adc2nrg[0,0,0,0,0]:%.3f", adcs0[0,0,0,0], adcs1[0,0,0,0], 
-        adc2nrgData[0,0,0,0,0])
+    adcs0 /= gainData[...,calConstant.CRNG_LEX8,0]
+    adcs1 /= gainData[...,calConstant.CRNG_LEX8,0]
+    log.debug("FLE adcs0[0,0,0,0]:%.3f %.3f gainData[0,0,0,0,0]:%.3f", adcs0[0,0,0,0], adcs1[0,0,0,0], 
+        gainData[0,0,0,0,calConstant.CRNG_LEX8,0])
             
     # trigger bias correction
     
@@ -616,15 +562,13 @@ if __name__ == '__main__':
             
     # energy range scaling
     
-    rngScale = Numeric.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE), Numeric.Float32)
-    rngScale = rngScale * 9.0    
+    rngScale = gainData[...,calConstant.CRNG_LEX1,0] / gainData[...,calConstant.CRNG_LEX8,0]    
         
     adcs0 /= rngScale
     adcs1 /= rngScale
     log.debug("FLE adcs[0,0,0,0]:%.3f %.3f rngScale[0,0,0,0]:%.3f", adcs0[0,0,0,0],
         adcs1[0,0,0,0], rngScale[0,0,0,0])
-    
+       
     # get linear fit parameters
     
     log.info("Compressing FLE")
@@ -648,12 +592,13 @@ if __name__ == '__main__':
     
     # ADC->energy conversion
     
-    mevs *= adc2nrgData[...,0,Numeric.NewAxis]
+    mevs *= gainData[...,calConstant.CRNG_LEX8,0,Numeric.NewAxis]
     
     log.debug("FLE mevs[0,0,0,0]:%.3f %.3f adc2nrg[0,0,0,0,0]:%.3f", mevs[0,0,0,0,0], mevs[0,0,0,0,1],
-        adc2nrgData[0,0,0,0,0]) 
+        gainData[0,0,0,0,calConstant.CRNG_LEX8,0,Numeric.NewAxis]) 
     log.debug("FLE ranges[0,0,0,0]: %s", calConstant.CDAC[ranges[0,0,0,0]])      
     
+    sys.exit(0)
     
     #---------------------------- do FHE processing ---------------------------------------------
     

@@ -2,13 +2,11 @@
 Validate CAL DAC/ADC characterization calibration data in XML format.  The command
 line is:
 
-charVal [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file>
+charVal [-V] [-R <root_file>] [-L <log_file>] <xml_file>
 
 where:
 
     -R <root_file> - output validation diagnostics in ROOT file
-    -E <err_limit> - error limit
-    -W <warn_limit> - warning limit
     -L <log_file>  - save console output to log text file
     -V             - verbose; turn on debug output
     <xml_file> The CAL characterization XML file to validate.    
@@ -18,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL adc2nrg calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/04/28 17:10:38 $"
-__version__   = "$Revision: 1.6 $, $Author: dwood $"
+__date__      = "$Date: 2006/04/28 17:12:29 $"
+__version__   = "$Revision: 1.7 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -38,13 +36,14 @@ import calConstant
 
 
 def residuals(p, y, x, fjac = None):
-  (a, b) = p
-  err = y - a*x -b
-  return (0, err)
+  
+    (a, b) = p
+    err = y - a*x -b
+    return (0, err)
 
 
 
-def rootHists(errData):
+def rootHists(errData, fileName):
 
     # create summary histogram
 
@@ -58,7 +57,7 @@ def rootHists(errData):
     for rng in range(2):
 
         hName = "h_Summary_%s" % calConstant.CDAC[rng]      
-        hs = ROOT.TH1F(hName, '', 100, 0.0, (dnormErrLimit * 2))
+        hs = ROOT.TH1F(hName, 'DAC_Char: %s' % fileName, 100, 0.0, (dnormErrLimit * 2))
         hs.SetLineColor(rng + 1)
         hs.SetStats(False)
         for e in errData[rng]:
@@ -77,6 +76,13 @@ def rootHists(errData):
     for rng in range(2):
         if rng == 0:
             dopt = ''
+            hs = hists[0]
+            axis = hs.GetXaxis()
+            axis.SetTitle('Fit Error')
+            axis.CenterTitle()
+            axis = hs.GetYaxis()
+            axis.SetTitle('Counts')
+            axis.CenterTitle()
         else:
             dopt = 'SAME'
         hs = hists[rng]
@@ -296,11 +302,9 @@ def uldVal(data):
 
 if __name__ == '__main__':
 
-    usage = "charVal [-V] [-L <log_file>] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>"
+    usage = "charVal [-V] [-L <log_file>] [-R <root_file>] <xml_file>"
 
     rootOutput = False
-    dnormWarnLimit = None
-    dnormErrLimit = None
 
     # setup logger
 
@@ -311,7 +315,7 @@ if __name__ == '__main__':
     # check command line
 
     try:
-        opts = getopt.getopt(sys.argv[1:], "-R:-E:-W:-L:-V")
+        opts = getopt.getopt(sys.argv[1:], "-R:-L:-V")
     except getopt.GetoptError:
         log.error(usage)
         sys.exit(1)
@@ -321,10 +325,6 @@ if __name__ == '__main__':
         if o[0] == '-R':
             rootName = o[1]
             rootOutput = True
-        elif o[0] == '-E':
-            dnormErrLimit = float(o[1])
-        elif o[0] == '-W':
-            dnormWarnLimit = float(o[1])
         elif o[0] == '-L':
             if os.path.exists(o[1]):
                 log.warning('Deleting old log file %s', o[1])
@@ -352,26 +352,22 @@ if __name__ == '__main__':
     info = xmlFile.info()
     type = info['TTYPE1']
     xmlFile.close()
-
-    if dnormWarnLimit is None:
-        if type == 'log_acpt':
-            dnormWarnLimit = 200.0
-        elif type == 'fhe_dac':
-            dnormWarnLimit = 500.0    
-        else:
-            dnormWarnLimit = 400.0
-    if dnormErrLimit is None:
-        if type == 'log_acpt':
-            dnormErrLimit = 400.0
-        elif type == 'fhe_dac':
-            dnormErrLimit = 1000.0    
-        else:
-            dnormErrLimit = 800.0
-            
+ 
+    # determine validation limits based on DAC type
+    
+    if type == 'log_acpt':
+        dnormWarnLimit = 200.0
+        dnormErrLimit = 400.0
+    elif type == 'fhe_dac':
+        dnormWarnLimit = 500.0
+        dnormErrLimit = 1000.0    
+    else:
+        dnormWarnLimit = 400.0
+        dnormErrLimit = 800.0
+                
     log.debug('Validating file type %s', type)
     log.debug('Using error limit %f', dnormErrLimit)
     log.debug('Using warning limit %f', dnormWarnLimit)
-
                             
     # do validation
     
@@ -379,7 +375,6 @@ if __name__ == '__main__':
         (valStatus, errData) = uldVal(data)
     else:    
         (valStatus, errData) = charVal(data)
-    
 
     # create ROOT output file
     
@@ -393,7 +388,7 @@ if __name__ == '__main__':
 
         # write error histograms
 
-        rootHists(errData)        
+        rootHists(errData, xmlName)        
 
         # clean up
 

@@ -1,13 +1,10 @@
 """
 Validate CAL ULD settings XML files.  The command line is:
 
-uldVal [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>]
-       <cfg_file> <dac_xml_file>
+uldVal [-V] [-R <root_file>] [-L <log_file>] <cfg_file> <dac_xml_file>
 
 where:
     -R <root_file> - output validation diagnostics in ROOT file
-    -E <err_limit> - error limit
-    -W <warn_limit> - warning limit
     -L <log_file>  - save console output to log text file
     -V              = verbose; turn on debug output
     <cfg_file>      = The application configuration file to use.
@@ -19,8 +16,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL ULD settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/05/02 22:38:57 $"
-__version__     = "$Revision: 1.2 $, $Author: dwood $"
+__date__        = "$Date: 2006/05/03 16:48:57 $"
+__version__     = "$Revision: 1.3 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -39,7 +36,16 @@ import calConstant
 
 
 
-def rootHists(errData):
+# validation limits
+
+
+warnLimit   = 200.0
+errLimit    = 400.0
+
+
+
+
+def rootHists(errData, fileName):
 
     leg = ROOT.TLegend(0.88, 0.88, 0.99, 0.99)
     hists = [None, None, None]
@@ -53,14 +59,14 @@ def rootHists(errData):
     for erng in range(3):
                             
         hName = "ULD_%s" % calConstant.CRNG[erng]
-        hx = ROOT.TH1F(hName, 'ULD_Margin', 100, 0, 400)
+        hx = ROOT.TH1F(hName, 'ULD_Margin: %s' % fileName, 100, 0, 400)
         hx.SetLineColor(erng + 1)
         hx.SetStats(False)
         axis = hx.GetXaxis()
-        axis.SetTitle('ADC Margin')
+        axis.SetTitle('ULD Margin (ADC)')
         axis.CenterTitle()
         axis = hx.GetYaxis()
-        axis.SetTitle('Count')
+        axis.SetTitle('Counts')
         axis.CenterTitle()
 
         for err in errData[erng]:                                  
@@ -94,12 +100,10 @@ def rootHists(errData):
 
 if __name__ == '__main__':
 
-    usage = "uldVal [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] \
-       <cfg_file> <dac_xml_file>"
+    usage = "uldVal [-V] [-R <root_file>] [-L <log_file>] <cfg_file> <dac_xml_file>"
 
     rootOutput = False
-    warnLimit = 200.0
-    errLimit = 400.0 
+     
     valStatus = 0
 
     # setup logger
@@ -111,7 +115,7 @@ if __name__ == '__main__':
     # check command line
 
     try:
-        opts = getopt.getopt(sys.argv[1:], "-R:-E:-W:-L:-V")
+        opts = getopt.getopt(sys.argv[1:], "-R:-L:-V")
     except getopt.GetoptError:
         log.error(usage)
         sys.exit(1)
@@ -123,10 +127,6 @@ if __name__ == '__main__':
         elif o[0] == '-R':
             rootName = o[1]
             rootOutput = True
-        elif o[0] == '-E':
-            errLimit = float(o[1])
-        elif o[0] == '-W':
-            warnLimit = float(o[1])
         elif o[0] == '-L':
             if os.path.exists(o[1]):
                 log.warning('Deleting old log file %s', o[1])
@@ -298,7 +298,7 @@ if __name__ == '__main__':
 
         # write error histograms
 
-        rootHists(errData)        
+        rootHists(errData, uldName)        
 
         # clean up
 
