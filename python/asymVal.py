@@ -2,15 +2,11 @@
 Validate CAL Asym calibration data in XML format.  The command
 line is:
 
-asymVal [-V] [-L <log_file>] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>
+asymVal [-V] [-L <log_file>] [-R <root_file>] <xml_file>
 
 where:
 
     -R <root_file> - output validation diagnostics in ROOT file
-    -E <err_limit> - error limit for segment second derivative abs value
-                    (default is 0.00005)
-    -W <warn_limit> - warning limit for segment second derivative abs value
-                    (default is 0.00010)
     -L <log_file>   - save console output to log text file
     -V              - verbose; turn on debug output
     <xml_file> The CAL Asym calibration XML file to validate.    
@@ -20,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Asym calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/07/27 19:46:41 $"
-__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
+__date__      = "$Date: 2005/09/09 17:39:24 $"
+__version__   = "$Revision: 1.10 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -39,11 +35,21 @@ import calConstant
 
 
 
+
+# validation limits
+
+
+errLimit    = 0.00010
+warnLimit   = 0.00007
+
+
+
+
 VAL_NAMES = ('Big', 'Small', 'NsmallPbig', 'PsmallNbig')
 
 
 
-def rootGraphs(xposData, asymData):
+def rootGraphs(xposData, asymData, fileName):
 
     # create ROOT plots XML IntNonlin data
 
@@ -85,6 +91,13 @@ def rootGraphs(xposData, asymData):
                 hist = g.GetHistogram()
                 hist.SetMaximum(3)
                 hist.SetMinimum(-3)
+                hist.SetTitle('Light_Asym: %s' % fileName) 
+                axis = hist.GetXaxis()
+                axis.SetTitle('Position (mm)')
+                axis.CenterTitle()
+                axis = hist.GetYaxis()
+                axis.SetTitle('Asym Measure')
+                axis.CenterTitle()                
 
                 # draw and write graphs
 
@@ -99,7 +112,7 @@ def rootGraphs(xposData, asymData):
 
 
 
-def rootHists(errData):
+def rootHists(errData, fileName):
 
     # create summary sec deriv histograms
 
@@ -112,7 +125,7 @@ def rootHists(errData):
     for val in range(4):
 
         hName = "h_Summary_%s" % VAL_NAMES[val]       
-        hs = ROOT.TH1F(hName, 'Asym_Summary', 100, 0.0, errLimit)
+        hs = ROOT.TH1F(hName, 'Asym_Summary: %s' % fileName, 100, 0.0, errLimit)
         hs.SetLineColor(val + 1)
         hs.SetStats(False)
         sumHists[val] = hs
@@ -137,7 +150,7 @@ def rootHists(errData):
                 for val in range(4):
                         
                     hName = "h_%s_%s" % (title, VAL_NAMES[val])
-                    hx = ROOT.TH1F(hName, 'Asym_%s' % title, 100, 0.0, errLimit)
+                    hx = ROOT.TH1F(hName, 'Asym_%s: %s' % (title, fileName), 100, 0.0, errLimit)
                     hs = sumHists[val]
                     hx.SetLineColor(val + 1)
                     hx.SetStats(False)
@@ -154,6 +167,13 @@ def rootHists(errData):
                 for val in range(4):
                     if val == 0:
                         dopt = ''
+                        hx = hists[0]
+                        axis = hx.GetXaxis()
+                        axis.SetTitle('Second Derivative')
+                        axis.CenterTitle()
+                        axis = hx.GetYaxis()
+                        axis.SetTitle('Counts')
+                        axis.CenterTitle()
                     else:
                         dopt = 'SAME'
                     hx = hists[val]
@@ -171,6 +191,12 @@ def rootHists(errData):
         hs = sumHists[val]
         if val == 0:
             dopt = ''
+            axis = hs.GetXaxis()
+            axis.SetTitle('Second Derivative')
+            axis.CenterTitle()
+            axis = hs.GetYaxis()
+            axis.SetTitle('Counts')
+            axis.CenterTitle()
         else:
             dopt = 'SAME'
         hs.Draw(dopt)
@@ -243,12 +269,10 @@ def calcError(xposData, asymData):
 
 if __name__ == '__main__':
 
-    usage = "usage: asymVal [-V] [-L <log_file>] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>"
+    usage = "usage: asymVal [-V] [-L <log_file>] [-R <root_file>] <xml_file>"
 
     rootOutput = False
-    errLimit = 0.00010
-    warnLimit = 0.00005    
-
+    
     # setup logger
 
     logging.basicConfig()
@@ -268,10 +292,6 @@ if __name__ == '__main__':
         if o[0] == '-R':
             rootName = o[1]
             rootOutput = True
-        elif o[0] == '-E':
-            errLimit = float(o[1])
-        elif o[0] == '-W':
-            warnLimit = float(o[1])
         elif o[0] == '-L':
             if os.path.exists(o[1]):
                 log.warning('Deleting old log file %s', o[1])
@@ -290,12 +310,12 @@ if __name__ == '__main__':
 
     xmlName = args[0]
 
-    log.debug('Using input file %s', xmlName)
     log.debug('Using sec deriv err limit %0.6f', errLimit)
     log.debug('Using sec deriv warn limit %0.6f', warnLimit)
 
     # open and read XML Asym file
 
+    log.info("Reading file %s", xmlName)
     xmlFile = calCalibXML.calAsymCalibXML(xmlName)
     (xposData, asymData) = xmlFile.read()
     towers = xmlFile.getTowers()
@@ -311,16 +331,17 @@ if __name__ == '__main__':
 
         import ROOT
 
+        log.info("Writing file %s", rootName)
         ROOT.gROOT.Reset()
         rootFile = ROOT.TFile(rootName, "recreate")
 
         # write plots
 
-        rootGraphs(xposData, asymData)
+        rootGraphs(xposData, asymData, xmlName)
 
         # write error histograms
 
-        rootHists(errData)        
+        rootHists(errData, xmlName)        
 
         # clean up
 

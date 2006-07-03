@@ -2,15 +2,11 @@
 Validate CAL threshold bias offset calibration data in XML format.  The command
 line is:
 
-biasVal [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file>
+biasVal [-V] [-R <root_file>] [-L <log_file>] <xml_file>
 
 where:
 
     -R <root_file> - output validation diagnostics in ROOT file
-    -E <err_limit> - error limit for pedestal sigma value for x8 ranges
-                    (default is 10.0; x1 ranges use this value / 5)
-    -W <warn_limit> - warning limit pedestal sigma value for x8 ranges
-                     (default is 8.0; x1 ranges use this value / 5)
     -L <log_file>  - save console output to log text file
     -V             - verbose; turn on debug output
     <xml_file> The CAL bias offset calibration XML file to validate.    
@@ -20,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL bias offset calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/09 17:39:24 $"
-__version__   = "$Revision: 1.5 $, $Author: dwood $"
+__date__      = "$Date: 2005/09/20 21:11:13 $"
+__version__   = "$Revision: 1.1 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -37,7 +33,16 @@ import calConstant
 
 
 
-def rootHists(biasData):
+# validation limits
+
+
+warnLimit   = 120.0
+errLimit    = 180.0
+
+
+
+
+def rootHists(biasData, fileName):
 
     # create summary histogram
 
@@ -51,7 +56,7 @@ def rootHists(biasData):
     for eng in range(2):
 
         hName = "h_Summary_%s" % calConstant.CLEHE[eng]      
-        hs = ROOT.TH1F(hName, 'bias', 100, 0.0, errLimit)
+        hs = ROOT.TH1F(hName, 'bias: %s' % fileName, 100, 0.0, errLimit)
         hs.SetLineColor(eng + 1)
         hs.SetStats(False)
         
@@ -76,6 +81,13 @@ def rootHists(biasData):
     for eng in range(2):
         if eng == 0:
             dopt = ''
+            hs = hists[0]
+            axis = hs.GetXaxis()
+            axis.SetTitle('Bias (ADC)')
+            axis.CenterTitle()
+            axis = hs.GetYaxis()
+            axis.SetTitle('Counts')
+            axis.CenterTitle()
         else:
             dopt = 'SAME'
         hs = hists[eng]
@@ -127,12 +139,10 @@ def calcError(biasData):
 
 if __name__ == '__main__':
 
-    usage = " biasVal [-V] [-L <log_file>] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>"
+    usage = " biasVal [-V] [-L <log_file>] [-R <root_file>] <xml_file>"
 
     rootOutput = False
-    warnLimit = 120.0
-    errLimit = 180.0
-
+    
     # setup logger
 
     logging.basicConfig()
@@ -174,12 +184,12 @@ if __name__ == '__main__':
 
     xmlName = args[0]
 
-    log.debug('Using input file %s', xmlName)
     log.debug('using warn limit %0.3f', warnLimit)
     log.debug('using err limit %0.3f', errLimit)
 
     # open and read XML adc2nrg file
 
+    log.info("Reading file %s", xmlName)
     xmlFile = calDacXML.calEnergyXML(xmlName, 'thrBias')
     biasData = xmlFile.read()
     towers = xmlFile.getTowers()
@@ -195,12 +205,13 @@ if __name__ == '__main__':
 
         import ROOT
 
+        log.info("Writing file %s", rootName)
         ROOT.gROOT.Reset()
         rootFile = ROOT.TFile(rootName, "recreate")
 
         # write error histograms
 
-        rootHists(biasData)        
+        rootHists(biasData, xmlName)        
 
         # clean up
 

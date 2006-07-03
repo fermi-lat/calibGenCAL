@@ -1,13 +1,10 @@
 """
 Validate CAL DAC (FHE, FLE, or LAC) settings XML files.  The command line is:
 
-dacVal [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>]
-       FLE|FHE|LAC <MeV> <cfg_file> <dac_xml_file>
+dacVal [-V] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC <MeV> <cfg_file> <dac_xml_file>
 
 where:
     -R <root_file> - output validation diagnostics in ROOT file
-    -E <err_limit> - error limit
-    -W <warn_limit> - warning limit
     -L <log_file>  - save console output to log text file
     -V              = verbose; turn on debug output
     FLE|FHE|LAC     = DAC type to validate
@@ -21,8 +18,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/04/29 20:33:02 $"
-__version__     = "$Revision: 1.8 $, $Author: dwood $"
+__date__        = "$Date: 2006/05/03 16:16:29 $"
+__version__     = "$Revision: 1.9 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -41,7 +38,18 @@ import calConstant
 
 
 
-def rootHists(engData):
+# validation limits
+
+
+warnLimit   = 5.0
+errLimit    = 10.0
+    
+    
+    
+
+
+
+def rootHists(engData, fileName):
 
     # create summary histogram
 
@@ -50,7 +58,7 @@ def rootHists(engData):
     cs.SetLogy()
 
     hName = "h_Summary"      
-    hs = ROOT.TH1F(hName, dacType, 100, MeV - (errLimit * 2), MeV + (errLimit * 2))
+    hs = ROOT.TH1F(hName, "DAC_Val_%s: %s" % (dacType, fileName), 100, MeV - (errLimit * 2), MeV + (errLimit * 2))
     axis = hs.GetXaxis()
     axis.SetTitle('Threshold Energy (MeV)')
     axis.CenterTitle()
@@ -96,13 +104,10 @@ def engVal(errData):
 
 if __name__ == '__main__':
     
-    usage = "dacVal [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] \
-       FLE|FHE|LAC <MeV> <cfg_file> <dac_xml_file>"
+    usage = "dacVal [-V] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC <MeV> <cfg_file> <dac_xml_file>"
 
     rootOutput = False
-    warnLimit = 5.0
-    errLimit = 10.0    
-
+    
     # setup logger
 
     logging.basicConfig()
@@ -113,7 +118,7 @@ if __name__ == '__main__':
     # check command line
 
     try:
-        opts = getopt.getopt(sys.argv[1:], "-R:-E:-W:-L:-V")
+        opts = getopt.getopt(sys.argv[1:], "-R:-L:-V")
     except getopt.GetoptError:
         log.error(usage)
         sys.exit(1)
@@ -125,10 +130,6 @@ if __name__ == '__main__':
         elif o[0] == '-R':
             rootName = o[1]
             rootOutput = True
-        elif o[0] == '-E':
-            errLimit = float(o[1])
-        elif o[0] == '-W':
-            warnLimit = float(o[1])
         elif o[0] == '-L':
             if os.path.exists(o[1]):
                 log.warning('Deleting old log file %s', o[1])
@@ -433,7 +434,7 @@ if __name__ == '__main__':
 
         # write error histograms
 
-        rootHists(eng)        
+        rootHists(eng, dacName)        
 
         # clean up
 

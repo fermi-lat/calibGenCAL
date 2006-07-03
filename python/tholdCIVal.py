@@ -2,13 +2,11 @@
 Validate CAL Thold_CI calibration data in XML format.  The command
 line is:
 
-tholdCIVal [-V] [-L <log_file>] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>
+tholdCIVal [-V] [-L <log_file>] [-R <root_file>] <xml_file>
 
 where:
 
     -R <root_file> - output validation diagnostics in ROOT file
-    -E <err_limit> - error limit for ULD threshold (default is 3000)
-    -W <warn_limit> - warning limit ULD threshold (default is 3200) 
     -L <log_file>   - save console output to log text file
     -V              - verbose; turn on debug output
     <xml_file> The CAL Thold_CI calibration XML file to validate.    
@@ -18,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Thold_CI calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/05/03 17:47:01 $"
-__version__   = "$Revision: 1.17 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/26 19:50:35 $"
+__version__   = "$Revision: 1.18 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -34,12 +32,24 @@ import Numeric
 
 import calCalibXML
 import calConstant
+                  
+                  
+
+# validation limits
+
+
+uldErrLimit     = 3000.0
+uldWarnLimit    = 3200.0
+    
+                      
+                  
                    
 
 ADC_VALS = ('LAC', 'FLE', 'FHE', 'LEX8 ULD', 'HEX8 ULD')
 
 
-def rootHists(adcData, uldData):
+
+def rootHists(adcData, uldData, fileName):
 
     # create summary ULD histograms
 
@@ -51,7 +61,7 @@ def rootHists(adcData, uldData):
     for erng in range(4):
 
         hName = "h_Summary_ULD_%s" % calConstant.CRNG[erng]       
-        hs = ROOT.TH1F(hName, 'TholdCI_Summary_ULD', 100, uldErrLimit, 4095)
+        hs = ROOT.TH1F(hName, 'TholdCI_Summary_ULD: %s' % fileName, 100, uldErrLimit, 4095)
         hs.SetLineColor(erng + 1)
         hs.SetStats(False)
         axis = hs.GetXaxis()
@@ -80,7 +90,7 @@ def rootHists(adcData, uldData):
         for erng in range(calConstant.NUM_RNG):
                             
             hName = "h_%s_%d_%s" % (title, tem, calConstant.CRNG[erng])
-            hx = ROOT.TH1F(hName, 'TholdCI_ULD_%s' % title, 100, uldErrLimit, 4095)
+            hx = ROOT.TH1F(hName, 'TholdCI_ULD_%s: %s' % (title, fileName), 100, uldErrLimit, 4095)
             hs = sumHists[erng]
             hx.SetLineColor(erng + 1)
             hx.SetStats(False)
@@ -156,7 +166,7 @@ def rootHists(adcData, uldData):
     for val in range(5):
 
         hName = "h_Summary_ADC_%s" % ADC_VALS[val]       
-        hs = ROOT.TH1F(hName, 'TholdCI_Summary_ADC', 100, 0, 4095)
+        hs = ROOT.TH1F(hName, 'TholdCI_Summary_ADC: %s' % fileName, 100, 0, 4095)
         hs.SetLineColor(val + 1)
         hs.SetStats(False)
         axis = hs.GetXaxis()
@@ -184,7 +194,7 @@ def rootHists(adcData, uldData):
         for val in range(5):
                             
             hName = "h_%s_%d_%s" % (title, tem, ADC_VALS[val])
-            hx = ROOT.TH1F(hName, 'TholdCI_ADC_%s' % title, 100, 0, 4095)
+            hx = ROOT.TH1F(hName, 'TholdCI_ADC_%s: %s' % (title, fileName), 100, 0, 4095)
             hs = sumHists[val]
             hx.SetLineColor(val + 1)
             hx.SetStats(False)
@@ -322,12 +332,10 @@ def calcError(adcData, uldData, pedData):
 
 if __name__ == '__main__':
 
-    usage = "usage: tholdCIVal [-V] [-L <log_file>] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>"
+    usage = "usage: tholdCIVal [-V] [-L <log_file>] [-R <root_file>] <xml_file>"
 
     rootOutput = False
-    uldErrLimit = 3000.0
-    uldWarnLimit = 3200.0   
-
+    
     # setup logger
 
     logging.basicConfig()
@@ -337,7 +345,7 @@ if __name__ == '__main__':
     # check command line
 
     try:
-        opts = getopt.getopt(sys.argv[1:], "-R:-E:-W:-L:-V")
+        opts = getopt.getopt(sys.argv[1:], "-R:-L:-V")
     except getopt.GetoptError:
         log.error(usage)
         sys.exit(1)
@@ -347,10 +355,6 @@ if __name__ == '__main__':
         if o[0] == '-R':
             rootName = o[1]
             rootOutput = True
-        elif o[0] == '-E':
-            uldErrLimit = float(o[1])
-        elif o[0] == '-W':
-            uldWarnLimit = float(o[1])
         elif o[0] == '-L':
             if os.path.exists(o[1]):
                 log.warning('Deleting old log file %s', o[1])
@@ -396,7 +400,7 @@ if __name__ == '__main__':
 
         # write error histograms
 
-        rootHists(adcData, uldData)        
+        rootHists(adcData, uldData, xmlName)        
 
         # clean up
 
