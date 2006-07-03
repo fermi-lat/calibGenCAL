@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Mon Jul  3 07:46:42 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	intNonlinVal.py 
+Log Message:
+Increased sec deriv warning limit from 1.0 to 1.5 to reduce log output; added annotations to ROOT output plots.
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Jun 29 09:55:28 PDT 2006
 calibGenCAL/python
 
