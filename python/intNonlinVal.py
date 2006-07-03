@@ -2,14 +2,9 @@
 Validate CAL IntNonlin calibration data in XML format.  The command
 line is:
 
-intNonlinVal [-V] [-L <log_file>] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>
+intNonlinVal [-V] [-L <log_file>] [-R <root_file>] <xml_file>
 
 where:
-
-    -E <err_limit> - error limit for segment second derivative abs value
-                    (default is 1.0)
-    -W <warn_limit> - warning limit for segment second derivative abs value
-                    (default is 2.0)
     -R <root_file> - output validation diagnostics in ROOT file
     -L <log_file>  - save console output to log text file
     -V             - verbose; turn on debug output
@@ -20,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL IntNonlin calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/09 17:39:24 $"
-__version__   = "$Revision: 1.14 $, $Author: dwood $"
+__date__      = "$Date: 2005/11/03 22:01:32 $"
+__version__   = "$Revision: 1.15 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -39,7 +34,15 @@ import calConstant
     
 
 
-def rootGraphs(lengthData, dacData, adcData):
+
+# validation limits
+
+errLimit    = 2.0
+warnLimit   = 1.5
+
+
+
+def rootGraphs(lengthData, dacData, adcData, fileName):
 
     # create ROOT plots XML IntNonlin data
 
@@ -90,7 +93,7 @@ def rootGraphs(lengthData, dacData, adcData):
                             col = 4
                         g.SetMarkerStyle(5)
                         g.SetMarkerColor(col)
-                        g.SetTitle('IntNonlin_%s_x8' % title)
+                        g.SetTitle('IntNonlin_%s_x8: %s' % (title, fileName))
 
                         x8Graph.append(g)
                         x8Leg.AddEntry(g, calConstant.CRNG[erng], 'P')
@@ -132,7 +135,7 @@ def rootGraphs(lengthData, dacData, adcData):
                             col = 4
                         g.SetMarkerStyle(5)
                         g.SetMarkerColor(col)
-                        g.SetTitle('IntNonlin_%s_x1' % title)
+                        g.SetTitle('IntNonlin_%s_x1: %s' % (title, fileName))
 
                         x1Graph.append(g)
                         x1Leg.AddEntry(g, calConstant.CRNG[erng], 'P')
@@ -167,7 +170,7 @@ def rootGraphs(lengthData, dacData, adcData):
 
 
 
-def rootHists(errData):
+def rootHists(errData, fileName):
 
     # create summary sec deriv histograms
 
@@ -175,12 +178,13 @@ def rootHists(errData):
     cs = ROOT.TCanvas('c_Summary', 'Summary', -1)
     cs.SetGrid()
     cs.SetLogy()
+    cs.SetLogx()
     sumLeg = ROOT.TLegend(0.88, 0.88, 0.99, 0.99)
 
     for erng in range(calConstant.NUM_RNG):
 
         hName = "h_Summary_%s" % calConstant.CRNG[erng]       
-        hs = ROOT.TH1F(hName, 'IntNonlin_Summary', 100, 0.0, errLimit)
+        hs = ROOT.TH1F(hName, 'IntNonlin_Summary: %s' % fileName, 100, 0.0, (errLimit + 1.0))
         hs.SetLineColor(erng + 1)
         hs.SetStats(False)
         sumHists[erng] = hs
@@ -200,13 +204,14 @@ def rootHists(errData):
                     cc = ROOT.TCanvas(cName, title, -1)
                     cc.SetGrid()
                     cc.SetLogy()
+                    cc.SetLogx()
                     chanLeg = ROOT.TLegend(0.88, 0.88, 0.99, 0.99)
                     hists = [None, None, None, None]
                     
                     for erng in range(calConstant.NUM_RNG):
                         
                         hName = "h_%s_%s" % (title, calConstant.CRNG[erng])
-                        hc = ROOT.TH1F(hName, 'IntNonlin_%s' % title, 100, 0.0, errLimit)
+                        hc = ROOT.TH1F(hName, 'IntNonlin_%s: %s' % (title, fileName), 100, 0.0, (errLimit + 1.0))
                         hs = sumHists[erng]
                         hc.SetLineColor(erng + 1)
                         hc.SetStats(False)
@@ -223,6 +228,13 @@ def rootHists(errData):
                     for erng in range(calConstant.NUM_RNG):
                         if erng == 0:
                             dopt = ''
+                            hc = hists[0]
+                            axis = hc.GetXaxis()
+                            axis.SetTitle('Second Derivative')
+                            axis.CenterTitle()
+                            axis = hc.GetYaxis()
+                            axis.SetTitle('Counts')
+                            axis.CenterTitle()
                         else:
                             dopt = 'SAME'
                         hc = hists[erng]
@@ -240,6 +252,12 @@ def rootHists(errData):
         hs = sumHists[erng]
         if erng == 0:
             dopt = ''
+            axis = hs.GetXaxis()
+            axis.SetTitle('Second Derivative')
+            axis.CenterTitle()
+            axis = hs.GetYaxis()
+            axis.SetTitle('Counts') 
+            axis.CenterTitle()  
         else:
             dopt = 'SAME'
         hs.Draw(dopt)
@@ -318,12 +336,10 @@ def calcError(lengthData, dacData, adcData):
 
 if __name__ == '__main__':
 
-    usage = "intNonlinVal [-V] [-L <log_file>] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] <xml_file>"
+    usage = "intNonlinVal [-V] [-L <log_file>] [-R <root_file>] <xml_file>"
 
     rootOutput = False
-    errLimit = 2.0
-    warnLimit = 1.0
-
+    
     # setup logger
 
     logging.basicConfig()
@@ -333,7 +349,7 @@ if __name__ == '__main__':
     # check command line
 
     try:
-        opts = getopt.getopt(sys.argv[1:], "-R:-E:-W:-L:-V")
+        opts = getopt.getopt(sys.argv[1:], "-R:-L:-V")
     except getopt.GetoptError:
         log.error(usage)
         sys.exit(1)
@@ -343,10 +359,6 @@ if __name__ == '__main__':
         if o[0] == '-R':
             rootName = o[1]
             rootOutput = True
-        elif o[0] == '-E':
-            errLimit = float(o[1])
-        elif o[0] == '-W':
-            warnLimit = float(o[1])
         elif o[0] == '-L':
             if os.path.exists(o[1]):
                 log.warning('Deleting old log file %s', o[1])
@@ -365,12 +377,12 @@ if __name__ == '__main__':
 
     xmlName = args[0]
 
-    log.debug('Using input file %s', xmlName)
     log.debug('Using sec deriv err limit %0.3f', errLimit)
     log.debug('Using sec deriv warn limit %0.3f', warnLimit)    
 
     # open and read XML IntNonlin file
 
+    log.info('Reading file %s', xmlName)
     xmlFile = calCalibXML.calIntNonlinCalibXML(xmlName)
     (lengthData, dacData, adcData) = xmlFile.read()
     info = xmlFile.info()
@@ -387,16 +399,17 @@ if __name__ == '__main__':
 
         import ROOT
 
+        log.info("Writing file %s", rootName)
         ROOT.gROOT.Reset()
         rootFile = ROOT.TFile(rootName, "recreate")
 
         # write plots
 
-        rootGraphs(lengthData, dacData, adcData)
+        rootGraphs(lengthData, dacData, adcData, xmlName)
 
         # write error histograms
 
-        rootHists(errData)        
+        rootHists(errData, xmlName)        
                               
         # clean up
 
