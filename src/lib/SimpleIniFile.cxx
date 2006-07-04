@@ -1,4 +1,4 @@
-// $Header$
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/SimpleIniFile.cxx,v 1.1 2006/06/15 20:58:00 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
  */
@@ -86,7 +86,14 @@ static string &trim_comment(string &str) {
 
 SimpleIniFile::SimpleIniFile(const string &filename) 
 {
-  openIniFile(filename);
+  if (!openIniFile(filename)) {
+    ostringstream tmp;
+    tmp << __FILE__ << ":" << __LINE__ << 
+      ": Cannot open cfg file: " << filename;
+    throw runtime_error(tmp.str());
+        
+  }
+    
 }
 
 bool SimpleIniFile::openIniFile(const string &filename)
