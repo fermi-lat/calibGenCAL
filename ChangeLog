@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Jul  4 15:50:54 PDT 2006
+calibGenCAL/src/lib
+
+Modified Files:
+	SimpleIniFile.cxx 
+Log Message:
+improved exception handling
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Jul  3 12:28:24 PDT 2006
 calibGenCAL/python
 
