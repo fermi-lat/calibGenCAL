@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Jul  5 13:35:09 PDT 2006
+calibGenCAL/src/lib
+
+Modified Files:
+	MuonAsym.cxx 
+Log Message:
+update print outs
+
+    *
+------------------------------------------------------------
 User: dwood  Wed Jul  5 11:59:38 PDT 2006
 calibGenCAL/python
 
