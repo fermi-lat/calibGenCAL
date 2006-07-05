@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL MuSlope calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/28 16:05:41 $"
-__version__   = "$Revision: 1.5 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/29 16:55:28 $"
+__version__   = "$Revision: 1.6 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -196,6 +196,16 @@ def calcError(slopeData):
 
 
 
+def average(data, tems):
+
+    av = 0
+    for t in tems:
+        av += Numeric.average(data[t,...], axis = None)
+    return (av / len(tems))
+    
+    
+    
+
 if __name__ == '__main__':
 
     usage = "muSlopeVal [-V] [-L <log_file>] [-R <root_file>] <xml_file>"
@@ -271,13 +281,13 @@ if __name__ == '__main__':
         
     # do simple stats 
     
-    av = Numeric.average(slopeData[...,calConstant.CRNG_LEX8,0], axis = None)
+    av = average(slopeData[...,calConstant.CRNG_LEX8,0], towers)
     log.info("LEX8 gain values average=%f", av)
-    av = Numeric.average(slopeData[...,calConstant.CRNG_LEX1,0], axis = None)
+    av = average(slopeData[...,calConstant.CRNG_LEX1,0], towers)
     log.info("LEX1 gain values average=%f", av)
-    av = Numeric.average(slopeData[...,calConstant.CRNG_HEX8,0], axis = None)
+    av = average(slopeData[...,calConstant.CRNG_HEX8,0], towers)
     log.info("HEX8 gain values average=%f", av)
-    av = Numeric.average(slopeData[...,calConstant.CRNG_HEX1,0], axis = None)
+    av = average(slopeData[...,calConstant.CRNG_HEX1,0], towers)
     log.info("HEX1 gain values average=%f", av)    
 
     # report results
