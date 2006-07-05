@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.cxx,v 1.2 2006/06/22 21:50:23 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.cxx,v 1.3 2006/06/27 15:36:25 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -571,7 +571,7 @@ unsigned MuonMPD::getMinEntries() {
 
 
   m_ostrm << " Channels Detected: "  << n
-          << " Avg Hits/channel: " << (double)sum/n
+          << " Avg Hits/channel: " << ((n) ? (double)sum/n : 0)
           << " Max: " << maxHits
           << endl;
 
