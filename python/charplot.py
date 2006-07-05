@@ -17,8 +17,8 @@ Where:
 __facility__  = "Offline"
 __abstract__  = "Generate ROOT plots for CAL ADC/DAC characerization data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/05/01 17:10:14 $"
-__version__   = "$Revision: 1.7 $, $Author: dwood $"
+__date__      = "$Date: 2006/05/02 21:49:47 $"
+__version__   = "$Revision: 1.8 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -52,7 +52,7 @@ def residuals(p, y, x, fjac = None):
 
 
 
-def plotDAC(rawData, filterData, info, twrs):
+def plotDAC(rawData, filterData, info, twrs, rawName, filterName):
     """
     Create ROOT plots from ADC/DAC data
     """
@@ -174,6 +174,7 @@ def plotDAC(rawData, filterData, info, twrs):
                     # display plots
 
                     h = markerGraph[-1].GetHistogram()
+                    h.SetTitle("%s: %s, %s" % (title, rawName, filterName))
                     axis = h.GetXaxis()
                     axis.SetTitle('DAC')
                     axis.CenterTitle()
@@ -194,7 +195,7 @@ def plotDAC(rawData, filterData, info, twrs):
 
 
 
-def plotULD(rawData, filterData, info, twrs):
+def plotULD(rawData, filterData, info, twrs, rawName, filterName):
     """
     Create ROOT plots from ADC/ULD data
     """
@@ -332,6 +333,7 @@ def plotULD(rawData, filterData, info, twrs):
                     # display plots
 
                     h = markerGraph[-1].GetHistogram()
+                    h.SetTitle("%s: %s, %s" % (title, rawName, filterName)) 
                     h.SetMaximum(max(gMax) + 200)
                     axis = h.GetXaxis()
                     axis.SetTitle('DAC')
@@ -416,9 +418,9 @@ if __name__ == '__main__':
 
     type = filterInfo['TTYPE1']
     if type == 'fhe_dac' or type == 'fle_dac' or type == 'log_acpt':
-        plotDAC(rawData, filterData, filterInfo, filterTwrs)
+        plotDAC(rawData, filterData, filterInfo, filterTwrs, xmlNameRaw, xmlNameFilter)
     elif type == 'rng_uld_dac':
-        plotULD(rawData, filterData, filterInfo, filterTwrs)
+        plotULD(rawData, filterData, filterInfo, filterTwrs, xmlNameRaw, xmlNameFilter)
     else:
         log.error("file type %s not supported", type)
         sys.exit(1)
