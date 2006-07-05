@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Jul  5 11:01:32 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	build_tholdci_cfg.py 
+Log Message:
+updated usage string
+
+    *
+------------------------------------------------------------
 User: dwood  Wed Jul  5 08:59:50 PDT 2006
 calibGenCAL/src
 
