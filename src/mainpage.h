@@ -1,5 +1,5 @@
 // (Special "header" just for doxygen)
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/mainpage.h,v 1.34 2006/06/20 22:21:14 dwood Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/mainpage.h,v 1.35 2006/06/29 00:55:31 fewtrell Exp $
 
 
 /*! 
@@ -56,8 +56,7 @@ generates the following calibrations for use in offline software:
 
 <h3> Python scripts: </h3>
 
-The calibGenCAL python utilites have been tested using Python 2.3 and
-Python 2.4.
+The calibGenCAL python utilites require python version 2.4.
 
 Their use also requires that the following python extensions be installed:
 - Numeric
@@ -147,16 +146,17 @@ clean characterization tables to work well (e.g. genXXXsettings).
 
 <h5> Validation scripts </h5>
 
-- <tt> asymVal      [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> adc2nrgVal   [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> biasVal      [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> intNonlinVal [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> mevPerDacVal [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> pedVal       [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> tholdCIVal   [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> charVal      [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> dacVal       [-V] [-E <err_limit>] [-W <warn_limit>] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC <MeV> <cfg_file> <dac_xml_file></tt>
-- <tt> checkXML     [xml_file_0 xml_file_1 ...]</tt> generic xml validator
+- <tt> asymVal      [-V] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> adc2nrgVal   [-V] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> biasVal      [-V] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> intNonlinVal [-V] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> mevPerDacVal [-V] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> pedVal       [-V] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> tholdCIVal   [-V] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> charVal      [-V] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> muSlopeVal   [-V] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> dacVal       [-V] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC <MeV> <cfg_file> <dac_xml_file> </tt>
+- <tt> checkXML     [xml_file_0 xml_file_1 ...] </tt> 
 
 
 The validation scripts perform simple checks on the values and formats
@@ -173,7 +173,7 @@ characterization tables.
 - The charplot utility overlays raw, fitered, and linear model characterization
 data plots.  These require a working implementation of PyROOT. 
 
-<h5> merge scripts </h5>
+<h5> Merge scripts </h5>
 
 - <tt> intNonlinMerge [-V] <cfg_file> <out_xml_file> </tt>
 - <tt> pedMerge       [-V] <cfg_file> <out_xml_file> </tt>
@@ -188,7 +188,7 @@ python merge tools take a configuration file as input.  This
 configuration file specifies the input data sets and tower addressing. 
 The -V option increases the verbosity of the diagnostic output.
 
-<h5> conversion scripts </h5>
+<h5> Conversion scripts </h5>
 For converting xml files to and from columnar text and other formats.
 
 - <tt> asymTXT2XML [-doptional.dtd] <input.txt> <output.xml> </tt>
