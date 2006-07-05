@@ -1,7 +1,7 @@
 """
 Builds configuration file for tholdCIGen.py script from info in gensettings.py cfg file
 
-Usage: gen_tholdci_cfg [-b base_snapshot.xml] [-g gensettings.cfg] [-t dacfile_timetag] [-d dtdfile.dtd] [-p ped_dir] intnonlin.xml output_tholdci.cfg
+Usage: build_tholdci_cfg [-b base_snapshot.xml] [-g gensettings.cfg] [-t dacfile_timetag] [-d dtdfile.dtd] [-p ped_dir] intnonlin.xml output_tholdci.cfg
 
 where:
        intnonlin.xml      = offline adc->dac intNonlin calibration file.  (req'd as it is not specified in gensettings.cfg file)
@@ -20,8 +20,8 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Builds configuration file for tholdCIGen.py script from info in gensettings.py cfg file"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/03/14 22:42:43 $"
-__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/05/01 15:07:32 $"
+__version__   = "$Revision: 1.2 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -34,12 +34,12 @@ import glob
 
 # set up logging
 logging.basicConfig()
-log = logging.getLogger('gen_tholdci_cfg')
+log = logging.getLogger('build_tholdci_cfg')
 log.setLevel(logging.INFO)
 
 
 # retrieve commandline parms
-usage = "Usage: gen_tholdci_cfg [-b base_snapshot.xml] [-g gensettings.cfg] [-t dacfile_timetag] [-d dtdfile.dtd] intnonlin.xml output_tholdci.cfg"
+usage = "Usage: build_tholdci_cfg [-b base_snapshot.xml] [-g gensettings.cfg] [-t dacfile_timetag] [-d dtdfile.dtd] intnonlin.xml output_tholdci.cfg"
 # check command line
 try:
     (opts,args) = getopt.getopt(sys.argv[1:], "b:d:g:t:p:")
