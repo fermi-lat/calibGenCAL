@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.cxx,v 1.3 2006/06/27 15:36:25 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.cxx,v 1.4 2006/06/28 14:13:29 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -464,7 +464,7 @@ unsigned MuonAsym::getMinEntries() {
   }
 
   m_ostrm << " Channels Detected: "  << n
-          << " Avg Hits/channel: " << (double)sum/n
+          << " Avg Hits/channel: " << ((n) ? (double)sum/n : 0)
           << " Max: " << maxHits
           << endl;
 
