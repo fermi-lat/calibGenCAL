@@ -384,3 +384,7 @@ v4r2 fewtrell, dwood
 - inlTXT2XML script added
 - Put low level python modules in lib subdirectory; changed all scripts so that PYTHONPATH is set appropriately.
 
+--------------------
+v4r2p1  fewtrell
+--------------------
+- fixed bug in adc2nrgTXT2XML.py was writing out wrong ranges
