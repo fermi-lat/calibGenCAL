@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Sat Jul  8 12:41:37 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	adc2nrgTXT2XML.py asymTXT2XML.py asymXML2TXT.py 
+Log Message:
+small updates to TXT <-> XML converters
+
+    *
+------------------------------------------------------------
+User: fewtrell  Sat Jul  8 12:41:37 PDT 2006
 calibGenCAL/doc
 
 Modified Files:
