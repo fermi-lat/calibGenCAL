@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL ADC2NRG calibration XML files from TXT."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/06/22 21:21:20 $"
-__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/07/08 19:22:13 $"
+__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -123,7 +123,6 @@ if __name__ == '__main__':
         row = calCalibXML.layerToRow(int(lyr))
 
         outData[twr, row, face, col, int(rng/2)] = adc2nrg
-        print twr, row, face, col, int(rng/2), adc2nrg
 
     log.info('Writing output file %s', outPath)
 
