@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Sat Jul  8 12:22:13 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	adc2nrgTXT2XML.py 
+Log Message:
+bug wrote wrong ranges out to xml
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v4r2, operation: add
 Package: calibGenCAL
