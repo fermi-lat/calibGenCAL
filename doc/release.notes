@@ -388,3 +388,8 @@ v4r2 fewtrell, dwood
 v4r2p1  fewtrell
 --------------------
 - fixed bug in adc2nrgTXT2XML.py was writing out wrong ranges
+
+--------------------
+v4r2p2 fewtrell
+--------------------
+- small updates to TXT<->XML converters

@@ -9,7 +9,7 @@ where:
     -d           = specify which dtd file to load from calibUtil/xml folder (default = 'calCalib_v2r2.dtd')
 
     input.txt    = asymmetry input txt file, space delimited in following format:
-                   twr lyr col pos_diode neg_diode xpos asym asig
+                   twr lyr col pos_diode neg_diode asym asig
         
     output.xml = properly formatted offline CAL asymmetry XML file
 """
@@ -17,8 +17,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL Asymmetry calibration XML files from TXT."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/02/22 21:20:06 $"
-__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/06/22 17:52:13 $"
+__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
