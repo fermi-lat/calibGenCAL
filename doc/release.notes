@@ -393,3 +393,8 @@ v4r2p1  fewtrell
 v4r2p2 fewtrell
 --------------------
 - small updates to TXT<->XML converters
+
+--------------------
+v4r2p3 fewtrell
+--------------------
+- added biasTXT2XML tool
