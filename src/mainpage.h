@@ -1,5 +1,5 @@
 // (Special "header" just for doxygen)
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/mainpage.h,v 1.35 2006/06/29 00:55:31 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/mainpage.h,v 1.36 2006/07/05 15:59:50 dwood Exp $
 
 
 /*! 
@@ -205,6 +205,7 @@ For converting xml files to and from columnar text and other formats.
 - <tt> adc2nrgTXT2XML input.txt output.xml </tt>
 - <tt> muSlopeTXT2XML [-doptional.dtd] input.txt output.xml </tt>
 - <tt> inlTXT2XML [-doptional.dtd] input.txt output.xml </tt>
+- <tt> biasTXT2XML </tt>
 
 Each of the TXT2XML scripts converts one offline calibration file type
 from space delimited TXT file to proper XML file format.
