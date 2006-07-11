@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Tue Jul 11 15:32:30 PDT 2006
+calibGenCAL/python/lib
+
+Modified Files:
+	calADCFilter.py 
+Log Message:
+Improved calADCFilter.__restore() method to deal with cases where data is all zero.
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v4r2p3, operation: add
 Package: calibGenCAL
