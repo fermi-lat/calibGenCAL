@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL adc2nrg calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/04/28 17:12:29 $"
-__version__   = "$Revision: 1.7 $, $Author: dwood $"
+__date__      = "$Date: 2006/07/03 19:28:23 $"
+__version__   = "$Revision: 1.8 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -236,8 +236,8 @@ def uldVal(data):
                         fkw = {'x': x, 'y' : y}
 
                         if len(x) < 3:
-                            log.error('Too little data: %d,%s%s,%d,FINE', tem, calConstant.CROW[row],
-                                      calConstant.CPM[end], fe)
+                            log.error('Too little data: %d,%s%s,%d,%s,FINE', tem, calConstant.CROW[row],
+                                      calConstant.CPM[end], fe, calConstant.CRNG[erng])
                             valStatus = 1
                         else:
 
@@ -247,8 +247,8 @@ def uldVal(data):
                                 sys.exit(1)
                             dnorm = (fit.fnorm / len(x))
                             errData[0].append(dnorm)
-                            log.debug("%d,%s%s,%d,FINE: %0.1f %0.1f %0.2f", tem, calConstant.CROW[row],
-                                calConstant.CPM[end], fe, fit.params[0], fit.params[1], dnorm)
+                            log.debug("%d,%s%s,%d,%s,FINE: %0.1f %0.1f %0.2f", tem, calConstant.CROW[row],
+                                calConstant.CPM[end], fe, calConstant.CRNG[erng], fit.params[0], fit.params[1], dnorm)
 
                             if dnorm > dnormWarnLimit:
                                 if dnorm > dnormErrLimit:
@@ -273,8 +273,8 @@ def uldVal(data):
                         fkw = {'x': x, 'y' : y}
                     
                         if len(x) < 3:
-                            log.error('Too little data: %d,%s%s,%d,COARSE', tem, calConstant.CROW[row],
-                                      calConstant.CPM[end], fe)
+                            log.error('Too little data: %d,%s%s,%d,%s,COARSE', tem, calConstant.CROW[row],
+                                      calConstant.CPM[end], fe, calConstant.CRNG[erng])
                         else:
 
                             fit = mpfit.mpfit(residuals, p0, functkw = fkw, parinfo = pinfo, quiet = 1)
@@ -283,8 +283,8 @@ def uldVal(data):
                                 sys.exit(1)
                             dnorm = (fit.fnorm / len(x))
                             errData[1].append(dnorm)
-                            log.debug("%d,%s%s,%d,COARSE: %0.1f %0.1f %0.2f", tem, calConstant.CROW[row],
-                                calConstant.CPM[end], fe, fit.params[0], fit.params[1], dnorm)
+                            log.debug("%d,%s%s,%d,%s,COARSE: %0.1f %0.1f %0.2f", tem, calConstant.CROW[row],
+                                calConstant.CPM[end], fe, calConstant.CRNG[erng], fit.params[0], fit.params[1], dnorm)
 
                             if dnorm > dnormWarnLimit:
                                 if dnorm > dnormErrLimit:
