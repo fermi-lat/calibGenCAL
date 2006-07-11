@@ -6,8 +6,8 @@ Tool to smooth CAL ADC/DAC data.
 __facility__  = "Offline"
 __abstract__  = "Tool to smooth CAL ADC/DAC data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/04/20 19:46:06 $"
-__version__   = "$Revision: 1.17 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/21 18:43:14 $"
+__version__   = "$Revision: 1.1 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -259,10 +259,13 @@ class calADCFilter:
 
         # find first non-zero point
 
+        da = 64
         for d in range(0, 64):
             if data[d] > 0.0:
                 da = d
                 break
+        if da == 64:
+            return        
 
         # start search for strings of zero data
 
