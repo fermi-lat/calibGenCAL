@@ -2,16 +2,18 @@
 build batch file containing commands to run adcsmooth script for filtering configuration files for each module and setting specified in setup file
 also runs validation & plotting scripts.
 
-note:
-    see calibGenCAL/doc/gensettings_scripts.html for more information.
+Note:
+    - this program depends on input filenames w/ certain patterns.  Filename conventions change from time to time.  we try to keep the scripts current, so
+      you may have to modify the glob matches to work w/ older files.
+    - see calibGenCAL/doc/gensettings_scripts.html for more information.
 
 """
 
 __facility__  = "Offline"
 __abstract__  = "Build batch file containing commands to run adcsmooth filtering script"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2006/04/28 17:10:38 $"
-__version__   = "$Revision: 1.12 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/21 18:43:12 $"
+__version__   = "$Revision: 1.13 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -145,28 +147,28 @@ for idet in detsections:
 # either change them or use override
 
 	if flename is None:
-		flenamelist = glob.glob('*'+idet+'*fle2adc*.xml')
+		flenamelist = glob.glob('*fle2adc*'+idet+'*.xml')
 		if len(flenamelist) != 1:
 			log.error(' %s entries in flenamelist',len(flenamelist))
 			sys.exit(1)
 		else:
 			flename = flenamelist[0]
 	if fhename is None:
-		fhenamelist = glob.glob('*'+idet+'*fhe2adc*.xml')
+		fhenamelist = glob.glob('*fhe2adc*'+idet+'*.xml')
 		if len(fhenamelist) != 1:
 			log.error(' %s entries in fhenamelist',len(fhenamelist))
 			sys.exit(1)
 		else:
 			fhename = fhenamelist[0]
 	if lacname is None:
-		lacnamelist = glob.glob('*'+idet+'*lac2adc*.xml')
+		lacnamelist = glob.glob('*lac2adc*'+idet+'*.xml')
 		if len(lacnamelist) != 1:
 			log.error(' %s entries in lacnamelist',len(lacnamelist))
 			sys.exit(1)
 		else:
 			lacname = lacnamelist[0]
 	if uldname is None:
-		uldnamelist = glob.glob('*'+idet+'*uld2adc*.xml')
+		uldnamelist = glob.glob('*uld2adc*'+idet+'*.xml')
 		if len(uldnamelist) != 1:
 			log.error(' %s entries in uldnamelist',len(uldnamelist))
 			sys.exit(1)
