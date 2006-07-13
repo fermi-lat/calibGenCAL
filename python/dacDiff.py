@@ -15,8 +15,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL DAC settings XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/02/08 19:20:25 $"
-__version__     = "$Revision: 1.1 $, $Author: dwood $"
+__date__        = "$Date: 2006/02/15 23:38:38 $"
+__version__     = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -70,7 +70,7 @@ dac1 = dacFile1.read()
 dac2 = dacFile2.read()
 
 # subtract all elements in arrays
-dacDiff = dac1 - dac2
+dacDiff = dac2 - dac1
 
 for twr in dacTwrs1:
     print dacDiff[twr,:]
