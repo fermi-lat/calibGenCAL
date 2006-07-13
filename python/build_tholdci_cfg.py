@@ -20,8 +20,8 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Builds configuration file for tholdCIGen.py script from info in gensettings.py cfg file"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/05/01 15:07:32 $"
-__version__   = "$Revision: 1.2 $, $Author: dwood $"
+__date__      = "$Date: 2006/07/05 18:01:32 $"
+__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -190,7 +190,7 @@ for idet in detsections:
         sys.exit(1)
 
     # search for pedestal.xml
-    pedname = glob.glob("%s/*%s*pedestals.xml"%(ped_dir,idet))[0];
+    pedname = glob.glob("%s/*pedestals_%s.xml"%(ped_dir,idet))[0];
     
 
 # read in configuration parameters
