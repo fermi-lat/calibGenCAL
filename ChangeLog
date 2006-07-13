@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Jul 13 07:37:08 PDT 2006
+calibGenCAL/doc
+
+Modified Files:
+	gensettings_scripts.html 
+Log Message:
+updated top level python gensettings scripts to handle new online filename conventions
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Jul 13 07:17:16 PDT 2006
 calibGenCAL/python
 
