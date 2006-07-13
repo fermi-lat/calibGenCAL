@@ -398,3 +398,10 @@ v4r2p2 fewtrell
 v4r2p3 fewtrell
 --------------------
 - added biasTXT2XML tool
+
+-----------------------
+v4r2p4 fewtrell, dwood
+-----------------------
+- updating for new filename conventions from online tests
+- Added range information to ULD logging statements.
+- Improved calADCFilter.__restore() method to deal with cases where data is all zero.
