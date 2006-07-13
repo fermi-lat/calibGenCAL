@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Jul 13 07:49:05 PDT 2006
+calibGenCAL/src
+
+Modified Files:
+	emiAnal.cxx 
+Log Message:
+adding cast to reduce compiler warning.
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v4r2p4, operation: add
 Package: calibGenCAL
