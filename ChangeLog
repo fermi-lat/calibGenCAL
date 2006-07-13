@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Jul 13 12:02:22 PDT 2006
+calibGenCAL/cfg
+
+Removed Files:
+	runSuiteParallel.cfg 
+Log Message:
+no need for cfg file anymore as app has been superceded.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Jul 13 07:49:05 PDT 2006
 calibGenCAL/src
 
