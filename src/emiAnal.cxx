@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
 	double ticks0 = ticks[0];
 	double ticksmax = ticks[n-1];
 	double time_slice=3.0;
-	int n_time_slices = (ticksmax-ticks0)/time_slice;
+	int n_time_slices = (int)(ticksmax-ticks0)/time_slice;
 	cout <<" ticks0=" << ticks0 << " ticksmax=" << ticksmax << " n_time_slices=" << n_time_slices << endl;
 
 
