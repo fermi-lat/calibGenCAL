@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Jul 13 13:25:13 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacDiff.py 
+Log Message:
+switched direction of difference calculation
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Jul 13 12:02:22 PDT 2006
 calibGenCAL/cfg
 
