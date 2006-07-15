@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/26 21:47:37 $"
-__version__   = "$Revision: 1.5 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/27 16:08:29 $"
+__version__   = "$Revision: 1.6 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -2230,29 +2230,29 @@ class calDacSlopesCalibXML(calCalibXML):
                         ds = doc.createElementNS(None, 'dacSlopes')
                         
                         dsVal = dacData[tem,row,end,fe,0]
-                        ds.setAttributeNS(None, 'LACSlopeVal', str(dsVal))
+                        ds.setAttributeNS(None, 'LACSlopeVal', "%.3f" % dsVal)
                         dsVal = dacData[tem,row,end,fe,1]
-                        ds.setAttributeNS(None, 'LACOffsetVal', str(dsVal))
+                        ds.setAttributeNS(None, 'LACOffsetVal', "%.3f" % dsVal)
                         dsVal = dacData[tem,row,end,fe,2]
-                        ds.setAttributeNS(None, 'FLESlopeVal', str(dsVal))
+                        ds.setAttributeNS(None, 'FLESlopeVal', "%.3f" % dsVal)
                         dsVal = dacData[tem,row,end,fe,3]
-                        ds.setAttributeNS(None, 'FLEOffsetVal', str(dsVal))
+                        ds.setAttributeNS(None, 'FLEOffsetVal', "%.3f" % dsVal)
                         dsVal = dacData[tem,row,end,fe,4]
-                        ds.setAttributeNS(None, 'FHESlopeVal', str(dsVal))
+                        ds.setAttributeNS(None, 'FHESlopeVal', "%.3f" % dsVal)
                         dsVal = dacData[tem,row,end,fe,5]
-                        ds.setAttributeNS(None, 'FHEOffsetVal', str(dsVal))
+                        ds.setAttributeNS(None, 'FHEOffsetVal', "%.3f" % dsVal)
                         dsVal = dacData[tem,row,end,fe,6]
-                        ds.setAttributeNS(None, 'LACSlopeErr', str(dsVal))
+                        ds.setAttributeNS(None, 'LACSlopeErr', "%.3f" % dsVal)
                         dsVal = dacData[tem,row,end,fe,7]
-                        ds.setAttributeNS(None, 'LACOffsetErr', str(dsVal))
+                        ds.setAttributeNS(None, 'LACOffsetErr', "%.3f" % dsVal)
                         dsVal = dacData[tem,row,end,fe,8]
-                        ds.setAttributeNS(None, 'FLESlopeErr', str(dsVal))
+                        ds.setAttributeNS(None, 'FLESlopeErr', "%.3f" % dsVal)
                         dsVal = dacData[tem,row,end,fe,9]
-                        ds.setAttributeNS(None, 'FLEOffsetErr', str(dsVal))
+                        ds.setAttributeNS(None, 'FLEOffsetErr', "%.3f" % dsVal)
                         dsVal = dacData[tem,row,end,fe,10]
-                        ds.setAttributeNS(None, 'FHESlopeErr', str(dsVal))
+                        ds.setAttributeNS(None, 'FHESlopeErr', "%.3f" % dsVal)
                         dsVal = dacData[tem,row,end,fe,11]
-                        ds.setAttributeNS(None, 'FHEOffsetErr', str(dsVal))
+                        ds.setAttributeNS(None, 'FHEOffsetErr', "%.3f" % dsVal)
                         dsVal = int(rangeData[tem,row,end,fe,0])
                         ds.setAttributeNS(None, 'LACRange', calConstant.CDAC[dsVal])
                         dsVal = int(rangeData[tem,row,end,fe,1])
@@ -2268,17 +2268,17 @@ class calDacSlopesCalibXML(calCalibXML):
                             dsr = doc.createElementNS(None, 'dacSlopesRange')
                             dsr.setAttributeNS(None, 'range', calConstant.CRNG[erng])
                             dsrVal = uldData[erng,tem,row,end,fe,0]
-                            dsr.setAttributeNS(None, 'ULDSlopeVal', str(dsrVal))
+                            dsr.setAttributeNS(None, 'ULDSlopeVal', "%.3f" % dsrVal)
                             dsrVal = uldData[erng,tem,row,end,fe,1]
-                            dsr.setAttributeNS(None, 'ULDOffsetVal', str(dsrVal))
+                            dsr.setAttributeNS(None, 'ULDOffsetVal', "%.3f" % dsrVal)
                             dsrVal = uldData[erng,tem,row,end,fe,2]
-                            dsr.setAttributeNS(None, 'ULDSatVal', str(dsrVal))
+                            dsr.setAttributeNS(None, 'ULDSatVal', "%.3f" % dsrVal)
                             dsrVal = uldData[erng,tem,row,end,fe,3]
-                            dsr.setAttributeNS(None, 'ULDSlopeErr', str(dsrVal))
+                            dsr.setAttributeNS(None, 'ULDSlopeErr', "%.3f" % dsrVal)
                             dsrVal = uldData[erng,tem,row,end,fe,4]
-                            dsr.setAttributeNS(None, 'ULDOffsetErr', str(dsrVal))
+                            dsr.setAttributeNS(None, 'ULDOffsetErr', "%.3f" % dsrVal)
                             dsrVal = uldData[erng,tem,row,end,fe,5]
-                            dsr.setAttributeNS(None, 'ULDSatErr', str(dsrVal))
+                            dsr.setAttributeNS(None, 'ULDSatErr', "%.3f" % dsrVal)
                             dsrVal = int(rangeData[tem,row,end,fe,erng+3])
                             dsr.setAttributeNS(None, 'ULDRange', calConstant.CDAC[dsrVal])
                             ds.appendChild(dsr)
