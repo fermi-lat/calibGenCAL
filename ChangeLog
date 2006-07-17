@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Mon Jul 17 08:29:17 PDT 2006
+calibGenCAL/python
+
+Added Files:
+	dacSlopesGen.bat 
+Log Message:
+Added windows launcher script.
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Jul 17 08:24:41 PDT 2006
 calibGenCAL/python
 
