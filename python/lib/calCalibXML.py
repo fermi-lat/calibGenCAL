@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/27 16:08:29 $"
-__version__   = "$Revision: 1.6 $, $Author: dwood $"
+__date__      = "$Date: 2006/07/15 04:24:56 $"
+__version__   = "$Revision: 1.7 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -2432,10 +2432,12 @@ class calDacSlopesCalibXML(calCalibXML):
                             uldData[erng,tem, row, end, fe, 4] = float(dsrVal)
                             dsrVal = dsr.getAttributeNS(None, 'ULDSatErr')
                             uldData[erng,tem, row, end, fe, 5] = float(dsrVal)
-                            dsrVal = ds.getAttributeNS(None, 'ULDRange')
+                            dsrVal = dsr.getAttributeNS(None, 'ULDRange')
                             rangeData[tem,row,end,fe,erng+3] = DRNG_MAP[str(dsrVal)]
+                               
                                         
         return (dacData, uldData, rangeData)
+        
         
         
         
