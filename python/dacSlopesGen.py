@@ -1,7 +1,7 @@
 """
 Tool to produce CAL DAC XML calibration data file.  The command line is:
 
-adccompress [-V] [-L <log_file>] <cfg_file> <out_xml_file>
+dacSlopesGen [-V] [-L <log_file>] <cfg_file> <out_xml_file>
 
 where:
     -V              = verbose; turn on debug output
@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL DAC XML calibration data file"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/23 15:32:01 $"
-__version__   = "$Revision: 1.1 $, $Author: dwood $"
+__date__      = "$Date: 2006/07/03 19:28:23 $"
+__version__   = "$Revision: 1.2 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -69,10 +69,12 @@ class inputFile:
 	
 
 
+
 def residuals(p, y, x, fjac = None):
 
     err = y - ((p[0] * x) + p[1])
     return (0, err)
+    
     
     
     
@@ -82,6 +84,8 @@ PI    = {'fixed':0, 'limited':(0,0), 'mpprint':0}
 PINFO = [PI, PI]
 P0    = (20.0, -300.0)    
     
+
+
 
 def fitDAC(fineThresholds, coarseThresholds, adcs0, adcs1):
     """
@@ -103,7 +107,7 @@ def fitDAC(fineThresholds, coarseThresholds, adcs0, adcs1):
     # array to hold range info 
     
     ranges = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE), Numeric.Int)    
+        calConstant.NUM_FE), Numeric.Int8)    
     
     adcs0 = adcs0[...,Numeric.NewAxis]
     adcs1 = adcs1[...,Numeric.NewAxis]
@@ -209,14 +213,22 @@ def fitULD(tholds):
 if __name__ == '__main__':
 
 
-    usage = "adccompress [-V] <cfg_file> <out_xml_file>"
+    usage = "dacSlopesGen [-V] <cfg_file> <out_xml_file>"
 
 
     # setup logger
 
     logging.basicConfig()
-    log = logging.getLogger('adccompress')
+    log = logging.getLogger('dacSlopesGen')
     log.setLevel(logging.INFO) 
+    
+    # get environment settings
+
+    try:
+        calibUtilRoot = os.environ['CALIBUTILROOT']
+    except:
+        log.error('CALIBUTILROOT must be defined')
+        sys.exit(1)
 
     # check command line
 
@@ -393,7 +405,18 @@ if __name__ == '__main__':
             
     if muslopeFile is None:
         log.error("Config file %s missing [gainfiles]:muslope option" % configName)
-        sys.exit(1)         
+        sys.exit(1)   
+        
+    # get DTD spec file names
+
+    if 'dtdfiles' not in sections:
+        log.error("Config file %s missing [dtdfiles] section" % configName)
+        sys.exit(1)
+    if not configFile.has_option('dtdfiles', 'dtdfile'):
+        log.error("Config file %s missing [dtdfiles]:dtdfile option" % configName)
+        sys.exit(1)
+
+    dtdName = os.path.join(calibUtilRoot, 'xml', configFile.get('dtdfiles', 'dtdfile'))      
                   
 
     # create empty ADC data arrays
@@ -526,6 +549,15 @@ if __name__ == '__main__':
     gainData = fio.read()
     fio.close()
     
+    # create empty output data arrays
+    
+    dacDataOut = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE, 12), Numeric.Float32)
+    uldDataOut = Numeric.zeros((3, calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE, 6), Numeric.Float32)
+    rangeDataOut = Numeric.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE, 6), Numeric.Int8)         
+    
         
     #---------------------------- do FLE processing ---------------------------------------------
     
@@ -571,7 +603,7 @@ if __name__ == '__main__':
        
     # get linear fit parameters
     
-    log.info("Compressing FLE")
+    log.info("Fitting FLE")
     (mevs, ranges) = fitDAC(fineThresholds, coarseThresholds, adcs0, adcs1)                       
     
     # convert DAC/ADC slopes to DAC/energy slopes
@@ -596,10 +628,14 @@ if __name__ == '__main__':
     
     log.debug("FLE mevs[0,0,0,0]:%.3f %.3f adc2nrg[0,0,0,0,0]:%.3f", mevs[0,0,0,0,0], mevs[0,0,0,0,1],
         gainData[0,0,0,0,calConstant.CRNG_LEX8,0,Numeric.NewAxis]) 
-    log.debug("FLE ranges[0,0,0,0]: %s", calConstant.CDAC[ranges[0,0,0,0]])      
+    log.debug("FLE ranges[0,0,0,0]: %s", calConstant.CDAC[int(ranges[0,0,0,0])])      
     
-    sys.exit(0)
+    # insert data into output array
     
+    dacDataOut[...,2] = mevs[...,0]
+    dacDataOut[...,3] = mevs[...,1]
+    rangeDataOut[...,1] = ranges[...]     
+        
     #---------------------------- do FHE processing ---------------------------------------------
     
     # split into fine and coarse ranges
@@ -619,31 +655,23 @@ if __name__ == '__main__':
     adcs1 = adcs1 * fheHigh
     log.debug("FHE adcs[0,0,0,0]:%.3f %.3f", adcs0[0,0,0,0], adcs1[0,0,0,0])
             
-    # relative gain factor
-    
-    adcs0 /= relgainData[MUON_GAIN,calConstant.CRNG_HEX8,...]
-    adcs1 /= relgainData[MUON_GAIN,calConstant.CRNG_HEX8,...]
-        
-    log.debug("FHE adcs[0,0,0,0]:%.3f %.3f relgain[0,0,0,0]:%.3f", adcs0[0,0,0,0], adcs1[0,0,0,0], 
-            (1.0 / relgainData[MUON_GAIN,calConstant.CRNG_HEX8,0,0,0,0]))
-
     # energy->ADC conversion
     
-    adcs0 /= adc2nrgData[...,1]
-    adcs1 /= adc2nrgData[...,1]
+    adcs0 /= gainData[...,calConstant.CRNG_HEX8,0]
+    adcs1 /= gainData[...,calConstant.CRNG_HEX8,0]
     log.debug("FHE adcs0[0,0,0,0]:%.3f %.3f adc2nrg[0,0,0,0,1]:%.3f", adcs0[0,0,0,0],
-            adcs1[0,0,0,0], adc2nrgData[0,0,0,0,1])
+            adcs1[0,0,0,0], gainData[0,0,0,0,calConstant.CRNG_HEX8,0])
             
     # trigger bias correction
     
-    adcs0 -= biasAdcData[...,1]
-    adcs1 -= biasAdcData[...,1]
-    log.debug("FHE adcs0[0,0,0,0]:%.3f %.3f bias[0,0,0,0,0]:%.3f", adcs0[0,0,0,0],
-            adcs1[0,0,0,0], biasAdcData[0,0,0,0,1])
+    #adcs0 -= biasAdcData[...,1]
+    #adcs1 -= biasAdcData[...,1]
+    #log.debug("FHE adcs0[0,0,0,0]:%.3f %.3f bias[0,0,0,0,0]:%.3f", adcs0[0,0,0,0],
+    #        adcs1[0,0,0,0], biasAdcData[0,0,0,0,1])
             
     # get linear fit parameters
     
-    log.info("Compressing FHE")
+    log.info("Fitting FHE")
     (mevs, ranges) = fitDAC(fineThresholds, coarseThresholds, adcs0, adcs1)  
                         
     # convert DAC/ADC slopes to DAC/energy slopes
@@ -652,24 +680,25 @@ if __name__ == '__main__':
     
     # trigger bias correction
     
-    mevs[...,1] += biasAdcData[...,1]
-    log.debug("FHE mevs[0,0,0,0]:%.3f %.3f bias[0,0,0,0,1]:%.3f", mevs[0,0,0,0,0],
-            mevs[0,0,0,0,1], biasAdcData[0,0,0,0,1])    
+    #mevs[...,1] += biasAdcData[...,1]
+    #log.debug("FHE mevs[0,0,0,0]:%.3f %.3f bias[0,0,0,0,1]:%.3f", mevs[0,0,0,0,0],
+    #        mevs[0,0,0,0,1], biasAdcData[0,0,0,0,1])    
     
     # ADC->energy conversion
     
-    mevs *= adc2nrgData[...,1,Numeric.NewAxis]
-    log.debug("FHE mevs[0,0,0,0]:%.3f %.3f adc2nrg[0,0,0,0,1]:%.3f", mevs[0,0,0,0,0], mevs[0,0,0,0,1],
-        adc2nrgData[0,0,0,0,1])  
+    mevs *= gainData[...,calConstant.CRNG_HEX8,0,Numeric.NewAxis]
     
-    # relative gain factor
-            
-    mevs *= relgainData[MUON_GAIN,calConstant.CRNG_HEX8,...,Numeric.NewAxis] 
-                
-    log.debug("FHE mevs[0,0,0,0]:%.3f %.3f relgain[0,0,0,0]:%.3f", mevs[0,0,0,0,0], mevs[0,0,0,0,1], 
-        relgainData[MUON_GAIN,calConstant.CRNG_HEX8,0,0,0,0])  
-    log.debug("FHE ranges[0,0,0,0]: %s", calConstant.CDAC[ranges[0,0,0,0]])    
-   
+    log.debug("FHE mevs[0,0,0,0]:%.3f %.3f adc2nrg[0,0,0,0,1]:%.3f", mevs[0,0,0,0,0], mevs[0,0,0,0,1],
+        gainData[0,0,0,0,calConstant.CRNG_HEX8,0])  
+      
+    log.debug("FHE ranges[0,0,0,0]: %s", calConstant.CDAC[int(ranges[0,0,0,0])])
+    
+    # insert data into output array
+    
+    dacDataOut[...,4] = mevs[...,0]
+    dacDataOut[...,5] = mevs[...,1] 
+    rangeDataOut[...,2] = ranges[...]
+    
     #---------------------------- do LAC processing ---------------------------------------------
     
     # split into fine and coarse ranges
@@ -691,14 +720,14 @@ if __name__ == '__main__':
             
     # energy->ADC conversion
     
-    adcs0 /= adc2nrgData[...,0]
-    adcs1 /= adc2nrgData[...,0]
+    adcs0 /= gainData[...,calConstant.CRNG_LEX8,0]
+    adcs1 /= gainData[...,calConstant.CRNG_LEX8,0]
     log.debug("LAC adcs0[0,0,0,0]:%.3f %.3f adc2nrg[0,0,0,0,0]:%.3f", adcs0[0,0,0,0],
-            adcs1[0,0,0,0], adc2nrgData[0,0,0,0,0])
+            adcs1[0,0,0,0], gainData[0,0,0,0,calConstant.CRNG_LEX8,0])
             
     # get linear fit parameters
     
-    log.info("Compressing LAC")
+    log.info("Fitting LAC")
     (mevs, ranges) = fitDAC(fineThresholds, coarseThresholds, adcs0, adcs1)
     
     # convert DAC/ADC slopes to DAC/energy slopes
@@ -707,11 +736,19 @@ if __name__ == '__main__':
     
     # ADC->energy conversion
     
-    mevs *= adc2nrgData[...,0,Numeric.NewAxis]
-    log.debug("LAC mevs[0,0,0,0]:%.3f %.3f adc2nrg[0,0,0,0,0]:%.3f", mevs[0,0,0,0,0], mevs[0,0,0,0,1],
-        adc2nrgData[0,0,0,0,0])  
-    log.debug("LAC ranges[0,0,0,0]: %s", calConstant.CDAC[ranges[0,0,0,0]]) 
+    mevs *= gainData[...,calConstant.CRNG_LEX8,0,Numeric.NewAxis]
     
+    log.debug("LAC mevs[0,0,0,0]:%.3f %.3f adc2nrg[0,0,0,0,0]:%.3f", mevs[0,0,0,0,0], mevs[0,0,0,0,1],
+        gainData[0,0,0,0,calConstant.CRNG_LEX8,0])  
+    log.debug("LAC ranges[0,0,0,0]: %s", calConstant.CDAC[int(ranges[0,0,0,0])]) 
+    
+    # insert data into output array
+    
+    dacDataOut[...,0] = mevs[...,0]
+    dacDataOut[...,1] = mevs[...,1]
+    rangeDataOut[...,0] = ranges[...]
+    
+   
     #---------------------------- do ULD processing ---------------------------------------------
     
     # split into fine and coarse ranges
@@ -723,7 +760,7 @@ if __name__ == '__main__':
             
     # get linear fit parameters
     
-    log.info("Compressing ULD")
+    log.info("Fitting ULD")
     adcs0 = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
             calConstant.NUM_FE), Numeric.Float32)
     adcs1 = Numeric.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
@@ -744,39 +781,38 @@ if __name__ == '__main__':
     log.debug("ULD mevs[2,0,0,0,0]:%.3f %.3f %.3f", mevs[2,0,0,0,0,0], 
         mevs[2,0,0,0,0,1], mevs[2,0,0,0,0,2])
     
-    # energy range scaling
-    
-    rngScale = Numeric.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE), Numeric.Float32)
-    rngScale = rngScale * 9.0
-    mevs[calConstant.CRNG_LEX1,...] *= rngScale[...,Numeric.NewAxis].astype(Numeric.Float32)   
-    log.debug("ULD mevs[1,0,0,0,0]:%.3f %.3f %.3f rngScale[0,0,0,0]:%.3f", 
-        mevs[1,0,0,0,0,0], mevs[1,0,0,0,0,1], mevs[1,0,0,0,0,2],
-        rngScale[0,0,0,0])
-        
     # ADC->energy conversion
     
-    mevs[calConstant.CRNG_LEX8,...] *= adc2nrgData[...,0,Numeric.NewAxis]
-    mevs[calConstant.CRNG_LEX1,...] *= adc2nrgData[...,0,Numeric.NewAxis]
-    mevs[calConstant.CRNG_HEX8,...] *= adc2nrgData[...,1,Numeric.NewAxis]
+    mevs[calConstant.CRNG_LEX8,...] *= gainData[...,calConstant.CRNG_LEX8,0,Numeric.NewAxis]
+    mevs[calConstant.CRNG_LEX1,...] *= gainData[...,calConstant.CRNG_LEX1,0,Numeric.NewAxis]
+    mevs[calConstant.CRNG_HEX8,...] *= gainData[...,calConstant.CRNG_HEX8,0,Numeric.NewAxis]
     log.debug("ULD mevs[0,0,0,0,0]:%.3f %.3f %.3f adc2nrg[0,0,0,0,0]:%.3f", 
         mevs[0,0,0,0,0,0], mevs[0,0,0,0,0,1], mevs[0,0,0,0,0,2],
-        adc2nrgData[0,0,0,0,0]) 
+        gainData[0,0,0,0,calConstant.CRNG_LEX8,0]) 
     log.debug("ULD mevs[1,0,0,0,0]:%.3f %.3f %.3f adc2nrg[0,0,0,0,0]:%.3f", 
         mevs[1,0,0,0,0,0], mevs[1,0,0,0,0,1], mevs[1,0,0,0,0,2],
-        adc2nrgData[0,0,0,0,0])    
+        gainData[0,0,0,0,calConstant.CRNG_LEX1,0])    
     log.debug("ULD mevs[2,0,0,0,0]:%.3f %.3f %.3f adc2nrg[0,0,0,0,1]:%.3f", 
         mevs[2,0,0,0,0,0], mevs[2,0,0,0,0,1], mevs[2,0,0,0,0,2],
-        adc2nrgData[0,0,0,0,1]) 
-       
-    # relative gain factor
-            
-    mevs[calConstant.CRNG_HEX8,...] *= relgainData[MUON_GAIN,calConstant.CRNG_HEX8,...,Numeric.NewAxis] 
+        gainData[0,0,0,0,calConstant.CRNG_HEX8,0]) 
+   
+    # insert data into output array
+    
+    uldDataOut[...,0] = mevs[...,0]
+    uldDataOut[...,1] = mevs[...,1]
+    uldDataOut[...,2] = mevs[...,2]
+    
+    # create output file
+    
+    log.info("Creating file %s", calibName)
+    fio = calCalibXML.calDacSlopesCalibXML(calibName, calCalibXML.MODE_CREATE)
+    fio.write(dacDataOut, uldDataOut, rangeDataOut, range(calConstant.NUM_TEM))
+    fio.close()  
+    
+    # fixup calibration XML file - insert DTD info
+
+    calCalibXML.insertDTD(calibName, dtdName) 
                 
-    log.debug("ULD mevs[2,0,0,0,0]:%.3f %.3f %.3f relgain[0,0,0,0]:%.3f", 
-        mevs[2,0,0,0,0,0], mevs[2,0,0,0,0,1], mevs[2,0,0,0,0,2],
-        relgainData[MUON_GAIN,calConstant.CRNG_HEX8,0,0,0,0]) 
-             
     sys.exit(0)
 
 
