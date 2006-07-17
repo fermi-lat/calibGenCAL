@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Mon Jul 17 14:20:50 PDT 2006
+calibGenCAL/python
+
+Added Files:
+	dacSlopesVal.bat dacSlopesVal.py dacSlopesVal.sh 
+Log Message:
+Added application to validate CAL_DacSlopes XML calibration files; still needs limit checks added.
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Jul 17 08:59:53 PDT 2006
 calibGenCAL/python/lib
 
