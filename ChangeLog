@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Mon Jul 17 15:34:58 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacSlopesVal.py 
+Log Message:
+Added log of ULD saturation minimum values to get idea of worst case dynamic range.
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Jul 17 14:20:50 PDT 2006
 calibGenCAL/python
 
