@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Mon Jul 17 08:24:41 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacSlopesGen.py 
+Log Message:
+Modified to work with CAL_MuSlope gain information instead of adc2nrg and relgain; still need to address bias, particularly for FHE.
+
+    *
+------------------------------------------------------------
 User: dwood  Fri Jul 14 21:24:56 PDT 2006
 calibGenCAL/python/lib
 
