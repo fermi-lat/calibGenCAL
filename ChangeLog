@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Tue Jul 18 09:25:20 PDT 2006
+calibGenCAL/python/lib
+
+Modified Files:
+	calDacXML.py 
+Log Message:
+Added layer name comments to output files.
+
+    *
+------------------------------------------------------------
 User: dwood  Tue Jul 18 08:12:22 PDT 2006
 calibGenCAL/python/old
 
