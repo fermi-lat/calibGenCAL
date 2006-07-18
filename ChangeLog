@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Tue Jul 18 10:49:15 PDT 2006
+calibGenCAL/python/lib
+
+Modified Files:
+	calCalibXML.py calConstant.py calDacXML.py 
+Log Message:
+Added module names to towers in XML output.
+
+    *
+------------------------------------------------------------
 User: dwood  Tue Jul 18 09:25:20 PDT 2006
 calibGenCAL/python/lib
 
