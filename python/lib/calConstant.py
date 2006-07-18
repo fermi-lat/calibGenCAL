@@ -6,8 +6,8 @@ Global calorimeter constant values
 __facility__      = "Online"
 __abstract__      = "Global calorimeter constant values"
 __author__        = "D.L. Wood"
-__date__          = "$Date: 2006/06/21 18:43:14 $"
-__version__       = "$Revision: 1.1 $, $Author: dwood $"
+__date__          = "$Date: 2006/06/27 15:50:02 $"
+__version__       = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__       = "$Name:  $"
 __credits__       = "NRL code 7650"
 
@@ -89,4 +89,8 @@ NUM_TEM = 16
 
 NUM_RNG = 4
 
+# Symbolic names for the towers/tems as modules
 
+CMOD = ('FM104', 'FM103', 'FM117', 'FM118', 'FM105', 'FM102', 'FM115', 'FM116',
+        'FM107', 'FM106', 'FM111', 'FM112', 'FM110', 'FM108', 'FM113', 'FM114')
+         

@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/15 04:24:56 $"
-__version__   = "$Revision: 1.7 $, $Author: dwood $"
+__date__      = "$Date: 2006/07/17 15:59:52 $"
+__version__   = "$Revision: 1.8 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -309,7 +309,7 @@ class calTholdCICalibXML(calCalibXML):
             t = doc.createElementNS(None, 'tower')
             t.setAttributeNS(None, 'iRow', str(iRow))
             t.setAttributeNS(None, 'iCol', str(iCol))
-            c = doc.createComment('tem number = %d' % tem)
+            c = doc.createComment('tem number = %d, module = %s' % (tem, calConstant.CMOD[tem]))
             t.appendChild(c)
             r.appendChild(t)
             
@@ -624,7 +624,7 @@ class calIntNonlinCalibXML(calCalibXML):
             t = doc.createElementNS(None, 'tower')
             t.setAttributeNS(None, 'iRow', str(iRow))
             t.setAttributeNS(None, 'iCol', str(iCol))
-            c = doc.createComment('tem number = %d' % tem)
+            c = doc.createComment('tem number = %d, module = %s' % (tem, calConstant.CMOD[tem]))
             t.appendChild(c)
             r.appendChild(t)
             
@@ -774,7 +774,7 @@ class calIntNonlinCalibXML(calCalibXML):
             t = doc.createElementNS(None, 'tower')
             t.setAttributeNS(None, 'iRow', str(iRow))
             t.setAttributeNS(None, 'iCol', str(iCol))
-            c = doc.createComment('tem number = %d' % tem)
+            c = doc.createComment('tem number = %d, module = %s' % (tem, calConstant.CMOD[tem]))
             t.appendChild(c)
             r.appendChild(t)
             
@@ -1272,7 +1272,7 @@ class calAsymCalibXML(calCalibXML):
             t = doc.createElementNS(None, 'tower')
             t.setAttributeNS(None, 'iRow', str(iRow))
             t.setAttributeNS(None, 'iCol', str(iCol))
-            c = doc.createComment('tem number = %d' % tem)
+            c = doc.createComment('tem number = %d, module = %s' % (tem, calConstant.CMOD[tem]))
             t.appendChild(c)
             r.appendChild(t)
             
@@ -1572,7 +1572,7 @@ class calMevPerDacCalibXML(calCalibXML):
             t = doc.createElementNS(None, 'tower')
             t.setAttributeNS(None, 'iRow', str(iRow))
             t.setAttributeNS(None, 'iCol', str(iCol))
-            c = doc.createComment('tem number = %d' % tem)
+            c = doc.createComment('tem number = %d, module = %s' % (tem, calConstant.CMOD[tem]))
             t.appendChild(c)
             r.appendChild(t)
             
@@ -1797,7 +1797,7 @@ class calPedCalibXML(calCalibXML):
             t = doc.createElementNS(None, 'tower')
             t.setAttributeNS(None, 'iRow', str(iRow))
             t.setAttributeNS(None, 'iCol', str(iCol))
-            c = doc.createComment('tem number = %d' % tem)
+            c = doc.createComment('tem number = %d, module = %s' % (tem, calConstant.CMOD[tem]))
             t.appendChild(c)
             r.appendChild(t)
             
@@ -1987,7 +1987,7 @@ class calMuSlopeCalibXML(calCalibXML):
             t = doc.createElementNS(None, 'tower')
             t.setAttributeNS(None, 'iRow', str(iRow))
             t.setAttributeNS(None, 'iCol', str(iCol))
-            c = doc.createComment('tem number = %d' % tem)
+            c = doc.createComment('tem number = %d, module = %s' % (tem, calConstant.CMOD[tem]))
             t.appendChild(c)
             r.appendChild(t)
             
@@ -2192,7 +2192,7 @@ class calDacSlopesCalibXML(calCalibXML):
             t = doc.createElementNS(None, 'tower')
             t.setAttributeNS(None, 'iRow', str(iRow))
             t.setAttributeNS(None, 'iCol', str(iCol))
-            c = doc.createComment('tem number = %d' % tem)
+            c = doc.createComment('tem number = %d, module = %s' % (tem, calConstant.CMOD[tem]))
             t.appendChild(c)
             r.appendChild(t)
             
