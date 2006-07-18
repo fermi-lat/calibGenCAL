@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL DacSlopes calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/17 21:20:49 $"
-__version__   = "$Revision: 1.1 $, $Author: dwood $"
+__date__      = "$Date: 2006/07/17 22:34:58 $"
+__version__   = "$Revision: 1.2 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -29,6 +29,7 @@ import logging
 import array
 
 import Numeric
+import MLab
 
 import calCalibXML
 import calConstant
@@ -365,44 +366,71 @@ if __name__ == '__main__':
     # do simple stats
     
     av = Numeric.average(dacData[...,0], axis = None)
-    log.info("LAC Mev/DAC slope average = %f", av)
+    sd = MLab.std(Numeric.ravel(dacData[...,0]))
+    log.info("LAC Mev/DAC slope average=%f, stddev=%f", av, sd)
+    
     av = Numeric.average(dacData[...,1], axis = None)
-    log.info("LAC Mev offset average = %f", av)
+    sd = MLab.std(Numeric.ravel(dacData[...,1]))
+    log.info("LAC Mev offset average = %f, stddev=%f", av, sd)
         
     av = Numeric.average(dacData[...,2], axis = None)
-    log.info("FLE Mev/DAC slope average = %f", av)
+    sd = MLab.std(Numeric.ravel(dacData[...,2]))
+    log.info("FLE Mev/DAC slope average = %f, stddev=%f", av, sd)
+    
     av = Numeric.average(dacData[...,3], axis = None)
-    log.info("FLE Mev offset average = %f", av)
+    sd = MLab.std(Numeric.ravel(dacData[...,3]))
+    log.info("FLE Mev offset average = %f, stddev=%f", av, sd)
     
     av = Numeric.average(dacData[...,4], axis = None)
-    log.info("FHE Mev/DAC slope average = %f", av)
+    sd = MLab.std(Numeric.ravel(dacData[...,4]))
+    log.info("FHE Mev/DAC slope average = %f, stddev=%f", av, sd)
+    
     av = Numeric.average(dacData[...,5], axis = None)
-    log.info("FHE Mev offset average = %f", av)
+    sd = MLab.std(Numeric.ravel(dacData[...,5]))
+    log.info("FHE Mev offset average = %f, stddev=%f", av, sd)
         
     av = Numeric.average(uldData[calConstant.CRNG_LEX8,...,0], axis = None)
-    log.info("ULD LEX8 Mev/DAC slope average = %f", av) 
-    av = Numeric.average(uldData[calConstant.CRNG_LEX8,...,1], axis = None) 
-    log.info("ULD LEX8 MeV offset average = %f", av)
+    sd = MLab.std(Numeric.ravel(uldData[calConstant.CRNG_LEX8,...,0]))
+    log.info("ULD LEX8 Mev/DAC slope average = %f, stddev=%f", av, sd) 
+    
+    av = Numeric.average(uldData[calConstant.CRNG_LEX8,...,1], axis = None)
+    sd = MLab.std(Numeric.ravel(uldData[calConstant.CRNG_LEX8,...,1])) 
+    log.info("ULD LEX8 MeV offset average = %f, stddev=%f", av, sd)
+    
     av = Numeric.average(uldData[calConstant.CRNG_LEX8,...,2], axis = None)
-    log.info("ULD LEX8 MeV saturation average = %f", av)
+    sd = MLab.std(Numeric.ravel(uldData[calConstant.CRNG_LEX8,...,2]))
+    log.info("ULD LEX8 MeV saturation average = %f, stddev=%f", av, sd)
+    
     mn = min(Numeric.ravel(uldData[calConstant.CRNG_LEX8,...,2]))
     log.info("ULD LEX8 MeV saturation minimum = %f", mn)
     
     av = Numeric.average(uldData[calConstant.CRNG_LEX1,...,0], axis = None)
-    log.info("ULD LEX1 Mev/DAC slope average = %f", av) 
+    sd = MLab.std(Numeric.ravel(uldData[calConstant.CRNG_LEX1,...,0]))
+    log.info("ULD LEX1 Mev/DAC slope average = %f, stddev=%f", av, sd)
+     
     av = Numeric.average(uldData[calConstant.CRNG_LEX1,...,1], axis = None) 
-    log.info("ULD LEX1 MeV offset average = %f", av)
+    sd = MLab.std(Numeric.ravel(uldData[calConstant.CRNG_LEX1,...,1]))
+    log.info("ULD LEX1 MeV offset average = %f, stddev=%f", av, sd)
+    
     av = Numeric.average(uldData[calConstant.CRNG_LEX1,...,2], axis = None)
-    log.info("ULD LEX1 MeV saturation average = %f", av)
+    sd = MLab.std(Numeric.ravel(uldData[calConstant.CRNG_LEX1,...,2]))
+    log.info("ULD LEX1 MeV saturation average = %f, stddev=%f", av, sd)
+    
     mn = min(Numeric.ravel(uldData[calConstant.CRNG_LEX1,...,2]))
     log.info("ULD LEX8 MeV saturation minimum = %f", mn)
     
     av = Numeric.average(uldData[calConstant.CRNG_HEX8,...,0], axis = None)
-    log.info("ULD HEX8 Mev/DAC slope average = %f", av) 
+    sd = MLab.std(Numeric.ravel(uldData[calConstant.CRNG_HEX8,...,0]))
+    log.info("ULD HEX8 Mev/DAC slope average = %f, stddev=%f", av, sd) 
+    
     av = Numeric.average(uldData[calConstant.CRNG_HEX8,...,1], axis = None) 
-    log.info("ULD HEX8 MeV offset average = %f", av)
+    sd = MLab.std(Numeric.ravel(uldData[calConstant.CRNG_HEX8,...,1]))
+    log.info("ULD HEX8 MeV offset average = %f, stddev=%f", av, sd)
+    
     av = Numeric.average(uldData[calConstant.CRNG_HEX8,...,2], axis = None)
-    log.info("ULD HEX8 MeV saturation average = %f", av)
+    sd = MLab.std(Numeric.ravel(uldData[calConstant.CRNG_HEX8,...,2]))
+    log.info("ULD HEX8 MeV saturation average = %f, stddev=%f", av, sd)
+    
     mn = min(Numeric.ravel(uldData[calConstant.CRNG_HEX8,...,2]))
     log.info("ULD LEX8 MeV saturation minimum = %f", mn)
 
