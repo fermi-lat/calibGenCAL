@@ -6,8 +6,8 @@ Classes to represent CAL hardware settings XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL DAC settings XML documents"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/21 18:43:14 $"
-__version__   = "$Revision: 1.1 $, $Author: dwood $"
+__date__      = "$Date: 2006/07/18 16:25:20 $"
+__version__   = "$Revision: 1.2 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -283,6 +283,9 @@ class calDacXML(calSnapshotXML):
             gt.setAttributeNS(None, 'ID', str(tem))
             gl.appendChild(gt)
             
+            c = doc.createComment("module = %s" % calConstant.CMOD[tem])
+            gt.appendChild(c)
+            
             for ccc in range(4):
 
                 # insert <GCCC> elements
@@ -511,6 +514,9 @@ class calEnergyXML(calXML.calXML):
             gt = doc.createElementNS(None, 'GTEM')
             gt.setAttributeNS(None, 'ID', str(tem))
             gl.appendChild(gt)
+            
+            c = doc.createComment("module = %s" % calConstant.CMOD[tem])
+            gt.appendChild(c)
 
             for rng in range(2): 
 
