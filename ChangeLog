@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Tue Jul 18 13:40:40 PDT 2006
+calibGenCAL/python
+
+Added Files:
+	genDACsettings.py genDACsettings.sh 
+Log Message:
+New tool to do all DAC settings from a single CAL DacSlopes input file; still needs testing.
+
+    *
+------------------------------------------------------------
 User: dwood  Tue Jul 18 13:26:08 PDT 2006
 calibGenCAL/python/lib
 
