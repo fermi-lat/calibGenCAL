@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Mon Jul 17 19:03:19 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	pedVal.py 
+Log Message:
+Added log of stddev info for values.
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Jul 17 15:34:58 PDT 2006
 calibGenCAL/python
 
