@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Thold_CI calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/26 19:50:35 $"
-__version__   = "$Revision: 1.18 $, $Author: dwood $"
+__date__      = "$Date: 2006/07/03 19:28:23 $"
+__version__   = "$Revision: 1.19 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -29,6 +29,7 @@ import logging
 import array
 
 import Numeric
+import MLab
 
 import calCalibXML
 import calConstant
@@ -58,7 +59,7 @@ def rootHists(adcData, uldData, fileName):
     cs.SetGrid()
     sumLeg = ROOT.TLegend(0.88, 0.88, 0.99, 0.99)
 
-    for erng in range(4):
+    for erng in range(calConstant.NUM_RNG):
 
         hName = "h_Summary_ULD_%s" % calConstant.CRNG[erng]       
         hs = ROOT.TH1F(hName, 'TholdCI_Summary_ULD: %s' % fileName, 100, uldErrLimit, 4095)
@@ -326,7 +327,27 @@ def calcError(adcData, uldData, pedData):
                                              calConstant.CPM[end], fe, calConstant.CRNG[erng])
                                               
 
-    return (status)
+    return status
+
+
+
+def average(data, tems):
+
+    av = 0
+    for t in tems:
+        av += Numeric.average(data[t,...], axis = None)
+    return (av / len(tems))
+            
+
+
+def stddev(data, tems):
+
+    av = 0
+    for t in tems:
+        sd = MLab.std(Numeric.ravel(data))
+        av += (sd * sd)
+        
+    return math.sqrt(av / len(tems))
 
 
 
@@ -405,6 +426,52 @@ if __name__ == '__main__':
         # clean up
 
         rootFile.Close()
+        
+    # do simple stats 
+    
+    av = average(adcData[...,0], towers)
+    sd = stddev(adcData[...,0], towers)
+    log.info("LAC ADC threshold average=%f, stddev=%f", av, sd)
+    
+    av = average(adcData[...,1], towers)
+    sd = stddev(adcData[...,1], towers)
+    log.info("FLE ADC threshold average=%f, stddev=%f", av, sd)
+    
+    av = average(adcData[...,2], towers)
+    sd = stddev(adcData[...,2], towers)
+    log.info("FHE ADC threshold average=%f, stddev=%f", av, sd)
+    
+    av = average(uldData[...,calConstant.CRNG_LEX8], towers)
+    sd = stddev(uldData[...,calConstant.CRNG_LEX8], towers)
+    log.info("LEX8 ULD ADC threshold average=%f, stddev=%f", av, sd)
+    
+    av = average(uldData[...,calConstant.CRNG_LEX1], towers)
+    sd = stddev(uldData[...,calConstant.CRNG_LEX1], towers)
+    log.info("LEX1 ULD ADC threshold average=%f, stddev=%f", av, sd)
+    
+    av = average(uldData[...,calConstant.CRNG_HEX8], towers)
+    sd = stddev(uldData[...,calConstant.CRNG_HEX8], towers)
+    log.info("HEX8 ULD ADC threshold average=%f, stddev=%f", av, sd)
+    
+    av = average(uldData[...,calConstant.CRNG_HEX1], towers)
+    sd = stddev(uldData[...,calConstant.CRNG_HEX1], towers)
+    log.info("HEX1 ULD ADC threshold average=%f, stddev=%f", av, sd)
+    
+    av = average(pedData[...,calConstant.CRNG_LEX8], towers)
+    sd = stddev(pedData[...,calConstant.CRNG_LEX8], towers)
+    log.info("LEX8 pedestal ADC value average=%f, stddev=%f", av, sd)
+    
+    av = average(pedData[...,calConstant.CRNG_LEX1], towers)
+    sd = stddev(pedData[...,calConstant.CRNG_LEX1], towers)
+    log.info("LEX1 pedestal ADC value average=%f, stddev=%f", av, sd)
+    
+    av = average(pedData[...,calConstant.CRNG_HEX8], towers)
+    sd = stddev(pedData[...,calConstant.CRNG_HEX8], towers)
+    log.info("HEX8 pedestal ADC value average=%f, stddev=%f", av, sd)
+    
+    av = average(pedData[...,calConstant.CRNG_HEX1], towers)
+    sd = stddev(pedData[...,calConstant.CRNG_HEX1], towers)
+    log.info("HEX1 pedestal ADC value average=%f, stddev=%f", av, sd)
 
     # report results
 
