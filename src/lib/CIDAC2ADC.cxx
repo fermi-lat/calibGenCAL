@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CIDAC2ADC.cxx,v 1.2 2006/06/22 21:50:22 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CIDAC2ADC.cxx,v 1.3 2006/06/27 15:36:25 fewtrell Exp $
 /** @file
     @author fewtrell
  */
@@ -416,7 +416,7 @@ void CIDAC2ADC::genSplinePts() {
     } // xtalFace lop
   } // range loop
 
-  delete tmpADC;  
+  delete [] tmpADC;  
 }
 
 void CIDAC2ADC::makeGraphs(TFile &histFile) {
@@ -483,8 +483,8 @@ void CIDAC2ADC::makeGraphs(TFile &histFile) {
   }
 
   // clean up memory
-  delete tmpADC;
-  delete tmpDAC;
+  delete [] tmpADC;
+  delete [] tmpDAC;
 }
 
 
@@ -520,8 +520,8 @@ void CIDAC2ADC::genSplines() {
 
     // expand arrays if necessary
     if (nDAC > arraySize) {
-      delete dacs;
-      delete adcs;
+      delete [] dacs;
+      delete [] adcs;
 
       arraySize = nDAC;
       dacs = new double[arraySize];
@@ -550,8 +550,8 @@ void CIDAC2ADC::genSplines() {
   }
 
   // cleanup
-  delete dacs;
-  delete adcs;
+  delete [] dacs;
+  delete [] adcs;
 }
 
 
