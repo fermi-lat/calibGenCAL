@@ -6,8 +6,8 @@ Classes to represent CAL hardware settings XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL DAC settings XML documents"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/18 16:25:20 $"
-__version__   = "$Revision: 1.2 $, $Author: dwood $"
+__date__      = "$Date: 2006/07/18 17:49:15 $"
+__version__   = "$Revision: 1.3 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -305,7 +305,7 @@ class calDacXML(calSnapshotXML):
                     # translate index
 
                     (row, end) = ccToRow(ccc, rc) 
-                    c = doc.createComment("layer = %s%s" % (calConstant.CROW[row], calConstant.CPM[end]))
+                    c = doc.createComment("layer = %s%s " % (calConstant.CROW[row], calConstant.CPM[end]))
                     gr.appendChild(c) 
                     
                     for fe in range(12):
@@ -545,7 +545,7 @@ class calEnergyXML(calXML.calXML):
                         # translate index
 
                         (row, end) = ccToRow(ccc, rc) 
-                        c = doc.createComment("layer = %s%s" % (calConstant.CROW[row], calConstant.CPM[end]))
+                        c = doc.createComment("layer = %s%s " % (calConstant.CROW[row], calConstant.CPM[end]))
                         gr.appendChild(c)
                                                           
                         for fe in range(12):
