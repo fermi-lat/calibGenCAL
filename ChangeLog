@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Tue Jul 18 08:12:22 PDT 2006
+calibGenCAL/python
+
+Removed Files:
+	reverse_uld.py 
+Log Message:
+Moved old applications to subdirectory.
+
+    *
+------------------------------------------------------------
 User: dwood  Tue Jul 18 08:11:40 PDT 2006
 calibGenCAL/python/old
 
