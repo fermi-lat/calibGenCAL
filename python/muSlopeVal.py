@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL MuSlope calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/05 18:59:38 $"
-__version__   = "$Revision: 1.7 $, $Author: dwood $"
+__date__      = "$Date: 2006/07/18 02:33:06 $"
+__version__   = "$Revision: 1.8 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -210,7 +210,7 @@ def stddev(data, tems):
 
     av = 0
     for t in tems:
-        sd = MLab.std(Numeric.ravel(data))
+        sd = MLab.std(Numeric.ravel(data[t,...]))
         av += (sd * sd)
         
     return math.sqrt(av / len(tems))
