@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Mon Jul 17 20:02:39 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacSlopesVal.py 
+Log Message:
+Added stddev to stat logs.
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Jul 17 19:46:09 PDT 2006
 calibGenCAL/python
 
