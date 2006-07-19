@@ -13,8 +13,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL TholdCI XML calibration data files"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/03/29 22:01:36 $"
-__version__   = "$Revision: 1.23 $, $Author: dwood $"
+__date__      = "$Date: 2006/04/14 15:53:07 $"
+__version__   = "$Revision: 1.24 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -380,7 +380,7 @@ if __name__ == '__main__':
         if i['TTYPE1'] != 'fle_dac':
             log.error("File %s not a FLE ADC file", f.name)
             sys.exit(1)
-	erng = i['ERNG']    
+        erng = i['ERNG']    
         if erng != 'LEX8' and erng != 'LEX1':
             log.error("Only LEX8 and LEX1 energy ranges supported for FLE DAC")
             sys.exit(1)
@@ -389,8 +389,8 @@ if __name__ == '__main__':
             log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
             sys.exit(1)
         adcData = fleAdcFile.read()
-	if erng == 'LEX1':
-	    adcData = adcData * 9.0
+        if erng == 'LEX1':
+	        adcData = adcData * 9.0
         fleAdcData[f.destTwr,...] = adcData[f.srcTwr,...].astype(Numeric.Float32)
         fleAdcFile.close()
         
@@ -526,6 +526,43 @@ if __name__ == '__main__':
 
     log.info("Creating file %s", calibName)
     calibFile = calCalibXML.calTholdCICalibXML(calibName, mode = calCalibXML.MODE_CREATE)
+    
+    doc = calibFile.getDoc()
+    c = doc.createComment("Input snapshot file = %s" % os.path.basename(snapshotName))
+    doc.appendChild(c)
+    for f in uldDacFiles:
+        c = doc.createComment("Input ULD DAC settings file = %s" % os.path.basename(f.name))
+        doc.appendChild(c)
+    for f in fleDacFiles:
+        c = doc.createComment("Input FLE DAC settings file = %s" % os.path.basename(f.name))
+        doc.appendChild(c)
+    for f in fheDacFiles:
+        c = doc.createComment("Input FHE DAC settings file = %s" % os.path.basename(f.name))
+        doc.appendChild(c) 
+    for f in lacDacFiles:
+        c = doc.createComment("Input LAC DAC settings file = %s" % os.path.basename(f.name)) 
+        doc.appendChild(c) 
+    for f in uldAdcFiles:
+        c = doc.createComment("Input ULD ADC characterization file = %s" % os.path.basename(f.name))
+        doc.appendChild(c)
+    for f in fleAdcFiles:
+        c = doc.createComment("Input FLE ADC characterization file = %s" % os.path.basename(f.name))
+        doc.appendChild(c)
+    for f in fheAdcFiles:
+        c = doc.createComment("Input FHE ADC characterization file = %s" % os.path.basename(f.name))
+        doc.appendChild(c)            
+    for f in lacAdcFiles:
+        c = doc.createComment("Input LAC ADC characterization file = %s" % os.path.basename(f.name))
+        doc.appendChild(c)
+    for f in biasAdcFiles:
+        c = doc.createComment("Input bias value file = %s" % os.path.basename(f.name))
+        doc.appendChild(c) 
+    for f in pedAdcFiles:
+        c = doc.createComment("Input pedestal value file = %s" % os.path.basename(f.name))
+        doc.appendChild(c) 
+    c = doc.createComment("Input IntNonlin file = %s" % os.path.basename(intNonlinName))
+    doc.appendChild(c)                         
+    
     dacData = (uldDacData, lacDacData, fleDacData, fheDacData)
     adcData = (uldAdcData, lacAdcData, fleAdcData, fheAdcData)
     calibFile.write(dacData, adcData, intNonlinAdcData[calConstant.CRNG_HEX1], intNonlinLengthData[calConstant.CRNG_HEX1],
