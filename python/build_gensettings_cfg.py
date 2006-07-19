@@ -11,8 +11,8 @@ Note:
 __facility__  = "Offline"
 __abstract__  = "Identifies files and builds config file for gensettings.py"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2006/04/25 18:27:04 $"
-__version__   = "$Revision: 1.8 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/07/13 14:37:08 $"
+__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -133,19 +133,19 @@ for idet in detsections:
 # the following are overrides for automatic filename searching (optional)
 
         elif opt == 'biasname':
-            biasname = cfile.get(idet,opt)
+            biasname = ((cfile.get(idet,opt),))
         elif opt == 'adc2nrgname':
-            adc2nrgname = cfile.get(idet,opt)
+            adc2nrgname = ((cfile.get(idet,opt),))
         elif opt == 'relgainname':
-            relgainname = cfile.get(idet,opt)
+            relgainname = ((cfile.get(idet,opt),))
         elif opt == 'flename':
-            flename = cfile.get(idet,opt)
+            flename = ((cfile.get(idet,opt),))
         elif opt == 'fhename':
-            fhename = cfile.get(idet,opt)
+            fhename = ((cfile.get(idet,opt),))
         elif opt == 'lacname':
-            lacname = cfile.get(idet,opt)
+            lacname = ((cfile.get(idet,opt),))
         elif opt == 'uldname':
-            uldname = cfile.get(idet,opt)
+            uldname = ((cfile.get(idet,opt),))
 
 
 # check if all module items are present (error out if not)
@@ -202,25 +202,25 @@ for idet in detsections:
 # if any name lists either empty or more than 1, report and exit with error
 
     listflg = 0
-    if len(biasname) != 1:
+    if biasname is None:
         log.error(' %s entries in biasname list != 1',len(biasname))
         listflg = 1
-    if len(adc2nrgname) != 1:
+    if adc2nrgname is None:
         log.error(' %s entries in adc2nrgname list != 1',len(adc2nrgname))
         listflg = 1
-    if len(relgainname) != 1:
+    if relgainname is None:
         log.error(' %s entries in relgainname list != 1',len(relgainname))
         listflg = 1
-    if len(flename) != 1:
+    if flename is None:
         log.error(' %s entries in flename list != 1',len(flename))
         listflg = 1
-    if len(fhename) != 1:
+    if fhename is None:
         log.error(' %s entries in fhename list != 1',len(fhename))
         listflg = 1
-    if len(lacname) != 1:
+    if lacname is None:
         log.error(' %s entries in lacname list != 1',len(lacname))
         listflg = 1
-    if len(uldname) != 1:
+    if uldname is None:
         log.error(' %s entries in uldname list != 1',len(uldname))
         listflg = 1
     if listflg:
