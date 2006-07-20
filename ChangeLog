@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Jul 20 11:21:22 PDT 2006
+calibGenCAL/python/lib
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Made <dimension> nRange value to 3 for DacSlopes files.
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Jul 20 10:59:25 PDT 2006
 calibGenCAL/python
 
