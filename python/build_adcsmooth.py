@@ -12,8 +12,8 @@ Note:
 __facility__  = "Offline"
 __abstract__  = "Build batch file containing commands to run adcsmooth filtering script"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2006/06/21 18:43:12 $"
-__version__   = "$Revision: 1.13 $, $Author: dwood $"
+__date__      = "$Date: 2006/07/13 14:37:08 $"
+__version__   = "$Revision: 1.14 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -79,6 +79,8 @@ CALIBGENCALROOT = os.environ["CALIBGENCALROOT"]
 cmdbat = open('adcsmooth.bat','w')
 cmdsh = open('adcsmooth.sh', 'w')
 
+cmdsh.write('#!/bin/sh\n')
+cmdsh.write('set -v\n')
 cmdsh.write('PYTHONPATH=${CALIBGENCALROOT}/python/lib:${ROOTSYS}/bin:${PYTHONPATH}\n')
 cmdsh.write('export PYTHONPATH\n')
 
