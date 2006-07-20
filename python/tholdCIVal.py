@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Thold_CI calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/18 02:22:28 $"
-__version__   = "$Revision: 1.20 $, $Author: dwood $"
+__date__      = "$Date: 2006/07/18 02:46:09 $"
+__version__   = "$Revision: 1.21 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -50,7 +50,7 @@ ADC_VALS = ('LAC', 'FLE', 'FHE', 'LEX8 ULD', 'HEX8 ULD')
 
 
 
-def rootHists(adcData, uldData, fileName):
+def rootHists(adcData, uldData, pedData, fileName):
 
     # create summary ULD histograms
 
@@ -266,7 +266,62 @@ def rootHists(adcData, uldData, fileName):
     cs.Update()
     cs.Write()    
 
+    # create summary pedestal value histograms
+    
+    sumHists = [None, None, None, None]
+    cs = ROOT.TCanvas('c_Summary_Pedestal', 'Summary_Pedestal', -1)
+    cs.SetGrid()
+    sumLeg = ROOT.TLegend(0.88, 0.88, 0.99, 0.99)
 
+    for erng in range(calConstant.NUM_RNG):
+
+        hName = "h_Summary_Pedestal_%s" % calConstant.CRNG[erng]       
+        hs = ROOT.TH1F(hName, 'TholdCI_Summary_Pedestal: %s' % fileName, 100, 0, 1000)
+        hs.SetLineColor(erng + 1)
+        hs.SetStats(False)
+        axis = hs.GetXaxis()
+        axis.SetTitle('Pedestal (ADC)')
+        axis.CenterTitle()
+        axis = hs.GetYaxis()
+        axis.SetTitle('Counts')
+        axis.CenterTitle()
+        sumHists[erng] = hs
+        sumLeg.AddEntry(hs, calConstant.CRNG[erng], 'L')
+        cs.Update()
+        
+    for tem in towers:
+        for row in range(calConstant.NUM_ROW):
+            for end in range(calConstant.NUM_END):
+                for fe in range(calConstant.NUM_FE):             
+                    for erng in range(calConstant.NUM_RNG):
+                        hs = sumHists[erng]
+                        ped = pedData[tem, row, end, fe, erng]
+                        hs.Fill(ped)
+                        
+                        
+    hMax = 0
+    for erng in range(calConstant.NUM_RNG):
+        hs = sumHists[erng]
+        if hs.GetMaximum() > hMax:
+            hMax = hs.GetMaximum()                    
+                        
+    for erng in range(calConstant.NUM_RNG):
+
+        hs = sumHists[erng]
+        if erng == 0:
+            dopt = ''
+        else:
+            dopt = 'SAME'
+            
+        hs.SetMaximum(hMax)    
+        hs.Draw(dopt)
+        cs.Update()
+
+    sumLeg.Draw()
+    cs.Update()
+    cs.Write()           
+    
+    
 
 def calcError(adcData, uldData, pedData):
 
@@ -421,7 +476,7 @@ if __name__ == '__main__':
 
         # write error histograms
 
-        rootHists(adcData, uldData, xmlName)        
+        rootHists(adcData, uldData, pedData, xmlName)        
 
         # clean up
 
