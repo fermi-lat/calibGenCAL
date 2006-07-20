@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Jul 20 10:52:12 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	gensettings.py 
+Log Message:
+Turn on verbose cmd exec for output sh script.
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Jul 20 10:23:21 PDT 2006
 calibGenCAL/python
 
