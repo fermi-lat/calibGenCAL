@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Jul 20 10:59:25 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacSlopesGen.py 
+Log Message:
+Added input file names and energy parameters to output file comments.
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Jul 20 10:52:12 PDT 2006
 calibGenCAL/python
 
