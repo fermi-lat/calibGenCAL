@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Jul 20 11:59:57 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	tholdCIVal.py 
+Log Message:
+Added histogram of pedestal values to ROOT output.
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Jul 20 11:21:22 PDT 2006
 calibGenCAL/python/lib
 
