@@ -9,8 +9,8 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Prepares config and commands to run gensettings scripts"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2006/06/21 18:43:13 $"
-__version__   = "$Revision: 1.13 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/21 20:05:31 $"
+__version__   = "$Revision: 1.14 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -95,6 +95,7 @@ cmdbat.write("set PYTHONPATH=%CALIBGENCALROOT%/python/lib;%ROOTSYS%/bin;%PYTHONP
 # open .sh file for run commands
 cmdsh = open("run_"+fileroot+".sh", "w")
 cmdsh.write("#! /bin/sh\n")
+cmdsh.write("set -v\n")
 cmdsh.write("PYTHONPATH=${CALIBGENCALROOT}/python/lib:${ROOTSYS}/bin:${PYTHONPATH}\n")
 cmdsh.write("export PYTHONPATH\n")
 
