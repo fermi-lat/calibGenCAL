@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/17 15:59:52 $"
-__version__   = "$Revision: 1.8 $, $Author: dwood $"
+__date__      = "$Date: 2006/07/18 17:49:15 $"
+__version__   = "$Revision: 1.9 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -2181,7 +2181,7 @@ class calDacSlopesCalibXML(calCalibXML):
 
         # insert <dimension> element  
 
-        d = self.dimensionWrite()            
+        d = self.dimensionWrite(nRange = 3)            
         r.appendChild(d)
 
         for tem in tems:
