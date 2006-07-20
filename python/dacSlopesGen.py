@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL DAC XML calibration data file"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/03 19:28:23 $"
-__version__   = "$Revision: 1.2 $, $Author: dwood $"
+__date__      = "$Date: 2006/07/17 15:24:41 $"
+__version__   = "$Revision: 1.3 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -806,6 +806,38 @@ if __name__ == '__main__':
     
     log.info("Creating file %s", calibName)
     fio = calCalibXML.calDacSlopesCalibXML(calibName, calCalibXML.MODE_CREATE)
+    
+    doc = fio.getDoc()
+    c = doc.createComment("Parameter LAC low energy = %f MeV" % lacLow)
+    doc.appendChild(c)
+    c = doc.createComment("Parameter LAC high energy = %f MeV" % lacHigh)
+    doc.appendChild(c)
+    c = doc.createComment("Parameter FLE low energy = %f MeV" % fleLow)
+    doc.appendChild(c)
+    c = doc.createComment("Parameter FLE high energy = %f MeV" % fleHigh)
+    doc.appendChild(c)
+    c = doc.createComment("Parameter FHE low energy = %f MeV" % fheLow)
+    doc.appendChild(c)
+    c = doc.createComment("Parameter FHE high energy = %f MeV" % fheHigh)
+    doc.appendChild(c)
+    for f in lacAdcFiles:
+        c = doc.createComment("Input LAC ADC characterization file = %s" % os.path.basename(f.name))
+        doc.appendChild(c)
+    for f in fleAdcFiles:    
+        c = doc.createComment("Input FLE ADC characterization file = %s" % os.path.basename(f.name))
+        doc.appendChild(c)
+    for f in fheAdcFiles:
+        c = doc.createComment("Input FHE ADC characterization file = %s" % os.path.basename(f.name))
+        doc.appendChild(c)
+    for f in uldAdcFiles:
+        c = doc.createComment("Input ULD ADC characterization file = %s" % os.path.basename(f.name))
+        doc.appendChild(c)    
+    for f in biasAdcFiles:
+        c = doc.createComment("Input bias value file = %s" % os.path.basename(f.name))
+        doc.appendChild(c)
+    c = doc.createComment("Input MuSlope gain value file = %s" % os.path.basename(muslopeFile))
+    doc.appendChild(c)            
+        
     fio.write(dacDataOut, uldDataOut, rangeDataOut, range(calConstant.NUM_TEM))
     fio.close()  
     
