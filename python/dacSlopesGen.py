@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL DAC XML calibration data file"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/17 15:24:41 $"
-__version__   = "$Revision: 1.3 $, $Author: dwood $"
+__date__      = "$Date: 2006/07/20 17:59:25 $"
+__version__   = "$Revision: 1.4 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -547,6 +547,7 @@ if __name__ == '__main__':
     log.info("Reading file %s", muslopeFile)
     fio = calCalibXML.calMuSlopeCalibXML(muslopeFile)
     gainData = fio.read()
+    towers = fio.getTowers()
     fio.close()
     
     # create empty output data arrays
@@ -838,7 +839,7 @@ if __name__ == '__main__':
     c = doc.createComment("Input MuSlope gain value file = %s" % os.path.basename(muslopeFile))
     doc.appendChild(c)            
         
-    fio.write(dacDataOut, uldDataOut, rangeDataOut, range(calConstant.NUM_TEM))
+    fio.write(dacDataOut, uldDataOut, rangeDataOut, towers)
     fio.close()  
     
     # fixup calibration XML file - insert DTD info
