@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Jul 20 17:39:59 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	genDACsettings.py 
+Log Message:
+Added ancillary info to output files.
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Jul 20 11:59:57 PDT 2006
 calibGenCAL/python
 
