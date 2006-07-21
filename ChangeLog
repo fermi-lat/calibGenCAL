@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Jul 20 23:29:38 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacSlopesGen.py 
+Log Message:
+Made output tower list depend on input tower list from MuSlope file.
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Jul 20 17:39:59 PDT 2006
 calibGenCAL/python
 
