@@ -15,8 +15,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate FLE Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2006/03/29 22:01:32 $"
-__version__     = "$Revision: 1.16 $, $Author: dwood $"
+__date__        = "$Date: 2006/04/14 00:16:28 $"
+__version__     = "$Revision: 1.17 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -260,7 +260,7 @@ if __name__ == '__main__':
     adcs -= biasTable[srcTwr,...,0]
     log.debug('adcs[0,0,0]:%6.3f biasTable[0,0,0,0]:%6.3f', adcs[0,0,0], biasTable[srcTwr,0,0,0,0])
     
-    # convert to LEX8 ADC units
+    # convert to LEX1 ADC units
     
     adcs /= nrgRangeMultiplier
     log.debug('adcs[0,0,0]:%6.3f nrgRangeMultiplier[0,0,0]:%6.3f', adcs[0,0,0], nrgRangeMultiplier[0,0,0])
