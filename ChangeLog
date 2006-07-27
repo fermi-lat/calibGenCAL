@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Jul 27 12:25:32 PDT 2006
+calibGenCAL/python/lib
+
+Modified Files:
+	calDacXML.py 
+Log Message:
+Changed calDacXML.read() return array type to UInt8.
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Jul 27 11:01:47 PDT 2006
 calibGenCAL/python
 
