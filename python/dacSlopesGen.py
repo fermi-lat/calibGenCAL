@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL DAC XML calibration data file"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/20 17:59:25 $"
-__version__   = "$Revision: 1.4 $, $Author: dwood $"
+__date__      = "$Date: 2006/07/21 06:29:38 $"
+__version__   = "$Revision: 1.5 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -345,8 +345,7 @@ if __name__ == '__main__':
     lacAdcFiles = []
     fleAdcFiles = []
     fheAdcFiles = []
-    biasAdcFiles = []
-
+ 
     options = configFile.options('adcfiles')
     for opt in options:
         
@@ -362,8 +361,6 @@ if __name__ == '__main__':
             fList = fleAdcFiles
         elif optList[0] == 'fhe2adc':
             fList = fheAdcFiles
-        elif optList[0] == 'bias':
-            fList = biasAdcFiles
         else:
             continue
 
@@ -389,8 +386,13 @@ if __name__ == '__main__':
         
         log.debug('Adding %s file %s to input as tower %d (from %d)', optList[0], name,
                   destTwr, srcTwr)
+    
+    if 'bias' not in options:
+        log.error("Config file %s missing [adcfiles]:bias option" % configName)
+        sys.exit(1)
+    biasName = configFile.get('adcfiles', 'bias')
                   
-    # get gain file names
+    # get gain file name
 
     if 'gainfiles' not in sections:
         log.error("Config file %s missing [gainfiles] section" % configName)
@@ -427,8 +429,6 @@ if __name__ == '__main__':
                                 calConstant.NUM_FE, 128), Numeric.Float32)
     fheAdcData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
                                 calConstant.NUM_FE, 128), Numeric.Float32)
-    biasAdcData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                 calConstant.NUM_FE, 2), Numeric.Float32)
     uldAdcData = Numeric.zeros((3, calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
                                 calConstant.NUM_FE, 128), Numeric.Float32)                            
                                 
@@ -505,21 +505,7 @@ if __name__ == '__main__':
         adcData = fheAdcFile.read()
         fheAdcData[f.destTwr,...] = adcData[f.srcTwr,...]
         fheAdcFile.close()
-
-    # read bias correction files
-
-    for f in biasAdcFiles:
-
-        log.info("Reading file %s", f.name)
-        biasFile = calDacXML.calEnergyXML(f.name, 'thrBias')
-        twrs = biasFile.getTowers()
-        if f.srcTwr not in twrs:
-            log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
-            sys.exit(1)
-        adcData = biasFile.read()
-        biasAdcData[f.destTwr,...] = adcData[f.srcTwr,...]
-        biasFile.close()
-        
+     
     # read ULD/ADC characterization files
 
     for f in uldAdcFiles:        
@@ -541,6 +527,13 @@ if __name__ == '__main__':
         adcData = uldAdcFile.read()
         uldAdcData[:,f.destTwr,...] = adcData[:,f.srcTwr,...]
         uldAdcFile.close()
+    
+    # read bias correction file
+
+    log.info("Reading file %s", biasName)
+    biasFile = calDacXML.calEnergyXML(biasName, 'thrBias')
+    biasAdcData = biasFile.read()
+    biasFile.close()
         
     # read MuSlope gain file
     
@@ -833,9 +826,8 @@ if __name__ == '__main__':
     for f in uldAdcFiles:
         c = doc.createComment("Input ULD ADC characterization file = %s" % os.path.basename(f.name))
         doc.appendChild(c)    
-    for f in biasAdcFiles:
-        c = doc.createComment("Input bias value file = %s" % os.path.basename(f.name))
-        doc.appendChild(c)
+    c = doc.createComment("Input bias value file = %s" % os.path.basename(biasName))
+    doc.appendChild(c)
     c = doc.createComment("Input MuSlope gain value file = %s" % os.path.basename(muslopeFile))
     doc.appendChild(c)            
         
