@@ -1,13 +1,14 @@
 """
 Builds configuration file for dacSlopesGen.py script from info in gensettings.py cfg file
 
-Usage: build_dacslopes_cfg [-g gensettings.cfg] [-d dtdfile.dtd] muslope.xml output_dacslopes.cfg
+Usage: build_dacslopes_cfg [-b bias.xml] [-g gensettings.cfg] [-d dtdfile.dtd] muslope.xml output_dacslopes.cfg
 
 Note: this program depends on input filenames w/ certain patterns.  Filename conventions change from time to time.  we try to keep the scripts current, so
 you may have to modify the glob matches to work w/ older files.
 
 where:
        muslope.xml          = offline adc->energy DacSlopes calibration file.  (req'd as it is not specified in gensettings.cfg file)
+       bias.xml             = trigger bias file (default is to glob for file in current directory)
        gensettings.cfg      = name of input gensettings.py cfg file (default = "gensettings.cfg")
        dtdfile              = name of dtd file to use in output (will be found in "$CALIBUTILROOT/xml/Cal" )
        output_dacslopes.cfg = output cfg file for tholdCIGen.py script
@@ -20,14 +21,13 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Builds configuration file for dacSlopesGen.py script from info in gensettings.py cfg file"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/13 14:37:08 $"
-__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/07/19 18:34:29 $"
+__version__   = "$Revision: 1.1 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 import sys, os
 import logging
-import string
 import ConfigParser
 import getopt
 import glob
@@ -39,10 +39,10 @@ log.setLevel(logging.INFO)
 
 
 # retrieve commandline parms
-usage = "Usage: build_dacslopes_cfg [-g gensettings.cfg] [-d dtdfile.dtd] muslope.xml output_dacslopes.cfg"
+usage = "Usage: build_dacslopes_cfg [-b bias.xml] [-g gensettings.cfg] [-d dtdfile.dtd] muslope.xml output_dacslopes.cfg"
 # check command line
 try:
-    (opts,args) = getopt.getopt(sys.argv[1:], "d:g:")
+    (opts,args) = getopt.getopt(sys.argv[1:], "b:d:g:")
 except getopt.GetoptError:
     log.error(usage)
     sys.exit(1)
@@ -51,18 +51,31 @@ except getopt.GetoptError:
 cfg_path           = "gensettings.cfg"
 dtd_path           = "calCalib_v2r3.dtd"
 
+# try to find bias file
+
+bias_path = None
+biasList = glob.glob('*[bB]ias*.xml')
+if len(biasList) == 1:
+    bias_path = biasList[0]
+
 for (o,a) in opts:
     if o == '-d':
         dtd_path = a
     elif o == '-g':
         cfg_path = a
-            
+    elif o == '-b':
+        bias_path = a 
+        
 if len(args) != 2:
     log.error(usage)
     sys.exit(1)
-
+    
 muslope_path       = args[0]
 output_path        = args[1]
+
+if bias_path is None:
+    log.error("No bias file found or specified")
+    sys.exit(1)
 
 
 ##############################################
@@ -116,12 +129,12 @@ outcfg.add_section("dtdfiles")
 outcfg.set("dtdfiles","dtdfile",dtd_path)
 
 outcfg.add_section("adcfiles")
+outcfg.set("adcfiles", "bias", bias_path)
 
 # loop over detectors
 for idet in detsections:
     # get input file names, src and dest towers, desired config
     log.info(idet)
-    biasname = None
     flename = None
     fhename = None
     lacname = None
@@ -132,9 +145,7 @@ for idet in detsections:
 
     doptions = cfile.options(idet)
     for opt in doptions:
-        if opt == 'biasname':
-            biasname = cfile.get(idet,opt)
-        elif opt == 'flename':
+        if opt == 'flename':
             flename = cfile.get(idet,opt)
         elif opt == 'fhename':
             fhename = cfile.get(idet,opt)
@@ -152,9 +163,7 @@ for idet in detsections:
             config = 'CFG'+config
 
     # make sure all file names, towers, config exist
-    if biasname is None:
-        log.error('%s bias file missing', idet)
-        sys.exit(1)
+    
     if flename is None:
         log.error('%s fle file missing', idet)
         sys.exit(1)
@@ -176,7 +185,7 @@ for idet in detsections:
     
 
     # populate output cfg file
-    outcfg.set("adcfiles","bias_%d"%desttower,      biasname+",%d"%srctower)
+    
     outcfg.set("adcfiles","fle2adc_%d"%desttower,   flename+",%d"%srctower)
     outcfg.set("adcfiles","fhe2adc_%d"%desttower,   fhename+",%d"%srctower)
     outcfg.set("adcfiles","lac2adc_%d"%desttower,   lacname+",%d"%srctower)

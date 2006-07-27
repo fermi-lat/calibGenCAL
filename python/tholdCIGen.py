@@ -13,8 +13,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL TholdCI XML calibration data files"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/04/14 15:53:07 $"
-__version__   = "$Revision: 1.24 $, $Author: dwood $"
+__date__      = "$Date: 2006/07/19 17:17:23 $"
+__version__   = "$Revision: 1.25 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -183,7 +183,6 @@ if __name__ == '__main__':
     fleAdcFiles = []
     fheAdcFiles = []
     pedAdcFiles = []
-    biasAdcFiles = []
 
     options = configFile.options('adcfiles')
     for opt in options:
@@ -202,8 +201,6 @@ if __name__ == '__main__':
             fList = fheAdcFiles
         elif optList[0] == 'pedestals':
             fList = pedAdcFiles
-        elif optList[0] == 'bias':
-            fList = biasAdcFiles
         else:
             continue
 
@@ -230,7 +227,12 @@ if __name__ == '__main__':
         log.debug('Adding %s file %s to input as tower %d (from %d)', optList[0], name,
                   destTwr, srcTwr)
 
-    if not configFile.has_option('adcfiles', 'intnonlin'):
+    if 'bias' not in options:
+        log.error("Config file %s missing [adcfiles]:bias option" % configName)
+        sys.exit(1)
+    biasName = configFile.get('adcfiles', 'bias')    
+
+    if 'intnonlin' not in options:
         log.error("Config file %s missing [adcfiles]:intnonlin option" % configName)
         sys.exit(1)
     intNonlinName = configFile.get('adcfiles', 'intnonlin')
@@ -327,8 +329,6 @@ if __name__ == '__main__':
                                 calConstant.NUM_FE, 128), Numeric.Float32)
     fheAdcData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
                                 calConstant.NUM_FE, 128), Numeric.Float32)
-    biasAdcData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                 calConstant.NUM_FE, 2), Numeric.Float32)
 
     # read LAC/ADC characterization file
     
@@ -435,17 +435,10 @@ if __name__ == '__main__':
 
     # read bias correction file
 
-    for f in biasAdcFiles:
-
-        log.info("Reading file %s", f.name)
-        biasFile = calDacXML.calEnergyXML(f.name, 'thrBias')
-        twrs = biasFile.getTowers()
-        if f.srcTwr not in twrs:
-            log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
-            sys.exit(1)
-        adcData = biasFile.read()
-        biasAdcData[f.destTwr,...] = adcData[f.srcTwr,...]
-        biasFile.close()
+    log.info("Reading file %s", biasName)
+    biasFile = calDacXML.calEnergyXML(biasName, 'thrBias')
+    biasAdcData = biasFile.read()
+    biasFile.close()
 
     # read ADC non-linearity characterization data
 
@@ -554,12 +547,11 @@ if __name__ == '__main__':
     for f in lacAdcFiles:
         c = doc.createComment("Input LAC ADC characterization file = %s" % os.path.basename(f.name))
         doc.appendChild(c)
-    for f in biasAdcFiles:
-        c = doc.createComment("Input bias value file = %s" % os.path.basename(f.name))
-        doc.appendChild(c) 
     for f in pedAdcFiles:
         c = doc.createComment("Input pedestal value file = %s" % os.path.basename(f.name))
         doc.appendChild(c) 
+    c = doc.createComment("Input bias value file = %s" % os.path.basename(biasName))
+    doc.appendChild(c)     
     c = doc.createComment("Input IntNonlin file = %s" % os.path.basename(intNonlinName))
     doc.appendChild(c)                         
     
