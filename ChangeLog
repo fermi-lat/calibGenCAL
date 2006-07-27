@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Jul 27 11:01:47 PDT 2006
+calibGenCAL/cfg
+
+Modified Files:
+	tholdCIGen.cfg 
+Log Message:
+Modified cfg input files to accept a single 16-tower trigger bias file; build_xxx_cfg scripts create new input format.
+
+    *
+------------------------------------------------------------
 User: dwood  Fri Jul 21 11:25:15 PDT 2006
 calibGenCAL/python
 
