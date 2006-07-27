@@ -1,5 +1,16 @@
 ------------------------------------------------------------
 User: dwood  Thu Jul 27 11:01:47 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	build_dacslopes_cfg.py build_tholdci_cfg.py dacSlopesGen.py 
+	tholdCIGen.py 
+Log Message:
+Modified cfg input files to accept a single 16-tower trigger bias file; build_xxx_cfg scripts create new input format.
+
+    *
+------------------------------------------------------------
+User: dwood  Thu Jul 27 11:01:47 PDT 2006
 calibGenCAL/cfg
 
 Modified Files:
