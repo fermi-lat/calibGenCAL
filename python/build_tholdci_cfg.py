@@ -23,8 +23,8 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Builds configuration file for tholdCIGen.py script from info in gensettings.py cfg file"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/07/13 14:37:08 $"
-__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/07/27 18:01:47 $"
+__version__   = "$Revision: 1.6 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -53,7 +53,7 @@ except getopt.GetoptError:
 cfg_path           = "gensettings.cfg"
 dacfile_timetag    = "latest"
 dtd_path           = "calCalib_v2r3.dtd"
-ped_dir       = "./"
+ped_dir            = "./"
 
 # try to find bias file
 
@@ -125,17 +125,33 @@ log.info(configsections)
 if len(configsections) == 0:
     log.error('No config sections')
     sys.exit(1)
+    
+legain = cfile.get(configsections[0], "legain")
+hegainmu = cfile.get(configsections[0], "hegainmu")
+if legain is None:
+    log.error('%s legain missing', config)
+    sys.exit(1)
+if hegainmu is None:
+    log.error('%s hegainmu missing', config)
+    sys.exit(1)
 
 # create ConfigParser object for tholdCI.cfg
 outcfg = ConfigParser.SafeConfigParser()
 
 # set global parms
+
+outcfg.add_section("gains")
+outcfg.set("gains", "legain", legain)
+outcfg.set("gains", "hegain", hegainmu)
+
 outcfg.add_section("dacfiles")
-outcfg.set("dacfiles","snapshot","base_snapshot.xml")
+
 outcfg.add_section("adcfiles")
 outcfg.set("adcfiles","intnonlin",intlin_path)
 outcfg.set("adcfiles", "bias", bias_path)
+
 outcfg.add_section("dtdfiles")
+
 outcfg.set("dtdfiles","dtdfile",dtd_path)
 
 # loop over detectors

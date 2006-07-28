@@ -13,8 +13,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL TholdCI XML calibration data files"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/19 17:17:23 $"
-__version__   = "$Revision: 1.25 $, $Author: dwood $"
+__date__      = "$Date: 2006/07/27 18:01:47 $"
+__version__   = "$Revision: 1.26 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -114,18 +114,32 @@ if __name__ == '__main__':
     if len(sections) == 0:
         log.error("Config file %s missing or empty" % configName)
         sys.exit(1)
+        
+    # get gain settings    
+        
+    if 'gains' not in sections:
+        log.error("Config file %s missing [gains] section" % configName)
+        sys.exit(1)
+    options = configFile.options('gains')
+    if 'hegain' not in options:
+        log.error("Config file %s missing [gains]:hegain option" % configName)
+        sys.exit(1)
+    if 'legain' not in options:
+        log.error("Config file %s missing [gains]:legain option" % configName)
+        sys.exit(1) 
+    
+    leGain = int(configFile.get('gains', 'legain'))
+    heGain = int(configFile.get('gains', 'hegain'))
+    
+    log.debug("Using LE gain %d", leGain)
+    log.debug("Using HE gain %d", heGain)             
 
     # get DAC setttings file names
 
     if 'dacfiles' not in sections:
         log.error("Config file %s missing [dacfiles] section" % configName)
         sys.exit(1)
-    if not configFile.has_option('dacfiles', 'snapshot'):
-        log.error("Config file %s missing [dacfiles]:snapshot option" % configName)
-        sys.exit(1)
-
-    snapshotName = configFile.get('dacfiles', 'snapshot')
-
+    
     uldDacFiles = []
     lacDacFiles = []
     fleDacFiles = []
@@ -249,20 +263,18 @@ if __name__ == '__main__':
 
     dtdName = os.path.join(calibUtilRoot, 'xml', configFile.get('dtdfiles', 'dtdfile'))
 
+    # create empty DAC arrays
+    
+    fleDacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE), Numeric.UInt8)
+    fheDacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE), Numeric.UInt8)
+    lacDacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE), Numeric.UInt8)
+    uldDacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE), Numeric.UInt8)            
 
-    # read snapshot DAC config file
-
-    log.info("Reading file %s", snapshotName)
-    snapshotFile = calDacXML.calSnapshotXML(snapshotName)
-    fleDacData = snapshotFile.read('fle_dac')
-    fheDacData = snapshotFile.read('fhe_dac')
-    lacDacData = snapshotFile.read('log_acpt')
-    uldDacData = snapshotFile.read('rng_uld_dac')
-    config0Data = snapshotFile.read('config_0')
-    tlist =  snapshotFile.getTowers()
-    snapshotFile.close()
-
-    # optionally overlay snapshot fragment config settings
+    # read in DAC settings files
 
     for f in uldDacFiles:
 
@@ -314,8 +326,12 @@ if __name__ == '__main__':
 
     # get gain indicies
 
-    leGainData = (config0Data & 0x0007)
-    heGainData = ((config0Data & 0x0078) >> 3)
+    leGainData = Numeric.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE), Numeric.UInt8)
+    heGainData = Numeric.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE), Numeric.UInt8)
+    leGainData = leGainData * leGain
+    heGainData = heGainData * heGain    
 
     # create empty ADC data arrays
 
@@ -438,6 +454,7 @@ if __name__ == '__main__':
     log.info("Reading file %s", biasName)
     biasFile = calDacXML.calEnergyXML(biasName, 'thrBias')
     biasAdcData = biasFile.read()
+    tlist = biasFile.getTowers()
     biasFile.close()
 
     # read ADC non-linearity characterization data
@@ -461,10 +478,9 @@ if __name__ == '__main__':
                     for fe in range(calConstant.NUM_FE):
                         for erng in range(3):
                             if erng < calConstant.CRNG_HEX8:
-                                gData = int(leGainData[f.destTwr, row, end, fe])
+                                gData = leGain
                             else:
-                                gData = int(heGainData[f.destTwr, row, end, fe])
-                                gData -= 8
+                                gData = heGain - 8
                                 if gData < 0:
                                    gData = 8
                             psData = pedData[f.destTwr, gData, erng, row, end, fe]
@@ -481,10 +497,9 @@ if __name__ == '__main__':
                     for fe in range(calConstant.NUM_FE):
                         for erng in range(3):
                             if erng < calConstant.CRNG_HEX8:
-                                gData = int(leGainData[f.destTwr, row, end, fe])
+                                gData = leGain
                             else:
-                                gData = int(heGainData[f.destTwr, row, end, fe])
-                                gData -= 8
+                                gData = heGain - 8
                                 if gData < 0:
                                     gData = 8
                             psData = pedData[f.destTwr, gData, erng, row, end, fe]
@@ -521,7 +536,9 @@ if __name__ == '__main__':
     calibFile = calCalibXML.calTholdCICalibXML(calibName, mode = calCalibXML.MODE_CREATE)
     
     doc = calibFile.getDoc()
-    c = doc.createComment("Input snapshot file = %s" % os.path.basename(snapshotName))
+    c = doc.createComment("Input LE gain parameter = %d" % leGain)
+    doc.appendChild(c)
+    c = doc.createComment("Input HE gain parameter = %d" % heGain)
     doc.appendChild(c)
     for f in uldDacFiles:
         c = doc.createComment("Input ULD DAC settings file = %s" % os.path.basename(f.name))
