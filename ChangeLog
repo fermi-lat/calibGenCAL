@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: dwood  Thu Jul 27 18:45:12 PDT 2006
+calibGenCAL/python/old
+
+Added Files:
+	genGainSettings.py 
+Log Message:
+Moved genSettings.py to old subdir; no longer needed to generate tholdci base snapshot file.
+
+    *
+------------------------------------------------------------
+User: dwood  Thu Jul 27 18:45:12 PDT 2006
 calibGenCAL/python
 
 Removed Files:
