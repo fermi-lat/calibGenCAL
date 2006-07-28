@@ -16,8 +16,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate CAL gain settings for GCFE Config 0 Register"
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2005/09/02 16:59:46 $"
-__version__     = "$Revision: 1.1 $, $Author: dwood $"
+__date__        = "$Date: 2005/09/02 17:15:01 $"
+__version__     = "$Revision: 1.2 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
