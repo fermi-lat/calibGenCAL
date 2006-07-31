@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Mon Jul 31 15:13:13 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacVal.py 
+Log Message:
+Improved energy values for validation limits and histogram axis; added mean and stddev stats to output log.
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Jul 31 09:14:26 PDT 2006
 calibGenCAL/python/lib
 
