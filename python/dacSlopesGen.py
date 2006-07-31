@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL DAC XML calibration data file"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/21 06:29:38 $"
-__version__   = "$Revision: 1.5 $, $Author: dwood $"
+__date__      = "$Date: 2006/07/27 18:01:47 $"
+__version__   = "$Revision: 1.6 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -226,7 +226,7 @@ if __name__ == '__main__':
 
     try:
         calibUtilRoot = os.environ['CALIBUTILROOT']
-    except:
+    except KeyError:
         log.error('CALIBUTILROOT must be defined')
         sys.exit(1)
 
@@ -658,10 +658,10 @@ if __name__ == '__main__':
             
     # trigger bias correction
     
-    #adcs0 -= biasAdcData[...,1]
-    #adcs1 -= biasAdcData[...,1]
-    #log.debug("FHE adcs0[0,0,0,0]:%.3f %.3f bias[0,0,0,0,0]:%.3f", adcs0[0,0,0,0],
-    #        adcs1[0,0,0,0], biasAdcData[0,0,0,0,1])
+    adcs0 -= biasAdcData[...,1]
+    adcs1 -= biasAdcData[...,1]
+    log.debug("FHE adcs0[0,0,0,0]:%.3f %.3f bias[0,0,0,0,0]:%.3f", adcs0[0,0,0,0],
+            adcs1[0,0,0,0], biasAdcData[0,0,0,0,1])
             
     # get linear fit parameters
     
@@ -674,9 +674,9 @@ if __name__ == '__main__':
     
     # trigger bias correction
     
-    #mevs[...,1] += biasAdcData[...,1]
-    #log.debug("FHE mevs[0,0,0,0]:%.3f %.3f bias[0,0,0,0,1]:%.3f", mevs[0,0,0,0,0],
-    #        mevs[0,0,0,0,1], biasAdcData[0,0,0,0,1])    
+    mevs[...,1] += biasAdcData[...,1]
+    log.debug("FHE mevs[0,0,0,0]:%.3f %.3f bias[0,0,0,0,1]:%.3f", mevs[0,0,0,0,0],
+            mevs[0,0,0,0,1], biasAdcData[0,0,0,0,1])    
     
     # ADC->energy conversion
     
