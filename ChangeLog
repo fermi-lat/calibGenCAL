@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Mon Jul 31 08:29:30 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	genDACsettings.py 
+Log Message:
+Simulate naming conventions for output DAC settings files following gensettings application conventions.
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Jul 31 08:09:47 PDT 2006
 calibGenCAL/python
 
