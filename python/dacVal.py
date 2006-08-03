@@ -1,9 +1,10 @@
 """
 Validate CAL DAC (FHE, FLE, or LAC) settings XML files.  The command line is:
 
-dacVal [-V] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC <MeV> <cfg_file> <dac_xml_file>
+dacVal [-V] [-r] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC <MeV> <cfg_file> <dac_xml_file>
 
 where:
+    -r             - generate ROOT output with default name
     -R <root_file> - output validation diagnostics in ROOT file
     -L <log_file>  - save console output to log text file
     -V              = verbose; turn on debug output
@@ -18,8 +19,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/07/03 19:28:23 $"
-__version__     = "$Revision: 1.10 $, $Author: dwood $"
+__date__        = "$Date: 2006/07/31 22:13:13 $"
+__version__     = "$Revision: 1.11 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -108,9 +109,10 @@ def stddev(data):
 
 if __name__ == '__main__':
     
-    usage = "dacVal [-V] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC <MeV> <cfg_file> <dac_xml_file>"
+    usage = "dacVal [-V] [-r] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC <MeV> <cfg_file> <dac_xml_file>"
 
     rootOutput = False
+    logName = None
     
     # setup logger
 
@@ -122,7 +124,7 @@ if __name__ == '__main__':
     # check command line
 
     try:
-        opts = getopt.getopt(sys.argv[1:], "-R:-L:-V")
+        opts = getopt.getopt(sys.argv[1:], "-R:-L:-V-r")
     except getopt.GetoptError:
         log.error(usage)
         sys.exit(1)
@@ -135,13 +137,11 @@ if __name__ == '__main__':
             rootName = o[1]
             rootOutput = True
         elif o[0] == '-L':
-            if os.path.exists(o[1]):
-                log.warning('Deleting old log file %s', o[1])
-                os.remove(o[1])
-            hdl = logging.FileHandler(o[1])
-            fmt = logging.Formatter('%(levelname)s %(message)s')
-            hdl.setFormatter(fmt)
-            log.addHandler(hdl)
+            logName = o[1]
+        elif o[0] == '-r':
+            rootName = None
+            rootOutput = True
+            
         
     args = opts[1]
     if len(args) != 4:
@@ -168,6 +168,17 @@ if __name__ == '__main__':
     else:
         log.error("DAC type %s not supported", dacType)
         sys.exit(1)
+        
+    ext = os.path.splitext(dacName)
+    if rootOutput and rootName is None:
+        rootName = "%s.val.root" % ext[0]
+    if logName is None:
+        logName = "%s.val.log" % ext[0]
+
+    hdl = logging.FileHandler(logName)
+    fmt = logging.Formatter('%(levelname)s %(message)s')
+    hdl.setFormatter(fmt)
+    log.addHandler(hdl)
 
     log.debug('Using error limit %f', errLimit)
     log.debug('Using warning limit %f', warnLimit)

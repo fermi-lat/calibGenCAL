@@ -2,10 +2,10 @@
 Validate CAL adc2nrg calibration data in XML format.  The command
 line is:
 
-adc2nrgVal [-V] [-R <root_file>] [-L <log_file>] <xml_file>
+adc2nrgVal [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file>
 
 where:
-
+    -r             - generate ROOT output with default name
     -R <root_file> - output validation diagnostics in ROOT file
     -L <log_file>  - save console output to log text file
     -V             - verbose; turn on debug output
@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL adc2nrg calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/03/14 22:42:43 $"
-__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/07/03 19:28:23 $"
+__version__   = "$Revision: 1.4 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -150,9 +150,10 @@ def calcError(energyData):
 
 if __name__ == '__main__':
 
-    usage = "adc2nrgVal [-V] [-L <log_file>] [-R <root_file>] <xml_file>"
+    usage = "adc2nrgVal [-V] [-r] [-L <log_file>] [-R <root_file>] <xml_file>"
 
     rootOutput = False
+    logName = None
     
     # setup logger
 
@@ -163,7 +164,7 @@ if __name__ == '__main__':
     # check command line
 
     try:
-        opts = getopt.getopt(sys.argv[1:], "-R:-E:-W:-L:-V")
+        opts = getopt.getopt(sys.argv[1:], "-R:-L:-V-r")
     except getopt.GetoptError:
         log.error(usage)
         sys.exit(1)
@@ -174,15 +175,12 @@ if __name__ == '__main__':
             rootName = o[1]
             rootOutput = True
         elif o[0] == '-L':
-            if os.path.exists(o[1]):
-                log.warning('Deleting old log file %s', o[1])
-                os.remove(o[1])
-            hdl = logging.FileHandler(o[1])
-            fmt = logging.Formatter('%(levelname)s %(message)s')
-            hdl.setFormatter(fmt)
-            log.addHandler(hdl)
+            logName = o[1]
         elif o[0] == '-V':
             log.setLevel(logging.DEBUG)
+        elif o[0] == '-r':
+            rootName = None
+            rootOutput = True
         
     args = opts[1]
     if len(args) != 1:
@@ -190,6 +188,16 @@ if __name__ == '__main__':
         sys.exit(1)    
 
     xmlName = args[0]
+    ext = os.path.splitext(xmlName)
+    if rootOutput and rootName is None:
+        rootName = "%s.val.root" % ext[0]
+    if logName is None:
+        logName = "%s.val.log" % ext[0]
+
+    hdl = logging.FileHandler(logName)
+    fmt = logging.Formatter('%(levelname)s %(message)s')
+    hdl.setFormatter(fmt)
+    log.addHandler(hdl)
 
     log.debug('using LE warn limit %0.3f', leWarnLimit)
     log.debug('using LE err limit %0.3f', leErrLimit)
