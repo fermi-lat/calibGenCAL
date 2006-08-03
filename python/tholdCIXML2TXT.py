@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Dump tholdci file to .txt file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2006/02/21 23:37:19 $"
-__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/02/22 21:20:07 $"
+__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -29,7 +29,7 @@ import Numeric
 
 import calCalibXML
 import calConstant
-
+import zachUtil
 
                   
 if __name__ == '__main__':
@@ -63,9 +63,6 @@ if __name__ == '__main__':
     towers = xmlFile.getTowers()
     xmlFile.close()
 
-    # Convert offline xtal face indexing to online xtal face indexing  (they're reversed, don't blame me :)
-    offline_face_to_online = {0:1,1:0}
-
     # print out txt file.
     for twr in towers:
         for lyr in range(0,8):
@@ -73,7 +70,7 @@ if __name__ == '__main__':
             row = calCalibXML.layerToRow(lyr)
             for col in range(0,12):
                 for face in range(0,2):
-                    online_face = offline_face_to_online[face]
+                    online_face = zachUtil.offline_face_to_online[face]
                     print delim.join([str(x) for x in twr, lyr, col, face,\
                                      adcData[twr][row][online_face][col][0],
                                      adcData[twr][row][online_face][col][1],\

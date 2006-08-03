@@ -13,7 +13,7 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL BIAS calibration XML files from TXT."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/06/22 21:21:20 $"
+__date__      = "$Date: 2006/07/09 16:42:57 $"
 __version__   = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
@@ -28,9 +28,7 @@ import array
 import calDacXML
 import calCalibXML
 import calConstant
-
-# Convert offline xtal face indexing to online xtal face indexing  (they're reversed, don't blame me :)
-offline_face_to_online = {0:1,1:0}
+import zachUtil
 
 #######################################################################################
 
@@ -105,7 +103,7 @@ if __name__ == '__main__':
         face = int(face)
 
         # convert offline face numbering to online face numbering
-        face = offline_face_to_online[face]
+        face = zachUtil.offline_face_to_online[face]
 
         # make sure current tower is on list
         twrSet.add(twr)

@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Dump offline mevPerDAC xml file to .txt file"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/02/21 22:41:14 $"
-__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/02/21 23:37:19 $"
+__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -57,7 +57,6 @@ if __name__ == '__main__':
     inName  = args[0]
 
     # open and read XML MevPerDAC file
-
     xmlFile = calCalibXML.calMevPerDacCalibXML(inName)
     mpdData = xmlFile.read()
     towers = xmlFile.getTowers()

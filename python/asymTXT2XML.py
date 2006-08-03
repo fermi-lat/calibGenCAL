@@ -6,7 +6,7 @@ Note: asymTXT2XML assumes 10 data points from xtal, one crystal width apart.
 asymTXT2XML [-doptional.dtd] input.txt output.xml
 
 where:
-    -d           = specify which dtd file to load from calibUtil/xml folder (default = 'calCalib_v2r2.dtd')
+    -d           = specify which dtd file to load from calibUtil/xml folder (default = 'calCalib_v2r3.dtd')
 
     input.txt    = asymmetry input txt file, space delimited in following format:
                    twr lyr col pos_diode neg_diode asym asig
@@ -17,8 +17,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL Asymmetry calibration XML files from TXT."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/06/22 17:52:13 $"
-__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/07/08 19:41:37 $"
+__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -31,6 +31,7 @@ import array
 
 import calCalibXML
 import calConstant
+import zachUtil
 
 #######################################################################################3
 
@@ -38,7 +39,7 @@ if __name__ == '__main__':
 
     #constants
     usage      = "asymTXT2XML [-doptional.dtd] input.txt output.xml"
-    dtdName    = "calCalib_v2r2.dtd" #default value
+    dtdName    = "calCalib_v2r3.dtd" #default value
     xpos_pts   = (-122.25, -95.0833, -67.9167, -40.75, -13.5833, 13.5833, 40.75, 67.9167, 95.0833, 122.25)
 
     # setup logger
@@ -105,17 +106,6 @@ if __name__ == '__main__':
     #     6 = NsmallPbigSigs value
     #     7 = PsmallNbigSigs value
 
-    # tuple idx keys are (pos_diode, neg_diode, sigma)
-    asymIdx = {
-        (0,0,False):0,\
-        (1,1,False):1,\
-        (0,1,False):2,\
-        (1,0,False):3,\
-        (0,0,True):4,\
-        (1,1,True):5,\
-        (0,1,True):6,\
-        (1,0,True):7}
-
     # keep track of which curve we're plotting
     # use tuple as key of (twr,lyr,col,pdiode,ndiode)
     # increment value for each new point.
@@ -152,8 +142,8 @@ if __name__ == '__main__':
         row = calCalibXML.layerToRow(int(lyr))
 
         # calculate index for asym_type
-        valIdx = asymIdx[(pdiode,ndiode,False)]
-        sigIdx = asymIdx[(pdiode,ndiode,True)]
+        valIdx = zachUtil.asymIdx[(pdiode,ndiode,False)]
+        sigIdx = zachUtil.asymIdx[(pdiode,ndiode,True)]
 
         # set asym & sigma for each point alon xtal
         outData[twr, row, col, valIdx, nPt] = asym
