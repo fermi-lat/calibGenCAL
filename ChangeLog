@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Wed Aug  2 17:30:12 PDT 2006
+calibGenCAL/python
+
+Added Files:
+	valDACsettings.py valDACsettings.sh 
+Log Message:
+New DAC settings file validation program; uses dacSlopes file; still needs section to handle ULD settings.
+
+    *
+------------------------------------------------------------
 User: dwood  Wed Aug  2 17:29:11 PDT 2006
 calibGenCAL/python
 
