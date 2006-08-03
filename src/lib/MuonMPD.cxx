@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.cxx,v 1.3 2006/06/27 15:36:25 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.cxx,v 1.4 2006/07/05 20:38:19 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -111,7 +111,7 @@ void MuonMPD::fillHists(unsigned nEntries,
 
 
   // need one hodo scope per tower
-  CalVec<TwrNum, TwrHodoscope> hscopes(TwrNum::N_VALS, TwrHodoscope(peds));
+  CalVec<TwrNum, TwrHodoscope> hscopes(TwrNum::N_VALS, TwrHodoscope(peds, dac2adc));
 
   ///////////////////////////////////////////
   // DIGI Event Loop - Fill Twr Hodoscopes //
@@ -210,7 +210,6 @@ void MuonMPD::fillHists(unsigned nEntries,
         }
 
         //-- GET HODOSCOPIC TRACK FROM ORTHOGONAL XTALS --//
-
         graph.Set(hitListOrtho.size());
 
         // fill in each point val
@@ -251,25 +250,15 @@ void MuonMPD::fillHists(unsigned nEntries,
         vector<CalArray<XtalDiode,float> > dacs(hitList.size());
         // now that we have eliminated events on the ends of xtals, we can use
         // asymmetry to get a higher precision slope
-        // also we need the dac values for each hit later
         graph.Set(hitList.size());
         for (unsigned i = 0; i < hitList.size(); i++) {
           XtalIdx xtalIdx = hitList[i];
           LyrNum lyr = xtalIdx.getLyr();
-
-          for (XtalDiode xDiode; xDiode.isValid(); xDiode++) {
-            DiodeIdx diodeIdx(xtalIdx, xDiode);
-            RngNum x8Rng = diodeIdx.getDiode().getX8Rng();
-            FaceNum face = xDiode.getFace();
-            RngIdx rngIdx(xtalIdx, face, x8Rng);
-            // calculate DAC vals
-            dacs[i][xDiode] = dac2adc.adc2dac(rngIdx, 
-                                              hscope.adc_ped[diodeIdx.getTDiodeIdx()]);
-          }
-        
+          
           // calcuate the log ratio = log(POS/NEG)
-          float asymLL = log(dacs[i][XtalDiode(POS_FACE,LRG_DIODE)]
-                             / dacs[i][XtalDiode(NEG_FACE,LRG_DIODE)]);
+          float dacP = hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), POS_FACE, LRG_DIODE)];
+          float dacN = hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), NEG_FACE, LRG_DIODE)];
+          float asymLL = log(dacP/dacN);
 
           // get new position from asym
           float hitPos = asym.asym2pos(xtalIdx, LRG_DIODE, asymLL);
@@ -295,15 +284,17 @@ void MuonMPD::fillHists(unsigned nEntries,
           // calculate dacs
           XtalIdx xtalIdx = hitList[i];
 
+          CalArray<XtalDiode, float> dacs;
+
           // apply pathlength correction
           for (XtalDiode xDiode; xDiode.isValid(); xDiode++)
-            dacs[i][xDiode] /= sec;
+            dacs[xDiode] = hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), xDiode)] /= sec;
 
-          float meanDACLrg = sqrt(dacs[i][XtalDiode(POS_FACE,LRG_DIODE)]
-                                  * dacs[i][XtalDiode(NEG_FACE,LRG_DIODE)]);
+          float meanDACLrg = sqrt(dacs[XtalDiode(POS_FACE, LRG_DIODE)] *
+                                  dacs[XtalDiode(NEG_FACE, LRG_DIODE)]);
 
-          float meanDACSm = sqrt(dacs[i][XtalDiode(POS_FACE, SM_DIODE)]
-                                 * dacs[i][XtalDiode(NEG_FACE, SM_DIODE)]);
+          float meanDACSm = sqrt(dacs[XtalDiode(POS_FACE, SM_DIODE)] *
+                                 dacs[XtalDiode(NEG_FACE, SM_DIODE)]);
         
           // Load meanDAC Histogram
           m_dacLLHists[xtalIdx]->Fill(meanDACLrg);

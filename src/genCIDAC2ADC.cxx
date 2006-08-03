@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.2 2006/06/22 21:50:22 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.3 2006/06/27 15:36:25 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -43,17 +43,17 @@ int main(int argc, char **argv) {
     // input files
     string rootFileLE = cfgFile.getVal("CIDAC2ADC", 
                                        "LE_ROOT_FILE", string(""));
-    if (rootFileLE.length() < 1) {
-      cout << __FILE__ << ": no LE root file specified" << endl;
-      return -1;
-    }
     string rootFileHE = cfgFile.getVal("CIDAC2ADC", 
                                        "HE_ROOT_FILE", string(""));
-    if (rootFileHE.length() < 1) {
-      cout << __FILE__ << ": no HE root file specified" << endl;
+
+    // i can process 1 or 2 files, but not none
+    if (rootFileLE.length() == 0 && rootFileHE.length() ==0) {
+      cout << __FILE__ << ": no input files specified." << endl;
       return -1;
     }
 
+    const string &outputBaseName = (rootFileLE.length()) ? 
+      rootFileLE : rootFileHE;
 
     //-- SETUP LOG FILE --//
     /// multiplexing output streams 
@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
     // generate logfile name
     string logfile;
     CIDAC2ADC::genOutputFilename(outputDir,
-                                 rootFileLE,
+                                 outputBaseName,
                                  "log.txt",
                                  logfile);
     ofstream tmpStrm(logfile.c_str());
@@ -84,14 +84,14 @@ int main(int argc, char **argv) {
     // txt output filename
     string outputTXTFile;
     CIDAC2ADC::genOutputFilename(outputDir,
-                                 rootFileLE,
+                                 outputBaseName,
                                  "txt",
                                  outputTXTFile);
 
     // output histogram file
     string outputHistFile;
     CIDAC2ADC::genOutputFilename(outputDir,
-                                 rootFileLE,
+                                 outputBaseName,
                                  "root",
                                  outputHistFile);
 
@@ -106,7 +106,7 @@ int main(int argc, char **argv) {
   
     string adcMeanFile;
     CIDAC2ADC::genOutputFilename(outputDir,
-                                 rootFileLE,
+                                 outputBaseName,
                                  "adcmean.txt",
                                  adcMeanFile);
                                
@@ -119,10 +119,14 @@ int main(int argc, char **argv) {
               << adcMeanFile << endl;
       cidac2adc.readADCMeans(adcMeanFile);
     } else {
-      logStrm << __FILE__ << ": reading LE calibGen event file: " << rootFileLE << endl;
-      cidac2adc.readRootData(rootFileLE, LRG_DIODE, bcastMode);
-      logStrm << __FILE__ << ": reading HE calibGen event file: " << rootFileHE << endl;
-      cidac2adc.readRootData(rootFileHE, SM_DIODE,  bcastMode);
+      if (rootFileLE.length()) {
+        logStrm << __FILE__ << ": reading LE calibGen event file: " << rootFileLE << endl;
+        cidac2adc.readRootData(rootFileLE, LRG_DIODE, bcastMode);
+      }
+      if (rootFileHE.length()) {
+        logStrm << __FILE__ << ": reading HE calibGen event file: " << rootFileHE << endl;
+        cidac2adc.readRootData(rootFileHE, SM_DIODE,  bcastMode);
+      }
       logStrm << __FILE__ << ": saving adc means to txt file: " 
               << adcMeanFile << endl;
       cidac2adc.writeADCMeans(adcMeanFile);

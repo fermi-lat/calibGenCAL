@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/TwrHodoscope.cxx,v 1.1 2006/06/15 20:58:00 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/TwrHodoscope.cxx,v 1.2 2006/06/22 21:50:23 fewtrell Exp $
 /** @file
     @author fewtrell
  */
@@ -21,6 +21,7 @@ using namespace CalUtil;
 void TwrHodoscope::clear() {
   // zero out all vectors
   fill_zero(adc_ped);
+  fill_zero(dac);
   fill_zero(perLyrX);
   fill_zero(perLyrY);
   fill_zero(perColX);
@@ -73,31 +74,47 @@ void TwrHodoscope::addHit(const CalDigi &calDigi) {
     if (adc < 0) {
       m_ostrm << "Couldn't get adc val for face=" << face.val()
               << " rng=" << rng.val() << endl;
-      continue;
+      return;
     }
 
     float ped = m_peds.getPed(rngIdx);
     adc_ped[diodeIdx] = adc - ped;
+
+    dac[diodeIdx] = m_cidac2adc.adc2dac(rngIdx, adc_ped[diodeIdx]);
+    // double check that all dac signals are > 0
+    if (dac[diodeIdx] <= 0) 
+      return;
   }
     
   // DO WE HAVE A HIT? (sum up both ends LEX8 i.e LRG_DIODE)
-  if (adc_ped[tDiodeIdx(xtalIdx.getTXtalIdx(), POS_FACE,LRG_DIODE)] +
-      adc_ped[tDiodeIdx(xtalIdx.getTXtalIdx(),NEG_FACE,LRG_DIODE)] > hitThresh) {
-      
-    count++; // increment total # hits
-      
-    // used to determine if xtal is x or y layer
-    if (lyr.getDir() == X_DIR) { // X layer
-      GCRCNum gcrc = lyr.getGCRC();
-      perLyrX[gcrc]++;
-      perColX[col]++;
-      hitListX.push_back(xtalIdx);
-    } else { // y layer
-      GCRCNum gcrc = lyr.getGCRC();
-      perLyrY[gcrc]++;
-      perColY[col]++;
-      hitListY.push_back(xtalIdx);
-    }
+  float &adcPedPL = adc_ped[tDiodeIdx(xtalIdx.getTXtalIdx(), POS_FACE, LRG_DIODE)];
+  float &adcPedNL = adc_ped[tDiodeIdx(xtalIdx.getTXtalIdx(), NEG_FACE, LRG_DIODE)];
+
+  float adcSigPL = m_peds.getPedSig(RngIdx(xtalIdx, POS_FACE, LEX8));
+  float adcSigNL = m_peds.getPedSig(RngIdx(xtalIdx, NEG_FACE, LEX8));
+
+  //-- HIT CUT --//
+  // - total deposited energy should be > threshold 
+  // - also, each face > 3 sigma pretty much guarantees that it is xtal deposit & not
+  //   direct diode deposit.
+  if (adcPedPL + adcPedNL < hitThresh ||
+      adcPedPL < 3*adcSigPL ||
+      adcPedNL < 3*adcSigNL) 
+    return;
+
+  count++; // increment total # hits
+  
+  // used to determine if xtal is x or y layer
+  if (lyr.getDir() == X_DIR) { // X layer
+    GCRCNum gcrc = lyr.getGCRC();
+    perLyrX[gcrc]++;
+    perColX[col]++;
+    hitListX.push_back(xtalIdx);
+  } else { // y layer
+    GCRCNum gcrc = lyr.getGCRC();
+    perLyrY[gcrc]++;
+    perColY[col]++;
+    hitListY.push_back(xtalIdx);
   }
 }
 

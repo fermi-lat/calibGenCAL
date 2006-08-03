@@ -1,13 +1,14 @@
-// $Header$
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/TwrHodoscope.h,v 1.1 2006/06/15 20:58:00 fewtrell Exp $
 /** @file
     @author fewtrell
- */
+*/
 
 #ifndef TwrHodoscope_h
 #define TwrHodoscope_h
 
 // LOCAL INCLUDES
 #include "MuonPed.h"
+#include "CIDAC2ADC.h"
 
 // GLAST INCLUDES
 #include "digiRootData/DigiEvent.h"
@@ -29,9 +30,12 @@ class TwrHodoscope {
  public:
   /// default ctor
   TwrHodoscope(const MuonPed &ped,
+               const CIDAC2ADC &cidac2adc,
                ostream &ostrm = cout) :      
     adc_ped(tDiodeIdx::N_VALS),
+    dac(tDiodeIdx::N_VALS),
     m_peds(ped),
+    m_cidac2adc(cidac2adc),
     m_ostrm(ostrm)
     {
       clear();
@@ -48,6 +52,9 @@ class TwrHodoscope {
 
   /// pedestal subtracted adc values 1 per diode
   CalVec<tDiodeIdx, float> adc_ped; 
+
+  /// cidac values (1 per diode)
+  CalVec<tDiodeIdx, float> dac;
 
   // Hit summary histograms
   /// number of hits per layer
@@ -94,6 +101,9 @@ class TwrHodoscope {
 
   /// reference to pedestal calibrations needed for some operations
   const MuonPed &m_peds;
+
+  /// reference to cidac2adc calibs needed for some ops
+  const CIDAC2ADC &m_cidac2adc;
 
   /// stream used for loggging
   ostream &m_ostrm;
