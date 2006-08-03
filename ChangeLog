@@ -1,5 +1,23 @@
 ------------------------------------------------------------
 User: fewtrell  Thu Aug  3 06:06:48 PDT 2006
+calibGenCAL/src/lib
+
+Modified Files:
+	CGCUtil.h CIDAC2ADC.cxx CIDAC2ADC.h MuonAsym.cxx MuonMPD.cxx 
+	TwrHodoscope.cxx TwrHodoscope.h 
+Log Message:
+C++ changes:
+cidac2adc now runs on LE or HE only files, doesn't require both
+cidac2adc now generates pedestals by extrapolating from successor points (old pedestals were wrong)
+cidac2adc drops unused 'smoothing disabled' functionality for simplicities sake.
+muonAsym & muonMPD now cut out noise hits where there is signal only on one face (this usually indicates direct diode deposit)
+
+
+
+
+    *
+------------------------------------------------------------
+User: fewtrell  Thu Aug  3 06:06:48 PDT 2006
 calibGenCAL/src
 
 Modified Files:
