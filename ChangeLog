@@ -1,4 +1,21 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Aug  3 06:06:48 PDT 2006
+calibGenCAL/src
+
+Modified Files:
+	genCIDAC2ADC.cxx 
+Log Message:
+C++ changes:
+cidac2adc now runs on LE or HE only files, doesn't require both
+cidac2adc now generates pedestals by extrapolating from successor points (old pedestals were wrong)
+cidac2adc drops unused 'smoothing disabled' functionality for simplicities sake.
+muonAsym & muonMPD now cut out noise hits where there is signal only on one face (this usually indicates direct diode deposit)
+
+
+
+
+    *
+------------------------------------------------------------
 User: dwood  Wed Aug  2 20:26:44 PDT 2006
 calibGenCAL/src
 
