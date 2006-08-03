@@ -1,5 +1,5 @@
 // (Special "header" just for doxygen)
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/mainpage.h,v 1.37 2006/07/09 16:43:59 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/mainpage.h,v 1.38 2006/08/03 03:26:44 dwood Exp $
 
 
 /*! 
@@ -21,7 +21,7 @@ generates the following calibrations for use in offline software:
       10 points along each crystal length.
 
 - <b> Integral Nonlinearity </b> 
-      adc2cidac conversion in all 4 ranges.
+      cidac2adc conversion in all 4 ranges.
       Corrects for nonlinearity in adc scale.
 
 - \b MevPerDAC  
@@ -43,6 +43,7 @@ generates the following calibrations for use in offline software:
       Generate spline function points for adc2cidac
       conversions. Read digi root files containing charge injection
       calibration data. Expected test configuration is described in code.
+      (also known as intNonlin)
 
 - \b genMuonPed.exe
    Generate ADC pedestals from 4-range non-zero suppressed event data.
@@ -209,6 +210,11 @@ file for use in FSW on-board filter code
 
 The genFlightGain script converts a CAL_MuSlope XML file into a 'cal_gains.h' 
 file for use in FSW on-board filter code
+
+<h5> calibGain scripts </h5>
+- <tt> calibGainCoeff </tt> extract ratio of calibGain setting On/Off for HE channels from 2 intNonlin xml files.
+- <tt> mpdApplyCalibGain </tt> apply calibGain ratio to mevPerDAC file
+- <tt> asymApplyCalibGain </tt> apply claibGain ratio to asymmetry file
 
 <h3> cfg files </h3>
 Sample configuration scripts for python and C++ tools are included in the cfg 
