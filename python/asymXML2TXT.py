@@ -9,14 +9,15 @@ asymXML2TXT [-d delim] <input_xml_file>
 where:
     <input_xml_file> = input asymmetry GLAST Cal offline calibration file
         -d delim         = optional field delimeter override (default = ' ')
+
 """
 
 
 __facility__  = "Offline"
 __abstract__  = "Dump offline asymmetry xml file to .txt file"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/06/22 17:52:13 $"
-__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/07/08 19:41:37 $"
+__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -29,6 +30,7 @@ import Numeric
 
 import calCalibXML
 import calConstant
+import zachUtil
 
 if __name__ == '__main__':
     usage = "usage: python asymXML2TXT.py [-d delim] <input_xml_file>"
@@ -40,7 +42,7 @@ if __name__ == '__main__':
     except getopt.GetoptError:
         log.error(usage)
         sys.exit(1)
-    
+
     # opts has 2 parts, options (-abc ...) & remaining default params
     for o, a in opts:
         if o == '-d':
@@ -80,18 +82,6 @@ if __name__ == '__main__':
     #     6 = NsmallPbigSigs value
     #     7 = PsmallNbigSigs value
 
-    # tuple idx keys are (pos_diode, neg_diode, sigma)
-    asymIdx = {
-        (0,0,False):0,\
-        (1,1,False):1,\
-        (0,1,False):2,\
-        (1,0,False):3,\
-        (0,0,True):4,\
-        (1,1,True):5,\
-        (0,1,True):6,\
-        (1,0,True):7}
-
-    
     #print asymData
     #sys.exit()
     # print out txt file.
@@ -105,16 +95,16 @@ if __name__ == '__main__':
                         for pt in range (0,len(xpos)):
                             print delim.join([str(x) for x in twr, lyr, col,
                                               pdiode, ndiode,
-                                              asymData[twr][row][col][asymIdx[(pdiode,ndiode,False)]][pt], #asym val
-                                              asymData[twr][row][col][asymIdx[(pdiode,ndiode,True)]][pt]])   #sigma
-                                              
+                                              asymData[twr][row][col][zachUtil.asymIdx[(pdiode,ndiode,False)]][pt], #asym val
+                                              asymData[twr][row][col][zachUtil.asymIdx[(pdiode,ndiode,True)]][pt]])   #sigma
 
 
 
- 
-
- 
- 
 
 
- 
+
+
+
+
+
+

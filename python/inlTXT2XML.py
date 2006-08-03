@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL CIDAC2ADC calibration XML files from TXT."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/02/21 22:41:14 $"
-__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/06/22 20:56:57 $"
+__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -28,12 +28,8 @@ import array
 
 import calCalibXML
 import calConstant
+import zachUtil
 
-# Convert offline xtal face indexing to online xtal face indexing  (they're reversed, don't blame me :)
-offline_face_to_online = {0:1,1:0}
-
-# constant
-N_DAC_PTS = 173
 
 #######################################################################################
 
@@ -101,14 +97,14 @@ if __name__ == '__main__':
                                          calConstant.NUM_ROW,
                                          calConstant.NUM_END,
                                          calConstant.NUM_FE,
-                                         N_DAC_PTS),
+                                         zachUtil.N_DAC_PTS),
                                         Numeric.Float32))
 
         adcData.append(Numeric.zeros((calConstant.NUM_TEM,
                                          calConstant.NUM_ROW,
                                          calConstant.NUM_END,
                                          calConstant.NUM_FE,
-                                         N_DAC_PTS),
+                                         zachUtil.N_DAC_PTS),
                                         Numeric.Float32))
 
 
@@ -139,7 +135,7 @@ if __name__ == '__main__':
         rng  = int(rng)
 
         # convert offline face numbering to online face numbering
-        face = offline_face_to_online[face]
+        face = zachUtil.offline_face_to_online[face]
         # also convert layer2row
         row = calCalibXML.layerToRow(int(lyr))
 
@@ -153,6 +149,17 @@ if __name__ == '__main__':
         adcData[rng][twr, row, face, col, length-1] = adc
 
     log.info('Writing output file %s', outPath)
+
+    # WARNING! semi-hack!
+    # calibUtil dtd file does not allow for intNonlin channels w/ zero entries.
+    # I need this in some cases (for instance diagnostic tests for HE only would
+    # require that LE channels be empty.
+    #
+    # the way I'm going to fix it is to make empty channels have a single zero point
+    # (dac = 0, adc = 0) instead of not points at all.  shouldn't break too much :(
+    for rng in range(4):
+        zero_channels = (lengthData[rng] == 0)
+        lengthData[rng] = Numeric.where(zero_channels, 1, lengthData[rng])
 
     outFile = calCalibXML.calIntNonlinCalibXML(outPath, calCalibXML.MODE_CREATE)
     outFile.write(lengthData, dacData, adcData, tems = twrSet)
