@@ -21,8 +21,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/07/21 00:39:59 $"
-__version__     = "$Revision: 1.2 $, $Author: dwood $"
+__date__        = "$Date: 2006/07/31 15:29:30 $"
+__version__     = "$Revision: 1.3 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -50,6 +50,7 @@ def dacSettings(slope, offset, energy):
 
      d = (energy - offset) / slope
      d = Numeric.clip(d, 0, 63)
+     d = Numeric.around(d) 
      return d.astype(Numeric.Int8)
      
      
@@ -60,6 +61,7 @@ def uldSettings(slopes, offsets, sats, margin):
     sats = sats - (sats * margin)
     d = (sats - offsets) / slopes
     d = Numeric.clip(d, 0, 63)
+    d = Numeric.around(d)
     lex8 = d[calConstant.CRNG_LEX8, ...]
     lex1 = d[calConstant.CRNG_LEX1, ...]  
     hex8 = d[calConstant.CRNG_HEX8, ...]
