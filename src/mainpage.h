@@ -1,5 +1,5 @@
 // (Special "header" just for doxygen)
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/mainpage.h,v 1.36 2006/07/05 15:59:50 dwood Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/mainpage.h,v 1.37 2006/07/09 16:43:59 fewtrell Exp $
 
 
 /*! 
@@ -118,18 +118,12 @@ files produced by the CI tests provide the ADC threshold data lookup for each co
 <p>The DAC settings generation tools produce configuration XML files
 providing values to configure each channel.  The DAC settings tools
 take a configuration file and possibly (except for ULD) a threshold
-energy as input.  TThe -V option increases the verbosity of the
+energy as input.  The -V option increases the verbosity of the
 diagnostic output.</p>
-
-- <tt> genGainSettings [-V] <leGain> <heGain> <out_xml_file> </tt>
-
-<p>The genGainSettings tool is useful for producing a base CAL snapshot
-fragment which only contains the gain settings in <config_0> elements.</p>
 
 - dacDiff.py
 <p>dacDiff.py will calculate per-channel difference between any two cal dac 
 settings files.  This can be used for trending & validation.</p>
-
 
 - <tt> adcsmooth [-V] <in_file> <out_file> </tt>
 
@@ -146,16 +140,16 @@ clean characterization tables to work well (e.g. genXXXsettings).
 
 <h5> Validation scripts </h5>
 
-- <tt> asymVal      [-V] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> adc2nrgVal   [-V] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> biasVal      [-V] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> intNonlinVal [-V] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> mevPerDacVal [-V] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> pedVal       [-V] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> tholdCIVal   [-V] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> charVal      [-V] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> muSlopeVal   [-V] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> dacVal       [-V] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC <MeV> <cfg_file> <dac_xml_file> </tt>
+- <tt> asymVal      [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> adc2nrgVal   [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> biasVal      [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> intNonlinVal [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> mevPerDacVal [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> pedVal       [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> tholdCIVal   [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> charVal      [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> muSlopeVal   [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> dacVal       [-V] [-r] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC <MeV> <cfg_file> <dac_xml_file> </tt>
 - <tt> checkXML     [xml_file_0 xml_file_1 ...] </tt> 
 
 
