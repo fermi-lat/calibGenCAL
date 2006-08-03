@@ -1,6 +1,6 @@
 #ifndef CIDAC2ADC_h
 #define CIDAC2ADC_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CIDAC2ADC.h,v 1.1 2006/06/15 20:57:59 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CIDAC2ADC.h,v 1.2 2006/06/22 21:50:22 fewtrell Exp $
 /** @file
     @author fewtrell
  */
@@ -112,6 +112,10 @@ class CIDAC2ADC {
 
   CalVec<RngIdx, TSpline3*> m_splinesADC2DAC; 
   CalVec<RngIdx, TSpline3*> m_splinesDAC2ADC; 
+
+
+  /// pedestal subtract spline point ADC by using value from first point
+  void pedSubtractADCSplines();
 
   ostream &m_ostrm;
 

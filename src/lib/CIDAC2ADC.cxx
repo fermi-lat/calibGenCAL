@@ -1,7 +1,7 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CIDAC2ADC.cxx,v 1.3 2006/06/27 15:36:25 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CIDAC2ADC.cxx,v 1.4 2006/07/18 22:01:43 fewtrell Exp $
 /** @file
     @author fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "RootFileAnalysis.h"
@@ -20,6 +20,8 @@
 #include <sstream>
 #include <ostream>
 
+using namespace CGCUtil;
+
 static const float CIDAC_TEST_VALS[] = 
   {0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,
    34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,
@@ -37,13 +39,20 @@ static const float CIDAC_TEST_VALS[] =
    3551,3583,3615,3647,3679,3711,3743,3775,3807,3839,
    3871,3903,3935,3967,3999,4031,4063,4095};
 
-static const unsigned short SPLINE_GRP_WIDTH[] = {3,4,3,4};
-static const unsigned short SPLINE_SKIP_LO[]   = {3,1,3,1};
-static const unsigned short SPLINE_SKIP_HI[]   = {6,10,6,10};
-static const unsigned short SPLINE_ENABLE_GRP[]       = {1,1,1,1};
+/// how many points for each smoothing 'group'?  (per adc range)
+static const unsigned short SMOOTH_GRP_WIDTH[] = {3,4,3,4};
+/// how many points at beginning of curve to extrapolate from following points
+static const unsigned short EXTRAP_PTS_LO[]    = {2,2,2,2};
+/// how many points to extrapolate beginning of curve _from_
+static const unsigned short EXTRAP_PTS_LO_FROM[] = {5,5,5,5};
+/// how many points at end of curve not to smooth (simply copy them over verbatim from raw data)
+static const unsigned short SMOOTH_SKIP_HI[]   = {6,10,6,10};
 
+/// number of CIDAC values tested
 static const unsigned short N_CIDAC_VALS     = sizeof(CIDAC_TEST_VALS)/sizeof(*CIDAC_TEST_VALS);
+/// n pulses (events) per CIDAC val
 static const unsigned short N_PULSES_PER_DAC = 50;
+/// n total pulsees per xtal (or column)
 static const unsigned N_PULSES_PER_XTAL      = N_CIDAC_VALS * N_PULSES_PER_DAC;
 
 CIDAC2ADC::CIDAC2ADC(ostream &ostrm) :
@@ -278,7 +287,6 @@ void CIDAC2ADC::readRootData(const string &rootFileName,
   }  // end analysis code in event loop
 }
 
-
 void CIDAC2ADC::genSplinePts() {
   TF1 splineFunc("spline_fitter","pol2",0,4095);
 
@@ -288,9 +296,10 @@ void CIDAC2ADC::genSplinePts() {
   // Loop through all 4 energy ranges
   for (RngNum rng; rng.isValid(); rng++) {
     // following vals only change w/ rng, so i get them outside the other loops.
-    int grpWid  = SPLINE_GRP_WIDTH[rng.val()];
-    int skpLo   = SPLINE_SKIP_LO[rng.val()];
-    int skpHi   = SPLINE_SKIP_HI[rng.val()];
+    int grpWid       = SMOOTH_GRP_WIDTH[rng.val()];
+    int extrapLo     = EXTRAP_PTS_LO[rng.val()];
+    int extrapLoFrom = EXTRAP_PTS_LO_FROM[rng.val()];
+    int skpHi        = SMOOTH_SKIP_HI[rng.val()];
 
     // loop through each xtal face.
     for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
@@ -302,104 +311,90 @@ void CIDAC2ADC::genSplinePts() {
 
       // point to current adc vector
       vector<float> &curADC = m_adcMean[rngIdx];
-      // get pedestal
-      float ped     = curADC[0];
 
-
-      //calculate ped-subtracted means.
-      for (int dac = 0; dac < N_CIDAC_VALS; dac++)
-        curADC[dac] -= ped;
-
-      // get upper adc boundary
+      //-- GET UPPER ADC BOUNDARY for this channel --//
       float adc_max = curADC[N_CIDAC_VALS-1];
-
       // last idx will be last index that is <= 0.99*adc_max
       // it is the last point we intend on using.
       int last_idx = 0; 
-      while (curADC[last_idx] <= 0.99*adc_max) {
+      while (curADC[last_idx] <= 0.99*adc_max)
         last_idx++;
-      }
       last_idx--;
       
-      // set up new graph object for fitting.
+
+      //-- CREATE GRAPH OBJECT for fitting --//
       copy(curADC.begin(),
            curADC.end(),
            tmpADC);
-
       TGraph myGraph(last_idx+1,
                      CIDAC_TEST_VALS,
                      tmpADC);
 
-      if (!SPLINE_ENABLE_GRP[rng.val()]) {
-        ////////////////////////
-        // GROUPING DISABLED  //
-        ////////////////////////
-        for (int i = 0; i <= last_idx; i++) {
-          // put new ADC val on list
-          m_splinePtsADC[rngIdx].push_back(curADC[i]);
 
-          // put new DAC val on global output list
-          m_splinePtsDAC[rngIdx].push_back(CIDAC_TEST_VALS[i]);
-        }
-      } else {
+      // PART I: EXTRAPOLATE INITIAL POINTS FROM MEAT OF CURVE
+      for (int i = 0; i < extrapLo; i++) {
+        // put new DAC val on global output list
+        const float &dac = CIDAC_TEST_VALS[i];
+        m_splinePtsDAC[rngIdx].push_back(dac);
 
-        //////////////////////
-        // GROUPING ENABLED //
-        //////////////////////
+        // extrapolate associated adc value from points later in curve
+        // 1st non extrapolated point
+        unsigned short pt2 = extrapLo;
+        // n points into curve from pt2
+        unsigned short pt1 = pt2+extrapLoFrom-1;
 
-        // PART I: NO SMOOTHING/GROUPING FOR SKIPLO PTS ////////////////////////
-        // copy SKPLO points directly from beginning of array.
+        const float &dac2 = CIDAC_TEST_VALS[pt2];
+        const float &adc2 = curADC[pt2];
 
-        for (int i = 0; i < skpLo; i++) {
-          // put new ADC val on list
-          m_splinePtsADC[rngIdx].push_back(curADC[i]);
+        const float &dac1 = CIDAC_TEST_VALS[pt1];
+        const float &adc1 = curADC[pt1];
 
-          // put new DAC val on global output list
-          m_splinePtsDAC[rngIdx].push_back(CIDAC_TEST_VALS[i]);
-        }
+        float adc = linear_extrap(dac1, dac2, dac,
+                                  adc1, adc2);
 
-        // PART II: GROUP & SMOOTH MIDDLE RANGE  ///////////////////////////////
-        // start one grp above skiplo & go as hi as you can w/out entering skpHi
-        for (int ctrIdx = skpLo + grpWid - 1; 
-             ctrIdx <= last_idx - max(skpHi,grpWid-1); // allow last group to overlap skpHi section.
-             ctrIdx += grpWid) {
+        m_splinePtsADC[rngIdx].push_back(adc);
+      }
 
-          int lp = ctrIdx - grpWid; // 1st point in group
-          int hp  = ctrIdx + grpWid; // last point in group
+      // PART II: GROUP & SMOOTH MIDDLE RANGE  ///////////////////////////////
+      // start one grp above skiplo & go as hi as you can w/out entering skpHi
+      for (int ctrIdx = extrapLo + grpWid - 1; 
+           ctrIdx <= last_idx - max(skpHi,grpWid-1); // allow last group to overlap skpHi section.
+           ctrIdx += grpWid) {
 
-          // fit curve to grouped points
-          myGraph.Fit(&splineFunc,"QN","",
-                      CIDAC_TEST_VALS[lp],
-                      CIDAC_TEST_VALS[hp]);
-          float myPar1 = splineFunc.GetParameter(0);
-          float myPar2 = splineFunc.GetParameter(1);
-          float myPar3 = splineFunc.GetParameter(2);
+        int lp = ctrIdx - grpWid; // 1st point in group
+        int hp  = ctrIdx + grpWid; // last point in group
 
-          // use DAC value from center point
-          float fitDAC = CIDAC_TEST_VALS[ctrIdx];
-          // eval smoothed ADC value
-          float fitADC = myPar1 + fitDAC*(myPar2 + fitDAC*myPar3);
+        // fit curve to grouped points
+        myGraph.Fit(&splineFunc,"QN","",
+                    CIDAC_TEST_VALS[lp],
+                    CIDAC_TEST_VALS[hp]);
+        float myPar1 = splineFunc.GetParameter(0);
+        float myPar2 = splineFunc.GetParameter(1);
+        float myPar3 = splineFunc.GetParameter(2);
 
-          // put new ADC val on list
-          m_splinePtsADC[rngIdx].push_back(fitADC);
+        // use DAC value from center point
+        float fitDAC = CIDAC_TEST_VALS[ctrIdx];
+        // eval smoothed ADC value
+        float fitADC = myPar1 + fitDAC*(myPar2 + fitDAC*myPar3);
 
-          // put new DAC val on global output list
-          m_splinePtsDAC[rngIdx].push_back(fitDAC);
-        }
+        // put new ADC val on list
+        m_splinePtsADC[rngIdx].push_back(fitADC);
 
-        // PART III: NO SMOOTHING/GROUPING FOR LAST SKPHI PTS //////////////////
-        // copy SKPHI points directly from face of array.
-        for (int i = last_idx+1 - skpHi;
-             i <= last_idx;
-             i++) {
-          // put new ADC val on list
-          m_splinePtsADC[rngIdx].push_back(curADC[i]); 
+        // put new DAC val on global output list
+        m_splinePtsDAC[rngIdx].push_back(fitDAC);
+      }
 
-          // put new DAC val on global output list
-          m_splinePtsDAC[rngIdx].push_back(CIDAC_TEST_VALS[i]);
-        }
+      // PART III: NO SMOOTHING/GROUPING FOR LAST SKPHI PTS //////////////////
+      // copy SKPHI points directly from face of array.
+      for (int i = last_idx+1 - skpHi;
+           i <= last_idx;
+           i++) {
+        // put new ADC val on list
+        m_splinePtsADC[rngIdx].push_back(curADC[i]); 
 
-      } // grouping enabled
+        // put new DAC val on global output list
+        m_splinePtsDAC[rngIdx].push_back(CIDAC_TEST_VALS[i]);
+      }
 
       //-- EXTRAPOLATE FINAL POINT --//
       int nPts    = m_splinePtsADC[rngIdx].size();
@@ -416,7 +411,23 @@ void CIDAC2ADC::genSplinePts() {
     } // xtalFace lop
   } // range loop
 
+  // subtract pedestals
+  pedSubtractADCSplines();
+
   delete [] tmpADC;  
+}
+
+/// pedestal subtract spline point ADC by using value from first point
+void CIDAC2ADC::pedSubtractADCSplines() {
+  for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
+    // skip empty splines
+    if (m_splinePtsADC[rngIdx].size() == 0) 
+      continue;
+
+    float ped = m_splinePtsADC[rngIdx][0];
+    for (unsigned i = 0; i < m_splinePtsADC[rngIdx].size(); i++) 
+      m_splinePtsADC[rngIdx][i]-=ped;
+  }
 }
 
 void CIDAC2ADC::makeGraphs(TFile &histFile) {

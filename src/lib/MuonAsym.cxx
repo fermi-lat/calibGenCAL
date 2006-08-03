@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.cxx,v 1.4 2006/06/28 14:13:29 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.cxx,v 1.5 2006/07/05 20:35:09 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -85,10 +85,9 @@ void MuonAsym::fillHists(unsigned nEntries,
   int  nYDirs     = 0;
   long nHits      = 0; // count total # of xtals measured
   int  nBadHits   = 0;
-  int  nBadDACs   = 0;
 
   // need one hodo scope per tower
-  CalVec<TwrNum, TwrHodoscope> hscopes(TwrNum::N_VALS, TwrHodoscope(peds));
+  CalVec<TwrNum, TwrHodoscope> hscopes(TwrNum::N_VALS, TwrHodoscope(peds, dac2adc));
 
   // Basic digi-event loop
   
@@ -184,29 +183,12 @@ void MuonAsym::fillHists(unsigned nEntries,
         for (unsigned i = 0; i < hitListOrtho.size(); i++) {
           XtalIdx xtalIdx = hitListOrtho[i];
           
-          CalArray<XtalDiode, float> dac;
-          bool badDAC = false;
-          for (XtalDiode xDiode; xDiode.isValid(); xDiode++) {
-            DiodeIdx diodeIdx(xtalIdx, xDiode);
-            RngNum x8Rng = xDiode.getDiode().getX8Rng();
-            FaceNum face = xDiode.getFace();
-            RngIdx rngIdx(xtalIdx, face, x8Rng);
-            dac[xDiode] = dac2adc.adc2dac(rngIdx, hscope.adc_ped[diodeIdx.getTDiodeIdx()]);
-            
-            // can't take log so we must quit here.
-            if (dac[xDiode] <= 0) badDAC = true;
-          }
-          
-          if (badDAC) {
-            nBadHits++;
-            nBadDACs++;
-            continue;
-          }
-          
           // calcuate the 4 log ratios = log(POS/NEG)
           for (AsymType asymType; asymType.isValid(); asymType++) {
-            float asym = log(dac[XtalDiode(POS_FACE, asymType.getDiode(POS_FACE))] /
-                             dac[XtalDiode(NEG_FACE, asymType.getDiode(NEG_FACE))]);
+            float dacP = hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), POS_FACE, asymType.getDiode(POS_FACE))];
+            float dacN = hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), NEG_FACE, asymType.getDiode(NEG_FACE))];
+            float asym = log(dacP/dacN);
+
             m_histograms[asymType][xtalIdx]->Fill(pos, asym);
           }
           //           m_ostrm << "HIT: " << eventNum 
