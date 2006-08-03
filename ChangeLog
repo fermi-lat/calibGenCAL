@@ -1,4 +1,30 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Aug  3 06:11:03 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	adc2nrgTXT2XML.py asymTXT2XML.py asymXML2TXT.py biasTXT2XML.py 
+	calCalibApplyRelgain.py inlTXT2XML.py inlXML2TXT.py 
+	mpdTXT2XML.py mpdXML2TXT.py muSlopeTXT2XML.py pedTXT2XML.py 
+	pedXML2TXT.py tholdCIXML2TXT.py 
+Added Files:
+	asymApplyCalibGain.bat asymApplyCalibGain.py 
+	asymApplyCalibGain.sh calibGain.py calibGainCoeff.bat 
+	calibGainCoeff.py calibGainCoeff.sh mpdApplyCalibGain.bat 
+	mpdApplyCalibGain.py mpdApplyCalibGain.sh zachUtil.py 
+Log Message:
+python changes:
+zachUtil.py file created with some of my shared code snippets
+calibUtil/xml/calCalib_v2r3.dtd used throughout now for offline xml calibrations (instead of oldedr v2r2)
+added scripts
+- calibGain.py: handle txt files w/ HE calibGain Off/On ratio
+- calibGainCoeff.py: extract HE calibGain ratio from intNonlin files
+- asymApplyCalibGain.py: apply calibGain ratio to offline asymmetry calibrations
+- mpdApplyCalibGain.py: apply cg ratio to offline mevPerDAC calibrations
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Aug  3 06:06:48 PDT 2006
 calibGenCAL/src/lib
 
