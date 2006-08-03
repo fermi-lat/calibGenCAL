@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Wed Aug  2 17:29:11 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	genDACsettings.py 
+Log Message:
+Use Numeric.around() to round the DAC values before converting to integers; this seems to produce a better output distribution when converted back to energy.
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Jul 31 15:13:13 PDT 2006
 calibGenCAL/python
 
