@@ -15,8 +15,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL DAC settings XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/02/15 23:38:38 $"
-__version__     = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__        = "$Date: 2006/07/13 20:25:13 $"
+__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -83,7 +83,10 @@ for twr in dacTwrs1:
 # set up pyROOT
 import ROOT
 ROOT.gROOT.Reset()
-rootFile = ROOT.TFile(rootPath, "recreate")
+rootFile = ROOT.TFile(rootPath,
+                      "recreate",
+                      "dacDiff(%s,%s)"%(dacPath1,dacPath2),
+                      9)
 
 # build ROOT canvas (for which onto drawem)
 cs = ROOT.TCanvas(dacType + '_diff', dacType + '_diff', -1)
