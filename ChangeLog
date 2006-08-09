@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Aug  9 13:14:30 PDT 2006
+calibGenCAL/python
+
+Added Files:
+	asymDiff.bat asymDiff.py asymDiff.sh 
+Log Message:
+added asymDiff tool to diff 2 cal asym files
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Aug  9 13:14:02 PDT 2006
 calibGenCAL/python
 
