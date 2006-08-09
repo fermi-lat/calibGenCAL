@@ -1,4 +1,21 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Aug  9 13:14:02 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	asymApplyCalibGain.py calibGainCoeff.py dacDiff.py 
+	mpdApplyCalibGain.py zachUtil.py 
+Added Files:
+	inlDiff.bat inlDiff.py inlDiff.sh 
+Removed Files:
+	calibGain.py 
+Log Message:
+added inlDiff tool for diffing 2 intNonlin xml files
+move calibGain.py contents to zachUtil & deleted
+rename read_calibGain_txt() to read_perFace_txt()
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Aug  3 06:57:59 PDT 2006
 calibGenCAL/src
 
