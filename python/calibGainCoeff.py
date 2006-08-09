@@ -15,7 +15,7 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to extract effect of calibGain setting from two intNonlin XML files"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/06/22 20:56:57 $"
+__date__      = "$Date: 2006/08/03 13:11:03 $"
 __version__   = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
@@ -47,18 +47,25 @@ if __name__ == '__main__':
         log.error("Need 2 filenames: " + usage)
         sys.exit(1)
 
-    cgOnPath   = sys.argv[1]
+    cgOnPath  = sys.argv[1]
     cgOffPath = sys.argv[2]
 
     # read in data files.
     xmlOnFile = calCalibXML.calIntNonlinCalibXML(cgOnPath)
-    (cgOnLen, cgOnDAC, cgOnADC) = xmlOnFile.read()
+    cgOnData = xmlOnFile.read()
+    (cgOnLen, cgOnDAC, cgOnADC) = cgOnData
     cgOnTwrSet = xmlOnFile.getTowers()
 
     xmlOffFile = calCalibXML.calIntNonlinCalibXML(cgOffPath)
-    (cgOffLen, cgOffDAC, cgOffADC) = xmlOffFile.read()
+    cgOffData = xmlOffFile.read()
+    (cgOffLen, cgOffDAC, cgOffADC) = cgOffData
     cgOffTwrSet = xmlOffFile.getTowers()
 
+    cgOnSplines = zachUtil.build_inl_splines(cgOnData, cgOnTwrSet)
+    cgOffSplines = zachUtil.build_inl_splines(cgOffData, cgOffTwrSet)
+
+    (adc2dacOn, dac2adcOn) = cgOnSplines
+    (adc2dacOff, dac2adcOff) = cgOffSplines
     
     # calc & print calibGainFactor for each channel
     for twr in cgOnTwrSet:
@@ -69,24 +76,11 @@ if __name__ == '__main__':
                 for face in range(2):
                     online_face = zachUtil.offline_face_to_online[face]
 
-                    rng = 2 # HEX8 only
-                    onLen  = int(cgOnLen[rng][twr,row,online_face,col])
-                    offLen  = int(cgOffLen[rng][twr,row,online_face,col])
+                    # HEX8 only
+                    rng = 2
 
-                    # build arrays for each channel
-                    cgOnDACArray = array.array('d',  cgOnDAC[rng][twr,row,online_face,col,0:onLen].tolist()   )
-                    cgOnADCArray = array.array('d',  cgOnADC[rng][twr,row,online_face,col,0:onLen].tolist()   )
-                    cgOffDACArray = array.array('d', cgOffDAC[rng][twr,row,online_face,col,0:offLen].tolist() )
-                    cgOffADCArray = array.array('d', cgOffADC[rng][twr,row,online_face,col,0:offLen].tolist() )
-
-                    # build splines (ADC->DAC) direction
-                    cgOnSpline = ROOT.TSpline3("%d_%d_%d_%d_cgOn"%(twr,lyr,col,face),
-                                               cgOnADCArray, cgOnDACArray,
-                                               onLen)
-
-                    cgOffSpline = ROOT.TSpline3("%d_%d_%d_%d_cgOff"%(twr,lyr,col,face),
-                                               cgOffADCArray, cgOffDACArray,
-                                               offLen)
+                    cgOnSpline = adc2dacOn[(twr,lyr,online_face,col,rng)]
+                    cgOffSpline = adc2dacOff[(twr,lyr,online_face,col,rng)]
 
                     # evaluate both splines @ 1500 ADC units
                     onVal = cgOnSpline.Eval(1500)
