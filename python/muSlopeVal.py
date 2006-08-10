@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL MuSlope calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/18 02:46:09 $"
-__version__   = "$Revision: 1.9 $, $Author: dwood $"
+__date__      = "$Date: 2006/08/03 03:26:43 $"
+__version__   = "$Revision: 1.10 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -82,7 +82,20 @@ def rootHists(slopeData, fileName):
         hs.SetStats(False)
         sumHists[erng] = hs
         sumLeg.AddEntry(hs, calConstant.CRNG[erng], 'L')
-        cs.Update()  
+        cs.Update()
+
+    # INTERRANGE HISTOGRAMS
+    l1l8 = ROOT.TH1S("h_Summary_LEX1/LEX8",
+                     "h_Summary_LEX1/LEX8:%s"%fileName,
+                     100,0,0)
+    h8l1 = ROOT.TH1S("h_Summary_HEX8/LEX1",
+                     "h_Summary_HEX8/LEX1:%s"%fileName,
+                     100,0,0)
+    h1h8 = ROOT.TH1S("h_Summary_HEX1/HEX8",
+                     "h_Summary_HEX1/HEX8:%s"%fileName,
+                     100,0,0)
+    # re-fill for each xtal face
+    rng2slope = {}
         
     for tem in towers:
         for row in range(calConstant.NUM_ROW):
@@ -91,8 +104,18 @@ def rootHists(slopeData, fileName):
                     for erng in range(calConstant.NUM_RNG):
                         hs = sumHists[erng]
                         slope = slopeData[tem, row, end, fe, erng, 0]
+                        rng2slope[erng] = slope
                         hs.Fill(slope)
-                        
+
+                    #INTERRANGE HISTOGRAMS
+                    l1l8.Fill(rng2slope[calConstant.CRNG_LEX1]/rng2slope[calConstant.CRNG_LEX8])
+                    h8l1.Fill(rng2slope[calConstant.CRNG_HEX8]/rng2slope[calConstant.CRNG_LEX1])
+                    h1h8.Fill(rng2slope[calConstant.CRNG_HEX1]/rng2slope[calConstant.CRNG_HEX8])
+
+    #INTERRANGE HISTOGRAMS (done, so i can write now)
+    l1l8.Write();
+    h8l1.Write();
+    h1h8.Write();
                         
     hMax = 0
     for erng in range(calConstant.NUM_RNG):
