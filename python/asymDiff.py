@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL asymmetry XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/07/13 20:25:13 $"
-__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__        = "$Date: 2006/08/09 20:14:30 $"
+__version__     = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -94,8 +94,7 @@ err_diff_summary = ROOT.TH1I("err_diff_summary",
 
 
 # calc diffs for each channel
-#for twr in asymTwrs1:
-for twr in range(1):   
+for twr in asymTwrs1:
     log.info("Processing TEM=%d"%twr)
     for lyr in range(calConstant.NUM_LAYER):
         # calCalibXML uses 'row' indexing, not layer
