@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL mevPerDAC calibration XML files from TXT."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/08/03 13:11:03 $"
-__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/08/10 18:06:43 $"
+__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -106,7 +106,7 @@ if __name__ == '__main__':
         row = calCalibXML.layerToRow(int(lyr))
 
         valIdx = zachUtil.mpdBigValIdx
-        sigIdx = zachUitl.mpdBigSigIdx
+        sigIdx = zachUtil.mpdBigSigIdx
         if (diode == zachUtil.DIODE_SM):
             valIdx = zachUtil.mpdSmallValIdx
             sigIdx = zachUtil.mpdSmallSigIdx
