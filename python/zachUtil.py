@@ -5,8 +5,8 @@ collection of simple utilities shared throughout my code
 __facility__  = "Offline"
 __abstract__  = "apply calibGain correction to asymmetry xml file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2006/08/03 13:11:03 $"
-__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/08/09 20:14:02 $"
+__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -15,6 +15,17 @@ import calCalibXML
 import array
 import Numeric
 import ROOT
+
+### CONSTANTS ###
+DIODE_LRG  = 0
+DIODE_SM   = 1
+
+mpdBigValIdx   = 0
+mpdSmallValIdx = 1
+mpdBigSigIdx   = 2
+mpdSmallSigIdx = 3
+
+
 
 """
 Convert offline xtal face indexing to online xtal face indexing  (they're reversed, don't blame me :)

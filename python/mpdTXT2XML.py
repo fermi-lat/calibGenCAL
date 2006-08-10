@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL mevPerDAC calibration XML files from TXT."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/02/22 21:20:07 $"
-__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/08/03 13:11:03 $"
+__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -29,6 +29,7 @@ import array
 
 import calCalibXML
 import calConstant
+import zachUtil
 
 #######################################################################################
 
@@ -38,9 +39,7 @@ if __name__ == '__main__':
     usage      = "mpdTXT2XML [-doptional.dtd] input.txt output.xml"
     dtdName    = "calCalib_v2r3.dtd"
     nTXTFields = 6
-    DIODE_LRG  = 0
-    DIODE_SM   = 1
-
+    
     # setup logger
     logging.basicConfig()
     log = logging.getLogger('mpdTXT2XML')
@@ -80,13 +79,11 @@ if __name__ == '__main__':
 
     lines = inFile.readlines()
 
-    outData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_FE, 8), Numeric.Float32)
+    outData = Numeric.zeros((calConstant.NUM_TEM,
+                             calConstant.NUM_ROW,
+                             calConstant.NUM_FE, 8),
+                            Numeric.Float32)
 
-    # indeces for outData
-    bigValIdx   = 0
-    smallValIdx = 1
-    bigSigIdx   = 2
-    smallSigIdx = 3
 
     # keep track of active towers
     twrSet = set()
@@ -108,11 +105,11 @@ if __name__ == '__main__':
 
         row = calCalibXML.layerToRow(int(lyr))
 
-        valIdx = bigValIdx
-        sigIdx = bigSigIdx
-        if (diode == DIODE_SM):
-            valIdx = smallValIdx
-            sigIdx = smallSigIdx
+        valIdx = zachUtil.mpdBigValIdx
+        sigIdx = zachUitl.mpdBigSigIdx
+        if (diode == zachUtil.DIODE_SM):
+            valIdx = zachUtil.mpdSmallValIdx
+            sigIdx = zachUtil.mpdSmallSigIdx
             
         outData[twr, row, col, valIdx] = mpd
         outData[twr, row, col, sigIdx] = sig
