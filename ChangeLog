@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Aug 10 13:06:10 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	mpdTXT2XML.py 
+Log Message:
+fixed mispelled var
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Aug 10 12:51:11 PDT 2006
 calibGenCAL/python
 
