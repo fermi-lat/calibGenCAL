@@ -17,8 +17,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL Asymmetry calibration XML files from TXT."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/07/08 19:41:37 $"
-__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/08/03 13:11:03 $"
+__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -90,21 +90,6 @@ if __name__ == '__main__':
     # read input files
     inFile = open(inPath, 'r')
     lines = inFile.readlines()
-
-    # associate pos_diode, big_diode & val_or_sigma
-    # to index into calAsymCalibXML array as spec'd as
-    # follows (from calCalibXML.py)
-
-    #     The next-to-last
-    #     dimension contains the following data:
-    #     0 = bigVals value
-    #     1 = smallVals value
-    #     2 = NsmallPbigVals value
-    #     3 = PsmallNbigVals value
-    #     4 = bigSigs value
-    #     5 = smallSigs value
-    #     6 = NsmallPbigSigs value
-    #     7 = PsmallNbigSigs value
 
     # keep track of which curve we're plotting
     # use tuple as key of (twr,lyr,col,pdiode,ndiode)
