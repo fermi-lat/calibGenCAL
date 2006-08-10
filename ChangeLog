@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Aug 10 08:18:15 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	asymDiff.py 
+Log Message:
+removed silly debug line that only proc'd one cal module.
+pretend i never happened :)
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Aug  9 13:14:30 PDT 2006
 calibGenCAL/python
 
