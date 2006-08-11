@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Aug 11 08:04:58 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	calibGainCoeff.py zachUtil.py 
+Log Message:
+made build_inl_splines smart enough to skip empty & pseudo-emtpy (1 point at 0,0) splines
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Aug 10 13:06:10 PDT 2006
 calibGenCAL/python
 
