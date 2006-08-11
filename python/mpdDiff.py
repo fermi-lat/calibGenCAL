@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL mevPerDAC XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/08/10 15:18:15 $"
-__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__        = "$Date: 2006/08/10 18:06:43 $"
+__version__     = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -92,21 +92,22 @@ sm_err_diff_summary = ROOT.TH1I("sm_err_diff_summary",
                                 100,0,0)
 
 
-mpdDiff = mpd1 - mpd2
+mpdDiff = mpd2 - mpd1
 
-lrgDiff    = mpdDiff[..., zachUtil.mpdBigValIdx]
-smDiff     = mpdDiff[..., zachUtil.mpdSmallValIdx]
-lrgErrDiff = mpdDiff[..., zachUtil.mpdBigSigIdx]
-smErrDiff  = mpdDiff[..., zachUtil.mpdSmallSigIdx]
+for twr in mpdTwrs1:
+    lrgDiff    = mpdDiff[twr, ..., zachUtil.mpdBigValIdx]
+    smDiff     = mpdDiff[twr, ..., zachUtil.mpdSmallValIdx]
+    lrgErrDiff = mpdDiff[twr, ..., zachUtil.mpdBigSigIdx]
+    smErrDiff  = mpdDiff[twr, ..., zachUtil.mpdSmallSigIdx]
 
-for lrg in Numeric.ravel(lrgDiff):
-    lrg_diff_summary.Fill(lrg)
-for lErr in Numeric.ravel(lrgErrDiff):
-    lrg_err_diff_summary.Fill(lErr)
-for sm in Numeric.ravel(smDiff):
-    sm_diff_summary.Fill(sm)
-for smErr in Numeric.ravel(smErrDiff):
-    sm_err_diff_summary.Fill(smErr)
+    for lrg in Numeric.ravel(lrgDiff):
+        lrg_diff_summary.Fill(lrg)
+    for lErr in Numeric.ravel(lrgErrDiff):
+        lrg_err_diff_summary.Fill(lErr)
+    for sm in Numeric.ravel(smDiff):
+        sm_diff_summary.Fill(sm)
+    for smErr in Numeric.ravel(smErrDiff):
+        sm_err_diff_summary.Fill(smErr)
 
 log.info("Writing %s"%rootPath)
 rootFile.Write()
