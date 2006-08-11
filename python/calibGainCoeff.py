@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to extract effect of calibGain setting from two intNonlin XML files"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/08/03 13:11:03 $"
-__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/08/09 20:14:02 $"
+__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -51,22 +51,26 @@ if __name__ == '__main__':
     cgOffPath = sys.argv[2]
 
     # read in data files.
+    log.info("Reading %s"%cgOnPath)
     xmlOnFile = calCalibXML.calIntNonlinCalibXML(cgOnPath)
     cgOnData = xmlOnFile.read()
     (cgOnLen, cgOnDAC, cgOnADC) = cgOnData
     cgOnTwrSet = xmlOnFile.getTowers()
 
+    log.info("Reading %s"%cgOffPath)
     xmlOffFile = calCalibXML.calIntNonlinCalibXML(cgOffPath)
     cgOffData = xmlOffFile.read()
     (cgOffLen, cgOffDAC, cgOffADC) = cgOffData
     cgOffTwrSet = xmlOffFile.getTowers()
 
+    log.info("Building inl splines")
     cgOnSplines = zachUtil.build_inl_splines(cgOnData, cgOnTwrSet)
     cgOffSplines = zachUtil.build_inl_splines(cgOffData, cgOffTwrSet)
 
     (adc2dacOn, dac2adcOn) = cgOnSplines
     (adc2dacOff, dac2adcOff) = cgOffSplines
     
+    log.info("Evalutating ratios")
     # calc & print calibGainFactor for each channel
     for twr in cgOnTwrSet:
         for lyr in range(8):
