@@ -1,4 +1,18 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Aug 11 09:30:18 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	mpdApplyCalibGain.py mpdDiff.py 
+Added Files:
+	pedDiff.bat pedDiff.py pedDiff.sh 
+Log Message:
+wrote new pedDiff script for diffing 2 offline pedestal xml files
+fixed import bug in mpdApplyCalibGain
+mpdDiff was subtracting the wrong way
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Aug 11 08:04:58 PDT 2006
 calibGenCAL/python
 
