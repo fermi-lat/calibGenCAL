@@ -5,8 +5,8 @@ collection of simple utilities shared throughout my code
 __facility__  = "Offline"
 __abstract__  = "apply calibGain correction to asymmetry xml file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2006/08/09 20:14:02 $"
-__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/08/10 18:06:43 $"
+__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -72,20 +72,28 @@ def build_inl_splines(data, twrSet):
                 for face in range(calConstant.NUM_END):
                     online_face = offline_face_to_online[face]
                     for rng in range(calConstant.NUM_RNG):
-                        len = int(lenData[rng][twr,row,online_face,col])
+                        length = int(lenData[rng][twr,row,online_face,col])
 
-                        dacArray = array.array('d', dac[rng][twr,row,online_face,col,0:len].tolist())
-                        adcArray = array.array('d', adc[rng][twr,row,online_face,col,0:len].tolist())
+                        # skip empty channels: HACK WARNING!
+                        # unfortunately i fear that calCalib .dtd requires that all channels have
+                        # some entry, so sometimes I have put in empty channels w/ single point
+                        # 0,0  This seems to break the TSpline objects in this script
+                        # so I skip any channel w/ either 0 _or_ 1 entry in it.
+                        if length <= 1:
+                            continue
+
+                        dacArray = array.array('d', dac[rng][twr,row,online_face,col,0:length].tolist())
+                        adcArray = array.array('d', adc[rng][twr,row,online_face,col,0:length].tolist())
 
                         a2dSpline = ROOT.TSpline3("%d_%d_%d_%d_adc2dac"%(twr,lyr,col,face),
                                                   adcArray,
                                                   dacArray,
-                                                  len)
+                                                  length)
 
                         d2aSpline = ROOT.TSpline3("%d_%d_%d_%d_dac2adc"%(twr,lyr,col,face),
                                                   dacArray,
                                                   adcArray,
-                                                  len)
+                                                  length)
 
                         adc2dac[(twr,row,online_face,col,rng)] = a2dSpline
                         dac2adc[(twr,row,online_face,col,rng)] = d2aSpline
