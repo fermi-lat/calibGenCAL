@@ -405,3 +405,26 @@ v4r2p4 fewtrell, dwood
 - updating for new filename conventions from online tests
 - Added range information to ULD logging statements.
 - Improved calADCFilter.__restore() method to deal with cases where data is all zero.
+
+
+-----------------------
+v4r3 dwood, fewtrell
+-----------------------
+- added new scripts pedDiff, mpdDiff, asymDiff, inlDiff
+calibUtil/xml/calCalib_v2r3.dtd used throughout now for offline xml calibrations (instead of oldedr v2r2)
+added scripts
+- calibGain.py: handle txt files w/ HE calibGain Off/On ratio
+- calibGainCoeff.py: extract HE calibGain ratio from intNonlin files
+- asymApplyCalibGain.py: apply calibGain ratio to offline asymmetry calibrations
+- mpdApplyCalibGain.py: apply cg ratio to offline mevPerDAC calibrations
+- cidac2adc now runs on LE or HE only files, doesn't require both
+- cidac2adc now generates pedestals by extrapolating from successor points (old pedestals were wrong)
+- cidac2adc drops unused 'smoothing disabled' functionality for simplicities sake.
+- muonAsym & muonMPD now cut out noise hits where there is signal only on one face (this usually indicates direct diode deposit)
+- For validation programs added -r option to get default ROOT output file name; log files are atomatically generated with a default name even if the -L option is not given.
+- Removed need for base snapshot file to get gain settings; replaced with new section in tholdci cfg file.
+- Modified cfg input files to accept a single 16-tower trigger bias file; build_xxx_cfg scripts create new input format.
+- Added ancillary info to output files. (data source filenames)
+
+
+
