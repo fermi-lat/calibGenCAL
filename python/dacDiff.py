@@ -4,7 +4,7 @@ Diff 2 CAL DAC settings XML files.  The command line is:
 python dacDiff.py FLE|FHE|LAC <dac_xml_file1> <dac_xml_file2> <output_root_file>
 
 where:
-    FLE|FHE|LAC|ULD    = DAC dacType to validate
+    FLE|FHE|LAC    = DAC dacType to validate
     <dac_xml_file1>    = GLAST Cal dac xml 'fragment' file (minuend)
     <dac_xml_file2>    = GLAST Cal dac xml 'fragment' file (subtrahend)
     <output_root_file> = ROOT overplots & residuals will be saved here.
@@ -15,8 +15,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL DAC settings XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/07/13 20:25:13 $"
-__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__        = "$Date: 2006/08/09 20:14:02 $"
+__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -24,7 +24,7 @@ import sys
 import calDacXML
 import calConstant
 
-usage = "python dacDiff.py FLE|FHE|LAC|ULD <dac_xml_file1> <dac_xml_file2> <output_root_file>"
+usage = "python dacDiff.py FLE|FHE|LAC <dac_xml_file1> <dac_xml_file2> <output_root_file>"
 
 
 # check command line
@@ -46,8 +46,6 @@ elif dacType == 'FHE':
     dacType = 'fhe_dac'
 elif dacType == 'LAC':
     dacType = 'log_acpt'
-elif dacType == 'ULD':
-    dacType = 'rng_uld_dac'
 else:
     print "DAC dacType %s not supported" % dacType
     sys.exit(1)
