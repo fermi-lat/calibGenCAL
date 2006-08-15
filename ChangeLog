@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Aug 15 14:44:14 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacDiff.py 
+Added Files:
+	dacXML2TXT.bat dacXML2TXT.py dacXML2TXT.sh 
+Log Message:
+created new tool to dump online dac XML files to TXT
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Aug 11 17:26:27 PDT 2006
 calibGenCAL/doc
 
