@@ -1,5 +1,5 @@
 // (Special "header" just for doxygen)
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/mainpage.h,v 1.38 2006/08/03 03:26:44 dwood Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/mainpage.h,v 1.39 2006/08/03 13:57:59 fewtrell Exp $
 
 
 /*! 
@@ -62,6 +62,7 @@ The calibGenCAL python utilites require python version 2.4.
 Their use also requires that the following python extensions be installed:
 - Numeric
 - 4Suite-XML
+- PyROOT
 
 <h5> Python general usage: launcher scripts  </h5>
 For each calibGenCAL python script XYZ.py there exists on XYZ.bat
