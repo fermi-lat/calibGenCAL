@@ -1,5 +1,5 @@
 // (Special "header" just for doxygen)
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/mainpage.h,v 1.39 2006/08/03 13:57:59 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/mainpage.h,v 1.40 2006/08/16 20:57:53 fewtrell Exp $
 
 
 /*! 
@@ -96,6 +96,9 @@ of the calibDAC suite and subsequent pipeline analyses.</p>
 
 <p>see calibGenCAL/doc/gensettings_scripts.html for more information.</p>
 
+<h5> tholdCI scripts </h5>
+for offline calibration of Cal thresholds in ADC units.
+
 - <tt> tholdCIGen [-V] <cfg_file> <out_xml_file> </tt>
 
 <p>The tholdCIGen application produces a CAL threshold calibration XML file using
@@ -123,10 +126,6 @@ take a configuration file and possibly (except for ULD) a threshold
 energy as input.  The -V option increases the verbosity of the
 diagnostic output.</p>
 
-- dacDiff.py
-<p>dacDiff.py will calculate per-channel difference between any two cal dac 
-settings files.  This can be used for trending & validation.</p>
-
 - <tt> adcsmooth [-V] <in_file> <out_file> </tt>
 
 The adcsmooth tool performs various fixups of the DAC/ADC
@@ -139,6 +138,11 @@ characterization data XML files:
  - Digital smoothing filter as final processing
 This tool can be used as a pre-processor for other tools which require
 clean characterization tables to work well (e.g. genXXXsettings).
+
+<h5> calibGain scripts </h5>
+- <tt> calibGainCoeff </tt> extract ratio of calibGain setting On/Off for HE channels from 2 intNonlin xml files.
+- <tt> mpdApplyCalibGain </tt> apply calibGain ratio to mevPerDAC file
+- <tt> asymApplyCalibGain </tt> apply claibGain ratio to asymmetry file
 
 <h5> Validation scripts </h5>
 
@@ -169,21 +173,6 @@ characterization tables.
 - The charplot utility overlays raw, fitered, and linear model characterization
 data plots.  These require a working implementation of PyROOT. 
 
-<h5> Merge scripts </h5>
-
-- <tt> intNonlinMerge [-V] <cfg_file> <out_xml_file> </tt>
-- <tt> pedMerge       [-V] <cfg_file> <out_xml_file> </tt>
-- <tt> mevPerDacMerge [-V] <cfg_file> <out_xml_file> </tt>
-- <tt> asymMerge      [-V] <cfg_file> <out_xml_file> </tt>
-- <tt> calFitsMerge [-V] <output_xml_file> <input_xml_file1> [input_xml_fileN]* </tt> merge relgain files
-
-The merge tools take multiple single-tower CAL calibration XML files
-and produce a single output file of the same type, with the option to
-specify the source and destination tower addressing.  All of the
-python merge tools take a configuration file as input.  This
-configuration file specifies the input data sets and tower addressing. 
-The -V option increases the verbosity of the diagnostic output.
-
 <h5> Conversion scripts </h5>
 For converting xml files to and from columnar text and other formats.
 
@@ -202,6 +191,7 @@ For converting xml files to and from columnar text and other formats.
 - <tt> muSlopeTXT2XML [-doptional.dtd] input.txt output.xml </tt>
 - <tt> inlTXT2XML [-doptional.dtd] input.txt output.xml </tt>
 - <tt> biasTXT2XML </tt>
+- <tt> dacXML2TXT </tt>
 
 Each of the TXT2XML scripts converts one offline calibration file type
 from space delimited TXT file to proper XML file format.
@@ -212,20 +202,40 @@ file for use in FSW on-board filter code
 The genFlightGain script converts a CAL_MuSlope XML file into a 'cal_gains.h' 
 file for use in FSW on-board filter code
 
-<h5> calibGain scripts </h5>
-- <tt> calibGainCoeff </tt> extract ratio of calibGain setting On/Off for HE channels from 2 intNonlin xml files.
-- <tt> mpdApplyCalibGain </tt> apply calibGain ratio to mevPerDAC file
-- <tt> asymApplyCalibGain </tt> apply claibGain ratio to asymmetry file
+<h5> Diff scripts </h5>
+Useful for trending.  Calculate difference between 2 files of same type.  Generate associated root plots.
 
-<h3> cfg files </h3>
-Sample configuration scripts for python and C++ tools are included in the cfg 
-folder.  
+- <tt> dacDiff </tt>
+- <tt> pedDiff </tt>
+- <tt> asymDiff </tt>
+- <tt> mpdDiff </tt>
+- <tt> inlDiff </tt>
+
+<h5> Merge scripts </h5>
+
+- <tt> intNonlinMerge [-V] <cfg_file> <out_xml_file> </tt>
+- <tt> pedMerge       [-V] <cfg_file> <out_xml_file> </tt>
+- <tt> mevPerDacMerge [-V] <cfg_file> <out_xml_file> </tt>
+- <tt> asymMerge      [-V] <cfg_file> <out_xml_file> </tt>
+- <tt> calFitsMerge [-V] <output_xml_file> <input_xml_file1> [input_xml_fileN]* </tt> merge relgain files
 
 <h3> unit test </h3>
 
 <p>the unit_test subfolder contains cfg files & validated output for most of the
 calibGenCAL applications.
 <p>unit_test/output contains the validated output:</p>
+
+The merge tools take multiple single-tower CAL calibration XML files
+and produce a single output file of the same type, with the option to
+specify the source and destination tower addressing.  All of the
+python merge tools take a configuration file as input.  This
+configuration file specifies the input data sets and tower addressing. 
+The -V option increases the verbosity of the diagnostic output.
+
+<h3> cfg files </h3>
+Sample configuration scripts for python and C++ tools are included in the cfg 
+folder.  
+
 
 <h3> other docs </h3>
 - \b calibGenCAL/doc/calibGenCAL_configurationRecord_howto.txt - generate online
