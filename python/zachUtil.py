@@ -5,8 +5,8 @@ collection of simple utilities shared throughout my code
 __facility__  = "Offline"
 __abstract__  = "apply calibGain correction to asymmetry xml file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2006/08/10 18:06:43 $"
-__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/08/11 15:04:58 $"
+__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -160,3 +160,11 @@ def read_perFace_txt(filename):
 
     return (outData, twrSet)
 
+
+
+"""
+return y3 such that (y2 - y1)/(x2 - x1) = (y3 - y2)/(x3 - x2)
+"""
+
+def linear_extrap(x1, x2, x3, y1, y2):
+    return (x3-x2)*(y2-y1)/(x2-x1) + y2;
