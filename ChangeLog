@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Aug 28 13:11:55 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	calibGainCoeff.py zachUtil.py 
+Log Message:
+fixed indexing bug in calibGainCoeff
+added linear_extrap method to zachUtil.py
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Aug 18 11:52:17 PDT 2006
 calibGenCAL/doc
 
