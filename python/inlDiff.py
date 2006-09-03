@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL CIDAC2ADC XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/07/13 20:25:13 $"
-__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__        = "$Date: 2006/08/09 20:14:02 $"
+__version__     = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -107,22 +107,22 @@ for twr in inlTwrs1:
                     length1   = int(inlLen1[rng][twr,row,online_face,col])
                     length2   = int(inlLen2[rng][twr,row,online_face,col])
 
-                    test_adc1 = inlADC1[rng][twr,row,online_face,col,0:length1]
-                    test_adc2 = inlADC2[rng][twr,row,online_face,col,0:length2]
+                    test_dac1 = inlDAC1[rng][twr,row,online_face,col,0:length1]
+                    test_dac2 = inlDAC2[rng][twr,row,online_face,col,0:length2]
 
-                    adc_max1 = test_adc1[-1]
-                    adc_max2 = test_adc2[-1]
+                    dac_max1 = test_dac1[-1]
+                    dac_max2 = test_dac2[-1]
 
-                    if (adc_max1 < adc_max2):
+                    if (dac_max1 < dac_max2):
                         length = length1
-                        test_adc = test_adc1
+                        test_dac = test_dac1
                     else:
                         length = length2
-                        test_adc = test_adc2
+                        test_dac = test_dac2
                     
 
-                    adc2dac1 = adc2dac1Splines[(twr,row,online_face,col,rng)]
-                    adc2dac2 = adc2dac2Splines[(twr,row,online_face,col,rng)]
+                    dac2adc1 = dac2adc1Splines[(twr,row,online_face,col,rng)]
+                    dac2adc2 = dac2adc2Splines[(twr,row,online_face,col,rng)]
 
 
                     ### INIT  ROOT HISTS ###
@@ -134,14 +134,14 @@ for twr in inlTwrs1:
                     x = array.array('f')
                     resid = array.array('f')
                     
-                    for adc in test_adc:
-                        dac1 = adc2dac1.Eval(adc)
-                        dac2 = adc2dac2.Eval(adc)
+                    for dac in test_dac:
+                        adc1 = dac2adc1.Eval(dac)
+                        adc2 = dac2adc2.Eval(dac)
 
                         ### POPULATE PLOTS & HISTS ###
-                        x.append(adc)
-                        diff = dac2 - dac1
-                        print channel_str, adc, dac1, dac2, diff
+                        x.append(dac)
+                        diff = adc2 - adc1
+                        print channel_str, dac, adc1, adc2, diff
                         resid.append(diff)
                         diffHist.Fill(diff)
                         resid_summary.Fill(diff)
