@@ -428,3 +428,8 @@ added scripts
 
 
 
+--------------------------------
+v4r3p1 fewtrell
+--------------------------------
+- documentation updates
+- bug fix in calibGainCoeff.py script (bad channel indexing
