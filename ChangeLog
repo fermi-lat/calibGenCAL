@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Sun Sep  3 14:28:07 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	inlDiff.py zachUtil.py 
+Log Message:
+inlDiff updated to calc diff of adc values & not dac
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Aug 28 13:11:55 PDT 2006
 calibGenCAL/python
 
