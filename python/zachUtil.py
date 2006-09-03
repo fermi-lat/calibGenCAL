@@ -5,8 +5,8 @@ collection of simple utilities shared throughout my code
 __facility__  = "Offline"
 __abstract__  = "apply calibGain correction to asymmetry xml file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2006/08/11 15:04:58 $"
-__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/08/28 20:11:55 $"
+__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -85,12 +85,12 @@ def build_inl_splines(data, twrSet):
                         dacArray = array.array('d', dac[rng][twr,row,online_face,col,0:length].tolist())
                         adcArray = array.array('d', adc[rng][twr,row,online_face,col,0:length].tolist())
 
-                        a2dSpline = ROOT.TSpline3("%d_%d_%d_%d_adc2dac"%(twr,lyr,col,face),
+                        a2dSpline = ROOT.TSpline3("%d_%d_%d_%d_%d_adc2dac"%(twr,lyr,col,face,rng),
                                                   adcArray,
                                                   dacArray,
                                                   length)
 
-                        d2aSpline = ROOT.TSpline3("%d_%d_%d_%d_dac2adc"%(twr,lyr,col,face),
+                        d2aSpline = ROOT.TSpline3("%d_%d_%d_%d_%d_dac2adc"%(twr,lyr,col,face,rng),
                                                   dacArray,
                                                   adcArray,
                                                   length)
