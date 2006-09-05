@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: dwood  Tue Sep  5 12:19:17 PDT 2006
+calibGenCAL/xml
+
+Added Files:
+	calCalib_v2r3.dtd 
+Log Message:
+=Made copy of calCalib_v2r3 for calibGenCAL xml subdirectory; a placeholder for new dacSlopes format until calibUtil package is updated.
+    *
+------------------------------------------------------------
+User: dwood  Tue Sep  5 12:19:17 PDT 2006
 calibGenCAL/python
 
 Modified Files:
