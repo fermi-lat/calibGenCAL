@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL DAC XML calibration data file"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/27 18:01:47 $"
-__version__   = "$Revision: 1.6 $, $Author: dwood $"
+__date__      = "$Date: 2006/07/31 15:09:47 $"
+__version__   = "$Revision: 1.7 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -225,9 +225,9 @@ if __name__ == '__main__':
     # get environment settings
 
     try:
-        calibUtilRoot = os.environ['CALIBUTILROOT']
+        calibUtilRoot = os.environ['CALIBGENCALROOT']
     except KeyError:
-        log.error('CALIBUTILROOT must be defined')
+        log.error('CALIBGENCALROOT must be defined')
         sys.exit(1)
 
     # check command line
