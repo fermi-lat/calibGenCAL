@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Tue Sep  5 12:19:17 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacSlopesGen.py 
+Log Message:
+=Made copy of calCalib_v2r3 for calibGenCAL xml subdirectory; a placeholder for new dacSlopes format until calibUtil package is updated.
+    *
+------------------------------------------------------------
 TAG
 Tag name: v4r3p1, operation: add
 Package: calibGenCAL
