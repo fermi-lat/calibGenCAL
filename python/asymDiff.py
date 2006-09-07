@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL asymmetry XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/08/09 20:14:30 $"
-__version__     = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__        = "$Date: 2006/08/10 15:18:15 $"
+__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -85,12 +85,19 @@ rootFile = ROOT.TFile(rootPath,
                       "asymDiff(%s,%s)"%(asymPath1,asymPath2))
 
 # gobal summary histogram
-diff_summary = ROOT.TH1I("diff_summary",
-                          "diff_summary",
-                          100,0,0)
-err_diff_summary = ROOT.TH1I("err_diff_summary",
-                             "err_diff_summary",
-                             100,0,0)
+# indexed by (pdiode,ndiode) tuple
+diff_summary = {}
+err_diff_summary = {}
+
+for pdiode in range(2):
+    for ndiode in range(2):
+        diode_tpl = (pdiode,ndiode)
+        diff_summary[diode_tpl] = ROOT.TH1I("diff_summary_%d%d"%diode_tpl,
+                                            "diff_summary_%d%d"%diode_tpl,
+                                            100,0,0)
+        err_diff_summary[diode_tpl] = ROOT.TH1I("err_diff_summary_%d%d"%diode_tpl,
+                                                "err_diff_summary_%d%d"%diode_tpl,
+                                                100,0,0)
 
 
 # calc diffs for each channel
@@ -103,8 +110,9 @@ for twr in asymTwrs1:
             # diode on positive face
             for pdiode in range(2):
                 for ndiode in range(2):
-                    channel_str = "%d_%d_%d_%d_%d"%(twr,lyr,col,pdiode,ndiode)
+                    diode_tpl = (pdiode,ndiode)
 
+                    channel_str = "%d_%d_%d_%d_%d"%(twr,lyr,col,pdiode,ndiode)
 
                     ## CALC INDECES ##
                     asymIdx = zachUtil.asymIdx[(pdiode,ndiode,False)]
@@ -129,10 +137,10 @@ for twr in asymTwrs1:
 
                     ## FILL HISTS ##
                     for asym in asymDiff:
-                        diff_summary.Fill(asym)
+                        diff_summary[diode_tpl].Fill(asym)
 
                     for err in errDiff:
-                        err_diff_summary.Fill(err)
+                        err_diff_summary[diode_tpl].Fill(err)
 
                     ## GENERATE GRAPHS ##
                     # asym diffs
