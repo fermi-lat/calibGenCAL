@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Sep  7 11:41:48 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	asymDiff.py 
+Log Message:
+summary histograms now separated by diode type
+
+    *
+------------------------------------------------------------
 User: dwood  Tue Sep  5 12:19:17 PDT 2006
 calibGenCAL/xml
 
