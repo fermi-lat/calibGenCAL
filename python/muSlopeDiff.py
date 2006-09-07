@@ -1,20 +1,20 @@
 """
-Diff 2 CAL pedestal (pedestal) offline calibration XML files.  The command line is:
+Diff 2 CAL muSlope (muSlope) offline calibration XML files.  The command line is:
 
-python pedDiff.py [-p] [-x xaxis_width] <ped_xml_file1> <ped_xml_file2> <output_root_file>
+python muSlopeDiff.py [-p] [-x xaxis_width] <muSlope_xml_file1> <muSlope_xml_file2> <output_root_file>
 
 where:
-    -p                 = pctdiff (default = absolute diff)
-    -x xaxis_width     = fixed x axis scaling (default = auto_scale
-    <ped_xml_file1>    = GLAST Cal pedestal offline calib file
-    <ped_xml_file2>    = GLAST Cal pedestal offline calib file
+    -p                  = pctdiff (default = absolute diff)
+    -x xaxis_width      = fixed x axis scaling (default = auto_scale
+    <muSlope_xml_file1> = GLAST Cal muSlope offline calib file
+    <muSlope_xml_file2> = GLAST Cal muSlope offline calib file
     <output_root_file> = ROOT overplots & residuals will be saved here.
 
 
 """
 
 __facility__    = "Offline"
-__abstract__    = "Diff 2 CAL pedestal XML files."
+__abstract__    = "Diff 2 CAL muSlope XML files."
 __author__      = "Z.Fewtrell"
 __date__        = "$Date: 2006/08/11 16:30:18 $"
 __version__     = "$Revision: 1.1 $, $Author: fewtrell $"
@@ -36,12 +36,12 @@ import zachUtil
 OPTYPE_DIFF    = 0
 OPTYPE_PCTDIFF = 1
 
-usage = "Usage: python pedDiff.py [-p] [-x xaxis_width] <ped_xml_file1> <ped_xml_file2> <output_root_file>"
+usage = "Usage: python muSlopeDiff.py [-p] [-x xaxis_width] <muSlope_xml_file1> <muSlope_xml_file2> <output_root_file>"
 
 # setup logger
 
 logging.basicConfig()
-log = logging.getLogger('pedDiff')
+log = logging.getLogger('muSlopeDiff')
 log.setLevel(logging.INFO)
 
 # 1st check for optional args
@@ -73,35 +73,35 @@ if len(args) != 3:
     sys.exit(1)
 
 # get filenames
-pedPath1 = args[0]
-pedPath2 = args[1]
+muSlopePath1 = args[0]
+muSlopePath2 = args[1]
 rootPath = args[2]
 
 # read in dac xml files
-log.info("Opening %s"%pedPath1)
-pedFile1 = calCalibXML.calPedCalibXML(pedPath1)
-log.info("Opening %s"%pedPath2)
-pedFile2 = calCalibXML.calPedCalibXML(pedPath2)
+log.info("Opening %s"%muSlopePath1)
+muSlopeFile1 = calCalibXML.calMuSlopeCalibXML(muSlopePath1)
+log.info("Opening %s"%muSlopePath2)
+muSlopeFile2 = calCalibXML.calMuSlopeCalibXML(muSlopePath2)
 
 # check that towers are the same (ok if they are, just print warning)
-pedTwrs1 = pedFile1.getTowers()
-pedTwrs2 = pedFile2.getTowers()
+muSlopeTwrs1 = muSlopeFile1.getTowers()
+muSlopeTwrs2 = muSlopeFile2.getTowers()
 
-if (pedTwrs1 != pedTwrs2):
+if (muSlopeTwrs1 != muSlopeTwrs2):
     log.error("input files have different n towers.  I quit! ;)")
 
 
 # load up arrays
-log.info("Reading %s"%pedPath1)
-ped1 = pedFile1.read()
-log.info("Reading %s"%pedPath2)
-ped2 = pedFile2.read()
+log.info("Reading %s"%muSlopePath1)
+muSlope1 = muSlopeFile1.read()
+log.info("Reading %s"%muSlopePath2)
+muSlope2 = muSlopeFile2.read()
 
 # calc diffs
 if optype == OPTYPE_DIFF:
-    diff = ped2 - ped1
+    diff = muSlope2 - muSlope1
 elif optype == OPTYPE_PCTDIFF:
-    diff = (ped2 - ped1)*100/ped1
+    diff = (muSlope2 - muSlope1)*100/muSlope1
 else:
     log.error("Undefined optype, programmer error...")
     sys.exit(-1)
@@ -112,24 +112,24 @@ ROOT.gROOT.Reset()
 log.info("Opening %s"%rootPath)
 rootFile = ROOT.TFile(rootPath,
                       "recreate",
-                      "ped%s(%s,%s)"%(optypeName,pedPath1,pedPath2))
+                      "muSlope%s(%s,%s)"%(optypeName,muSlopePath1,muSlopePath2))
 
 # gobal summary histograms
-pedHists = {}
+muSlopeHists = {}
 sigHists = {}
 for rng in range(calConstant.NUM_RNG):
-    pedHists[rng] = ROOT.TH1S("Pedestal%s_%s"%(optypeName,calConstant.CRNG[rng]),
-                              "Pedestal%s_%s"%(optypeName,calConstant.CRNG[rng]),
+    muSlopeHists[rng] = ROOT.TH1S("EnergyPerBin%s_%s"%(optypeName,calConstant.CRNG[rng]),
+                              "EnergyPerBin%s_%s"%(optypeName,calConstant.CRNG[rng]),
                               nbins,xaxismin,xaxismax)
     
-    sigHists[rng] = ROOT.TH1S("PedestalSigma%s_%s"%(optypeName,calConstant.CRNG[rng]),
-                              "PedestalSigma%s_%s"%(optypeName,calConstant.CRNG[rng]),
+    sigHists[rng] = ROOT.TH1S("EnergyPerBinSigma%s_%s"%(optypeName,calConstant.CRNG[rng]),
+                              "EnergyPerBinSigma%s_%s"%(optypeName,calConstant.CRNG[rng]),
                               nbins,xaxismin,xaxismax)
 
-for twr in pedTwrs1:
+for twr in muSlopeTwrs1:
     # from calCalibXML.py
-    #         Param: pedData -
-    #             A Numeric array containing the pedestal data
+    #         Param: muSlopeData -
+    #             A Numeric array containing the muSlope data
     #             of shape (16, 8, 2, 12, 4, 3) The last dimension contains
     #             the following data for each crystal end and energy
     #             range:
@@ -138,11 +138,11 @@ for twr in pedTwrs1:
     #                 2 = cos values
 
     for rng in range(calConstant.NUM_RNG):
-        pedDiff = diff[twr,...,rng,0]
+        muSlopeDiff = diff[twr,...,rng,0]
         sigDiff = diff[twr,...,rng,1]
         
-        for p in Numeric.ravel(pedDiff):
-            pedHists[rng].Fill(p)
+        for p in Numeric.ravel(muSlopeDiff):
+            muSlopeHists[rng].Fill(p)
         for s in Numeric.ravel(sigDiff):
             sigHists[rng].Fill(s)
 
