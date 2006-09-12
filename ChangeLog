@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Sep 12 12:34:25 PDT 2006
+calibGenCAL/python
+
+Added Files:
+	inlPedSubtract.bat inlPedSubtract.py inlPedSubtract.sh 
+Log Message:
+added inlPedSubtract.py script which will pedestal subtract in  a CIDAC2ADC file
+(by subtracting 1st point from all points in given spline
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Sep  7 14:36:00 PDT 2006
 calibGenCAL/python
 
