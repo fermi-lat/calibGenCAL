@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Sep 13 11:05:30 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	asymXML2TXT.py inlDiff.py 
+Log Message:
+inlDiff smart enought to skip empty channels
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Sep 12 12:34:25 PDT 2006
 calibGenCAL/python
 
