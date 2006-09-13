@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL CIDAC2ADC XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/08/09 20:14:02 $"
-__version__     = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__        = "$Date: 2006/09/03 21:28:07 $"
+__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -90,7 +90,6 @@ rootFile = ROOT.TFile(rootPath,
 resid_summary = ROOT.TH1I("resid_summary",
                           "resid_summary",
                           100,0,0)
-
                 
 # calc diffs for each channel
 for twr in inlTwrs1:
@@ -107,6 +106,10 @@ for twr in inlTwrs1:
                     length1   = int(inlLen1[rng][twr,row,online_face,col])
                     length2   = int(inlLen2[rng][twr,row,online_face,col])
 
+                    # skip empty channels
+                    if (length1 < 2 and length2 < 2):
+                        continue
+
                     test_dac1 = inlDAC1[rng][twr,row,online_face,col,0:length1]
                     test_dac2 = inlDAC2[rng][twr,row,online_face,col,0:length2]
 
@@ -120,10 +123,8 @@ for twr in inlTwrs1:
                         length = length2
                         test_dac = test_dac2
                     
-
                     dac2adc1 = dac2adc1Splines[(twr,row,online_face,col,rng)]
                     dac2adc2 = dac2adc2Splines[(twr,row,online_face,col,rng)]
-
 
                     ### INIT  ROOT HISTS ###
                     channel_str = "%d_%d_%d_%d_%d"%(twr,lyr,col,face,rng)
@@ -141,7 +142,6 @@ for twr in inlTwrs1:
                         ### POPULATE PLOTS & HISTS ###
                         x.append(dac)
                         diff = adc2 - adc1
-                        print channel_str, dac, adc1, adc2, diff
                         resid.append(diff)
                         diffHist.Fill(diff)
                         resid_summary.Fill(diff)
