@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Dump offline asymmetry xml file to .txt file"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/07/08 19:41:37 $"
-__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/08/03 13:11:03 $"
+__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -82,8 +82,6 @@ if __name__ == '__main__':
     #     6 = NsmallPbigSigs value
     #     7 = PsmallNbigSigs value
 
-    #print asymData
-    #sys.exit()
     # print out txt file.
     for twr in towers:
         for lyr in range(8):
