@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Sep 15 08:02:09 PDT 2006
+calibGenCAL/src
+
+Modified Files:
+	emiAnal.cxx genCIDAC2ADC.cxx genMuonAsym.cxx genMuonMPD.cxx 
+	genMuonPed.cxx runMuTrigEff.cxx 
+Log Message:
+restructuring/remodularization of C++ code will allow for easy addition of alternate calibration algorithms, such as GCR calib.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Sep 13 11:05:30 PDT 2006
 calibGenCAL/python
 
