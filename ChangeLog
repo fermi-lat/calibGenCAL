@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Sep 15 09:23:07 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	inlPedSubtract.py 
+Log Message:
+removed stupid debug line
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Sep 15 08:02:10 PDT 2006
 calibGenCAL/src/lib
 
