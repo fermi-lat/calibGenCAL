@@ -11,8 +11,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Pedestal subtract CAL CIDAC2ADC XML file."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/09/12 19:34:25 $"
-__version__     = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__        = "$Date: 2006/09/15 16:23:07 $"
+__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -78,6 +78,8 @@ for rngData in inlADC:
 # write new output file
 outFile = calCalibXML.calIntNonlinCalibXML(outPath, calCalibXML.MODE_CREATE)
 outFile.write(inlLen, inlDAC, newADC, tems=twrSet)
+outFile.close()
+
 calCalibXML.insertDTD(outPath, dtdPath)
 
 sys.exit(0)
