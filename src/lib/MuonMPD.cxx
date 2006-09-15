@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.cxx,v 1.4 2006/07/05 20:38:19 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.cxx,v 1.5 2006/08/03 13:06:48 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -6,6 +6,7 @@
 // LOCAL INCLUDES
 #include "MuonMPD.h"
 #include "RootFileAnalysis.h"
+#include "CIDAC2ADC.h"
 #include "TwrHodoscope.h"
 #include "CGCUtil.h"
 
@@ -32,12 +33,8 @@ const float MuonMPD::MUON_ENERGY = 11.2;
 
 
 MuonMPD::MuonMPD(ostream &ostrm) :
-  m_mpd(DiodeNum::N_VALS),
-  m_mpdErr(DiodeNum::N_VALS),
   m_ostrm(ostrm)
 {
-  for (DiodeNum diode; diode.isValid(); diode++)
-    m_mpd[diode].fill(INVALID_MPD);
 }
 
 
@@ -71,11 +68,11 @@ void MuonMPD::initHists(){
 
 void MuonMPD::fillHists(unsigned nEntries,
                         const vector<string> &rootFileList, 
-                        const MuonPed &peds,
-                        const MuonAsym &asym,
+                        const CalPed &peds,
+                        const CalAsym &asym,
                         const CIDAC2ADC &dac2adc){
   initHists();
-
+  
   RootFileAnalysis rootFile(0, &rootFileList, 0);
   // enable only needed branches in root file
   rootFile.getDigiChain()->SetBranchStatus("*",0);
@@ -100,8 +97,8 @@ void MuonMPD::fillHists(unsigned nEntries,
   TF1 lineFunc("line","pol1",0,8);
 
   // SUMMARY COUNTERS //
-  int nXEvts  = 0; // count total # of X events used
-  int nYEvts  = 0; // count total # of Y events used
+  unsigned nXEvts  = 0; // count total # of X events used
+  unsigned nYEvts  = 0; // count total # of Y events used
   long nXtals = 0; // count total # of xtals measured
 
   // NUMERIC CONSTANTS
@@ -181,10 +178,15 @@ void MuonMPD::fillHists(unsigned nEntries,
       hscope.summarizeEvent();
 
       // CHECK BOTH DIRECTIONS FOR USABLE EVENT
+      /** Note: 'direction' refers to the direction of xtals which have vertical
+          'connect-4' deposits.  For MevPerDAC, the orthogonal hits will be used to
+          determine the pathlength for these 4 hits.
+      */
+
       for (DirNum dir; dir.isValid(); dir++) {
         // skip if we don't have a good track
-        if (dir == X_DIR && !hscope.goodXTrack) continue;
-        else if (dir == Y_DIR && !hscope.goodYTrack) continue;
+        if (dir == X_DIR && !passCutX(hscope)) continue;
+        else if (dir == Y_DIR && !passCutY(hscope)) continue;
 
         // count used events
 
@@ -196,14 +198,10 @@ void MuonMPD::fillHists(unsigned nEntries,
         vector<XtalIdx> hitListOrtho;
 
         if (dir == X_DIR) {
-          // need at least 2 points to get a orthogonal track
-          if (hscope.nLyrsY < 2) continue;
           nXEvts++;
           hitList = hscope.hitListX;
           hitListOrtho = hscope.hitListY;
         } else {
-          // need at least 2 points to get a orthogonal track
-          if (hscope.nLyrsX < 2) continue;
           nYEvts++;
           hitList = hscope.hitListY;
           hitListOrtho = hscope.hitListX;
@@ -228,7 +226,7 @@ void MuonMPD::fillHists(unsigned nEntries,
         if (abs(lineSlope) > 0.5) continue;
 
 
-        //-- IMPROVE TRACK W/ ASYMMETRY FROM GOOD XTALS --//
+        //-- THROW OUT HITS NEAR END OF XTAL --//
         // loop through each hit in X direction, remove bad xtals
         // bad xtals have energy centroid at col 0 or 11 (-5 or +5 since center of xtal is 0)
         for (unsigned i = 0; i < hitList.size(); i++) {
@@ -247,10 +245,11 @@ void MuonMPD::fillHists(unsigned nEntries,
         // occasionally there will be no good hits!
         if (hitList.size() < 1) continue;
 
+        //-- IMPROVE TRACK W/ ASYMMETRY FROM GOOD XTALS --//
         vector<CalArray<XtalDiode,float> > dacs(hitList.size());
         // now that we have eliminated events on the ends of xtals, we can use
         // asymmetry to get a higher precision slope
-        graph.Set(hitList.size());
+        graph.Set(hitList.size());  // reset graph size in case we removed any invalid points.
         for (unsigned i = 0; i < hitList.size(); i++) {
           XtalIdx xtalIdx = hitList[i];
           LyrNum lyr = xtalIdx.getLyr();
@@ -278,9 +277,9 @@ void MuonMPD::fillHists(unsigned nEntries,
         float tan = lineSlope*slopeFactor;
         float sec = sqrt(1 + tan*tan); //sec proportional to hyp which is pathlen.
 
-        // poulate histograms & apply pathlen correction
-        int nHits = hitList.size();
-        for (int i = 0; i < nHits; i++) {
+        // poulate histograms & apply pathlength correction
+        unsigned nHits = hitList.size();
+        for (unsigned i = 0; i < nHits; i++) {
           // calculate dacs
           XtalIdx xtalIdx = hitList[i];
 
@@ -312,7 +311,7 @@ void MuonMPD::fillHists(unsigned nEntries,
   }
 }
 
-void MuonMPD::fitHists() {
+void MuonMPD::fitHists(CalMPD &calMPD) {
   ////////////////////////////////////////////////////
   // INITIALIZE ROOT PLOTTING OBJECTS FOR LINE FITS //
   ////////////////////////////////////////////////////
@@ -331,6 +330,8 @@ void MuonMPD::fitHists() {
 
   // PER XTAL LOOP
   for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
+    if (!m_dacLLHists[xtalIdx])
+      continue;
     // retrieve Lrg diode DAC histogram
     TH1S& histLL = *m_dacLLHists[xtalIdx];
     // skip empty histograms
@@ -348,12 +349,12 @@ void MuonMPD::fitHists() {
     float mean  = (histLL.GetFunction("landau"))->GetParameter(1);
     float sigma = (histLL.GetFunction("landau"))->GetParameter(2);
 
-    m_mpd[LRG_DIODE][xtalIdx] = MUON_ENERGY/mean;
+    float mpdLrg = MUON_ENERGY/mean;
+    calMPD.setMPD(xtalIdx, LRG_DIODE, mpdLrg);
 
     // keep sigma proportional to extrapolated val
-    m_mpdErr[LRG_DIODE][xtalIdx] = 
-      m_mpd[LRG_DIODE][xtalIdx] * sigma/mean; 
-
+    float mpdErrLrg = mpdLrg * sigma/mean;
+    calMPD.setMPDErr(xtalIdx, LRG_DIODE, mpdErrLrg); 
     
     ////////////////////
     //-- (Sm Diode) --//
@@ -384,17 +385,18 @@ void MuonMPD::fitHists() {
     // MPDSm     = MeV/SmDAC = (MeV/LrgDAC)*(LrgDAC/SmDAC) 
     //              = MPDLrg/sm2lrg
     
-    m_mpd[SM_DIODE][xtalIdx] = m_mpd[LRG_DIODE][xtalIdx]/sm2lrg;
+    float mpdSm = mpdLrg/sm2lrg;
+    calMPD.setMPD(xtalIdx, SM_DIODE, mpdSm);
     
     //-- Propogate errors
     // in order to combine slope & MPD error for final error
     // I need the relative error for both values - so sayeth sasha
     float relLineErr = s2lsig/sm2lrg;
-    float relMPDErr  = m_mpdErr[LRG_DIODE][xtalIdx]/m_mpd[LRG_DIODE][xtalIdx];
+    float relMPDErr  = mpdErrLrg/mpdLrg;
 
-    m_mpdErr[SM_DIODE][xtalIdx] = m_mpd[SM_DIODE][xtalIdx]*
+    float mpdErrSm = mpdSm*
       sqrt(relLineErr*relLineErr + relMPDErr*relMPDErr);
-
+    calMPD.setMPDErr(xtalIdx, SM_DIODE, mpdErrSm);
 
     ////////////////////
     //-- L2S Slope  --//
@@ -404,9 +406,9 @@ void MuonMPD::fitHists() {
     TProfile& p = *m_dacL2SSlopeProfs[xtalIdx]; // get profile
 
     // Fill scatter graph w/ smDAC vs lrgDAC points
-    int nPts = 0;
+    unsigned nPts = 0;
     graph.Set(nPts); // start w/ empty graph
-    for (int i = 0; i < N_L2S_PTS; i++) {
+    for (unsigned i = 0; i < N_L2S_PTS; i++) {
       // only insert a bin if it has entries
       if (!(p.GetBinEntries(i+1) > 0)) continue; // bins #'d from 1
       nPts++;
@@ -432,58 +434,6 @@ void MuonMPD::fitHists() {
     graph.Fit(&lineFunc,"WQN");
   }
 }
-
-
-void MuonMPD::writeTXT(const string &filename) const{
-  ofstream outfile(filename.c_str());
-
-  if (!outfile.is_open())
-    throw runtime_error(string("Unable to open " + filename));
-
-  // PER XTAL LOOP
-  for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) 
-    for (DiodeNum diode; diode.isValid(); diode++) {
-      TwrNum twr = xtalIdx.getTwr();
-      LyrNum lyr = xtalIdx.getLyr();
-      ColNum col = xtalIdx.getCol();
-      if (m_mpd[diode][xtalIdx] == INVALID_MPD)
-        continue;
-      
-      // per point along curve
-      outfile << twr
-              << " " << lyr 
-              << " " << col
-              << " " << diode
-              << " " << m_mpd[diode][xtalIdx]
-              << " " << m_mpdErr[diode][xtalIdx]
-              << endl;
-    }
-}
-
-void MuonMPD::readTXT(const string &filename){
-  unsigned short twr, lyr, col, diode;
-  float mpd, sig;
-  
-  // open file
-  ifstream infile(filename.c_str());
-  if (!infile.is_open())
-    throw runtime_error(string("Unable to open " + filename));
-  
-  // loop through each line in file
-  while (infile.good()) {
-    // get lyr, col (xtalId)
-    infile >> twr >> lyr >> col >> diode >> mpd >> sig;
-    
-    if (infile.fail()) break; // bad get()
-    
-    XtalIdx xtalIdx(twr, lyr,col);
-
-    m_mpd[diode][xtalIdx] = mpd;
-    m_mpdErr[diode][xtalIdx] = sig;
-  }
-}
-
-
 
 void MuonMPD::loadHists(const string &filename) {
   m_dacLLHists.resize(XtalIdx::N_VALS);
@@ -574,8 +524,9 @@ unsigned MuonMPD::getMinEntries() {
 }
 
 void MuonMPD::writeADC2NRG(const string &filename,
-                           const MuonAsym &asym,
-                           const CIDAC2ADC &dac2adc) {
+                           const CalAsym &asym,
+                           const CIDAC2ADC &dac2adc,
+                           const CalMPD &calMPD) {
   ofstream outfile(filename.c_str());
 
   if (!outfile.is_open())
@@ -589,9 +540,9 @@ void MuonMPD::writeADC2NRG(const string &filename,
     RngNum rng = rngIdx.getRng();
     DiodeNum diode = rng.getDiode();
     XtalIdx xtalIdx = rngIdx.getXtalIdx();
-    float mpd = m_mpd[diode][xtalIdx];
+    float mpd = calMPD.getMPD(xtalIdx, diode);
 
-    if (mpd == INVALID_MPD)
+    if (mpd == CalMPD::INVALID_MPD)
       continue;
 
     // get asymmetry measured at ctr of xtal (gives us relative gain between xtal faces)
@@ -622,3 +573,32 @@ void MuonMPD::writeADC2NRG(const string &filename,
   }
 }
 
+bool MuonMPD::passCutX(const TwrHodoscope &hscope) {
+  // max 2 hits on any layer
+  if (hscope.maxPerLyr > 2) 
+    return false;
+
+  // need vertical connect 4 in X dir
+  if (hscope.nLyrsX != 4 || hscope.nColsX != 1) 
+    return false;
+  
+  // need at least 2 points to get an orthogonal track
+  if (hscope.nLyrsY < 2) return false;
+
+  return true;
+}
+
+bool MuonMPD::passCutY(const TwrHodoscope &hscope) {
+  // max 2 hits on any layer
+  if (hscope.maxPerLyr > 2) 
+    return false;
+
+  // need vertical connect 4 in Y dir
+  if (hscope.nLyrsY != 4 || hscope.nColsY != 1) 
+    return false;
+  
+  // need at least 2 points to get an orthogonal track
+  if (hscope.nLyrsX < 2) return false;
+
+  return true;
+}

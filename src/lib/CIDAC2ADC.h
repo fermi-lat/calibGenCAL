@@ -1,13 +1,12 @@
 #ifndef CIDAC2ADC_h
 #define CIDAC2ADC_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CIDAC2ADC.h,v 1.2 2006/06/22 21:50:22 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CIDAC2ADC.h,v 1.3 2006/08/03 13:06:48 fewtrell Exp $
 /** @file
     @author fewtrell
  */
 
 // LOCAL INCLUDES
 #include "CGCUtil.h"
-#include "RootFileAnalysis.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalVec.h"
@@ -15,7 +14,6 @@
 #include "CalUtil/CalArray.h"
 
 // EXTLIB INCLUDES
-#include "TFile.h"
 #include "TSpline.h"
 
 // STD INCLUDES
@@ -33,35 +31,27 @@ using namespace CalUtil;
 */
 class CIDAC2ADC {
  public:
-  CIDAC2ADC(ostream &ostrm = cout);
- 
-  /// process digi root event file
-  /// \param diode specify whether to analyze HE or LE circuits
-  void readRootData(const string &rootFileName,
-                    DiodeNum diode,
-                    bool bcastMode); 
-  
-  /// smooth raw adc means for use in offline spline calibration
-  void genSplinePts(); 
-  
+  CIDAC2ADC();
+
   /// write calibrations to txt file
   void writeTXT(const string &filename) const; 
 
-  /// write pre-smoothed values to txt file
-  void writeADCMeans(const string &filename) const;
-
-  void readADCMeans(const string &filename);
-  
   void readTXT(const string &filename);
 
-  void makeGraphs(TFile &histFile);
-
   /// get series of charge injection DAC values used for given energy range in
-  const vector<float>& getSplineDAC(RngIdx rngIdx) const 
+  const vector<float>& getPtsDAC(RngIdx rngIdx) const 
     {return m_splinePtsDAC[rngIdx];}
 
   /// get series of measured ADC values for given channel
-  const vector<float>& getSplineADC(RngIdx rngIdx) const 
+  const vector<float>& getPtsADC(RngIdx rngIdx) const 
+    {return m_splinePtsADC[rngIdx];}
+
+  /// get series of charge injection DAC values used for given energy range in
+  vector<float>& getPtsDAC(RngIdx rngIdx)
+    {return m_splinePtsDAC[rngIdx];}
+
+  /// get series of measured ADC values for given channel
+  vector<float>& getPtsADC(RngIdx rngIdx)
     {return m_splinePtsADC[rngIdx];}
 
   /// creates & populates INL splines from m_calIntNonlin;
@@ -83,28 +73,12 @@ class CIDAC2ADC {
     return m_splinesDAC2ADC[rngIdx]->Eval(dac);
   }
 
-  static void genOutputFilename(const string outputDir,
-                                const string &inFilename,
-                                const string &ext,
-                                string &outFilename) {
-    CGCUtil::genOutputFilename(outputDir,
-                               "cidac2adc",
-                               inFilename,
-                               ext,
-                               outFilename);
-  }
+  static const short INVALID_ADC = -5000;
 
-  /// retrieve mean adc value for given CI DAC level.
-  /// \return INVALID_ADC on error.
-  double getADCMean(RngIdx rngIdx, unsigned short dacIdx) const {
-    if (m_adcMean[rngIdx].size() < dacIdx)
-      return INVALID_ADC;
-    return m_adcMean[rngIdx][dacIdx];
-  }
+  /// pedestal subtract spline point ADC by using value from first point
+  void pedSubtractADCSplines();
 
  private:
-  /// store mean ADC for each channel / DAC setting
-  CalVec<RngIdx, vector<float> >  m_adcMean;
   /// output ADC spline points
   CalVec<RngIdx, vector<float> >  m_splinePtsADC;
   /// output DAC spline points
@@ -112,15 +86,6 @@ class CIDAC2ADC {
 
   CalVec<RngIdx, TSpline3*> m_splinesADC2DAC; 
   CalVec<RngIdx, TSpline3*> m_splinesDAC2ADC; 
-
-
-  /// pedestal subtract spline point ADC by using value from first point
-  void pedSubtractADCSplines();
-
-  ostream &m_ostrm;
-
-  static const short INVALID_ADC = -5000;
-
 };
 
 #endif

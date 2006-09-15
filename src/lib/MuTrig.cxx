@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuTrig.cxx,v 1.2 2006/06/27 15:36:25 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuTrig.cxx,v 1.3 2006/06/29 00:30:54 fewtrell Exp $
 /** @file
     @author fewtrell
 */
@@ -59,7 +59,7 @@ MuTrig::MuTrig(ostream &ostrm) :
 
   m_ciTrigSum(FaceIdx::N_VALS, vector<unsigned short>(N_CIDAC_VALS)),
   m_ciAdcN(FaceIdx::N_VALS, vector<unsigned short>(N_CIDAC_VALS)),
-  m_ciADCSum(FaceIdx::N_VALS, vector<unsigned int>(N_CIDAC_VALS)),
+  m_ciADCSum(FaceIdx::N_VALS, vector<unsigned>(N_CIDAC_VALS)),
   m_delPed(FaceIdx::N_VALS,0),
   
   m_ostrm(ostrm) {
@@ -70,7 +70,7 @@ MuTrig::MuTrig(ostream &ostrm) :
 void MuTrig::fillMuonHists(TRIG_CFG trigCfg,
                            const string &filename,
                            unsigned nEvents,
-                           const MuonPed &peds,
+                           const CalPed &peds,
                            bool calLOEnabled) {
   
   // open input root file.
@@ -185,7 +185,7 @@ void MuTrig::fillMuonHists(TRIG_CFG trigCfg,
       TwrNum twr = id.getTower();
 
       for (FaceNum face; face.isValid(); face++) {
-        int adc = calDigi.getAdcSelectedRange(LEX8, (CalXtalId::XtalFace)(face.val())); 
+        unsigned short adc = calDigi.getAdcSelectedRange(LEX8, (CalXtalId::XtalFace)(face.val())); 
         
         FaceIdx faceIdx(twr,lyr,col,face);
         RngIdx rngIdx(faceIdx,LEX8);
@@ -285,7 +285,7 @@ void MuTrig::fillCIHists(const string &filename) {
 
     // determine current test setting
     ColNum testCol = nGoodEvents/N_PULSES_PER_XTAL;
-    int testDAC    = (nGoodEvents%N_PULSES_PER_XTAL)/N_PULSES_PER_DAC;
+    unsigned testDAC    = (nGoodEvents%N_PULSES_PER_XTAL)/N_PULSES_PER_DAC;
 
     //-- populate fle diagnostic info --//
     const TClonesArray* calDiagCol = digiEvent->getCalDiagnosticCol();
@@ -317,7 +317,7 @@ void MuTrig::fillCIHists(const string &filename) {
     TIter calDigiIter(calDigiCol);
 
     CalDigi *pdig = 0;
-    int nDigis = calDigiCol->GetEntries();
+    unsigned nDigis = calDigiCol->GetEntries();
     // event should have 1 hit for every xtal in each tower
     // we support any nTowers
     if(nDigis > 0 && nDigis%tXtalIdx::N_VALS == 0) {
@@ -333,7 +333,7 @@ void MuTrig::fillCIHists(const string &filename) {
         LyrNum lyr = id.getLayer();
 
         for (FaceNum face; face.isValid(); face++) {
-          int adc = calDigi.getAdcSelectedRange(LEX8, (CalXtalId::XtalFace)(face.val())); 
+          unsigned short adc = calDigi.getAdcSelectedRange(LEX8, (CalXtalId::XtalFace)(face.val())); 
 
           FaceIdx faceIdx(twr,lyr,col,face);
 
@@ -376,7 +376,7 @@ void MuTrig::writeCIMetavals(const string &filename) const {
   }
 }
 
-void MuTrig::fitData(const MuonPed &ped) {
+void MuTrig::fitData(const CalPed &ped) {
   auto_ptr<TF1> step(new TF1("step","1.0/(1.0+exp(-[1]*(x-[0])))",0,MUADC_BINSIZE*N_MUADC_BINS));
 
   for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
@@ -400,7 +400,7 @@ void MuTrig::fitData(const MuonPed &ped) {
       m_delPed[faceIdx] = ciPed - ped.getPed(rngIdx);
 
       //calculate ped-subtracted means.
-      for (int dacIdx = 0; dacIdx < N_CIDAC_VALS; dacIdx++){
+      for (unsigned dacIdx = 0; dacIdx < N_CIDAC_VALS; dacIdx++){
         if (m_ciAdcN[faceIdx][dacIdx] == 0) {
           ostringstream tmp;
           tmp << __FILE__ << ":" << __LINE__ << " " 
@@ -435,7 +435,7 @@ void MuTrig::fitData(const MuonPed &ped) {
       }
 
       // find threshold center point, where efficiency > 0.5
-      for(int dacIdx=0; dacIdx<N_CIDAC_VALS; dacIdx++) 
+      for(unsigned dacIdx=0; dacIdx<N_CIDAC_VALS; dacIdx++) 
         if(eff[dacIdx] > 0.5) {
           adcThresh=adcMean[dacIdx]; 
           break;
@@ -472,7 +472,7 @@ void MuTrig::fitData(const MuonPed &ped) {
       const short* ytrig = (m_muTrigHists[faceIdx])->GetArray();
 
       adcThresh=0.0;
-      for(int adcBin=0; adcBin < N_MUADC_BINS; adcBin++){
+      for(unsigned short adcBin=0; adcBin < N_MUADC_BINS; adcBin++){
         float mu = ymu[adcBin+1];
         // simply skip empty bins
         if (mu == 0) 

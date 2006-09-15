@@ -1,10 +1,11 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.cxx,v 1.5 2006/07/05 20:35:09 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.cxx,v 1.6 2006/08/03 13:06:48 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
 
 // LOCAL INCLUDES
 #include "MuonAsym.h"
+#include "CalAsym.h"
 #include "RootFileAnalysis.h"
 #include "TwrHodoscope.h"
 #include "CGCUtil.h"
@@ -20,11 +21,7 @@
 using namespace std;
 using namespace CGCUtil;
 
-const float MuonAsym::CSI_LEN      = 326;
-
 MuonAsym::MuonAsym(ostream &ostrm) :
-  m_asym(AsymType::N_VALS),
-  m_asymErr(AsymType::N_VALS),
   m_ostrm(ostrm)
 {
 }
@@ -54,10 +51,10 @@ void MuonAsym::initHists(){
       // .5 & 10.5 limit puts 1-10 at center of bins
       m_histograms[asymType][xtalIdx] = new TH2S(tmp.c_str(),
                                                  tmp.c_str(),
-                                                 N_ASYM_PTS, 
+                                                 CalAsym::N_ASYM_PTS, 
                                                  .5, 
                                                  10.5,
-                                                 (int)(100*(asymMax[asymType] -
+                                                 (unsigned)(100*(asymMax[asymType] -
                                                             asymMin[asymType])),
                                                  asymMin[asymType],
                                                  asymMax[asymType]);
@@ -67,7 +64,7 @@ void MuonAsym::initHists(){
 
 void MuonAsym::fillHists(unsigned nEntries,
                          const vector<string> &rootFileList, 
-                         const MuonPed &peds,
+                         const CalPed &peds,
                          const CIDAC2ADC &dac2adc) {
   initHists();
 
@@ -80,11 +77,11 @@ void MuonAsym::fillHists(unsigned nEntries,
   unsigned nEvents = rootFile.getEntries();
   m_ostrm << __FILE__ << ": Processing: " << nEvents << " events." << endl;
 
-  int  nGoodDirs  = 0; // count total # of events used
-  int  nXDirs     = 0;
-  int  nYDirs     = 0;
+  unsigned  nGoodDirs  = 0; // count total # of events used
+  unsigned  nXDirs     = 0;
+  unsigned  nYDirs     = 0;
   long nHits      = 0; // count total # of xtals measured
-  int  nBadHits   = 0;
+  unsigned  nBadHits   = 0;
 
   // need one hodo scope per tower
   CalVec<TwrNum, TwrHodoscope> hscopes(TwrNum::N_VALS, TwrHodoscope(peds, dac2adc));
@@ -154,26 +151,28 @@ void MuonAsym::fillHists(unsigned nEntries,
       hscope.summarizeEvent();
       
       for (DirNum dir; dir.isValid(); dir++) {
-        int pos;
+        unsigned short pos;
         vector<XtalIdx> *pHitList, *pHitListOrtho;
 
         // DIRECTION SPECIFIC SETUP //
+        /** Note: 'direction' refers to the direction of xtals which have vertical
+            'connect-4' deposits.  For asymmetry, we use this vertical column
+            to calibrate the signal in the orthogonal crystals.  
+        */
         if (dir == X_DIR) {
-          if (!hscope.goodXTrack) continue;  // skip this direction if track is bad
+          if (!passCutX(hscope)) continue;  // skip this direction if track is bad
           pos = hscope.firstColX;
           pHitList = &hscope.hitListX; // hit list in test direction 
           pHitListOrtho = &hscope.hitListY; // ortho direction
           nXDirs++;
         } else { // Y_DIR
-          if (!hscope.goodYTrack) continue; // skip this direction if track is bad
+          if (!passCutY(hscope)) continue; // skip this direction if track is bad
           pos = hscope.firstColY;
           pHitList = &hscope.hitListY; // hit list in test direction 
           pHitListOrtho = &hscope.hitListX; // ortho direction
           nYDirs++;
         }
 
-        // skip extreme ends of xtal, as variance is high.
-        if (pos == 0 || pos == 11) continue;
         nGoodDirs++;
         
         // use references to avoid -> notation
@@ -222,7 +221,7 @@ void MuonAsym::summarizeHists(ostream &ostrm) {
   
 }
 
-void MuonAsym::fitHists() {
+void MuonAsym::fitHists(CalAsym &calAsym) {
   for (AsymType asymType; asymType.isValid(); asymType++) {
     
     // PER XTAL LOOP
@@ -238,7 +237,7 @@ void MuonAsym::fitHists() {
       if (h.GetEntries() == 0) 
         continue;
 
-      for (int i = 0; i < N_ASYM_PTS; i++) {
+      for (unsigned short i = 0; i < CalAsym::N_ASYM_PTS; i++) {
         // get slice of 2D histogram for each X bin
         // HISTOGRAM BINS START AT 1 NOT ZERO! (hence 'i+1') 
         TH1D &slice = *(h.ProjectionY("slice", i+1,i+1));
@@ -260,8 +259,8 @@ void MuonAsym::fitHists() {
         // update new mean & sigma
         av = slice.GetMean(); rms = slice.GetRMS();
 
-        m_asym[asymType][xtalIdx].push_back(av);
-        m_asymErr[asymType][xtalIdx].push_back(rms);
+        calAsym.getPtsAsym(xtalIdx,asymType).push_back(av);
+        calAsym.getPtsErr(xtalIdx,asymType).push_back(rms);
 
         // evidently ROOT doesn't like reusing the slice 
         // histograms as much as they claim they do.
@@ -271,130 +270,6 @@ void MuonAsym::fitHists() {
   }
 }
 
-void MuonAsym::writeTXT(const string &filename) const{
-  ofstream outfile(filename.c_str());
-
-  if (!outfile.is_open())
-    throw runtime_error(string("Unable to open " + filename));
-
-  // PER XTAL LOOP
-  for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
-    TwrNum twr = xtalIdx.getTwr();
-    LyrNum lyr = xtalIdx.getLyr();
-    ColNum col = xtalIdx.getCol();
-    for (AsymType asymType; asymType.isValid(); asymType++) {
-      // skip empty channels
-      if (m_asym[asymType][xtalIdx].size() != N_ASYM_PTS)
-        continue;
-
-      // per point along curve
-      for (int i = 0; i < N_ASYM_PTS; i++) {
-        outfile << twr
-                << " " << lyr 
-                << " " << col
-                << " " << asymType.getDiode(POS_FACE)
-                << " " << asymType.getDiode(NEG_FACE)
-                << " " << m_asym[asymType][xtalIdx][i]
-                << " " << m_asymErr[asymType][xtalIdx][i]
-                << endl;
-      }
-    }
-  }
-}
-
-void MuonAsym::readTXT(const string &filename){
-  unsigned short twr, lyr, col, pdiode, ndiode;
-  float asym, sig;
-
-  // open file
-  ifstream infile(filename.c_str());
-  if (!infile.is_open())
-    throw runtime_error(string("Unable to open " + filename));
-
-  // loop through each line in file
-  while (infile.good()) {
-    // get lyr, col (xtalId)
-    infile >> twr >> lyr >> col >> pdiode >> ndiode >> asym >> sig;
-    
-    if (infile.fail()) break; // bad get()
-
-    XtalIdx xtalIdx(twr, lyr,col);
-    AsymType asymType(pdiode, ndiode);
-
-    m_asym[asymType][xtalIdx].push_back(asym);
-    m_asymErr[asymType][xtalIdx].push_back(sig);
-  }
-}
-
-
-void MuonAsym::buildSplines(){
-  m_a2pSplines.resize(DiodeNum::N_VALS);
-  m_p2aSplines.resize(DiodeNum::N_VALS);
-
-  for (DiodeNum diode; diode.isValid(); diode++) {
-    m_a2pSplines[diode].fill(0);
-    m_p2aSplines[diode].fill(0);
-  }
-
-  // create position (Y-axis) array
-  // linearly extrapolate for 1st and last points (+2 points)
-  double pos[N_ASYM_PTS+2];
-  for (int i = 0; i < N_ASYM_PTS+2; i++) 
-    pos[i] = i + 0.5; // (center of the column)
-  double asym[N_ASYM_PTS+2];
-
-  // PER XTAL LOOP
-  for (DiodeNum diode; diode.isValid(); diode++) {
-    AsymType asymType(diode,diode);
-    for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
-      // skip empty channels
-      if (m_asym[asymType][xtalIdx].size() != N_ASYM_PTS)
-        continue;
-    
-      // copy asym vector into middle of array
-      vector<float> &asymVec = m_asym[asymType][xtalIdx];
-      copy(asymVec.begin(), asymVec.end(), asym+1);
-
-      // extrapolate 1st & last points
-      asym[0] = 2*asym[1] - asym[2];
-      asym[N_ASYM_PTS+1] = 2*asym[N_ASYM_PTS]-asym[N_ASYM_PTS-1];
-
-      { 
-        //generate splinename
-        ostringstream name;
-        name << "asym2pos_" << xtalIdx.val() << "_" << diode.val();
-
-        // create spline object
-        TSpline3 *mySpline= new TSpline3(name.str().c_str(), 
-                                         asym, pos, N_ASYM_PTS+2);
-        mySpline->SetName(name.str().c_str());
-
-        
-        
-        m_a2pSplines[diode][xtalIdx] = mySpline;
-      }
-
-      // create inverse spline object
-      {
-        //generate splinename
-        ostringstream name;
-        name << "pos2asym_" << xtalIdx.val() << "_" << diode.val();
-
-        // create spline object
-        TSpline3 *mySpline= new TSpline3(name.str().c_str(), 
-                                         pos, asym, N_ASYM_PTS+2);
-        mySpline->SetName(name.str().c_str());
-
-//         cout << mySpline->GetName() << " ";
-//         for (int i = 0; i < N_ASYM_PTS+2; i++)
-//           cout << pos[i] << " " << asym[i] << " ";
-//         cout << endl;
-
-        m_p2aSplines[diode][xtalIdx] = mySpline;
-      }
-    }
-  }
-}
 void MuonAsym::loadHists(const string &filename) {
   m_histograms.resize(AsymType::N_VALS);
   TFile histFile(filename.c_str(), "READ");
@@ -455,4 +330,44 @@ unsigned MuonAsym::getMinEntries() {
     return 0;
 
   return retVal;
+}
+
+bool MuonAsym::passCutX(const TwrHodoscope &hscope) {
+  // max 2 hits on any layer
+  if (hscope.maxPerLyr > 2) 
+    return false;
+
+  // need vertical connect 4 in X dir
+  if (hscope.nLyrsX != 4 || hscope.nColsX != 1) 
+    return false;
+
+  // skip extreme ends of xtal, as variance is high.
+  if (hscope.firstColX == 0 || hscope.firstColX == 11) 
+    return false;
+
+  // need at least one hit in ortho direction,
+  // otherwise there is nothing to calibrate
+  if (!hscope.nLyrsY) return false;
+
+  return true;
+}
+
+bool MuonAsym::passCutY(const TwrHodoscope &hscope) {
+  // max 2 hits on any layer
+  if (hscope.maxPerLyr > 2) 
+    return false;
+
+  // need vertical connect 4 in Y dir
+  if (hscope.nLyrsY != 4 || hscope.nColsY != 1) 
+    return false;
+
+  // skip extreme ends of xtal, as variance is high.
+  if (hscope.firstColY == 0 || hscope.firstColY == 11) 
+    return false;
+
+  // need at least one hit in ortho direction,
+  // otherwise there is nothing to calibrate
+  if (!hscope.nLyrsX) return false;
+
+  return true;
 }

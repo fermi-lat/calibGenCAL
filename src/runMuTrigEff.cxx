@@ -1,9 +1,10 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runMuTrigEff.cxx,v 1.21 2006/06/27 15:36:25 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runMuTrigEff.cxx,v 1.22 2006/06/29 00:30:53 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
 
 // LOCAL INCLUDES
+#include "lib/CalPed.h"
 #include "lib/MuonPed.h"
 #include "lib/MuTrig.h"
 #include "lib/CIDAC2ADC.h"
@@ -95,7 +96,7 @@ int main(int argc, char **argv) {
                                "txt",
                                pedTXTFile);
 
-    MuonPed peds(logStrm);
+    CalPed peds;
     logStrm << __FILE__ << ": reading in muon pedestal file: " << pedTXTFile << endl;
     peds.readTXT(pedTXTFile);
 

@@ -1,19 +1,20 @@
 #ifndef MuTrig_h
 #define MuTrig_h
-// $Header$
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuTrig.h,v 1.1 2006/06/15 20:57:59 fewtrell Exp $
 /** @file
     @author fewtrell
  */
 
 
 // LOCAL INCLUDES
-#include "MuonPed.h"
+#include "CalPed.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"
 #include "CalUtil/CalVec.h"
 
 // EXTLIB INCLUDES
+#include "TH1S.h"
 
 // STD INCLUDES
 
@@ -49,7 +50,7 @@ class MuTrig {
   void fillMuonHists(TRIG_CFG trigCfg,
                      const string &filename,
                      unsigned nEvents,
-                     const MuonPed &peds,
+                     const CalPed &peds,
                      bool calLOEnabled=false
                      );
   
@@ -59,7 +60,7 @@ class MuTrig {
   void fillCIHists(const string &filename);
 
   /// fit muon and CI efficiency data
-  void fitData(const MuonPed &ped);
+  void fitData(const CalPed &ped);
 
   /// write output to txt
   void writeTXT(const string &filename) const;
@@ -130,7 +131,7 @@ class MuTrig {
   /// n total hits per channel for ci
   CalVec<FaceIdx, vector<unsigned short> >  m_ciAdcN;
   /// sum of all hit-adc values per channel
-  CalVec<FaceIdx, vector<unsigned int> >    m_ciADCSum;
+  CalVec<FaceIdx, vector<unsigned> >    m_ciADCSum;
 
   /// (CIDAC pedestal - muon pedestal)
   CalVec<FaceIdx, float> m_delPed;

@@ -1,6 +1,6 @@
 #ifndef MuonPed_h
 #define MuonPed_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.h,v 1.1 2006/06/15 20:58:00 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.h,v 1.2 2006/06/22 21:50:23 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
  */
@@ -9,6 +9,7 @@
 
 // LOCAL INCLUDES
 #include "RoughPed.h"
+#include "CalPed.h"
 #include "CGCUtil.h"
 
 // GLAST INCLUDES
@@ -46,18 +47,10 @@ class MuonPed {
                  bool periodicTrigger); 
 
   /// Fit muonpedhist[]'s, assign means to m_calMuonPed
-  void fitHists(); 
+  void fitHists(CalPed &peds); 
 
-  /// write muon LEX8 pedestals to simple columnar .txt file
-  void writeTXT(const string &filename) const; 
-
-  void readTXT(const string &filename);
-  
   /// skip evenmt processing and load histograms from previous run
   void loadHists(const string &filename);
-
-  float getPed(RngIdx rngIdx) const {return m_peds[rngIdx];}
-  float getPedSig(RngIdx rngIdx) const {return m_pedSig[rngIdx];}
 
   static void genOutputFilename(const string outputDir,
                                 const string &inFilename,
@@ -70,6 +63,9 @@ class MuonPed {
                                outFilename);
   }
 
+
+
+
  private:
   /// allocate & create muon pedestal histograms & pointer array
   void initHists(); 
@@ -79,15 +75,7 @@ class MuonPed {
 
   /// list of histograms for 'muon' pedestals
   CalVec<RngIdx, TH1S*> m_histograms; 
-
-  /// output pedestal data.
-  CalVec<RngIdx, float> m_peds; 
-  /// corresponding err values for m_calMuonPed
-  CalVec<RngIdx, float> m_pedSig; 
-
   ostream &m_ostrm;
-
-  static const short INVALID_PED = -5000;
 
   static string genHistName(RngIdx rngIdx);
 };

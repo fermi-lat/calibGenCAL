@@ -1,9 +1,10 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.3 2006/06/27 15:36:25 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.4 2006/08/03 13:06:48 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
 
 // LOCAL INCLUDES
+#include "lib/IntNonlin.h"
 #include "lib/CIDAC2ADC.h"
 #include "lib/SimpleIniFile.h"
 
@@ -62,7 +63,7 @@ int main(int argc, char **argv) {
     logStrm.getostreams().push_back(&cout);
     // generate logfile name
     string logfile;
-    CIDAC2ADC::genOutputFilename(outputDir,
+    IntNonlin::genOutputFilename(outputDir,
                                  outputBaseName,
                                  "log.txt",
                                  logfile);
@@ -73,9 +74,6 @@ int main(int argc, char **argv) {
     output_env_banner(logStrm);
 
 
-
-
-
     // broadcast mode
     bool bcastMode = cfgFile.getVal("CIDAC2ADC",
                                     "BCAST_MODE",
@@ -83,65 +81,48 @@ int main(int argc, char **argv) {
 
     // txt output filename
     string outputTXTFile;
-    CIDAC2ADC::genOutputFilename(outputDir,
+    IntNonlin::genOutputFilename(outputDir,
                                  outputBaseName,
                                  "txt",
                                  outputTXTFile);
 
-    // output histogram file
-    string outputHistFile;
-    CIDAC2ADC::genOutputFilename(outputDir,
-                                 outputBaseName,
-                                 "root",
-                                 outputHistFile);
-
-
-
-
-    CIDAC2ADC cidac2adc(logStrm);
+    CIDAC2ADC cidac2adc;
+    IntNonlin intNonlin(logStrm);
 
     bool readADCMeans = cfgFile.getVal("CIDAC2ADC",
                                        "READ_ADC_MEANS",
                                        false);
   
     string adcMeanFile;
-    CIDAC2ADC::genOutputFilename(outputDir,
+    IntNonlin::genOutputFilename(outputDir,
                                  outputBaseName,
                                  "adcmean.txt",
                                  adcMeanFile);
                                
-    // open file to save output histograms.
-    logStrm << __FILE__ << ": opening cidac2adc histogram file: " << outputHistFile << endl;
-    TFile histFile(outputHistFile.c_str(), "RECREATE", "CAL CIDAC2ADC", 9);
-
     if (readADCMeans) {
       logStrm << __FILE__ << ": reading in adc means from previous event processing: "
               << adcMeanFile << endl;
-      cidac2adc.readADCMeans(adcMeanFile);
+      intNonlin.readADCMeans(adcMeanFile);
     } else {
       if (rootFileLE.length()) {
         logStrm << __FILE__ << ": reading LE calibGen event file: " << rootFileLE << endl;
-        cidac2adc.readRootData(rootFileLE, LRG_DIODE, bcastMode);
+        intNonlin.readRootData(rootFileLE, LRG_DIODE, bcastMode);
       }
       if (rootFileHE.length()) {
         logStrm << __FILE__ << ": reading HE calibGen event file: " << rootFileHE << endl;
-        cidac2adc.readRootData(rootFileHE, SM_DIODE,  bcastMode);
+        intNonlin.readRootData(rootFileHE, SM_DIODE,  bcastMode);
       }
       logStrm << __FILE__ << ": saving adc means to txt file: " 
               << adcMeanFile << endl;
-      cidac2adc.writeADCMeans(adcMeanFile);
+      intNonlin.writeADCMeans(adcMeanFile);
     }
-
 
   
     logStrm << __FILE__ << ": generating smoothed spline points: " << rootFileHE << endl;
-    cidac2adc.genSplinePts();
+    intNonlin.genSplinePts(cidac2adc);
   
-    cidac2adc.makeGraphs(histFile);
-
     logStrm << __FILE__ << ": writing smoothed spline points: " << outputTXTFile << endl;
     cidac2adc.writeTXT(outputTXTFile);
-    histFile.Write();
   } catch (exception e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
   }
