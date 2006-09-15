@@ -1,10 +1,11 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.2 2006/06/22 21:50:22 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.3 2006/06/27 15:36:25 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
 
 // LOCAL INCLUDES
 #include "lib/RoughPed.h"
+#include "lib/MuonRoughPed.h"
 #include "lib/MuonPed.h"
 #include "lib/SimpleIniFile.h"
 
@@ -69,7 +70,8 @@ int main(int argc, char **argv) {
 
     //-- ROUGH PEDS --//
     // - LEX8 only include hits in histograms.
-    RoughPed roughPed(logStrm);
+    MuonRoughPed muonRoughPed(logStrm);
+    RoughPed roughPed;
     // input files
     vector<string> roughPedRootFileList;
     cfgFile.getVector("ROUGH_PEDS", 
@@ -96,25 +98,25 @@ int main(int argc, char **argv) {
 
     // txt output filename
     string roughPedTXTFile;
-    RoughPed::genOutputFilename(outputDir,
-                                roughPedRootFileList[0],
-                                "txt",
-                                roughPedTXTFile);
+    MuonRoughPed::genOutputFilename(outputDir,
+                                    roughPedRootFileList[0],
+                                    "txt",
+                                    roughPedTXTFile);
     // output histogram file
     string roughPedHistFile;
-    RoughPed::genOutputFilename(outputDir,
-                                roughPedRootFileList[0],
-                                "root",
-                                roughPedHistFile);
+    MuonRoughPed::genOutputFilename(outputDir,
+                                    roughPedRootFileList[0],
+                                    "root",
+                                    roughPedHistFile);
 
     if (readInTXTRoughPeds) {
       logStrm << "genMuonPed: reading in rough pedestals: " << roughPedTXTFile << endl;
       roughPed.readTXT(roughPedTXTFile);
     } else if (readInHistsRoughPeds) {
       logStrm << __FILE__ << ": loading rough pedestal histograms: " << roughPedHistFile << endl;
-      roughPed.loadHists(roughPedHistFile);
+      muonRoughPed.loadHists(roughPedHistFile);
       logStrm << __FILE__ << ": fitting rough pedestal histograms." << endl;
-      roughPed.fitHists();
+      muonRoughPed.fitHists(roughPed);
       logStrm << __FILE__ << ": writing rough pedestals: " << roughPedTXTFile << endl;
       roughPed.writeTXT(roughPedTXTFile);
     } else {
@@ -131,13 +133,13 @@ int main(int argc, char **argv) {
 
     
       logStrm << __FILE__ << ": reading root event file(s) starting w/ " << roughPedRootFileList[0] << endl;
-      roughPed.fillHists(nEntriesRoughPeds, 
-                         roughPedRootFileList,
-                         periodicTrigger);
+      muonRoughPed.fillHists(nEntriesRoughPeds, 
+                             roughPedRootFileList,
+                             periodicTrigger);
       outputHistFile.Write();
     
       logStrm << __FILE__ << ": fitting rough pedestal histograms." << endl;
-      roughPed.fitHists();
+      muonRoughPed.fitHists(roughPed);
       logStrm << __FILE__ << ": writing rough pedestals: " << roughPedTXTFile << endl;
       roughPed.writeTXT(roughPedTXTFile);
     }
@@ -146,6 +148,7 @@ int main(int argc, char **argv) {
     //-- MUON PEDS --//
     // - LEX8 only include hits in histograms.
     MuonPed muPed(logStrm);
+    CalPed calPed;
     // read in Hist file?
     bool readInHistsMuonPeds = cfgFile.getVal("MUON_PEDS",
                                               "READ_IN_HISTS",
@@ -167,7 +170,7 @@ int main(int argc, char **argv) {
       logStrm << __FILE__ << ": loading muon pedestal histograms: " << muPedHistFile << endl;
       muPed.loadHists(muPedHistFile);
       logStrm << __FILE__ << ": fitting muon pedestal histograms." << endl;
-      muPed.fitHists();
+      muPed.fitHists(calPed);
     } else {
       unsigned nEntriesMuonPeds = cfgFile.getVal<unsigned>("MUON_PEDS", 
                                                            "ENTRIES_PER_HIST", 
@@ -183,15 +186,16 @@ int main(int argc, char **argv) {
       logStrm << __FILE__ << ": reading root event file(s) starting w/ " << muPedRootFileList[0] << endl;
       muPed.fillHists(nEntriesMuonPeds, 
                       muPedRootFileList, 
-                      roughPed, periodicTrigger);
+                      roughPed, 
+                      periodicTrigger);
       outputHistFile.Write();
     
       logStrm << __FILE__ << ": fitting muon pedestal histograms." << endl;
-      muPed.fitHists();
+      muPed.fitHists(calPed);
     }
 
     logStrm << __FILE__ << ": writing muon pedestals: " << muPedTXTFile << endl;
-    muPed.writeTXT(muPedTXTFile);
+    calPed.writeTXT(muPedTXTFile);
   } catch (exception e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
   }

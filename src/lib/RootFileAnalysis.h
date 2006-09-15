@@ -1,6 +1,6 @@
 #ifndef RootFileAnalysis_h
 #define RootFileAnalysis_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/RootFileAnalysis.h,v 1.1 2006/06/15 20:58:00 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/RootFileAnalysis.h,v 1.2 2006/06/22 21:50:23 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
  */
@@ -83,7 +83,7 @@ class RootFileAnalysis {
   TObjArray   m_chainArr;
 
   /// current event number
-  Int_t m_nextEvt;
+  unsigned m_nextEvt;
 
   /// log to here
   ostream &m_ostrm;

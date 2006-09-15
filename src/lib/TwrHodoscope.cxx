@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/TwrHodoscope.cxx,v 1.2 2006/06/22 21:50:23 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/TwrHodoscope.cxx,v 1.3 2006/08/03 13:06:48 fewtrell Exp $
 /** @file
     @author fewtrell
  */
@@ -42,9 +42,6 @@ void TwrHodoscope::clear() {
   maxPerLyrY = 0;
   firstColX  = 0;
   firstColY  = 0;
-
-  goodXTrack = false;
-  goodYTrack = false;
 }
 
 void TwrHodoscope::addHit(const CalDigi &calDigi) {
@@ -57,7 +54,7 @@ void TwrHodoscope::addHit(const CalDigi &calDigi) {
   XtalIdx xtalIdx(id);
 
   // check that we are in 4-range readout mode
-  int nRO = calDigi.getNumReadouts();
+  unsigned nRO = calDigi.getNumReadouts();
   if (nRO != 4)
     return;
 
@@ -150,22 +147,6 @@ void TwrHodoscope::summarizeEvent() {
                         bind2nd(greater<unsigned short>(), 0)) - perColX.begin();
     firstColY = find_if(perColY.begin(), perColY.end(), 
                         bind2nd(greater<unsigned short>(), 0)) - perColY.begin();
-
-    // EVENT SELECTION:
-    // don't want ANY layer w/ >= 3 hits
-    if (maxPerLyr > 2) return;
-    
-    // X has Vertical Connect-4 && >0 Y hits
-    if (nLyrsX == 4 &&
-        nColsX == 1 &&
-        nLyrsY > 0)
-      goodXTrack = true;
-
-    // Y has Vertical Connect-4 && >0 X hits
-    if (nLyrsY == 4 &&
-        nColsY == 1 &&
-        nLyrsX > 0)
-      goodYTrack = true;
   }
 }
 

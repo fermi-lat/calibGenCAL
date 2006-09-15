@@ -1,12 +1,11 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.cxx,v 1.4 2006/06/27 15:36:25 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonRoughPed.cxx,v 1.4 2006/06/27 15:36:25 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
+#include "MuonRoughPed.h"
 #include "RootFileAnalysis.h"
-#include "MuonPed.h"
-#include "CGCUtil.h"
 
 // GLAST INCLUDES
 
@@ -18,32 +17,28 @@
 #include <sstream>
 #include <ostream>
 
-using namespace CGCUtil;
-
-MuonPed::MuonPed(ostream &ostrm) :
+MuonRoughPed::MuonRoughPed(ostream &ostrm) :
   m_ostrm(ostrm)
 {
 }
 
-void MuonPed::initHists() {
-  m_histograms.resize(RngIdx::N_VALS);
+void MuonRoughPed::initHists() {
+  m_histograms.resize(FaceIdx::N_VALS);
 
-  for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
-    if (m_histograms[rngIdx] == 0) {
-      string histname = genHistName(rngIdx);
+  for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
+    if (m_histograms[faceIdx] == 0) {
+      string histname = genHistName(faceIdx);
       
-      m_histograms[rngIdx] = new TH1S(histname.c_str(),
-                                      histname.c_str(),
-                                      1000,0.5,1000.5);
+      m_histograms[faceIdx] = new TH1S(histname.c_str(),
+                                       histname.c_str(),
+                                       1000,0.5,1000.5);
     }
   }
 }
 
-void MuonPed::fillHists(unsigned nEntries, 
-                        const vector<string> &rootFileList, 
-                        const RoughPed &roughPeds,
-                        bool periodicTrigger) {
-
+void MuonRoughPed::fillHists(unsigned nEntries, 
+                             const vector<string> &rootFileList,
+                             bool periodicTrigger) {
   // build histograms
   initHists();
 
@@ -60,7 +55,6 @@ void MuonPed::fillHists(unsigned nEntries,
   unsigned nEvents = rootFile.getEntries();
   m_ostrm << __FILE__ << ": Processing: " << nEvents << " events." << endl;
 
-
   // Basic digi-event loop
   bool prev4Range = true; // in periodic trigger mode we will skip these events
   bool fourRange  = true;
@@ -68,7 +62,7 @@ void MuonPed::fillHists(unsigned nEntries,
     // save previous mode
     prev4Range = fourRange;
 
-    if (eventNum % 2000 == 0) {
+    if (eventNum % 1000 == 0) {
       // quit if we have enough entries in each histogram
       unsigned currentMin = getMinEntries();
       if (currentMin >= nEntries) break;
@@ -93,9 +87,9 @@ void MuonPed::fillHists(unsigned nEntries,
 
     if (periodicTrigger) {
       // quick check if we are in 4-range mode
-      EventSummaryData& summary = digiEvent->getEventSummaryData();
+      EventSummaryData &summary = digiEvent->getEventSummaryData();
       if (&summary == 0) {
-        m_ostrm << "Warning, eventSummary data not found for event: "
+        m_ostrm << "Warning, gem data not found for event: "
                 << eventNum << endl;
         fourRange = true;
         continue;
@@ -136,59 +130,33 @@ void MuonPed::fillHists(unsigned nEntries,
       // skip hits not for current tower.
       XtalIdx xtalIdx(id);
 
-      unsigned nRO = calDigi.getNumReadouts();
-
-      if (nRO != 4) {
-        ostringstream tmp;
-        tmp << __FILE__  << ":"     << __LINE__ << " " 
-            << "Event# " << eventNum << " Invalid nReadouts, expecting 4";
-        throw runtime_error(tmp.str());
-      }
-
-      // 1st look at LEX8 vals
-      CalArray<FaceNum, float> adc;
-      bool badHit = false;
       for (FaceNum face; face.isValid(); face++) {
-        adc[face] = calDigi.getAdcSelectedRange(LEX8, (CalXtalId::XtalFace)face.val());
+        float adc = calDigi.getAdcSelectedRange(LEX8, (CalXtalId::XtalFace)face.val());
+
         // check for missing readout
-        if (adc[face] < 0) {
+        bool badHit = false;
+        if (adc < 0 ) {
           m_ostrm << "Couldn't get LEX8 readout for event=" << eventNum << endl;
           badHit = true;
           continue;
         }
-      }
-      if (badHit) continue;
+        if (badHit) continue;
 
-      // skip outliers (outside of 5 sigma on either side)
-      if (fabs(adc[NEG_FACE] - roughPeds.getPed(FaceIdx(xtalIdx,NEG_FACE))) < 
-          5*roughPeds.getPedSig(FaceIdx(xtalIdx,NEG_FACE)) &&
-          fabs(adc[POS_FACE] - roughPeds.getPed(FaceIdx(xtalIdx,POS_FACE))) < 
-          5*roughPeds.getPedSig(FaceIdx(xtalIdx,POS_FACE))) {
-
-        for (unsigned short n = 0; n < nRO; n++) {
-          const CalXtalReadout &readout = *calDigi.getXtalReadout(n);
-          
-          for (FaceNum face; face.isValid(); face++) {
-            // check that we are in the expected readout mode
-            RngNum rng = readout.getRange((CalXtalId::XtalFace)face.val());
-            unsigned short adc = readout.getAdc((CalXtalId::XtalFace)face.val());
-            RngIdx rngIdx(xtalIdx, face, rng);
-            m_histograms[rngIdx]->Fill(adc);
-          }
-        }
+        FaceIdx faceIdx(xtalIdx, face);
+        m_histograms[faceIdx]->Fill(adc);
       }
     }
   }
 }
 
-void MuonPed::fitHists(CalPed &calPed) {
-  for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
+void MuonRoughPed::fitHists(RoughPed &roughPed) {
+  for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
     // skip absent histograms
-    if (!m_histograms[rngIdx])
+    if (!m_histograms[faceIdx])
       continue;
 
     // select histogram from list
-    TH1S &h= *m_histograms[rngIdx];
+    TH1S &h= *m_histograms[faceIdx];
 
     // skip empty histograms
     if (h.GetEntries() == 0) 
@@ -196,7 +164,7 @@ void MuonPed::fitHists(CalPed &calPed) {
 
     // trim outliers
     float av = h.GetMean();float err =h.GetRMS();
-    for( unsigned short iter=0; iter<3;iter++ ) {
+    for(unsigned short iter=0; iter<3;iter++ ) {
       h.SetAxisRange(av-3*err,av+3*err);
       av = h.GetMean(); err= h.GetRMS();
     }
@@ -206,22 +174,44 @@ void MuonPed::fitHists(CalPed &calPed) {
     h.SetAxisRange(av-150,av+150);
 
     // assign values to permanent arrays
-    calPed.setPed(rngIdx, 
-                  ((TF1&)*h.GetFunction("gaus")).GetParameter(1));
-    calPed.setPedSig(rngIdx,
-                     ((TF1&)*h.GetFunction("gaus")).GetParameter(2));
+    roughPed.setPed(faceIdx,
+                    ((TF1&)*h.GetFunction("gaus")).GetParameter(1));
+    roughPed.setPedSig(faceIdx,
+                       ((TF1&)*h.GetFunction("gaus")).GetParameter(2));
   }
 }
 
-void MuonPed::loadHists(const string &filename) {
+void MuonRoughPed::loadHists(const string &filename) {
   TFile histFile(filename.c_str(), "READ");
 
-  for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
-    string histname = genHistName(rngIdx);
-    
-    TH1S *hist_ptr = retrieveHist<TH1S>(histFile, histname);
-    if (!hist_ptr)
+  for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
+    string histname = genHistName(faceIdx);
+    TKey *key = histFile.FindKey(histname.c_str());
+
+    // skip missing hist
+    if (!key)
       continue;
+
+    TClass *cls = gROOT->GetClass(key->GetClassName());
+
+    if (!cls)
+      continue;
+
+    TH1S *hist_ptr = (TH1S*)key->ReadObj();
+    if (!hist_ptr) {
+      m_ostrm << "Warning: unable to read histogram "
+              << histname << endl;
+      continue;
+    }
+
+    // skip hist if it's the wrong type
+    if (!hist_ptr->InheritsFrom(TH1S::Class())) {
+      m_ostrm << "Warning: histogram " << histname 
+              << " not of type TH1S"   << endl;
+      continue;
+    }
+
+
 
     // move histogram into Global ROOT memory
     // so it is not deleted when input file is closed.
@@ -229,23 +219,23 @@ void MuonPed::loadHists(const string &filename) {
     // anyone cares.
     hist_ptr->SetDirectory(0);
 
-    m_histograms[rngIdx] = hist_ptr;
+    m_histograms[faceIdx] = hist_ptr;
   }
 }
 
 
-string MuonPed::genHistName(RngIdx rngIdx) {
+string MuonRoughPed::genHistName(FaceIdx faceIdx) {
   ostringstream tmp;
-  tmp << "muonpeds_" << rngIdx.val();
+  tmp << "roughpeds_" << faceIdx.val();
   return tmp.str();
 }
 
-unsigned MuonPed::getMinEntries() {
+unsigned MuonRoughPed::getMinEntries() {
   unsigned retVal = ULONG_MAX;
 
   for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
-    RngIdx rngIdx(xtalIdx, POS_FACE, LEX8);
-    unsigned nEntries = (unsigned)m_histograms[rngIdx]->GetEntries();
+    FaceIdx faceIdx(xtalIdx,POS_FACE);
+    unsigned nEntries = (unsigned)m_histograms[faceIdx]->GetEntries();
     
     // only count histograms that have been filled 
     // (some histograms will never be filled if we are

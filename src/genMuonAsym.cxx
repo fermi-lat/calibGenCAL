@@ -1,11 +1,11 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.2 2006/06/22 21:50:22 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.3 2006/06/27 15:36:25 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
 
 // LOCAL INCLUDES
 #include "lib/MuonPed.h"
-#include "lib/CIDAC2ADC.h"
+#include "lib/IntNonlin.h"
 #include "lib/MuonAsym.h"
 #include "lib/SimpleIniFile.h"
 
@@ -70,9 +70,6 @@ int main(int argc, char **argv) {
     //-- LOG SOFTWARE VERSION INFO --//
     output_env_banner(logStrm);
 
-
-
-
     //-- RETRIEVE PEDESTALS
     // retrieve original input root filename for pedestal process
     // (in order to generate associated 'output' txt filename)
@@ -92,7 +89,7 @@ int main(int argc, char **argv) {
                                "txt",
                                pedTXTFile);
 
-    MuonPed peds(logStrm);
+    CalPed peds;
     logStrm << __FILE__ << ": reading in muon pedestal file: " << pedTXTFile << endl;
     peds.readTXT(pedTXTFile);
 
@@ -110,14 +107,15 @@ int main(int argc, char **argv) {
     }
     // txt output filename
     string dac2adcTXTFile;
-    CIDAC2ADC::genOutputFilename(outputDir,
+    IntNonlin::genOutputFilename(outputDir,
                                  dac2adcRootFile,
                                  "txt",
                                  dac2adcTXTFile);
 
-    CIDAC2ADC dac2adc(logStrm);
+    CIDAC2ADC dac2adc;
     logStrm << __FILE__ << ": reading in dac2adc txt file: " << dac2adcTXTFile << endl;
     dac2adc.readTXT(dac2adcTXTFile);
+
     logStrm << __FILE__ << ": generating dac2adc splines: " << endl;
     dac2adc.genSplines();
 
@@ -145,13 +143,14 @@ int main(int argc, char **argv) {
                                       "READ_IN_HISTS",
                                       false);
 
-    MuonAsym asym(logStrm);
+    MuonAsym muonAsym(logStrm);
+    CalAsym calAsym;
 
     // used when creating histgrams
     auto_ptr<TFile> histFile;
     if (readInHists) { // skip event file processing & read in histograms directly
       logStrm << __FILE__ << ": opening input histogram file: " << histFilename<< endl;
-      asym.loadHists(histFilename);
+      muonAsym.loadHists(histFilename);
     } else {
     
       // open file to save output histograms.
@@ -159,19 +158,19 @@ int main(int argc, char **argv) {
       histFile.reset(new TFile(histFilename.c_str(), "RECREATE", "CAL Muon Asymmetry", 9));
     
       logStrm << __FILE__ << ": reading root event file(s) starting w/ " << rootFileList[0] << endl;
-      asym.fillHists(nEntries,
+      muonAsym.fillHists(nEntries,
                      rootFileList,
                      peds,
                      dac2adc);
     }
 
-    asym.summarizeHists(logStrm);
+    muonAsym.summarizeHists(logStrm);
     
     logStrm << __FILE__ << ": fitting muon asymmmetry histograms." << endl;
-    asym.fitHists();
+    muonAsym.fitHists(calAsym);
 
     logStrm << __FILE__ << ": writing muon asymmetry: " << outputTXTFile << endl;
-    asym.writeTXT(outputTXTFile);
+    calAsym.writeTXT(outputTXTFile);
     if (!readInHists) {
       logStrm << __FILE__ << ": writing histogram file: " << histFilename << endl;
       histFile->Write();

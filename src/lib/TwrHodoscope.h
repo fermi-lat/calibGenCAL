@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/TwrHodoscope.h,v 1.1 2006/06/15 20:58:00 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/TwrHodoscope.h,v 1.2 2006/08/03 13:06:48 fewtrell Exp $
 /** @file
     @author fewtrell
 */
@@ -7,7 +7,7 @@
 #define TwrHodoscope_h
 
 // LOCAL INCLUDES
-#include "MuonPed.h"
+#include "CalPed.h"
 #include "CIDAC2ADC.h"
 
 // GLAST INCLUDES
@@ -29,7 +29,7 @@ using namespace CalUtil;
 class TwrHodoscope {
  public:
   /// default ctor
-  TwrHodoscope(const MuonPed &ped,
+  TwrHodoscope(const CalPed &ped,
                const CIDAC2ADC &cidac2adc,
                ostream &ostrm = cout) :      
     adc_ped(tDiodeIdx::N_VALS),
@@ -74,7 +74,7 @@ class TwrHodoscope {
 
   // His summary 
   /// total # of hit xtals 
-  unsigned int count;          
+  unsigned count;          
   /// total # of x layers hit
   unsigned short nLyrsX;       
   /// total # of y layers hit
@@ -94,13 +94,8 @@ class TwrHodoscope {
   /// fisrt hit Y col (will be only hit col in good Y track)
   unsigned short firstColY;    
 
-  /// true if track passed selection in x direction (clean vertical 4-in row)
-  bool goodXTrack;    
-  /// true if track passed selection in y direction (clean vertical 4-in row)
-  bool goodYTrack;    
-
   /// reference to pedestal calibrations needed for some operations
-  const MuonPed &m_peds;
+  const CalPed &m_peds;
 
   /// reference to cidac2adc calibs needed for some ops
   const CIDAC2ADC &m_cidac2adc;
@@ -110,7 +105,6 @@ class TwrHodoscope {
   
   /// threshold (LEX8 ADCP + ADCN) for couniting a 'hit' xtal
   static const unsigned short hitThresh = 100;
-
 };
 
 #endif

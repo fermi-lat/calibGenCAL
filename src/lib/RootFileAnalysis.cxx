@@ -1,4 +1,4 @@
-// $Header$
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/RootFileAnalysis.cxx,v 1.1 2006/06/15 20:58:00 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
  */
@@ -56,7 +56,7 @@ RootFileAnalysis::RootFileAnalysis(const vector<string> *mcFilenames,
  
     // Check DigiEvt structure Ver
     TIter fileListIter(m_digiChain.GetListOfFiles());
-    int   codeDigiEvtVer =
+    int codeDigiEvtVer =
       DigiEvent::Class()->GetClassVersion();
 
     while (TChainElement *curElement = (TChainElement*)fileListIter.Next()) {
@@ -116,7 +116,7 @@ UInt_t RootFileAnalysis::getEvent(UInt_t iEvt) {
   UInt_t nBytes = 0;
   // if using chains, check the array of chains and move
   // the event pointer to the Req event
-  for (Int_t i = 0; i < m_chainArr.GetEntries(); i++)
+  for (int i = 0; i < m_chainArr.GetEntries(); i++)
     nBytes += ((TChain*)m_chainArr.At(i))->GetEvent(iEvt);
 
   m_nextEvt++;
@@ -130,7 +130,7 @@ UInt_t RootFileAnalysis::getEntries() const {
 
   UInt_t nEntries = 0;
   nEntries = (int)(((TChain*)m_chainArr.At(0))->GetEntries());
-  for (Int_t i = 1; i < m_chainArr.GetEntries(); i++)
+  for (int i = 1; i < m_chainArr.GetEntries(); i++)
     nEntries = min(nEntries, (UInt_t)((TChain*)m_chainArr.At(i))->GetEntries());
   return nEntries;
 }
