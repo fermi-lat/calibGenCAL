@@ -1,7 +1,7 @@
 #! /bin/sh
-#$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/tholdCIVal.sh,v 1.3 2006/06/21 18:43:13 dwood Exp $
+#$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/dacSlopesVal.sh,v 1.1 2006/07/17 21:20:49 dwood Exp $
 
-PYTHONPATH=${CALIBGENCALROOT}/python/lib:${PYTHONPATH}
+PYTHONPATH=${CALIBGENCALROOT}/python/lib:$ROOTSYS/lib:${PYTHONPATH}
 export PYTHONPATH
 
 python ${CALIBGENCALROOT}/python/dacSlopesVal.py "$@"

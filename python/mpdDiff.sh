@@ -1,7 +1,7 @@
 #! /bin/sh
-#$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/mpdDiff.sh,v 1.1 2006/08/09 20:14:30 fewtrell Exp $
+#$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/mpdDiff.sh,v 1.1 2006/08/10 18:06:43 fewtrell Exp $
 
-PYTHONPATH=${CALIBGENCALROOT}/python/lib:${PYTHONPATH}
+PYTHONPATH=${CALIBGENCALROOT}/python/lib:$ROOTSYS/lib:${PYTHONPATH}
 export PYTHONPATH
 
 python ${CALIBGENCALROOT}/python/mpdDiff.py "$@"
