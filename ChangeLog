@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Sep 18 07:12:53 PDT 2006
+calibGenCAL/src
+
+Modified Files:
+	genCIDAC2ADC.cxx genMuonAsym.cxx genMuonMPD.cxx genMuonPed.cxx 
+	runMuTrigEff.cxx 
+Log Message:
+usage string updates
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Sep 15 09:26:41 PDT 2006
 calibGenCAL/python
 
