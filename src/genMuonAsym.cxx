@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.3 2006/06/27 15:36:25 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.4 2006/09/15 15:02:09 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
           
     //-- COMMAND LINE --//
     if (argc != 2) {
-      cout << __FILE__ << ": " << usage_str << endl;
+      cout << __FILE__ << ": Usage: " << usage_str << endl;
       return -1;
     }
 
