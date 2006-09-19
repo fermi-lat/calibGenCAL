@@ -1,5 +1,16 @@
 ------------------------------------------------------------
 User: fewtrell  Tue Sep 19 11:49:26 PDT 2006
+calibGenCAL/src
+
+Modified Files:
+	genMuonPed.cxx 
+Log Message:
+code simplification.
+'rough' pedestals are now considered a special case of muonPedestals
+
+    *
+------------------------------------------------------------
+User: fewtrell  Tue Sep 19 11:49:26 PDT 2006
 calibGenCAL/cfg
 
 Modified Files:
