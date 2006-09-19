@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalAsym.cxx,v 1.6 2006/08/03 13:06:48 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalAsym.cxx,v 1.1 2006/09/15 15:02:10 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -40,6 +40,10 @@ void CalAsym::writeTXT(const string &filename) const{
     for (AsymType asymType; asymType.isValid(); asymType++) {
       // per point along curve
       for (unsigned short i = 0; i < N_ASYM_PTS; i++) {
+        // skip empty channels
+        if (m_asym[asymType][xtalIdx].size() != N_ASYM_PTS)
+          continue;
+        
         outfile << twr
                 << " " << lyr 
                 << " " << col
