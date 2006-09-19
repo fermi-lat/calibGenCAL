@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.cxx,v 1.4 2006/06/27 15:36:25 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.cxx,v 1.5 2006/09/15 15:02:10 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
  */
@@ -41,12 +41,18 @@ void MuonPed::initHists() {
 
 void MuonPed::fillHists(unsigned nEntries, 
                         const vector<string> &rootFileList, 
-                        const RoughPed &roughPeds,
+                        const CalPed *roughPeds,
                         bool periodicTrigger) {
 
-  // build histograms
+  /////////////////////////////////////////
+  /// Initialize Histograms ///////////////
+  /////////////////////////////////////////
   initHists();
 
+
+  /////////////////////////////////////////
+  /// Open ROOT Event File  ///////////////
+  /////////////////////////////////////////
   RootFileAnalysis rootFile(0, &rootFileList, 0);
 
   // enable only needed branches in root file
@@ -60,14 +66,18 @@ void MuonPed::fillHists(unsigned nEntries,
   unsigned nEvents = rootFile.getEntries();
   m_ostrm << __FILE__ << ": Processing: " << nEvents << " events." << endl;
 
-
-  // Basic digi-event loop
+  /////////////////////////////////////////
+  /// Event Loop //////////////////////////
+  /////////////////////////////////////////
   bool prev4Range = true; // in periodic trigger mode we will skip these events
   bool fourRange  = true;
   for (unsigned eventNum = 0; eventNum < nEvents; eventNum++) {
     // save previous mode
     prev4Range = fourRange;
 
+    /////////////////////////////////////////
+    /// Load new event //////////////////////
+    /////////////////////////////////////////
     if (eventNum % 2000 == 0) {
       // quit if we have enough entries in each histogram
       unsigned currentMin = getMinEntries();
@@ -91,6 +101,9 @@ void MuonPed::fillHists(unsigned nEntries,
       continue;
     }
 
+    /////////////////////////////////////////
+    /// Event/Trigger level cuts ////////////
+    /////////////////////////////////////////
     if (periodicTrigger) {
       // quick check if we are in 4-range mode
       EventSummaryData& summary = digiEvent->getEventSummaryData();
@@ -127,7 +140,9 @@ void MuonPed::fillHists(unsigned nEntries,
     TIter calDigiIter(calDigiCol);
     const CalDigi *pCalDigi = 0;
 
-    //loop through each 'hit' in one event
+    /////////////////////////////////////////
+    /// Xtal Hit Loop ///////////////////////
+    /////////////////////////////////////////
     while ((pCalDigi = (CalDigi*)calDigiIter.Next())) {
       const CalDigi &calDigi = *pCalDigi; // use reference to avoid -> syntax
 
@@ -146,25 +161,40 @@ void MuonPed::fillHists(unsigned nEntries,
       }
 
       // 1st look at LEX8 vals
-      CalArray<FaceNum, float> adc;
+      CalArray<FaceNum, float> adcL8;
       bool badHit = false;
       for (FaceNum face; face.isValid(); face++) {
-        adc[face] = calDigi.getAdcSelectedRange(LEX8, (CalXtalId::XtalFace)face.val());
+        adcL8[face] = calDigi.getAdcSelectedRange(LEX8, (CalXtalId::XtalFace)face.val());
         // check for missing readout
-        if (adc[face] < 0) {
+        if (adcL8[face] < 0) {
           m_ostrm << "Couldn't get LEX8 readout for event=" << eventNum << endl;
           badHit = true;
           continue;
         }
       }
-      if (badHit) continue;
+      if (badHit) continue;      
 
-      // skip outliers (outside of 5 sigma on either side)
-      if (fabs(adc[NEG_FACE] - roughPeds.getPed(FaceIdx(xtalIdx,NEG_FACE))) < 
-          5*roughPeds.getPedSig(FaceIdx(xtalIdx,NEG_FACE)) &&
-          fabs(adc[POS_FACE] - roughPeds.getPed(FaceIdx(xtalIdx,POS_FACE))) < 
-          5*roughPeds.getPedSig(FaceIdx(xtalIdx,POS_FACE))) {
-
+      /////////////////////////////////////////
+      /// 'Rough' pedestal mode (fist pass) ///
+      /////////////////////////////////////////
+      if (!roughPeds) {
+        for (FaceNum face; face.isValid(); face++) {
+          RngIdx rngIdx(xtalIdx, face, LEX8);
+          
+          m_histograms[rngIdx]->Fill(adcL8[face]);
+        }
+      /////////////////////////////////////////
+      /// Cut outliers (2nd pass) /////////////
+      /////////////////////////////////////////
+      } else  {
+        // skip outliers (outside of 5 sigma on either side)
+        if (fabs(adcL8[NEG_FACE] - roughPeds->getPed(RngIdx(xtalIdx,NEG_FACE,LEX8))) >=
+            5*roughPeds->getPedSig(RngIdx(xtalIdx,NEG_FACE,LEX8)) ||
+            fabs(adcL8[POS_FACE] - roughPeds->getPed(RngIdx(xtalIdx,POS_FACE,LEX8))) >=
+            5*roughPeds->getPedSig(RngIdx(xtalIdx,POS_FACE,LEX8)))
+          continue;
+      
+        //-- Fill histograms for all 4 ranges
         for (unsigned short n = 0; n < nRO; n++) {
           const CalXtalReadout &readout = *calDigi.getXtalReadout(n);
           

@@ -1,11 +1,9 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.4 2006/09/15 15:02:09 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.5 2006/09/18 14:12:53 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
 
 // LOCAL INCLUDES
-#include "lib/RoughPed.h"
-#include "lib/MuonRoughPed.h"
 #include "lib/MuonPed.h"
 #include "lib/SimpleIniFile.h"
 
@@ -70,8 +68,8 @@ int main(int argc, char **argv) {
 
     //-- ROUGH PEDS --//
     // - LEX8 only include hits in histograms.
-    MuonRoughPed muonRoughPed(logStrm);
-    RoughPed roughPed;
+    MuonPed muonRoughPed(logStrm);
+    CalPed roughPed;
     // input files
     vector<string> roughPedRootFileList;
     cfgFile.getVector("ROUGH_PEDS", 
@@ -98,16 +96,18 @@ int main(int argc, char **argv) {
 
     // txt output filename
     string roughPedTXTFile;
-    MuonRoughPed::genOutputFilename(outputDir,
-                                    roughPedRootFileList[0],
-                                    "txt",
-                                    roughPedTXTFile);
+    CGCUtil::genOutputFilename(outputDir,
+                               "roughPeds",
+                               roughPedRootFileList[0],
+                               "txt",
+                               roughPedTXTFile);
     // output histogram file
     string roughPedHistFile;
-    MuonRoughPed::genOutputFilename(outputDir,
-                                    roughPedRootFileList[0],
-                                    "root",
-                                    roughPedHistFile);
+    CGCUtil::genOutputFilename(outputDir,
+                               "roughPeds",
+                               roughPedRootFileList[0],
+                               "root",
+                               roughPedHistFile);
 
     if (readInTXTRoughPeds) {
       logStrm << "genMuonPed: reading in rough pedestals: " << roughPedTXTFile << endl;
@@ -135,6 +135,7 @@ int main(int argc, char **argv) {
       logStrm << __FILE__ << ": reading root event file(s) starting w/ " << roughPedRootFileList[0] << endl;
       muonRoughPed.fillHists(nEntriesRoughPeds, 
                              roughPedRootFileList,
+                             NULL,
                              periodicTrigger);
       outputHistFile.Write();
     
@@ -186,7 +187,7 @@ int main(int argc, char **argv) {
       logStrm << __FILE__ << ": reading root event file(s) starting w/ " << muPedRootFileList[0] << endl;
       muPed.fillHists(nEntriesMuonPeds, 
                       muPedRootFileList, 
-                      roughPed, 
+                      &roughPed, 
                       periodicTrigger);
       outputHistFile.Write();
     
