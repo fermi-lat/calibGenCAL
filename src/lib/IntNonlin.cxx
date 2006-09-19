@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/IntNonlin.cxx,v 1.5 2006/08/03 13:06:48 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/IntNonlin.cxx,v 1.1 2006/09/15 15:02:10 fewtrell Exp $
 /** @file
     @author fewtrell
 */
@@ -59,11 +59,11 @@ IntNonlin::IntNonlin(ostream &ostrm) :
   m_ostrm(ostrm)
 {
 }
+
 void IntNonlin::readRootData(const string &rootFileName,
+                             CIDAC2ADC &adcMeans,
                              DiodeNum diode,
                              bool bcastMode) {
-  m_adcMean.resize(RngIdx::N_VALS, 
-                   vector<float>(N_CIDAC_VALS, CIDAC2ADC::INVALID_ADC));
 
   // create one temporary histogram per adc channel.
   // this histogram will be reused for each new CIDAC
@@ -211,7 +211,8 @@ void IntNonlin::readRootData(const string &rootFileName,
                 err = h.GetRMS();
               }
               // assign to table
-              m_adcMean[rngIdx][testDAC] = av;
+              adcMeans.getPtsADC(rngIdx).push_back(av);
+              adcMeans.getPtsDAC(rngIdx).push_back(CIDAC_TEST_VALS[testDAC]);
             }
           } // foreach face
         } // foreach readout
@@ -224,7 +225,7 @@ void IntNonlin::readRootData(const string &rootFileName,
   }  // end analysis code in event loop
 }
 
-void IntNonlin::genSplinePts(CIDAC2ADC &cidac2adc) {
+void IntNonlin::genSplinePts(CIDAC2ADC &adcMeans, CIDAC2ADC &cidac2adc) {
   TF1 splineFunc("spline_fitter","pol2",0,4095);
 
   // 2 dimensional poly line f() to use for spline fitting.
@@ -243,11 +244,11 @@ void IntNonlin::genSplinePts(CIDAC2ADC &cidac2adc) {
       RngIdx rngIdx(faceIdx,rng);
 
       // skip missing channels
-      if (m_adcMean[rngIdx][0] == CIDAC2ADC::INVALID_ADC)
+      if (adcMeans.getPtsADC(rngIdx).empty())
         continue;
 
       // point to current adc vector
-      vector<float> &curADC = m_adcMean[rngIdx];
+      vector<float> &curADC = adcMeans.getPtsADC(rngIdx);
 
       // point to output splines
       vector<float> &splineADC = cidac2adc.getPtsADC(rngIdx);
@@ -359,62 +360,3 @@ void IntNonlin::genSplinePts(CIDAC2ADC &cidac2adc) {
 }
 
 
-void IntNonlin::writeADCMeans(const string &filename) const {
-  ofstream outfile(filename.c_str());
-  if (!outfile.is_open())
-    throw runtime_error(string("Unable to open " + filename));
-
-  for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
-    TwrNum twr   = rngIdx.getTwr();
-    LyrNum lyr   = rngIdx.getLyr();
-    ColNum col   = rngIdx.getCol();
-    FaceNum face = rngIdx.getFace();
-    RngNum rng   = rngIdx.getRng();
-
-    for (unsigned dacIdx = 0;
-         dacIdx < N_CIDAC_VALS;
-         dacIdx++) {
-
-      float adcMean = m_adcMean[rngIdx][dacIdx];
-
-      if (adcMean == CIDAC2ADC::INVALID_ADC)
-        continue;
-
-      outfile << " " << twr
-              << " " << lyr
-              << " " << col
-              << " " << face.val()
-              << " " << rng.val()
-              << " " << dacIdx
-              << " " << CIDAC_TEST_VALS[dacIdx]
-              << " " << m_adcMean[rngIdx][dacIdx]
-              << endl;
-    }
-  }
-}
-
-void IntNonlin::readADCMeans(const string &filename) {
-  m_adcMean.resize(RngIdx::N_VALS, 
-                   vector<float>(N_CIDAC_VALS, CIDAC2ADC::INVALID_ADC));
-
-  unsigned short twr, lyr, col, face, rng, dacIdx;
-  float dac, adc;
-
-  // open file
-  ifstream infile(filename.c_str());
-  if (!infile.is_open())
-    throw runtime_error(string("Unable to open " + filename));
-
-  // loop through each line in file
-  while (infile.good()) {
-    // get lyr, col (xtalId)
-    infile >> twr >> lyr >> col >> face >> rng >> dacIdx
-           >> dac >> adc;
-    
-    if (infile.fail()) break; // bad get()
-
-    RngIdx rngIdx(twr, lyr, col, face, rng);
-
-    m_adcMean[rngIdx][dacIdx] = adc;
-  }
-}
