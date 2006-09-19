@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.cxx,v 1.6 2006/08/03 13:06:48 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.cxx,v 1.7 2006/09/15 15:02:10 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -214,10 +214,11 @@ void MuonAsym::fillHists(unsigned nEntries,
 void MuonAsym::summarizeHists(ostream &ostrm) {
   ostrm << "XTAL\tNHITS" << endl;
   for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++)
-    if (m_histograms[ASYM_SS][xtalIdx]->GetEntries() > 0)
-      ostrm << xtalIdx.val() << "\t"
-            << m_histograms[ASYM_SS][xtalIdx]->GetEntries()
-            << endl;
+    if (m_histograms[ASYM_SS][xtalIdx])
+      if (m_histograms[ASYM_SS][xtalIdx]->GetEntries() > 0)
+        ostrm << xtalIdx.val() << "\t"
+              << m_histograms[ASYM_SS][xtalIdx]->GetEntries()
+              << endl;
   
 }
 
