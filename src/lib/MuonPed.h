@@ -1,6 +1,6 @@
 #ifndef MuonPed_h
 #define MuonPed_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.h,v 1.2 2006/06/22 21:50:23 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.h,v 1.3 2006/09/15 15:02:10 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
  */
@@ -8,7 +8,6 @@
 
 
 // LOCAL INCLUDES
-#include "RoughPed.h"
 #include "CalPed.h"
 #include "CGCUtil.h"
 
@@ -43,7 +42,7 @@ class MuonPed {
   /// \param histFilename.  output root file for histograms.
   void fillHists(unsigned nEntries, 
                  const vector<string> &rootFileList, 
-                 const RoughPed &roughPeds,
+                 const CalPed *roughPeds,
                  bool periodicTrigger); 
 
   /// Fit muonpedhist[]'s, assign means to m_calMuonPed
