@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Sep 19 11:49:27 PDT 2006
+calibGenCAL/src/lib
+
+Modified Files:
+	MuonPed.cxx MuonPed.h 
+Removed Files:
+	MuonRoughPed.cxx MuonRoughPed.h RoughPed.cxx RoughPed.h 
+Log Message:
+code simplification.
+'rough' pedestals are now considered a special case of muonPedestals
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Sep 19 11:49:26 PDT 2006
 calibGenCAL/src
 
