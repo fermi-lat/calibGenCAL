@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.5 2006/09/15 15:02:09 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.6 2006/09/18 14:12:53 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -86,6 +86,7 @@ int main(int argc, char **argv) {
                                  "txt",
                                  outputTXTFile);
 
+    CIDAC2ADC adcMeans;
     CIDAC2ADC cidac2adc;
     IntNonlin intNonlin(logStrm);
 
@@ -102,24 +103,24 @@ int main(int argc, char **argv) {
     if (readADCMeans) {
       logStrm << __FILE__ << ": reading in adc means from previous event processing: "
               << adcMeanFile << endl;
-      intNonlin.readADCMeans(adcMeanFile);
+      adcMeans.readTXT(adcMeanFile);
     } else {
       if (rootFileLE.length()) {
         logStrm << __FILE__ << ": reading LE calibGen event file: " << rootFileLE << endl;
-        intNonlin.readRootData(rootFileLE, LRG_DIODE, bcastMode);
+        intNonlin.readRootData(rootFileLE, adcMeans, LRG_DIODE, bcastMode);
       }
       if (rootFileHE.length()) {
         logStrm << __FILE__ << ": reading HE calibGen event file: " << rootFileHE << endl;
-        intNonlin.readRootData(rootFileHE, SM_DIODE,  bcastMode);
+        intNonlin.readRootData(rootFileHE, adcMeans, SM_DIODE,  bcastMode);
       }
       logStrm << __FILE__ << ": saving adc means to txt file: " 
               << adcMeanFile << endl;
-      intNonlin.writeADCMeans(adcMeanFile);
+      adcMeans.writeTXT(adcMeanFile);
     }
 
   
     logStrm << __FILE__ << ": generating smoothed spline points: " << rootFileHE << endl;
-    intNonlin.genSplinePts(cidac2adc);
+    intNonlin.genSplinePts(adcMeans, cidac2adc);
   
     logStrm << __FILE__ << ": writing smoothed spline points: " << outputTXTFile << endl;
     cidac2adc.writeTXT(outputTXTFile);
