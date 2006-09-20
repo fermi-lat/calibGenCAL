@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Sep 20 08:28:13 PDT 2006
+calibGenCAL/doc
+
+Modified Files:
+	calibGenCAL_description.doc calibGenCAL_description.pdf 
+Log Message:
+documentation updates (removal of 'rough_pedestal' configuration
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Sep 19 11:49:27 PDT 2006
 calibGenCAL/src/lib
 
