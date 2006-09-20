@@ -1,5 +1,18 @@
 ------------------------------------------------------------
 User: fewtrell  Wed Sep 20 12:07:55 PDT 2006
+calibGenCAL/unit_test/output
+
+Removed Files:
+	135004348_T01_FMxxx_cal_bias.xml 
+	135004348_T04_FMxxx_cal_bias.xml 
+	135004384_T01_FMxxx_cal_adc2nrg.xml 
+	135004384_T04_FMxxx_cal_adc2nrg.xml tholdci_unit_test.xml 
+Log Message:
+udating to new unit test for latest code
+
+    *
+------------------------------------------------------------
+User: fewtrell  Wed Sep 20 12:07:55 PDT 2006
 calibGenCAL/unit_test
 
 Modified Files:
