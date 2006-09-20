@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.cxx,v 1.5 2006/08/03 13:06:48 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.cxx,v 1.6 2006/09/15 15:02:10 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -333,6 +333,8 @@ void MuonMPD::fitHists(CalMPD &calMPD) {
     if (!m_dacLLHists[xtalIdx])
       continue;
     // retrieve Lrg diode DAC histogram
+    if (!m_dacLLHists[xtalIdx])
+        continue;
     TH1S& histLL = *m_dacLLHists[xtalIdx];
     // skip empty histograms
     if (histLL.GetEntries() == 0) 
