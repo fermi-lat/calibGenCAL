@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Sep 20 08:46:44 PDT 2006
+calibGenCAL/src/lib
+
+Modified Files:
+	MuonMPD.cxx 
+Log Message:
+added extra check for empty histogram
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Sep 20 08:28:13 PDT 2006
 calibGenCAL/doc
 
