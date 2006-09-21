@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Sep 21 09:22:34 PDT 2006
+calibGenCAL/cfg
+
+Modified Files:
+	calibGenCAL_suite.cfg 
+Log Message:
+broke up muonPed alg into more modular structure.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Sep 20 12:07:55 PDT 2006
 calibGenCAL/unit_test/output
 
