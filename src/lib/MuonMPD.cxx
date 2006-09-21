@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.cxx,v 1.6 2006/09/15 15:02:10 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.cxx,v 1.7 2006/09/20 15:46:43 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -33,16 +33,15 @@ const float MuonMPD::MUON_ENERGY = 11.2;
 
 
 MuonMPD::MuonMPD(ostream &ostrm) :
+  m_dacLLHists(XtalIdx::N_VALS),
+  m_dacL2SHists(XtalIdx::N_VALS),
+  m_dacL2SSlopeProfs(XtalIdx::N_VALS),
   m_ostrm(ostrm)
 {
 }
 
 
 void MuonMPD::initHists(){
-  m_dacLLHists.resize(XtalIdx::N_VALS);
-  m_dacL2SHists.resize(XtalIdx::N_VALS);
-  m_dacL2SSlopeProfs.resize(XtalIdx::N_VALS);  
-  
   for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
     string tmp = genHistName("dacLL", xtalIdx);
     m_dacLLHists[xtalIdx] = new TH1S(tmp.c_str(),
@@ -438,10 +437,6 @@ void MuonMPD::fitHists(CalMPD &calMPD) {
 }
 
 void MuonMPD::loadHists(const string &filename) {
-  m_dacLLHists.resize(XtalIdx::N_VALS);
-  m_dacL2SHists.resize(XtalIdx::N_VALS);
-  m_dacL2SSlopeProfs.resize(XtalIdx::N_VALS);  
-
   TFile histFile(filename.c_str(), "READ");
 
   for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {

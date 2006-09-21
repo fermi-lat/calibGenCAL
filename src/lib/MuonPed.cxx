@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.cxx,v 1.6 2006/09/19 18:49:27 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.cxx,v 1.7 2006/09/21 16:22:34 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -21,6 +21,7 @@
 using namespace CGCUtil;
 
 MuonPed::MuonPed(ostream &ostrm) :
+  m_histograms(RngIdx::N_VALS),
   m_ostrm(ostrm)
 {
   algData.clear();
@@ -28,8 +29,6 @@ MuonPed::MuonPed(ostream &ostrm) :
 }
 
 void MuonPed::initHists() {
-  m_histograms.resize(RngIdx::N_VALS);
-
   for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
     if (m_histograms[rngIdx] == 0) {
       string histname = genHistName(rngIdx);
