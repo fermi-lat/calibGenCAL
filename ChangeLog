@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Sep 21 12:30:57 PDT 2006
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+mistakenly included genGCRMPD in previous cvs commit
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Sep 21 12:30:01 PDT 2006
 calibGenCAL/src/lib
 
