@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Sep 21 12:30:00 PDT 2006
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+minor update, changed 'rec' variable names to 'recon'
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Sep 21 12:03:27 PDT 2006
 calibGenCAL/src/lib
 
