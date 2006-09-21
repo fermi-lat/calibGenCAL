@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/RootFileAnalysis.cxx,v 1.1 2006/06/15 20:58:00 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/RootFileAnalysis.cxx,v 1.2 2006/09/15 15:02:10 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
  */
@@ -22,14 +22,14 @@ using namespace std;
 
 RootFileAnalysis::RootFileAnalysis(const vector<string> *mcFilenames,
                                    const vector<string> *digiFilenames,
-                                   const vector<string> *recFilenames,
+                                   const vector<string> *reconFilenames,
                                    ostream &ostrm) :
   m_mcChain("mc"),
   m_mcEvt(0),
   m_digiChain("Digi"),
   m_digiEvt(0),
-  m_recChain("rec"),
-  m_recEvt(0),
+  m_reconChain("recon"),
+  m_reconEvt(0),
   m_ostrm(ostrm)
 {
  
@@ -73,14 +73,14 @@ RootFileAnalysis::RootFileAnalysis(const vector<string> *mcFilenames,
   }
 
   // add recon file list into mc ROOT chain
-  if (recFilenames) {
-    for(vector<string>::const_iterator itr = recFilenames->begin();
-        itr != recFilenames->end(); ++itr) {
-      m_ostrm << "rec file added to chain: " << *itr << endl;
-      m_recChain.Add(itr->c_str());
+  if (reconFilenames) {
+    for(vector<string>::const_iterator itr = reconFilenames->begin();
+        itr != reconFilenames->end(); ++itr) {
+      m_ostrm << "recon file added to chain: " << *itr << endl;
+      m_reconChain.Add(itr->c_str());
     }
-    m_recChain.SetBranchAddress("RecEvent",&m_recEvt);
-    m_chainArr.Add(&m_recChain);
+    m_reconChain.SetBranchAddress("ReconEvent",&m_reconEvt);
+    m_chainArr.Add(&m_reconChain);
   }
 }
 
@@ -95,9 +95,9 @@ RootFileAnalysis::~RootFileAnalysis() {
     delete m_digiEvt;
   }
    
-  if (m_recEvt) {
-    m_recEvt->Clear();
-    delete m_recEvt;
+  if (m_reconEvt) {
+    m_reconEvt->Clear();
+    delete m_reconEvt;
   }
 }
 
@@ -109,8 +109,8 @@ UInt_t RootFileAnalysis::getEvent(UInt_t iEvt) {
   if (m_digiEvt) {
     m_digiEvt->Clear();
   }
-  if (m_recEvt) {
-    m_recEvt->Clear();
+  if (m_reconEvt) {
+    m_reconEvt->Clear();
   }
 
   UInt_t nBytes = 0;
