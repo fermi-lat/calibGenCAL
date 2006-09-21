@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.5 2006/09/18 14:12:53 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.6 2006/09/19 18:49:26 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -29,7 +29,6 @@ int main(int argc, char **argv) {
       return -1;
     }
 
-
     //-- CONFIG FILE --//
     SimpleIniFile cfgFile(argv[1]);
   
@@ -38,12 +37,12 @@ int main(int argc, char **argv) {
                                       "OUTPUT_DIR",
                                       string("./"));
     // input files
-    vector<string> muPedRootFileList;
+    vector<string> rootFileList;
     cfgFile.getVector("MUON_PEDS", 
                       "ROOT_FILES", 
-                      muPedRootFileList,
+                      rootFileList,
                       ", ");
-    if (muPedRootFileList.size() < 1) {
+    if (rootFileList.size() < 1) {
       cout << __FILE__ << ": No input files specified" << endl;
       return -1;
     }
@@ -56,7 +55,7 @@ int main(int argc, char **argv) {
     // generate logfile name
     string logfile;
     MuonPed::genOutputFilename(outputDir,
-                               muPedRootFileList[0],
+                               rootFileList[0],
                                "log.txt",
                                logfile);
     ofstream tmpStrm(logfile.c_str());
@@ -70,60 +69,53 @@ int main(int argc, char **argv) {
     // - LEX8 only include hits in histograms.
     MuonPed muonRoughPed(logStrm);
     CalPed roughPed;
-    // input files
-    vector<string> roughPedRootFileList;
-    cfgFile.getVector("ROUGH_PEDS", 
-                      "ROOT_FILES", 
-                      roughPedRootFileList, 
-                      ", ");
-    if (roughPedRootFileList.size() < 1) {
-      cout << __FILE__ << ": No input files specified" << endl;
-      return -1;
-    }
-    // read in txt file?
-    bool readInTXTRoughPeds = cfgFile.getVal("ROUGH_PEDS",
-                                             "READ_IN_TXT",
-                                             false);
-    // read in Hist file?
-    bool readInHistsRoughPeds = cfgFile.getVal("ROUGH_PEDS",
-                                               "READ_IN_HISTS",
-                                               false);
-
-    // use only periodic trigger events as specified by GEM word?
-    bool periodicTrigger = cfgFile.getVal("MUON_PEDS",
-                                          "PERIODIC_TRIGGER",
-                                          true);
 
     // txt output filename
     string roughPedTXTFile;
     CGCUtil::genOutputFilename(outputDir,
                                "roughPeds",
-                               roughPedRootFileList[0],
+                               rootFileList[0],
                                "txt",
                                roughPedTXTFile);
     // output histogram file
     string roughPedHistFile;
     CGCUtil::genOutputFilename(outputDir,
                                "roughPeds",
-                               roughPedRootFileList[0],
+                               rootFileList[0],
                                "root",
                                roughPedHistFile);
 
-    if (readInTXTRoughPeds) {
-      logStrm << "genMuonPed: reading in rough pedestals: " << roughPedTXTFile << endl;
-      roughPed.readTXT(roughPedTXTFile);
-    } else if (readInHistsRoughPeds) {
-      logStrm << __FILE__ << ": loading rough pedestal histograms: " << roughPedHistFile << endl;
-      muonRoughPed.loadHists(roughPedHistFile);
-      logStrm << __FILE__ << ": fitting rough pedestal histograms." << endl;
-      muonRoughPed.fitHists(roughPed);
-      logStrm << __FILE__ << ": writing rough pedestals: " << roughPedTXTFile << endl;
-      roughPed.writeTXT(roughPedTXTFile);
-    } else {
-      unsigned nEntriesRoughPeds = cfgFile.getVal<unsigned>("ROUGH_PEDS", 
-                                                            "ENTRIES_PER_HIST", 
-                                                            1000);
+
+    // what type of cut?
+    const string PASS_THROUGH_CUT("PASS_THROUGH");
+    const string PERIODIC_TRIGGER_CUT("PERIODIC_TRIGGER");
+    const string EXTERNAL_TRIGGER_CUT("EXTERNAL_TRIGGER");
+    map<string,MuonPed::TRIGGER_CUT> trigCutMap;
+    trigCutMap[PASS_THROUGH_CUT] = MuonPed::PASS_THROUGH;
+    trigCutMap[PERIODIC_TRIGGER_CUT] = MuonPed::PERIODIC_TRIGGER;
+    trigCutMap[EXTERNAL_TRIGGER_CUT] = MuonPed::EXTERNAL_TRIGGER;
+    string trigCutStr = cfgFile.getVal<string>("MUON_PEDS",
+                                               "TRIGGER_CUT",
+                                               "PERIODIC_TRIGGER");
+
+    if (trigCutMap.find(trigCutStr) == trigCutMap.end()) {
+      logStrm << __FILE__ << ": ERROR! Invalid trigger_cut string: " << trigCutStr << endl;
+      return -1;
+    }
+    MuonPed::TRIGGER_CUT trigCut = trigCutMap[trigCutStr];
+
+
+
+    unsigned nEntries = cfgFile.getVal<unsigned>("MUON_PEDS", 
+                                                 "ENTRIES_PER_HIST", 
+                                                 1000);
+
+    // read in Hist file?
+    bool readInHists = cfgFile.getVal("MUON_PEDS",
+                                      "READ_IN_HISTS",
+                                      false);
     
+    if (!readInHists) {
       // open new output histogram file
       logStrm << __FILE__ << ": opening output rough pedestal histogram file: " << roughPedHistFile << endl;
       TFile outputHistFile(roughPedHistFile.c_str(),
@@ -132,11 +124,11 @@ int main(int argc, char **argv) {
                            9);
 
     
-      logStrm << __FILE__ << ": reading root event file(s) starting w/ " << roughPedRootFileList[0] << endl;
-      muonRoughPed.fillHists(nEntriesRoughPeds, 
-                             roughPedRootFileList,
+      logStrm << __FILE__ << ": reading root event file(s) starting w/ " << rootFileList[0] << endl;
+      muonRoughPed.fillHists(nEntries, 
+                             rootFileList,
                              NULL,
-                             periodicTrigger);
+                             trigCut);
       outputHistFile.Write();
     
       logStrm << __FILE__ << ": fitting rough pedestal histograms." << endl;
@@ -150,33 +142,25 @@ int main(int argc, char **argv) {
     // - LEX8 only include hits in histograms.
     MuonPed muPed(logStrm);
     CalPed calPed;
-    // read in Hist file?
-    bool readInHistsMuonPeds = cfgFile.getVal("MUON_PEDS",
-                                              "READ_IN_HISTS",
-                                              false);
     // txt output filename
     string muPedTXTFile;
     MuonPed::genOutputFilename(outputDir,
-                               muPedRootFileList[0],
+                               rootFileList[0],
                                "txt",
                                muPedTXTFile);
     // output histogram file
     string muPedHistFile;
     MuonPed::genOutputFilename(outputDir,
-                               muPedRootFileList[0],
+                               rootFileList[0],
                                "root",
                                muPedHistFile);
 
-    if (readInHistsMuonPeds) {
+    if (readInHists) {
       logStrm << __FILE__ << ": loading muon pedestal histograms: " << muPedHistFile << endl;
       muPed.loadHists(muPedHistFile);
       logStrm << __FILE__ << ": fitting muon pedestal histograms." << endl;
       muPed.fitHists(calPed);
     } else {
-      unsigned nEntriesMuonPeds = cfgFile.getVal<unsigned>("MUON_PEDS", 
-                                                           "ENTRIES_PER_HIST", 
-                                                           1000);
-
       // open new output histogram file
       logStrm << __FILE__ << ": opening muon pedestal output histogram file: " << muPedHistFile << endl;
       TFile outputHistFile(muPedHistFile.c_str(),
@@ -184,11 +168,11 @@ int main(int argc, char **argv) {
                            "Muon pedestals",
                            9);
 
-      logStrm << __FILE__ << ": reading root event file(s) starting w/ " << muPedRootFileList[0] << endl;
-      muPed.fillHists(nEntriesMuonPeds, 
-                      muPedRootFileList, 
+      logStrm << __FILE__ << ": reading root event file(s) starting w/ " << rootFileList[0] << endl;
+      muPed.fillHists(nEntries, 
+                      rootFileList, 
                       &roughPed, 
-                      periodicTrigger);
+                      trigCut);
       outputHistFile.Write();
     
       logStrm << __FILE__ << ": fitting muon pedestal histograms." << endl;
