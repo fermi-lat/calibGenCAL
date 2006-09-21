@@ -1,7 +1,7 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.cxx,v 1.5 2006/09/15 15:02:10 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.cxx,v 1.6 2006/09/19 18:49:27 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "RootFileAnalysis.h"
@@ -23,6 +23,8 @@ using namespace CGCUtil;
 MuonPed::MuonPed(ostream &ostrm) :
   m_ostrm(ostrm)
 {
+  algData.clear();
+  evtData.clear();
 }
 
 void MuonPed::initHists() {
@@ -42,13 +44,18 @@ void MuonPed::initHists() {
 void MuonPed::fillHists(unsigned nEntries, 
                         const vector<string> &rootFileList, 
                         const CalPed *roughPeds,
-                        bool periodicTrigger) {
+                        TRIGGER_CUT trigCut) {
 
   /////////////////////////////////////////
-  /// Initialize Histograms ///////////////
+  /// Initialize Object Data //////////////
   /////////////////////////////////////////
   initHists();
+  algData.clear();
+  evtData.clear();
 
+  algData.roughPeds = roughPeds;
+  algData.trigCut = trigCut;
+  
 
   /////////////////////////////////////////
   /// Open ROOT Event File  ///////////////
@@ -58,10 +65,11 @@ void MuonPed::fillHists(unsigned nEntries,
   // enable only needed branches in root file
   rootFile.getDigiChain()->SetBranchStatus("*",0);
   rootFile.getDigiChain()->SetBranchStatus("m_calDigiCloneCol");
-  if (periodicTrigger) {
-    rootFile.getDigiChain()->SetBranchStatus("m_gem");
+  if (algData.trigCut == PERIODIC_TRIGGER)
     rootFile.getDigiChain()->SetBranchStatus("m_summary");
-  }
+  if (algData.trigCut == PERIODIC_TRIGGER || algData.trigCut == EXTERNAL_TRIGGER)
+    rootFile.getDigiChain()->SetBranchStatus("m_gem");
+
 
   unsigned nEvents = rootFile.getEntries();
   m_ostrm << __FILE__ << ": Processing: " << nEvents << " events." << endl;
@@ -69,145 +77,40 @@ void MuonPed::fillHists(unsigned nEntries,
   /////////////////////////////////////////
   /// Event Loop //////////////////////////
   /////////////////////////////////////////
-  bool prev4Range = true; // in periodic trigger mode we will skip these events
-  bool fourRange  = true;
-  for (unsigned eventNum = 0; eventNum < nEvents; eventNum++) {
+  // in periodic trigger mode we will skip these events
+  evtData.prev4Range = true; 
+  evtData.fourRange  = true;
+  for (evtData.evtNum = 0; evtData.evtNum < nEvents; evtData.evtNum++) {
     // save previous mode
-    prev4Range = fourRange;
+    evtData.prev4Range = evtData.fourRange;
 
     /////////////////////////////////////////
     /// Load new event //////////////////////
     /////////////////////////////////////////
-    if (eventNum % 2000 == 0) {
+    if (evtData.evtNum % 2000 == 0) {
       // quit if we have enough entries in each histogram
       unsigned currentMin = getMinEntries();
       if (currentMin >= nEntries) break;
-      m_ostrm << "Event: " << eventNum 
+      m_ostrm << "Event: " << evtData.evtNum 
               << " min entries per histogram: " << currentMin
               << endl;
       m_ostrm.flush();
     }
 
-    if (!rootFile.getEvent(eventNum)) {
-      m_ostrm << "Warning, event " << eventNum << " not read." << endl;
-      fourRange = true;
+    if (!rootFile.getEvent(evtData.evtNum)) {
+      m_ostrm << "Warning, event " << evtData.evtNum << " not read." << endl;
+      evtData.fourRange = true;
       continue;
     }
-
+    
     DigiEvent *digiEvent = rootFile.getDigiEvent();
     if (!digiEvent) {
-      m_ostrm << __FILE__ << ": Unable to read DigiEvent " << eventNum  << endl;
-      fourRange = true;
+      m_ostrm << __FILE__ << ": Unable to read DigiEvent " << evtData.evtNum  << endl;
+      evtData.fourRange = true;
       continue;
     }
 
-    /////////////////////////////////////////
-    /// Event/Trigger level cuts ////////////
-    /////////////////////////////////////////
-    if (periodicTrigger) {
-      // quick check if we are in 4-range mode
-      EventSummaryData& summary = digiEvent->getEventSummaryData();
-      if (&summary == 0) {
-        m_ostrm << "Warning, eventSummary data not found for event: "
-                << eventNum << endl;
-        fourRange = true;
-        continue;
-      }
-      fourRange = summary.readout4();
-
-      const Gem& gem = digiEvent->getGem();
-      if (&gem==0) {
-        m_ostrm << "Warning, gem data not found for event: "
-                << eventNum << endl;
-        continue;
-      }
-
-      float gemDeltaEventTime = gem.getDeltaEventTime()*0.05;
-      unsigned gemConditionsWord = gem.getConditionSummary();
-      if(gemConditionsWord != 32 ||  // skip unless we are periodic trigger only
-         prev4Range              ||  // avoid bias from 4 range readout in prev event
-         gemDeltaEventTime < 2000) {   // avoid bias from shaped readout noise from adjacent event
-        continue;
-      }
-    }
-
-    const TClonesArray* calDigiCol = digiEvent->getCalDigiCol();
-    if (!calDigiCol) {
-      m_ostrm << "no calDigiCol found for event#" << eventNum << endl;
-      continue;
-    }
-
-    TIter calDigiIter(calDigiCol);
-    const CalDigi *pCalDigi = 0;
-
-    /////////////////////////////////////////
-    /// Xtal Hit Loop ///////////////////////
-    /////////////////////////////////////////
-    while ((pCalDigi = (CalDigi*)calDigiIter.Next())) {
-      const CalDigi &calDigi = *pCalDigi; // use reference to avoid -> syntax
-
-      //-- XtalId --//
-      idents::CalXtalId id(calDigi.getPackedId()); // get interaction information
-      // skip hits not for current tower.
-      XtalIdx xtalIdx(id);
-
-      unsigned nRO = calDigi.getNumReadouts();
-
-      if (nRO != 4) {
-        ostringstream tmp;
-        tmp << __FILE__  << ":"     << __LINE__ << " " 
-            << "Event# " << eventNum << " Invalid nReadouts, expecting 4";
-        throw runtime_error(tmp.str());
-      }
-
-      // 1st look at LEX8 vals
-      CalArray<FaceNum, float> adcL8;
-      bool badHit = false;
-      for (FaceNum face; face.isValid(); face++) {
-        adcL8[face] = calDigi.getAdcSelectedRange(LEX8, (CalXtalId::XtalFace)face.val());
-        // check for missing readout
-        if (adcL8[face] < 0) {
-          m_ostrm << "Couldn't get LEX8 readout for event=" << eventNum << endl;
-          badHit = true;
-          continue;
-        }
-      }
-      if (badHit) continue;      
-
-      /////////////////////////////////////////
-      /// 'Rough' pedestal mode (fist pass) ///
-      /////////////////////////////////////////
-      if (!roughPeds) {
-        for (FaceNum face; face.isValid(); face++) {
-          RngIdx rngIdx(xtalIdx, face, LEX8);
-          
-          m_histograms[rngIdx]->Fill(adcL8[face]);
-        }
-      /////////////////////////////////////////
-      /// Cut outliers (2nd pass) /////////////
-      /////////////////////////////////////////
-      } else  {
-        // skip outliers (outside of 5 sigma on either side)
-        if (fabs(adcL8[NEG_FACE] - roughPeds->getPed(RngIdx(xtalIdx,NEG_FACE,LEX8))) >=
-            5*roughPeds->getPedSig(RngIdx(xtalIdx,NEG_FACE,LEX8)) ||
-            fabs(adcL8[POS_FACE] - roughPeds->getPed(RngIdx(xtalIdx,POS_FACE,LEX8))) >=
-            5*roughPeds->getPedSig(RngIdx(xtalIdx,POS_FACE,LEX8)))
-          continue;
-      
-        //-- Fill histograms for all 4 ranges
-        for (unsigned short n = 0; n < nRO; n++) {
-          const CalXtalReadout &readout = *calDigi.getXtalReadout(n);
-          
-          for (FaceNum face; face.isValid(); face++) {
-            // check that we are in the expected readout mode
-            RngNum rng = readout.getRange((CalXtalId::XtalFace)face.val());
-            unsigned short adc = readout.getAdc((CalXtalId::XtalFace)face.val());
-            RngIdx rngIdx(xtalIdx, face, rng);
-            m_histograms[rngIdx]->Fill(adc);
-          }
-        }
-      }
-    }
+    processEvent(*digiEvent);
   }
 }
 
@@ -290,4 +193,130 @@ unsigned MuonPed::getMinEntries() {
     return 0;
 
   return retVal;
+}
+
+void MuonPed::processEvent(DigiEvent &digiEvent) {
+
+  /////////////////////////////////////////
+  /// Event/Trigger level cuts ////////////
+  /////////////////////////////////////////
+
+  //-- retrieve trigger data
+  const Gem *gem = 0;
+  unsigned gemConditionsWord = 0;
+  if (algData.trigCut == PERIODIC_TRIGGER ||
+      algData.trigCut == EXTERNAL_TRIGGER) {
+    gem = &(digiEvent.getGem());
+    if (&gem==0) {
+      m_ostrm << "Warning, gem data not found for event: "
+              << evtData.evtNum << endl;
+      return;
+    }
+    gemConditionsWord = gem->getConditionSummary();
+  }
+  
+  //-- PERIODIC_TRIGGER CUT
+  if (algData.trigCut == PERIODIC_TRIGGER) {
+    // quick check if we are in 4-range mode
+    EventSummaryData& summary = digiEvent.getEventSummaryData();
+    if (&summary == 0) {
+      m_ostrm << "Warning, eventSummary data not found for event: "
+              << evtData.evtNum << endl;
+      evtData.fourRange = true;
+      return;
+    }
+    evtData.fourRange = summary.readout4();
+    
+    float gemDeltaEventTime = gem->getDeltaEventTime()*0.05;
+    if(gemConditionsWord != 32 ||  // skip unless we are periodic trigger only
+       evtData.prev4Range      ||  // avoid bias from 4 range readout in prev event
+       gemDeltaEventTime < 2000) {   // avoid bias from shaped readout noise from adjacent event
+      return;
+    }
+  }
+
+  //-- EXTERNAL_TRIGGER CUT
+  if (algData.trigCut == EXTERNAL_TRIGGER) {
+    if (gemConditionsWord != 128)
+      return;
+  }
+
+  const TClonesArray* calDigiCol = digiEvent.getCalDigiCol();
+  if (!calDigiCol) {
+    m_ostrm << "no calDigiCol found for event#" << evtData.evtNum << endl;
+    return;
+  }
+
+  TIter calDigiIter(calDigiCol);
+  const CalDigi *pCalDigi = 0;
+
+  /////////////////////////////////////////
+  /// Xtal Hit Loop ///////////////////////
+  /////////////////////////////////////////
+  while ((pCalDigi = (CalDigi*)calDigiIter.Next()))
+    processHit(*pCalDigi);
+  
+}
+
+void MuonPed::processHit(const CalDigi &calDigi) {
+  //-- XtalId --//
+  idents::CalXtalId id(calDigi.getPackedId()); // get interaction information
+  // skip hits not for current tower.
+  XtalIdx xtalIdx(id);
+
+  unsigned nRO = calDigi.getNumReadouts();
+
+  if (nRO != 4) {
+    ostringstream tmp;
+    tmp << __FILE__  << ":"     << __LINE__ << " " 
+        << "Event# " << evtData.evtNum << " Invalid nReadouts, expecting 4";
+    throw runtime_error(tmp.str());
+  }
+
+  // 1st look at LEX8 vals
+  CalArray<FaceNum, float> adcL8;
+  for (FaceNum face; face.isValid(); face++) {
+    adcL8[face] = calDigi.getAdcSelectedRange(LEX8, (CalXtalId::XtalFace)face.val());
+    // check for missing readout
+    if (adcL8[face] < 0) {
+      m_ostrm << "Couldn't get LEX8 readout for event=" << evtData.evtNum << endl;
+      return;
+    }
+  }
+
+  /////////////////////////////////////////
+  /// 'Rough' pedestal mode (fist pass) ///
+  /////////////////////////////////////////
+  if (!algData.roughPeds) {
+    for (FaceNum face; face.isValid(); face++) {
+      RngIdx rngIdx(xtalIdx, face, LEX8);
+          
+      m_histograms[rngIdx]->Fill(adcL8[face]);
+    }
+  } else  {
+    /////////////////////////////////////////
+    /// Cut outliers (2nd pass) /////////////
+    /////////////////////////////////////////
+
+    // skip outliers (outside of 5 sigma on either side)
+    if (fabs(adcL8[NEG_FACE] - algData.roughPeds->getPed(RngIdx(xtalIdx,NEG_FACE,LEX8))) >=
+        5*algData.roughPeds->getPedSig(RngIdx(xtalIdx,NEG_FACE,LEX8)) ||
+        fabs(adcL8[POS_FACE] - algData.roughPeds->getPed(RngIdx(xtalIdx,POS_FACE,LEX8))) >=
+        5*algData.roughPeds->getPedSig(RngIdx(xtalIdx,POS_FACE,LEX8)))
+      return;
+      
+    //-- Fill histograms for all 4 ranges
+    for (unsigned short n = 0; n < nRO; n++) {
+      const CalXtalReadout &readout = *calDigi.getXtalReadout(n);
+          
+      for (FaceNum face; face.isValid(); face++) {
+        // check that we are in the expected readout mode
+        RngNum rng = readout.getRange((CalXtalId::XtalFace)face.val());
+        unsigned short adc = readout.getAdc((CalXtalId::XtalFace)face.val());
+        RngIdx rngIdx(xtalIdx, face, rng);
+        m_histograms[rngIdx]->Fill(adc);
+      }
+    }
+
+  }
 }
