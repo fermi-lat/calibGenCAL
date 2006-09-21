@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Thu Sep 21 09:22:34 PDT 2006
+calibGenCAL/src/lib
+
+Modified Files:
+	MuonPed.cxx MuonPed.h 
+Log Message:
+broke up muonPed alg into more modular structure.
+
+    *
+------------------------------------------------------------
+User: fewtrell  Thu Sep 21 09:22:34 PDT 2006
 calibGenCAL/src
 
 Modified Files:
