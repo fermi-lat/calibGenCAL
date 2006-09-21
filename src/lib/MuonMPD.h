@@ -1,6 +1,6 @@
 #ifndef MuonMPD_h
 #define MuonMPD_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.h,v 1.2 2006/06/22 21:50:23 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.h,v 1.3 2006/09/15 15:02:10 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
  */
@@ -67,7 +67,7 @@ class MuonMPD {
                                outFilename);
   }
 
-  static void MuonMPD::writeADC2NRG(const string &filename,
+  static void writeADC2NRG(const string &filename,
                                     const CalAsym &asym,
                                     const CIDAC2ADC &dac2adc,
                                     const CalMPD &mpd);
