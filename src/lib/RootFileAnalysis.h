@@ -1,6 +1,6 @@
 #ifndef RootFileAnalysis_h
 #define RootFileAnalysis_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/RootFileAnalysis.h,v 1.2 2006/06/22 21:50:23 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/RootFileAnalysis.h,v 1.3 2006/09/15 15:02:10 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
  */
@@ -35,13 +35,13 @@ class RootFileAnalysis {
     /**
        \param mcFilenames set to NULL to disable MC ROOT Chain
        \param digiFilenames set to NULL to disable Digi ROOT Chain
-       \param recFilenames set to NULL to disable Rec ROOT Chain
+       \param reconFilenames set to NULL to disable recon ROOT Chain
        \param ostrm optional logging stream
 
      */
     RootFileAnalysis(const vector<string> *mcFilenames,
                      const vector<string> *digiFilenames,
-                     const vector<string> *recFilenames,
+                     const vector<string> *reconFilenames,
                      ostream &ostrm = cout);
 
   ~RootFileAnalysis();
@@ -56,11 +56,11 @@ class RootFileAnalysis {
 
   McEvent   *getMcEvent() const {return m_mcEvt;}
   DigiEvent *getDigiEvent() const {return m_digiEvt;}
-  ReconEvent  *getRecEvent() const {return m_recEvt;}
+  ReconEvent  *getreconEvent() const {return m_reconEvt;}
 
   TChain *getMcChain()   {return &m_mcChain;}
   TChain *getDigiChain() {return &m_digiChain;}
-  TChain *getRecChain()  {return &m_recChain;}
+  TChain *getReconChain()  {return &m_reconChain;}
  
  private:
 
@@ -75,9 +75,9 @@ class RootFileAnalysis {
   DigiEvent   *m_digiEvt;
 
   /// Chains store event data for all files
-  TChain       m_recChain;
-  /// pointer to current ReconEvent
-  ReconEvent  *m_recEvt;
+  TChain       m_reconChain;
+  /// pointer to current reconEvent
+  ReconEvent  *m_reconEvt;
 
   /// helpful list of all 3 TChains
   TObjArray   m_chainArr;

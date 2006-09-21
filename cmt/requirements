@@ -38,4 +38,8 @@ application genMuonMPD genMuonMPD.cxx
 
 application runMuTrigEff runMuTrigEff.cxx 
 
+application genGCRMPD genGCRMPD.cxx
+
 application emiAnal emiAnal.cxx
+
+
