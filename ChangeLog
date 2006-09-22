@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Fri Sep 22 13:14:22 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	build_adcsmooth.py gensettings.py 
+Log Message:
+Improvements for batch processing on UNIX: unset DISPLAY env variable to prevent ROOT plotting; automatically make the UNIX sh output scripts user executable.
+
+    *
+------------------------------------------------------------
 User: dwood  Fri Sep 22 13:01:08 PDT 2006
 calibGenCAL/doc
 
