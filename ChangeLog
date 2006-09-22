@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: dwood  Fri Sep 22 12:52:09 PDT 2006
+calibGenCAL/doc
+
+Modified Files:
+	gensettings_scripts.html 
+Log Message:
+Added description of build_adcsmooth detector file name options
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Sep 21 12:30:57 PDT 2006
 calibGenCAL/cmt
 
