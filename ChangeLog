@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Fri Sep 22 15:12:33 PDT 2006
+calibGenCAL/cfg
+
+Added Files:
+	dacSlopesGen.cfg 
+Log Message:
+Added example config file for dacSlopesGen application.
+
+    *
+------------------------------------------------------------
 User: dwood  Fri Sep 22 13:14:22 PDT 2006
 calibGenCAL/python
 
