@@ -12,14 +12,15 @@ Note:
 __facility__  = "Offline"
 __abstract__  = "Build batch file containing commands to run adcsmooth filtering script"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2006/07/13 14:37:08 $"
-__version__   = "$Revision: 1.14 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/07/20 17:14:12 $"
+__version__   = "$Revision: 1.15 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 
 
 import sys, os
+import stat
 import logging
 import string
 import ConfigParser
@@ -27,7 +28,7 @@ import glob
 import os.path
 from optparse import OptionParser
 
-usage = 'build_adcsmooth [-f fileroot][--file fileroot]'
+usage = 'build_adcsmooth [-f fileroot | --file fileroot]'
 
 # finds files for gensettings and creates bat and sh files with adcsmooth commands to produce filtered files
 # NOTE:  folder must contain only one file for each module and type
@@ -83,6 +84,7 @@ cmdsh.write('#!/bin/sh\n')
 cmdsh.write('set -v\n')
 cmdsh.write('PYTHONPATH=${CALIBGENCALROOT}/python/lib:${ROOTSYS}/bin:${PYTHONPATH}\n')
 cmdsh.write('export PYTHONPATH\n')
+cmdsh.write('export -n DISPLAY\n')
 
 cmdbat.write('setlocal\n')
 cmdbat.write('set PYTHONPATH=%CALIBGENCALROOT%/python/lib;%ROOTSYS%/bin;%PYTHONPATH%\n')
@@ -189,12 +191,21 @@ for idet in detsections:
 	if uldname != 'skip':
             process_file(uldname)
             
-# close output files and terminate
+# close output files 
 
 cmdbat.write('endlocal')
 
 cmdbat.close()
 cmdsh.close()
+
+
+# fixup permissions for UNIX sh script
+
+fs = os.stat('adcsmooth.sh')
+os.chmod('adcsmooth.sh', (fs.st_mode | stat.S_IXUSR))
+
+
+# terminate
 
 sys.exit(0)
 
