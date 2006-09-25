@@ -6,8 +6,8 @@ Tool to smooth CAL ADC/DAC data.
 __facility__  = "Offline"
 __abstract__  = "Tool to smooth CAL ADC/DAC data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/21 18:43:14 $"
-__version__   = "$Revision: 1.1 $, $Author: dwood $"
+__date__      = "$Date: 2006/07/11 22:32:30 $"
+__version__   = "$Revision: 1.2 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -133,22 +133,22 @@ class calADCFilter:
                                              (tem, calConstant.CROW[row], calConstant.CPM[end],
                                               fe, calConstant.CRNG[erng]))
 
-                            fineData = outData[erng,tem,row,end,fe,0:64]
+                            #fineData = outData[erng,tem,row,end,fe,0:64]
                             coarseData = outData[erng,tem,row,end,fe,64:128]
 
-                            self.__floor(fineData)
+                            #self.__floor(fineData)
                             self.__floor(coarseData)
 
                             self.__saturateULD(coarseData)                            
 
-                            self.__restore(fineData)
+                            #self.__restore(fineData)
                             self.__restore(coarseData)                    
 
-                            self.__filter(fineData)
+                            #self.__filter(fineData)
                             self.__filter(coarseData)
 
                             if self.__smoothing:
-                                self.__smooth(fineData)
+                                #self.__smooth(fineData)
                                 self.__smooth(coarseData)                            
 
 
