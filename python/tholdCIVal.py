@@ -5,19 +5,19 @@ line is:
 tholdCIVal [-V] [-r] [-L <log_file>] [-R <root_file>] <xml_file>
 
 where:
-    -r             - generate ROOT output with default name
-    -R <root_file> - output validation diagnostics in ROOT file
+    -r              - generate ROOT output with default name
+    -R <root_file>  - output validation diagnostics in ROOT file
     -L <log_file>   - save console output to log text file
     -V              - verbose; turn on debug output
-    <xml_file> The CAL Thold_CI calibration XML file to validate.    
+    <xml_file>      - The CAL Thold_CI calibration XML file to validate.    
 """
 
 
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Thold_CI calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/20 18:59:57 $"
-__version__   = "$Revision: 1.22 $, $Author: dwood $"
+__date__      = "$Date: 2006/08/03 03:26:43 $"
+__version__   = "$Revision: 1.23 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -26,7 +26,6 @@ __credits__   = "NRL code 7650"
 import sys, os, math
 import getopt
 import logging
-import array
 
 import Numeric
 import MLab

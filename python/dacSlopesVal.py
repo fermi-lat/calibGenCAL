@@ -2,31 +2,30 @@
 Validate CAL DacSlopes calibration data in XML format.  The command
 line is:
 
-tholdCIVal [-V] [-L <log_file>] [-R <root_file>] <xml_file>
+dacSlopesVal [-V] [-L <log_file>] [-r] [-R <root_file>] <xml_file>
 
 where:
-
-    -R <root_file> - output validation diagnostics in ROOT file
+    -r              - generate ROOT output with default name
+    -R <root_file>  - output validation diagnostics in ROOT file
     -L <log_file>   - save console output to log text file
     -V              - verbose; turn on debug output
-    <xml_file> The CAL DacSlopes calibration XML file to validate.    
+    <xml_file>      - The CAL DacSlopes calibration XML file to validate.    
 """
 
 
 __facility__  = "Offline"
 __abstract__  = "Validate CAL DacSlopes calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/17 22:34:58 $"
-__version__   = "$Revision: 1.2 $, $Author: dwood $"
+__date__      = "$Date: 2006/07/18 03:02:39 $"
+__version__   = "$Revision: 1.3 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 
 
-import sys, os, math
+import sys, os
 import getopt
 import logging
-import array
 
 import Numeric
 import MLab
@@ -38,6 +37,30 @@ import calConstant
 
 # validation limits
 
+
+lacFineSlopeWarnLow    = 0.21
+lacFineSlopeWarnHigh   = 0.45
+
+lacFineSlopeErrLow     = 0.17
+lacFineSlopeErrHigh    = 0.49
+
+lacCoarseSlopeWarnLow  = 0.44
+lacCoarseSlopeWarnHigh = 0.78
+
+lacCoarseSlopeErrLow   = 0.37
+lacCoarseSlopeErrHigh  = 0.85
+
+fleCoarseSlopeWarnLow  = 3.0
+fleCoarseSlopeWarnHigh = 4.8 
+
+fleCoarseSlopeErrLow   = 2.7
+fleCoarseSlopeErrHigh  = 5.1
+
+fheFineSlopeWarnLow    = 36.0
+fheFineSlopeWarnHigh   = 72.0
+
+fheFineSlopeErrLow     = 30.0
+fheFineSlopeErrHigh    = 78.0
 
 
 
@@ -284,16 +307,152 @@ def rootHists(dacData, uldData, rangeData, fileName):
 def calcError(dacData, uldData, rangeData):
 
     status = 0
+    
+    # check LAC slopes
+    
+    for tem in towers:
+        for row in range(calConstant.NUM_ROW):
+            for end in range(calConstant.NUM_END):
+                for fe in range(calConstant.NUM_FE):
+                
+                    slope = dacData[tem, row, end, fe, 0]
+                    
+                    if rangeData[tem, row, end, fe, 0] == 0:
+                        warnLow = lacFineSlopeWarnLow
+                        warnHigh = lacFineSlopeWarnHigh
+                        errLow = lacFineSlopeErrLow
+                        errHigh = lacFineSlopeErrHigh
+                    else:
+                        warnLow = lacCoarseSlopeWarnLow
+                        warnHigh = lacCoarseSlopeWarnHigh
+                        errLow = lacCoarseSlopeErrLow
+                        errHigh = lacCoarseSlopeErrHigh 
+                        
+                    if slope > warnHigh or slope < warnLow:
+                    
+                        if slope > errHigh:
+                            msg = 'slope %0.3f > %0.3f for T%d,%s%s,%d,LAC' % \
+                                (slope, errHigh, tem, calConstant.CROW[row], 
+                                 calConstant.CPM[end], fe)
+                            log.error(msg)     
+                            status = 1
+                        elif slope < errLow:
+                            msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,LAC' % \
+                                (slope, errLow, tem, calConstant.CROW[row], 
+                                 calConstant.CPM[end], fe)
+                            log.error(msg)     
+                            status = 1
+                            
+                        elif slope > warnHigh:
+                            msg = 'slope %0.3f > %0.3f for T%d,%s%s,%d,LAC' % \
+                                (slope, warnHigh, tem, calConstant.CROW[row], 
+                                 calConstant.CPM[end], fe)
+                            log.warning(msg)
+                        else:
+                            msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,LAC' % \
+                                (slope, warnLow, tem, calConstant.CROW[row], 
+                                 calConstant.CPM[end], fe) 
+                        log.warning(msg)
+                        
+    # check FLE slopes
+    
+    for tem in towers:
+        for row in range(calConstant.NUM_ROW):
+            for end in range(calConstant.NUM_END):
+                for fe in range(calConstant.NUM_FE):
+                
+                    slope = dacData[tem, row, end, fe, 2]
+                    
+                    if rangeData[tem, row, end, fe, 1] == 0:
+                        log.warning('using FINE range for T%d,%s%s,%d,FLE', tem, row, end, fe)
+                        continue    
+                    else:
+                        warnLow = fleCoarseSlopeWarnLow
+                        warnHigh = fleCoarseSlopeWarnHigh
+                        errLow = fleCoarseSlopeErrLow
+                        errHigh = fleCoarseSlopeErrHigh 
+                        
+                    if slope > warnHigh or slope < warnLow:
+                    
+                        if slope > errHigh:
+                            msg = 'slope %0.3f > %0.3f for T%d,%s%s,%d,FLE' % \
+                                (slope, errHigh, tem, calConstant.CROW[row], 
+                                 calConstant.CPM[end], fe)
+                            log.error(msg)     
+                            status = 1
+                        elif slope < errLow:
+                            msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,FLE' % \
+                                (slope, errLow, tem, calConstant.CROW[row], 
+                                 calConstant.CPM[end], fe)
+                            log.error(msg)     
+                            status = 1
+                            
+                        elif slope > warnHigh:
+                            msg = 'slope %0.3f > %0.3f for T%d,%s%s,%d,FLE' % \
+                                (slope, warnHigh, tem, calConstant.CROW[row], 
+                                 calConstant.CPM[end], fe)
+                            log.warning(msg)
+                        else:
+                            msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,FLE' % \
+                                (slope, warnLow, tem, calConstant.CROW[row], 
+                                 calConstant.CPM[end], fe) 
+                        log.warning(msg)
+                        
+    # check FHE slopes
+    
+    for tem in towers:
+        for row in range(calConstant.NUM_ROW):
+            for end in range(calConstant.NUM_END):
+                for fe in range(calConstant.NUM_FE):
+                
+                    slope = dacData[tem, row, end, fe, 4]
+                    
+                    if rangeData[tem, row, end, fe, 2] != 0:
+                        log.warning('using COARSE range for T%d,%s%s,%d,FHE', tem, row, end, fe)
+                        continue    
+                    else:
+                        warnLow = fheFineSlopeWarnLow
+                        warnHigh = fheFineSlopeWarnHigh
+                        errLow = fheFineSlopeErrLow
+                        errHigh = fheFineSlopeErrHigh 
+                        
+                    if slope > warnHigh or slope < warnLow:
+                    
+                        if slope > errHigh:
+                            msg = 'slope %0.3f > %0.3f for T%d,%s%s,%d,FHE' % \
+                                (slope, errHigh, tem, calConstant.CROW[row], 
+                                 calConstant.CPM[end], fe)
+                            log.error(msg)     
+                            status = 1
+                        elif slope < errLow:
+                            msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,FHE' % \
+                                (slope, errLow, tem, calConstant.CROW[row], 
+                                 calConstant.CPM[end], fe)
+                            log.error(msg)     
+                            status = 1
+                            
+                        elif slope > warnHigh:
+                            msg = 'slope %0.3f > %0.3f for T%d,%s%s,%d,FHE' % \
+                                (slope, warnHigh, tem, calConstant.CROW[row], 
+                                 calConstant.CPM[end], fe)
+                            log.warning(msg)
+                        else:
+                            msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,FHE' % \
+                                (slope, warnLow, tem, calConstant.CROW[row], 
+                                 calConstant.CPM[end], fe) 
+                        log.warning(msg)                                                                               
 
     return status
 
 
 
+
 if __name__ == '__main__':
 
-    usage = "usage: dacSlopesVal [-V] [-L <log_file>] [-R <root_file>] <xml_file>"
+    usage = "usage: dacSlopesVal [-V] [-L <log_file>] [-r] [-R <root_file>] <xml_file>"
 
     rootOutput = False
+    logName = None
     
     # setup logger
 
@@ -304,7 +463,7 @@ if __name__ == '__main__':
     # check command line
 
     try:
-        opts = getopt.getopt(sys.argv[1:], "-R:-L:-V")
+        opts = getopt.getopt(sys.argv[1:], "-R:-L:-V-r")
     except getopt.GetoptError:
         log.error(usage)
         sys.exit(1)
@@ -314,14 +473,11 @@ if __name__ == '__main__':
         if o[0] == '-R':
             rootName = o[1]
             rootOutput = True
+        elif o[0] == '-r':
+            rootName = None
+            rootOutput = True    
         elif o[0] == '-L':
-            if os.path.exists(o[1]):
-                log.warning('Deleting old log file %s', o[1])
-                os.remove(o[1])
-            hdl = logging.FileHandler(o[1])
-            fmt = logging.Formatter('%(levelname)s %(message)s')
-            hdl.setFormatter(fmt)
-            log.addHandler(hdl)
+            logName = o[1]
         elif o[0] == '-V':
             log.setLevel(logging.DEBUG)    
         
@@ -331,6 +487,17 @@ if __name__ == '__main__':
         sys.exit(1)    
 
     xmlName = args[0]
+    
+    ext = os.path.splitext(xmlName)
+    if rootOutput and rootName is None:
+        rootName = "%s.val.root" % ext[0]
+    if logName is None:
+        logName = "%s.val.log" % ext[0]
+
+    hdl = logging.FileHandler(logName)
+    fmt = logging.Formatter('%(levelname)s %(message)s')
+    hdl.setFormatter(fmt)
+    log.addHandler(hdl)
 
     # open and read XML DacSlopes file
 
@@ -365,30 +532,143 @@ if __name__ == '__main__':
         
     # do simple stats
     
-    av = Numeric.average(dacData[...,0], axis = None)
-    sd = MLab.std(Numeric.ravel(dacData[...,0]))
-    log.info("LAC Mev/DAC slope average=%f, stddev=%f", av, sd)
+    # LAC
     
-    av = Numeric.average(dacData[...,1], axis = None)
-    sd = MLab.std(Numeric.ravel(dacData[...,1]))
-    log.info("LAC Mev offset average = %f, stddev=%f", av, sd)
+    sf = (rangeData[...,0] == 0)
+    sc = (rangeData[...,0] == 1)
+    
+    fineCount = Numeric.sum(Numeric.ravel(sf))
+    coarseCount = Numeric.sum(Numeric.ravel(sc))
+    log.info("LAC FINE count = %d, COARSE count = %d", fineCount, coarseCount)  
+    
+    data = Numeric.compress(Numeric.ravel(sf), Numeric.ravel(dacData[...,0]))
+    if len(data) == 0:
+        av = 0
+        sd = 0
+    else:    
+        av = Numeric.average(data)
+        sd = MLab.std(data)
+    log.info("LAC FINE Mev/DAC slope average=%f, stddev=%f", av, sd)
+    
+    data = Numeric.compress(Numeric.ravel(sf), Numeric.ravel(dacData[...,1]))
+    if len(data) == 0:
+        av = 0
+        sd = 0
+    else:    
+        av = Numeric.average(data)
+        sd = MLab.std(data)
+    log.info("LAC FINE Mev offset average = %f, stddev=%f", av, sd)
+    
+    data = Numeric.compress(Numeric.ravel(sc), Numeric.ravel(dacData[...,0]))
+    if len(data) == 0:
+        av = 0
+        sd = 0
+    else:    
+        av = Numeric.average(data)
+        sd = MLab.std(data)
+    log.info("LAC COARSE Mev/DAC slope average=%f, stddev=%f", av, sd)
+    
+    data = Numeric.compress(Numeric.ravel(sc), Numeric.ravel(dacData[...,1]))
+    if len(data) == 0:
+        av = 0
+        sd = 0
+    else:    
+        av = Numeric.average(data)
+        sd = MLab.std(data)
+    log.info("LAC COARSE Mev offset average = %f, stddev=%f", av, sd)
+    
+    # FLE    
         
-    av = Numeric.average(dacData[...,2], axis = None)
-    sd = MLab.std(Numeric.ravel(dacData[...,2]))
-    log.info("FLE Mev/DAC slope average = %f, stddev=%f", av, sd)
+    sf = (rangeData[...,1] == 0)
+    sc = (rangeData[...,1] == 1)
     
-    av = Numeric.average(dacData[...,3], axis = None)
-    sd = MLab.std(Numeric.ravel(dacData[...,3]))
-    log.info("FLE Mev offset average = %f, stddev=%f", av, sd)
+    fineCount = Numeric.sum(Numeric.ravel(sf))
+    coarseCount = Numeric.sum(Numeric.ravel(sc))
+    log.info("FLE FINE count = %d, COARSE COUNT = %d", fineCount, coarseCount)    
     
-    av = Numeric.average(dacData[...,4], axis = None)
-    sd = MLab.std(Numeric.ravel(dacData[...,4]))
-    log.info("FHE Mev/DAC slope average = %f, stddev=%f", av, sd)
+    data = Numeric.compress(Numeric.ravel(sf), Numeric.ravel(dacData[...,2]))  
+    if len(data) == 0:
+        av = 0
+        sd = 0
+    else:       
+        av = Numeric.average(data)
+        sd = MLab.std(data)
+    log.info("FLE FINE Mev/DAC slope average = %f, stddev=%f", av, sd)
     
-    av = Numeric.average(dacData[...,5], axis = None)
-    sd = MLab.std(Numeric.ravel(dacData[...,5]))
-    log.info("FHE Mev offset average = %f, stddev=%f", av, sd)
-        
+    data = Numeric.compress(Numeric.ravel(sf), Numeric.ravel(dacData[...,3]))
+    if len(data) == 0:
+        av = 0
+        sd = 0
+    else:    
+        av = Numeric.average(data)
+        sd = MLab.std(data)
+    log.info("FLE FINE Mev offset average = %f, stddev=%f", av, sd)
+    
+    data = Numeric.compress(Numeric.ravel(sc), Numeric.ravel(dacData[...,2])) 
+    if len(data) == 0:
+        av = 0
+        sd = 0
+    else:        
+        av = Numeric.average(data)
+        sd = MLab.std(data)
+    log.info("FLE COARSE Mev/DAC slope average = %f, stddev=%f", av, sd)
+    
+    data = Numeric.compress(Numeric.ravel(sc), Numeric.ravel(dacData[...,3]))
+    if len(data) == 0:
+        av = 0
+        sd = 0
+    else:    
+        av = Numeric.average(data)
+        sd = MLab.std(data)
+    log.info("FLE COARSE Mev offset average = %f, stddev=%f", av, sd)
+    
+    # FHE
+    
+    sf = (rangeData[...,2] == 0)
+    sc = (rangeData[...,2] == 1)
+    
+    fineCount = Numeric.sum(Numeric.ravel(sf))
+    coarseCount = Numeric.sum(Numeric.ravel(sc))
+    log.info("FHE FINE count = %d, COARSE count = %d", fineCount, coarseCount)
+    
+    data = Numeric.compress(Numeric.ravel(sf), Numeric.ravel(dacData[...,4]))
+    if len(data) == 0: 
+        av = 0
+        sd = 0
+    else:
+        av = Numeric.average(data)
+        sd = MLab.std(data)
+    log.info("FHE FINE Mev/DAC slope average = %f, stddev=%f", av, sd)
+    
+    data = Numeric.compress(Numeric.ravel(sf), Numeric.ravel(dacData[...,5]))
+    if len(data) == 0:
+        av = 0
+        sd = 0
+    else:    
+        av = Numeric.average(data)
+        sd = MLab.std(data)
+    log.info("FHE FINE Mev offset average = %f, stddev=%f", av, sd)
+    
+    data = Numeric.compress(Numeric.ravel(sc), Numeric.ravel(dacData[...,4]))
+    if len(data) == 0:
+        av = 0
+        sd = 0
+    else:    
+        av = Numeric.average(data)
+        sd = MLab.std(data)
+    log.info("FHE COARSE Mev/DAC slope average = %f, stddev=%f", av, sd)
+    
+    data = Numeric.compress(Numeric.ravel(sc), Numeric.ravel(dacData[...,5]))
+    if len(data) == 0:
+        av = 0
+        sd = 0
+    else:    
+        av = Numeric.average(data)
+        sd = MLab.std(data)
+    log.info("FHE COARSE Mev offset average = %f, stddev=%f", av, sd)
+    
+    # ULD LEX8
+    
     av = Numeric.average(uldData[calConstant.CRNG_LEX8,...,0], axis = None)
     sd = MLab.std(Numeric.ravel(uldData[calConstant.CRNG_LEX8,...,0]))
     log.info("ULD LEX8 Mev/DAC slope average = %f, stddev=%f", av, sd) 
@@ -404,6 +684,8 @@ if __name__ == '__main__':
     mn = min(Numeric.ravel(uldData[calConstant.CRNG_LEX8,...,2]))
     log.info("ULD LEX8 MeV saturation minimum = %f", mn)
     
+    # ULD LEX1
+    
     av = Numeric.average(uldData[calConstant.CRNG_LEX1,...,0], axis = None)
     sd = MLab.std(Numeric.ravel(uldData[calConstant.CRNG_LEX1,...,0]))
     log.info("ULD LEX1 Mev/DAC slope average = %f, stddev=%f", av, sd)
@@ -418,6 +700,8 @@ if __name__ == '__main__':
     
     mn = min(Numeric.ravel(uldData[calConstant.CRNG_LEX1,...,2]))
     log.info("ULD LEX8 MeV saturation minimum = %f", mn)
+    
+    # ULD HEX8
     
     av = Numeric.average(uldData[calConstant.CRNG_HEX8,...,0], axis = None)
     sd = MLab.std(Numeric.ravel(uldData[calConstant.CRNG_HEX8,...,0]))
