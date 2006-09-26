@@ -1,6 +1,6 @@
 #ifndef MuonAsym_h
 #define MuonAsym_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.h,v 1.3 2006/09/15 15:02:10 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.h,v 1.4 2006/09/26 18:57:24 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -25,12 +25,10 @@ class CIDAC2ADC;
 class TwrHodoscope;
 class TH2S;
 
-/** \brief Reresents GLAST Cal crystal light asymmetry calibration constants.
+/** \brief Algorithm class populates CalAsym calibration data with values extracted
+    from Muon collection digi ROOT event files
 
-contains read & write methods to various file formats & code
-to calculate calibrations from digi ROOT event files
-
-@author Zachary Fewtrell
+    @author Zachary Fewtrell
 */
 class MuonAsym {
  public:
@@ -64,7 +62,9 @@ class MuonAsym {
 
 
  private:
+  /// hodoscopic event cut for X direction xtals
   bool passCutX(const TwrHodoscope &hscope);
+  /// hodoscopic event cut for Y direction xtals
   bool passCutY(const TwrHodoscope &hscope);
 
   /// allocate & create asymmetry histograms & pointer arrays
@@ -77,6 +77,7 @@ class MuonAsym {
 
   std::string genHistName(CalUtil::AsymType asymType, CalUtil::XtalIdx xtalIdx);
 
+  /// used for logging output
   ostream &m_ostrm;
 };
 

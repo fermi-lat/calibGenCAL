@@ -1,6 +1,6 @@
 #ifndef MuonMPD_h
 #define MuonMPD_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.h,v 1.4 2006/09/21 18:42:27 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.h,v 1.5 2006/09/26 18:57:24 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -27,11 +27,8 @@ class TH1S;
 class TProfile;
 class TwrHodoscope;
 
-/** \brief Represents GLAST Cal Optical gain calibration constants
-    (MeV <-> CIDAC)
-
-    contains read & write methods to various file formats & code
-    to calculate calibrations from digi ROOT event files
+/** \brief Algorithm class generates CalMPD calibration data from digi ROOT
+    event files
 
     @author Zachary Fewtrell
 */
@@ -46,8 +43,9 @@ class MuonMPD {
                  const CalAsym &asym,
                  const CIDAC2ADC &dac2adc); 
 
-  /// fit histograms & save means
+  /// fit histograms & save mean gain values to calMPD
   void fitHists(CalMPD &calMPD); 
+
   /// skip event processing & load histograms from previous analysis
   void loadHists(const std::string &filename);
 
@@ -62,13 +60,16 @@ class MuonMPD {
                                outFilename);
   }
 
+  /// output adc2nrg calibration data in TXT format.
   static void writeADC2NRG(const string &filename,
                            const CalAsym &asym,
                            const CIDAC2ADC &dac2adc,
                            const CalMPD &mpd);
 
  private:
+  /// hodoscopic event cut for X direction crystals
   bool passCutX(const TwrHodoscope &hscope);
+  /// hodoscopic event cut for Y direction crystals
   bool passCutY(const TwrHodoscope &hscope);
 
   /// allocate & create mpdmetry histograms & pointer arrays
@@ -80,6 +81,7 @@ class MuonMPD {
   string genHistName(const std::string &type,
                      CalUtil::XtalIdx xtalIdx);
 
+  /// used for loggin output
   std::ostream &m_ostrm;
 
   /// # of bins in dacL2S profiles
@@ -99,8 +101,6 @@ class MuonMPD {
 
   /// most likely vertical muon energy deposition in Cal CsI crystal
   static const float MUON_ENERGY;
-
-
 };
 
 #endif
