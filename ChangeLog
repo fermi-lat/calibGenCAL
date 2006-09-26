@@ -1,4 +1,20 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Sep 26 11:57:24 PDT 2006
+calibGenCAL/src/lib
+
+Modified Files:
+	CGCUtil.cxx CGCUtil.h CIDAC2ADC.cxx CIDAC2ADC.h CalAsym.cxx 
+	CalAsym.h CalMPD.cxx CalMPD.h CalPed.cxx CalPed.h 
+	IntNonlin.cxx IntNonlin.h MuTrig.cxx MuTrig.h MuonAsym.cxx 
+	MuonAsym.h MuonMPD.cxx MuonMPD.h MuonPed.cxx MuonPed.h 
+	RootFileAnalysis.cxx RootFileAnalysis.h SimpleIniFile.cxx 
+	SimpleIniFile.h TwrHodoscope.cxx TwrHodoscope.h 
+Log Message:
+removed extraneous #include statements, replaced w/ 'class' statements where possible.
+removed 'using namespace' statements from header files.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Sep 26 11:57:23 PDT 2006
 calibGenCAL/src
 
