@@ -1,28 +1,23 @@
 #ifndef IntNonlin_h
 #define IntNonlin_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/IntNonlin.h,v 1.1 2006/09/15 15:02:10 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/IntNonlin.h,v 1.2 2006/09/19 13:19:32 fewtrell Exp $
 /** @file
     @author fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "CGCUtil.h"
-#include "RootFileAnalysis.h"
-#include "CIDAC2ADC.h"
 
 // GLAST INCLUDES
-#include "CalUtil/CalVec.h"
 #include "CalUtil/CalDefs.h"
-#include "CalUtil/CalArray.h"
+
 
 // EXTLIB INCLUDES
-#include "TFile.h"
-#include "TSpline.h"
 
 // STD INCLUDES
 
-using namespace std;
-using namespace CalUtil;
+class CIDAC2ADC;
+
 
 /** \brief Represents GLAST Cal CIDAC (Charge Injection DAC) <-> ADC 
     calibration constants
@@ -38,18 +33,18 @@ class IntNonlin {
  
   /// process digi root event file
   /// \param diode specify whether to analyze HE or LE circuits
-  void readRootData(const string &rootFileName,
+  void readRootData(const std::string &rootFileName,
                     CIDAC2ADC &adcMeans,
-                    DiodeNum diode,
+                    CalUtil::DiodeNum diode,
                     bool bcastMode); 
   
   /// smooth raw adc means for use in offline spline calibration
   void genSplinePts(CIDAC2ADC &adcMeans, CIDAC2ADC &cidac2adc); 
 
-  static void genOutputFilename(const string outputDir,
-                                const string &inFilename,
-                                const string &ext,
-                                string &outFilename) {
+  static void genOutputFilename(const std::string outputDir,
+                                const std::string &inFilename,
+                                const std::string &ext,
+                                std::string &outFilename) {
     CGCUtil::genOutputFilename(outputDir,
                                "cidac2adc",
                                inFilename,
@@ -59,7 +54,7 @@ class IntNonlin {
 
 
  private:
-  ostream &m_ostrm;
+  std::ostream &m_ostrm;
 
 
 };

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.4 2006/09/15 15:02:09 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.5 2006/09/18 14:12:53 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -9,6 +9,10 @@
 #include "lib/MuonAsym.h"
 #include "lib/MuonMPD.h"
 #include "lib/SimpleIniFile.h"
+#include "lib/CalPed.h"
+#include "lib/CalAsym.h"
+#include "lib/CIDAC2ADC.h"
+#include "lib/CalMPD.h"
 
 // GLAST INCLUDES
 

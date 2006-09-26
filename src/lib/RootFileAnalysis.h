@@ -1,27 +1,25 @@
 #ifndef RootFileAnalysis_h
 #define RootFileAnalysis_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/RootFileAnalysis.h,v 1.3 2006/09/15 15:02:10 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/RootFileAnalysis.h,v 1.4 2006/09/21 19:30:00 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 
 // LOCAL INCLUDES
 
 // GLAST INCLUDES
-#include "digiRootData/DigiEvent.h"
-#include "reconRootData/ReconEvent.h"
-#include "mcRootData/McEvent.h"
 
 // EXTLIB INCLUDES
 #include "TChain.h"
 
 // STD INCLUDES
-#include <string>
-#include <vector>
 #include <iostream>
 
-using namespace std;
+
+class McEvent;
+class DigiEvent;
+class ReconEvent;
 
 /** \brief Makes a VCR for GLAST root event files
 
@@ -33,16 +31,16 @@ RootFileAnalysis contains the following features...
 class RootFileAnalysis {
   public :
     /**
-       \param mcFilenames set to NULL to disable MC ROOT Chain
-       \param digiFilenames set to NULL to disable Digi ROOT Chain
-       \param reconFilenames set to NULL to disable recon ROOT Chain
+       \param mcFilenames (set to NULL to disable MC ROOT Chain)
+       \param digiFilenames (set to NULL to disable Digi ROOT Chain)
+       \param reconFilenames (set to NULL to disable recon ROOT Chain)
        \param ostrm optional logging stream
 
-     */
-    RootFileAnalysis(const vector<string> *mcFilenames,
-                     const vector<string> *digiFilenames,
-                     const vector<string> *reconFilenames,
-                     ostream &ostrm = cout);
+    */
+    RootFileAnalysis(const std::vector<std::string> *mcFilenames,
+                     const std::vector<std::string> *digiFilenames,
+                     const std::vector<std::string> *reconFilenames,
+                     std::ostream &ostrm=std::cout);
 
   ~RootFileAnalysis();
 
@@ -56,7 +54,7 @@ class RootFileAnalysis {
 
   McEvent   *getMcEvent() const {return m_mcEvt;}
   DigiEvent *getDigiEvent() const {return m_digiEvt;}
-  ReconEvent  *getreconEvent() const {return m_reconEvt;}
+  ReconEvent  *getReconEvent() const {return m_reconEvt;}
 
   TChain *getMcChain()   {return &m_mcChain;}
   TChain *getDigiChain() {return &m_digiChain;}

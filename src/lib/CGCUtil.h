@@ -1,7 +1,7 @@
 #ifndef CGCUtil_H
 #define CGCUtil_H
 
-//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CGCUtil.h,v 1.2 2006/06/22 21:50:22 fewtrell Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CGCUtil.h,v 1.3 2006/08/03 13:06:48 fewtrell Exp $
 
 // LOCAL INCLUDES
 
@@ -10,47 +10,46 @@
 // EXTLIB INCLUDES
 #include "TFile.h"
 #include "TKey.h"
-#include "TClass.h"
 
 // STD INCLUDES
-#include <string>
-#include <vector>
 #include <ostream>
+#include <vector>
+#include <streambuf>
 
 /** @file CGCUtil.h
     @author Zachary Fewtrell
     \brief Generic utility functions for calibGenCAL pkg
 */
 
-using namespace std;
+
 
 namespace CGCUtil {
 
-  const string CVS_TAG("$Name:  $");
+  const std::string CVS_TAG("$Name: HEAD $");
 
   /// Template function fills any STL type container with zero values
   template <class T> static void fill_zero(T &container) {
     fill(container.begin(), container.end(), 0);
   }
 
-  void tokenize_str(const string& str,
-                    vector<string>& tokens,
-                    const string& delimiters = " ");
+  void tokenize_str(const std::string& str,
+                    std::vector<std::string>& tokens,
+                    const std::string& delimiters = " ");
 
-  string &path_remove_dir(string &path);
+  std::string &path_remove_dir(std::string &path);
 
-  string &path_remove_ext(string &path);
+  std::string &path_remove_ext(std::string &path);
 
 
 
-  typedef vector<ostream*> streamvector;
+  typedef std::vector<std::ostream*> streamvector;
   /** wrapper class for treating multiple streambuf objects as one 
    *
    * used by multiplexor_ostream
    */
-  class multiplexor_streambuf : public streambuf {
+  class multiplexor_streambuf : public std::streambuf {
   public:
-    multiplexor_streambuf() : streambuf() {}
+    multiplexor_streambuf() : std::streambuf() {}
   
     virtual int overflow(int c) {
       // write the incoming character into each stream
@@ -78,7 +77,7 @@ namespace CGCUtil {
   class multiplexor_ostream : public ostream
     {
     public:
-      multiplexor_ostream() : ios(0), ostream(new multiplexor_streambuf()){}
+      multiplexor_ostream() : std::ios(0), std::ostream(new multiplexor_streambuf()){}
       virtual ~multiplexor_ostream() { delete rdbuf(); }
   
       streamvector& getostreams() { 
@@ -89,13 +88,13 @@ namespace CGCUtil {
   /// Output string w/ username, hostname, time, relevant CMT package versions 
   /// & paths to ostream
   /// output is in multi line text format
-  void output_env_banner(ostream &ostrm);
+  void output_env_banner(std::ostream &ostrm);
 
   /** \brief convert string to uppercase
       \return ref to converted string
       \note operates in place on given string.
   */
-  string &str_toupper(string &str);
+  std::string &str_toupper(std::string &str);
 
   /** convert string to boolean.
       \return boolean interperetation of value
@@ -104,20 +103,20 @@ namespace CGCUtil {
       to be interpereted as boolean, value must be '1', '0', '[t]rue', '[f]alse', '[y]es', '[n]o'
       \note interperetation is case-insensitive.
   */
-  bool stringToBool(const string &str);
+  bool stringToBool(const std::string &str);
 
-  void genOutputFilename(const string &outputDir,
-                         const string &outputCalibType,
-                         const string &inputFilename,
-                         const string &outputExt,
-                         string &outputFilename);
+  void genOutputFilename(const std::string &outputDir,
+                         const std::string &outputCalibType,
+                         const std::string &inputFilename,
+                         const std::string &outputExt,
+                         std::string &outputFilename);
 
   /// use this method to retrieve a histogram of given
   /// type and name out of a root file
   /// \return ptr to hist obj if successful, NULL ptr otherwise
   template <class T>
     T* retrieveHist(TFile &histFile,
-                    const string &histname) {
+                    const std::string &histname) {
     TKey *key = histFile.FindKey(histname.c_str());
     // skip missing hist
     if (!key)
@@ -138,12 +137,12 @@ namespace CGCUtil {
   } 
 
   /// return minimum value from an STL vector
-  template<typename T> const T& max_val(const vector<T> &vec) {
+  template<typename T> const T& max_val(const std::vector<T> &vec) {
     return *(max_element(vec.begin(),vec.end()));
   }
 
   /// return minimum value from an STL vector
-  template<typename T> const T& min_val(const vector<T> &vec) {
+  template<typename T> const T& min_val(const std::vector<T> &vec) {
     return *(min_element(vec.begin(),vec.end()));
   }
 

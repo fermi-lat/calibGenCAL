@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/TwrHodoscope.h,v 1.2 2006/08/03 13:06:48 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/TwrHodoscope.h,v 1.3 2006/09/15 15:02:10 fewtrell Exp $
 /** @file
     @author fewtrell
 */
@@ -7,20 +7,22 @@
 #define TwrHodoscope_h
 
 // LOCAL INCLUDES
-#include "CalPed.h"
-#include "CIDAC2ADC.h"
 
 // GLAST INCLUDES
-#include "digiRootData/DigiEvent.h"
-#include "CalUtil/CalArray.h"
-#include "CalUtil/CalVec.h"
 #include "CalUtil/CalDefs.h"
+#include "CalUtil/CalVec.h"
+#include "CalUtil/CalArray.h"
 
 // EXTLIB INCLUDES
 
 // STD INCLUDES
+#include <vector>
 
-using namespace CalUtil;
+
+class CalPed;
+class CIDAC2ADC;
+class CalDigi;
+
 
 /** \brief Accumulate crystal hits in single tower and summarize into information
     which can be used for track determination.
@@ -31,9 +33,9 @@ class TwrHodoscope {
   /// default ctor
   TwrHodoscope(const CalPed &ped,
                const CIDAC2ADC &cidac2adc,
-               ostream &ostrm = cout) :      
-    adc_ped(tDiodeIdx::N_VALS),
-    dac(tDiodeIdx::N_VALS),
+               std::ostream &ostrm = cout) :      
+    adc_ped(CalUtil::tDiodeIdx::N_VALS),
+    dac(CalUtil::tDiodeIdx::N_VALS),
     m_peds(ped),
     m_cidac2adc(cidac2adc),
     m_ostrm(ostrm)
@@ -51,26 +53,26 @@ class TwrHodoscope {
   void summarizeEvent();
 
   /// pedestal subtracted adc values 1 per diode
-  CalVec<tDiodeIdx, float> adc_ped; 
+  CalUtil::CalVec<CalUtil::tDiodeIdx, float> adc_ped; 
 
   /// cidac values (1 per diode)
-  CalVec<tDiodeIdx, float> dac;
+  CalUtil::CalVec<CalUtil::tDiodeIdx, float> dac;
 
   // Hit summary histograms
   /// number of hits per layer
-  CalArray<GCRCNum, unsigned short> perLyrX; 
+  CalUtil::CalArray<CalUtil::GCRCNum, unsigned short> perLyrX; 
   /// number of hits per layer
-  CalArray<GCRCNum, unsigned short> perLyrY; 
+  CalUtil::CalArray<CalUtil::GCRCNum, unsigned short> perLyrY; 
   /// # of hits per X column
-  CalArray<ColNum, unsigned short> perColX; 
+  CalUtil::CalArray<CalUtil::ColNum, unsigned short> perColX; 
   /// # of hits per Y column
-  CalArray<ColNum, unsigned short> perColY; 
+  CalUtil::CalArray<CalUtil::ColNum, unsigned short> perColY; 
 
   // Hit lists
   /// list of X direction xtalId's which were hit 
-  vector<XtalIdx> hitListX; 
+  std::vector<CalUtil::XtalIdx> hitListX; 
   /// list of Y direction xtalId's which were hit
-  vector<XtalIdx> hitListY; 
+  std::vector<CalUtil::XtalIdx> hitListY; 
 
   // His summary 
   /// total # of hit xtals 
@@ -101,7 +103,7 @@ class TwrHodoscope {
   const CIDAC2ADC &m_cidac2adc;
 
   /// stream used for loggging
-  ostream &m_ostrm;
+  std::ostream &m_ostrm;
   
   /// threshold (LEX8 ADCP + ADCN) for couniting a 'hit' xtal
   static const unsigned short hitThresh = 100;

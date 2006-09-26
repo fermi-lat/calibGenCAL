@@ -1,25 +1,22 @@
 #ifndef CIDAC2ADC_h
 #define CIDAC2ADC_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CIDAC2ADC.h,v 1.3 2006/08/03 13:06:48 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CIDAC2ADC.h,v 1.4 2006/09/15 15:02:10 fewtrell Exp $
 /** @file
     @author fewtrell
- */
+*/
 
 // LOCAL INCLUDES
-#include "CGCUtil.h"
 
 // GLAST INCLUDES
-#include "CalUtil/CalVec.h"
 #include "CalUtil/CalDefs.h"
-#include "CalUtil/CalArray.h"
+#include "CalUtil/CalVec.h"
 
 // EXTLIB INCLUDES
 #include "TSpline.h"
 
 // STD INCLUDES
 
-using namespace std;
-using namespace CalUtil;
+
 
 /** \brief Represents GLAST Cal CIDAC (Charge Injection DAC) <-> ADC 
     calibration constants
@@ -34,31 +31,31 @@ class CIDAC2ADC {
   CIDAC2ADC();
 
   /// write calibrations to txt file
-  void writeTXT(const string &filename) const; 
+  void writeTXT(const std::string &filename) const; 
 
-  void readTXT(const string &filename);
+  void readTXT(const std::string &filename);
 
   /// get series of charge injection DAC values used for given energy range in
-  const vector<float>& getPtsDAC(RngIdx rngIdx) const 
+  const std::vector<float>& getPtsDAC(CalUtil::RngIdx rngIdx) const 
     {return m_splinePtsDAC[rngIdx];}
 
   /// get series of measured ADC values for given channel
-  const vector<float>& getPtsADC(RngIdx rngIdx) const 
+  const std::vector<float>& getPtsADC(CalUtil::RngIdx rngIdx) const 
     {return m_splinePtsADC[rngIdx];}
 
   /// get series of charge injection DAC values used for given energy range in
-  vector<float>& getPtsDAC(RngIdx rngIdx)
+  std::vector<float>& getPtsDAC(CalUtil::RngIdx rngIdx)
     {return m_splinePtsDAC[rngIdx];}
 
   /// get series of measured ADC values for given channel
-  vector<float>& getPtsADC(RngIdx rngIdx)
+  std::vector<float>& getPtsADC(CalUtil::RngIdx rngIdx)
     {return m_splinePtsADC[rngIdx];}
 
   /// creates & populates INL splines from m_calIntNonlin;
   void genSplines(); 
 
   /// uses intNonlin to convert adc 2 dac for specified xtal/adc range
-  float adc2dac(RngIdx rngIdx, float adc) const {
+  float adc2dac(CalUtil::RngIdx rngIdx, float adc) const {
     if (!m_splinesADC2DAC[rngIdx])
       return INVALID_ADC;
 
@@ -66,7 +63,7 @@ class CIDAC2ADC {
   }
 
   /// uses intNonlin to convert dac 2 adc for specified xtal/adc range
-  float dac2adc(RngIdx rngIdx, float dac) const {
+  float dac2adc(CalUtil::RngIdx rngIdx, float dac) const {
     if (!m_splinesDAC2ADC[rngIdx])
       return INVALID_ADC;
 
@@ -80,12 +77,12 @@ class CIDAC2ADC {
 
  private:
   /// output ADC spline points
-  CalVec<RngIdx, vector<float> >  m_splinePtsADC;
+  CalUtil::CalVec<CalUtil::RngIdx, vector<float> >  m_splinePtsADC;
   /// output DAC spline points
-  CalVec<RngIdx, vector<float> >  m_splinePtsDAC;
+  CalUtil::CalVec<CalUtil::RngIdx, vector<float> >  m_splinePtsDAC;
 
-  CalVec<RngIdx, TSpline3*> m_splinesADC2DAC; 
-  CalVec<RngIdx, TSpline3*> m_splinesDAC2ADC; 
+  CalUtil::CalVec<CalUtil::RngIdx, TSpline3*> m_splinesADC2DAC; 
+  CalUtil::CalVec<CalUtil::RngIdx, TSpline3*> m_splinesDAC2ADC; 
 };
 
 #endif

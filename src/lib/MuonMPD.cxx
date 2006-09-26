@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.cxx,v 1.7 2006/09/20 15:46:43 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.cxx,v 1.8 2006/09/21 19:03:27 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -8,35 +8,38 @@
 #include "RootFileAnalysis.h"
 #include "CIDAC2ADC.h"
 #include "TwrHodoscope.h"
-#include "CGCUtil.h"
+#include "CalGeom.h"
+#include "CalPed.h"
+#include "CalAsym.h"
+#include "CalMPD.h"
 
 // GLAST INCLUDES
+#include "digiRootData/DigiEvent.h"
 
 // EXTLIB INCLUDES
-#include "TKey.h"
-#include "TCanvas.h"
 #include "TProfile.h"
+#include "TH2S.h"
+#include "TCanvas.h"
 #include "TF1.h"
+#include "TFile.h"
+#include "TH1S.h"
+
 
 // STD INCLUDES
 #include <sstream>
 
 using namespace std;
-using namespace CGCUtil;
-
-/// vertical pitch (mm) of cal xtals
-static const float CELL_VERT_PITCH = 21.35;
-/// horizontal pitch (mm) of cal xtals
-static const float CELL_HOR_PITCH  = 27.84;
+using namespace CalUtil;
+using namespace CalGeom;
 
 const float MuonMPD::MUON_ENERGY = 11.2;
 
 
 MuonMPD::MuonMPD(ostream &ostrm) :
-  m_dacLLHists(XtalIdx::N_VALS),
+  m_ostrm(ostrm),
   m_dacL2SHists(XtalIdx::N_VALS),
   m_dacL2SSlopeProfs(XtalIdx::N_VALS),
-  m_ostrm(ostrm)
+  m_dacLLHists(XtalIdx::N_VALS)
 {
 }
 
@@ -103,7 +106,7 @@ void MuonMPD::fillHists(unsigned nEntries,
   // NUMERIC CONSTANTS
   // converts between lyr/col units & mm
   // real trig is needed for pathlength calculation
-  static const float slopeFactor = CELL_HOR_PITCH/CELL_VERT_PITCH;
+  static const float slopeFactor = CalGeom::CELL_HOR_PITCH/CalGeom::CELL_VERT_PITCH;
 
 
   // need one hodo scope per tower
@@ -284,23 +287,22 @@ void MuonMPD::fillHists(unsigned nEntries,
 
           CalArray<XtalDiode, float> dacs;
 
-          // apply pathlength correction
-          for (XtalDiode xDiode; xDiode.isValid(); xDiode++)
-            dacs[xDiode] = hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), xDiode)] /= sec;
+          // calculate meanDAC for each diode size.
+          CalArray<DiodeNum, float> meanDAC;
+          for (DiodeNum diode; diode.isValid(); diode++) {
+            meanDAC[diode] = sqrt(dacs[XtalDiode(POS_FACE, diode)] *
+                                  dacs[XtalDiode(NEG_FACE, diode)]);
 
-          float meanDACLrg = sqrt(dacs[XtalDiode(POS_FACE, LRG_DIODE)] *
-                                  dacs[XtalDiode(NEG_FACE, LRG_DIODE)]);
-
-          float meanDACSm = sqrt(dacs[XtalDiode(POS_FACE, SM_DIODE)] *
-                                 dacs[XtalDiode(NEG_FACE, SM_DIODE)]);
+            meanDAC[diode] /= sec;
+          }
         
           // Load meanDAC Histogram
-          m_dacLLHists[xtalIdx]->Fill(meanDACLrg);
+          m_dacLLHists[xtalIdx]->Fill(meanDAC[LRG_DIODE]);
 
           // load dacL2S profile
-          m_dacL2SHists[xtalIdx]->Fill(meanDACSm/meanDACLrg);
+          m_dacL2SHists[xtalIdx]->Fill(meanDAC[SM_DIODE]/meanDAC[LRG_DIODE]);
           // load dacL2S profile
-          m_dacL2SSlopeProfs[xtalIdx]->Fill(meanDACLrg,meanDACSm);
+          m_dacL2SSlopeProfs[xtalIdx]->Fill(meanDAC[LRG_DIODE],meanDAC[SM_DIODE]);
 
 
           nXtals++;      
@@ -333,7 +335,7 @@ void MuonMPD::fitHists(CalMPD &calMPD) {
       continue;
     // retrieve Lrg diode DAC histogram
     if (!m_dacLLHists[xtalIdx])
-        continue;
+      continue;
     TH1S& histLL = *m_dacLLHists[xtalIdx];
     // skip empty histograms
     if (histLL.GetEntries() == 0) 
@@ -443,7 +445,7 @@ void MuonMPD::loadHists(const string &filename) {
 
     //-- DAC_LL HISTOGRAMS --//
     string histname = genHistName("dacLL", xtalIdx);
-    TH1S *hist_LL = retrieveHist<TH1S>(histFile, histname);
+    TH1S *hist_LL = CGCUtil::retrieveHist<TH1S>(histFile, histname);
     if (!hist_LL) continue;
     
 
@@ -458,7 +460,7 @@ void MuonMPD::loadHists(const string &filename) {
 
     //-- DAC_L2S HISTOGRAMS --//
     histname = genHistName("dacL2S", xtalIdx);
-    TH1S *hist_L2S = retrieveHist<TH1S>(histFile, histname);
+    TH1S *hist_L2S = CGCUtil::retrieveHist<TH1S>(histFile, histname);
     if (!hist_L2S) continue;
 
     hist_L2S->SetDirectory(0);
@@ -467,7 +469,7 @@ void MuonMPD::loadHists(const string &filename) {
 
     //-- DAC_L2S HISTOGRAMS --//
     histname = genHistName("dacL2S_slope", xtalIdx);
-    TProfile *hist_L2S_slope = retrieveHist<TProfile>(histFile, histname);
+    TProfile *hist_L2S_slope = CGCUtil::retrieveHist<TProfile>(histFile, histname);
     if (!hist_L2S_slope) continue;
 
     hist_L2S_slope->SetDirectory(0);
