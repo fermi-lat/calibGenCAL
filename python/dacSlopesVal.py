@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL DacSlopes calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/18 03:02:39 $"
-__version__   = "$Revision: 1.3 $, $Author: dwood $"
+__date__      = "$Date: 2006/09/26 19:51:41 $"
+__version__   = "$Revision: 1.4 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -62,6 +62,23 @@ fheFineSlopeWarnHigh   = 72.0
 fheFineSlopeErrLow     = 30.0
 fheFineSlopeErrHigh    = 78.0
 
+uldLex8SlopeWarnLow    = 0.67
+uldLex8SlopeWarnHigh   = 1.02
+
+uldLex8SlopeErrLow     = 0.61
+uldLex8SlopeErrHigh    = 1.07
+
+uldLex1SlopeWarnLow    = 6.0
+uldLex1SlopeWarnHigh   = 9.0
+
+uldLex1SlopeErrLow     = 5.5
+uldLex1SlopeErrHigh    = 9.5
+
+uldHex8SlopeWarnLow    = 47.5
+uldHex8SlopeWarnHigh   = 74.5
+
+uldHex8SlopeErrLow     = 43.0
+uldHex8SlopeErrHigh    = 79.0
 
 
 
@@ -440,7 +457,142 @@ def calcError(dacData, uldData, rangeData):
                             msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,FHE' % \
                                 (slope, warnLow, tem, calConstant.CROW[row], 
                                  calConstant.CPM[end], fe) 
-                        log.warning(msg)                                                                               
+                        log.warning(msg)
+                        
+    # check ULD LEX8 slopes
+    
+    for tem in towers:
+        for row in range(calConstant.NUM_ROW):
+            for end in range(calConstant.NUM_END):
+                for fe in range(calConstant.NUM_FE):
+                
+                    slope = uldData[calConstant.CRNG_LEX8, tem, row, end, fe, 0]
+                    
+                    if rangeData[tem, row, end, fe, 3] == 0:
+                        log.error('using FINE range for T%d,%s%s,%d,ULD,LEX8', tem, row, end, fe)
+                        status = 1
+                        continue   
+                    else:
+                        warnLow = uldLex8SlopeWarnLow
+                        warnHigh = uldLex8SlopeWarnHigh
+                        errLow = uldLex8SlopeErrLow
+                        errHigh = uldLex8SlopeErrHigh 
+                        
+                    if slope > warnHigh or slope < warnLow:
+                    
+                        if slope > errHigh:
+                            msg = 'slope %0.3f > %0.3f for T%d,%s%s,%d,ULD,LEX8' % \
+                                (slope, errHigh, tem, calConstant.CROW[row], 
+                                 calConstant.CPM[end], fe)
+                            log.error(msg)     
+                            status = 1
+                        elif slope < errLow:
+                            msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,ULD,LEX8' % \
+                                (slope, errLow, tem, calConstant.CROW[row], 
+                                 calConstant.CPM[end], fe)
+                            log.error(msg)     
+                            status = 1
+                            
+                        elif slope > warnHigh:
+                            msg = 'slope %0.3f > %0.3f for T%d,%s%s,%d,ULD,LEX8' % \
+                                (slope, warnHigh, tem, calConstant.CROW[row], 
+                                 calConstant.CPM[end], fe)
+                            log.warning(msg)
+                        else:
+                            msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,ULD,LEX8' % \
+                                (slope, warnLow, tem, calConstant.CROW[row], 
+                                 calConstant.CPM[end], fe) 
+                        log.warning(msg)
+                        
+    # check ULD LEX1 slopes
+    
+    for tem in towers:
+        for row in range(calConstant.NUM_ROW):
+            for end in range(calConstant.NUM_END):
+                for fe in range(calConstant.NUM_FE):
+                
+                    slope = uldData[calConstant.CRNG_LEX1, tem, row, end, fe, 0]
+                    
+                    if rangeData[tem, row, end, fe, 4] == 0:
+                        log.error('using FINE range for T%d,%s%s,%d,ULD,LEX1', tem, row, end, fe)
+                        status = 1
+                        continue   
+                    else:
+                        warnLow = uldLex1SlopeWarnLow
+                        warnHigh = uldLex1SlopeWarnHigh
+                        errLow = uldLex1SlopeErrLow
+                        errHigh = uldLex1SlopeErrHigh 
+                        
+                    if slope > warnHigh or slope < warnLow:
+                    
+                        if slope > errHigh:
+                            msg = 'slope %0.3f > %0.3f for T%d,%s%s,%d,ULD,LEX1' % \
+                                (slope, errHigh, tem, calConstant.CROW[row], 
+                                 calConstant.CPM[end], fe)
+                            log.error(msg)     
+                            status = 1
+                        elif slope < errLow:
+                            msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,ULD,LEX1' % \
+                                (slope, errLow, tem, calConstant.CROW[row], 
+                                 calConstant.CPM[end], fe)
+                            log.error(msg)     
+                            status = 1
+                            
+                        elif slope > warnHigh:
+                            msg = 'slope %0.3f > %0.3f for T%d,%s%s,%d,ULD,LEX1' % \
+                                (slope, warnHigh, tem, calConstant.CROW[row], 
+                                 calConstant.CPM[end], fe)
+                            log.warning(msg)
+                        else:
+                            msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,ULD,LEX1' % \
+                                (slope, warnLow, tem, calConstant.CROW[row], 
+                                 calConstant.CPM[end], fe) 
+                            log.warning(msg)
+                            
+    # check ULD HEX8 slopes
+    
+    for tem in towers:
+        for row in range(calConstant.NUM_ROW):
+            for end in range(calConstant.NUM_END):
+                for fe in range(calConstant.NUM_FE):
+                
+                    slope = uldData[calConstant.CRNG_HEX8, tem, row, end, fe, 0]
+                    
+                    if rangeData[tem, row, end, fe, 5] == 0:
+                        log.error('using FINE range for T%d,%s%s,%d,ULD,HEX8', tem, row, end, fe)
+                        status = 1
+                        continue   
+                    else:
+                        warnLow = uldHex8SlopeWarnLow
+                        warnHigh = uldHex8SlopeWarnHigh
+                        errLow = uldHex8SlopeErrLow
+                        errHigh = uldHex8SlopeErrHigh 
+                        
+                    if slope > warnHigh or slope < warnLow:
+                    
+                        if slope > errHigh:
+                            msg = 'slope %0.3f > %0.3f for T%d,%s%s,%d,ULD,HEX8' % \
+                                (slope, errHigh, tem, calConstant.CROW[row], 
+                                 calConstant.CPM[end], fe)
+                            log.error(msg)     
+                            status = 1
+                        elif slope < errLow:
+                            msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,ULD,HEX8' % \
+                                (slope, errLow, tem, calConstant.CROW[row], 
+                                 calConstant.CPM[end], fe)
+                            log.error(msg)     
+                            status = 1
+                            
+                        elif slope > warnHigh:
+                            msg = 'slope %0.3f > %0.3f for T%d,%s%s,%d,ULD,HEX8' % \
+                                (slope, warnHigh, tem, calConstant.CROW[row], 
+                                 calConstant.CPM[end], fe)
+                            log.warning(msg)
+                        else:
+                            msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,ULD,HEX8' % \
+                                (slope, warnLow, tem, calConstant.CROW[row], 
+                                 calConstant.CPM[end], fe) 
+                        log.warning(msg)                                                                                                                                               
 
     return status
 
