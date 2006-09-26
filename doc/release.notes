@@ -433,3 +433,16 @@ v4r3p1 fewtrell
 --------------------------------
 - documentation updates
 - bug fix in calibGainCoeff.py script (bad channel indexing
+
+---------------------
+v4r4 fewtrell, dwood
+---------------------
+Fewtrell:
+- much internal code cleanup that shouldn't affect output.  Improved modularity & reduced redundancy of code.
+- rough pedestal code now uses full pedestal cfg (simplifying the cfg file)
+- updated unit test cfg & output for C++ applications
+- $ROOTSYS/lib path appended to PYTHONPATH environment variable for .sh launcher scripts.
+- new inlPedSubtract.py script will pedestal subtract a dac2adc xml file.
+- new muSlopeDiff.py script will diff 2 muSlope XML offline calibration files
+
+
