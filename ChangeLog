@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Sep 26 11:46:09 PDT 2006
+calibGenCAL/src/lib
+
+Added Files:
+	CalGeom.h 
+Log Message:
+cal geometry constants (i'm not using gleam, so i need to hard code these)
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Sep 25 16:10:26 PDT 2006
 calibGenCAL/python/lib
 
