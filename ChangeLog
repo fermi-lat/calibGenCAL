@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: dwood  Tue Sep 26 12:51:42 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacSlopesVal.py tholdCIVal.py 
+Log Message:
+Added default log and ROOT output files; added validation of slope values based on deviation from mean; added
+stats of fine verses coarse range counts.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Sep 26 11:57:24 PDT 2006
 calibGenCAL/src/lib
 
