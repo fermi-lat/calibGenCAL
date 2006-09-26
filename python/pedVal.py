@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Ped calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/18 02:46:09 $"
-__version__   = "$Revision: 1.19 $, $Author: dwood $"
+__date__      = "$Date: 2006/08/03 03:26:43 $"
+__version__   = "$Revision: 1.20 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -210,6 +210,8 @@ def rootHists(errData, pedData, fileName):
 
 def calcError(pedData):
 
+    status = 0
+
     # check pedestal average values
     
     for tem in towers:
@@ -238,7 +240,6 @@ def calcError(pedData):
     # check pedestal sigma values
     
     errs = pedData[...,1]
-    status = 0
 
     for tem in towers:
         for row in range(calConstant.NUM_ROW):
