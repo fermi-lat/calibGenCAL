@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Sep 26 11:57:23 PDT 2006
+calibGenCAL/src
+
+Modified Files:
+	genMuonAsym.cxx genMuonMPD.cxx genMuonPed.cxx 
+Log Message:
+removed extraneous #include statements, replaced w/ 'class' statements where possible.
+removed 'using namespace' statements from header files.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Sep 26 11:46:09 PDT 2006
 calibGenCAL/src/lib
 
