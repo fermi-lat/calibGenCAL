@@ -1,26 +1,22 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CIDAC2ADC.cxx,v 1.5 2006/08/03 13:06:48 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CIDAC2ADC.cxx,v 1.6 2006/09/15 15:02:10 fewtrell Exp $
 /** @file
     @author fewtrell
 */
 
 // LOCAL INCLUDES
-#include "RootFileAnalysis.h"
 #include "CIDAC2ADC.h"
 
 // GLAST INCLUDES
 
 // EXTLIB INCLUDES
-#include "TH1S.h"
-#include "TProfile.h"
-#include "TGraph.h"
-#include "TF1.h"
-#include "TMultiGraph.h"
+
 
 // STD INCLUDES
+#include <fstream>
 #include <sstream>
-#include <ostream>
 
-using namespace CGCUtil;
+using namespace std;
+using namespace CalUtil;
 
 static const float CIDAC_TEST_VALS[] = 
   {0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,

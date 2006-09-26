@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.4 2006/09/15 15:02:09 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.5 2006/09/18 14:12:53 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -8,6 +8,9 @@
 #include "lib/IntNonlin.h"
 #include "lib/MuonAsym.h"
 #include "lib/SimpleIniFile.h"
+#include "lib/CalPed.h"
+#include "lib/CIDAC2ADC.h"
+#include "lib/CalAsym.h"
 
 // GLAST INCLUDES
 
@@ -159,9 +162,9 @@ int main(int argc, char **argv) {
     
       logStrm << __FILE__ << ": reading root event file(s) starting w/ " << rootFileList[0] << endl;
       muonAsym.fillHists(nEntries,
-                     rootFileList,
-                     peds,
-                     dac2adc);
+                         rootFileList,
+                         peds,
+                         dac2adc);
     }
 
     muonAsym.summarizeHists(logStrm);

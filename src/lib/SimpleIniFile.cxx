@@ -1,18 +1,14 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/SimpleIniFile.cxx,v 1.1 2006/06/15 20:58:00 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/SimpleIniFile.cxx,v 1.2 2006/07/04 22:50:54 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "SimpleIniFile.h"
 
 // STD INCLUDES
 #include <fstream>
-#include <algorithm>
-#include <iostream>
-#include <sstream>
 #include <stdexcept>
-#include <cctype>
 
 
 using namespace std;
@@ -90,7 +86,7 @@ SimpleIniFile::SimpleIniFile(const string &filename)
     ostringstream tmp;
     tmp << __FILE__ << ":" << __LINE__ << 
       ": Cannot open cfg file: " << filename;
-    throw runtime_error(tmp.str());
+    throw std::runtime_error(tmp.str());
         
   }
     
@@ -141,9 +137,11 @@ bool SimpleIniFile::openIniFile(const string &filename)
 
       addKey(cur_section, key, val);
     } else {
-      cerr << __FILE__ << ' ' << filename << ':' << n_line 
-           << " is invalid (neither comment, nor section, nor entry!)" << endl;
-      cerr << " '" << line << "'" << endl;
+      ostringstream tmp;
+      tmp << __FILE__ << ' ' << filename << ':' << n_line 
+          << " is invalid (neither comment, nor section, nor entry!)" << endl;
+      tmp << " '" << line << "'" << endl;
+      throw std::runtime_error(tmp.str());
     }
   }
   return true;

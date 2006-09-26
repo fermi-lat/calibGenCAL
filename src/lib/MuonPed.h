@@ -1,38 +1,32 @@
 #ifndef MuonPed_h
 #define MuonPed_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.h,v 1.4 2006/09/19 18:49:27 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.h,v 1.5 2006/09/21 16:22:34 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
- */
-
-
+*/
 
 // LOCAL INCLUDES
-#include "CalPed.h"
 #include "CGCUtil.h"
-#include "RootFileAnalysis.h"
 
 // GLAST INCLUDES
-#include "CalUtil/CalVec.h"
 #include "CalUtil/CalDefs.h"
-#include "CalUtil/CalArray.h"
+#include "CalUtil/CalVec.h"
 
 // EXTLIB INCLUDES
-#include "TH1S.h"
-#include "TFile.h"
 
 // STD INCLUDES
 
-
-using namespace std;
-using namespace CalUtil;
+class CalPed;
+class TH1S;
+class DigiEvent;
+class CalDigi;
 
 /** \brief \brief Represents GLAST Cal ADC pedestal calibrations
 
-    contains read & write methods to various file formats & code
-    to calculate calibrations from digi ROOT event files
+contains read & write methods to various file formats & code
+to calculate calibrations from digi ROOT event files
 
-    @author Zachary Fewtrell
+@author Zachary Fewtrell
 */
 class MuonPed {
  public:
@@ -50,7 +44,7 @@ class MuonPed {
   /// \param rootFilename.  input digi event file
   /// \param histFilename.  output root file for histograms.
   void fillHists(unsigned nEntries, 
-                 const vector<string> &rootFileList, 
+                 const std::vector<std::string> &rootFileList, 
                  const CalPed *roughPeds,
                  TRIGGER_CUT trigCut); 
 
@@ -58,12 +52,12 @@ class MuonPed {
   void fitHists(CalPed &peds); 
 
   /// skip evenmt processing and load histograms from previous run
-  void loadHists(const string &filename);
+  void loadHists(const std::string &filename);
 
-  static void genOutputFilename(const string outputDir,
-                                const string &inFilename,
-                                const string &ext,
-                                string &outFilename) {
+  static void genOutputFilename(const std::string outputDir,
+                                const std::string &inFilename,
+                                const std::string &ext,
+                                std::string &outFilename) {
     CGCUtil::genOutputFilename(outputDir,
                                "muonPeds",
                                inFilename,
@@ -85,34 +79,40 @@ class MuonPed {
   void processEvent(DigiEvent &digiEvt);
 
   /// list of histograms for 'muon' pedestals
-  CalVec<RngIdx, TH1S*> m_histograms; 
+  CalUtil::CalVec<CalUtil::RngIdx, TH1S*> m_histograms; 
 
   /// used for log messages
   ostream &m_ostrm;
 
   /// generate ROOT histogram name string.
-  static string genHistName(RngIdx rngIdx);
+  static string genHistName(CalUtil::RngIdx rngIdx);
 
   /// store cfg & status data pertinent to current algorithm run
-  struct {
-    void clear() {memset(this, 0, sizeof(*this));}
+  struct AlgData {
+    AlgData() {clear();}
+    void clear() {
+      roughPeds = 0;
+      trigCut = PERIODIC_TRIGGER;
+    }
     const CalPed *roughPeds;
     TRIGGER_CUT trigCut;
   } algData;
 
   /// store data pertinent to current event
-  struct {
-    void clear() {
-      memset(this, 0, sizeof(*this));
+  struct EventData{
+    EventData() {clear();}
 
+    void clear() {
       prev4Range = true;
       fourRange = true;
+      eventNum = 0;
+
     }
 
     bool prev4Range;
     bool fourRange;
-    unsigned evtNum;
-  } evtData;
+    unsigned eventNum;
+  } eventData;
 
 };
 

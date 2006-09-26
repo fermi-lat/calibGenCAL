@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.cxx,v 1.7 2006/09/21 16:22:34 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.cxx,v 1.8 2006/09/21 19:03:27 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -6,26 +6,30 @@
 // LOCAL INCLUDES
 #include "RootFileAnalysis.h"
 #include "MuonPed.h"
+#include "CalPed.h"
 #include "CGCUtil.h"
 
 // GLAST INCLUDES
+#include "digiRootData/Gem.h"
+#include "digiRootData/DigiEvent.h"
+#include "CalUtil/CalArray.h"
 
 // EXTLIB INCLUDES
+#include "TH1S.h"
 #include "TF1.h"
-#include "TKey.h"
 
 // STD INCLUDES
 #include <sstream>
-#include <ostream>
+#include <cmath>
 
 using namespace CGCUtil;
+using namespace CalUtil;
+using namespace std;
 
 MuonPed::MuonPed(ostream &ostrm) :
   m_histograms(RngIdx::N_VALS),
   m_ostrm(ostrm)
 {
-  algData.clear();
-  evtData.clear();
 }
 
 void MuonPed::initHists() {
@@ -50,7 +54,7 @@ void MuonPed::fillHists(unsigned nEntries,
   /////////////////////////////////////////
   initHists();
   algData.clear();
-  evtData.clear();
+  eventData.clear();
 
   algData.roughPeds = roughPeds;
   algData.trigCut = trigCut;
@@ -77,35 +81,35 @@ void MuonPed::fillHists(unsigned nEntries,
   /// Event Loop //////////////////////////
   /////////////////////////////////////////
   // in periodic trigger mode we will skip these events
-  evtData.prev4Range = true; 
-  evtData.fourRange  = true;
-  for (evtData.evtNum = 0; evtData.evtNum < nEvents; evtData.evtNum++) {
+  eventData.prev4Range = true; 
+  eventData.fourRange  = true;
+  for (eventData.eventNum = 0; eventData.eventNum < nEvents; eventData.eventNum++) {
     // save previous mode
-    evtData.prev4Range = evtData.fourRange;
+    eventData.prev4Range = eventData.fourRange;
 
     /////////////////////////////////////////
     /// Load new event //////////////////////
     /////////////////////////////////////////
-    if (evtData.evtNum % 2000 == 0) {
+    if (eventData.eventNum % 2000 == 0) {
       // quit if we have enough entries in each histogram
       unsigned currentMin = getMinEntries();
       if (currentMin >= nEntries) break;
-      m_ostrm << "Event: " << evtData.evtNum 
+      m_ostrm << "Event: " << eventData.eventNum 
               << " min entries per histogram: " << currentMin
               << endl;
       m_ostrm.flush();
     }
 
-    if (!rootFile.getEvent(evtData.evtNum)) {
-      m_ostrm << "Warning, event " << evtData.evtNum << " not read." << endl;
-      evtData.fourRange = true;
+    if (!rootFile.getEvent(eventData.eventNum)) {
+      m_ostrm << "Warning, event " << eventData.eventNum << " not read." << endl;
+      eventData.fourRange = true;
       continue;
     }
     
     DigiEvent *digiEvent = rootFile.getDigiEvent();
     if (!digiEvent) {
-      m_ostrm << __FILE__ << ": Unable to read DigiEvent " << evtData.evtNum  << endl;
-      evtData.fourRange = true;
+      m_ostrm << __FILE__ << ": Unable to read DigiEvent " << eventData.eventNum  << endl;
+      eventData.fourRange = true;
       continue;
     }
 
@@ -208,7 +212,7 @@ void MuonPed::processEvent(DigiEvent &digiEvent) {
     gem = &(digiEvent.getGem());
     if (&gem==0) {
       m_ostrm << "Warning, gem data not found for event: "
-              << evtData.evtNum << endl;
+              << eventData.eventNum << endl;
       return;
     }
     gemConditionsWord = gem->getConditionSummary();
@@ -220,15 +224,15 @@ void MuonPed::processEvent(DigiEvent &digiEvent) {
     EventSummaryData& summary = digiEvent.getEventSummaryData();
     if (&summary == 0) {
       m_ostrm << "Warning, eventSummary data not found for event: "
-              << evtData.evtNum << endl;
-      evtData.fourRange = true;
+              << eventData.eventNum << endl;
+      eventData.fourRange = true;
       return;
     }
-    evtData.fourRange = summary.readout4();
+    eventData.fourRange = summary.readout4();
     
     float gemDeltaEventTime = gem->getDeltaEventTime()*0.05;
     if(gemConditionsWord != 32 ||  // skip unless we are periodic trigger only
-       evtData.prev4Range      ||  // avoid bias from 4 range readout in prev event
+       eventData.prev4Range      ||  // avoid bias from 4 range readout in prev event
        gemDeltaEventTime < 2000) {   // avoid bias from shaped readout noise from adjacent event
       return;
     }
@@ -242,7 +246,7 @@ void MuonPed::processEvent(DigiEvent &digiEvent) {
 
   const TClonesArray* calDigiCol = digiEvent.getCalDigiCol();
   if (!calDigiCol) {
-    m_ostrm << "no calDigiCol found for event#" << evtData.evtNum << endl;
+    m_ostrm << "no calDigiCol found for event#" << eventData.eventNum << endl;
     return;
   }
 
@@ -268,7 +272,7 @@ void MuonPed::processHit(const CalDigi &calDigi) {
   if (nRO != 4) {
     ostringstream tmp;
     tmp << __FILE__  << ":"     << __LINE__ << " " 
-        << "Event# " << evtData.evtNum << " Invalid nReadouts, expecting 4";
+        << "Event# " << eventData.eventNum << " Invalid nReadouts, expecting 4";
     throw runtime_error(tmp.str());
   }
 
@@ -278,7 +282,7 @@ void MuonPed::processHit(const CalDigi &calDigi) {
     adcL8[face] = calDigi.getAdcSelectedRange(LEX8, (CalXtalId::XtalFace)face.val());
     // check for missing readout
     if (adcL8[face] < 0) {
-      m_ostrm << "Couldn't get LEX8 readout for event=" << evtData.evtNum << endl;
+      m_ostrm << "Couldn't get LEX8 readout for event=" << eventData.eventNum << endl;
       return;
     }
   }

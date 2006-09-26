@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuTrig.cxx,v 1.3 2006/06/29 00:30:54 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuTrig.cxx,v 1.4 2006/09/15 15:02:10 fewtrell Exp $
 /** @file
     @author fewtrell
 */
@@ -6,18 +6,22 @@
 // LOCAL INCLUDES
 #include "RootFileAnalysis.h"
 #include "MuTrig.h"
+#include "CalPed.h"
 
 // GLAST INCLUDES
+#include "CalUtil/CalArray.h"
+#include "digiRootData/DigiEvent.h"
 
 // EXTLIB INCLUDES
 #include "TGraphErrors.h"
 #include "TF1.h"
 
 // STD INCLUDES
-#include <sstream>
 #include <set>
-#include <memory>
-#include <algorithm>
+#include <sstream>
+
+using namespace std;
+using namespace CalUtil;
 
 static const float CIDAC_TEST_VALS[] = 
   {0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,
@@ -43,8 +47,6 @@ static const unsigned N_PULSES_PER_XTAL      = N_CIDAC_VALS * N_PULSES_PER_DAC;
 static const unsigned short N_MUADC_BINS = 100;
 static const unsigned short MUADC_BINSIZE = 30;
 
-using namespace CalUtil;
-using namespace std;
 
 MuTrig::MuTrig(ostream &ostrm) :
   m_muThresh(FaceIdx::N_VALS, INVALID_ADC),

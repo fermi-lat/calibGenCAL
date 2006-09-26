@@ -1,11 +1,11 @@
 /** @file CGCUtil.cxx
 
-    @author Zachary Fewtrell
+@author Zachary Fewtrell
 
-    \brief generic utility functions used in calibGenCAL pkg
+\brief generic utility functions used in calibGenCAL pkg
 
-    $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CGCUtil.cxx,v 1.11 2006/01/13 17:25:58 fewtrell Exp $
- */
+$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CGCUtil.cxx,v 1.1 2006/06/15 20:57:59 fewtrell Exp $
+*/
 
 // LOCAL INCLUDES
 #include "CGCUtil.h"
@@ -15,13 +15,13 @@
 // EXTLIB INCLUDES
 
 // STD INCLUDES
-#include <cstdlib>
-#include <ctime>
-#include <iostream>
-#include <iomanip>
 #include <algorithm>
+#include <iostream>
 #include <sstream>
+#include <ctime>
 #include <stdexcept>
+
+using namespace std;
 
 namespace CGCUtil {
 
@@ -134,10 +134,10 @@ namespace CGCUtil {
   }
 
   string &str_toupper(string &str) {
-  //transform(str.begin(),str.end(), str.begin(), toupper<char>);
-  std::transform(str.begin(), str.end(), str.begin(), 
-                 (int(*)(int)) toupper);
-	return str;
+    //transform(str.begin(),str.end(), str.begin(), toupper<char>);
+    std::transform(str.begin(), str.end(), str.begin(), 
+                   (int(*)(int)) toupper);
+    return str;
   }
 
   bool stringToBool(const string &str) {
@@ -163,7 +163,7 @@ namespace CGCUtil {
     ostringstream tmp;
     tmp << '"' << tmpStr << '"' << " not a boolean string.";
 
-    throw runtime_error(tmp.str());
+    throw std::runtime_error(tmp.str());
   }
 
   void genOutputFilename(const string &outputDir,

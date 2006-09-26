@@ -1,36 +1,31 @@
 #ifndef MuonMPD_h
 #define MuonMPD_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.h,v 1.3 2006/09/15 15:02:10 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.h,v 1.4 2006/09/21 18:42:27 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
-#include "CIDAC2ADC.h"
-#include "CalPed.h"
-#include "CalAsym.h"
-#include "CalMPD.h"
 #include "CGCUtil.h"
-#include "TwrHodoscope.h"
+
 
 // GLAST INCLUDES
-#include "CalUtil/CalVec.h"
 #include "CalUtil/CalDefs.h"
-#include "CalUtil/CalArray.h"
-
+#include "CalUtil/CalVec.h"
 
 // EXTLIB INCLUDES
-#include "TFile.h"
-#include "TH1S.h"
-#include "TSpline.h"
 
 
 // STD INCLUDES
-#include <string>
-#include <memory>
+#include <iostream>
 
-using namespace std;
-using namespace CalUtil;
+class CalPed;
+class CIDAC2ADC;
+class CalAsym;
+class CalMPD;
+class TH1S;
+class TProfile;
+class TwrHodoscope;
 
 /** \brief Represents GLAST Cal Optical gain calibration constants
     (MeV <-> CIDAC)
@@ -42,11 +37,11 @@ using namespace CalUtil;
 */
 class MuonMPD {
  public:
-  MuonMPD(ostream &ostrm = cout);
+  MuonMPD(std::ostream &ostrm = cout);
 
   /// populate histograms from digi root event file
   void fillHists(unsigned nEntries,
-                 const vector<string> &rootFileList, 
+                 const std::vector<std::string> &rootFileList, 
                  const CalPed &peds,
                  const CalAsym &asym,
                  const CIDAC2ADC &dac2adc); 
@@ -54,12 +49,12 @@ class MuonMPD {
   /// fit histograms & save means
   void fitHists(CalMPD &calMPD); 
   /// skip event processing & load histograms from previous analysis
-  void loadHists(const string &filename);
+  void loadHists(const std::string &filename);
 
-  static void genOutputFilename(const string outputDir,
-                                const string &inFilename,
-                                const string &ext,
-                                string &outFilename) {
+  static void genOutputFilename(const std::string outputDir,
+                                const std::string &inFilename,
+                                const std::string &ext,
+                                std::string &outFilename) {
     CGCUtil::genOutputFilename(outputDir,
                                "muonMPD",
                                inFilename,
@@ -68,9 +63,9 @@ class MuonMPD {
   }
 
   static void writeADC2NRG(const string &filename,
-                                    const CalAsym &asym,
-                                    const CIDAC2ADC &dac2adc,
-                                    const CalMPD &mpd);
+                           const CalAsym &asym,
+                           const CIDAC2ADC &dac2adc,
+                           const CalMPD &mpd);
 
  private:
   bool passCutX(const TwrHodoscope &hscope);
@@ -82,10 +77,10 @@ class MuonMPD {
   /// count min number of entries in all enable histograms
   unsigned getMinEntries();
 
-  string genHistName(const string &type,
-                     XtalIdx xtalIdx);
+  string genHistName(const std::string &type,
+                     CalUtil::XtalIdx xtalIdx);
 
-  ostream &m_ostrm;
+  std::ostream &m_ostrm;
 
   /// # of bins in dacL2S profiles
   static const unsigned short N_L2S_PTS = 20;
@@ -95,12 +90,12 @@ class MuonMPD {
   static const unsigned short L2S_MAX_LEDAC = 60;
   
   /// profile X=bigdiodedac Y=smdiodedac 1 per xtal
-  CalVec<XtalIdx, TH1S*> m_dacL2SHists;  
+  CalUtil::CalVec<CalUtil::XtalIdx, TH1S*> m_dacL2SHists;  
 
   /// profile X=bigdiodedac Y=smdiodedac 1 per xtal (not used in main calib, only for finding extra l2s slope info)
-  CalVec<XtalIdx, TProfile*> m_dacL2SSlopeProfs;
+  CalUtil::CalVec<CalUtil::XtalIdx, TProfile*> m_dacL2SSlopeProfs;
   /// list of histograms of geometric mean for both ends on each xtal.
-  CalVec<XtalIdx, TH1S*> m_dacLLHists; 
+  CalUtil::CalVec<CalUtil::XtalIdx, TH1S*> m_dacLLHists; 
 
   /// most likely vertical muon energy deposition in Cal CsI crystal
   static const float MUON_ENERGY;

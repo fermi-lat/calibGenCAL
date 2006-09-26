@@ -1,25 +1,25 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.cxx,v 1.8 2006/09/19 18:44:15 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.cxx,v 1.9 2006/09/21 19:03:27 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
 
 // LOCAL INCLUDES
 #include "MuonAsym.h"
-#include "CalAsym.h"
 #include "RootFileAnalysis.h"
 #include "TwrHodoscope.h"
-#include "CGCUtil.h"
+#include "CalAsym.h"
 
 // GLAST INCLUDES
+#include "digiRootData/DigiEvent.h"
 
 // EXTLIB INCLUDES
-#include "TKey.h"
+#include "TH2S.h"
 
 // STD INCLUDES
 #include <sstream>
 
 using namespace std;
-using namespace CGCUtil;
+using namespace CalUtil;
 
 MuonAsym::MuonAsym(ostream &ostrm) :
   m_histograms(AsymType::N_VALS),
@@ -54,7 +54,7 @@ void MuonAsym::initHists(){
                                                  .5, 
                                                  10.5,
                                                  (unsigned)(100*(asymMax[asymType] -
-                                                            asymMin[asymType])),
+                                                                 asymMin[asymType])),
                                                  asymMin[asymType],
                                                  asymMax[asymType]);
       
@@ -277,7 +277,7 @@ void MuonAsym::loadHists(const string &filename) {
     // PER XTAL LOOP
     for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
       string histname = genHistName(asymType, xtalIdx);
-      TH2S *hist_ptr = retrieveHist<TH2S>(histFile, histname);
+      TH2S *hist_ptr = CGCUtil::retrieveHist<TH2S>(histFile, histname);
       if (!hist_ptr) 
         continue;
 

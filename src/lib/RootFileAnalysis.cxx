@@ -1,22 +1,26 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/RootFileAnalysis.cxx,v 1.2 2006/09/15 15:02:10 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/RootFileAnalysis.cxx,v 1.3 2006/09/21 19:30:00 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "RootFileAnalysis.h"
 
 // GLAST INCLUDES
+#include "digiRootData/DigiEvent.h"
+#include "reconRootData/ReconEvent.h"
+#include "mcRootData/McEvent.h"
 
-//EXTLIB INCLUDES
-#include "TFile.h"
+
+// EXTLIB INCLUDES
 #include "TChainElement.h"
-#include "TStreamerInfo.h"
+#include "TFile.h"
 
 // STD INCLUDES
-#include <iostream>
 #include <vector>
 #include <string>
+#include <ostream>
+
 
 using namespace std;
 
@@ -82,6 +86,7 @@ RootFileAnalysis::RootFileAnalysis(const vector<string> *mcFilenames,
     m_reconChain.SetBranchAddress("ReconEvent",&m_reconEvt);
     m_chainArr.Add(&m_reconChain);
   }
+
 }
 
 RootFileAnalysis::~RootFileAnalysis() {
@@ -99,6 +104,8 @@ RootFileAnalysis::~RootFileAnalysis() {
     m_reconEvt->Clear();
     delete m_reconEvt;
   }
+
+
 }
 
 UInt_t RootFileAnalysis::getEvent(UInt_t iEvt) {

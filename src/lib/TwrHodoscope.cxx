@@ -1,22 +1,26 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/TwrHodoscope.cxx,v 1.3 2006/08/03 13:06:48 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/TwrHodoscope.cxx,v 1.4 2006/09/15 15:02:10 fewtrell Exp $
 /** @file
     @author fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "TwrHodoscope.h"
 #include "CGCUtil.h"
+#include "CalPed.h"
+#include "CIDAC2ADC.h"
+
 
 // GLAST INCLUDES
+#include "digiRootData/CalDigi.h"
 
 // EXTLIB INCLUDES
 
 // STD INCLUDES
-#include <sstream>
 #include <functional>
+#include <ostream>
 
-using namespace CGCUtil;
 using namespace CalUtil;
+using namespace CGCUtil;
 
 void TwrHodoscope::clear() {
   // zero out all vectors
@@ -130,9 +134,9 @@ void TwrHodoscope::summarizeEvent() {
     
     // count all layers w/ count > 0
     nLyrsX = count_if(perLyrX.begin(), perLyrX.end(),
-                         bind2nd(greater<unsigned short>(), 0));
+                      bind2nd(greater<unsigned short>(), 0));
     nLyrsY = count_if(perLyrY.begin(), perLyrY.end(),
-                         bind2nd(greater<unsigned short>(), 0));
+                      bind2nd(greater<unsigned short>(), 0));
     
     // count all cols w/ count > 0
     nColsX = count_if(perColX.begin(), perColX.end(),

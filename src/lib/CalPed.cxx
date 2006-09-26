@@ -1,7 +1,7 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalPed.cxx,v 1.4 2006/06/27 15:36:25 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalPed.cxx,v 1.1 2006/09/15 15:02:10 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "CalPed.h"
@@ -10,15 +10,13 @@
 // GLAST INCLUDES
 
 // EXTLIB INCLUDES
-#include "TF1.h"
-#include "TKey.h"
 
 // STD INCLUDES
-#include <sstream>
-#include <ostream>
 #include <fstream>
 
 using namespace CGCUtil;
+using namespace CalUtil;
+using namespace std;
 
 CalPed::CalPed() :
   m_peds(RngIdx::N_VALS, INVALID_PED),

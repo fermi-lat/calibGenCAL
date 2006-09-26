@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.6 2006/09/19 18:49:26 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.7 2006/09/21 16:22:34 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -6,6 +6,7 @@
 // LOCAL INCLUDES
 #include "lib/MuonPed.h"
 #include "lib/SimpleIniFile.h"
+#include "lib/CalPed.h"
 
 // GLAST INCLUDES
 

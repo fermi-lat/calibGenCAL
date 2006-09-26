@@ -1,42 +1,36 @@
 #ifndef MuonAsym_h
 #define MuonAsym_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.h,v 1.2 2006/06/22 21:50:22 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.h,v 1.3 2006/09/15 15:02:10 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 
 // LOCAL INCLUDES
-#include "CalPed.h"
-#include "CalAsym.h"
-#include "CIDAC2ADC.h"
 #include "CGCUtil.h"
-#include "TwrHodoscope.h"
 
 // GLAST INCLUDES
-#include "CalUtil/CalVec.h"
 #include "CalUtil/CalDefs.h"
+#include "CalUtil/CalVec.h"
 #include "CalUtil/CalArray.h"
 
 
 // EXTLIB INCLUDES
-#include "TFile.h"
-#include "TH2S.h"
-#include "TSpline.h"
 
 // STD INCLUDES
-#include <string>
-#include <memory>
 
-using namespace std;
-using namespace CalUtil;
+class CalAsym;
+class CalPed;
+class CIDAC2ADC;
+class TwrHodoscope;
+class TH2S;
 
 /** \brief Reresents GLAST Cal crystal light asymmetry calibration constants.
 
-    contains read & write methods to various file formats & code
-    to calculate calibrations from digi ROOT event files
+contains read & write methods to various file formats & code
+to calculate calibrations from digi ROOT event files
 
-    @author Zachary Fewtrell
+@author Zachary Fewtrell
 */
 class MuonAsym {
  public:
@@ -79,9 +73,9 @@ class MuonAsym {
   /// count min number of entries in all enable histograms
   unsigned getMinEntries();
   /// list of histograms for muon asymmetry
-  CalVec<AsymType, CalArray<XtalIdx, TH2S*> > m_histograms; 
+  CalUtil::CalVec<CalUtil::AsymType, CalUtil::CalArray<CalUtil::XtalIdx, TH2S*> > m_histograms; 
 
-  string genHistName(AsymType asymType, XtalIdx xtalIdx);
+  std::string genHistName(CalUtil::AsymType asymType, CalUtil::XtalIdx xtalIdx);
 
   ostream &m_ostrm;
 };
