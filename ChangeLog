@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Tue Sep 26 15:13:01 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	pedVal.py 
+Log Message:
+Corrected validation status report.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Sep 26 14:13:51 PDT 2006
 calibGenCAL/src
 
