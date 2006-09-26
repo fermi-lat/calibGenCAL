@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Sep 26 14:04:13 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	asymXML2TXT.py 
+Log Message:
+fixed misleading error msg
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Sep 26 13:58:17 PDT 2006
 calibGenCAL/doc
 
