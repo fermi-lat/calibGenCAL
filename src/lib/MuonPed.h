@@ -1,6 +1,6 @@
 #ifndef MuonPed_h
 #define MuonPed_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.h,v 1.5 2006/09/21 16:22:34 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.h,v 1.6 2006/09/26 18:57:24 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -21,10 +21,14 @@ class TH1S;
 class DigiEvent;
 class CalDigi;
 
-/** \brief \brief Represents GLAST Cal ADC pedestal calibrations
+/** \brief Algorithm class populates CalPed calibration object
+    by analyzing digi ROOT event files. 
 
-contains read & write methods to various file formats & code
-to calculate calibrations from digi ROOT event files
+    Supports extracting pedestals from the following trigger schemes
+    1 - Event data only 
+    2 - Periodic trigger 
+    3 - External trigger
+    
 
 @author Zachary Fewtrell
 */

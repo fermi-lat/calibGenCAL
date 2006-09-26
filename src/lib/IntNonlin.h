@@ -1,6 +1,6 @@
 #ifndef IntNonlin_h
 #define IntNonlin_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/IntNonlin.h,v 1.2 2006/09/19 13:19:32 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/IntNonlin.h,v 1.3 2006/09/26 18:57:24 fewtrell Exp $
 /** @file
     @author fewtrell
 */
@@ -19,11 +19,8 @@
 class CIDAC2ADC;
 
 
-/** \brief Represents GLAST Cal CIDAC (Charge Injection DAC) <-> ADC 
-    calibration constants
-
-    contains read & write methods to various file formats & code
-    to calculate calibrations from digi ROOT event files
+/** \brief Algorithm class populates CIDAC2ADC calibration data 
+    object by analyzing calibGen singlex16 digi ROOT files.
 
     @author fewtrell
 */
@@ -54,9 +51,8 @@ class IntNonlin {
 
 
  private:
+  /// used for logging
   std::ostream &m_ostrm;
-
-
 };
 
 #endif

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/SimpleIniFile.h,v 1.1 2006/06/15 20:58:00 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/SimpleIniFile.h,v 1.2 2006/09/26 18:57:24 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -19,21 +19,22 @@
     Specification:
     - whitespace all leading & trailing ' ' && '\t' are ignored from every line
     - _all_ '\t' characters are converted to ' '
-    - comments ';' chars are recognized as comments.  all text following first ';' 
-    is ignored
+    - comments ';' chars are recognized as comments.  all text following first 
+    ';' is ignored
     - escape_chars there are none :)
-    - sections names are embraced in '[]' chars (ex. [section_name]) there should be
-    no other text on the line
+    - sections names are embraced in '[]' chars (ex. [section_name]) there 
+    should be no other text on the line
     - entries are of the format "varname = val...."
 
-    \note leading & trailing whitespace is removed from entry names _and_ values.
+    \note leading & trailing whitespace is removed from entry names _and_ 
+    values.
     \note all text w/in '[]' section names is included.... 
     therefore "[mysection]" != "[mysection ]"
     \note entries with duplicate names will overwrite their predecessors 
     \note sections with dupliate names will be concatenated.
     \note some error messages will be printed to stderr
-    \note entries defined before any section defnition are stored in the empty "" 
-    section
+    \note entries defined before any section defnition are stored in the empty 
+    "" section
 */
 
 class SimpleIniFile
@@ -98,6 +99,7 @@ class SimpleIniFile
   }
 
  private:
+  /// store new section/key/value combination
   void addKey(const std::string &section,
               const std::string &key,
               const std::string &val);
@@ -106,11 +108,16 @@ class SimpleIniFile
   const std::string *findKey(const std::string &section, 
                              const std::string &key) const;
   
+  /// read values from txt file
   bool openIniFile (const std::string &filename);
   
+  /// type maps key strings to value strings for a single section 
+  /// of an ini file
   typedef std::map<std::string, std::string> Section; 
+  /// type maps section name strings to Section objects
   typedef std::map<std::string, Section> SectionMap;
   
+  /// top of the data tree
   SectionMap m_sectionMap;
 };
 #endif

@@ -1,6 +1,6 @@
 #ifndef CalAsym_h
 #define CalAsym_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalAsym.h,v 1.1 2006/09/15 15:02:10 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalAsym.h,v 1.2 2006/09/26 18:57:24 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -22,8 +22,7 @@
 
 /** \brief Reresents GLAST Cal crystal light asymmetry calibration constants.
 
-contains read & write methods to various file formats & code
-to calculate calibrations from digi ROOT event files
+contains read & write methods to various file formats 
 
 @author Zachary Fewtrell
 */
@@ -35,10 +34,10 @@ class CalAsym {
   void writeTXT(const std::string &filename) const;
   /// read asymmetry tables in from text file(s)
   void readTXT(const std::string &filename);
+
   /// # of points per xtal for asymmetry type data.  
   /// 1 point for the center of each orthogonal xtal 
   /// excluding the two outermost xtals
-
   static const unsigned short N_ASYM_PTS = 10;
 
   /// creates & populates INL splines from m_asym
@@ -87,32 +86,40 @@ class CalAsym {
       - 0.5*CalGeom::CsILength;     // put 0 in middle of xtal
   }
 
-  const std::vector<float>& getPtsErr(CalUtil::XtalIdx xtalIdx, CalUtil::AsymType asymType) const 
+  const std::vector<float>& getPtsErr(CalUtil::XtalIdx xtalIdx, 
+                                      CalUtil::AsymType asymType) const 
     {return m_asymErr[asymType][xtalIdx];}
 
-  const std::vector<float>& getPtsAsym(CalUtil::XtalIdx xtalIdx, CalUtil::AsymType asymType) const 
+  const std::vector<float>& getPtsAsym(CalUtil::XtalIdx xtalIdx, 
+                                       CalUtil::AsymType asymType) const 
     {return m_asym[asymType][xtalIdx];}
 
-  std::vector<float>& getPtsErr(CalUtil::XtalIdx xtalIdx, CalUtil::AsymType asymType)
+  std::vector<float>& getPtsErr(CalUtil::XtalIdx xtalIdx, 
+                                CalUtil::AsymType asymType)
     {return m_asymErr[asymType][xtalIdx];}
 
-  std::vector<float>& getPtsAsym(CalUtil::XtalIdx xtalIdx, CalUtil::AsymType asymType)
+  std::vector<float>& getPtsAsym(CalUtil::XtalIdx xtalIdx, 
+                                 CalUtil::AsymType asymType)
     {return m_asym[asymType][xtalIdx];}
 
  private:
 
   /// collection of spline functions based on LEX8 vs LEX8 asymmetry 
   /// for calculating hit position in muon gain calibration (1 per xtal)
-  CalUtil::CalVec<CalUtil::DiodeNum, CalUtil::CalArray<CalUtil::XtalIdx, TSpline3*> > m_a2pSplines; 
+  CalUtil::CalVec<CalUtil::DiodeNum, CalUtil::CalArray<CalUtil::XtalIdx, 
+    TSpline3*> > m_a2pSplines; 
   /// collection of spline functions based on LEX8 vs LEX8 asymmetry 
   /// vs xtal position
-  CalUtil::CalVec<CalUtil::DiodeNum, CalUtil::CalArray<CalUtil::XtalIdx, TSpline3*> > m_p2aSplines; 
+  CalUtil::CalVec<CalUtil::DiodeNum, CalUtil::CalArray<CalUtil::XtalIdx, 
+    TSpline3*> > m_p2aSplines; 
 
 
   /// 2d vector N_ASYM_PTS lograt asymvals per xtal/asymType
-  CalUtil::CalVec<CalUtil::AsymType, CalUtil::CalArray<CalUtil::XtalIdx, std::vector<float> > > m_asym; 
+  CalUtil::CalVec<CalUtil::AsymType, CalUtil::CalArray<CalUtil::XtalIdx, 
+    std::vector<float> > > m_asym; 
   /// corresponding error value
-  CalUtil::CalVec<CalUtil::AsymType, CalUtil::CalArray<CalUtil::XtalIdx, std::vector<float> > > m_asymErr; 
+  CalUtil::CalVec<CalUtil::AsymType, CalUtil::CalArray<CalUtil::XtalIdx, 
+    std::vector<float> > > m_asymErr; 
 
 };
 

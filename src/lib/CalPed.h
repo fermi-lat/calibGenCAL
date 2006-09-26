@@ -1,7 +1,7 @@
 #ifndef CalPed_h
 #define CalPed_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalPed.h,v 1.1 2006/09/15 15:02:10 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalPed.h,v 1.2 2006/09/26 18:57:24 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -16,8 +16,7 @@
 
 /** \brief \brief Represents GLAST Cal ADC pedestal calibrations
 
-contains read & write methods to various file formats & code
-to calculate calibrations from digi ROOT event files
+contains read & write methods to various file formats 
 
 @author Zachary Fewtrell
 */
@@ -25,9 +24,10 @@ class CalPed {
  public:
   CalPed();
  
-  /// write muon LEX8 pedestals to simple columnar .txt file
+  /// write pedestals to columnar TXTfile
   void writeTXT(const std::string &filename) const; 
 
+  /// read pedestals from columnar TXTfile
   void readTXT(const std::string &filename);
   
   float getPed(CalUtil::RngIdx rngIdx) const {return m_peds[rngIdx];}

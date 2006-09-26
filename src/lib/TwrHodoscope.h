@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/TwrHodoscope.h,v 1.3 2006/09/15 15:02:10 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/TwrHodoscope.h,v 1.4 2006/09/26 18:57:24 fewtrell Exp $
 /** @file
     @author fewtrell
 */
@@ -24,8 +24,8 @@ class CIDAC2ADC;
 class CalDigi;
 
 
-/** \brief Accumulate crystal hits in single tower and summarize into information
-    which can be used for track determination.
+/** \brief Accumulate crystal hits in single tower and summarize into 
+    information which can be used for track determination.
     @author fewtrell
 */
 class TwrHodoscope {

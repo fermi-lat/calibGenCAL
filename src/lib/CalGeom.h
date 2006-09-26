@@ -1,7 +1,7 @@
 #ifndef CalGeom_H
 #define CalGeom_H
 
-//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalGeom.h,v 1.3 2006/08/03 13:06:48 fewtrell Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalGeom.h,v 1.1 2006/09/26 18:46:09 fewtrell Exp $
 
 // LOCAL INCLUDES
 
@@ -13,7 +13,8 @@
 
 /** @file CalGeom.h
     @author Zachary Fewtrell
-    \brief 
+    \brief Static Cal Geometry data for use when 
+    Gleam facilities are not available.
 */
 
 namespace CalGeom {
