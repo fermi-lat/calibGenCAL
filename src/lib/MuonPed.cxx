@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.cxx,v 1.8 2006/09/21 19:03:27 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.cxx,v 1.9 2006/09/26 18:57:24 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -322,4 +322,14 @@ void MuonPed::processHit(const CalDigi &calDigi) {
     }
 
   }
+}
+
+void MuonPed::trimHists() {
+  for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++) 
+    if (m_histograms[rngIdx])
+      if (!m_histograms[rngIdx]->GetEntries()) {
+        delete m_histograms[rngIdx];
+        m_histograms[rngIdx] = 0;
+      }
+
 }

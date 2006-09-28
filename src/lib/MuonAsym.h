@@ -1,6 +1,6 @@
 #ifndef MuonAsym_h
 #define MuonAsym_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.h,v 1.4 2006/09/26 18:57:24 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.h,v 1.5 2006/09/26 20:27:01 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -48,6 +48,10 @@ class MuonAsym {
 
   /// print histogram summary info to output stream
   void summarizeHists(ostream &ostrm=cout);
+
+  /// delete empty histograms
+  /// \note useful for data w/ < 16 Cal modules.
+  void trimHists();
 
   static void genOutputFilename(const string outputDir,
                                 const string &inFilename,

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.cxx,v 1.9 2006/09/21 19:03:27 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.cxx,v 1.10 2006/09/26 18:57:24 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -369,4 +369,14 @@ bool MuonAsym::passCutY(const TwrHodoscope &hscope) {
   if (!hscope.nLyrsX) return false;
 
   return true;
+}
+
+void MuonAsym::trimHists() {
+  for (AsymType asymType; asymType.isValid(); asymType++)
+    for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++)
+      if (m_histograms[asymType][xtalIdx])
+        if (!m_histograms[asymType][xtalIdx]->GetEntries()) {
+          delete m_histograms[asymType][xtalIdx];
+          m_histograms[asymType][xtalIdx] = 0;
+        }
 }

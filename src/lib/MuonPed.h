@@ -1,6 +1,6 @@
 #ifndef MuonPed_h
 #define MuonPed_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.h,v 1.6 2006/09/26 18:57:24 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.h,v 1.7 2006/09/26 20:27:01 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -57,6 +57,11 @@ class MuonPed {
 
   /// skip evenmt processing and load histograms from previous run
   void loadHists(const std::string &filename);
+
+  /// delete empty histograms
+  /// \note useful for data w/ < 16 Cal modules.
+  void trimHists();
+
 
   static void genOutputFilename(const std::string outputDir,
                                 const std::string &inFilename,

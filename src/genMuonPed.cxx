@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.7 2006/09/21 16:22:34 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.8 2006/09/26 18:57:23 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -130,6 +130,7 @@ int main(int argc, char **argv) {
                              rootFileList,
                              NULL,
                              trigCut);
+      muonRoughPed.trimHists();
       outputHistFile.Write();
     
       logStrm << __FILE__ << ": fitting rough pedestal histograms." << endl;
@@ -174,6 +175,7 @@ int main(int argc, char **argv) {
                       rootFileList, 
                       &roughPed, 
                       trigCut);
+      muPed.trimHists();
       outputHistFile.Write();
     
       logStrm << __FILE__ << ": fitting muon pedestal histograms." << endl;

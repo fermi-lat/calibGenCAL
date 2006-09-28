@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.6 2006/09/26 18:57:23 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.7 2006/09/28 17:47:55 fewtrell Exp $
 /** @file Gen MevPerDAC calibrations from Muon event files
     @author Zachary Fewtrell
 */
@@ -196,6 +196,7 @@ int main(int argc, char **argv) {
                         peds,
                         asym,
                         dac2adc);
+      muonMPD.trimHists();
     }
     
     logStrm << __FILE__ << ": fitting muon mpd histograms." << endl;
