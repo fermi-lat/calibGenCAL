@@ -2,17 +2,15 @@
 Generate DAC (FHE, FLE, ULD, or LAC) settings XML files using a CAL DacSlopes file as a calibration
 reference.  The command line is:
 
-genDACsettings [-V] [-t <timetag>] FLE|FHE|LAC|ULD <MeV | margin> <dac_slopes_xml_file> [<gain>]
+genDACsettings [-V] FLE|FHE|LAC|ULD <MeV | margin> <dac_slopes_xml_file> <dac_xml_file> [<gain>]
 
 where:
     -V              = verbose; turn on debug output
-    -t <timetag>    = id string at front of all output DAC settings filenames (usually 12 digit date string, could be 'latest') 
-                      (default = "latest")
     FLE|FHE|LAC|ULD = DAC type to validate
     <MeV | margin>  = For FLE, FHE, LAC: The threshold energy in MeV units.
                       For ULD: The margin as a percentage of the saturation value.
     <dac_slopes_xml_file> = The CAL_DacSlopes calibration file.                     
-    <dac_xml_file>  = The DAC settings XML file to validate.
+    <dac_xml_file>  = The DAC settings XML file output name.
     <gain>          = CAL gain setting DAC's are valid for (needed for FLE, FHE, and LAC only). 
 """
 
@@ -21,17 +19,16 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/07/31 15:29:30 $"
-__version__     = "$Revision: 1.3 $, $Author: dwood $"
+__date__        = "$Date: 2006/08/03 00:29:11 $"
+__version__     = "$Revision: 1.4 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
 
 
-import sys, os, time
+import sys
 import logging
 import getopt
-import shutil
 
 import Numeric
 
@@ -78,22 +75,12 @@ def setRange(dacs, rangeData):
           
   
 
-def gen_basename(timetag, gain, mev, idet, dac_type):
     
-    return  "%s_G%d_MeV%d_%s_CAL_%s.xml" % (timetag, int(gain), int(mev), idet, dac_type)
-  
-  
-    
-def gen_basename_uld(timetag, adcmargin, idet):
-
-    return "%s_mar%03d_%s_CAL_uld.xml" % (timetag, int(adcmargin), idet)
-    
-      
-     
 
 if __name__ == '__main__':
     
-    usage = "genDACsettings [-V] [-t <timetag>] FLE|FHE|LAC|ULD <MeV | margin> <dac_slopes_xml_file> [<gain>]"
+    usage = \
+        "genDACsettings [-V] FLE|FHE|LAC|ULD <MeV | margin> <dac_slopes_xml_name> <out_xml_name> [<gain>]"
 
     # setup logger
 
@@ -119,27 +106,27 @@ if __name__ == '__main__':
             timetag = o[1]    
                 
     args = opts[1]
-    if len(args) < 3:
+    if len(args) < 4:
         log.error(usage)
         sys.exit(1)
 
     dacType = args[0]
     MeV = float(args[1])
     dacSlopesName = args[2]
-    if dacType != 'ULD':
-        if len(args) != 4:
-            log.error(usage)
-            sys.exit(1)
-        gain = int(args[3])
-
-    if dacType not in ('FLE', 'FHE', 'LAC', 'ULD'):
+    outName = args[3]
+    
+    if dacType not in DAC_MAP.keys():
         log.error("DAC type %s not supported", dacType)
         sys.exit(1)
 
     log.debug('Using DAC type %s', dacType)
     if dacType != 'ULD':
+        if len(args) != 5:
+            log.error(usage)
+            sys.exit(1)
+        gain = int(args[4])    
         log.debug('Using threshold %f MeV', MeV)
-        log.debug('Using gain setting %d', gain)
+        log.debug('Using gain %d', gain)
     else:
         log.debug('Using margin %f %%', MeV) 
            
@@ -148,6 +135,7 @@ if __name__ == '__main__':
     
     log.info("Reading file %s", dacSlopesName)
     fio = calCalibXML.calDacSlopesCalibXML(dacSlopesName)
+    towers = fio.getTowers()
     (dacData, uldData, rangeData) = fio.read()
     fio.close()
     
@@ -167,12 +155,7 @@ if __name__ == '__main__':
         settings = setRange(settings, Numeric.ones((calConstant.NUM_TEM, calConstant.NUM_ROW,
             calConstant.NUM_END, calConstant.NUM_FE), Numeric.Int8))       
     
-    # create output settings XML files
-    
-    if timetag is None:
-        timestamp = time.strftime('%y%m%d%H%M%S', time.gmtime())
-    else:
-        timestamp = timetag     
+    # create output DAC settings XML file
     
     if dacType == 'ULD':
         adcmargin = MeV
@@ -191,26 +174,13 @@ if __name__ == '__main__':
         legain = gain
         hegain = None
         
-    for tem in range(calConstant.NUM_TEM):
-    
-        if dacType != 'ULD':
-            outName = gen_basename(timestamp, gain, MeV, calConstant.CMOD[tem], dacType.lower())
-            copyName = gen_basename('latest', gain, MeV, calConstant.CMOD[tem], dacType.lower())
-        else:
-            outName = gen_basename_uld(timestamp, int(MeV * 10), calConstant.CMOD[tem])
-            copyName = gen_basename_uld('latest', int(MeV * 10), calConstant.CMOD[tem])          
-        log.info("Creating file %s", outName)
-        fio = calDacXML.calDacXML(outName, DAC_MAP[dacType], calDacXML.MODE_CREATE)
-        fio.write(settings, filename = outName, leGain = legain, heGain = hegain, 
-            energy = energy, engfilename = dacSlopesName, adcmargin = adcmargin, 
-            tems = (tem,))
-        fio.close() 
-        
-        # make copy of with online name format
-        
-        log.debug("Copying %s to %s", outName, copyName)
-        shutil.copy(outName, copyName) 
-
+    log.info("Creating file %s", outName)
+    fio = calDacXML.calDacXML(outName, DAC_MAP[dacType], calDacXML.MODE_CREATE)
+    fio.write(settings, filename = outName, leGain = legain, heGain = hegain, energy = energy, 
+        engfilename = dacSlopesName, adcmargin = adcmargin, tems = towers)
+    fio.close() 
+  
+ 
     sys.exit(0)
      
 
