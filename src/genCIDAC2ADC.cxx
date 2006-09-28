@@ -1,5 +1,5 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.6 2006/09/18 14:12:53 fewtrell Exp $
-/** @file
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.7 2006/09/19 13:19:32 fewtrell Exp $
+/** @file Gen CIDAC2ADC calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
 */
 
