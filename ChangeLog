@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Sep 28 14:26:48 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	genDACsettings.py valDACsettings.py 
+Log Message:
+Modified DAC settings calibration sets to work with 16-tower files; so now a complete list of settings consistts of 4 files, one for each type of DAC.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Sep 28 13:00:24 PDT 2006
 calibGenCAL/src/lib
 
