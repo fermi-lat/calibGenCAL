@@ -13,8 +13,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL TholdCI XML calibration data files"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/27 18:01:47 $"
-__version__   = "$Revision: 1.26 $, $Author: dwood $"
+__date__      = "$Date: 2006/07/28 01:42:57 $"
+__version__   = "$Revision: 1.27 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -162,28 +162,42 @@ if __name__ == '__main__':
         else:
             continue
             
-        destTwr = int(optList[1])        
-        if destTwr < 0 or destTwr > 15:
-            log.error("Index for [dacfiles] option %s out of range (0 - 15)", opt)
-            sys.exit(1)
-
-        value = configFile.get('dacfiles', opt)
-        nameList = value.split(',')
-        nameLen = len(nameList)
-        if nameLen == 2:
-            name = nameList[0]
-            srcTwr = int(nameList[1])
-        else:
-            log.error("Incorrect option format %s", value)
-            sys.exit(1)
-        if srcTwr < 0 or srcTwr > 15:
-            log.error("Src index for [dacfiles] option %s out of range (0 - 15)", opt)
-            sys.exit(1)
-            
-        inFile = inputFile(srcTwr, destTwr, name)
-        fList.append(inFile)
+        destTwr = int(optList[1]) 
         
-        log.debug('Adding %s file %s to input as tower %d (from %d)', optList[0], name,
+        # 16 tower DAC file
+        
+        if destTwr == 16:
+        
+            name = configFile.get('dacfiles', opt)
+            inFile = inputFile(None, destTwr, name)
+            fList.append(inFile)
+            log.debug('Adding file %s', name)
+           
+        # single tower DAC files   
+               
+        else:
+        
+            if destTwr < 0 or destTwr > 15:
+                log.error("Index for [dacfiles] option %s out of range (0 - 15)", opt)
+                sys.exit(1)
+
+            value = configFile.get('dacfiles', opt)
+            nameList = value.split(',')
+            nameLen = len(nameList)
+            if nameLen == 2:
+                name = nameList[0]
+                srcTwr = int(nameList[1])
+            else:
+                log.error("Incorrect option format %s", value)
+                sys.exit(1)
+            if srcTwr < 0 or srcTwr > 15:
+                log.error("Src index for [dacfiles] option %s out of range (0 - 15)", opt)
+                sys.exit(1)
+            
+            inFile = inputFile(srcTwr, destTwr, name)
+            fList.append(inFile)
+        
+            log.debug('Adding %s file %s to input as tower %d (from %d)', optList[0], name,
                   destTwr, srcTwr)
 
     # get DAC/ADC characterization file names
@@ -263,66 +277,114 @@ if __name__ == '__main__':
 
     dtdName = os.path.join(calibUtilRoot, 'xml', configFile.get('dtdfiles', 'dtdfile'))
 
-    # create empty DAC arrays
+  
+    # read in ULD DAC settings files
+
+    if len(uldDacFiles) == 1 and uldDacFiles[0].destTwr == 16:
     
-    fleDacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE), Numeric.UInt8)
-    fheDacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE), Numeric.UInt8)
-    lacDacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE), Numeric.UInt8)
-    uldDacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE), Numeric.UInt8)            
-
-    # read in DAC settings files
-
-    for f in uldDacFiles:
-
-        log.info("Reading file %s", f.name)
+        f = uldDacFiles[0]  
+        log.info("Reading file %s", f.name)  
         uldDacFile = calDacXML.calDacXML(f.name, 'rng_uld_dac')
-        twrs = uldDacFile.getTowers()
-        if f.srcTwr not in twrs:
-            log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
-            sys.exit(1)
-        dacData = uldDacFile.read()
-        uldDacData[f.destTwr,...] = dacData[f.srcTwr,...]
+        uldDacData = uldDacFile.read()
         uldDacFile.close()
         
-    for f in lacDacFiles:
+    else:
+        
+        uldDacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+            calConstant.NUM_FE), Numeric.UInt8)
+        
+        for f in uldDacFiles:
 
+            log.info("Reading file %s", f.name)
+            uldDacFile = calDacXML.calDacXML(f.name, 'rng_uld_dac')
+            twrs = uldDacFile.getTowers()
+            if f.srcTwr not in twrs:
+                log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
+                sys.exit(1)
+            dacData = uldDacFile.read()
+            uldDacData[f.destTwr,...] = dacData[f.srcTwr,...]
+            uldDacFile.close()
+            
+    # read in LAC DAC settings files
+    
+    if len(lacDacFiles) == 1 and lacDacFiles[0].destTwr == 16:
+    
+        f = lacDacFiles[0]
         log.info("Reading file %s", f.name)
         lacDacFile = calDacXML.calDacXML(f.name, 'log_acpt')
-        twrs = lacDacFile.getTowers()
-        if f.srcTwr not in twrs:
-            log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
-            sys.exit(1)
-        dacData = lacDacFile.read()
-        lacDacData[f.destTwr,...] = dacData[f.srcTwr,...]
+        lacDacData = lacDacFile.read()
         lacDacFile.close()
+    
+    else:
+    
+        lacDacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+            calConstant.NUM_FE), Numeric.UInt8)    
+    
+        for f in lacDacFiles:
 
-    for f in fleDacFiles:
+            log.info("Reading file %s", f.name)
+            lacDacFile = calDacXML.calDacXML(f.name, 'log_acpt')
+            twrs = lacDacFile.getTowers()
+            if f.srcTwr not in twrs:
+                log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
+                sys.exit(1)
+            dacData = lacDacFile.read()
+            lacDacData[f.destTwr,...] = dacData[f.srcTwr,...]
+            lacDacFile.close()
 
+    # read in FLE DAC settings files
+    
+    if len(fleDacFiles) == 1 and fleDacFiles[0].destTwr == 16:
+    
+        f = fleDacFiles[0]
         log.info("Reading file %s", f.name)
         fleDacFile = calDacXML.calDacXML(f.name, 'fle_dac')
-        twrs = fleDacFile.getTowers()
-        if f.srcTwr not in twrs:
-            log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
-            sys.exit(1)
-        dacData = fleDacFile.read()
-        fleDacData[f.destTwr,...] = dacData[f.srcTwr,...]
+        fleDacData = fleDacFile.read()
         fleDacFile.close()
 
-    for f in fheDacFiles:
+    else:
+        
+        fleDacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+            calConstant.NUM_FE), Numeric.UInt8)
+        
+        for f in fleDacFiles:
 
+            log.info("Reading file %s", f.name)
+            fleDacFile = calDacXML.calDacXML(f.name, 'fle_dac')
+            twrs = fleDacFile.getTowers()
+            if f.srcTwr not in twrs:
+                log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
+                sys.exit(1)
+            dacData = fleDacFile.read()
+            fleDacData[f.destTwr,...] = dacData[f.srcTwr,...]
+            fleDacFile.close()
+        
+    # read in FHE DAC settings files
+    
+    if len(fheDacFiles) == 1 and fheDacFiles[0].destTwr == 16:
+    
+        f = fheDacFiles[0]
         log.info("Reading file %s", f.name)
         fheDacFile = calDacXML.calDacXML(f.name, 'fhe_dac')
-        twrs = fheDacFile.getTowers()
-        if f.srcTwr not in twrs:
-            log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
-            sys.exit(1)
-        dacData = fheDacFile.read()
-        fheDacData[f.destTwr,...] = dacData[f.srcTwr,...]
-        fheDacFile.close()        
+        fheDacData = fheDacFile.read()
+        fheDacFile.close()
+        
+    else:
+    
+        fheDacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+            calConstant.NUM_FE), Numeric.UInt8)    
+
+        for f in fheDacFiles:
+
+            log.info("Reading file %s", f.name)
+            fheDacFile = calDacXML.calDacXML(f.name, 'fhe_dac')
+            twrs = fheDacFile.getTowers()
+            if f.srcTwr not in twrs:
+                log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
+                sys.exit(1)
+            dacData = fheDacFile.read()
+            fheDacData[f.destTwr,...] = dacData[f.srcTwr,...]
+            fheDacFile.close()        
 
     # get gain indicies
 
@@ -484,8 +546,7 @@ if __name__ == '__main__':
                                 if gData < 0:
                                    gData = 8
                             psData = pedData[f.destTwr, gData, erng, row, end, fe]
-                            for dac in range(128):
-                               uldAdcData[erng, f.destTwr, row, end, fe, dac] -= psData
+                            uldAdcData[erng, f.destTwr, row, end, fe, :] -= psData
 
         # correct pedestal subtraction for v1 ULD XML files
      
@@ -504,9 +565,8 @@ if __name__ == '__main__':
                                     gData = 8
                             psData = pedData[f.destTwr, gData, erng, row, end, fe]
                             paData = pedData[f.destTwr, gData, (erng + 1), row, end, fe]
-                            for dac in range(128):
-                               uldAdcData[erng, f.destTwr, row, end, fe, dac] += paData
-                               uldAdcData[erng, f.destTwr, row, end, fe, dac] -= psData
+                            uldAdcData[erng, f.destTwr, row, end, fe, :] += paData
+                            uldAdcData[erng, f.destTwr, row, end, fe, :] -= psData
 
 
     # do warning check of intNonlin saturation against ULD saturation
@@ -526,7 +586,7 @@ if __name__ == '__main__':
                         uld = uldAdcData[erng, f.destTwr, row, end, fe, dac]
                         if uld > id:
                             log.warning("ULD %0.3f > INTNONLIN %0.3f for T%d,%s%s,%d,%s", uld, id, f.destTwr,
-                                        calConstant.CROW[row], calConstant.CPM[end], fe, calConstant.CRNG[erng])
+                                calConstant.CROW[row], calConstant.CPM[end], fe, calConstant.CRNG[erng])
                 
                                
 
