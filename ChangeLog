@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Sep 28 10:47:55 PDT 2006
+calibGenCAL/src
+
+Modified Files:
+	genCIDAC2ADC.cxx genMuonAsym.cxx genMuonMPD.cxx 
+Log Message:
+documenation updates.  fix MuonMPD::fillHists bug introduced in last commit.
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Sep 28 08:39:21 PDT 2006
 calibGenCAL/python
 
