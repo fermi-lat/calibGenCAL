@@ -1,5 +1,16 @@
 ------------------------------------------------------------
 User: fewtrell  Thu Sep 28 13:00:24 PDT 2006
+calibGenCAL/src/lib
+
+Modified Files:
+	MuonAsym.cxx MuonAsym.h MuonMPD.cxx MuonMPD.h MuonPed.cxx 
+	MuonPed.h 
+Log Message:
+now we delete any empty histograms before saving the root files
+
+    *
+------------------------------------------------------------
+User: fewtrell  Thu Sep 28 13:00:24 PDT 2006
 calibGenCAL/src
 
 Modified Files:
