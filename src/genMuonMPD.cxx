@@ -1,5 +1,5 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.5 2006/09/18 14:12:53 fewtrell Exp $
-/** @file
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.6 2006/09/26 18:57:23 fewtrell Exp $
+/** @file Gen MevPerDAC calibrations from Muon event files
     @author Zachary Fewtrell
 */
 
