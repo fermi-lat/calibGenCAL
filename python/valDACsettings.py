@@ -1,9 +1,10 @@
 """
-Validate CAL DAC (FHE, FLE, or LAC) settings XML files.  The command line is:
+Validate CAL DAC settings XML files.  The command line is:
 
-valDACsettings [-V] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC <MeV> <dac_slopes_file> <dac_xml_file>
+valDACsettings [-V] [-r] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC <MeV> <dac_slopes_file> <dac_xml_file>
 
 where:
+    -r                 = generate ROOT output with default name
     -R <root_file>     = output validation diagnostics in ROOT file
     -L <log_file>      = save console output to log text file
     -V                 = verbose; turn on debug output
@@ -18,14 +19,14 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/07/03 19:28:23 $"
-__version__     = "$Revision: 1.10 $, $Author: dwood $"
+__date__        = "$Date: 2006/08/03 00:30:12 $"
+__version__     = "$Revision: 1.1 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
 
 
-import sys, os, time
+import sys, os
 import logging
 import getopt
 
@@ -38,7 +39,7 @@ import calConstant
 
 
 
-def rootHists(engData, fileName):
+def rootHistsDAC(engData, fileName):
 
     # create summary histogram
 
@@ -68,7 +69,7 @@ def rootHists(engData, fileName):
 
 
 
-def engVal(errData):
+def engValDAC(errData):
 
     valStatus = 0
     
@@ -82,11 +83,11 @@ def engVal(errData):
                     err = errData[tem, row, end, fe]                
                     if err > warnLimit:
                         if err > errLimit:
-                            log.error('err %0.2f > %0.2f for %d,%s%s,%d', err, errLimit, tem, calConstant.CROW[row],
+                            log.error('err %0.2f > %0.2f for T%d,%s%s,%d', err, errLimit, tem, calConstant.CROW[row],
                                   calConstant.CPM[end], fe)
                             valStatus = 1
                         else:
-                            log.warning('err %0.2f > %0.2f for %d,%s%s,%d', err, warnLimit, tem, calConstant.CROW[row],
+                            log.warning('err %0.2f > %0.2f for T%d,%s%s,%d', err, warnLimit, tem, calConstant.CROW[row],
                                     calConstant.CPM[end], fe)
     return valStatus			    
                         
@@ -95,14 +96,16 @@ def engVal(errData):
 
 if __name__ == '__main__':
     
-    usage = "valDACsettings [-V] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC <MeV> <dac_slopes_file> <dac_xml_file>"
+    usage = \
+        "valDACsettings [-V] [-r] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC <MeV | margin> <dac_slopes_file> <dac_xml_file>"
 
     rootOutput = False
+    logName = None
     
     # setup logger
 
     logging.basicConfig()
-    log = logging.getLogger('dacVal')
+    log = logging.getLogger('valDACsettings')
     log.setLevel(logging.INFO)
 
 
@@ -121,14 +124,12 @@ if __name__ == '__main__':
         elif o[0] == '-R':
             rootName = o[1]
             rootOutput = True
+        elif o[0] == '-r':
+            rootName = None
+            rootOutput = True
         elif o[0] == '-L':
-            if os.path.exists(o[1]):
-                log.warning('Deleting old log file %s', o[1])
-                os.remove(o[1])
-            hdl = logging.FileHandler(o[1])
-            fmt = logging.Formatter('%(levelname)s %(message)s')
-            hdl.setFormatter(fmt)
-            log.addHandler(hdl)
+            logName = o[1]
+           
         
     args = opts[1]
     if len(args) != 4:
@@ -140,27 +141,43 @@ if __name__ == '__main__':
     slopesName = args[2]
     dacName = args[3]
     
+    ext = os.path.splitext(dacName)
+    if rootOutput and rootName is None:
+        rootName = "%s.val.root" % ext[0]
+    if logName is None:
+        logName = "%s.val.log" % ext[0]
+
+    hdl = logging.FileHandler(logName)
+    fmt = logging.Formatter('%(levelname)s %(message)s')
+    hdl.setFormatter(fmt)
+    log.addHandler(hdl)
+    
     # set limits base on DAC type 
     
     if dacType == 'FLE':
-        type = 'fle_dac'
+        ftype = 'fle_dac'
         warnLimit = 5.0
         errLimit = 10.0
     elif dacType == 'FHE':
-        type = 'fhe_dac'
+        ftype = 'fhe_dac'
         warnLimit = 50.0
         errLimit = 100.0
     elif dacType == 'LAC':
-        type = 'log_acpt'
+        ftype = 'log_acpt'
         warnLimit = 0.5
         errLimit = 1.0
+    elif dacType = 'ULD':
+        ftype = 'rng_uld_dac'
+        warnLimit = 0.005
+        errLimit = 0.010
+        MeV /= 100.0
     else:
         log.error("DAC type %s not supported", dacType)
         sys.exit(1)
 
     log.debug('Using error limit %f', errLimit)
     log.debug('Using warning limit %f', warnLimit)
-    log.debug('Using DAC type %s', type)
+    log.debug('Using DAC type %s', ftype)
     log.debug('Using threshold %f MeV', MeV)
 
     # read dacSlopes gain file
@@ -209,7 +226,8 @@ if __name__ == '__main__':
 
     # do validation
 
-    valStatus = engVal(err)    
+    if dacType != 'ULD':
+        valStatus = engValDAC(err)    
 
     # create ROOT output file
     
@@ -223,7 +241,8 @@ if __name__ == '__main__':
 
         # write error histograms
 
-        rootHists(eng, dacName)        
+        if dacType != 'ULD':
+            rootHistsDAC(eng, dacName)        
 
         # clean up
 
