@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Sep 28 08:19:53 PDT 2006
+calibGenCAL/cfg
+
+Modified Files:
+	tholdCIGen.cfg 
+Log Message:
+Added support for input of 16-tower DAC settings files; 4 files can be given, one for each DAC type.
+
+    *
+------------------------------------------------------------
 User: dwood  Tue Sep 26 15:13:01 PDT 2006
 calibGenCAL/python
 
