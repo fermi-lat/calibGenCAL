@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.cxx,v 1.9 2006/09/26 18:57:24 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.cxx,v 1.10 2006/09/28 17:47:55 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -596,4 +596,27 @@ bool MuonMPD::passCutY(const TwrHodoscope &hscope) {
   if (hscope.nLyrsX < 2) return false;
 
   return true;
+}
+
+void MuonMPD::trimHists() {
+  for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
+    if (m_dacLLHists[xtalIdx])
+      if (!m_dacLLHists[xtalIdx]->GetEntries()) {
+        delete m_dacLLHists[xtalIdx];
+        m_dacLLHists[xtalIdx] = 0;
+      }
+
+    if (m_dacL2SHists[xtalIdx])
+      if (!m_dacL2SHists[xtalIdx]->GetEntries()) {
+        delete m_dacL2SHists[xtalIdx];
+        m_dacL2SHists[xtalIdx] = 0;
+      }
+
+   if (m_dacL2SSlopeProfs[xtalIdx])
+      if (!m_dacL2SSlopeProfs[xtalIdx]->GetEntries()) {
+        delete m_dacL2SSlopeProfs[xtalIdx];
+        m_dacL2SSlopeProfs[xtalIdx] = 0;
+      }
+ 
+  }
 }

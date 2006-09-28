@@ -1,6 +1,6 @@
 #ifndef MuonMPD_h
 #define MuonMPD_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.h,v 1.5 2006/09/26 18:57:24 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.h,v 1.6 2006/09/26 20:27:01 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -45,6 +45,10 @@ class MuonMPD {
 
   /// fit histograms & save mean gain values to calMPD
   void fitHists(CalMPD &calMPD); 
+
+  /// delete empty histograms
+  /// \note useful for data w/ < 16 Cal modules.
+  void trimHists();
 
   /// skip event processing & load histograms from previous analysis
   void loadHists(const std::string &filename);
@@ -94,7 +98,8 @@ class MuonMPD {
   /// profile X=bigdiodedac Y=smdiodedac 1 per xtal
   CalUtil::CalVec<CalUtil::XtalIdx, TH1S*> m_dacL2SHists;  
 
-  /// profile X=bigdiodedac Y=smdiodedac 1 per xtal (not used in main calib, only for finding extra l2s slope info)
+  /// profile X=bigdiodedac Y=smdiodedac 1 per xtal (not used in main calib, 
+  /// only for finding extra l2s slope info)
   CalUtil::CalVec<CalUtil::XtalIdx, TProfile*> m_dacL2SSlopeProfs;
   /// list of histograms of geometric mean for both ends on each xtal.
   CalUtil::CalVec<CalUtil::XtalIdx, TH1S*> m_dacLLHists; 

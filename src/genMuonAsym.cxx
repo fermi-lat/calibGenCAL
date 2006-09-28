@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.6 2006/09/26 18:57:23 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.7 2006/09/28 17:47:55 fewtrell Exp $
 /** @file generate Light Asymmetry calibrations from Muon event files
     @author Zachary Fewtrell
 
@@ -167,6 +167,7 @@ int main(int argc, char **argv) {
                          rootFileList,
                          peds,
                          dac2adc);
+      muonAsym.trimHists();
     }
 
     muonAsym.summarizeHists(logStrm);
