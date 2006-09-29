@@ -1,6 +1,6 @@
 #ifndef MuonPed_h
 #define MuonPed_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.h,v 1.7 2006/09/26 20:27:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.h,v 1.8 2006/09/28 20:00:24 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -98,29 +98,44 @@ class MuonPed {
 
   /// store cfg & status data pertinent to current algorithm run
   struct AlgData {
-    AlgData() {clear();}
-    void clear() {
+    AlgData() {init();}
+
+    void init() {
       roughPeds = 0;
       trigCut = PERIODIC_TRIGGER;
     }
-    const CalPed *roughPeds;
-    TRIGGER_CUT trigCut;
+    
+	const CalPed *roughPeds;
+    
+	TRIGGER_CUT trigCut;
   } algData;
 
   /// store data pertinent to current event
   struct EventData{
-    EventData() {clear();}
+    EventData() {init();}
 
-    void clear() {
+    /// reset all member variables
+	void init() {
       prev4Range = true;
       fourRange = true;
-      eventNum = 0;
-
+	  eventNum = 0;	  
     }
 
-    bool prev4Range;
+	/// set member variables for next event.
+	void next() {
+		prev4Range = fourRange;
+		
+		// if mode is unknown, we always treat it as 4 range
+		fourRange = true;
+		
+		eventNum++;
+	}
+
     bool fourRange;
-    unsigned eventNum;
+		
+	unsigned eventNum;
+	
+	bool prev4Range;
   } eventData;
 
 };

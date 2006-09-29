@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.cxx,v 1.9 2006/09/26 18:57:24 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.cxx,v 1.10 2006/09/28 20:00:24 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -53,8 +53,6 @@ void MuonPed::fillHists(unsigned nEntries,
   /// Initialize Object Data //////////////
   /////////////////////////////////////////
   initHists();
-  algData.clear();
-  eventData.clear();
 
   algData.roughPeds = roughPeds;
   algData.trigCut = trigCut;
@@ -81,12 +79,8 @@ void MuonPed::fillHists(unsigned nEntries,
   /// Event Loop //////////////////////////
   /////////////////////////////////////////
   // in periodic trigger mode we will skip these events
-  eventData.prev4Range = true; 
-  eventData.fourRange  = true;
-  for (eventData.eventNum = 0; eventData.eventNum < nEvents; eventData.eventNum++) {
-    // save previous mode
-    eventData.prev4Range = eventData.fourRange;
-
+  eventData.init();
+  for (eventData.eventNum = 0; eventData.eventNum < nEvents; eventData.next()) {
     /////////////////////////////////////////
     /// Load new event //////////////////////
     /////////////////////////////////////////
@@ -102,14 +96,12 @@ void MuonPed::fillHists(unsigned nEntries,
 
     if (!rootFile.getEvent(eventData.eventNum)) {
       m_ostrm << "Warning, event " << eventData.eventNum << " not read." << endl;
-      eventData.fourRange = true;
       continue;
     }
     
     DigiEvent *digiEvent = rootFile.getDigiEvent();
     if (!digiEvent) {
       m_ostrm << __FILE__ << ": Unable to read DigiEvent " << eventData.eventNum  << endl;
-      eventData.fourRange = true;
       continue;
     }
 
@@ -225,7 +217,6 @@ void MuonPed::processEvent(DigiEvent &digiEvent) {
     if (&summary == 0) {
       m_ostrm << "Warning, eventSummary data not found for event: "
               << eventData.eventNum << endl;
-      eventData.fourRange = true;
       return;
     }
     eventData.fourRange = summary.readout4();
