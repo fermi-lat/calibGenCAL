@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Sep 29 12:11:44 PDT 2006
+calibGenCAL/src/lib
+
+Modified Files:
+	IntNonlin.cxx IntNonlin.h MuonPed.cxx MuonPed.h 
+Log Message:
+broke up long functions into several smaller subroutiens
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Sep 28 14:26:48 PDT 2006
 calibGenCAL/python
 
