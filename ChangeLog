@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Tue Oct  3 09:26:38 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	valDACsettings.py 
+Log Message:
+Fixed bugs from initial support added for ULD; still need to do the validation work for ULD input.
+
+    *
+------------------------------------------------------------
 User: dwood  Tue Oct  3 09:20:40 PDT 2006
 calibGenCAL/python
 
