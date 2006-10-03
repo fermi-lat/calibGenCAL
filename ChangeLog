@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Tue Oct  3 11:13:07 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	valDACsettings.py 
+Log Message:
+Added validation for ULD files.
+
+    *
+------------------------------------------------------------
 User: dwood  Tue Oct  3 10:30:29 PDT 2006
 calibGenCAL/src
 
