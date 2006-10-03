@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.cxx,v 1.10 2006/09/28 17:47:55 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.cxx,v 1.11 2006/09/28 20:00:24 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -74,6 +74,7 @@ void MuonMPD::fillHists(unsigned nEntries,
                         const CalAsym &asym,
                         const CIDAC2ADC &dac2adc){
   initHists();
+  algData.init(&asym);
   
   RootFileAnalysis rootFile(0, &rootFileList, 0);
   // enable only needed branches in root file
@@ -85,245 +86,42 @@ void MuonMPD::fillHists(unsigned nEntries,
   unsigned nEvents = rootFile.getEntries();
   m_ostrm << __FILE__ << ": Processing: " << nEvents << " events." << endl;
 
-  ////////////////////////////////////////////////////
-  // INITIALIZE ROOT PLOTTING OBJECTS FOR LINE FITS //
-  ////////////////////////////////////////////////////
-  // viewHist is used to set scale before drawing TGraph
-  TH2S viewHist("viewHist","viewHist",
-                8,-0.5,7.5, //X-limits lyr
-                12,-0.5,11.5); //Y-limits col
-  TCanvas canvas("canvas","event display",800,600);
-  viewHist.Draw();
-  TGraph graph(4); graph.Draw("*");
-  canvas.Update();
-  TF1 lineFunc("line","pol1",0,8);
 
-  // SUMMARY COUNTERS //
-  unsigned nXEvts  = 0; // count total # of X events used
-  unsigned nYEvts  = 0; // count total # of Y events used
-  long nXtals = 0; // count total # of xtals measured
-
-  // NUMERIC CONSTANTS
-  // converts between lyr/col units & mm
-  // real trig is needed for pathlength calculation
-  static const float slopeFactor = CalGeom::CELL_HOR_PITCH/CalGeom::CELL_VERT_PITCH;
-
-
-  // need one hodo scope per tower
-  CalVec<TwrNum, TwrHodoscope> hscopes(TwrNum::N_VALS, TwrHodoscope(peds, dac2adc));
 
   ///////////////////////////////////////////
   // DIGI Event Loop - Fill Twr Hodoscopes //
   ///////////////////////////////////////////
-  for (unsigned eventNum = 0; eventNum < nEvents; eventNum++) {
+  eventData.init(peds, dac2adc);
+  for (eventData.eventNum = 0; eventData.eventNum < nEvents; eventData.eventNum++) {
+    eventData.next();
 
-    if (eventNum % 10000 == 0) {
+    if (eventData.eventNum % 10000 == 0) {
       // quit if we have enough entries in each histogram
       unsigned currentMin = getMinEntries();
       if (currentMin >= nEntries) break;
-      m_ostrm << "Event: " << eventNum 
+      m_ostrm << "Event: " << eventData.eventNum 
               << " min entries per histogram: " << currentMin
               << endl;
       m_ostrm.flush();
     }
 
-    if (!rootFile.getEvent(eventNum)) {
-      m_ostrm << "Warning, event " << eventNum << " not read." << endl;
+    if (!rootFile.getEvent(eventData.eventNum)) {
+      m_ostrm << "Warning, event " << eventData.eventNum << " not read." << endl;
       continue;
     }
 
     DigiEvent *digiEvent = rootFile.getDigiEvent();
     if (!digiEvent) {
-      m_ostrm << __FILE__ << ": Unable to read DigiEvent " << eventNum  << endl;
+      m_ostrm << __FILE__ << ": Unable to read DigiEvent " << eventData.eventNum  << endl;
       continue;
-    }
-
-    // check that we are in 4 range mode
-    EventSummaryData &summary = digiEvent->getEventSummaryData();
-    if (!summary.readout4())
-      continue;
-
-    const TClonesArray* calDigiCol = digiEvent->getCalDigiCol();
-    if (!calDigiCol) {
-      m_ostrm << "no calDigiCol found for event#" << eventNum << endl;
-      continue;
-    }
-
-    TIter calDigiIter(calDigiCol);
-    const CalDigi *pCalDigi = 0;
-
-    // clear all hodoscopes
-    for (TwrNum twr; twr.isValid(); twr++)
-      hscopes[twr].clear();
-
-    // loop through each 'hit' in one event
-    while ((pCalDigi = (CalDigi*)calDigiIter.Next())) {
-      const CalDigi &calDigi = *pCalDigi; // use reference to avoid -> syntax
-      
-      //-- XtalId --//
-      idents::CalXtalId id(calDigi.getPackedId()); // get interaction information
-      // retrieve tower info
-      TwrNum twr = id.getTower();
-      
-      // add hit to appropriate hodoscope.
-      hscopes[twr].addHit(calDigi);
-
     }
     
-    ///////////////////////////////////////////
-    // Search Twr Hodoscopes for good events //
-    ///////////////////////////////////////////
-    for (TwrNum twr; twr.isValid(); twr++) {
-      TwrHodoscope &hscope = hscopes[twr];
-      
-      // summarize the event for each hodoscope
-      hscope.summarizeEvent();
-
-      // CHECK BOTH DIRECTIONS FOR USABLE EVENT
-      /** Note: 'direction' refers to the direction of xtals which have vertical
-          'connect-4' deposits.  For MevPerDAC, the orthogonal hits will be used to
-          determine the pathlength for these 4 hits.
-      */
-
-      for (DirNum dir; dir.isValid(); dir++) {
-        // skip if we don't have a good track
-        if (dir == X_DIR && !passCutX(hscope)) continue;
-        else if (dir == Y_DIR && !passCutY(hscope)) continue;
-
-        // count used events
-
-        // copy hit lists to local var since
-        // i will be removing some hits and
-        // the lists may need to be reused for
-        // the next oritentation (X vs Y)
-        vector<XtalIdx> hitList;
-        vector<XtalIdx> hitListOrtho;
-
-        if (dir == X_DIR) {
-          nXEvts++;
-          hitList = hscope.hitListX;
-          hitListOrtho = hscope.hitListY;
-        } else {
-          nYEvts++;
-          hitList = hscope.hitListY;
-          hitListOrtho = hscope.hitListX;
-        }
-
-        //-- GET HODOSCOPIC TRACK FROM ORTHOGONAL XTALS --//
-        graph.Set(hitListOrtho.size());
-
-        // fill in each point val
-        for (unsigned i = 0; i < hitListOrtho.size(); i++) {
-          XtalIdx xtalIdx = hitListOrtho[i];
-          LyrNum lyr = xtalIdx.getLyr();
-          ColNum col = xtalIdx.getCol();
-          graph.SetPoint(i,lyr,col);
-        }
-
-        // fit straight line through graph
-        graph.Fit(&lineFunc,"WQN");
-
-        // throw out events which are greater than about 30 deg from vertical
-        float lineSlope = lineFunc.GetParameter(1);
-        if (abs(lineSlope) > 0.5) continue;
-
-
-        //-- THROW OUT HITS NEAR END OF XTAL --//
-        // loop through each hit in X direction, remove bad xtals
-        // bad xtals have energy centroid at col 0 or 11 (-5 or +5 since center of xtal is 0)
-        for (unsigned i = 0; i < hitList.size(); i++) {
-          XtalIdx xtalIdx = hitList[i];
-          LyrNum lyr = xtalIdx.getLyr();
-
-          float hitPos = lineFunc.Eval(lyr); // find column for given lyr
-
-          //throw out event if energy centroid is in column 0 or 11 (3cm from end)
-          if (hitPos < 1 || hitPos > 10) {
-            hitList.erase(hitList.begin()+i);
-            i--;
-          }
-        }
-
-        // occasionally there will be no good hits!
-        if (hitList.size() < 1) continue;
-
-        // improve hodoscopic slope if there are enough good points left 
-        // to fit a straight line
-        if (hitList.size() > 1) {
-          //-- IMPROVE TRACK W/ ASYMMETRY FROM GOOD XTALS --//
-          // now that we have eliminated events on the ends of xtals, we can use
-          // asymmetry to get a higher precision slope
-          graph.Set(hitList.size());  // reset graph size in case we removed any invalid points.
-          for (unsigned i = 0; i < hitList.size(); i++) {
-            XtalIdx xtalIdx = hitList[i];
-            LyrNum lyr = xtalIdx.getLyr();
-          
-            // calcuate the log ratio = log(POS/NEG)
-            float dacP = hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), POS_FACE, LRG_DIODE)];
-            float dacN = hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), NEG_FACE, LRG_DIODE)];
-            float asymLL = log(dacP/dacN);
-
-            // get new position from asym
-            float hitPos = asym.asym2pos(xtalIdx, LRG_DIODE, asymLL);
-
-            graph.SetPoint(i,lyr,hitPos);
-          }
-
-          graph.Fit(&lineFunc,"WQN");
-          lineSlope = lineFunc.GetParameter(1);
-        }
-
-
-        //-- Pathlength Correction --//
-        //slope = rise/run = dy/dx = colPos/lyrNum
-        float tan = lineSlope*slopeFactor;
-        float sec = sqrt(1 + tan*tan); //sec proportional to hyp which is pathlen.
-
-        // poulate histograms & apply pathlength correction
-        unsigned nHits = hitList.size();
-        for (unsigned i = 0; i < nHits; i++) {
-          XtalIdx xtalIdx = hitList[i];
-
-          // calculate meanDAC for each diode size.
-          CalArray<DiodeNum, float> meanDAC;
-          for (DiodeNum diode; diode.isValid(); diode++) {
-            meanDAC[diode] = sqrt(hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), POS_FACE, diode)] *
-                                  hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), NEG_FACE, diode)]);
-
-            meanDAC[diode] /= sec;
-          }
-        
-          // Load meanDAC Histogram
-          m_dacLLHists[xtalIdx]->Fill(meanDAC[LRG_DIODE]);
-
-          // load dacL2S profile
-          m_dacL2SHists[xtalIdx]->Fill(meanDAC[SM_DIODE]/meanDAC[LRG_DIODE]);
-          // load dacL2S profile
-          m_dacL2SSlopeProfs[xtalIdx]->Fill(meanDAC[LRG_DIODE],meanDAC[SM_DIODE]);
-
-          nXtals++;      
-        }
-      }
-    }
+    processEvent(*digiEvent);
+    
   }
 }
 
 void MuonMPD::fitHists(CalMPD &calMPD) {
-  ////////////////////////////////////////////////////
-  // INITIALIZE ROOT PLOTTING OBJECTS FOR LINE FITS //
-  ////////////////////////////////////////////////////
-  // viewHist is used to set scale before drawing TGraph
-  TH2S viewHist("viewHist","viewHist",
-                N_L2S_PTS, 0, L2S_MAX_LEDAC, // X-LIMITS LRG
-                N_L2S_PTS, 0, L2S_MAX_LEDAC); // Y-LIMITS SM
-  TCanvas canvas("canvas","event display",800,600);
-  viewHist.Draw();
-  TGraph graph(N_L2S_PTS); 
-  graph.Draw("*");
-  canvas.Update();
-  TF1 lineFunc("line","pol1", 
-               L2S_MIN_LEDAC, 
-               L2S_MAX_LEDAC);
 
   // PER XTAL LOOP
   for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
@@ -406,7 +204,7 @@ void MuonMPD::fitHists(CalMPD &calMPD) {
 
     // Fill scatter graph w/ smDAC vs lrgDAC points
     unsigned nPts = 0;
-    graph.Set(nPts); // start w/ empty graph
+    algData.graph.Set(nPts); // start w/ empty graph
     for (unsigned i = 0; i < N_L2S_PTS; i++) {
       // only insert a bin if it has entries
       if (!(p.GetBinEntries(i+1) > 0)) continue; // bins #'d from 1
@@ -417,8 +215,8 @@ void MuonMPD::fitHists(CalMPD &calMPD) {
       float lrgDAC = p.GetBinCenter(i+1);
 
       // update graphsize & set point
-      graph.Set(nPts);
-      graph.SetPoint(nPts-1,lrgDAC,smDAC);
+      algData.graph.Set(nPts);
+      algData.graph.SetPoint(nPts-1,lrgDAC,smDAC);
     }
 
     // bail if for some reason we didn't get any points
@@ -430,7 +228,7 @@ void MuonMPD::fitHists(CalMPD &calMPD) {
     }
 
     // fit straight line to get mean ratio
-    graph.Fit(&lineFunc,"WQN");
+    algData.graph.Fit(&algData.lineFunc,"WQN");
   }
 }
 
@@ -612,11 +410,207 @@ void MuonMPD::trimHists() {
         m_dacL2SHists[xtalIdx] = 0;
       }
 
-   if (m_dacL2SSlopeProfs[xtalIdx])
+    if (m_dacL2SSlopeProfs[xtalIdx])
       if (!m_dacL2SSlopeProfs[xtalIdx]->GetEntries()) {
         delete m_dacL2SSlopeProfs[xtalIdx];
         m_dacL2SSlopeProfs[xtalIdx] = 0;
       }
  
   }
+}
+
+
+void MuonMPD::processEvent(DigiEvent &digiEvent) {
+  // check that we are in 4 range mode
+  EventSummaryData &summary = digiEvent.getEventSummaryData();
+  if (!summary.readout4())
+    return;
+
+  const TClonesArray* calDigiCol = digiEvent.getCalDigiCol();
+  if (!calDigiCol) {
+    m_ostrm << "no calDigiCol found for event#" << eventData.eventNum << endl;
+    return;
+  }
+
+  TIter calDigiIter(calDigiCol);
+  const CalDigi *pCalDigi = 0;
+
+  // loop through each 'hit' in one event
+  while ((pCalDigi = (CalDigi*)calDigiIter.Next())) {
+    const CalDigi &calDigi = *pCalDigi; // use reference to avoid -> syntax
+      
+    //-- XtalId --//
+    idents::CalXtalId id(calDigi.getPackedId()); // get interaction information
+    // retrieve tower info
+    TwrNum twr = id.getTower();
+      
+    // add hit to appropriate hodoscope.
+    (*eventData.hscopes)[twr].addHit(calDigi);
+
+  }
+    
+  ///////////////////////////////////////////
+  // Search Twr Hodoscopes for good events //
+  ///////////////////////////////////////////
+  for (TwrNum twr; twr.isValid(); twr++) {
+    TwrHodoscope &hscope = (*eventData.hscopes)[twr];
+
+    processTower(hscope);
+  }
+}
+
+void MuonMPD::processTower(TwrHodoscope &hscope) {
+  // summarize the event for each hodoscope
+  hscope.summarizeEvent();
+
+  // CHECK BOTH DIRECTIONS FOR USABLE EVENT
+  /** Note: 'direction' refers to the direction of xtals which have vertical
+      'connect-4' deposits.  For MevPerDAC, the orthogonal hits will be used to
+      determine the pathlength for these 4 hits.
+  */
+
+  for (DirNum dir; dir.isValid(); dir++) {
+    // skip if we don't have a good track
+    if (dir == X_DIR && !passCutX(hscope)) continue;
+    else if (dir == Y_DIR && !passCutY(hscope)) continue;
+
+    // count used events
+
+    // copy hit lists to local var since
+    // i will be removing some hits and
+    // the lists may need to be reused for
+    // the next oritentation (X vs Y)
+    vector<XtalIdx> hitList;
+    vector<XtalIdx> hitListOrtho;
+
+    if (dir == X_DIR) {
+      algData.nXEvents++;
+      hitList = hscope.hitListX;
+      hitListOrtho = hscope.hitListY;
+    } else {
+      algData.nYEvents++;
+      hitList = hscope.hitListY;
+      hitListOrtho = hscope.hitListX;
+    }
+
+    //-- GET HODOSCOPIC TRACK FROM ORTHOGONAL XTALS --//
+    algData.graph.Set(hitListOrtho.size());
+
+    // fill in each point val
+    for (unsigned i = 0; i < hitListOrtho.size(); i++) {
+      XtalIdx xtalIdx = hitListOrtho[i];
+      LyrNum lyr = xtalIdx.getLyr();
+      ColNum col = xtalIdx.getCol();
+      algData.graph.SetPoint(i,lyr,col);
+    }
+
+    // fit straight line through graph
+    algData.graph.Fit(&algData.lineFunc,"WQN");
+
+    // throw out events which are greater than about 30 deg from vertical
+    float lineSlope = algData.lineFunc.GetParameter(1);
+    if (abs(lineSlope) > 0.5) continue;
+
+
+    //-- THROW OUT HITS NEAR END OF XTAL --//
+    // loop through each hit in X direction, remove bad xtals
+    // bad xtals have energy centroid at col 0 or 11 (-5 or +5 since center of xtal is 0)
+    for (unsigned i = 0; i < hitList.size(); i++) {
+      XtalIdx xtalIdx = hitList[i];
+      LyrNum lyr = xtalIdx.getLyr();
+
+      float hitPos = algData.lineFunc.Eval(lyr); // find column for given lyr
+
+      //throw out event if energy centroid is in column 0 or 11 (3cm from end)
+      if (hitPos < 1 || hitPos > 10) {
+        hitList.erase(hitList.begin()+i);
+        i--;
+      }
+    }
+
+    // occasionally there will be no good hits!
+    if (hitList.size() < 1) continue;
+
+    // improve hodoscopic slope if there are enough good points left 
+    // to fit a straight line
+    if (hitList.size() > 1) {
+      //-- IMPROVE TRACK W/ ASYMMETRY FROM GOOD XTALS --//
+      // now that we have eliminated events on the ends of xtals, we can use
+      // asymmetry to get a higher precision slope
+      algData.graph.Set(hitList.size());  // reset graph size in case we removed any invalid points.
+      for (unsigned i = 0; i < hitList.size(); i++) {
+        XtalIdx xtalIdx = hitList[i];
+        LyrNum lyr = xtalIdx.getLyr();
+          
+        // calcuate the log ratio = log(POS/NEG)
+        float dacP = hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), POS_FACE, LRG_DIODE)];
+        float dacN = hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), NEG_FACE, LRG_DIODE)];
+        float asymLL = log(dacP/dacN);
+
+        // get new position from asym
+        float hitPos = algData.asym->asym2pos(xtalIdx, LRG_DIODE, asymLL);
+
+        algData.graph.SetPoint(i,lyr,hitPos);
+      }
+
+      algData.graph.Fit(&algData.lineFunc,"WQN");
+      lineSlope = algData.lineFunc.GetParameter(1);
+    }
+
+	// NUMERIC CONSTANTS
+    // converts between lyr/col units & mm
+    // real trigonometry is needed for pathlength calculation
+    static const float slopeFactor = CalGeom::CELL_HOR_PITCH/CalGeom::CELL_VERT_PITCH;
+
+    //-- Pathlength Correction --//
+    //slope = rise/run = dy/dx = colPos/lyrNum
+    float tan = lineSlope*slopeFactor;
+    float sec = sqrt(1 + tan*tan); //sec proportional to hyp which is pathlen.
+
+    // poulate histograms & apply pathlength correction
+    unsigned nHits = hitList.size();
+    for (unsigned i = 0; i < nHits; i++) {
+      XtalIdx xtalIdx = hitList[i];
+
+      // calculate meanDAC for each diode size.
+      CalArray<DiodeNum, float> meanDAC;
+      for (DiodeNum diode; diode.isValid(); diode++) {
+        meanDAC[diode] = sqrt(hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), POS_FACE, diode)] *
+                              hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), NEG_FACE, diode)]);
+
+        meanDAC[diode] /= sec;
+      }
+        
+      // Load meanDAC Histogram
+      m_dacLLHists[xtalIdx]->Fill(meanDAC[LRG_DIODE]);
+
+      // load dacL2S profile
+      m_dacL2SHists[xtalIdx]->Fill(meanDAC[SM_DIODE]/meanDAC[LRG_DIODE]);
+      // load dacL2S profile
+      m_dacL2SSlopeProfs[xtalIdx]->Fill(meanDAC[LRG_DIODE],meanDAC[SM_DIODE]);
+
+      algData.nXtals++;      
+    }
+  }
+}
+
+
+MuonMPD::AlgData::AlgData() :
+  canvas("canvas","event display",800,600),
+  graph(4),
+  lineFunc("line","pol1",0,8),
+  viewHist("viewHist","viewHist",
+           8,-0.5,7.5, //X-limits lyr
+           12,-0.5,11.5) //Y-limits col
+{
+  init();
+  
+  ////////////////////////////////////////////////////
+  // INITIALIZE ROOT PLOTTING OBJECTS FOR LINE FITS //
+  ////////////////////////////////////////////////////
+  // viewHist is used to set scale before drawing TGraph
+  viewHist.Draw();
+  graph.Draw("*");
+  canvas.Update();
+  
 }
