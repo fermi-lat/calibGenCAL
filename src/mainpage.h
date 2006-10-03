@@ -1,5 +1,5 @@
 // (Special "header" just for doxygen)
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/mainpage.h,v 1.41 2006/08/17 14:34:21 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/mainpage.h,v 1.42 2006/09/26 21:13:51 fewtrell Exp $
 
 
 /*! 
@@ -117,18 +117,23 @@ lookup for each configuration.</p>
 - dumpROOTPlots.py  - dump all root histograms & TCanvas objects in file to 
 image file.
 
-<h5> dac settings scripts </h5>
+<h5> DAC settings scripts </h5>
 
 - <tt> genLACsettings [-V] <MeV> <cfg_file> <out_xml_file> </tt>
 - <tt> genFLEsettings [-V] <MeV> <cfg_file> <out_xml_file> </tt>
 - <tt> genFHEsettings [-V] <GeV> <cfg_file> <out_xml_file> </tt>
 - <tt> genULDsettings [-V] <cfg_file> <out_xml_file> </tt>
+- <tt> dacSlopesGen [-V] [-L <log_file>] <cfg_file> <out_xml_file> </tt>
+- <tt> genDACsettings [-V] FLE|FHE|LAC|ULD <MeV | margin> <dac_slopes_xml_file> 
+          <dac_xml_file> [<gain>] </tt>
 
 <p>The DAC settings generation tools produce configuration XML files
 providing values to configure each channel.  The DAC settings tools
 take a configuration file and possibly (except for ULD) a threshold
 energy as input.  The -V option increases the verbosity of the
-diagnostic output.</p>
+diagnostic output.  The dacSlopesGen tool creates an intermediate
+summary of the DAC characterization data.  It is used as input to
+the genDACsettings application.</p>
 
 - <tt> adcsmooth [-V] <in_file> <out_file> </tt>
 
@@ -151,17 +156,19 @@ channels from 2 intNonlin xml files.
 
 <h5> Validation scripts </h5>
 
-- <tt> asymVal      [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> adc2nrgVal   [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> biasVal      [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> intNonlinVal [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> mevPerDacVal [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> pedVal       [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> tholdCIVal   [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> charVal      [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> muSlopeVal   [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
-- <tt> dacVal       [-V] [-r] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC <MeV>
-<cfg_file> <dac_xml_file> </tt>
+- <tt> asymVal        [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> adc2nrgVal     [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> biasVal        [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> intNonlinVal   [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> mevPerDacVal   [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> pedVal         [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> tholdCIVal     [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> charVal        [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> muSlopeVal     [-V] [-r] [-R <root_file>] [-L <log_file>] <xml_file> </tt>
+- <tt> dacVal         [-V] [-r] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC <MeV>
+                          <cfg_file> <dac_xml_file> </tt>
+- <tt> valDACsettings [-V] [-r] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC|ULD 
+                          <MeV> <dac_slopes_file> <xml_file> </tt>                   
 - <tt> checkXML     [xml_file_0 xml_file_1 ...] </tt> 
 
 
@@ -225,8 +232,8 @@ Generate associated root plots.
 - <tt> pedMerge       [-V] <cfg_file> <out_xml_file> </tt>
 - <tt> mevPerDacMerge [-V] <cfg_file> <out_xml_file> </tt>
 - <tt> asymMerge      [-V] <cfg_file> <out_xml_file> </tt>
-- <tt> calFitsMerge [-V] <output_xml_file> <input_xml_file1> [input_xml_fileN]* 
-</tt> merge relgain files
+- <tt> calFitsMerge   [-V] <output_xml_file> <input_xml_file1> 
+                      [input_xml_fileN, ...] </tt> 
 
 <h5> Miscellaneous scripts </h5>
 - <tt> inlPedSubtract </tt> : pedestal subtract the ADC values in a cidac2adc 
@@ -255,5 +262,6 @@ folder.
 dac settings with calibGenCAL python scripts.
 - \b calibGenCAL/doc/gensettings_scripts.html - in depth description of dac 
 settings tools
-
+- \b calibGenCAL/doc/calibGenCAL_description.xxx - high level description of
+the calibGenCAL package
 */
