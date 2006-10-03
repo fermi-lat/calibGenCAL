@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Oct  3 09:09:28 PDT 2006
+calibGenCAL/src/lib
+
+Modified Files:
+	MuonAsym.cxx MuonAsym.h 
+Log Message:
+made MuonAsym code more modular, broke it up into several subroutines
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Sep 29 12:11:44 PDT 2006
 calibGenCAL/src/lib
 
