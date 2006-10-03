@@ -19,8 +19,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/08/03 00:30:12 $"
-__version__     = "$Revision: 1.1 $, $Author: dwood $"
+__date__        = "$Date: 2006/09/28 21:26:48 $"
+__version__     = "$Revision: 1.2 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -166,7 +166,7 @@ if __name__ == '__main__':
         ftype = 'log_acpt'
         warnLimit = 0.5
         errLimit = 1.0
-    elif dacType = 'ULD':
+    elif dacType == 'ULD':
         ftype = 'rng_uld_dac'
         warnLimit = 0.005
         errLimit = 0.010
@@ -191,7 +191,7 @@ if __name__ == '__main__':
     # read DAC settings file
 
     log.info('Reading file %s', dacName)
-    fio = calDacXML.calDacXML(dacName, type)
+    fio = calDacXML.calDacXML(dacName, ftype)
     twrs = set(fio.getTowers())
     if not twrs.issubset(towers):
         log.error("%s data not found in file %s", twrs, dacName)
