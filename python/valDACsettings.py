@@ -1,7 +1,7 @@
 """
 Validate CAL DAC settings XML files.  The command line is:
 
-valDACsettings [-V] [-r] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC <MeV> <dac_slopes_file> <dac_xml_file>
+valDACsettings [-V] [-r] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC|ULD <MeV> <dac_slopes_file> <dac_xml_file>
 
 where:
     -r                 = generate ROOT output with default name
@@ -19,8 +19,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/09/28 21:26:48 $"
-__version__     = "$Revision: 1.2 $, $Author: dwood $"
+__date__        = "$Date: 2006/10/03 16:26:38 $"
+__version__     = "$Revision: 1.3 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -35,6 +35,13 @@ import Numeric
 import calCalibXML
 import calDacXML
 import calConstant
+
+
+
+# validation limits
+
+uldWarnLimit = 0.005
+uldErrLimit  = 0.010
 
 
 
@@ -94,10 +101,46 @@ def engValDAC(errData):
 
 
 
+
+def engValULD(engData, saturation):
+
+    valStatus = 0
+    
+    # check ULD threshold verses saturation to see if margin is kept
+    
+    for tem in twrs:
+        for row in range(calConstant.NUM_ROW):
+            for end in range(calConstant.NUM_END):
+                for fe in range(calConstant.NUM_FE):
+                    for erng in range(3):
+                    
+                        eng = engData[erng, tem, row, end, fe]
+                        sat = saturation[erng, tem, row, end, fe]
+                        margin = (sat - eng) / sat
+                        
+                        if margin < MeV:
+                        
+                            err = abs(MeV - margin)                            
+                        
+                            if err > uldWarnLimit:
+                                if err > uldErrLimit:
+                                    log.error("err %0.3f > %0.3f for T%d,%s%s,%d,%s", err, uldErrLimit, tem, calConstant.CROW[row],
+                                        calConstant.CPM[end], fe, calConstant.CRNG[erng])
+                                    valStatus = 1
+                                else:
+                                    log.warning("err %0.3f > %0.3f for T%d,%s%s,%d,%s", err, uldWarnLimit, tem, calConstant.CROW[row],
+                                        calConstant.CPM[end], fe, calConstant.CRNG[erng]) 
+                                    
+    return valStatus                                                   
+
+
+
+
+
 if __name__ == '__main__':
     
     usage = \
-        "valDACsettings [-V] [-r] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC <MeV | margin> <dac_slopes_file> <dac_xml_file>"
+        "valDACsettings [-V] [-r] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC|ULD <MeV | margin> <dac_slopes_file> <dac_xml_file>"
 
     rootOutput = False
     logName = None
@@ -112,7 +155,7 @@ if __name__ == '__main__':
     # check command line
 
     try:
-        opts = getopt.getopt(sys.argv[1:], "-R:-L:-V")
+        opts = getopt.getopt(sys.argv[1:], "-R:-L:-V-r")
     except getopt.GetoptError:
         log.error(usage)
         sys.exit(1)
@@ -213,21 +256,43 @@ if __name__ == '__main__':
         slope = dacSlope[...,4]
         offset = dacSlope[...,5]
         ranges = rangeData[...,2]
+    elif dacType == 'ULD':
+        slope = uldSlope[...,0]
+        offset = uldSlope[...,1]
+        saturation = uldSlope[...,2]     
         
-    dacData = Numeric.where(ranges, (dacData - 64), dacData)    
-    
-    # convert to MeV
-    
-    eng = (slope * dacData) + offset
-    
-    # calculate errors
-
-    err = abs(eng - MeV)
-
-    # do validation
-
+    # handle FLE, FHE, and LAC cases
+        
     if dacType != 'ULD':
-        valStatus = engValDAC(err)    
+        
+        dacData = Numeric.where(ranges, (dacData - 64), dacData)    
+    
+        # convert to MeV
+    
+        eng = (slope * dacData) + offset
+    
+        # calculate errors
+
+        err = abs(eng - MeV)
+
+        # do validation
+
+        valStatus = engValDAC(err) 
+        
+    # handle ULD case
+    
+    else:
+        
+        dacData = dacData - 64
+        
+        # convert to MeV
+        
+        eng = (slope * dacData) + offset
+ 
+        # do validation
+        
+        valStatus = engValULD(eng, saturation)      
+           
 
     # create ROOT output file
     
