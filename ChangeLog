@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Oct  3 14:12:25 PDT 2006
+calibGenCAL/python
+
+Added Files:
+	xdiodeXtalk.bat xdiodeXtalk.py xdiodeXtalk.sh 
+Log Message:
+this code is not yet officially supported, but it is intended to correct for LE->HE diode crosstalk in the Cal
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Oct  3 14:09:26 PDT 2006
 calibGenCAL/src/lib
 
