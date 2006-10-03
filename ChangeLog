@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Tue Oct  3 10:30:29 PDT 2006
+calibGenCAL/src
+
+Modified Files:
+	mainpage.h 
+Log Message:
+Added notes on new method for generating DAC settings.
+
+    *
+------------------------------------------------------------
 User: dwood  Tue Oct  3 09:26:38 PDT 2006
 calibGenCAL/python
 
