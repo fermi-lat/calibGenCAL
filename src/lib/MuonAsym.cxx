@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.cxx,v 1.10 2006/09/26 18:57:24 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.cxx,v 1.11 2006/09/28 20:00:24 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -66,6 +66,7 @@ void MuonAsym::fillHists(unsigned nEntries,
                          const CalPed &peds,
                          const CIDAC2ADC &dac2adc) {
   initHists();
+  algData.init();
 
   RootFileAnalysis rootFile(0, &rootFileList, 0);
   // enable only needed branches in root file
@@ -76,136 +77,44 @@ void MuonAsym::fillHists(unsigned nEntries,
   unsigned nEvents = rootFile.getEntries();
   m_ostrm << __FILE__ << ": Processing: " << nEvents << " events." << endl;
 
-  unsigned  nGoodDirs  = 0; // count total # of events used
-  unsigned  nXDirs     = 0;
-  unsigned  nYDirs     = 0;
-  long nHits      = 0; // count total # of xtals measured
-  unsigned  nBadHits   = 0;
-
-  // need one hodo scope per tower
-  CalVec<TwrNum, TwrHodoscope> hscopes(TwrNum::N_VALS, TwrHodoscope(peds, dac2adc));
-
-  // Basic digi-event loop
   
-  for (unsigned eventNum = 0; eventNum < nEvents; eventNum++) {
-    if (eventNum % 10000 == 0) {
+  
+  // Basic digi-event loop
+  eventData.init(peds, dac2adc);
+  for (eventData.eventNum = 0; eventData.eventNum < nEvents; eventData.eventNum++) {
+	eventData.next();
+    if (eventData.eventNum % 10000 == 0) {
       // quit if we have enough entries in each histogram
       unsigned currentMin = getMinEntries();
       if (currentMin >= nEntries) break;
 
-      m_ostrm << "Event: " << eventNum 
+      m_ostrm << "Event: " << eventData.eventNum 
               << " min entries per histogram: " << currentMin
               << endl;
       m_ostrm.flush();
     }
+	
 
-    if (!rootFile.getEvent(eventNum)) {
-      m_ostrm << "Warning, event " << eventNum << " not read." << endl;
+    if (!rootFile.getEvent(eventData.eventNum)) {
+      m_ostrm << "Warning, event " << eventData.eventNum << " not read." << endl;
       continue;
     }
 
     DigiEvent *digiEvent = rootFile.getDigiEvent();
     if (!digiEvent) {
-      m_ostrm << __FILE__ << ": Unable to read DigiEvent " << eventNum  << endl;
+      m_ostrm << __FILE__ << ": Unable to read DigiEvent " << eventData.eventNum  << endl;
       continue;
-    }
-
-    // check that we are in 4 range mode
-    EventSummaryData &summary = digiEvent->getEventSummaryData();
-    if (!summary.readout4())
-      continue;
-
-    const TClonesArray* calDigiCol = digiEvent->getCalDigiCol();
-    if (!calDigiCol) {
-      m_ostrm << "no calDigiCol found for event#" << eventNum << endl;
-      continue;
-    }
-
-    TIter calDigiIter(calDigiCol);
-    const CalDigi *pCalDigi = 0;
-
-    // clear all hodoscopes
-    for (TwrNum twr; twr.isValid(); twr++)
-      hscopes[twr].clear();
-
-    //loop through each 'hit' in one event
-    while ((pCalDigi = (CalDigi*)calDigiIter.Next())) {
-      const CalDigi &calDigi = *pCalDigi; // use reference to avoid -> syntax
-      
-      //-- XtalId --//
-      idents::CalXtalId id(calDigi.getPackedId()); // get interaction information
-      // retrieve tower info
-      TwrNum twr = id.getTower();
-      
-      // add hit to appropriate hodoscope.
-      hscopes[twr].addHit(calDigi);
-
     }
     
-    // process each tower for possible good muon event
-    for (TwrNum twr; twr.isValid(); twr++) {
-      TwrHodoscope &hscope = hscopes[twr];
-      
-      // summarize the event for each hodoscope
-      hscope.summarizeEvent();
-      
-      for (DirNum dir; dir.isValid(); dir++) {
-        unsigned short pos;
-        vector<XtalIdx> *pHitList, *pHitListOrtho;
+    processEvent(*digiEvent);
 
-        // DIRECTION SPECIFIC SETUP //
-        /** Note: 'direction' refers to the direction of xtals which have vertical
-            'connect-4' deposits.  For asymmetry, we use this vertical column
-            to calibrate the signal in the orthogonal crystals.  
-        */
-        if (dir == X_DIR) {
-          if (!passCutX(hscope)) continue;  // skip this direction if track is bad
-          pos = hscope.firstColX;
-          pHitList = &hscope.hitListX; // hit list in test direction 
-          pHitListOrtho = &hscope.hitListY; // ortho direction
-          nXDirs++;
-        } else { // Y_DIR
-          if (!passCutY(hscope)) continue; // skip this direction if track is bad
-          pos = hscope.firstColY;
-          pHitList = &hscope.hitListY; // hit list in test direction 
-          pHitListOrtho = &hscope.hitListX; // ortho direction
-          nYDirs++;
-        }
-
-        nGoodDirs++;
-        
-        // use references to avoid -> notation
-        vector<XtalIdx> &hitListOrtho = *pHitListOrtho; 
-        
-        // loop through each orthogonal hit
-        for (unsigned i = 0; i < hitListOrtho.size(); i++) {
-          XtalIdx xtalIdx = hitListOrtho[i];
-          
-          // calcuate the 4 log ratios = log(POS/NEG)
-          for (AsymType asymType; asymType.isValid(); asymType++) {
-            float dacP = hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), POS_FACE, asymType.getDiode(POS_FACE))];
-            float dacN = hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), NEG_FACE, asymType.getDiode(NEG_FACE))];
-            float asym = log(dacP/dacN);
-
-            m_histograms[asymType][xtalIdx]->Fill(pos, asym);
-          }
-          //           m_ostrm << "HIT: " << eventNum 
-          //                   << " " << xtalIdx.val() 
-          //                   << " " << m_histograms[ASYM_SS][xtalIdx]->GetEntries()
-          //                   << endl;
-          
-          
-          nHits++;
-        } // per hit loop
-      } // per direction loop
-    } // per tower loop
   } // per event loop
   
-  m_ostrm << "Asymmetry histograms filled nEvents=" << nGoodDirs
-          << " nXDirs="               << nXDirs
-          << " nYDirs="               << nYDirs << endl;
-  m_ostrm << " nHits measured="       << nHits
-          << " Bad hits="             << nBadHits
+  m_ostrm << "Asymmetry histograms filled nEvents=" << algData.nGoodDirs
+          << " algData.nXDirs="               << algData.nXDirs
+          << " algData.nYDirs="               << algData.nYDirs << endl;
+  m_ostrm << " nHits measured="       << algData.nHits
+          << " Bad hits="             << algData.nBadHits
           << endl;
 
 }
@@ -379,4 +288,95 @@ void MuonAsym::trimHists() {
           delete m_histograms[asymType][xtalIdx];
           m_histograms[asymType][xtalIdx] = 0;
         }
+}
+
+void MuonAsym::processEvent(DigiEvent &digiEvent) {
+  // check that we are in 4 range mode
+  EventSummaryData &summary = digiEvent.getEventSummaryData();
+  if (!summary.readout4())
+    return;
+
+  const TClonesArray* calDigiCol = digiEvent.getCalDigiCol();
+  if (!calDigiCol) {
+    m_ostrm << "no calDigiCol found for event#" << eventData.eventNum << endl;
+    return;
+  }
+
+  TIter calDigiIter(calDigiCol);
+  const CalDigi *pCalDigi = 0;
+
+  //loop through each 'hit' in one event
+  while ((pCalDigi = (CalDigi*)calDigiIter.Next())) {
+    const CalDigi &calDigi = *pCalDigi; // use reference to avoid -> syntax
+      
+    //-- XtalId --//
+    idents::CalXtalId id(calDigi.getPackedId()); // get interaction information
+    // retrieve tower info
+    TwrNum twr = id.getTower();
+      
+    // add hit to appropriate hodoscope.
+    (*eventData.hscopes)[twr].addHit(calDigi);
+
+  }
+    
+  // process each tower for possible good muon event
+  for (TwrNum twr; twr.isValid(); twr++) {
+    TwrHodoscope &hscope = (*eventData.hscopes)[twr];
+    processTower(hscope);
+  } // per tower loop
+}
+
+void MuonAsym::processTower(TwrHodoscope &hscope) {
+  // summarize the event for each hodoscope
+  hscope.summarizeEvent();
+      
+  for (DirNum dir; dir.isValid(); dir++) {
+    unsigned short pos;
+    vector<XtalIdx> *pHitList, *pHitListOrtho;
+
+    // DIRECTION SPECIFIC SETUP //
+    /** Note: 'direction' refers to the direction of xtals which have vertical
+        'connect-4' deposits.  For asymmetry, we use this vertical column
+        to calibrate the signal in the orthogonal crystals.  
+    */
+    if (dir == X_DIR) {
+      if (!passCutX(hscope)) continue;  // skip this direction if track is bad
+      pos = hscope.firstColX;
+      pHitList = &hscope.hitListX; // hit list in test direction 
+      pHitListOrtho = &hscope.hitListY; // ortho direction
+      algData.nXDirs++;
+    } else { // Y_DIR
+      if (!passCutY(hscope)) continue; // skip this direction if track is bad
+      pos = hscope.firstColY;
+      pHitList = &hscope.hitListY; // hit list in test direction 
+      pHitListOrtho = &hscope.hitListX; // ortho direction
+      algData.nYDirs++;
+    }
+
+    algData.nGoodDirs++;
+        
+    // use references to avoid -> notation
+    vector<XtalIdx> &hitListOrtho = *pHitListOrtho; 
+        
+    // loop through each orthogonal hit
+    for (unsigned i = 0; i < hitListOrtho.size(); i++) {
+      XtalIdx xtalIdx = hitListOrtho[i];
+          
+      // calcuate the 4 log ratios = log(POS/NEG)
+      for (AsymType asymType; asymType.isValid(); asymType++) {
+        float dacP = hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), POS_FACE, asymType.getDiode(POS_FACE))];
+        float dacN = hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), NEG_FACE, asymType.getDiode(NEG_FACE))];
+        float asym = log(dacP/dacN);
+
+        m_histograms[asymType][xtalIdx]->Fill(pos, asym);
+      }
+      //           m_ostrm << "HIT: " << eventData.eventNum 
+      //                   << " " << xtalIdx.val() 
+      //                   << " " << m_histograms[ASYM_SS][xtalIdx]->GetEntries()
+      //                   << endl;
+          
+          
+      algData.nHits++;
+    } // per hit loop
+  } // per direction loop
 }

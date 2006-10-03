@@ -1,6 +1,6 @@
 #ifndef MuonAsym_h
 #define MuonAsym_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.h,v 1.5 2006/09/26 20:27:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.h,v 1.6 2006/09/28 20:00:24 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -8,6 +8,7 @@
 
 // LOCAL INCLUDES
 #include "CGCUtil.h"
+#include "TwrHodoscope.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"
@@ -24,6 +25,7 @@ class CalPed;
 class CIDAC2ADC;
 class TwrHodoscope;
 class TH2S;
+class DigiEvent;
 
 /** \brief Algorithm class populates CalAsym calibration data with values extracted
     from Muon collection digi ROOT event files
@@ -66,6 +68,13 @@ class MuonAsym {
 
 
  private:
+  /// process a single event for histogram fill
+  void processEvent(DigiEvent &digiEvent);
+
+  /// process a single tower's data in single event for
+  /// histogram fill
+  void processTower(TwrHodoscope &hscope);
+
   /// hodoscopic event cut for X direction xtals
   bool passCutX(const TwrHodoscope &hscope);
   /// hodoscopic event cut for Y direction xtals
@@ -76,6 +85,7 @@ class MuonAsym {
 
   /// count min number of entries in all enable histograms
   unsigned getMinEntries();
+
   /// list of histograms for muon asymmetry
   CalUtil::CalVec<CalUtil::AsymType, CalUtil::CalArray<CalUtil::XtalIdx, TH2S*> > m_histograms; 
 
@@ -83,6 +93,66 @@ class MuonAsym {
 
   /// used for logging output
   ostream &m_ostrm;
+
+  struct AlgData {
+    AlgData() {init();}
+    void init() {
+      nGoodDirs = 0;
+      nXDirs = 0;
+      nYDirs = 0;
+      nHits = 0;
+      nBadHits = 0;
+    }
+
+    unsigned  nGoodDirs  ; // count total # of events used
+    unsigned  nXDirs     ;
+    unsigned  nYDirs     ;
+    long nHits      ; // count total # of xtals measured
+    unsigned  nBadHits   ;
+
+
+
+  } algData;
+
+  struct EventData {
+    EventData() :
+      hscopes(0),
+         eventNum(0)
+    {
+    }
+
+    ~EventData() {
+      if (hscopes)
+        delete hscopes;
+    }
+    
+    /// reset all member variables
+    void init(const CalPed &peds,
+              const CIDAC2ADC &dac2adc) {
+      eventNum = 0;
+      hscopes = new CalUtil::CalVec<CalUtil::TwrNum, TwrHodoscope>
+        (CalUtil::TwrNum::N_VALS, TwrHodoscope(peds, dac2adc));
+      next();
+    }
+
+    /// rest all member variables that do not retain data
+    /// from one event to next.
+    void next() {
+      // clear all hodoscopes
+      for (CalUtil::TwrNum twr; twr.isValid(); twr++)
+        if (hscopes)
+          (*hscopes)[twr].clear();
+
+    }
+
+    /// need one hodo scope per tower
+    CalUtil::CalVec<CalUtil::TwrNum, TwrHodoscope> *hscopes;
+
+    unsigned eventNum;
+
+
+  } eventData;
+
 };
 
 #endif
