@@ -1,5 +1,5 @@
 // (Special "header" just for doxygen)
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/mainpage.h,v 1.42 2006/09/26 21:13:51 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/mainpage.h,v 1.43 2006/10/03 17:30:29 dwood Exp $
 
 
 /*! 
@@ -95,8 +95,6 @@ analyses.</p>
 
 <p>These scripts will generate associated validation output as well, by invoking
 appropriate dacVal and charVal scripts </p>
-
-<p>see calibGenCAL/doc/gensettings_scripts.html for more information.</p>
 
 <h5> tholdCI scripts </h5>
 for offline calibration of Cal thresholds in ADC units.
@@ -258,10 +256,6 @@ folder.
 
 
 <h3> other docs </h3>
-- \b calibGenCAL/doc/calibGenCAL_configurationRecord_howto.txt - generate online
-dac settings with calibGenCAL python scripts.
-- \b calibGenCAL/doc/gensettings_scripts.html - in depth description of dac 
-settings tools
-- \b calibGenCAL/doc/calibGenCAL_description.xxx - high level description of
+- \b calibGenCAL/doc/calibGenCAL_description.xxx - detailed description of
 the calibGenCAL package
 */
