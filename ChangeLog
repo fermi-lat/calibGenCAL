@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Oct  4 14:54:27 PDT 2006
+calibGenCAL/unit_test
+
+Modified Files:
+	calibGenCAL_suite.cfg 
+Log Message:
+removed unused 'rough_peds' section from cfg file 
+'rough_ped' alg now uses same cfg as muon_peds
+
+    *
+------------------------------------------------------------
 User: dwood  Wed Oct  4 12:22:31 PDT 2006
 calibGenCAL/doc
 
