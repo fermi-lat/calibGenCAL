@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Oct  5 10:59:04 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacSlopesVal.py 
+Log Message:
+Restored FHE COARSE limits; does point a problem with the data when out of these ranges.
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Oct  5 10:54:19 PDT 2006
 calibGenCAL/python
 
