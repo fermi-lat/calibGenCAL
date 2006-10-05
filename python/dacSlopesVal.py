@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL DacSlopes calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/09/26 19:51:41 $"
-__version__   = "$Revision: 1.4 $, $Author: dwood $"
+__date__      = "$Date: 2006/09/26 20:58:14 $"
+__version__   = "$Revision: 1.5 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -50,6 +50,12 @@ lacCoarseSlopeWarnHigh = 0.78
 lacCoarseSlopeErrLow   = 0.37
 lacCoarseSlopeErrHigh  = 0.85
 
+fleFineSlopeWarnLow    = 0.74
+fleFineSlopeWarnHigh   = 1.26
+
+fleFineSlopeErrLow     = 0.61
+fleFineSlopeErrHigh    = 1.39
+
 fleCoarseSlopeWarnLow  = 3.0
 fleCoarseSlopeWarnHigh = 4.8 
 
@@ -62,6 +68,12 @@ fheFineSlopeWarnHigh   = 72.0
 fheFineSlopeErrLow     = 30.0
 fheFineSlopeErrHigh    = 78.0
 
+fheCoarseSlopeWarnLow  = 81.0
+fheCoarseSlopeWarnHigh = 113.0
+
+fheCoarseSlopeErrLow   = 65.0
+fheCoarseSlopeErrHigh  = 129.0
+
 uldLex8SlopeWarnLow    = 0.67
 uldLex8SlopeWarnHigh   = 1.02
 
@@ -71,8 +83,8 @@ uldLex8SlopeErrHigh    = 1.07
 uldLex1SlopeWarnLow    = 6.0
 uldLex1SlopeWarnHigh   = 9.0
 
-uldLex1SlopeErrLow     = 5.5
-uldLex1SlopeErrHigh    = 9.5
+uldLex1SlopeErrLow     = 5.0
+uldLex1SlopeErrHigh    = 10.0
 
 uldHex8SlopeWarnLow    = 47.5
 uldHex8SlopeWarnHigh   = 74.5
@@ -333,13 +345,15 @@ def calcError(dacData, uldData, rangeData):
                 for fe in range(calConstant.NUM_FE):
                 
                     slope = dacData[tem, row, end, fe, 0]
+                    rng = int(rangeData[tem, row, end, fe, 0])
                     
-                    if rangeData[tem, row, end, fe, 0] == 0:
+                    if rng == calConstant.CDAC_FINE:
                         warnLow = lacFineSlopeWarnLow
                         warnHigh = lacFineSlopeWarnHigh
                         errLow = lacFineSlopeErrLow
                         errHigh = lacFineSlopeErrHigh
                     else:
+                        log.warning('using COARSE range for T%d,%s%s,%d,LAC', tem, row, end, fe)
                         warnLow = lacCoarseSlopeWarnLow
                         warnHigh = lacCoarseSlopeWarnHigh
                         errLow = lacCoarseSlopeErrLow
@@ -348,27 +362,27 @@ def calcError(dacData, uldData, rangeData):
                     if slope > warnHigh or slope < warnLow:
                     
                         if slope > errHigh:
-                            msg = 'slope %0.3f > %0.3f for T%d,%s%s,%d,LAC' % \
+                            msg = 'slope %0.3f > %0.3f for T%d,%s%s,%d,LAC,%s' % \
                                 (slope, errHigh, tem, calConstant.CROW[row], 
-                                 calConstant.CPM[end], fe)
+                                 calConstant.CPM[end], fe, calConstant.CDAC[rng])
                             log.error(msg)     
                             status = 1
                         elif slope < errLow:
-                            msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,LAC' % \
+                            msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,LAC,%s' % \
                                 (slope, errLow, tem, calConstant.CROW[row], 
-                                 calConstant.CPM[end], fe)
+                                 calConstant.CPM[end], fe, calConstant.CDAC[rng])
                             log.error(msg)     
                             status = 1
                             
                         elif slope > warnHigh:
-                            msg = 'slope %0.3f > %0.3f for T%d,%s%s,%d,LAC' % \
+                            msg = 'slope %0.3f > %0.3f for T%d,%s%s,%d,LAC,%s' % \
                                 (slope, warnHigh, tem, calConstant.CROW[row], 
-                                 calConstant.CPM[end], fe)
+                                 calConstant.CPM[end], fe, calConstant.CDAC[rng])
                             log.warning(msg)
                         else:
-                            msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,LAC' % \
+                            msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,LAC,%s' % \
                                 (slope, warnLow, tem, calConstant.CROW[row], 
-                                 calConstant.CPM[end], fe) 
+                                 calConstant.CPM[end], fe, calConstant.CDAC[rng]) 
                         log.warning(msg)
                         
     # check FLE slopes
@@ -379,10 +393,14 @@ def calcError(dacData, uldData, rangeData):
                 for fe in range(calConstant.NUM_FE):
                 
                     slope = dacData[tem, row, end, fe, 2]
+                    rng = int(rangeData[tem, row, end, fe, 1])
                     
-                    if rangeData[tem, row, end, fe, 1] == 0:
+                    if rng == calConstant.CDAC_FINE:
                         log.warning('using FINE range for T%d,%s%s,%d,FLE', tem, row, end, fe)
-                        continue    
+                        warnLow = fleFineSlopeWarnLow
+                        warnHigh = fleFineSlopeWarnHigh
+                        errLow = fleFineSlopeErrLow
+                        errHigh = fleFineSlopeErrHigh  
                     else:
                         warnLow = fleCoarseSlopeWarnLow
                         warnHigh = fleCoarseSlopeWarnHigh
@@ -392,27 +410,27 @@ def calcError(dacData, uldData, rangeData):
                     if slope > warnHigh or slope < warnLow:
                     
                         if slope > errHigh:
-                            msg = 'slope %0.3f > %0.3f for T%d,%s%s,%d,FLE' % \
+                            msg = 'slope %0.3f > %0.3f for T%d,%s%s,%d,FLE,%s' % \
                                 (slope, errHigh, tem, calConstant.CROW[row], 
-                                 calConstant.CPM[end], fe)
+                                 calConstant.CPM[end], fe, calConstant.CDAC[rng])
                             log.error(msg)     
                             status = 1
                         elif slope < errLow:
-                            msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,FLE' % \
+                            msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,FLE,%s' % \
                                 (slope, errLow, tem, calConstant.CROW[row], 
-                                 calConstant.CPM[end], fe)
+                                 calConstant.CPM[end], fe, calConstant.CDAC[rng])
                             log.error(msg)     
                             status = 1
                             
                         elif slope > warnHigh:
-                            msg = 'slope %0.3f > %0.3f for T%d,%s%s,%d,FLE' % \
+                            msg = 'slope %0.3f > %0.3f for T%d,%s%s,%d,FLE,%s' % \
                                 (slope, warnHigh, tem, calConstant.CROW[row], 
-                                 calConstant.CPM[end], fe)
+                                 calConstant.CPM[end], fe, calConstant.CDAC[rng])
                             log.warning(msg)
                         else:
-                            msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,FLE' % \
+                            msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,FLE,%s' % \
                                 (slope, warnLow, tem, calConstant.CROW[row], 
-                                 calConstant.CPM[end], fe) 
+                                 calConstant.CPM[end], fe, calConstant.CDAC[rng]) 
                         log.warning(msg)
                         
     # check FHE slopes
@@ -423,10 +441,14 @@ def calcError(dacData, uldData, rangeData):
                 for fe in range(calConstant.NUM_FE):
                 
                     slope = dacData[tem, row, end, fe, 4]
+                    rng = int(rangeData[tem, row, end, fe, 2])
                     
-                    if rangeData[tem, row, end, fe, 2] != 0:
+                    if rng == calConstant.CDAC_COARSE:
                         log.warning('using COARSE range for T%d,%s%s,%d,FHE', tem, row, end, fe)
-                        continue    
+                        warnLow = fheCoarseSlopeWarnLow
+                        warnHigh = fheCoarseSlopeWarnHigh
+                        errLow = fheCoarseSlopeErrLow
+                        errHigh = fheCoarseSlopeErrHigh    
                     else:
                         warnLow = fheFineSlopeWarnLow
                         warnHigh = fheFineSlopeWarnHigh
@@ -436,27 +458,27 @@ def calcError(dacData, uldData, rangeData):
                     if slope > warnHigh or slope < warnLow:
                     
                         if slope > errHigh:
-                            msg = 'slope %0.3f > %0.3f for T%d,%s%s,%d,FHE' % \
+                            msg = 'slope %0.3f > %0.3f for T%d,%s%s,%d,FHE,%s' % \
                                 (slope, errHigh, tem, calConstant.CROW[row], 
-                                 calConstant.CPM[end], fe)
+                                 calConstant.CPM[end], fe, calConstant.CDAC[rng])
                             log.error(msg)     
                             status = 1
                         elif slope < errLow:
-                            msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,FHE' % \
+                            msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,FHE,%s' % \
                                 (slope, errLow, tem, calConstant.CROW[row], 
-                                 calConstant.CPM[end], fe)
+                                 calConstant.CPM[end], fe, calConstant.CDAC[rng])
                             log.error(msg)     
                             status = 1
                             
                         elif slope > warnHigh:
-                            msg = 'slope %0.3f > %0.3f for T%d,%s%s,%d,FHE' % \
+                            msg = 'slope %0.3f > %0.3f for T%d,%s%s,%d,FHE,%s' % \
                                 (slope, warnHigh, tem, calConstant.CROW[row], 
-                                 calConstant.CPM[end], fe)
+                                 calConstant.CPM[end], fe, calConstant.CDAC[rng])
                             log.warning(msg)
                         else:
-                            msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,FHE' % \
+                            msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,FHE,%s' % \
                                 (slope, warnLow, tem, calConstant.CROW[row], 
-                                 calConstant.CPM[end], fe) 
+                                 calConstant.CPM[end], fe, calConstant.CDAC[rng]) 
                         log.warning(msg)
                         
     # check ULD LEX8 slopes
@@ -468,7 +490,7 @@ def calcError(dacData, uldData, rangeData):
                 
                     slope = uldData[calConstant.CRNG_LEX8, tem, row, end, fe, 0]
                     
-                    if rangeData[tem, row, end, fe, 3] == 0:
+                    if rangeData[tem, row, end, fe, 3] == calConstant.CDAC_FINE:
                         log.error('using FINE range for T%d,%s%s,%d,ULD,LEX8', tem, row, end, fe)
                         status = 1
                         continue   
