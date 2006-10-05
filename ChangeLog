@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Wed Oct  4 19:24:33 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacSlopesVal.py 
+Log Message:
+Added checks for FLE FINE range and FHE COARSE range values if present.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Oct  4 14:54:27 PDT 2006
 calibGenCAL/unit_test
 
