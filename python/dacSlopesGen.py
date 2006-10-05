@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL DAC XML calibration data file"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/31 15:09:47 $"
-__version__   = "$Revision: 1.7 $, $Author: dwood $"
+__date__      = "$Date: 2006/09/05 19:19:16 $"
+__version__   = "$Revision: 1.8 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -77,7 +77,8 @@ def residuals(p, y, x, fjac = None):
     
     
     
-    
+
+# fit constants    
 
 D0    = Numeric.arange(0.0, 64.0, 1.0)
 PI    = {'fixed':0, 'limited':(0,0), 'mpprint':0}
@@ -86,14 +87,28 @@ P0    = (20.0, -300.0)
     
 
 
+# error limits for FINE range slopes
 
-def fitDAC(fineThresholds, coarseThresholds, adcs0, adcs1):
+FLE_LIM_LOW  = 0.61
+FLE_LIM_HIGH = 1.39
+
+FHE_LIM_LOW  = 30.0
+FHE_LIM_HIGH = 78.0
+
+LAC_LIM_LOW  = 0.17
+LAC_LIM_HIGH = 0.49
+
+
+
+def fitDAC(fineThresholds, coarseThresholds, adcs0, adcs1, limLow, limHigh):
     """
     Do linear fit of ADC/DAC curve in ADC range
     Param: fineThresholds - ADC thresholds for DAC FINE range
     Param: coarseThresholds - ADC thresholds for DAC COARSE range
     Param: adcs0 - Lower energy limit converted to ADC units
     Param: adcs1 - Upper energy limit converted to ADC units
+    Param: limLow - Lower limits for slope value
+    Param: limHigh - Uppwer limits for slope value
     Returns: Tuple: 0 = Array of shape (16,8,2,12,2) where the last dimension holds the linear
                         fit parameters for each channel.
                     1 = Array of shape (16,8,2,12) filled in with FINE/COARSE selection per channel    
@@ -122,6 +137,7 @@ def fitDAC(fineThresholds, coarseThresholds, adcs0, adcs1):
                 for fe in range(calConstant.NUM_FE):
                 
                     qx = q[tem,row,end,fe,:]
+                    rng = calConstant.CDAC_FINE
                                     
                     # if there are not enough points in the FINE range or high point is out of range, 
                     # try the COARSE range
@@ -133,28 +149,73 @@ def fitDAC(fineThresholds, coarseThresholds, adcs0, adcs1):
                             (coarseThresholds[tem,row,end,fe,:] < adcs1[tem,row,end,fe,:])
                         
                         tholds = coarseThresholds[tem,row,end,fe,:]
-                        ranges[tem,row,end,fe] = calConstant.CDAC_COARSE
+                        rng = calConstant.CDAC_COARSE
                         
                     else:
                     
-                        tholds = fineThresholds[tem,row,end,fe,:]
-                        ranges[tem,row,end,fe] = calConstant.CDAC_FINE     
+                        tholds = fineThresholds[tem,row,end,fe,:]    
                         
                     d = Numeric.compress(qx, D0)
                     a = Numeric.compress(qx, tholds)
                     fkw = {'x' : d, 'y' : a}
                     
+                    # try to fit the preferred range data
+                    
+                    fail = False
+                    
                     try:
                         fit = mpfit.mpfit(residuals, P0, functkw = fkw, parinfo = PINFO, quiet = True) 
+                        if fit.status <= 0:
+                            log.error("mpfit error on T%d,%s%s,%d: %s,%s,%s", tem, calConstant.CROW[row],
+                                calConstant.CPM[end], fe, fit.errmsg, d, a)
+                            fail = True
                     except ValueError, e:
                         log.error("mpfit excep on T%d,%s%s,%d: %s,%s,%s", tem, calConstant.CROW[row],
                             calConstant.CPM[end], fe, e, d, a)
-                    if fit.status <= 0:
-                        log.error("mpfit error on T%d,%s%s,%d: %s,%s,%s", tem, calConstant.CROW[row],
-                            calConstant.CPM[end], fe, fit.errmsg, d, a)
+                        fail = True
+                        
+                    # check slope parameter value for reasonableness
+                    
+                    if not fail and rng == calConstant.CDAC_FINE:
+                        m = fit.params[0]
+                        if m < limLow[tem,row,end,fe] or m > limHigh[tem,row,end,fe]:
+                            fail = True
+                    
+                    # if the range is FINE, and the fit fails, or the resulting slope is
+                    # out of limits, try to get fit parameters for the COARSE range
+                    
+                    if fail:
+                    
+                        log.warning("trying COARSE range for T%d,%s%s,%d", tem, calConstant.CROW[row],
+                            calConstant.CPM[end], fe)
+                            
+                        qx[...] = \
+                            (coarseThresholds[tem,row,end,fe,:] > adcs0[tem,row,end,fe,:]) & \
+                            (coarseThresholds[tem,row,end,fe,:] < adcs1[tem,row,end,fe,:])
+                        
+                        tholds = coarseThresholds[tem,row,end,fe,:]    
+                        rng = calConstant.CDAC_COARSE
+                        
+                        d = Numeric.compress(qx, D0)
+                        a = Numeric.compress(qx, tholds)
+                        fkw = {'x' : d, 'y' : a}
+                        
+                        try:
+                            fit = mpfit.mpfit(residuals, P0, functkw = fkw, parinfo = PINFO, quiet = True) 
+                            if fit.status <= 0:
+                                log.error("mpfit error on T%d,%s%s,%d: %s,%s,%s", tem, calConstant.CROW[row],
+                                    calConstant.CPM[end], fe, fit.errmsg, d, a)
+                            else:
+                                fail = False
+                        except ValueError, e:
+                            log.error("mpfit excep on T%d,%s%s,%d: %s,%s,%s", tem, calConstant.CROW[row],
+                                calConstant.CPM[end], fe, e, d, a)
+                        
+                    # save fit parameters (or substitute)
                          
                     mevs[tem,row,end,fe,0] = fit.params[0]
                     mevs[tem,row,end,fe,1] = fit.params[1] 
+                    ranges[tem,row,end,fe] = rng
                     
     return (mevs, ranges)
                         
@@ -558,9 +619,9 @@ if __name__ == '__main__':
     # split into fine and coarse ranges
     
     fineThresholds = fleAdcData[...,:64]
-    log.debug("FLE fineThresholds[0,0,0,0,:]:%s", str(fineThresholds[0,0,0,0,:]))
+    log.debug("FLE fineThresholds[0,0,0,0,:]:\n%s", str(fineThresholds[0,0,0,0,:]))
     coarseThresholds = fleAdcData[...,64:]
-    log.debug("FLE coarseThresholds[0,0,0,0,:]:%s", str(coarseThresholds[0,0,0,0,:]))
+    log.debug("FLE coarseThresholds[0,0,0,0,:]:\n%s", str(coarseThresholds[0,0,0,0,:]))
     
     # convert energy to ADC threshold
     
@@ -574,70 +635,64 @@ if __name__ == '__main__':
             
     # energy->ADC conversion
     
-    adcs0 /= gainData[...,calConstant.CRNG_LEX8,0]
-    adcs1 /= gainData[...,calConstant.CRNG_LEX8,0]
-    log.debug("FLE adcs0[0,0,0,0]:%.3f %.3f gainData[0,0,0,0,0]:%.3f", adcs0[0,0,0,0], adcs1[0,0,0,0], 
-        gainData[0,0,0,0,calConstant.CRNG_LEX8,0])
+    gain = gainData[...,calConstant.CRNG_LEX1,0]
+    adcs0 /= gain
+    adcs1 /= gain
+    log.debug("FLE adcs0[0,0,0,0]:%.3f %.3f gain[0,0,0,0]:%.3f", adcs0[0,0,0,0], adcs1[0,0,0,0], 
+        gain[0,0,0,0])
+        
+    # energy range scaling
+    
+    rngScale = gainData[...,calConstant.CRNG_LEX8,0] / gain 
+    log.debug("FLE rngScale[0,0,0,0]:%.3f", rngScale[0,0,0,0])   
             
     # trigger bias correction
     
-    adcs0 -= biasAdcData[...,0]
-    adcs1 -= biasAdcData[...,0]
-    log.debug("FLE adcs0[0,0,0,0]:%.3f %.3f bias[0,0,0,0,0]:%.3f", adcs0[0,0,0,0], adcs1[0,0,0,0], 
-        biasAdcData[0,0,0,0,0])
+    bias = (biasAdcData[...,0] * rngScale)
+    adcs0 -= bias
+    adcs1 -= bias
+    log.debug("FLE adcs0[0,0,0,0]:%.3f %.3f bias[0,0,0,0]:%.3f", adcs0[0,0,0,0], adcs1[0,0,0,0], 
+        bias[0,0,0,0])
             
-    # energy range scaling
-    
-    rngScale = gainData[...,calConstant.CRNG_LEX1,0] / gainData[...,calConstant.CRNG_LEX8,0]    
-        
-    adcs0 /= rngScale
-    adcs1 /= rngScale
-    log.debug("FLE adcs[0,0,0,0]:%.3f %.3f rngScale[0,0,0,0]:%.3f", adcs0[0,0,0,0],
-        adcs1[0,0,0,0], rngScale[0,0,0,0])
-       
     # get linear fit parameters
     
     log.info("Fitting FLE")
-    (mevs, ranges) = fitDAC(fineThresholds, coarseThresholds, adcs0, adcs1)                       
+    (mevs, ranges) = fitDAC(fineThresholds, coarseThresholds, adcs0, adcs1,
+        (FLE_LIM_LOW / gain), (FLE_LIM_HIGH / gain))                       
     
     # convert DAC/ADC slopes to DAC/energy slopes
          
     log.debug("FLE mevs[0,0,0,0]:%.3f %.3f", mevs[0,0,0,0,0], mevs[0,0,0,0,1])
     
-    # energy range scaling
-    
-    mevs *= rngScale[...,Numeric.NewAxis].astype(Numeric.Float32)
-    log.debug("FLE mevs[0,0,0,0]:%.3f %.3f rngScale[0,0,0,0]:%.3f", mevs[0,0,0,0,0], mevs[0,0,0,0,1],
-        rngScale[0,0,0,0]) 
-        
     # trigger bias correction
     
-    mevs[...,1] += biasAdcData[...,0]
-    log.debug("FLE mevs[0,0,0,0]:%.3f %.3f bias[0,0,0,0,0]:%.3f", mevs[0,0,0,0,0], mevs[0,0,0,0,1], 
-        biasAdcData[0,0,0,0,0])    
+    mevs[...,1] += bias
+    log.debug("FLE mevs[0,0,0,0]:%.3f %.3f bias[0,0,0,0]:%.3f", mevs[0,0,0,0,0], mevs[0,0,0,0,1], 
+        bias[0,0,0,0])    
     
     # ADC->energy conversion
     
-    mevs *= gainData[...,calConstant.CRNG_LEX8,0,Numeric.NewAxis]
-    
-    log.debug("FLE mevs[0,0,0,0]:%.3f %.3f adc2nrg[0,0,0,0,0]:%.3f", mevs[0,0,0,0,0], mevs[0,0,0,0,1],
-        gainData[0,0,0,0,calConstant.CRNG_LEX8,0,Numeric.NewAxis]) 
+    mevs *= gain[...,Numeric.NewAxis]
+    log.debug("FLE mevs[0,0,0,0]:%.3f %.3f gain[0,0,0,0]:%.3f", mevs[0,0,0,0,0], mevs[0,0,0,0,1],
+        gain[0,0,0,0]) 
+        
     log.debug("FLE ranges[0,0,0,0]: %s", calConstant.CDAC[int(ranges[0,0,0,0])])      
     
     # insert data into output array
     
     dacDataOut[...,2] = mevs[...,0]
     dacDataOut[...,3] = mevs[...,1]
-    rangeDataOut[...,1] = ranges[...]     
-        
+    rangeDataOut[...,1] = ranges[...] 
+    
+
     #---------------------------- do FHE processing ---------------------------------------------
     
     # split into fine and coarse ranges
     
     fineThresholds = fheAdcData[...,:64]
-    log.debug("FHE fineThresholds[0,0,0,0,:]:%s", str(fineThresholds[0,0,0,0,:]))
+    log.debug("FHE fineThresholds[0,0,0,0,:]:\n%s", str(fineThresholds[0,0,0,0,:]))
     coarseThresholds = fheAdcData[...,64:]
-    log.debug("FHE coarseThresholds[0,0,0,0,:]:%s", str(coarseThresholds[0,0,0,0,:]))
+    log.debug("FHE coarseThresholds[0,0,0,0,:]:\n%s", str(coarseThresholds[0,0,0,0,:]))
     
     # convert energy to ADC threshold
     
@@ -651,22 +706,25 @@ if __name__ == '__main__':
             
     # energy->ADC conversion
     
-    adcs0 /= gainData[...,calConstant.CRNG_HEX8,0]
-    adcs1 /= gainData[...,calConstant.CRNG_HEX8,0]
-    log.debug("FHE adcs0[0,0,0,0]:%.3f %.3f adc2nrg[0,0,0,0,1]:%.3f", adcs0[0,0,0,0],
-            adcs1[0,0,0,0], gainData[0,0,0,0,calConstant.CRNG_HEX8,0])
+    gain = gainData[...,calConstant.CRNG_HEX8,0]
+    adcs0 /= gain
+    adcs1 /= gain
+    log.debug("FHE adcs0[0,0,0,0]:%.3f %.3f gain[0,0,0,0]:%.3f", adcs0[0,0,0,0],
+            adcs1[0,0,0,0], gain[0,0,0,0])
             
     # trigger bias correction
     
-    adcs0 -= biasAdcData[...,1]
-    adcs1 -= biasAdcData[...,1]
-    log.debug("FHE adcs0[0,0,0,0]:%.3f %.3f bias[0,0,0,0,0]:%.3f", adcs0[0,0,0,0],
-            adcs1[0,0,0,0], biasAdcData[0,0,0,0,1])
+    bias = biasAdcData[...,1]
+    adcs0 -= bias
+    adcs1 -= bias
+    log.debug("FHE adcs0[0,0,0,0]:%.3f %.3f bias[0,0,0,0]:%.3f", adcs0[0,0,0,0],
+            adcs1[0,0,0,0], bias[0,0,0,0])
             
     # get linear fit parameters
     
     log.info("Fitting FHE")
-    (mevs, ranges) = fitDAC(fineThresholds, coarseThresholds, adcs0, adcs1)  
+    (mevs, ranges) = fitDAC(fineThresholds, coarseThresholds, adcs0, adcs1,
+        (FHE_LIM_LOW / gain), (FHE_LIM_HIGH / gain))  
                         
     # convert DAC/ADC slopes to DAC/energy slopes
          
@@ -674,16 +732,15 @@ if __name__ == '__main__':
     
     # trigger bias correction
     
-    mevs[...,1] += biasAdcData[...,1]
-    log.debug("FHE mevs[0,0,0,0]:%.3f %.3f bias[0,0,0,0,1]:%.3f", mevs[0,0,0,0,0],
-            mevs[0,0,0,0,1], biasAdcData[0,0,0,0,1])    
+    mevs[...,1] += bias
+    log.debug("FHE mevs[0,0,0,0]:%.3f %.3f bias[0,0,0,0]:%.3f", mevs[0,0,0,0,0],
+            mevs[0,0,0,0,1], bias[0,0,0,0])    
     
     # ADC->energy conversion
     
-    mevs *= gainData[...,calConstant.CRNG_HEX8,0,Numeric.NewAxis]
-    
-    log.debug("FHE mevs[0,0,0,0]:%.3f %.3f adc2nrg[0,0,0,0,1]:%.3f", mevs[0,0,0,0,0], mevs[0,0,0,0,1],
-        gainData[0,0,0,0,calConstant.CRNG_HEX8,0])  
+    mevs *= gain[...,Numeric.NewAxis]
+    log.debug("FHE mevs[0,0,0,0]:%.3f %.3f gain[0,0,0,0]:%.3f", mevs[0,0,0,0,0], mevs[0,0,0,0,1],
+        gain[0,0,0,0])  
       
     log.debug("FHE ranges[0,0,0,0]: %s", calConstant.CDAC[int(ranges[0,0,0,0])])
     
@@ -698,9 +755,9 @@ if __name__ == '__main__':
     # split into fine and coarse ranges
     
     fineThresholds = lacAdcData[...,:64]
-    log.debug("LAC fineThresholds[0,0,0,0,:]:%s", str(fineThresholds[0,0,0,0,:]))
+    log.debug("LAC fineThresholds[0,0,0,0,:]:\n%s", str(fineThresholds[0,0,0,0,:]))
     coarseThresholds = lacAdcData[...,64:]
-    log.debug("LAC coarseThresholds[0,0,0,0,:]:%s", str(coarseThresholds[0,0,0,0,:]))
+    log.debug("LAC coarseThresholds[0,0,0,0,:]:\n%s", str(coarseThresholds[0,0,0,0,:]))
     
     # convert energy to ADC threshold
     
@@ -714,15 +771,17 @@ if __name__ == '__main__':
             
     # energy->ADC conversion
     
-    adcs0 /= gainData[...,calConstant.CRNG_LEX8,0]
-    adcs1 /= gainData[...,calConstant.CRNG_LEX8,0]
-    log.debug("LAC adcs0[0,0,0,0]:%.3f %.3f adc2nrg[0,0,0,0,0]:%.3f", adcs0[0,0,0,0],
-            adcs1[0,0,0,0], gainData[0,0,0,0,calConstant.CRNG_LEX8,0])
+    gain = gainData[...,calConstant.CRNG_LEX8,0]
+    adcs0 /= gain
+    adcs1 /= gain
+    log.debug("LAC adcs0[0,0,0,0]:%.3f %.3f gain[0,0,0,0]:%.3f", adcs0[0,0,0,0],
+            adcs1[0,0,0,0], gain[0,0,0,0])
             
     # get linear fit parameters
     
     log.info("Fitting LAC")
-    (mevs, ranges) = fitDAC(fineThresholds, coarseThresholds, adcs0, adcs1)
+    (mevs, ranges) = fitDAC(fineThresholds, coarseThresholds, adcs0, adcs1,
+        (LAC_LIM_LOW / gain), (LAC_LIM_HIGH / gain))
     
     # convert DAC/ADC slopes to DAC/energy slopes
          
@@ -730,10 +789,10 @@ if __name__ == '__main__':
     
     # ADC->energy conversion
     
-    mevs *= gainData[...,calConstant.CRNG_LEX8,0,Numeric.NewAxis]
-    
-    log.debug("LAC mevs[0,0,0,0]:%.3f %.3f adc2nrg[0,0,0,0,0]:%.3f", mevs[0,0,0,0,0], mevs[0,0,0,0,1],
-        gainData[0,0,0,0,calConstant.CRNG_LEX8,0])  
+    mevs *= gain[...,Numeric.NewAxis]
+    log.debug("LAC mevs[0,0,0,0]:%.3f %.3f gain[0,0,0,0]:%.3f", mevs[0,0,0,0,0], mevs[0,0,0,0,1],
+        gain[0,0,0,0])  
+        
     log.debug("LAC ranges[0,0,0,0]: %s", calConstant.CDAC[int(ranges[0,0,0,0])]) 
     
     # insert data into output array
@@ -748,9 +807,9 @@ if __name__ == '__main__':
     # split into fine and coarse ranges
     
     coarseThresholds = uldAdcData[...,64:]
-    log.debug("ULD coarseThresholds[0,0,0,0,0,:]:%s", str(coarseThresholds[0,0,0,0,0,:]))
-    log.debug("ULD coarseThresholds[1,0,0,0,0,:]:%s", str(coarseThresholds[1,0,0,0,0,:]))
-    log.debug("ULD coarseThresholds[2,0,0,0,0,:]:%s", str(coarseThresholds[2,0,0,0,0,:]))
+    log.debug("ULD coarseThresholds[0,0,0,0,0,:]:\n%s", str(coarseThresholds[0,0,0,0,0,:]))
+    log.debug("ULD coarseThresholds[1,0,0,0,0,:]:\n%s", str(coarseThresholds[1,0,0,0,0,:]))
+    log.debug("ULD coarseThresholds[2,0,0,0,0,:]:\n%s", str(coarseThresholds[2,0,0,0,0,:]))
             
     # get linear fit parameters
     
