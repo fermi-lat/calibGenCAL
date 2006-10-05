@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Oct  5 09:19:52 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacSlopesVal.py 
+Log Message:
+Increased tolerance for FHE COARSE range errors.
+
+    *
+------------------------------------------------------------
 User: dwood  Wed Oct  4 19:24:33 PDT 2006
 calibGenCAL/python
 
