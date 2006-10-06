@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL DacSlopes calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/10/05 16:19:52 $"
-__version__   = "$Revision: 1.7 $, $Author: dwood $"
+__date__      = "$Date: 2006/10/05 17:59:03 $"
+__version__   = "$Revision: 1.8 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -722,10 +722,15 @@ if __name__ == '__main__':
     if len(data) == 0:
         av = 0
         sd = 0
+        mn = 0
+        mx = 0
     else:    
         av = Numeric.average(data)
         sd = MLab.std(data)
+        mn = min(data)
+        mx = max(data)
     log.info("LAC FINE Mev/DAC slope average=%f, stddev=%f", av, sd)
+    log.info("LAC FINE Mev/DAC slope minumum=%f, maximum=%f", mn, mx) 
     
     data = Numeric.compress(Numeric.ravel(sf), Numeric.ravel(dacData[...,1]))
     if len(data) == 0:
@@ -740,10 +745,15 @@ if __name__ == '__main__':
     if len(data) == 0:
         av = 0
         sd = 0
+        mn = 0
+        mx = 0
     else:    
         av = Numeric.average(data)
         sd = MLab.std(data)
+        mn = min(data)
+        mx = max(data)
     log.info("LAC COARSE Mev/DAC slope average=%f, stddev=%f", av, sd)
+    log.info("LAC COARSE Mev/DAC slope minumum=%f, maximum=%f", mn, mx) 
     
     data = Numeric.compress(Numeric.ravel(sc), Numeric.ravel(dacData[...,1]))
     if len(data) == 0:
@@ -767,10 +777,15 @@ if __name__ == '__main__':
     if len(data) == 0:
         av = 0
         sd = 0
-    else:       
+        mn = 0
+        mx = 0
+    else:    
         av = Numeric.average(data)
         sd = MLab.std(data)
+        mn = min(data)
+        mx = max(data)
     log.info("FLE FINE Mev/DAC slope average = %f, stddev=%f", av, sd)
+    log.info("FLE FINE Mev/DAC slope minumum=%f, maximum=%f", mn, mx) 
     
     data = Numeric.compress(Numeric.ravel(sf), Numeric.ravel(dacData[...,3]))
     if len(data) == 0:
@@ -785,10 +800,15 @@ if __name__ == '__main__':
     if len(data) == 0:
         av = 0
         sd = 0
-    else:        
+        mn = 0
+        mx = 0
+    else:    
         av = Numeric.average(data)
         sd = MLab.std(data)
+        mn = min(data)
+        mx = max(data)
     log.info("FLE COARSE Mev/DAC slope average = %f, stddev=%f", av, sd)
+    log.info("FLE COARSE Mev/DAC slope minumum=%f, maximum=%f", mn, mx) 
     
     data = Numeric.compress(Numeric.ravel(sc), Numeric.ravel(dacData[...,3]))
     if len(data) == 0:
@@ -809,13 +829,18 @@ if __name__ == '__main__':
     log.info("FHE FINE count = %d, COARSE count = %d", fineCount, coarseCount)
     
     data = Numeric.compress(Numeric.ravel(sf), Numeric.ravel(dacData[...,4]))
-    if len(data) == 0: 
+    if len(data) == 0:
         av = 0
         sd = 0
-    else:
+        mn = 0
+        mx = 0
+    else:    
         av = Numeric.average(data)
         sd = MLab.std(data)
+        mn = min(data)
+        mx = max(data)
     log.info("FHE FINE Mev/DAC slope average = %f, stddev=%f", av, sd)
+    log.info("FHE FINE Mev/DAC slope minumum=%f, maximum=%f", mn, mx) 
     
     data = Numeric.compress(Numeric.ravel(sf), Numeric.ravel(dacData[...,5]))
     if len(data) == 0:
@@ -830,10 +855,15 @@ if __name__ == '__main__':
     if len(data) == 0:
         av = 0
         sd = 0
+        mn = 0
+        mx = 0
     else:    
         av = Numeric.average(data)
         sd = MLab.std(data)
+        mn = min(data)
+        mx = max(data)
     log.info("FHE COARSE Mev/DAC slope average = %f, stddev=%f", av, sd)
+    log.info("FHE COARSE Mev/DAC slope minumum=%f, maximum=%f", mn, mx) 
     
     data = Numeric.compress(Numeric.ravel(sc), Numeric.ravel(dacData[...,5]))
     if len(data) == 0:
@@ -846,9 +876,13 @@ if __name__ == '__main__':
     
     # ULD LEX8
     
-    av = Numeric.average(uldData[calConstant.CRNG_LEX8,...,0], axis = None)
-    sd = MLab.std(Numeric.ravel(uldData[calConstant.CRNG_LEX8,...,0]))
-    log.info("ULD LEX8 Mev/DAC slope average = %f, stddev=%f", av, sd) 
+    data = Numeric.ravel(uldData[calConstant.CRNG_LEX8,...,0])
+    av = Numeric.average(data)
+    sd = MLab.std(data)
+    mn = min(data)
+    mx = max(data)
+    log.info("ULD LEX8 Mev/DAC slope average = %f, stddev=%f", av, sd)
+    log.info("ULD LEX8 Mev/DAC slope minumum = %f, maximum = %f", mn, mx) 
     
     av = Numeric.average(uldData[calConstant.CRNG_LEX8,...,1], axis = None)
     sd = MLab.std(Numeric.ravel(uldData[calConstant.CRNG_LEX8,...,1])) 
@@ -863,9 +897,13 @@ if __name__ == '__main__':
     
     # ULD LEX1
     
-    av = Numeric.average(uldData[calConstant.CRNG_LEX1,...,0], axis = None)
-    sd = MLab.std(Numeric.ravel(uldData[calConstant.CRNG_LEX1,...,0]))
+    data = Numeric.ravel(uldData[calConstant.CRNG_LEX1,...,0])
+    av = Numeric.average(data)
+    sd = MLab.std(data)
+    mn = min(data)
+    mx = max(data)
     log.info("ULD LEX1 Mev/DAC slope average = %f, stddev=%f", av, sd)
+    log.info("ULD LEX1 Mev/DAC slope minumum = %f, maximum = %f", mn, mx)
      
     av = Numeric.average(uldData[calConstant.CRNG_LEX1,...,1], axis = None) 
     sd = MLab.std(Numeric.ravel(uldData[calConstant.CRNG_LEX1,...,1]))
@@ -880,9 +918,13 @@ if __name__ == '__main__':
     
     # ULD HEX8
     
-    av = Numeric.average(uldData[calConstant.CRNG_HEX8,...,0], axis = None)
-    sd = MLab.std(Numeric.ravel(uldData[calConstant.CRNG_HEX8,...,0]))
+    data = Numeric.ravel(uldData[calConstant.CRNG_HEX8,...,0])
+    av = Numeric.average(data)
+    sd = MLab.std(data)
+    mn = min(data)
+    mx = max(data)
     log.info("ULD HEX8 Mev/DAC slope average = %f, stddev=%f", av, sd) 
+    log.info("ULD HEX1 Mev/DAC slope minumum = %f, maximum = %f", mn, mx)
     
     av = Numeric.average(uldData[calConstant.CRNG_HEX8,...,1], axis = None) 
     sd = MLab.std(Numeric.ravel(uldData[calConstant.CRNG_HEX8,...,1]))
