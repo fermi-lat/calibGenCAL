@@ -6,8 +6,8 @@ Global calorimeter constant values
 __facility__      = "Online"
 __abstract__      = "Global calorimeter constant values"
 __author__        = "D.L. Wood"
-__date__          = "$Date: 2006/06/27 15:50:02 $"
-__version__       = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__          = "$Date: 2006/07/18 17:49:15 $"
+__version__       = "$Revision: 1.3 $, $Author: dwood $"
 __release__       = "$Name:  $"
 __credits__       = "NRL code 7650"
 
@@ -94,3 +94,32 @@ NUM_RNG = 4
 CMOD = ('FM104', 'FM103', 'FM117', 'FM118', 'FM105', 'FM102', 'FM115', 'FM116',
         'FM107', 'FM106', 'FM111', 'FM112', 'FM110', 'FM108', 'FM113', 'FM114')
          
+
+
+
+def temToModule(tem):
+    """
+    Gets a module name based on the TEM number.
+    Param: tem - the TEM number (0 - 15).
+    Returns: The module name string.
+    """
+    
+    if tem < 0 or tem > 15:
+        raise ValueError, "tem value %d not 0<>15." % tem
+        
+    return CMOD[tem]
+    
+        
+        
+def rowToName(row):
+    """
+    Gets a layer name based on the row number.
+    Param: row - the row number (0 - 7).
+    Returns: The layer name string.
+    """
+    
+    if row < 0 or row > 7:
+        raise ValueError, "row value %d not 0<>7" % row
+        
+    return CROW[row]
+                 
