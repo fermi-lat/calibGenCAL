@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.7 2006/09/28 17:47:55 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.8 2006/09/28 20:00:24 fewtrell Exp $
 /** @file Gen MevPerDAC calibrations from Muon event files
     @author Zachary Fewtrell
 */
@@ -78,71 +78,87 @@ int main(int argc, char **argv) {
 
 
     //-- RETRIEVE PEDESTALS
-    // retrieve original input root filename for pedestal process
-    // (in order to generate associated 'output' txt filename)
-    vector<string> pedRootFileList;
-    cfgFile.getVector("MUON_PEDS", 
-                      "ROOT_FILES", 
-                      pedRootFileList,
-                      ", ");
-    if (pedRootFileList.size() < 1) {
-      logStrm << __FILE__ << ": No input files specified" << endl;
-      return -1;
+    // see if user has explictly specified input txt filename
+    string pedTXTFile = cfgFile.getVal<string>("MUON_MPD",
+                                               "PED_TXT_FILE",
+                                               "");
+    if (!pedTXTFile.size()) {
+      // retrieve original input root filename for pedestal process
+      // (in order to generate associated 'output' txt filename)
+      vector<string> pedRootFileList;
+      cfgFile.getVector("MUON_PEDS", 
+                        "ROOT_FILES", 
+                        pedRootFileList,
+                        ", ");
+      if (pedRootFileList.size() < 1) {
+        logStrm << __FILE__ << ": No input files specified" << endl;
+        return -1;
+      }
+      // txt output filename
+      MuonPed::genOutputFilename(outputDir,
+                                 pedRootFileList[0],
+                                 "txt",
+                                 pedTXTFile);
     }
-    // txt output filename
-    string pedTXTFile;
-    MuonPed::genOutputFilename(outputDir,
-                               pedRootFileList[0],
-                               "txt",
-                               pedTXTFile);
 
     CalPed peds;
     logStrm << __FILE__ << ": reading in muon pedestal file: " << pedTXTFile << endl;
     peds.readTXT(pedTXTFile);
 
 
-  
-    //-- RETRIEVE CIDAC2ADC
-    // retrieve original input root filename for cidac2adc process
-    // (in order to generate 'output' txt filename)
-    string rootFileLE = cfgFile.getVal("CIDAC2ADC", 
-                                       "LE_ROOT_FILE", 
-                                       string(""));
-    if (rootFileLE.length() < 1) {
-      logStrm << __FILE__ << ": no LE root file specified" << endl;
-      return -1;
+    // first see if use has explicitly chosen a txt filename
+    string dac2adcTXTFile = cfgFile.getVal<string>("GCR_MPD",
+                                                   "INL_TXT_FILE",
+                                                   "");
+    if (!dac2adcTXTFile.size()) {
+      // retrieve original input root filename for cidac2adc process
+      // (in order to generate 'output' txt filename)
+      string rootFileLE = cfgFile.getVal("CIDAC2ADC", 
+                                         "LE_ROOT_FILE", 
+                                         string(""));
+      if (rootFileLE.length() < 1) {
+        logStrm << __FILE__ << ": no LE root file specified" << endl;
+        return -1;
+      }
+      // txt output filename
+      IntNonlin::genOutputFilename(outputDir,
+                                   rootFileLE,
+                                   "txt",
+                                   dac2adcTXTFile);
     }
-    // txt output filename
-    string cidac2adcTXTFile;
-    IntNonlin::genOutputFilename(outputDir,
-                                 rootFileLE,
-                                 "txt",
-                                 cidac2adcTXTFile);
+
+
 
     CIDAC2ADC dac2adc;
-    logStrm << __FILE__ << ": reading in cidac2adc txt file: " << cidac2adcTXTFile << endl;
-    dac2adc.readTXT(cidac2adcTXTFile);
+    logStrm << __FILE__ << ": reading in cidac2adc txt file: " << dac2adcTXTFile << endl;
+    dac2adc.readTXT(dac2adcTXTFile);
     logStrm << __FILE__ << ": generating cidac2adc splines: " << endl;
     dac2adc.genSplines();
 
     //-- RETRIEVE ASYM
-    // retrieve original input root filename for asymmetry process
-    // (in order to generate associated 'output' txt filename)
-    vector<string> asymRootFileList;
-    cfgFile.getVector("MUON_ASYM", 
-                      "ROOT_FILES", 
-                      asymRootFileList, 
-                      ", ");
-    if (asymRootFileList.size() < 1) {
-      logStrm << __FILE__ << ": No input files specified" << endl;
-      return -1;
+    // see if user has explictly specified input txt filename
+    string asymTXTFile = cfgFile.getVal("MUON_MPD",
+                                        "ASYM_TXT_FILE",
+                                        string(""));
+    
+    if (!asymTXTFile.size()) {
+      // retrieve original input root filename for asymmetry process
+      // (in order to generate associated 'output' txt filename)
+      vector<string> asymRootFileList;
+      cfgFile.getVector("MUON_ASYM", 
+                        "ROOT_FILES", 
+                        asymRootFileList, 
+                        ", ");
+      if (asymRootFileList.size() < 1) {
+        logStrm << __FILE__ << ": No input files specified" << endl;
+        return -1;
+      }
+      // txt output filename
+      MuonAsym::genOutputFilename(outputDir,
+                                  asymRootFileList[0],
+                                  "txt",
+                                  asymTXTFile);
     }
-    // txt output filename
-    string asymTXTFile;
-    MuonAsym::genOutputFilename(outputDir,
-                                asymRootFileList[0],
-                                "txt",
-                                asymTXTFile);
 
     CalAsym asym;
     logStrm << __FILE__ << ": reading in muon asym file: " << asymTXTFile << endl;
