@@ -17,8 +17,8 @@ Where:
 __facility__  = "Offline"
 __abstract__  = "Generate ROOT plots for CAL ADC/DAC characerization data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/05 18:35:32 $"
-__version__   = "$Revision: 1.9 $, $Author: dwood $"
+__date__      = "$Date: 2006/09/25 23:10:26 $"
+__version__   = "$Revision: 1.10 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -185,7 +185,7 @@ def plotDAC(rawData, filterData, info, twrs, rawName, filterName):
 
                     for g in lineGraph:
                         g.Draw('L')
-                        c.Update
+                        c.Update()
                     
                     for g in markerGraph:                    
                         g.Draw('P')
