@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Fri Oct  6 10:07:13 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacSlopesVal.py 
+Log Message:
+Added stats for minimum and maximum slopes.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Oct  6 09:26:47 PDT 2006
 calibGenCAL/src
 
