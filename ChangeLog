@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Oct  6 09:26:00 PDT 2006
+calibGenCAL/cfg
+
+Modified Files:
+	calibGenCAL_suite.cfg 
+Log Message:
+new functionality allows apps to overide input txt filenames instaed of auto-generating them.
+
+    *
+------------------------------------------------------------
 User: dwood  Fri Oct  6 09:20:09 PDT 2006
 calibGenCAL/python/lib
 
