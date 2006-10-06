@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Fri Oct  6 09:20:09 PDT 2006
+calibGenCAL/python/lib
+
+Modified Files:
+	calConstant.py 
+Log Message:
+Added rowToName() and temToModule() helper functions.
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Oct  5 10:59:04 PDT 2006
 calibGenCAL/python
 
