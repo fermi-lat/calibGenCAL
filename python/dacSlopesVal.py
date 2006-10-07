@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL DacSlopes calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/10/05 17:59:03 $"
-__version__   = "$Revision: 1.8 $, $Author: dwood $"
+__date__      = "$Date: 2006/10/06 17:07:13 $"
+__version__   = "$Revision: 1.9 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -337,7 +337,7 @@ def calcError(dacData, uldData, rangeData):
 
     status = 0
     
-    # check LAC slopes
+    # check LAC slopes and offsets
     
     for tem in towers:
         for row in range(calConstant.NUM_ROW):
@@ -345,6 +345,7 @@ def calcError(dacData, uldData, rangeData):
                 for fe in range(calConstant.NUM_FE):
                 
                     slope = dacData[tem, row, end, fe, 0]
+                    offset = dacData[tem, row, end, fe, 1]
                     rng = int(rangeData[tem, row, end, fe, 0])
                     
                     if rng == calConstant.CDAC_FINE:
@@ -386,7 +387,12 @@ def calcError(dacData, uldData, rangeData):
                                  calConstant.CPM[end], fe, calConstant.CDAC[rng]) 
                         log.warning(msg)
                         
-    # check FLE slopes
+                    if offset > 0:
+                        log.warning("offset %0.3f > 0 for for T%d,%s%s,%d,LAC,%s" % \
+                            (offset, tem, calConstant.CROW[row], 
+                             calConstant.CPM[end], fe, calConstant.CDAC[rng]))
+                        
+    # check FLE slopes and offsets
     
     for tem in towers:
         for row in range(calConstant.NUM_ROW):
@@ -394,6 +400,7 @@ def calcError(dacData, uldData, rangeData):
                 for fe in range(calConstant.NUM_FE):
                 
                     slope = dacData[tem, row, end, fe, 2]
+                    offset = dacData[tem, row, end, fe, 3]
                     rng = int(rangeData[tem, row, end, fe, 1])
                     
                     if rng == calConstant.CDAC_FINE:
@@ -435,7 +442,12 @@ def calcError(dacData, uldData, rangeData):
                                  calConstant.CPM[end], fe, calConstant.CDAC[rng]) 
                         log.warning(msg)
                         
-    # check FHE slopes
+                    if offset > 0:
+                        log.warning("offset %0.3f > 0 for for T%d,%s%s,%d,FLE,%s" % \
+                            (offset, tem, calConstant.CROW[row], 
+                             calConstant.CPM[end], fe, calConstant.CDAC[rng]))
+                        
+    # check FHE slopes and offsets
     
     for tem in towers:
         for row in range(calConstant.NUM_ROW):
@@ -443,6 +455,7 @@ def calcError(dacData, uldData, rangeData):
                 for fe in range(calConstant.NUM_FE):
                 
                     slope = dacData[tem, row, end, fe, 4]
+                    offset = dacData[tem, row, end, fe, 5]
                     rng = int(rangeData[tem, row, end, fe, 2])
                     
                     if rng == calConstant.CDAC_COARSE:
@@ -484,7 +497,13 @@ def calcError(dacData, uldData, rangeData):
                                  calConstant.CPM[end], fe, calConstant.CDAC[rng]) 
                         log.warning(msg)
                         
-    # check ULD LEX8 slopes
+                    if offset > 0:
+                        log.warning("offset %0.3f > 0 for for T%d,%s%s,%d,FHE,%s" % \
+                            (offset, tem, calConstant.CROW[row], 
+                             calConstant.CPM[end], fe, calConstant.CDAC[rng]))
+                             
+                        
+    # check ULD LEX8 slopes and offsets and saturation points
     
     for tem in towers:
         for row in range(calConstant.NUM_ROW):
@@ -492,6 +511,8 @@ def calcError(dacData, uldData, rangeData):
                 for fe in range(calConstant.NUM_FE):
                 
                     slope = uldData[calConstant.CRNG_LEX8, tem, row, end, fe, 0]
+                    offset = uldData[calConstant.CRNG_LEX8, tem, row, end, fe, 1]
+                    sat = uldData[calConstant.CRNG_LEX8, tem, row, end, fe, 2]
                     
                     if rangeData[tem, row, end, fe, 3] == calConstant.CDAC_FINE:
                         log.error('using FINE range for T%d,%s%s,%d,ULD,LEX8', tem, row, end, fe)
@@ -529,6 +550,17 @@ def calcError(dacData, uldData, rangeData):
                                  calConstant.CPM[end], fe) 
                         log.warning(msg)
                         
+                    if offset < 0:
+                        log.warning('offset %0.3f < 0 for T%d,%s%s,%d,ULD,LEX8' % \
+                            (offset, tem, calConstant.CROW[row], 
+                             calConstant.CPM[end], fe))
+                             
+                    if sat < 0:
+                        log.warning('saturation %0.3f < 0 for T%d,%s%s,%d,ULD,LEX8' % \
+                            (sat, tem, calConstant.CROW[row], 
+                             calConstant.CPM[end], fe))
+                 
+                        
     # check ULD LEX1 slopes
     
     for tem in towers:
@@ -537,6 +569,8 @@ def calcError(dacData, uldData, rangeData):
                 for fe in range(calConstant.NUM_FE):
                 
                     slope = uldData[calConstant.CRNG_LEX1, tem, row, end, fe, 0]
+                    offset = uldData[calConstant.CRNG_LEX1, tem, row, end, fe, 1]
+                    sat = uldData[calConstant.CRNG_LEX1, tem, row, end, fe, 2]
                     
                     if rangeData[tem, row, end, fe, 4] == 0:
                         log.error('using FINE range for T%d,%s%s,%d,ULD,LEX1', tem, row, end, fe)
@@ -574,6 +608,17 @@ def calcError(dacData, uldData, rangeData):
                                  calConstant.CPM[end], fe) 
                             log.warning(msg)
                             
+                    if offset < 0:
+                        log.warning('offset %0.3f < 0 for T%d,%s%s,%d,ULD,LEX1' % \
+                            (offset, tem, calConstant.CROW[row], 
+                             calConstant.CPM[end], fe))
+                             
+                    if sat < 0:
+                        log.warning('saturation %0.3f < 0 for T%d,%s%s,%d,ULD,LEX1' % \
+                            (sat, tem, calConstant.CROW[row], 
+                             calConstant.CPM[end], fe))
+                             
+                            
     # check ULD HEX8 slopes
     
     for tem in towers:
@@ -582,6 +627,8 @@ def calcError(dacData, uldData, rangeData):
                 for fe in range(calConstant.NUM_FE):
                 
                     slope = uldData[calConstant.CRNG_HEX8, tem, row, end, fe, 0]
+                    offset = uldData[calConstant.CRNG_HEX8, tem, row, end, fe, 1]
+                    sat = uldData[calConstant.CRNG_HEX8, tem, row, end, fe, 2]
                     
                     if rangeData[tem, row, end, fe, 5] == 0:
                         log.error('using FINE range for T%d,%s%s,%d,ULD,HEX8', tem, row, end, fe)
@@ -617,7 +664,17 @@ def calcError(dacData, uldData, rangeData):
                             msg = 'slope %0.3f < %0.3f for T%d,%s%s,%d,ULD,HEX8' % \
                                 (slope, warnLow, tem, calConstant.CROW[row], 
                                  calConstant.CPM[end], fe) 
-                        log.warning(msg)                                                                                                                                               
+                        log.warning(msg) 
+                        
+                    if offset < 0:
+                        log.warning('offset %0.3f < 0 for T%d,%s%s,%d,ULD,HEX8' % \
+                            (offset, tem, calConstant.CROW[row], 
+                             calConstant.CPM[end], fe))
+                             
+                    if sat < 0:
+                        log.warning('saturation %0.3f < 0 for T%d,%s%s,%d,ULD,HEX8' % \
+                            (sat, tem, calConstant.CROW[row], 
+                             calConstant.CPM[end], fe))                                                                                                                                              
 
     return status
 
