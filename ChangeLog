@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Fri Oct  6 17:46:21 PDT 2006
+calibGenCAL/src
+
+Modified Files:
+	mainpage.h 
+Log Message:
+Added notes on dacSlopes plot utility.
+
+    *
+------------------------------------------------------------
 User: dwood  Fri Oct  6 17:34:45 PDT 2006
 calibGenCAL/python
 
