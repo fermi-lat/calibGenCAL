@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Fri Oct  6 17:34:45 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacSlopesVal.py 
+Log Message:
+Added basic checks of offset and saturation values.
+
+    *
+------------------------------------------------------------
 User: dwood  Fri Oct  6 13:42:59 PDT 2006
 calibGenCAL/python
 
