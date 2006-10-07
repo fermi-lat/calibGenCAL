@@ -1,5 +1,5 @@
 // (Special "header" just for doxygen)
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/mainpage.h,v 1.43 2006/10/03 17:30:29 dwood Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/mainpage.h,v 1.44 2006/10/04 18:04:31 fewtrell Exp $
 
 
 /*! 
@@ -143,6 +143,7 @@ characterization data XML files:
  - Perform linear extrapolation for FLE LEX8 characterization data; needed 
    for higher FLE thresholds
  - Digital smoothing filter as final processing
+ 
 This tool can be used as a pre-processor for other tools which require
 clean characterization tables to work well (e.g. genXXXsettings).
 
@@ -178,11 +179,14 @@ any issues with failures. This requires a working implementation of PyROOT.
 
 - <tt> adcplot [-V] <xml_file> <root_file> </tt>
 - <tt> charplot [-V] <raw_xml_file> <filtered_xml_file> <root_file> </tt>
+- <tt> dacSlopesPlot <xml_file> <root_file> </tt>
 
 - The adcplot utility will generate ROOT plots of the CAL DAC/ADC
 characterization tables. 
 - The charplot utility overlays raw, fitered, and linear model characterization
 data plots.  These require a working implementation of PyROOT. 
+- The dacSlopesPlot utility generates ROOT plots of the idealized DAC characterization
+curves in a CAL_dacSlopes XML file produced by the dacSlopesGen application.
 
 <h5> Conversion scripts </h5>
 For converting xml files to and from columnar text and other formats.
