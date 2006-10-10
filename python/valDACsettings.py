@@ -1,7 +1,7 @@
 """
 Validate CAL DAC settings XML files.  The command line is:
 
-valDACsettings [-V] [-r] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC|ULD <MeV> <dac_slopes_file> <dac_xml_file>
+valDACsettings [-V] [-r] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC|ULD <MeV | margin> <dac_slopes_file> <dac_xml_file>
 
 where:
     -r                 = generate ROOT output with default name
@@ -9,7 +9,8 @@ where:
     -L <log_file>      = save console output to log text file
     -V                 = verbose; turn on debug output
     FLE|FHE|LAC        = DAC type to validate
-    <MeV>              = The threshold energy in MeV units.
+    <MeV>              = The threshold energy in MeV units (FLE, FHE, LAC).
+    <margin>           = The ULD saturation margin percentage (ULD).
     <dac_slopes_file>  = The CAL_DacSlopes calibration file.
     <dac_xml_file>     = The DAC settings XML file to validate.
 """
@@ -19,8 +20,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/10/03 16:26:38 $"
-__version__     = "$Revision: 1.3 $, $Author: dwood $"
+__date__        = "$Date: 2006/10/03 18:13:07 $"
+__version__     = "$Revision: 1.4 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -76,10 +77,34 @@ def rootHistsDAC(engData, fileName):
 
 
 
-def engValDAC(errData):
+def engValDAC(dacData, errData):
 
     valStatus = 0
     
+    # sanity check on DAC settings
+    
+    for tem in twrs:
+        for row in range(calConstant.NUM_ROW):
+            for end in range(calConstant.NUM_END):
+                for fe in range(calConstant.NUM_FE):
+                
+                    dac = dacData[tem, row, end, fe]
+                    
+                    if dac > 63:
+                        log.error('setting %d > 63 for T%d,%s%s,%d', dac, tem, calConstant.CROW[row],
+                            calConstant.CPM[end], fe)
+                        valStatus = 1    
+                    
+                    elif dac == 63:
+                        log.warning('setting %d == 63 for T%d,%s%s,%d', dac, tem, calConstant.CROW[row],
+                            calConstant.CPM[end], fe)
+                            
+                    elif dac == 0:
+                        log.error('setting %d == 0 for T%d,%s%s,%d', dac, tem, calConstant.CROW[row],
+                            calConstant.CPM[end], fe)
+                        valStatus = 1        
+                            
+   
     # check for ADC->energy conversion error
     
     for tem in twrs:
@@ -102,9 +127,32 @@ def engValDAC(errData):
 
 
 
-def engValULD(engData, saturation):
+def engValULD(dacData, engData, saturation):
 
     valStatus = 0
+    
+    # sanity check on DAC settings
+    
+    for tem in twrs:
+        for row in range(calConstant.NUM_ROW):
+            for end in range(calConstant.NUM_END):
+                for fe in range(calConstant.NUM_FE):
+                
+                    dac = dacData[tem, row, end, fe]
+                    
+                    if dac > 63:
+                        log.error('setting %d > 63 for T%d,%s%s,%d', dac, tem, calConstant.CROW[row],
+                            calConstant.CPM[end], fe)
+                        valStatus = 1    
+                    
+                    elif dac == 63:
+                        log.warning('setting %d == 63 for T%d,%s%s,%d', dac, tem, calConstant.CROW[row],
+                            calConstant.CPM[end], fe)
+                            
+                    elif dac == 0:
+                        log.error('setting %d == 0 for T%d,%s%s,%d', dac, tem, calConstant.CROW[row],
+                            calConstant.CPM[end], fe)
+                        valStatus = 1
     
     # check ULD threshold verses saturation to see if margin is kept
     
@@ -239,6 +287,7 @@ if __name__ == '__main__':
     if not twrs.issubset(towers):
         log.error("%s data not found in file %s", twrs, dacName)
         sys.exit(1)
+    log.debug("settings available for towers: %s", twrs)    
     dacData = fio.read()
     fio.close()
     
@@ -261,10 +310,12 @@ if __name__ == '__main__':
         offset = uldSlope[...,1]
         saturation = uldSlope[...,2]     
         
+    origDacData = dacData
+    
     # handle FLE, FHE, and LAC cases
         
     if dacType != 'ULD':
-        
+                
         dacData = Numeric.where(ranges, (dacData - 64), dacData)    
     
         # convert to MeV
@@ -277,7 +328,7 @@ if __name__ == '__main__':
 
         # do validation
 
-        valStatus = engValDAC(err) 
+        valStatus = engValDAC(dacData, err) 
         
     # handle ULD case
     
@@ -291,7 +342,7 @@ if __name__ == '__main__':
  
         # do validation
         
-        valStatus = engValULD(eng, saturation)      
+        valStatus = engValULD(dacData, eng, saturation)      
            
 
     # create ROOT output file
@@ -312,6 +363,40 @@ if __name__ == '__main__':
         # clean up
 
         rootFile.Close()
+        
+        
+    # do simple stats 
+    
+    sf = (origDacData < 64)
+    sc = Numeric.logical_not(sf) 
+    
+    fineCount = Numeric.sum(Numeric.ravel(sf))
+    coarseCount = Numeric.sum(Numeric.ravel(sc))
+    log.info("FINE count = %d, COARSE count = %d", fineCount, coarseCount)  
+    
+    data = Numeric.compress(Numeric.ravel(sf), Numeric.ravel(origDacData))
+    if len(data) == 0:
+        av = 0
+        mn = 0
+        mx = 0
+    else:
+        av = Numeric.average(data.astype(Numeric.Float32))
+        mn = min(data)
+        mx = max(data)
+    log.info("FINE setting average = %0.2f", av)
+    log.info("FINE setting minimum = %d, maximum = %d", mn, mx)
+    
+    data = Numeric.compress(Numeric.ravel(sc), Numeric.ravel(origDacData))
+    if len(data) == 0:
+        av = 0
+        mn = 0
+        mx = 0
+    else:
+        av = Numeric.average(data.astype(Numeric.Float32))
+        mn = min(data)
+        mx = max(data)
+    log.info("COARSE setting average = %0.2f", av)
+    log.info("COARSE setting minimum = %d, maximum = %d", mn, mx)           
 
     # report results
 
