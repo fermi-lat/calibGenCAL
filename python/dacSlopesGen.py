@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL DAC XML calibration data file"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/10/05 17:54:19 $"
-__version__   = "$Revision: 1.9 $, $Author: dwood $"
+__date__      = "$Date: 2006/10/10 15:51:41 $"
+__version__   = "$Revision: 1.10 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -99,8 +99,15 @@ LAC_LIM_LOW  = 0.17
 LAC_LIM_HIGH = 0.49
 
 
+# error limits for linear fits
 
-def fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1, limLow, limHigh):
+FLE_LIM_FIT  = 800.0
+FHE_LIM_FIT  = 1000.0
+LAC_LIM_FIT  = 400.0
+
+
+
+def fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1, limLow, limHigh, fitLim):
     """
     Do linear fit of ADC/DAC curve in ADC range
     Param: fineThresholds - ADC thresholds for DAC FINE range
@@ -110,6 +117,7 @@ def fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1, limLow, limHigh
     Param: bias - The trigger bias correction values
     Param: limLow - Lower limits for slope value
     Param: limHigh - Uppwer limits for slope value
+    Param: fitLim - Error limit for linear fit total deviation. 
     Returns: Tuple: 0 = Array of shape (16,8,2,12,2) where the last dimension holds the linear
                         fit parameters for each channel.
                     1 = Array of shape (16,8,2,12) filled in with FINE/COARSE selection per channel    
@@ -170,9 +178,15 @@ def fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1, limLow, limHigh
                     try:
                         fit = mpfit.mpfit(residuals, P0, functkw = fkw, parinfo = PINFO, quiet = True) 
                         if fit.status <= 0:
-                            log.error("mpfit error on T%d,%s%s,%d: %s,%s,%s", tem, calConstant.CROW[row],
+                            log.warning("mpfit error on T%d,%s%s,%d: %s,%s,%s", tem, calConstant.CROW[row],
                                 calConstant.CPM[end], fe, fit.errmsg, d, a)
                             fail = True
+                        else:
+                            dnorm = (fit.fnorm / len(d))
+                            if dnorm > fitLim:
+                                log.warning("fit error > %0.2f on T%d,%s%s,%d", dnorm, tem, 
+                                    calConstant.CROW[row], calConstant.CPM[end], fe)
+                                fail = True     
                     except ValueError, e:
                         log.error("mpfit excep on T%d,%s%s,%d: %s,%s,%s", tem, calConstant.CROW[row],
                             calConstant.CPM[end], fe, e, d, a)
@@ -183,6 +197,8 @@ def fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1, limLow, limHigh
                     if not fail and rng == calConstant.CDAC_FINE:
                         m = fit.params[0]
                         if m < limLow[tem,row,end,fe] or m > limHigh[tem,row,end,fe]:
+                            log.warning("bad slope %0.3f on T%d,%s%s,%d", m, tem, 
+                                calConstant.CROW[row], calConstant.CPM[end], fe)
                             fail = True
                     
                     # if the range is FINE, and the fit fails, or the resulting slope is
@@ -660,7 +676,7 @@ if __name__ == '__main__':
     
     log.info("Fitting FLE")
     (mevs, ranges) = fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1,
-        (FLE_LIM_LOW / gain), (FLE_LIM_HIGH / gain))                       
+        (FLE_LIM_LOW / gain), (FLE_LIM_HIGH / gain), FLE_LIM_FIT)                       
     
     # convert DAC/ADC slopes to DAC/energy slopes
          
@@ -717,7 +733,7 @@ if __name__ == '__main__':
     
     log.info("Fitting FHE")
     (mevs, ranges) = fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1,
-        (FHE_LIM_LOW / gain), (FHE_LIM_HIGH / gain))  
+        (FHE_LIM_LOW / gain), (FHE_LIM_HIGH / gain), FHE_LIM_FIT)  
                         
     # convert DAC/ADC slopes to DAC/energy slopes
          
@@ -773,7 +789,7 @@ if __name__ == '__main__':
     
     log.info("Fitting LAC")
     (mevs, ranges) = fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1,
-        (LAC_LIM_LOW / gain), (LAC_LIM_HIGH / gain))
+        (LAC_LIM_LOW / gain), (LAC_LIM_HIGH / gain), LAC_LIM_FIT)
     
     # convert DAC/ADC slopes to DAC/energy slopes
          
