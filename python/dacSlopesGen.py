@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL DAC XML calibration data file"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/09/05 19:19:16 $"
-__version__   = "$Revision: 1.8 $, $Author: dwood $"
+__date__      = "$Date: 2006/10/05 17:54:19 $"
+__version__   = "$Revision: 1.9 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -100,13 +100,14 @@ LAC_LIM_HIGH = 0.49
 
 
 
-def fitDAC(fineThresholds, coarseThresholds, adcs0, adcs1, limLow, limHigh):
+def fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1, limLow, limHigh):
     """
     Do linear fit of ADC/DAC curve in ADC range
     Param: fineThresholds - ADC thresholds for DAC FINE range
     Param: coarseThresholds - ADC thresholds for DAC COARSE range
     Param: adcs0 - Lower energy limit converted to ADC units
     Param: adcs1 - Upper energy limit converted to ADC units
+    Param: bias - The trigger bias correction values
     Param: limLow - Lower limits for slope value
     Param: limHigh - Uppwer limits for slope value
     Returns: Tuple: 0 = Array of shape (16,8,2,12,2) where the last dimension holds the linear
@@ -124,6 +125,8 @@ def fitDAC(fineThresholds, coarseThresholds, adcs0, adcs1, limLow, limHigh):
     ranges = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
         calConstant.NUM_FE), Numeric.Int8)    
     
+    adcs0 = adcs0 - bias
+    adcs1 = adcs1 - bias
     adcs0 = adcs0[...,Numeric.NewAxis]
     adcs1 = adcs1[...,Numeric.NewAxis]
     
@@ -154,7 +157,8 @@ def fitDAC(fineThresholds, coarseThresholds, adcs0, adcs1, limLow, limHigh):
                     else:
                     
                         tholds = fineThresholds[tem,row,end,fe,:]    
-                        
+                    
+                    tholds = tholds + bias[tem,row,end,fe,Numeric.NewAxis]    
                     d = Numeric.compress(qx, D0)
                     a = Numeric.compress(qx, tholds)
                     fkw = {'x' : d, 'y' : a}
@@ -196,6 +200,7 @@ def fitDAC(fineThresholds, coarseThresholds, adcs0, adcs1, limLow, limHigh):
                         tholds = coarseThresholds[tem,row,end,fe,:]    
                         rng = calConstant.CDAC_COARSE
                         
+                        tholds = tholds + bias[tem,row,end,fe,Numeric.NewAxis]
                         d = Numeric.compress(qx, D0)
                         a = Numeric.compress(qx, tholds)
                         fkw = {'x' : d, 'y' : a}
@@ -649,26 +654,17 @@ if __name__ == '__main__':
     # trigger bias correction
     
     bias = (biasAdcData[...,0] * rngScale)
-    adcs0 -= bias
-    adcs1 -= bias
-    log.debug("FLE adcs0[0,0,0,0]:%.3f %.3f bias[0,0,0,0]:%.3f", adcs0[0,0,0,0], adcs1[0,0,0,0], 
-        bias[0,0,0,0])
+    log.debug("FLE bias[0,0,0,0]:%.3f", bias[0,0,0,0])
             
     # get linear fit parameters
     
     log.info("Fitting FLE")
-    (mevs, ranges) = fitDAC(fineThresholds, coarseThresholds, adcs0, adcs1,
+    (mevs, ranges) = fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1,
         (FLE_LIM_LOW / gain), (FLE_LIM_HIGH / gain))                       
     
     # convert DAC/ADC slopes to DAC/energy slopes
          
-    log.debug("FLE mevs[0,0,0,0]:%.3f %.3f", mevs[0,0,0,0,0], mevs[0,0,0,0,1])
-    
-    # trigger bias correction
-    
-    mevs[...,1] += bias
-    log.debug("FLE mevs[0,0,0,0]:%.3f %.3f bias[0,0,0,0]:%.3f", mevs[0,0,0,0,0], mevs[0,0,0,0,1], 
-        bias[0,0,0,0])    
+    log.debug("FLE mevs[0,0,0,0]:%.3f %.3f", mevs[0,0,0,0,0], mevs[0,0,0,0,1])   
     
     # ADC->energy conversion
     
@@ -715,27 +711,18 @@ if __name__ == '__main__':
     # trigger bias correction
     
     bias = biasAdcData[...,1]
-    adcs0 -= bias
-    adcs1 -= bias
-    log.debug("FHE adcs0[0,0,0,0]:%.3f %.3f bias[0,0,0,0]:%.3f", adcs0[0,0,0,0],
-            adcs1[0,0,0,0], bias[0,0,0,0])
+    log.debug("FHE bias[0,0,0,0]:%.3f", bias[0,0,0,0])
             
     # get linear fit parameters
     
     log.info("Fitting FHE")
-    (mevs, ranges) = fitDAC(fineThresholds, coarseThresholds, adcs0, adcs1,
+    (mevs, ranges) = fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1,
         (FHE_LIM_LOW / gain), (FHE_LIM_HIGH / gain))  
                         
     # convert DAC/ADC slopes to DAC/energy slopes
          
     log.debug("FHE mevs[0,0,0,0]:%.3f %.3f", mevs[0,0,0,0,0], mevs[0,0,0,0,1])
-    
-    # trigger bias correction
-    
-    mevs[...,1] += bias
-    log.debug("FHE mevs[0,0,0,0]:%.3f %.3f bias[0,0,0,0]:%.3f", mevs[0,0,0,0,0],
-            mevs[0,0,0,0,1], bias[0,0,0,0])    
-    
+       
     # ADC->energy conversion
     
     mevs *= gain[...,Numeric.NewAxis]
@@ -777,10 +764,15 @@ if __name__ == '__main__':
     log.debug("LAC adcs0[0,0,0,0]:%.3f %.3f gain[0,0,0,0]:%.3f", adcs0[0,0,0,0],
             adcs1[0,0,0,0], gain[0,0,0,0])
             
+    # no bias correction
+    
+    bias = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW,
+        calConstant.NUM_END, calConstant.NUM_FE), Numeric.Float32)
+            
     # get linear fit parameters
     
     log.info("Fitting LAC")
-    (mevs, ranges) = fitDAC(fineThresholds, coarseThresholds, adcs0, adcs1,
+    (mevs, ranges) = fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1,
         (LAC_LIM_LOW / gain), (LAC_LIM_HIGH / gain))
     
     # convert DAC/ADC slopes to DAC/energy slopes
