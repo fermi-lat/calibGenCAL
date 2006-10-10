@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL DacSlopes calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/10/06 17:07:13 $"
-__version__   = "$Revision: 1.9 $, $Author: dwood $"
+__date__      = "$Date: 2006/10/07 00:34:45 $"
+__version__   = "$Revision: 1.10 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -71,8 +71,8 @@ fheFineSlopeErrHigh    = 78.0
 fheCoarseSlopeWarnLow  = 81.0
 fheCoarseSlopeWarnHigh = 113.0
 
-fheCoarseSlopeErrLow   = 65.0
-fheCoarseSlopeErrHigh  = 129.0
+fheCoarseSlopeErrLow   = 55.0
+fheCoarseSlopeErrHigh  = 135.0
 
 uldLex8SlopeWarnLow    = 0.67
 uldLex8SlopeWarnHigh   = 1.02
