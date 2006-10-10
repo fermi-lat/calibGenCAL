@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Tue Oct 10 11:17:25 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacSlopesVal.py 
+Log Message:
+Restored wider error limits for FHE; high gain causes even good channels to exihit a large variance in slopes.
+
+    *
+------------------------------------------------------------
 User: dwood  Tue Oct 10 11:10:40 PDT 2006
 calibGenCAL/python
 
