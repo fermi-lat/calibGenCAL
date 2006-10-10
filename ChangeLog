@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Tue Oct 10 10:24:18 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	valDACsettings.py 
+Log Message:
+Added statistics to log output; added check of DAC settings values for sanity 0 < dac <= 63.
+
+    *
+------------------------------------------------------------
 User: dwood  Tue Oct 10 08:51:41 PDT 2006
 calibGenCAL/python
 
