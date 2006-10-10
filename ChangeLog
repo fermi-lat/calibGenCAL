@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Tue Oct 10 11:10:40 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacSlopesGen.py 
+Log Message:
+Added check of linear fit quality for determining suitability for using FINE range test data.
+
+    *
+------------------------------------------------------------
 User: dwood  Tue Oct 10 10:24:18 PDT 2006
 calibGenCAL/python
 
