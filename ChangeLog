@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Tue Oct 10 08:51:41 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacSlopesGen.py 
+Log Message:
+Improved handling of bias correction.
+
+    *
+------------------------------------------------------------
 User: dwood  Fri Oct  6 17:46:21 PDT 2006
 calibGenCAL/src
 
