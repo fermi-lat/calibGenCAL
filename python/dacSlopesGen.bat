@@ -1,4 +1,4 @@
-REM $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/tholdCIGen.bat,v 1.6 2006/06/21 18:43:13 dwood Exp $
+REM $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/dacSlopesGen.bat,v 1.1 2006/07/17 15:29:17 dwood Exp $
 @echo off
 
 if not defined CALIBGENCALROOT goto :ERROR
@@ -11,7 +11,7 @@ endlocal
 goto :EXIT
 
 :ERROR
-echo ERROR: tholdCIGen: CALIBGENCALROOT must be defined
+echo ERROR: dacSlopesGen: CALIBGENCALROOT must be defined
 
 :EXIT
 
