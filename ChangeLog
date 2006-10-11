@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Wed Oct 11 14:11:11 PDT 2006
+calibGenCAL/python/lib
+
+Modified Files:
+	calFitsXML.py calXML.py 
+Log Message:
+Call os.path.expandvars() on XML file names to allow for substitution in path strings.
+
+    *
+------------------------------------------------------------
 User: dwood  Wed Oct 11 10:22:39 PDT 2006
 calibGenCAL/python
 
