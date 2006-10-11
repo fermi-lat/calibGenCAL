@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: dwood  Wed Oct 11 10:22:39 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacSlopesGen.bat dacSlopesVal.bat 
+Added Files:
+	dacSlopesPlot.bat 
+Log Message:
+Added windows launch script for dacSlopesPlot.
+
+    *
+------------------------------------------------------------
 User: dwood  Wed Oct 11 10:19:03 PDT 2006
 calibGenCAL/python
 
