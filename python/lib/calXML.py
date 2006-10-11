@@ -6,11 +6,14 @@ CAL XML base classes
 __facility__  = "Offline"
 __abstract__  = "CAL XML base classes"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/05/12 21:31:59 $"
-__version__   = "$Revision: 1.8 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/21 18:43:14 $"
+__version__   = "$Revision: 1.1 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
+
+
+import os
 
 import Ft.Xml.Domlette 
 import Ft.Lib.Uri
@@ -35,23 +38,23 @@ class calXML:
         """
         Open a CAL XML file
 
-        Param: fileName The XML file name.
+        Param: fileName The XML file name (variable expansion will be done).
         Param: mode The file access mode (MODE_READONLY or MODE_CREATE).
         Param: validating - True/False do document DTD validation.
         """
 
-        self.__xmlName = fileName
+        self.__xmlName = os.path.expandvars(fileName)
         self.__doc = None
         self.__xmlFile = None
         self.__mode = mode
 
-        uri = Ft.Lib.Uri.OsPathToUri(fileName)
+        uri = Ft.Lib.Uri.OsPathToUri(self.__xmlName)
 
         if mode == MODE_CREATE:
 
             # create ouput XML file
 
-            self.__xmlFile = open(fileName, 'w')            
+            self.__xmlFile = open(self.__xmlName, 'w')            
             
             # create output XML document
 
@@ -61,7 +64,7 @@ class calXML:
 
             # open input XML file
 
-            self.__xmlFile = open(fileName, "r")
+            self.__xmlFile = open(self.__xmlName, "r")
 
             # parse into DOM document
 

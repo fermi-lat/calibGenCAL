@@ -6,8 +6,8 @@ Classes and functions to read and write CAL XML files derived from FITS data set
 __facility__  = "Offline"
 __abstract__  = "Class to read and write CAL XML files derived from FITS data sets"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/26 21:32:24 $"
-__version__   = "$Revision: 1.6 $, $Author: dwood $"
+__date__      = "$Date: 2006/06/27 15:47:46 $"
+__version__   = "$Revision: 1.7 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -118,7 +118,8 @@ class calFitsXML(calXML.calXML):
 
         # open file
 
-        calXML.calXML.__init__(self, path, mode)        
+        calXML.calXML.__init__(self, path, mode) 
+        self.__fileName = self.getName()       
         self.__doc = self.getDoc()
         
 
