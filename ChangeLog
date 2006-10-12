@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Oct 12 11:42:05 PDT 2006
+calibGenCAL/xml
+
+Added Files:
+	cidac2adc.ideal.xml muonAsym.ideal.xml muonPeds.ideal.xml 
+Log Message:
+these files have the same settings as the ideal mode configuration for flight gain used in gleam.
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Oct 12 08:44:38 PDT 2006
 calibGenCAL/python
 
