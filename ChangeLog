@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Oct 12 08:44:38 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	dacDiff.py 
+Log Message:
+Now able to handle cases where one DAC settings file is a subset of the second, either direction.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Oct 12 08:41:52 PDT 2006
 calibGenCAL/src
 
