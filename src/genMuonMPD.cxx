@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.8 2006/09/28 20:00:24 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.9 2006/10/06 16:26:47 fewtrell Exp $
 /** @file Gen MevPerDAC calibrations from Muon event files
     @author Zachary Fewtrell
 */
@@ -107,7 +107,7 @@ int main(int argc, char **argv) {
 
 
     // first see if use has explicitly chosen a txt filename
-    string dac2adcTXTFile = cfgFile.getVal<string>("GCR_MPD",
+    string dac2adcTXTFile = cfgFile.getVal<string>("MUON_MPD",
                                                    "INL_TXT_FILE",
                                                    "");
     if (!dac2adcTXTFile.size()) {
