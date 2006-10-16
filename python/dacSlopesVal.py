@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL DacSlopes calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/10/07 00:34:45 $"
-__version__   = "$Revision: 1.10 $, $Author: dwood $"
+__date__      = "$Date: 2006/10/10 18:17:25 $"
+__version__   = "$Revision: 1.11 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -727,6 +727,10 @@ if __name__ == '__main__':
         rootName = "%s.val.root" % ext[0]
     if logName is None:
         logName = "%s.val.log" % ext[0]
+        
+    if os.path.exists(logName):
+        log.debug('Removing old log file %s', logName)
+        os.remove(logName)    
 
     hdl = logging.FileHandler(logName)
     fmt = logging.Formatter('%(levelname)s %(message)s')

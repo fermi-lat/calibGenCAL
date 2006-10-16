@@ -19,8 +19,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/07/31 22:13:13 $"
-__version__     = "$Revision: 1.11 $, $Author: dwood $"
+__date__        = "$Date: 2006/08/03 03:26:43 $"
+__version__     = "$Revision: 1.12 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -174,6 +174,10 @@ if __name__ == '__main__':
         rootName = "%s.val.root" % ext[0]
     if logName is None:
         logName = "%s.val.log" % ext[0]
+        
+    if os.path.exists(logName):
+        log.debug('Removing old log file %s', logName)
+        os.remove(logName)    
 
     hdl = logging.FileHandler(logName)
     fmt = logging.Formatter('%(levelname)s %(message)s')
