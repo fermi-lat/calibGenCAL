@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: dwood  Mon Oct 16 08:46:32 PDT 2006
+calibGenCAL/python
+
+Modified Files:
+	adc2nrgVal.py asymVal.py biasVal.py charVal.py dacSlopesVal.py 
+	dacVal.py intNonlinVal.py mevPerDacVal.py muSlopeVal.py 
+	pedVal.py tholdCIVal.py uldVal.py valDACsettings.py 
+Log Message:
+Made sure old log file is deleted if it exists; by default the logger opens files in append mode, which make the file difficult to interpret if multiple runs are done.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Oct 12 11:42:05 PDT 2006
 calibGenCAL/xml
 
