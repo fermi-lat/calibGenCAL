@@ -445,4 +445,27 @@ Fewtrell:
 - new inlPedSubtract.py script will pedestal subtract a dac2adc xml file.
 - new muSlopeDiff.py script will diff 2 muSlope XML offline calibration files
 
+DAC calibration:
+An alternate set of DAC calibration tools is now available which greatly reduces the amount of file
+processing.  The following tools are now deprecated, and support will be removed in a future release:
+
+build_dacslopes_cfg
+build_gensettings_cfg
+build_tholdci_cfg
+dacVal
+genFLEsettings
+genFHEsettings
+genLACsettings
+genULDsettings
+gensettings
+get_slac_calibdac
+uldVal
+
+The DAC calibration file management will be handled by MOOD/MOOT.  The new tools 'dacSlopesGen',
+'dacSlopesVal', 'genDACsettings', and 'valDACsettings' will replace the remaining deprecated tools.  
+See the calibGenCAL package document for a description of how to run the new tools.
+
+The tholdCIGen application has been updated to support 16-tower DAC settings files as input.
+
+  
 
