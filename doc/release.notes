@@ -444,6 +444,9 @@ Fewtrell:
 - $ROOTSYS/lib path appended to PYTHONPATH environment variable for .sh launcher scripts.
 - new inlPedSubtract.py script will pedestal subtract a dac2adc xml file.
 - new muSlopeDiff.py script will diff 2 muSlope XML offline calibration files
+- addition of 'ideal' xml output which matches ideal calibrations used in gleam.
+- C++ users can now specify input txt filenames instead of using only autogen names
+
 
 DAC calibration:
 An alternate set of DAC calibration tools is now available which greatly reduces the amount of file
