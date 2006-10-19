@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/TwrHodoscope.cxx,v 1.4 2006/09/15 15:02:10 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/TwrHodoscope.cxx,v 1.5 2006/09/26 18:57:24 fewtrell Exp $
 /** @file
     @author fewtrell
 */
@@ -57,10 +57,11 @@ void TwrHodoscope::addHit(const CalDigi &calDigi) {
 
   XtalIdx xtalIdx(id);
 
-  // check that we are in 4-range readout mode
-  unsigned nRO = calDigi.getNumReadouts();
-  if (nRO != 4)
-    return;
+  // now trying to work w/ 1 range data, just don't fill all hists
+//   // check that we are in 4-range readout mode
+//   unsigned nRO = calDigi.getNumReadouts();
+//   if (nRO != 4)
+//     return;
 
   // load up all adc values for each xtal diode
   // also ped subtraced adc values.
@@ -73,9 +74,10 @@ void TwrHodoscope::addHit(const CalDigi &calDigi) {
 
     float adc = calDigi.getAdcSelectedRange(rng.val(), (CalXtalId::XtalFace)face.val()); // raw adc
     if (adc < 0) {
-      m_ostrm << "Couldn't get adc val for face=" << face.val()
-              << " rng=" << rng.val() << endl;
-      return;
+//       m_ostrm << "Couldn't get adc val for face=" << face.val()
+//               << " rng=" << rng.val() << endl;
+//    return;
+      continue;
     }
 
     float ped = m_peds.getPed(rngIdx);
