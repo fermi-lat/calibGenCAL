@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Oct 19 10:57:57 PDT 2006
+calibGenCAL/src/lib
+
+Modified Files:
+	MuonMPD.cxx MuonMPD.h TwrHodoscope.cxx 
+Log Message:
+muonMPD can  now run w/ 1 range data.
+also muonMPD now saves a histogram w/ all xtals summed
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v4r4, operation: add
 Package: calibGenCAL
