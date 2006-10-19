@@ -1,6 +1,6 @@
 #ifndef MuonMPD_h
 #define MuonMPD_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.h,v 1.7 2006/09/28 20:00:24 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.h,v 1.8 2006/10/03 21:09:26 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -115,6 +115,8 @@ class MuonMPD {
   CalUtil::CalVec<CalUtil::XtalIdx, TProfile*> m_dacL2SSlopeProfs;
   /// list of histograms of geometric mean for both ends on each xtal.
   CalUtil::CalVec<CalUtil::XtalIdx, TH1S*> m_dacLLHists; 
+  /// contains sum of dacLLHists over all xtals
+  TH1S *m_dacLLSumHist;
                                        
   /// most likely vertical muon energy deposition in Cal CsI crystal
   static const float MUON_ENERGY;

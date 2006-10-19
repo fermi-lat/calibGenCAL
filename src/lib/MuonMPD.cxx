@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.cxx,v 1.11 2006/09/28 20:00:24 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.cxx,v 1.12 2006/10/03 21:09:26 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -39,27 +39,35 @@ MuonMPD::MuonMPD(ostream &ostrm) :
   m_ostrm(ostrm),
   m_dacL2SHists(XtalIdx::N_VALS),
   m_dacL2SSlopeProfs(XtalIdx::N_VALS),
-  m_dacLLHists(XtalIdx::N_VALS)
+  m_dacLLHists(XtalIdx::N_VALS),
+  m_dacLLSumHist(0)
 {
 }
 
 
 void MuonMPD::initHists(){
+  string histname;
+  histname = "dacLLSum";
+  m_dacLLSumHist = new TH1S(histname.c_str(),
+                            histname.c_str(),
+                            400,0,100);
+  
+
   for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
-    string tmp = genHistName("dacLL", xtalIdx);
-    m_dacLLHists[xtalIdx] = new TH1S(tmp.c_str(),
-                                     tmp.c_str(),
+    histname = genHistName("dacLL", xtalIdx);
+    m_dacLLHists[xtalIdx] = new TH1S(histname.c_str(),
+                                     histname.c_str(),
                                      200,0,100);
 
-    tmp = genHistName("dacL2S", xtalIdx);
-    m_dacL2SHists[xtalIdx] = new TH1S(tmp.c_str(),
-                                      tmp.c_str(),
+    histname = genHistName("dacL2S", xtalIdx);
+    m_dacL2SHists[xtalIdx] = new TH1S(histname.c_str(),
+                                      histname.c_str(),
                                       400,0,.4);
 
 
-    tmp = genHistName("dacL2S_slope", xtalIdx);
-    m_dacL2SSlopeProfs[xtalIdx] = new TProfile(tmp.c_str(),
-                                               tmp.c_str(),
+    histname = genHistName("dacL2S_slope", xtalIdx);
+    m_dacL2SSlopeProfs[xtalIdx] = new TProfile(histname.c_str(),
+                                               histname.c_str(),
                                                N_L2S_PTS,
                                                L2S_MIN_LEDAC,
                                                L2S_MAX_LEDAC);
@@ -125,9 +133,6 @@ void MuonMPD::fitHists(CalMPD &calMPD) {
 
   // PER XTAL LOOP
   for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
-    if (!m_dacLLHists[xtalIdx])
-      continue;
-    // retrieve Lrg diode DAC histogram
     if (!m_dacLLHists[xtalIdx])
       continue;
     TH1S& histLL = *m_dacLLHists[xtalIdx];
@@ -235,13 +240,17 @@ void MuonMPD::fitHists(CalMPD &calMPD) {
 void MuonMPD::loadHists(const string &filename) {
   TFile histFile(filename.c_str(), "READ");
 
+  string histname;
+  histname = "dacLLSum";
+  m_dacLLSumHist = CGCUtil::retrieveHist<TH1S>(histFile, histname);
+  m_dacLLSumHist->SetDirectory(0);
+
   for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
 
     //-- DAC_LL HISTOGRAMS --//
-    string histname = genHistName("dacLL", xtalIdx);
+    histname = genHistName("dacLL", xtalIdx);
     TH1S *hist_LL = CGCUtil::retrieveHist<TH1S>(histFile, histname);
     if (!hist_LL) continue;
-    
 
     // move histogram into Global ROOT memory
     // so it is not deleted when input file is closed.
@@ -250,7 +259,6 @@ void MuonMPD::loadHists(const string &filename) {
     hist_LL->SetDirectory(0);
 
     m_dacLLHists[xtalIdx] = hist_LL;
-
 
     //-- DAC_L2S HISTOGRAMS --//
     histname = genHistName("dacL2S", xtalIdx);
@@ -374,7 +382,7 @@ bool MuonMPD::passCutX(const TwrHodoscope &hscope) {
   // need vertical connect 4 in X dir
   if (hscope.nLyrsX != 4 || hscope.nColsX != 1) 
     return false;
-  
+
   // need at least 2 points to get an orthogonal track
   if (hscope.nLyrsY < 2) return false;
 
@@ -389,7 +397,7 @@ bool MuonMPD::passCutY(const TwrHodoscope &hscope) {
   // need vertical connect 4 in Y dir
   if (hscope.nLyrsY != 4 || hscope.nColsY != 1) 
     return false;
-  
+
   // need at least 2 points to get an orthogonal track
   if (hscope.nLyrsX < 2) return false;
 
@@ -421,10 +429,11 @@ void MuonMPD::trimHists() {
 
 
 void MuonMPD::processEvent(DigiEvent &digiEvent) {
-  // check that we are in 4 range mode
-  EventSummaryData &summary = digiEvent.getEventSummaryData();
-  if (!summary.readout4())
-    return;
+  // now trying to work w/ 1 range data, just don't fill all hists.
+  //   // check that we are in 4 range mode
+  //   EventSummaryData &summary = digiEvent.getEventSummaryData();
+  //   if (!summary.readout4())
+  //     return;
 
   const TClonesArray* calDigiCol = digiEvent.getCalDigiCol();
   if (!calDigiCol) {
@@ -557,7 +566,7 @@ void MuonMPD::processTower(TwrHodoscope &hscope) {
       lineSlope = algData.lineFunc.GetParameter(1);
     }
 
-	// NUMERIC CONSTANTS
+    // NUMERIC CONSTANTS
     // converts between lyr/col units & mm
     // real trigonometry is needed for pathlength calculation
     static const float slopeFactor = CalGeom::CELL_HOR_PITCH/CalGeom::CELL_VERT_PITCH;
@@ -583,6 +592,7 @@ void MuonMPD::processTower(TwrHodoscope &hscope) {
         
       // Load meanDAC Histogram
       m_dacLLHists[xtalIdx]->Fill(meanDAC[LRG_DIODE]);
+      m_dacLLSumHist->Fill(meanDAC[LRG_DIODE]);
 
       // load dacL2S profile
       m_dacL2SHists[xtalIdx]->Fill(meanDAC[SM_DIODE]/meanDAC[LRG_DIODE]);
