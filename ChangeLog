@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Nov  3 14:53:44 PST 2006
+calibGenCAL/python
+
+Modified Files:
+	inlDiff.py 
+Log Message:
+added a few more helpful histograms to root output
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Oct 24 12:13:27 PDT 2006
 calibGenCAL/doc
 
