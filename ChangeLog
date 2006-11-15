@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Nov 15 08:43:11 PST 2006
+calibGenCAL/src/lib
+
+Modified Files:
+	CalGeom.h 
+Log Message:
+fixed bad geom constant.  thankfully it was unused
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Nov  3 14:53:44 PST 2006
 calibGenCAL/python
 
