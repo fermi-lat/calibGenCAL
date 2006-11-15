@@ -1,7 +1,7 @@
 #ifndef CalGeom_H
 #define CalGeom_H
 
-//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalGeom.h,v 1.1 2006/09/26 18:46:09 fewtrell Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalGeom.h,v 1.2 2006/09/26 20:27:01 fewtrell Exp $
 
 // LOCAL INCLUDES
 
@@ -22,7 +22,7 @@ namespace CalGeom {
   static const float CsILength     = 326.  ;
   static const float CsIHeight     = 19.9 ;
   static const float CsIWidth      = 26.7;
-  static const float cellHorPitch  = 27.35;
+  static const float cellHorPitch  = 27.84;
   static const float cellVertPitch = 21.35;  
   static const float twrPitch      = 374.5 ;
   static const float twrGap        = twrPitch - 12.*cellHorPitch;
