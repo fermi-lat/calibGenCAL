@@ -1,7 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/TwrHodoscope.h,v 1.4 2006/09/26 18:57:24 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/TwrHodoscope.h,v 1.5 2006/09/26 20:27:01 fewtrell Exp $
+
 /** @file
     @author fewtrell
-*/
+ */
 
 #ifndef TwrHodoscope_h
 #define TwrHodoscope_h
@@ -18,33 +19,29 @@
 // STD INCLUDES
 #include <vector>
 
-
 class CalPed;
 class CIDAC2ADC;
 class CalDigi;
 
-
-/** \brief Accumulate crystal hits in single tower and summarize into 
+/** \brief Accumulate crystal hits in single tower and summarize into
     information which can be used for track determination.
     @author fewtrell
-*/
+ */
 class TwrHodoscope {
- public:
+public:
   /// default ctor
   TwrHodoscope(const CalPed &ped,
-               const CIDAC2ADC &cidac2adc,
-               std::ostream &ostrm = cout) :      
+               const CIDAC2ADC &cidac2adc) :
     adc_ped(CalUtil::tDiodeIdx::N_VALS),
     dac(CalUtil::tDiodeIdx::N_VALS),
     m_peds(ped),
-    m_cidac2adc(cidac2adc),
-    m_ostrm(ostrm)
-    {
-      clear();
-    }
+    m_cidac2adc(cidac2adc)
+  {
+    clear();
+  }
 
   /// 'zero-out' all members
-  void clear();       
+  void clear();
 
   /// add new xtal hit to event summary data
   void addHit(const CalDigi &calDigi);
@@ -53,48 +50,48 @@ class TwrHodoscope {
   void summarizeEvent();
 
   /// pedestal subtracted adc values 1 per diode
-  CalUtil::CalVec<CalUtil::tDiodeIdx, float> adc_ped; 
+  CalUtil::CalVec<CalUtil::tDiodeIdx, float>          adc_ped;
 
   /// cidac values (1 per diode)
-  CalUtil::CalVec<CalUtil::tDiodeIdx, float> dac;
+  CalUtil::CalVec<CalUtil::tDiodeIdx, float>          dac;
 
   // Hit summary histograms
-  /// number of hits per layer
-  CalUtil::CalArray<CalUtil::GCRCNum, unsigned short> perLyrX; 
-  /// number of hits per layer
-  CalUtil::CalArray<CalUtil::GCRCNum, unsigned short> perLyrY; 
+  /// number of hits per X layer
+  CalUtil::CalArray<CalUtil::GCRCNum, unsigned short> perLyrX;
+  /// number of hits per Y layer
+  CalUtil::CalArray<CalUtil::GCRCNum, unsigned short> perLyrY;
   /// # of hits per X column
-  CalUtil::CalArray<CalUtil::ColNum, unsigned short> perColX; 
+  CalUtil::CalArray<CalUtil::ColNum, unsigned short>  perColX;
   /// # of hits per Y column
-  CalUtil::CalArray<CalUtil::ColNum, unsigned short> perColY; 
+  CalUtil::CalArray<CalUtil::ColNum, unsigned short>  perColY;
 
   // Hit lists
-  /// list of X direction xtalId's which were hit 
-  std::vector<CalUtil::XtalIdx> hitListX; 
+  /// list of X direction xtalId's which were hit
+  std::vector<CalUtil::XtalIdx>                       hitListX;
   /// list of Y direction xtalId's which were hit
-  std::vector<CalUtil::XtalIdx> hitListY; 
+  std::vector<CalUtil::XtalIdx>                       hitListY;
 
-  // His summary 
-  /// total # of hit xtals 
-  unsigned count;          
+  // His summary
+  /// total # of hit xtals
+  unsigned count;
   /// total # of x layers hit
-  unsigned short nLyrsX;       
+  unsigned short nLyrsX;
   /// total # of y layers hit
-  unsigned short nLyrsY;       
+  unsigned short nLyrsY;
   /// total # of x columns hit
-  unsigned short nColsX;       
+  unsigned short nColsX;
   /// total # of y columns hit
-  unsigned short nColsY;       
+  unsigned short nColsY;
   /// max # of hits in any layer
-  unsigned short maxPerLyr;    
+  unsigned short maxPerLyr;
   /// max # of hits in any x layer
-  unsigned short maxPerLyrX;   
+  unsigned short maxPerLyrX;
   ///  max # of hits in any y layer
-  unsigned short maxPerLyrY;   
+  unsigned short maxPerLyrY;
   /// first hit X col (will be only hit col in good X track)
-  unsigned short firstColX;    
+  unsigned short firstColX;
   /// fisrt hit Y col (will be only hit col in good Y track)
-  unsigned short firstColY;    
+  unsigned short firstColY;
 
   /// reference to pedestal calibrations needed for some operations
   const CalPed &m_peds;
@@ -102,9 +99,6 @@ class TwrHodoscope {
   /// reference to cidac2adc calibs needed for some ops
   const CIDAC2ADC &m_cidac2adc;
 
-  /// stream used for loggging
-  std::ostream &m_ostrm;
-  
   /// threshold (LEX8 ADCP + ADCN) for couniting a 'hit' xtal
   static const unsigned short hitThresh = 100;
 };

@@ -1,10 +1,10 @@
 #ifndef MuonAsym_h
 #define MuonAsym_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.h,v 1.7 2006/10/03 16:09:28 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.h,v 1.8 2006/10/12 15:41:16 fewtrell Exp $
+
 /** @file
     @author Zachary Fewtrell
-*/
-
+ */
 
 // LOCAL INCLUDES
 #include "CGCUtil.h"
@@ -15,7 +15,6 @@
 #include "CalUtil/CalVec.h"
 #include "CalUtil/CalArray.h"
 
-
 // EXTLIB INCLUDES
 
 // STD INCLUDES
@@ -24,115 +23,75 @@ class CalAsym;
 class CalPed;
 class CIDAC2ADC;
 class TwrHodoscope;
-class TH2S;
 class DigiEvent;
+class AsymHists;
 
 /** \brief Algorithm class populates CalAsym calibration data with values extracted
     from Muon collection digi ROOT event files
 
     @author Zachary Fewtrell
-*/
+ */
 class MuonAsym {
- public:
-  MuonAsym(ostream &ostrm = cout);
+public:
+  MuonAsym(const CalPed &ped,
+           const CIDAC2ADC &dac2adc,
+           AsymHists &asymHists);
 
   /// populate asymmetry profiles w/ nEvt worth of data.
-  void fillHists(unsigned nEntries,
-                 const vector<string> &rootFileList, 
-                 const CalPed &peds,
-                 const CIDAC2ADC &dac2adc); 
+  void        fillHists(unsigned nEntries,
+                        const vector<string> &rootFileList);
 
-  /// load mean values from asymmetry profiles into m_asym*** arrays
-  void fitHists(CalAsym &calAsym); 
-
-  /// load histograms from ROOT output of previous run
-  void loadHists(const string &filename);
-
-  /// print histogram summary info to output stream
-  void summarizeHists(ostream &ostrm);
-
-  /// delete empty histograms
-  /// \note useful for data w/ < 16 Cal modules.
-  void trimHists();
-
-  static void genOutputFilename(const string outputDir,
-                                const string &inFilename,
-                                const string &ext,
-                                string &outFilename) {
-    CGCUtil::genOutputFilename(outputDir,
-                               "muonAsym",
-                               inFilename,
-                               ext,
-                               outFilename);
-  }
-
-
- private:
+private:
   /// process a single event for histogram fill
-  void processEvent(DigiEvent &digiEvent);
+  void        processEvent(DigiEvent &digiEvent);
 
   /// process a single tower's data in single event for
   /// histogram fill
-  void processTower(TwrHodoscope &hscope);
+  void        processTower(TwrHodoscope &hscope);
 
   /// hodoscopic event cut for X direction xtals
-  bool passCutX(const TwrHodoscope &hscope);
+  bool        passCutX(const TwrHodoscope &hscope);
+
   /// hodoscopic event cut for Y direction xtals
-  bool passCutY(const TwrHodoscope &hscope);
+  bool        passCutY(const TwrHodoscope &hscope);
 
-  /// allocate & create asymmetry histograms & pointer arrays
-  void initHists();
-
-  /// count min number of entries in all enable histograms
-  unsigned getMinEntries();
-
-  /// list of histograms for muon asymmetry
-  CalUtil::CalVec<CalUtil::AsymType, CalUtil::CalArray<CalUtil::XtalIdx, TH2S*> > m_histograms; 
-
-  std::string genHistName(CalUtil::AsymType asymType, CalUtil::XtalIdx xtalIdx);
-
-  /// used for logging output
-  ostream &m_ostrm;
-
-  struct AlgData {
-    AlgData() {init();}
+  class AlgData {
+private:
     void init() {
       nGoodDirs = 0;
-      nXDirs = 0;
-      nYDirs = 0;
-      nHits = 0;
-      nBadHits = 0;
+      nXDirs    = 0;
+      nYDirs    = 0;
+      nHits     = 0;
+      nBadHits  = 0;
     }
 
-    unsigned  nGoodDirs  ; // count total # of events used
-    unsigned  nXDirs     ;
-    unsigned  nYDirs     ;
-    long nHits      ; // count total # of xtals measured
-    unsigned  nBadHits   ;
+public:
+    AlgData() {
+      init();
+    }
 
-
-
+    unsigned nGoodDirs  ;   // count total # of events used
+    unsigned nXDirs     ;
+    unsigned nYDirs     ;
+    long     nHits      ;   // count total # of xtals measured
+    unsigned nBadHits   ;
   } algData;
 
-  struct EventData {
-    EventData() :
-      hscopes(0),
-         eventNum(0)
-    {
+  class EventData {
+private:
+    /// reset all member variables
+    void init() {
+      eventNum = 0;
+      next();
     }
 
-    ~EventData() {
-      if (hscopes)
-        delete hscopes;
-    }
-    
-    /// reset all member variables
-    void init(const CalPed &peds,
-              const CIDAC2ADC &dac2adc) {
-      eventNum = 0;
-      hscopes = new CalUtil::CalVec<CalUtil::TwrNum, TwrHodoscope>
-        (CalUtil::TwrNum::N_VALS, TwrHodoscope(peds, dac2adc));
-      next();
+public:
+    EventData(const CalPed &peds,
+              const CIDAC2ADC &dac2adc) :
+      hscopes(CalUtil::TwrNum::N_VALS,
+              TwrHodoscope(peds, dac2adc)),
+      eventNum(0)
+    {
     }
 
     /// rest all member variables that do not retain data
@@ -140,19 +99,17 @@ class MuonAsym {
     void next() {
       // clear all hodoscopes
       for (CalUtil::TwrNum twr; twr.isValid(); twr++)
-        if (hscopes)
-          (*hscopes)[twr].clear();
-
+        hscopes[twr].clear();
     }
 
     /// need one hodo scope per tower
-    CalUtil::CalVec<CalUtil::TwrNum, TwrHodoscope> *hscopes;
+    CalUtil::CalVec<CalUtil::TwrNum, TwrHodoscope> hscopes;
 
     unsigned eventNum;
-
-
   } eventData;
 
+  /// histograms to fill
+  AsymHists &m_asymHists;
 };
 
 #endif

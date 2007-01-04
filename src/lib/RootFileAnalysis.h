@@ -1,10 +1,10 @@
 #ifndef RootFileAnalysis_h
 #define RootFileAnalysis_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/RootFileAnalysis.h,v 1.5 2006/09/26 18:57:24 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/RootFileAnalysis.h,v 1.6 2006/09/26 20:27:01 fewtrell Exp $
+
 /** @file
     @author Zachary Fewtrell
-*/
-
+ */
 
 // LOCAL INCLUDES
 
@@ -16,61 +16,88 @@
 // STD INCLUDES
 #include <iostream>
 
-
 class McEvent;
 class DigiEvent;
 class ReconEvent;
 
 /** \brief Makes a VCR for GLAST root event files
 
-RootFileAnalysis contains the following features...
+   RootFileAnalysis contains the following features...
 
-1) ability to read in one or more GLAST digi, recon and/or mc root files.
-2) ability to step/rewind through events in those files
-3) events are read / stepped in parallel so that digi/recon/mc trees are always 
-in sync.
-*/
+   1) ability to read in one or more GLAST digi, recon and/or mc root files,
+   also svac tuple.
+   2) ability to step/rewind through events in those files
+   3) events are read / stepped in parallel so that digi/recon/mc trees are always
+   in sync.
+   4) User is responsible for enabling branches within each TTree/TChain
+   5) for event data classes (digi,mc,recon) this class will store the pointers
+   to the event objects and make them available via getXXXEvent() methods.
+   6) for tuple event files, user is responsible for maintaining and assigning
+   branch data destination pointers.
+
+ */
 class RootFileAnalysis {
-  public :
-    /**
-       \param mcFilenames (set to NULL to disable MC ROOT Chain)
-       \param digiFilenames (set to NULL to disable Digi ROOT Chain)
-       \param reconFilenames (set to NULL to disable recon ROOT Chain)
-       \param ostrm optional logging ostream
+public:
 
-    */
-    RootFileAnalysis(const std::vector<std::string> *mcFilenames,
-                     const std::vector<std::string> *digiFilenames,
-                     const std::vector<std::string> *reconFilenames,
-                     std::ostream &ostrm=std::cout);
+  /**
+   \param mcFilenames (set to NULL to disable MC ROOT Chain)
+   \param digiFilenames (set to NULL to disable Digi ROOT Chain)
+   \param reconFilenames (set to NULL to disable recon ROOT Chain)
+   \param ostrm optional logging ostream
+
+   */
+  RootFileAnalysis(const std::vector<std::string> *mcFilenames = 0,
+                   const std::vector<std::string> *digiFilenames = 0,
+                   const std::vector<std::string> *reconFilenames = 0,
+                   const std::vector<std::string> *svacFilenames = 0);
 
   ~RootFileAnalysis();
 
   /// returns total number of events in all open files
   UInt_t getEntries() const;
-  
+
   /// Retrieve pointers to given event #.
   /// \note events are numbered by position in root chain, not
   /// by EventID field
   UInt_t getEvent(UInt_t iEvt);
 
-  McEvent   *getMcEvent() const {return m_mcEvt;}
-  DigiEvent *getDigiEvent() const {return m_digiEvt;}
-  ReconEvent  *getReconEvent() const {return m_reconEvt;}
+  McEvent   *getMcEvent() const {
+    return m_mcEvt;
+  }
 
-  TChain *getMcChain()   {return &m_mcChain;}
-  TChain *getDigiChain() {return &m_digiChain;}
-  TChain *getReconChain()  {return &m_reconChain;}
- 
- private:
+  DigiEvent *getDigiEvent() const {
+    return m_digiEvt;
+  }
+
+  ReconEvent  *getReconEvent() const {
+    return m_reconEvt;
+  }
+
+  TChain *getMcChain()   {
+    return &m_mcChain;
+  }
+
+  TChain *getDigiChain() {
+    return &m_digiChain;
+  }
+
+  TChain *getReconChain()  {
+    return &m_reconChain;
+  }
+
+  TChain *getSvacChain() {
+    return &m_svacChain;
+  }
+
+private:
 
   /// Chains store event data for all files
-  TChain      m_mcChain;
+  TChain       m_mcChain;
   /// Pointer to current McEvent
   McEvent     *m_mcEvt;
 
   /// Chains store event data for all files
-  TChain      m_digiChain;
+  TChain       m_digiChain;
   /// pointer to current DigiEvent
   DigiEvent   *m_digiEvt;
 
@@ -79,15 +106,14 @@ class RootFileAnalysis {
   /// pointer to current reconEvent
   ReconEvent  *m_reconEvt;
 
+  /// Chains store event data for all files
+  TChain       m_svacChain;
+
   /// helpful list of all 3 TChains
-  TObjArray   m_chainArr;
+  TObjArray    m_chainArr;
 
   /// current event number
-  unsigned m_nextEvt;
-
-  /// log to here
-  ostream &m_ostrm;
-
+  unsigned     m_nextEvt;
 };
 
 #endif

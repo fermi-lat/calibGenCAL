@@ -1,7 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalPed.cxx,v 1.1 2006/09/15 15:02:10 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalPed.cxx,v 1.2 2006/09/26 18:57:24 fewtrell Exp $
+
 /** @file
     @author Zachary Fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "CalPed.h"
@@ -18,15 +19,17 @@ using namespace CGCUtil;
 using namespace CalUtil;
 using namespace std;
 
+const short CalPed::INVALID_PED = -5000;
+
 CalPed::CalPed() :
   m_peds(RngIdx::N_VALS, INVALID_PED),
   m_pedSig(RngIdx::N_VALS, 0)
 {
 }
 
-
 void CalPed::writeTXT(const string &filename) const {
   ofstream outfile(filename.c_str());
+
   if (!outfile.is_open())
     throw runtime_error(string("Unable to open " + filename));
 
@@ -42,32 +45,38 @@ void CalPed::writeTXT(const string &filename) const {
               << endl;
 }
 
-  
 void CalPed::readTXT(const string &filename) {
   ifstream infile(filename.c_str());
+
   if (!infile.is_open())
     throw runtime_error(string("Unable to open " + filename));
 
-  while(infile.good()) {
+  while (infile.good()) {
     float ped, sig;
     unsigned short twr;
     unsigned short lyr;
     unsigned short col;
     unsigned short face;
     unsigned short rng;
-    
-    infile >> twr
-           >> lyr
-           >> col
-           >> face
-           >> rng
-           >> ped
-           >> sig;
-    // quit once we can't read any more values
-    if (infile.fail()) break; 
 
-    RngIdx rngIdx(twr, lyr, col, face, rng);
-    m_peds[rngIdx]= ped;
-    m_pedSig[rngIdx]= sig;
+    infile >> twr
+    >> lyr
+    >> col
+    >> face
+    >> rng
+    >> ped
+    >> sig;
+    // quit once we can't read any more values
+    if (infile.fail()) break;
+
+    RngIdx rngIdx(twr,
+                  lyr,
+                  col,
+                  face,
+                  rng);
+
+    m_peds[rngIdx]   = ped;
+    m_pedSig[rngIdx] = sig;
   }
 }
+

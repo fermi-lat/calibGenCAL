@@ -1,18 +1,20 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.9 2006/10/06 16:26:47 fewtrell Exp $
-/** @file Gen MevPerDAC calibrations from Muon event files
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.10 2006/10/12 15:41:52 fewtrell Exp $
+
+/** @file Gen MevPerDAC calibrations from Muon event files using Cal Digi Hodoscope
+    for track & hit information
     @author Zachary Fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
-#include "lib/MuonPed.h"
-#include "lib/IntNonlin.h"
-#include "lib/MuonAsym.h"
 #include "lib/MuonMPD.h"
 #include "lib/SimpleIniFile.h"
 #include "lib/CalPed.h"
 #include "lib/CalAsym.h"
 #include "lib/CIDAC2ADC.h"
 #include "lib/CalMPD.h"
+#include "lib/CGCUtil.h"
+#include "lib/MPDHists.h"
+#include "lib/ADC2NRG.h"
 
 // GLAST INCLUDES
 
@@ -23,15 +25,17 @@
 #include <string>
 #include <climits>
 #include <fstream>
+#include <memory>
 
 using namespace std;
+using namespace CGCUtil;
 
 const string usage_str("genMuonMPD.exe cfg_file");
 
-int main(int argc, char **argv) {
-  // libCalibGenCAL will throw runtime_error         
+int main(int argc,
+         char **argv) {
+  // libCalibGenCAL will throw runtime_error
   try {
-          
     //-- COMMAND LINE --//
     if (argc != 2) {
       cout << __FILE__ << ": Usage: " << usage_str << endl;
@@ -48,8 +52,8 @@ int main(int argc, char **argv) {
 
     // input file(s)
     vector<string> rootFileList;
-    cfgFile.getVector("MUON_MPD", 
-                      "ROOT_FILES", 
+    cfgFile.getVector("MUON_MPD",
+                      "ROOT_FILES",
                       rootFileList,
                       ", ");
     if (rootFileList.size() < 1) {
@@ -57,187 +61,190 @@ int main(int argc, char **argv) {
       return -1;
     }
 
-
     //-- SETUP LOG FILE --//
-    /// multiplexing output streams 
+    /// multiplexing output streams
     /// simultaneously to cout and to logfile
-    CGCUtil::multiplexor_ostream logStrm;
-    logStrm.getostreams().push_back(&cout);
+    LogStream::addStream(cout);
     // generate logfile name
-    string logfile;
-    MuonMPD::genOutputFilename(outputDir,
-                               rootFileList[0],
-                               "log.txt",
-                               logfile);
+    string logfile =
+      CalMPD::genFilename(outputDir,
+                          rootFileList[0],
+                          "log.txt");
     ofstream tmpStrm(logfile.c_str());
-    logStrm.getostreams().push_back(&tmpStrm);
+
+    LogStream::addStream(tmpStrm);
 
     //-- LOG SOFTWARE VERSION INFO --//
-    output_env_banner(logStrm);
-
-
+    output_env_banner(LogStream::get());
 
     //-- RETRIEVE PEDESTALS
     // see if user has explictly specified input txt filename
-    string pedTXTFile = cfgFile.getVal<string>("MUON_MPD",
-                                               "PED_TXT_FILE",
-                                               "");
+    string    pedTXTFile = cfgFile. getVal<string>("MUON_MPD",
+                                                   "PED_TXT_FILE",
+                                                   "");
+
     if (!pedTXTFile.size()) {
       // retrieve original input root filename for pedestal process
       // (in order to generate associated 'output' txt filename)
       vector<string> pedRootFileList;
-      cfgFile.getVector("MUON_PEDS", 
-                        "ROOT_FILES", 
+      cfgFile.getVector("MUON_PEDS",
+                        "ROOT_FILES",
                         pedRootFileList,
                         ", ");
       if (pedRootFileList.size() < 1) {
-        logStrm << __FILE__ << ": No input files specified" << endl;
+        LogStream::get() << __FILE__ << ": No input files specified" << endl;
         return -1;
       }
       // txt output filename
-      MuonPed::genOutputFilename(outputDir,
-                                 pedRootFileList[0],
-                                 "txt",
-                                 pedTXTFile);
+      pedTXTFile = CalPed::genFilename(outputDir,
+                                       pedRootFileList[0],
+                                       "txt");
     }
 
-    CalPed peds;
-    logStrm << __FILE__ << ": reading in muon pedestal file: " << pedTXTFile << endl;
+    CalPed    peds;
+    LogStream::get() << __FILE__ << ": reading in muon pedestal file: " << pedTXTFile << endl;
     peds.readTXT(pedTXTFile);
 
-
     // first see if use has explicitly chosen a txt filename
-    string dac2adcTXTFile = cfgFile.getVal<string>("MUON_MPD",
-                                                   "INL_TXT_FILE",
-                                                   "");
+    string    dac2adcTXTFile = cfgFile. getVal<string>("MUON_MPD",
+                                                       "INL_TXT_FILE",
+                                                       "");
+
     if (!dac2adcTXTFile.size()) {
       // retrieve original input root filename for cidac2adc process
       // (in order to generate 'output' txt filename)
-      string rootFileLE = cfgFile.getVal("CIDAC2ADC", 
-                                         "LE_ROOT_FILE", 
+      string rootFileLE = cfgFile.getVal("CIDAC2ADC",
+                                         "LE_ROOT_FILE",
                                          string(""));
       if (rootFileLE.length() < 1) {
-        logStrm << __FILE__ << ": no LE root file specified" << endl;
+        LogStream::get() << __FILE__ << ": no LE root file specified" << endl;
         return -1;
       }
       // txt output filename
-      IntNonlin::genOutputFilename(outputDir,
-                                   rootFileLE,
-                                   "txt",
-                                   dac2adcTXTFile);
+      dac2adcTXTFile = CIDAC2ADC::genFilename(outputDir,
+                                              rootFileLE,
+                                              "txt");
     }
 
-
-
     CIDAC2ADC dac2adc;
-    logStrm << __FILE__ << ": reading in cidac2adc txt file: " << dac2adcTXTFile << endl;
+    LogStream::get() << __FILE__ << ": reading in cidac2adc txt file: " << dac2adcTXTFile << endl;
     dac2adc.readTXT(dac2adcTXTFile);
-    logStrm << __FILE__ << ": generating cidac2adc splines: " << endl;
+    LogStream::get() << __FILE__ << ": generating cidac2adc splines: " << endl;
     dac2adc.genSplines();
 
     //-- RETRIEVE ASYM
     // see if user has explictly specified input txt filename
-    string asymTXTFile = cfgFile.getVal("MUON_MPD",
-                                        "ASYM_TXT_FILE",
-                                        string(""));
-    
+    string  asymTXTFile = cfgFile.getVal("MUON_MPD",
+                                         "ASYM_TXT_FILE",
+                                         string(""));
+
     if (!asymTXTFile.size()) {
       // retrieve original input root filename for asymmetry process
       // (in order to generate associated 'output' txt filename)
       vector<string> asymRootFileList;
-      cfgFile.getVector("MUON_ASYM", 
-                        "ROOT_FILES", 
-                        asymRootFileList, 
+      cfgFile.getVector("MUON_ASYM",
+                        "ROOT_FILES",
+                        asymRootFileList,
                         ", ");
       if (asymRootFileList.size() < 1) {
-        logStrm << __FILE__ << ": No input files specified" << endl;
+        LogStream::get() << __FILE__ << ": No input files specified" << endl;
         return -1;
       }
       // txt output filename
-      MuonAsym::genOutputFilename(outputDir,
-                                  asymRootFileList[0],
-                                  "txt",
-                                  asymTXTFile);
+      asymTXTFile = CalAsym::genFilename(outputDir,
+                                         asymRootFileList[0],
+                                         "txt");
     }
 
     CalAsym asym;
-    logStrm << __FILE__ << ": reading in muon asym file: " << asymTXTFile << endl;
+    LogStream::get() << __FILE__ << ": reading in muon asym file: " << asymTXTFile << endl;
     asym.readTXT(asymTXTFile);
-    logStrm << __FILE__ << ": building asymmetry splines: " << endl;
+    LogStream::get() << __FILE__ << ": building asymmetry splines: " << endl;
     asym.buildSplines();
-
 
     //-- MUON MPD
 
     // output histogram file name
-    string histFilename;
-    MuonMPD::genOutputFilename(outputDir,
-                               rootFileList[0],
-                               "root",
-                               histFilename);
+    string histFilename =
+      CalMPD::genFilename(outputDir,
+                          rootFileList[0],
+                          "root");
 
     // output txt file name
-    string outputTXTFile;
-    MuonMPD::genOutputFilename(outputDir,
-                               rootFileList[0],
-                               "txt",
-                               outputTXTFile);
+    string   outputTXTFile =
+      CalMPD::genFilename(outputDir,
+                          rootFileList[0],
+                          "txt");
 
-    unsigned nEntries = cfgFile.getVal<unsigned>("MUON_MPD", 
-                                                 "ENTRIES_PER_HIST",
-                                                 3000); 
+    unsigned nEntries      = cfgFile. getVal<unsigned>("MUON_MPD",
+                                                       "ENTRIES_PER_HIST",
+                                                       3000);
 
     // read in Hist file?
-    bool readInHists = cfgFile.getVal("MUON_MPD",
-                                      "READ_IN_HISTS",
-                                      false);
+    bool     readInHists   = cfgFile.getVal("MUON_MPD",
+                                            "READ_IN_HISTS",
+                                            false);
 
-    MuonMPD muonMPD(logStrm);
-    CalMPD calMPD;
+    ///////////////////////////////////////
+	//-- OPEN HISTOGRAM FILE             //
+	//   (either 'CREATE' or 'UPDATE') --//
+	///////////////////////////////////////
 
-    // used when creating histgrams
-    auto_ptr<TFile> histFile;
-    if (readInHists) { // skip event file processing & read in histograms directly
-      logStrm << __FILE__ << ": opening input histogram file: " << histFilename<< endl;
-      muonMPD.loadHists(histFilename);
+	auto_ptr<TFile> histFile;
+    if (readInHists) {
+      LogStream::get() << __FILE__ << ": opening input histogram file: "
+                       << histFilename << endl;
+      histFile.reset(new TFile(histFilename.c_str(), "UPDATE"));
     } else {
-    
       // open file to save output histograms.
-      logStrm << __FILE__ << ": opening output histogram file: " << histFilename<< endl;
-      histFile.reset(new TFile(histFilename.c_str(), "RECREATE", "CAL Muon MPD", 9));
-    
-      logStrm << __FILE__ << ": reading root event file(s) starting w/ " << rootFileList[0] << endl;
-      muonMPD.fillHists(nEntries,
-                        rootFileList,
-                        peds,
-                        asym,
-                        dac2adc);
-      muonMPD.trimHists();
-    }
-    
-    logStrm << __FILE__ << ": fitting muon mpd histograms." << endl;
-    muonMPD.fitHists(calMPD);
+      LogStream::get() << __FILE__ << ": opening output histogram file: "
+                       << histFilename << endl;
+      histFile.reset(new TFile(histFilename.c_str(), "RECREATE", "CAL Muon Calib", 9));
+	}
+	
+	MPDHists mpdHists(MPDHists::FitMethods::LANDAU);
+    MuonMPD muonMPD(peds,
+                    dac2adc,
+                    asym,
+                    mpdHists);
 
-    logStrm << __FILE__ << ": writing muon mpd: " << outputTXTFile << endl;
+    CalMPD   calMPD;
+
+    if (readInHists) {
+      mpdHists.loadHists();
+    } else {
+      LogStream::get() << __FILE__ << ": reading root event file(s) starting w/ " << rootFileList[0] << endl;
+      muonMPD.fillHists(nEntries,
+                        rootFileList);
+      mpdHists.trimHists();
+
+      // Save file to disk before entering fit portion (saves time if i crash during debugging).
+      //histFile->Write();
+
+    }
+
+    LogStream::get() << __FILE__ << ": fitting muon mpd histograms." << endl;
+    mpdHists.fitHists(calMPD);
+
+    LogStream::get() << __FILE__ << ": writing muon mpd: " << outputTXTFile << endl;
     calMPD.writeTXT(outputTXTFile);
 
-    string adc2nrgFile;
-    MuonMPD::genOutputFilename(outputDir,
-                               rootFileList[0],
-                               "adc2nrg.txt",
-                               adc2nrgFile);
-  
-    logStrm << __FILE__ << ": writing muon adc2nrg: " << adc2nrgFile << endl;
-    muonMPD.writeADC2NRG(adc2nrgFile, asym, dac2adc, calMPD);
-  
-    if (!readInHists) {
-      logStrm << __FILE__ << ": writing histogram file: " << histFilename << endl;
-      histFile->Write();
-      histFile->Close();
-    }
+    string adc2nrgFile =
+      ADC2NRG::genFilename(outputDir,
+                           rootFileList[0],
+                           "txt");
+
+    LogStream::get() << __FILE__ << ": writing muon adc2nrg: " << adc2nrgFile << endl;
+    ADC2NRG::writeTXT(adc2nrgFile, asym, dac2adc, calMPD);
+
+    LogStream::get() << __FILE__ << ": writing histogram file: " << histFilename << endl;
+    histFile->Write();
+
   } catch (exception e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
+	return -1;
   }
 
   return 0;
 }
+

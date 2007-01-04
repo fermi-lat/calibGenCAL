@@ -1,9 +1,10 @@
 #ifndef MuonPed_h
 #define MuonPed_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.h,v 1.8 2006/09/28 20:00:24 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.h,v 1.9 2006/09/29 19:11:44 fewtrell Exp $
+
 /** @file
     @author Zachary Fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "CGCUtil.h"
@@ -22,122 +23,114 @@ class DigiEvent;
 class CalDigi;
 
 /** \brief Algorithm class populates CalPed calibration object
-    by analyzing digi ROOT event files. 
+    by analyzing digi ROOT event files.
 
     Supports extracting pedestals from the following trigger schemes
-    1 - Event data only 
-    2 - Periodic trigger 
+    1 - Event data only
+    2 - Periodic trigger
     3 - External trigger
-    
 
-@author Zachary Fewtrell
-*/
+
+    @author Zachary Fewtrell
+ */
 class MuonPed {
- public:
-  MuonPed(ostream &ostrm = cout);
+public:
+  MuonPed();
 
-  /// which type of events should be filtered for 
+  /// which type of events should be filtered for
   /// pedestal processing?
   typedef enum {
-    PASS_THROUGH, ///< use full data stream
-    PERIODIC_TRIGGER, ///< scan for periodic trigger events in standard data strem
-    EXTERNAL_TRIGGER ///< scan for external trigger events
+    PASS_THROUGH,       ///< use full data stream
+    PERIODIC_TRIGGER,   ///< scan for periodic trigger events in standard data stream
+    EXTERNAL_TRIGGER    ///< scan for external trigger events
   } TRIGGER_CUT ;
 
   /// Fill muonpedhist histograms w/ nEvt event data
   /// \param rootFilename.  input digi event file
   /// \param histFilename.  output root file for histograms.
-  void fillHists(unsigned nEntries, 
-                 const std::vector<std::string> &rootFileList, 
+  void fillHists(unsigned nEntries,
+                 const std::vector<std::string> &rootFileList,
                  const CalPed *roughPeds,
-                 TRIGGER_CUT trigCut); 
+                 TRIGGER_CUT trigCut);
 
   /// Fit muonpedhist[]'s, assign means to m_calMuonPed
-  void fitHists(CalPed &peds); 
+  void     fitHists(CalPed &peds);
 
   /// skip evenmt processing and load histograms from previous run
-  void loadHists(const std::string &filename);
+  void     loadHists(const TFile &histFile);
 
   /// delete empty histograms
   /// \note useful for data w/ < 16 Cal modules.
-  void trimHists();
+  void     trimHists();
 
-
-  static void genOutputFilename(const std::string outputDir,
-                                const std::string &inFilename,
-                                const std::string &ext,
-                                std::string &outFilename) {
-    CGCUtil::genOutputFilename(outputDir,
-                               "muonPeds",
-                               inFilename,
-                               ext,
-                               outFilename);
-  }
-
- private:
+private:
   /// allocate & create muon pedestal histograms & pointer array
-  void initHists(); 
+  void     initHists();
 
   /// count min number of entries in all enable histograms
   unsigned getMinEntries();
 
   /// process single crystal hit for pedestal data
-  void processHit(const CalDigi &calDigi);
+  void     processHit(const CalDigi &calDigi);
 
   /// process single digi event for pedestal data
-  void processEvent(DigiEvent &digiEvt);
+  void     processEvent(DigiEvent &digiEvt);
 
   /// list of histograms for 'muon' pedestals
-  CalUtil::CalVec<CalUtil::RngIdx, TH1S*> m_histograms; 
-
-  /// used for log messages
-  ostream &m_ostrm;
+  CalUtil::CalVec<CalUtil::RngIdx, TH1S *> m_histograms;
 
   /// generate ROOT histogram name string.
   static string genHistName(CalUtil::RngIdx rngIdx);
 
   /// store cfg & status data pertinent to current algorithm run
-  struct AlgData {
-    AlgData() {init();}
-
+  class AlgData {
+private:
     void init() {
       roughPeds = 0;
-      trigCut = PERIODIC_TRIGGER;
+      trigCut   = PERIODIC_TRIGGER;
     }
-    
-	const CalPed *roughPeds;
-    
-	TRIGGER_CUT trigCut;
+
+public:
+    AlgData() {
+      init();
+    }
+
+    const CalPed *roughPeds;
+
+    TRIGGER_CUT   trigCut;
   } algData;
 
   /// store data pertinent to current event
-  struct EventData{
-    EventData() {init();}
-
+  class EventData {
+private:
     /// reset all member variables
-	void init() {
+    void init() {
       prev4Range = true;
-      fourRange = true;
-	  eventNum = 0;	  
+      fourRange  = true;
+      eventNum   = 0;
     }
 
-	/// set member variables for next event.
-	void next() {
-		prev4Range = fourRange;
-		
-		// if mode is unknown, we always treat it as 4 range
-		fourRange = true;
-		
-		eventNum++;
-	}
+public:
+    EventData() {
+      init();
+    }
 
-    bool fourRange;
-		
-	unsigned eventNum;
-	
-	bool prev4Range;
+    /// set member variables for next event.
+    void next() {
+      prev4Range = fourRange;
+
+      // if mode is unknown, we always treat it as 4 range
+      fourRange  = true;
+
+      eventNum++;
+    }
+
+    bool     fourRange;
+
+    unsigned eventNum;
+
+    bool     prev4Range;
   } eventData;
-
 };
 
 #endif

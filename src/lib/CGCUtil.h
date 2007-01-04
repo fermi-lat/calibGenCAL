@@ -1,7 +1,7 @@
 #ifndef CGCUtil_H
 #define CGCUtil_H
 
-//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CGCUtil.h,v 1.3 2006/08/03 13:06:48 fewtrell Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CGCUtil.h,v 1.4 2006/09/26 18:57:24 fewtrell Exp $
 
 // LOCAL INCLUDES
 
@@ -10,91 +10,61 @@
 // EXTLIB INCLUDES
 #include "TFile.h"
 #include "TKey.h"
+#include "TF1.h"
+#include "TDirectory.h"
 
 // STD INCLUDES
 #include <ostream>
 #include <vector>
 #include <streambuf>
+#include <cmath>
+#include <memory>
+#include <algorithm>
 
 /** @file CGCUtil.h
     @author Zachary Fewtrell
     \brief Generic utility functions for calibGenCAL pkg
 */
 
-
-
 namespace CGCUtil {
-
   const std::string CVS_TAG("$Name: HEAD $");
 
   /// Template function fills any STL type container with zero values
-  template <class T> static void fill_zero(T &container) {
+  template <class T> void fill_zero(T &container) {
     fill(container.begin(), container.end(), 0);
   }
 
-  void tokenize_str(const std::string& str,
-                    std::vector<std::string>& tokens,
-                    const std::string& delimiters = " ");
+  void          tokenize_str(const std::string & str,
+                             std::vector<std::string> & tokens,
+                             const std::string & delimiters = " ");
 
-  std::string &path_remove_dir(std::string &path);
+  /// remove directory portion of full path
+  /// \note works in place on string!
+  void path_remove_dir(std::string &path);
 
-  std::string &path_remove_ext(std::string &path);
+  /// remove filename extention portion of path
+  /// \note works in place on string!
+  void path_remove_ext(std::string &path);
 
-
-
-  typedef std::vector<std::ostream*> streamvector;
-  /** wrapper class for treating multiple streambuf objects as one 
-   *
-   * used by multiplexor_ostream
-   */
-  class multiplexor_streambuf : public std::streambuf {
+  /// logStream will support parallel output to mutitple ostream classes
+  /// (as many as are added by the addStream method)
+  ///
+  class LogStream {
   public:
-    multiplexor_streambuf() : std::streambuf() {}
-  
-    virtual int overflow(int c) {
-      // write the incoming character into each stream
-      streamvector::iterator _b = _streams.begin(), _e = _streams.end();
-      for(; _b != _e; _b++)
-        (*_b)->put(c);
-    
-      return c;
-    }
-  
-  public:
-    streamvector _streams;
+    static std::ostream & get();
+    static void           addStream(std::ostream &strm);
   };
 
-  /** ostream class will write to any number of streambuffers simultaneously
-   *
-   * taken from here: 
-   * http://www.gamedev.net/community/forums/topic.asp?topic_id=286078
-   *
-   * CoffeeMug  GDNet+  Member since: 3/25/2003  From: NY, USA
-   * Posted - 12/1/2004 9:41:18 PM
-   *
-   *
-   */
-  class multiplexor_ostream : public ostream
-    {
-    public:
-      multiplexor_ostream() : std::ios(0), std::ostream(new multiplexor_streambuf()){}
-      virtual ~multiplexor_ostream() { delete rdbuf(); }
-  
-      streamvector& getostreams() { 
-        return ((multiplexor_streambuf*)rdbuf())->_streams; 
-      }
-    };
-
-  /// Output string w/ username, hostname, time, relevant CMT package versions 
+  /// Output string w/ username, hostname, time, relevant CMT package versions
   /// & paths to ostream
   /// output is in multi line text format
-  void output_env_banner(std::ostream &ostrm);
+  void          output_env_banner(std::ostream &ostrm);
 
   /** \brief convert string to uppercase
       \return ref to converted string
       \note operates in place on given string.
   */
-  std::string &str_toupper(std::string &str);
+  std::string & str_toupper(std::string &str);
 
   /** convert string to boolean.
       \return boolean interperetation of value
@@ -103,64 +73,107 @@ namespace CGCUtil {
       to be interpereted as boolean, value must be '1', '0', '[t]rue', '[f]alse', '[y]es', '[n]o'
       \note interperetation is case-insensitive.
   */
-  bool stringToBool(const std::string &str);
+  bool          stringToBool(const std::string &str);
 
-  void genOutputFilename(const std::string &outputDir,
-                         const std::string &outputCalibType,
-                         const std::string &inputFilename,
-                         const std::string &outputExt,
-                         std::string &outputFilename);
+  std::string   genOutputFilename(const std::string &outputDir,
+                                  const std::string &outputCalibType,
+                                  const std::string &inputFilename,
+                                  const std::string &outputExt);
 
-  /// use this method to retrieve a histogram of given
-  /// type and name out of a root file
-  /// \return ptr to hist obj if successful, NULL ptr otherwise
-  template <class T>
-    T* retrieveHist(TFile &histFile,
-                    const std::string &histname) {
-    TKey *key = histFile.FindKey(histname.c_str());
-    // skip missing hist
-    if (!key)
-      return NULL;
-      
-    TClass *cls = gROOT->GetClass(key->GetClassName());
-    if (!cls)
-      return NULL;
-      
-    T *hist_ptr = (T*)key->ReadObj();
-    if (!hist_ptr) return NULL;
 
-    // skip hist if it's the wrong type
-    if (!hist_ptr->InheritsFrom(T::Class())) 
-      return NULL;
-
-    return hist_ptr;
-  } 
 
   /// return minimum value from an STL vector
-  template<typename T> const T& max_val(const std::vector<T> &vec) {
-    return *(max_element(vec.begin(),vec.end()));
+  template<typename T> const T & max_val(const std::vector<T> &vec) {
+    return *(max_element(vec.begin(), vec.end()));
   }
 
   /// return minimum value from an STL vector
-  template<typename T> const T& min_val(const std::vector<T> &vec) {
-    return *(min_element(vec.begin(),vec.end()));
+  template<typename T> const T & min_val(const std::vector<T> &vec) {
+    return *(min_element(vec.begin(), vec.end()));
   }
 
   /** return p3 such that p3 - p2 = p2 - p1
    */
   template <class Ty>
-    inline Ty extrap(Ty p1, Ty p2) {
+    inline Ty extrap(Ty p1,
+                     Ty p2) {
     return 2*p2 - p1;
   }
-
 
   /** return y3 such that (y2 - y1)/(x2 - x1) = (y3 - y2)/(x3 - x2)
    */
   template <class Ty>
-    inline Ty linear_extrap(Ty x1, Ty x2, Ty x3, Ty y1, Ty y2) {
+    inline Ty linear_extrap(Ty x1,
+                            Ty x2,
+                            Ty x3,
+                            Ty y1,
+                            Ty y2) {
     return (x3-x2)*(y2-y1)/(x2-x1) + y2;
   }
 
-};
+  inline double degreesToRadians(const double degrees) {
+    return degrees*M_PI/180;
+  }
 
+  /// use this method to retrieve a histogram of given
+  /// type and name out of a root file
+  /// \return ptr to hist obj if successful, NULL ptr otherwise
+  template <class T>
+    T *retrieveHist(const TDirectory &rootDir,
+                    const std::string &histname) {
+    TKey *key = rootDir.FindKey(histname.c_str());
+
+
+    // skip missing hist
+    if (!key)
+      return NULL;
+
+    TClass *cls      = gROOT->GetClass(key->GetClassName());
+    if (!cls)
+      return NULL;
+
+    T      *hist_ptr = (T *)key->ReadObj();
+    if (!hist_ptr) return NULL;
+
+    // skip hist if it's the wrong type
+    if (!hist_ptr->InheritsFrom(T::Class()))
+      return NULL;
+
+    return hist_ptr;
+  }
+
+  /// create new 1D histogram w/ residuals from fitted 1D histogram
+  /// and 1st TF1 on histogram list-of-fuctions
+  template<class T>
+    T *createResidHist(const T &fittedHist) {
+    
+    // retrieve previous histogram info
+    std::string name(fittedHist.GetName());
+    std::string title(fittedHist.GetTitle());
+    int nBins = fittedHist.GetNbinsX();
+    double xlo = fittedHist.GetXaxis()->GetXmin();
+    double xhi = fittedHist.GetXaxis()->GetXmax();
+
+    name += "_resid";
+    title += "_resid";
+
+    T *resid = new T(name.c_str(),
+                     title.c_str(),
+                     nBins,
+                     xlo,
+                     xhi);
+
+    resid->Add(&fittedHist);
+    resid->Add(dynamic_cast<TF1*>(fittedHist.GetListOfFunctions()->At(0)),
+               -1);
+
+    return resid;
+  }
+
+  /// create new sub-directory inside of parent if it doesn't exist
+  /// \return ref to new subdir regardless of whether I had to make one or not.
+  /// \note leave pwd unchanged
+  TDirectory &root_safe_mkdir(TDirectory &parent, 
+                              const std::string &dirName);
+};
 #endif // CGCUtil_H

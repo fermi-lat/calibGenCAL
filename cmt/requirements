@@ -10,6 +10,7 @@ use reconRootData
 use mcRootData    
 use CalUtil
 use calibUtil
+use CLHEP * IExternal
 
 # make sure we have all graphical root libraries linked (stolen from rootanalysis)
 # used for line fitting in muonCalib
@@ -41,5 +42,7 @@ application runMuTrigEff runMuTrigEff.cxx
 #application genGCRMPD genGCRMPD.cxx
 
 application emiAnal emiAnal.cxx
+
+application genMuonCalibTkr genMuonCalibTkr.cxx
 
 
