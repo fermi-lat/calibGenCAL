@@ -1,5 +1,25 @@
 ------------------------------------------------------------
 User: fewtrell  Thu Jan  4 15:23:00 PST 2007
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+Fewtrell:
+- Addition of genMuonCalibTkr application, which uses tracker based muon/mip
+tracks to simultaneously calibrate asymmetery & mevPerDAC.  Better track
+leads to signficantly less noise hits.  Also uses more sophisticated fitting 
+method w/ gaussian-convolved landau and stepped background model.
+- mpdDiff.py script generates more detailed histograms.
+- 'uncrustify' c++ code beautifier applied to all C++ code
+- broke up existing C++ lib code into more modules
+	ADC2NRG, AsymHists, MPDHists
+- new modules added
+	CalHodoscope, MuonCalibTkr, LangauFun
+
+    *
+------------------------------------------------------------
+User: fewtrell  Thu Jan  4 15:23:00 PST 2007
 calibGenCAL/cfg
 
 Modified Files:
