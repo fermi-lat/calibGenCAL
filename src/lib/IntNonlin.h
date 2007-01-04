@@ -1,9 +1,10 @@
 #ifndef IntNonlin_h
 #define IntNonlin_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/IntNonlin.h,v 1.4 2006/09/26 20:27:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/IntNonlin.h,v 1.5 2006/09/29 19:11:44 fewtrell Exp $
+
 /** @file
     @author fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "CGCUtil.h"
@@ -22,38 +23,27 @@ class DigiEvent;
 class CalDigi;
 class TProfile;
 
-
-/** \brief Algorithm class populates CIDAC2ADC calibration data 
+/** \brief Algorithm class populates CIDAC2ADC calibration data
     object by analyzing calibGen singlex16 digi ROOT files.
 
     @author fewtrell
-*/
+ */
 class IntNonlin {
- public:
-  IntNonlin(ostream &ostrm = cout);
- 
+public:
+  IntNonlin();
+
   /// process digi root event file
   /// \param diode specify whether to analyze HE or LE circuits
   void readRootData(const std::string &rootFileName,
                     CIDAC2ADC &adcMeans,
                     CalUtil::DiodeNum diode,
-                    bool bcastMode); 
-  
+                    bool bcastMode);
+
   /// smooth raw adc means for use in offline spline calibration
-  void genSplinePts(CIDAC2ADC &adcMeans, CIDAC2ADC &cidac2adc); 
+  void genSplinePts(CIDAC2ADC &adcMeans,
+                    CIDAC2ADC &cidac2adc);
 
-  static void genOutputFilename(const std::string outputDir,
-                                const std::string &inFilename,
-                                const std::string &ext,
-                                std::string &outFilename) {
-    CGCUtil::genOutputFilename(outputDir,
-                               "cidac2adc",
-                               inFilename,
-                               ext,
-                               outFilename);
-  }
-
- private:
+private:
   /// fill histograms w/ data from single event
   void processEvent(const DigiEvent &digiEvent);
 
@@ -66,35 +56,32 @@ class IntNonlin {
                     vector<float> &splineDAC,
                     CalUtil::RngNum rng);
 
-  /// used for logging
-  std::ostream &m_ostrm;
-
   /// store cfg & status data pertinent to current algorithm run
   struct AlgData {
     AlgData() :
-      profiles(CalUtil::RngIdx::N_VALS,0) {
+      profiles(CalUtil::RngIdx::N_VALS, 0) {
       init();
     }
-    
+
     void init() {
-      diode = CalUtil::LRG_DIODE;
+      diode     = CalUtil::LRG_DIODE;
       bcastMode = true;
-      adcMeans = 0;
+      adcMeans  = 0;
       initHists();
     }
-        
+
     ~AlgData() {
       if (adcHists)
-        delete adcHists;                
+        delete adcHists;
     }
 
     /// create one temporary histogram per adc channel.
     /// this histogram will be reused for each new CIDAC
     /// level.
-    TObjArray *adcHists;
+    TObjArray                                   *adcHists;
 
     /// profiles owned by current ROOT directory/m_histFile.
-    CalUtil::CalVec<CalUtil::RngIdx, TProfile*> profiles;
+    CalUtil::CalVec<CalUtil::RngIdx, TProfile *> profiles;
 
     /// create new histogram objects and accompanying TObjArray
     void initHists();
@@ -103,40 +90,44 @@ class IntNonlin {
     CalUtil::DiodeNum diode;
 
     /// broadcast mode data samples all 12 columns
-    /// simultaneously.  
-    bool bcastMode;
+    /// simultaneously.
+    bool              bcastMode;
 
     /// fill in the mean values for each DAC setting here.
-    CIDAC2ADC *adcMeans;
+    CIDAC2ADC        *adcMeans;
   } algData;
 
   /// store data pertinent to current event
   struct EventData {
-    EventData() {init();}
+private:
 
-    void init() {
+    void            init() {
       eventNum = 0;
       iGoodEvt = 0;
-      testCol = 0;
-      iSamp = 0;
-      testDAC = 0;
+      testCol  = 0;
+      iSamp    = 0;
+      testDAC  = 0;
+    }
+
+public:
+    EventData() {
+      init();
     }
 
     /// count events read from root file
-    unsigned eventNum;
-        
+    unsigned        eventNum;
+
     /// count 'good' events actually used from root file
-    unsigned iGoodEvt;
+    unsigned        iGoodEvt;
 
     /// which xtal column is singlex16 currently sampling?
     CalUtil::ColNum testCol;
 
     /// how many samples @ current setting?
-    unsigned short iSamp;
+    unsigned short  iSamp;
 
     // current CIDAC index
-    unsigned short testDAC;
-  
+    unsigned short  testDAC;
   } eventData;
 };
 

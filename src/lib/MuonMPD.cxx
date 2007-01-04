@@ -1,7 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.cxx,v 1.12 2006/10/03 21:09:26 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.cxx,v 1.13 2006/10/19 17:57:57 fewtrell Exp $
+
 /** @file
     @author Zachary Fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "MuonMPD.h"
@@ -12,18 +13,13 @@
 #include "CalPed.h"
 #include "CalAsym.h"
 #include "CalMPD.h"
+#include "CGCUtil.h"
+#include "MPDHists.h"
 
 // GLAST INCLUDES
 #include "digiRootData/DigiEvent.h"
 
 // EXTLIB INCLUDES
-#include "TProfile.h"
-#include "TH2S.h"
-#include "TCanvas.h"
-#include "TF1.h"
-#include "TFile.h"
-#include "TH1S.h"
-
 
 // STD INCLUDES
 #include <sstream>
@@ -31,356 +27,72 @@
 using namespace std;
 using namespace CalUtil;
 using namespace CalGeom;
+using namespace CGCUtil;
 
-const float MuonMPD::MUON_ENERGY = 11.2;
-
-
-MuonMPD::MuonMPD(ostream &ostrm) :
-  m_ostrm(ostrm),
-  m_dacL2SHists(XtalIdx::N_VALS),
-  m_dacL2SSlopeProfs(XtalIdx::N_VALS),
-  m_dacLLHists(XtalIdx::N_VALS),
-  m_dacLLSumHist(0)
+MuonMPD::MuonMPD(const CalPed &ped,
+                 const CIDAC2ADC &dac2adc,
+                 const CalAsym &calAsym,
+                 MPDHists &mpdHists) :
+  algData(calAsym),
+  eventData(ped, dac2adc),
+  m_mpdHists(mpdHists)
 {
 }
 
-
-void MuonMPD::initHists(){
-  string histname;
-  histname = "dacLLSum";
-  m_dacLLSumHist = new TH1S(histname.c_str(),
-                            histname.c_str(),
-                            400,0,100);
-  
-
-  for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
-    histname = genHistName("dacLL", xtalIdx);
-    m_dacLLHists[xtalIdx] = new TH1S(histname.c_str(),
-                                     histname.c_str(),
-                                     200,0,100);
-
-    histname = genHistName("dacL2S", xtalIdx);
-    m_dacL2SHists[xtalIdx] = new TH1S(histname.c_str(),
-                                      histname.c_str(),
-                                      400,0,.4);
-
-
-    histname = genHistName("dacL2S_slope", xtalIdx);
-    m_dacL2SSlopeProfs[xtalIdx] = new TProfile(histname.c_str(),
-                                               histname.c_str(),
-                                               N_L2S_PTS,
-                                               L2S_MIN_LEDAC,
-                                               L2S_MAX_LEDAC);
-
-    
-  } 
-}
-
 void MuonMPD::fillHists(unsigned nEntries,
-                        const vector<string> &rootFileList, 
-                        const CalPed &peds,
-                        const CalAsym &asym,
-                        const CIDAC2ADC &dac2adc){
-  initHists();
-  algData.init(&asym);
-  
-  RootFileAnalysis rootFile(0, &rootFileList, 0);
+                        const vector<string> &rootFileList) {
+  m_mpdHists.initHists();
+
+  RootFileAnalysis rootFile(0,
+                            &rootFileList,
+                            0);
+
   // enable only needed branches in root file
-  rootFile.getDigiChain()->SetBranchStatus("*",0);
+  rootFile.getDigiChain()->SetBranchStatus("*", 0);
   rootFile.getDigiChain()->SetBranchStatus("m_calDigiCloneCol");
   rootFile.getDigiChain()->SetBranchStatus("m_summary");
 
-
   unsigned nEvents = rootFile.getEntries();
-  m_ostrm << __FILE__ << ": Processing: " << nEvents << " events." << endl;
-
-
+  LogStream::get() << __FILE__ << ": Processing: " << nEvents << " events." << endl;
 
   ///////////////////////////////////////////
   // DIGI Event Loop - Fill Twr Hodoscopes //
   ///////////////////////////////////////////
-  eventData.init(peds, dac2adc);
   for (eventData.eventNum = 0; eventData.eventNum < nEvents; eventData.eventNum++) {
     eventData.next();
 
     if (eventData.eventNum % 10000 == 0) {
       // quit if we have enough entries in each histogram
-      unsigned currentMin = getMinEntries();
+      unsigned currentMin = m_mpdHists.getMinEntries();
       if (currentMin >= nEntries) break;
-      m_ostrm << "Event: " << eventData.eventNum 
-              << " min entries per histogram: " << currentMin
-              << endl;
-      m_ostrm.flush();
+      LogStream::get() << "Event: " << eventData.eventNum
+                       << " min entries per histogram: " << currentMin
+                       << endl;
+      LogStream::get().flush();
     }
 
     if (!rootFile.getEvent(eventData.eventNum)) {
-      m_ostrm << "Warning, event " << eventData.eventNum << " not read." << endl;
+      LogStream::get() << "Warning, event " << eventData.eventNum << " not read." << endl;
       continue;
     }
 
     DigiEvent *digiEvent = rootFile.getDigiEvent();
     if (!digiEvent) {
-      m_ostrm << __FILE__ << ": Unable to read DigiEvent " << eventData.eventNum  << endl;
+      LogStream::get() << __FILE__ << ": Unable to read DigiEvent " << eventData.eventNum  << endl;
       continue;
     }
-    
+
     processEvent(*digiEvent);
-    
-  }
-}
-
-void MuonMPD::fitHists(CalMPD &calMPD) {
-
-  // PER XTAL LOOP
-  for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
-    if (!m_dacLLHists[xtalIdx])
-      continue;
-    TH1S& histLL = *m_dacLLHists[xtalIdx];
-    // skip empty histograms
-    if (histLL.GetEntries() == 0) 
-      continue;
-
-    ///////////////////////////////////
-    //-- MeV Per Dac (Lrg Diode) --//
-    ///////////////////////////////////
-    
-    // LANDAU fit for muon peak (limit outliers by n*err)
-    float ave = histLL.GetMean();
-    float err = histLL.GetRMS();
-    histLL.Fit("landau", "Q", "", ave-2*err, ave+3*err);
-    float mean  = (histLL.GetFunction("landau"))->GetParameter(1);
-    float sigma = (histLL.GetFunction("landau"))->GetParameter(2);
-
-    float mpdLrg = MUON_ENERGY/mean;
-    calMPD.setMPD(xtalIdx, LRG_DIODE, mpdLrg);
-
-    // keep sigma proportional to extrapolated val
-    float mpdErrLrg = mpdLrg * sigma/mean;
-    calMPD.setMPDErr(xtalIdx, LRG_DIODE, mpdErrLrg); 
-    
-    ////////////////////
-    //-- (Sm Diode) --//
-    ////////////////////
-        
-    // LRG 2 SM Ratio
-    TH1S &histL2S = *m_dacL2SHists[xtalIdx]; // get profile
-
-    // trim outliers - 3 times cut out anything outside 3 sigma
-    for (unsigned short iter = 0; iter < 3; iter++) {
-      // get current mean & RMS
-      float av  = histL2S.GetMean(); 
-      float rms = histL2S.GetRMS();
-      
-      // trim new histogram limits
-      histL2S.SetAxisRange(av - 3*rms, av + 3*rms);
-    }
-
-    // fit straight line to get mean ratio
-    histL2S.Fit("gaus","Q");
-    // mean ratio of smDac/lrgDac
-    float sm2lrg = ((TF1&)*histL2S.GetFunction("gaus")).GetParameter(1);
-    float s2lsig = ((TF1&)*histL2S.GetFunction("gaus")).GetParameter(2);
-    
-    //-- NOTES:
-    // MPDLrg     = MeV/LrgDAC
-    // sm2lrg  = SmDAC/LrgDAC
-    // MPDSm     = MeV/SmDAC = (MeV/LrgDAC)*(LrgDAC/SmDAC) 
-    //              = MPDLrg/sm2lrg
-    
-    float mpdSm = mpdLrg/sm2lrg;
-    calMPD.setMPD(xtalIdx, SM_DIODE, mpdSm);
-    
-    //-- Propogate errors
-    // in order to combine slope & MPD error for final error
-    // I need the relative error for both values - so sayeth sasha
-    float relLineErr = s2lsig/sm2lrg;
-    float relMPDErr  = mpdErrLrg/mpdLrg;
-
-    float mpdErrSm = mpdSm*
-      sqrt(relLineErr*relLineErr + relMPDErr*relMPDErr);
-    calMPD.setMPDErr(xtalIdx, SM_DIODE, mpdErrSm);
-
-    ////////////////////
-    //-- L2S Slope  --//
-    ////////////////////
-
-    // LRG 2 SM Ratio
-    TProfile& p = *m_dacL2SSlopeProfs[xtalIdx]; // get profile
-
-    // Fill scatter graph w/ smDAC vs lrgDAC points
-    unsigned nPts = 0;
-    algData.graph.Set(nPts); // start w/ empty graph
-    for (unsigned i = 0; i < N_L2S_PTS; i++) {
-      // only insert a bin if it has entries
-      if (!(p.GetBinEntries(i+1) > 0)) continue; // bins #'d from 1
-      nPts++;
-
-      // retrieve sm & lrg dac vals
-      float smDAC = p.GetBinContent(i+1);
-      float lrgDAC = p.GetBinCenter(i+1);
-
-      // update graphsize & set point
-      algData.graph.Set(nPts);
-      algData.graph.SetPoint(nPts-1,lrgDAC,smDAC);
-    }
-
-    // bail if for some reason we didn't get any points
-    if (!nPts) {
-      m_ostrm << __FILE__  << ":"     << __LINE__ << " "
-              << "Unable to find sm diode MPD for xtal=" << xtalIdx.val()
-              << " due to empty histogram." << endl;
-      continue;
-    }
-
-    // fit straight line to get mean ratio
-    algData.graph.Fit(&algData.lineFunc,"WQN");
-  }
-}
-
-void MuonMPD::loadHists(const string &filename) {
-  TFile histFile(filename.c_str(), "READ");
-
-  string histname;
-  histname = "dacLLSum";
-  m_dacLLSumHist = CGCUtil::retrieveHist<TH1S>(histFile, histname);
-  m_dacLLSumHist->SetDirectory(0);
-
-  for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
-
-    //-- DAC_LL HISTOGRAMS --//
-    histname = genHistName("dacLL", xtalIdx);
-    TH1S *hist_LL = CGCUtil::retrieveHist<TH1S>(histFile, histname);
-    if (!hist_LL) continue;
-
-    // move histogram into Global ROOT memory
-    // so it is not deleted when input file is closed.
-    // this may be a memory leak, i don't think
-    // anyone cares.
-    hist_LL->SetDirectory(0);
-
-    m_dacLLHists[xtalIdx] = hist_LL;
-
-    //-- DAC_L2S HISTOGRAMS --//
-    histname = genHistName("dacL2S", xtalIdx);
-    TH1S *hist_L2S = CGCUtil::retrieveHist<TH1S>(histFile, histname);
-    if (!hist_L2S) continue;
-
-    hist_L2S->SetDirectory(0);
-
-    m_dacL2SHists[xtalIdx] = hist_L2S;
-
-    //-- DAC_L2S HISTOGRAMS --//
-    histname = genHistName("dacL2S_slope", xtalIdx);
-    TProfile *hist_L2S_slope = CGCUtil::retrieveHist<TProfile>(histFile, histname);
-    if (!hist_L2S_slope) continue;
-
-    hist_L2S_slope->SetDirectory(0);
-
-    m_dacL2SSlopeProfs[xtalIdx] = hist_L2S_slope;
-
-  }
-
-}
-
-string MuonMPD::genHistName(const string &type,
-                            XtalIdx xtalIdx) {
-  ostringstream tmp;
-  tmp <<  type 
-      << "_" << xtalIdx.val();
-  return tmp.str();
-}
-
-unsigned MuonMPD::getMinEntries() {
-  unsigned retVal = ULONG_MAX;
-
-  unsigned long sum = 0;
-  unsigned n        = 0;
-  unsigned maxHits  = 0;
-
-  for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
-    unsigned nEntries = (unsigned)m_dacLLHists[xtalIdx]->GetEntries();
-    
-    // only count histograms that have been filled 
-    // (some histograms will never be filled if we are
-    // not using all 16 towers)
-    if (nEntries != 0) {
-      sum += nEntries;
-      n++;
-      retVal = min(retVal,nEntries);
-      maxHits = max(maxHits,nEntries);
-    }
-  }
-
-
-  m_ostrm << " Channels Detected: "  << n
-          << " Avg Hits/channel: " << ((n) ? (double)sum/n : 0)
-          << " Max: " << maxHits
-          << endl;
-
-  // case where there are no fills at all
-  if (retVal == ULONG_MAX)
-    return 0;
-
-  return retVal;
-}
-
-void MuonMPD::writeADC2NRG(const string &filename,
-                           const CalAsym &asym,
-                           const CIDAC2ADC &dac2adc,
-                           const CalMPD &calMPD) {
-  ofstream outfile(filename.c_str());
-
-  if (!outfile.is_open())
-    throw runtime_error(string("Unable to open " + filename));
-
-  for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
-    TwrNum twr = rngIdx.getTwr();
-    LyrNum lyr = rngIdx.getLyr();
-    ColNum col = rngIdx.getCol();
-    FaceNum face = rngIdx.getFace();
-    RngNum rng = rngIdx.getRng();
-    DiodeNum diode = rng.getDiode();
-    XtalIdx xtalIdx = rngIdx.getXtalIdx();
-    float mpd = calMPD.getMPD(xtalIdx, diode);
-
-    if (mpd == CalMPD::INVALID_MPD)
-      continue;
-
-    // get asymmetry measured at ctr of xtal (gives us relative gain between xtal faces)
-
-    // 0.25 would normally be 0.5, but it is applied equally to both sides
-    // so we split it in half.
-    float asym_ctr = 0.25*asym.pos2asym(xtalIdx,
-                                        diode,
-                                        6.0); // is center of xtal, coords range from 0-12
-    asym_ctr = exp(asym_ctr);
-
-    float dac = MUON_ENERGY/mpd;
-
-    dac = (face == POS_FACE) ?
-      dac * asym_ctr :
-      dac / asym_ctr;
-
-    float adc     = dac2adc.dac2adc(rngIdx, dac*asym_ctr);
-    float adc2nrg = MUON_ENERGY/adc;
-    outfile << twr
-            << " " << lyr 
-            << " " << col
-            << " " << face.val()
-            << " " << rng.val()
-            << " " << adc2nrg
-            << " " << 0 // error calc
-            << endl;
   }
 }
 
 bool MuonMPD::passCutX(const TwrHodoscope &hscope) {
   // max 2 hits on any layer
-  if (hscope.maxPerLyr > 2) 
+  if (hscope.maxPerLyr > 2)
     return false;
 
   // need vertical connect 4 in X dir
-  if (hscope.nLyrsX != 4 || hscope.nColsX != 1) 
+  if (hscope.nLyrsX != 4 || hscope.nColsX != 1)
     return false;
 
   // need at least 2 points to get an orthogonal track
@@ -391,11 +103,11 @@ bool MuonMPD::passCutX(const TwrHodoscope &hscope) {
 
 bool MuonMPD::passCutY(const TwrHodoscope &hscope) {
   // max 2 hits on any layer
-  if (hscope.maxPerLyr > 2) 
+  if (hscope.maxPerLyr > 2)
     return false;
 
   // need vertical connect 4 in Y dir
-  if (hscope.nLyrsY != 4 || hscope.nColsY != 1) 
+  if (hscope.nLyrsY != 4 || hscope.nColsY != 1)
     return false;
 
   // need at least 2 points to get an orthogonal track
@@ -404,30 +116,6 @@ bool MuonMPD::passCutY(const TwrHodoscope &hscope) {
   return true;
 }
 
-void MuonMPD::trimHists() {
-  for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
-    if (m_dacLLHists[xtalIdx])
-      if (!m_dacLLHists[xtalIdx]->GetEntries()) {
-        delete m_dacLLHists[xtalIdx];
-        m_dacLLHists[xtalIdx] = 0;
-      }
-
-    if (m_dacL2SHists[xtalIdx])
-      if (!m_dacL2SHists[xtalIdx]->GetEntries()) {
-        delete m_dacL2SHists[xtalIdx];
-        m_dacL2SHists[xtalIdx] = 0;
-      }
-
-    if (m_dacL2SSlopeProfs[xtalIdx])
-      if (!m_dacL2SSlopeProfs[xtalIdx]->GetEntries()) {
-        delete m_dacL2SSlopeProfs[xtalIdx];
-        m_dacL2SSlopeProfs[xtalIdx] = 0;
-      }
- 
-  }
-}
-
-
 void MuonMPD::processEvent(DigiEvent &digiEvent) {
   // now trying to work w/ 1 range data, just don't fill all hists.
   //   // check that we are in 4 range mode
@@ -435,34 +123,36 @@ void MuonMPD::processEvent(DigiEvent &digiEvent) {
   //   if (!summary.readout4())
   //     return;
 
-  const TClonesArray* calDigiCol = digiEvent.getCalDigiCol();
+  const TClonesArray *calDigiCol = digiEvent.getCalDigiCol();
+
+
   if (!calDigiCol) {
-    m_ostrm << "no calDigiCol found for event#" << eventData.eventNum << endl;
+    LogStream::get() << "no calDigiCol found for event#" << eventData.eventNum << endl;
     return;
   }
 
   TIter calDigiIter(calDigiCol);
-  const CalDigi *pCalDigi = 0;
+
+  const CalDigi      *pCalDigi = 0;
 
   // loop through each 'hit' in one event
-  while ((pCalDigi = (CalDigi*)calDigiIter.Next())) {
-    const CalDigi &calDigi = *pCalDigi; // use reference to avoid -> syntax
-      
+  while ((pCalDigi = (CalDigi *)calDigiIter.Next())) {
+    const  CalDigi &calDigi = *pCalDigi;           // use reference to avoid -> syntax
+
     //-- XtalId --//
-    idents::CalXtalId id(calDigi.getPackedId()); // get interaction information
+    idents::CalXtalId id(calDigi.getPackedId());   // get interaction information
     // retrieve tower info
     TwrNum twr = id.getTower();
-      
-    // add hit to appropriate hodoscope.
-    (*eventData.hscopes)[twr].addHit(calDigi);
 
+    // add hit to appropriate hodoscope.
+    eventData.hscopes[twr].addHit(calDigi);
   }
-    
+
   ///////////////////////////////////////////
   // Search Twr Hodoscopes for good events //
   ///////////////////////////////////////////
   for (TwrNum twr; twr.isValid(); twr++) {
-    TwrHodoscope &hscope = (*eventData.hscopes)[twr];
+    TwrHodoscope &hscope = eventData.hscopes[twr];
 
     processTower(hscope);
   }
@@ -473,10 +163,11 @@ void MuonMPD::processTower(TwrHodoscope &hscope) {
   hscope.summarizeEvent();
 
   // CHECK BOTH DIRECTIONS FOR USABLE EVENT
+
   /** Note: 'direction' refers to the direction of xtals which have vertical
       'connect-4' deposits.  For MevPerDAC, the orthogonal hits will be used to
       determine the pathlength for these 4 hits.
-  */
+   */
 
   for (DirNum dir; dir.isValid(); dir++) {
     // skip if we don't have a good track
@@ -494,11 +185,11 @@ void MuonMPD::processTower(TwrHodoscope &hscope) {
 
     if (dir == X_DIR) {
       algData.nXEvents++;
-      hitList = hscope.hitListX;
+      hitList      = hscope.hitListX;
       hitListOrtho = hscope.hitListY;
     } else {
       algData.nYEvents++;
-      hitList = hscope.hitListY;
+      hitList      = hscope.hitListY;
       hitListOrtho = hscope.hitListX;
     }
 
@@ -508,27 +199,26 @@ void MuonMPD::processTower(TwrHodoscope &hscope) {
     // fill in each point val
     for (unsigned i = 0; i < hitListOrtho.size(); i++) {
       XtalIdx xtalIdx = hitListOrtho[i];
-      LyrNum lyr = xtalIdx.getLyr();
-      ColNum col = xtalIdx.getCol();
-      algData.graph.SetPoint(i,lyr,col);
+      LyrNum  lyr     = xtalIdx.getLyr();
+      ColNum  col     = xtalIdx.getCol();
+      algData.graph.SetPoint(i, lyr, col);
     }
 
     // fit straight line through graph
-    algData.graph.Fit(&algData.lineFunc,"WQN");
+    algData.graph.Fit(&algData.lineFunc, "WQN");
 
     // throw out events which are greater than about 30 deg from vertical
     float lineSlope = algData.lineFunc.GetParameter(1);
     if (abs(lineSlope) > 0.5) continue;
-
 
     //-- THROW OUT HITS NEAR END OF XTAL --//
     // loop through each hit in X direction, remove bad xtals
     // bad xtals have energy centroid at col 0 or 11 (-5 or +5 since center of xtal is 0)
     for (unsigned i = 0; i < hitList.size(); i++) {
       XtalIdx xtalIdx = hitList[i];
-      LyrNum lyr = xtalIdx.getLyr();
+      LyrNum  lyr     = xtalIdx.getLyr();
 
-      float hitPos = algData.lineFunc.Eval(lyr); // find column for given lyr
+      float   hitPos  = algData.lineFunc.Eval(lyr);    // find column for given lyr
 
       //throw out event if energy centroid is in column 0 or 11 (3cm from end)
       if (hitPos < 1 || hitPos > 10) {
@@ -540,41 +230,41 @@ void MuonMPD::processTower(TwrHodoscope &hscope) {
     // occasionally there will be no good hits!
     if (hitList.size() < 1) continue;
 
-    // improve hodoscopic slope if there are enough good points left 
+    // improve hodoscopic slope if there are enough good points left
     // to fit a straight line
     if (hitList.size() > 1) {
       //-- IMPROVE TRACK W/ ASYMMETRY FROM GOOD XTALS --//
       // now that we have eliminated events on the ends of xtals, we can use
       // asymmetry to get a higher precision slope
-      algData.graph.Set(hitList.size());  // reset graph size in case we removed any invalid points.
+      algData.graph.Set(hitList.size());    // reset graph size in case we removed any invalid points.
       for (unsigned i = 0; i < hitList.size(); i++) {
         XtalIdx xtalIdx = hitList[i];
-        LyrNum lyr = xtalIdx.getLyr();
-          
+        LyrNum  lyr     = xtalIdx.getLyr();
+
         // calcuate the log ratio = log(POS/NEG)
-        float dacP = hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), POS_FACE, LRG_DIODE)];
-        float dacN = hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), NEG_FACE, LRG_DIODE)];
-        float asymLL = log(dacP/dacN);
+        float   dacP    = hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), POS_FACE, LRG_DIODE)];
+        float   dacN    = hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), NEG_FACE, LRG_DIODE)];
+        float   asymLL  = log(dacP/dacN);
 
         // get new position from asym
-        float hitPos = algData.asym->asym2pos(xtalIdx, LRG_DIODE, asymLL);
-
-        algData.graph.SetPoint(i,lyr,hitPos);
+        float   hitPos  = algData.calAsym.asym2pos(xtalIdx, LRG_DIODE, asymLL);
+        
+        algData.graph.SetPoint(i, lyr, hitPos);
       }
 
-      algData.graph.Fit(&algData.lineFunc,"WQN");
+      algData.graph.Fit(&algData.lineFunc, "WQN");
       lineSlope = algData.lineFunc.GetParameter(1);
     }
 
     // NUMERIC CONSTANTS
     // converts between lyr/col units & mm
     // real trigonometry is needed for pathlength calculation
-    static const float slopeFactor = CalGeom::CELL_HOR_PITCH/CalGeom::CELL_VERT_PITCH;
+    static const float slopeFactor = CalGeom::cellHorPitch/CalGeom::cellVertPitch;
 
     //-- Pathlength Correction --//
     //slope = rise/run = dy/dx = colPos/lyrNum
-    float tan = lineSlope*slopeFactor;
-    float sec = sqrt(1 + tan*tan); //sec proportional to hyp which is pathlen.
+    float    tan   = lineSlope*slopeFactor;
+    float    sec   = sqrt(1 + tan*tan);             //sec proportional to hyp which is pathlen.
 
     // poulate histograms & apply pathlength correction
     unsigned nHits = hitList.size();
@@ -584,37 +274,33 @@ void MuonMPD::processTower(TwrHodoscope &hscope) {
       // calculate meanDAC for each diode size.
       CalArray<DiodeNum, float> meanDAC;
       for (DiodeNum diode; diode.isValid(); diode++) {
-        meanDAC[diode] = sqrt(hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), POS_FACE, diode)] *
-                              hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), NEG_FACE, diode)]);
+        meanDAC[diode]  = sqrt(hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), POS_FACE, diode)] *
+                               hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), NEG_FACE, diode)]);
 
         meanDAC[diode] /= sec;
       }
-        
-      // Load meanDAC Histogram
-      m_dacLLHists[xtalIdx]->Fill(meanDAC[LRG_DIODE]);
-      m_dacLLSumHist->Fill(meanDAC[LRG_DIODE]);
+
+      m_mpdHists.fillDacLL(xtalIdx, meanDAC[LRG_DIODE]);
+      m_mpdHists.fillL2S(xtalIdx, meanDAC[LRG_DIODE], meanDAC[SM_DIODE]);
 
       // load dacL2S profile
-      m_dacL2SHists[xtalIdx]->Fill(meanDAC[SM_DIODE]/meanDAC[LRG_DIODE]);
-      // load dacL2S profile
-      m_dacL2SSlopeProfs[xtalIdx]->Fill(meanDAC[LRG_DIODE],meanDAC[SM_DIODE]);
 
-      algData.nXtals++;      
+      algData.nXtals++;
     }
   }
 }
 
-
-MuonMPD::AlgData::AlgData() :
-  canvas("canvas","event display",800,600),
+MuonMPD::AlgData::AlgData(const CalAsym &asym) :
+  canvas("canvas", "event display", 800, 600),
   graph(4),
-  lineFunc("line","pol1",0,8),
-  viewHist("viewHist","viewHist",
-           8,-0.5,7.5, //X-limits lyr
-           12,-0.5,11.5) //Y-limits col
+  lineFunc("line", "pol1", 0, 8),
+  viewHist("viewHist", "viewHist",
+           8, -0.5, 7.5,    //X-limits lyr
+           12, -0.5, 11.5),  //Y-limits col
+  calAsym(asym)
 {
   init();
-  
+
   ////////////////////////////////////////////////////
   // INITIALIZE ROOT PLOTTING OBJECTS FOR LINE FITS //
   ////////////////////////////////////////////////////
@@ -622,5 +308,5 @@ MuonMPD::AlgData::AlgData() :
   viewHist.Draw();
   graph.Draw("*");
   canvas.Update();
-  
 }
+
