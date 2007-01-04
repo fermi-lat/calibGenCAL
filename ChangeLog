@@ -1,4 +1,33 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Jan  4 15:23:01 PST 2007
+calibGenCAL/src/lib
+
+Modified Files:
+	CGCUtil.cxx CGCUtil.h CIDAC2ADC.cxx CIDAC2ADC.h CalAsym.cxx 
+	CalAsym.h CalGeom.h CalMPD.cxx CalMPD.h CalPed.cxx CalPed.h 
+	IntNonlin.cxx IntNonlin.h MuTrig.cxx MuTrig.h MuonAsym.cxx 
+	MuonAsym.h MuonMPD.cxx MuonMPD.h MuonPed.cxx MuonPed.h 
+	RootFileAnalysis.cxx RootFileAnalysis.h SimpleIniFile.cxx 
+	SimpleIniFile.h TwrHodoscope.cxx TwrHodoscope.h 
+Added Files:
+	ADC2NRG.cxx ADC2NRG.h AsymHists.cxx AsymHists.h CalGeom.cxx 
+	CalHodoscope.cxx CalHodoscope.h LangauFun.cxx LangauFun.h 
+	MPDHists.cxx MPDHists.h MuonCalibTkr.cxx MuonCalibTkr.h 
+Log Message:
+Fewtrell:
+- Addition of genMuonCalibTkr application, which uses tracker based muon/mip
+tracks to simultaneously calibrate asymmetery & mevPerDAC.  Better track
+leads to signficantly less noise hits.  Also uses more sophisticated fitting 
+method w/ gaussian-convolved landau and stepped background model.
+- mpdDiff.py script generates more detailed histograms.
+- 'uncrustify' c++ code beautifier applied to all C++ code
+- broke up existing C++ lib code into more modules
+	ADC2NRG, AsymHists, MPDHists
+- new modules added
+	CalHodoscope, MuonCalibTkr, LangauFun
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Jan  4 15:23:00 PST 2007
 calibGenCAL/src
 
