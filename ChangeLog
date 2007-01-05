@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Jan  5 09:31:59 PST 2007
+calibGenCAL/src/lib
+
+Modified Files:
+	SimpleIniFile.cxx SimpleIniFile.h 
+Log Message:
+added getSecitonKeys() to SimpleIniFile class
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Jan  5 09:25:34 PST 2007
 calibGenCAL/src/lib
 
