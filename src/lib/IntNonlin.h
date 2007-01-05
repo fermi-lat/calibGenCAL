@@ -1,10 +1,10 @@
 #ifndef IntNonlin_h
 #define IntNonlin_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/IntNonlin.h,v 1.5 2006/09/29 19:11:44 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/IntNonlin.h,v 1.6 2007/01/04 23:23:01 fewtrell Exp $
 
 /** @file
     @author fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "CGCUtil.h"
@@ -27,9 +27,9 @@ class TProfile;
     object by analyzing calibGen singlex16 digi ROOT files.
 
     @author fewtrell
- */
+*/
 class IntNonlin {
-public:
+ public:
   IntNonlin();
 
   /// process digi root event file
@@ -43,7 +43,7 @@ public:
   void genSplinePts(CIDAC2ADC &adcMeans,
                     CIDAC2ADC &cidac2adc);
 
-private:
+ private:
   /// fill histograms w/ data from single event
   void processEvent(const DigiEvent &digiEvent);
 
@@ -99,20 +99,20 @@ private:
 
   /// store data pertinent to current event
   struct EventData {
-private:
+    private:
 
-    void            init() {
-      eventNum = 0;
-      iGoodEvt = 0;
-      testCol  = 0;
-      iSamp    = 0;
-      testDAC  = 0;
-    }
+void            init() {
+  eventNum = 0;
+  iGoodEvt = 0;
+  testCol  = 0;
+  iSamp    = 0;
+  testDAC  = 0;
+}
 
-public:
-    EventData() {
-      init();
-    }
+    public:
+EventData() {
+  init();
+}
 
     /// count events read from root file
     unsigned        eventNum;

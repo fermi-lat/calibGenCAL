@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.9 2006/09/28 20:00:24 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.10 2007/01/04 23:23:00 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "lib/MuonPed.h"
@@ -42,11 +42,9 @@ int main(int argc,
                                       "OUTPUT_DIR",
                                       string("./"));
     // input files
-    vector<string> rootFileList;
-    cfgFile.getVector("MUON_PEDS",
-                      "ROOT_FILES",
-                      rootFileList,
-                      ", ");
+    vector<string> rootFileList(cfgFile.getVector<string>("MUON_PEDS",
+                                                          "ROOT_FILES",
+                                                          ", "));
     if (rootFileList.size() < 1) {
       cout << __FILE__ << ": No input files specified" << endl;
       return -1;
@@ -153,8 +151,8 @@ int main(int argc,
                           "root");
 
     if (readInHists) {
-	  TFile muPedHistFile(muPedHistFileName.c_str(),
-		                  "UPDATE");
+      TFile muPedHistFile(muPedHistFileName.c_str(),
+                          "UPDATE");
       LogStream::get() << __FILE__ << ": loading muon pedestal histograms: " << muPedHistFileName << endl;
       muPed.loadHists(muPedHistFile);
       LogStream::get() << __FILE__ << ": fitting muon pedestal histograms." << endl;

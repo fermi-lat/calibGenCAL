@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonCalibTkr.cxx,v 1.13 2006/10/19 17:57:57 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonCalibTkr.cxx,v 1.1 2007/01/04 23:23:01 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "MuonCalibTkr.h"
@@ -357,7 +357,7 @@ bool MuonCalibTkr::processFinalHitList() {
 
         algData.asymFills++;
         float asym = dac[XtalDiode(POS_FACE, pDiode)] /
-                     dac[XtalDiode(NEG_FACE, nDiode)];
+          dac[XtalDiode(NEG_FACE, nDiode)];
         asym = log(asym);
 
         m_asymHists.getHist(asymType, xtalIdx)->Fill(segmentNo, asym);

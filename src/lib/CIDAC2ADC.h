@@ -1,10 +1,10 @@
 #ifndef CIDAC2ADC_h
 #define CIDAC2ADC_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CIDAC2ADC.h,v 1.6 2006/09/26 20:27:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CIDAC2ADC.h,v 1.7 2007/01/04 23:23:00 fewtrell Exp $
 
 /** @file
     @author fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "CGCUtil.h"
@@ -24,9 +24,9 @@
     contains read & write methods to various file formats
 
     @author fewtrell
- */
+*/
 class CIDAC2ADC {
-public:
+ public:
   CIDAC2ADC();
 
   /// write calibrations to txt file
@@ -36,27 +36,27 @@ public:
 
   /// get series of charge injection DAC values used for given energy range in
   const std::vector<float> & getPtsDAC(CalUtil::RngIdx rngIdx) const
-  {
-    return m_splinePtsDAC[rngIdx];
-  }
+    {
+      return m_splinePtsDAC[rngIdx];
+    }
 
   /// get series of measured ADC values for given channel
   const std::vector<float> & getPtsADC(CalUtil::RngIdx rngIdx) const
-  {
-    return m_splinePtsADC[rngIdx];
-  }
+    {
+      return m_splinePtsADC[rngIdx];
+    }
 
   /// get series of charge injection DAC values used for given energy range in
   std::vector<float> & getPtsDAC(CalUtil::RngIdx rngIdx)
-  {
-    return m_splinePtsDAC[rngIdx];
-  }
+    {
+      return m_splinePtsDAC[rngIdx];
+    }
 
   /// get series of measured ADC values for given channel
   std::vector<float> & getPtsADC(CalUtil::RngIdx rngIdx)
-  {
-    return m_splinePtsADC[rngIdx];
-  }
+    {
+      return m_splinePtsADC[rngIdx];
+    }
 
   /// creates & populates INL splines from m_calIntNonlin;
   void genSplines();
@@ -93,7 +93,7 @@ public:
                                       ext);
   }
 
-private:
+ private:
   /// output ADC spline points
   CalUtil::CalVec<CalUtil::RngIdx, vector<float> >  m_splinePtsADC;
   /// output DAC spline points

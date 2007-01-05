@@ -48,21 +48,17 @@ int main(int argc,
                                       string("./"));
 
     // input file(s)
-    vector<string> digiFileList;
-    cfgFile.getVector("MUON_CALIB_TKR",
-                      "DIGI_FILES",
-                      digiFileList,
-                      ", ");
+    vector<string> digiFileList(cfgFile.getVector<string>("MUON_CALIB_TKR",
+                                                          "DIGI_FILES",
+                                                          ", "));
     if (digiFileList.size() < 1) {
       cout << __FILE__ << ": No input files specified" << endl;
       return -1;
     }
 
-    vector<string> svacFileList;
-    cfgFile.getVector("MUON_CALIB_TKR",
-                      "SVAC_FILES",
-                      svacFileList,
-                      ", ");
+    vector<string> svacFileList(cfgFile.getVector<string>("MUON_CALIB_TKR",
+                                                          "SVAC_FILES",
+                                                          ", "));
     if (svacFileList.size() < 1) {
       cout << __FILE__ << ": No input files specified" << endl;
       return -1;
@@ -94,11 +90,9 @@ int main(int argc,
     if (!pedTXTFile.size()) {
       // retrieve original input root filename for pedestal process
       // (in order to generate associated 'output' txt filename)
-      vector<string> pedRootFileList;
-      cfgFile.getVector("MUON_PEDS",
-                        "ROOT_FILES",
-                        pedRootFileList,
-                        ", ");
+      vector<string> pedRootFileList(cfgFile.getVector<string>("MUON_PEDS",
+                                                               "ROOT_FILES",
+                                                               ", "));
       if (pedRootFileList.size() < 1) {
         LogStream::get() << __FILE__ << ": No input files specified" << endl;
         return -1;
