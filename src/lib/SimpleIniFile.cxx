@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/SimpleIniFile.cxx,v 1.4 2007/01/04 23:23:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/SimpleIniFile.cxx,v 1.5 2007/01/05 17:25:34 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -219,6 +219,18 @@ void SimpleIniFile::tokenize_str(const string & str,
       // Find next "non-delimiter"
       pos     = str.find_first_of(delims, lastPos);
     }
+}
+
+vector<string>  SimpleIniFile::getSectionList() {
+  vector<string> retVal;
+
+  // push all section keys onto return vector
+  for (SectionMap::const_iterator smIter = m_sectionMap.begin();
+       smIter != m_sectionMap.end();
+       smIter++)
+    retVal.push_back(smIter->first);
+
+  return retVal;
 }
 
 vector<string>  SimpleIniFile::getSectionKeys(const string &section) {
