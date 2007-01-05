@@ -5,7 +5,7 @@
 
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "CalAsym.h"
@@ -25,17 +25,17 @@ class TH2S;
 class CalAsym;
 
 /** \brief Store histograms required to generate Calorimeter Light Asymmetry
-        calibrations
+    calibrations
 
-        @author Zachary Fewtrell
+    @author Zachary Fewtrell
 
- */
+*/
 class AsymHists {
-public:
+ public:
   AsymHists::AsymHists() :
     m_histograms(CalUtil::AsymType::N_VALS)
-  {
-  }
+    {
+    }
 
   /// allocate & create asymmetry histograms & pointer arrays
   void        initHists();
@@ -60,7 +60,7 @@ public:
     return m_histograms[asymType][xtalIdx];
   }
 
-private:
+ private:
   /// list of histograms for muon asymmetry
   CalUtil::CalVec<CalUtil::AsymType, CalUtil::CalArray<CalUtil::XtalIdx, TH2S *> > m_histograms;
 

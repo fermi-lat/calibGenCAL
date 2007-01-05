@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.8 2006/09/28 17:47:55 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.9 2007/01/04 23:23:00 fewtrell Exp $
 
 /** @file Gen CIDAC2ADC calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "lib/IntNonlin.h"
@@ -57,7 +57,7 @@ int main(int argc,
     }
 
     const  string &outputBaseName = (rootFileLE.length()) ?
-                                    rootFileLE : rootFileHE;
+      rootFileLE : rootFileHE;
 
     //-- SETUP LOG FILE --//
     /// multiplexing output streams

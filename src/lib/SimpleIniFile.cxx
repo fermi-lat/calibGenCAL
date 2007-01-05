@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/SimpleIniFile.cxx,v 1.3 2006/09/26 18:57:24 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/SimpleIniFile.cxx,v 1.4 2007/01/04 23:23:01 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "SimpleIniFile.h"
@@ -18,9 +18,9 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////
 
 /** \brief trim trailing ' ' && '\t'
- \note transform is done in place on caller's string object
- \return ref to resultant string.
- */
+    \note transform is done in place on caller's string object
+    \return ref to resultant string.
+*/
 static string &trim_right(string &str) {
   string::size_type pos = str.find_last_not_of(' ');
 
@@ -33,9 +33,9 @@ static string &trim_right(string &str) {
 }
 
 /** \brief trim leading ' ' && '\t' from input strings
- \note transform is done in place on caller's string object
- \return ref to resultant string.
- */
+    \note transform is done in place on caller's string object
+    \return ref to resultant string.
+*/
 static string &trim_left(string &str) {
   string::size_type pos = str.find_first_not_of(' ');
 
@@ -48,9 +48,9 @@ static string &trim_left(string &str) {
 }
 
 /** \brief trim leading AND trailing ' ' && '\t' from input string
- \note transform is done in place on caller's string object
- \return ref to resultant string.
- */
+    \note transform is done in place on caller's string object
+    \return ref to resultant string.
+*/
 static string &trim_whitespace(string &str) {
   // replace all '\t' with ' ' for trim_right & trim_left functions
   string::size_type pos;
@@ -63,9 +63,9 @@ static string &trim_whitespace(string &str) {
 }
 
 /** \brief trim first ';' comment char and all trailing text.
- \note transform is done in place on caller's string object
- \return ref to resultant string.
- */
+    \note transform is done in place on caller's string object
+    \return ref to resultant string.
+*/
 static string &trim_comment(string &str) {
   string::size_type pos = str.find_first_of(';');
 
@@ -89,7 +89,7 @@ SimpleIniFile::SimpleIniFile(const string &filename)
   if (!openIniFile(filename)) {
     ostringstream tmp;
     tmp << __FILE__ << ":" << __LINE__ <<
-    ": Cannot open cfg file: " << filename;
+      ": Cannot open cfg file: " << filename;
     throw std::runtime_error(tmp.str());
   }
 }
@@ -179,7 +179,6 @@ void SimpleIniFile::addKey(const string &section,
   // first look for section
   SectionMap::iterator smIter = m_sectionMap.find(section);
 
-
   // create new seciton if it doesn't exist
   if (smIter == m_sectionMap.end()) {
     // create new section
@@ -201,3 +200,42 @@ void SimpleIniFile::addKey(const string &section,
   return;
 }
 
+void SimpleIniFile::tokenize_str(const string & str,
+                                 vector<string> & tokens,
+                                 const string & delims)
+{
+  // Skip delims at beginning.
+  string::size_type lastPos = str.find_first_not_of(delims, 0);
+  // Find first "non-delimiter".
+  string::size_type pos     = str.find_first_of(delims, lastPos);
+
+
+  while (string::npos != pos || string::npos != lastPos)
+    {
+      // Found a token, add it to the vector.
+      tokens.push_back(str.substr(lastPos, pos - lastPos));
+      // Skip delims.  Note the "not_of"
+      lastPos = str.find_first_not_of(delims, pos);
+      // Find next "non-delimiter"
+      pos     = str.find_first_of(delims, lastPos);
+    }
+}
+
+vector<string>  SimpleIniFile::getSectionKeys(const string &section) {
+  vector<string> retVal;
+
+  // first look for section
+  SectionMap::const_iterator smIter = m_sectionMap.find(section);
+
+  // return empty vector if it doesn't exist
+  if (smIter == m_sectionMap.end())
+    return retVal;
+
+  // push all section keys onto return vector
+  for (Section::const_iterator sIter = smIter->second.begin();
+       sIter != smIter->second.end();
+       sIter++)
+    retVal.push_back(sIter->first);
+
+  return retVal;
+}

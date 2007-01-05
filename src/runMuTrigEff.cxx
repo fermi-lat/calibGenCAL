@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runMuTrigEff.cxx,v 1.24 2006/09/18 14:12:53 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runMuTrigEff.cxx,v 1.25 2007/01/04 23:23:00 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "lib/CalPed.h"
@@ -82,11 +82,9 @@ int main(int argc,
     //-- RETRIEVE PEDESTALS
     // retrieve original input root filename for pedestal process
     // (in order to generate associated 'output' txt filename)
-    vector<string> pedRootFileList;
-    cfgFile.getVector("MUON_PEDS",
-                      "ROOT_FILES",
-                      pedRootFileList,
-                      " ," );
+    vector<string> pedRootFileList(cfgFile.getVector<string>("MUON_PEDS",
+                                                             "ROOT_FILES",
+                                                             " ," ));
     if (pedRootFileList.size() < 1) {
       LogStream::get() << __FILE__ << ": No input files specified" << endl;
       return -1;
@@ -122,10 +120,10 @@ int main(int argc,
     // trigger configuration A :  Even Rows Even Columns
     unsigned nEvents      = cfgFile. getVal<unsigned>("MU_TRIG",
                                                       "N_EVENTS",
-             ULONG_MAX);                                    // process all events by default.
+                                                      ULONG_MAX);                                    // process all events by default.
     bool     calLOEnabled = cfgFile. getVal<bool>("MU_TRIG",
                                                   "CAL_LO_ENABLED",
-             false);
+                                                  false);
 
     muTrig.fillMuonHists(MuTrig::EVEN_ROW_EVEN_COL,
                          rootFileEvenEven,

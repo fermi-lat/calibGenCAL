@@ -1,9 +1,9 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.10 2006/10/12 15:41:52 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.11 2007/01/04 23:23:00 fewtrell Exp $
 
 /** @file Gen MevPerDAC calibrations from Muon event files using Cal Digi Hodoscope
     for track & hit information
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "lib/MuonMPD.h"
@@ -51,11 +51,9 @@ int main(int argc,
                                       string("./"));
 
     // input file(s)
-    vector<string> rootFileList;
-    cfgFile.getVector("MUON_MPD",
-                      "ROOT_FILES",
-                      rootFileList,
-                      ", ");
+    vector<string> rootFileList(cfgFile.getVector<string>("MUON_MPD",
+                                                          "ROOT_FILES",
+                                                          ", "));
     if (rootFileList.size() < 1) {
       cout << __FILE__ << ": No input files specified" << endl;
       return -1;
@@ -86,11 +84,9 @@ int main(int argc,
     if (!pedTXTFile.size()) {
       // retrieve original input root filename for pedestal process
       // (in order to generate associated 'output' txt filename)
-      vector<string> pedRootFileList;
-      cfgFile.getVector("MUON_PEDS",
-                        "ROOT_FILES",
-                        pedRootFileList,
-                        ", ");
+      vector<string> pedRootFileList(cfgFile.getVector<string>("MUON_PEDS",
+                                                               "ROOT_FILES",
+                                                               ", "));
       if (pedRootFileList.size() < 1) {
         LogStream::get() << __FILE__ << ": No input files specified" << endl;
         return -1;
@@ -141,110 +137,108 @@ int main(int argc,
     if (!asymTXTFile.size()) {
       // retrieve original input root filename for asymmetry process
       // (in order to generate associated 'output' txt filename)
-      vector<string> asymRootFileList;
-      cfgFile.getVector("MUON_ASYM",
-                        "ROOT_FILES",
-                        asymRootFileList,
-                        ", ");
-      if (asymRootFileList.size() < 1) {
-        LogStream::get() << __FILE__ << ": No input files specified" << endl;
-        return -1;
-      }
-      // txt output filename
-      asymTXTFile = CalAsym::genFilename(outputDir,
-                                         asymRootFileList[0],
-                                         "txt");
+      vector<string> asymRootFileList(cfgFile.getVector<string>("MUON_ASYM",
+                                                                "ROOT_FILES",
+                                                                ", "));
+    if (asymRootFileList.size() < 1) {
+      LogStream::get() << __FILE__ << ": No input files specified" << endl;
+      return -1;
     }
-
-    CalAsym asym;
-    LogStream::get() << __FILE__ << ": reading in muon asym file: " << asymTXTFile << endl;
-    asym.readTXT(asymTXTFile);
-    LogStream::get() << __FILE__ << ": building asymmetry splines: " << endl;
-    asym.buildSplines();
-
-    //-- MUON MPD
-
-    // output histogram file name
-    string histFilename =
-      CalMPD::genFilename(outputDir,
-                          rootFileList[0],
-                          "root");
-
-    // output txt file name
-    string   outputTXTFile =
-      CalMPD::genFilename(outputDir,
-                          rootFileList[0],
-                          "txt");
-
-    unsigned nEntries      = cfgFile. getVal<unsigned>("MUON_MPD",
-                                                       "ENTRIES_PER_HIST",
-                                                       3000);
-
-    // read in Hist file?
-    bool     readInHists   = cfgFile.getVal("MUON_MPD",
-                                            "READ_IN_HISTS",
-                                            false);
-
-    ///////////////////////////////////////
-	//-- OPEN HISTOGRAM FILE             //
-	//   (either 'CREATE' or 'UPDATE') --//
-	///////////////////////////////////////
-
-	auto_ptr<TFile> histFile;
-    if (readInHists) {
-      LogStream::get() << __FILE__ << ": opening input histogram file: "
-                       << histFilename << endl;
-      histFile.reset(new TFile(histFilename.c_str(), "UPDATE"));
-    } else {
-      // open file to save output histograms.
-      LogStream::get() << __FILE__ << ": opening output histogram file: "
-                       << histFilename << endl;
-      histFile.reset(new TFile(histFilename.c_str(), "RECREATE", "CAL Muon Calib", 9));
-	}
-	
-	MPDHists mpdHists(MPDHists::FitMethods::LANDAU);
-    MuonMPD muonMPD(peds,
-                    dac2adc,
-                    asym,
-                    mpdHists);
-
-    CalMPD   calMPD;
-
-    if (readInHists) {
-      mpdHists.loadHists();
-    } else {
-      LogStream::get() << __FILE__ << ": reading root event file(s) starting w/ " << rootFileList[0] << endl;
-      muonMPD.fillHists(nEntries,
-                        rootFileList);
-      mpdHists.trimHists();
-
-      // Save file to disk before entering fit portion (saves time if i crash during debugging).
-      //histFile->Write();
-
-    }
-
-    LogStream::get() << __FILE__ << ": fitting muon mpd histograms." << endl;
-    mpdHists.fitHists(calMPD);
-
-    LogStream::get() << __FILE__ << ": writing muon mpd: " << outputTXTFile << endl;
-    calMPD.writeTXT(outputTXTFile);
-
-    string adc2nrgFile =
-      ADC2NRG::genFilename(outputDir,
-                           rootFileList[0],
-                           "txt");
-
-    LogStream::get() << __FILE__ << ": writing muon adc2nrg: " << adc2nrgFile << endl;
-    ADC2NRG::writeTXT(adc2nrgFile, asym, dac2adc, calMPD);
-
-    LogStream::get() << __FILE__ << ": writing histogram file: " << histFilename << endl;
-    histFile->Write();
-
-  } catch (exception e) {
-    cout << __FILE__ << ": exception thrown: " << e.what() << endl;
-	return -1;
+    // txt output filename
+    asymTXTFile = CalAsym::genFilename(outputDir,
+                                       asymRootFileList[0],
+                                       "txt");
   }
 
-  return 0;
+  CalAsym asym;
+  LogStream::get() << __FILE__ << ": reading in muon asym file: " << asymTXTFile << endl;
+  asym.readTXT(asymTXTFile);
+  LogStream::get() << __FILE__ << ": building asymmetry splines: " << endl;
+  asym.buildSplines();
+
+  //-- MUON MPD
+
+  // output histogram file name
+  string histFilename =
+    CalMPD::genFilename(outputDir,
+                        rootFileList[0],
+                        "root");
+
+  // output txt file name
+  string   outputTXTFile =
+    CalMPD::genFilename(outputDir,
+                        rootFileList[0],
+                        "txt");
+
+  unsigned nEntries      = cfgFile. getVal<unsigned>("MUON_MPD",
+                                                     "ENTRIES_PER_HIST",
+                                                     3000);
+
+  // read in Hist file?
+  bool     readInHists   = cfgFile.getVal("MUON_MPD",
+                                          "READ_IN_HISTS",
+                                          false);
+
+  ///////////////////////////////////////
+  //-- OPEN HISTOGRAM FILE             //
+  //   (either 'CREATE' or 'UPDATE') --//
+  ///////////////////////////////////////
+
+  auto_ptr<TFile> histFile;
+  if (readInHists) {
+    LogStream::get() << __FILE__ << ": opening input histogram file: "
+                     << histFilename << endl;
+    histFile.reset(new TFile(histFilename.c_str(), "UPDATE"));
+  } else {
+    // open file to save output histograms.
+    LogStream::get() << __FILE__ << ": opening output histogram file: "
+                     << histFilename << endl;
+    histFile.reset(new TFile(histFilename.c_str(), "RECREATE", "CAL Muon Calib", 9));
+  }
+        
+  MPDHists mpdHists(MPDHists::FitMethods::LANDAU);
+  MuonMPD muonMPD(peds,
+                  dac2adc,
+                  asym,
+                  mpdHists);
+
+  CalMPD   calMPD;
+
+  if (readInHists) {
+    mpdHists.loadHists();
+  } else {
+    LogStream::get() << __FILE__ << ": reading root event file(s) starting w/ " << rootFileList[0] << endl;
+    muonMPD.fillHists(nEntries,
+                      rootFileList);
+    mpdHists.trimHists();
+
+    // Save file to disk before entering fit portion (saves time if i crash during debugging).
+    //histFile->Write();
+
+  }
+
+  LogStream::get() << __FILE__ << ": fitting muon mpd histograms." << endl;
+  mpdHists.fitHists(calMPD);
+
+  LogStream::get() << __FILE__ << ": writing muon mpd: " << outputTXTFile << endl;
+  calMPD.writeTXT(outputTXTFile);
+
+  string adc2nrgFile =
+    ADC2NRG::genFilename(outputDir,
+                         rootFileList[0],
+                         "txt");
+
+  LogStream::get() << __FILE__ << ": writing muon adc2nrg: " << adc2nrgFile << endl;
+  ADC2NRG::writeTXT(adc2nrgFile, asym, dac2adc, calMPD);
+
+  LogStream::get() << __FILE__ << ": writing histogram file: " << histFilename << endl;
+  histFile->Write();
+
+} catch (exception e) {
+  cout << __FILE__ << ": exception thrown: " << e.what() << endl;
+  return -1;
+}
+
+return 0;
 }
 

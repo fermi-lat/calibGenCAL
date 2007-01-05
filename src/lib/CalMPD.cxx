@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalMPD.cxx,v 1.2 2006/09/26 18:57:24 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalMPD.cxx,v 1.3 2007/01/04 23:23:01 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "CalMPD.h"

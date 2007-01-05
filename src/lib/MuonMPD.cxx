@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.cxx,v 1.13 2006/10/19 17:57:57 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.cxx,v 1.14 2007/01/04 23:23:01 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "MuonMPD.h"
@@ -167,7 +167,7 @@ void MuonMPD::processTower(TwrHodoscope &hscope) {
   /** Note: 'direction' refers to the direction of xtals which have vertical
       'connect-4' deposits.  For MevPerDAC, the orthogonal hits will be used to
       determine the pathlength for these 4 hits.
-   */
+  */
 
   for (DirNum dir; dir.isValid(); dir++) {
     // skip if we don't have a good track

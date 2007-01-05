@@ -1,11 +1,11 @@
 /** @file CGCUtil.cxx
 
-   @author Zachary Fewtrell
+@author Zachary Fewtrell
 
- \brief generic utility functions used in calibGenCAL pkg
+\brief generic utility functions used in calibGenCAL pkg
 
-   $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CGCUtil.cxx,v 1.2 2006/09/26 18:57:24 fewtrell Exp $
- */
+$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CGCUtil.cxx,v 1.3 2007/01/04 23:23:00 fewtrell Exp $
+*/
 
 // LOCAL INCLUDES
 #include "CGCUtil.h"
@@ -26,7 +26,7 @@ using namespace std;
 namespace CGCUtil {
   /** \brief splits a delmiited string into a vector of shorter token-strings
       stolen from http://www.linuxselfhelp.com/HOWTO/C++Programming-HOWTO-7.html
-   */
+  */
   void tokenize_str(const string & str,
                     vector<string> & tokens,
                     const string & delims)
@@ -38,14 +38,14 @@ namespace CGCUtil {
 
 
     while (string::npos != pos || string::npos != lastPos)
-    {
-      // Found a token, add it to the vector.
-      tokens.push_back(str.substr(lastPos, pos - lastPos));
-      // Skip delims.  Note the "not_of"
-      lastPos = str.find_first_not_of(delims, pos);
-      // Find next "non-delimiter"
-      pos     = str.find_first_of(delims, lastPos);
-    }
+      {
+        // Found a token, add it to the vector.
+        tokens.push_back(str.substr(lastPos, pos - lastPos));
+        // Skip delims.  Note the "not_of"
+        lastPos = str.find_first_not_of(delims, pos);
+        // Find next "non-delimiter"
+        pos     = str.find_first_of(delims, lastPos);
+      }
   }
 
   /// finds position of last directory delimeter ('/' || '\\')
@@ -180,9 +180,9 @@ namespace CGCUtil {
     path_remove_ext(baseFilename);
 
     return outputDir + '/'
-           + outputCalibType + '.'
-           + baseFilename + '.'
-           + outputExt;
+      + outputCalibType + '.'
+      + baseFilename + '.'
+      + outputExt;
   }
 
   typedef std::vector<std::ostream *> streamvector;
@@ -193,7 +193,7 @@ namespace CGCUtil {
    */
   class multiplexor_streambuf :
     public std::streambuf {
-public:
+  public:
     multiplexor_streambuf() :
       std::streambuf() {
     }
@@ -209,7 +209,7 @@ public:
       return c;
     }
 
-public:
+  public:
     streamvector _streams;
   };
 
@@ -226,7 +226,7 @@ public:
   class multiplexor_ostream :
     public ostream
   {
-public:
+  public:
     multiplexor_ostream() :
       std::ios(0),
       std::ostream(new multiplexor_streambuf()) {

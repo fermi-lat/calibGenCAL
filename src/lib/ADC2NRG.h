@@ -4,8 +4,8 @@
 // $Header: //
 
 /** @file
-        @author Zachary Fewtrell
- */
+    @author Zachary Fewtrell
+*/
 
 // LOCAL INCLUDES
 #include "CGCUtil.h"
@@ -26,7 +26,7 @@ class CIDAC2ADC;
  */
 
 class ADC2NRG {
-public:
+ public:
   static void        writeTXT(const std::string &filename,
                               const CalAsym &asym,
                               const CIDAC2ADC &dac2adc,

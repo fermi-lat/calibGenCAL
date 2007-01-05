@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/TwrHodoscope.cxx,v 1.6 2006/10/19 17:57:57 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/TwrHodoscope.cxx,v 1.7 2007/01/04 23:23:01 fewtrell Exp $
 
 /** @file
     @author fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "TwrHodoscope.h"
