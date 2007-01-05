@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/SimpleIniFile.h,v 1.4 2007/01/04 23:23:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/SimpleIniFile.h,v 1.5 2007/01/05 17:25:34 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -102,6 +102,9 @@ class SimpleIniFile
     return retVal;
   }
 
+  /// return list of section names
+  std::vector<std::string> getSectionList();
+							 
   /// return list of keys for given section
   std::vector<std::string> getSectionKeys(const std::string &section);
 
