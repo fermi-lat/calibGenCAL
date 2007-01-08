@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: fewtrell  Mon Jan  8 14:19:36 PST 2007
+calibGenCAL/src/lib
+
+Modified Files:
+	AsymHists.cxx CGCUtil.h LangauFun.cxx MPDHists.cxx 
+Log Message:
+'langau' function now returns landau & gaussian widths in fractions of the mpv
+    *
+------------------------------------------------------------
+User: fewtrell  Mon Jan  8 14:19:36 PST 2007
 calibGenCAL/src
 
 Modified Files:
