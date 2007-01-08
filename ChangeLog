@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Jan  8 14:25:27 PST 2007
+calibGenCAL/src
+
+Modified Files:
+	genMuonCalibTkr.cxx 
+Log Message:
+had to uncomment asym fit which had been left commented before for debugging purposes.
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Jan  8 14:19:36 PST 2007
 calibGenCAL/src/lib
 
