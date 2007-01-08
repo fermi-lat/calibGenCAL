@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Jan  8 14:19:36 PST 2007
+calibGenCAL/src
+
+Modified Files:
+	genMuonCalibTkr.cxx 
+Log Message:
+'langau' function now returns landau & gaussian widths in fractions of the mpv
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Jan  8 14:05:26 PST 2007
 calibGenCAL/python
 
