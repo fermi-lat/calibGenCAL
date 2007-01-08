@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Jan  8 14:05:26 PST 2007
+calibGenCAL/python
+
+Added Files:
+	txt2tuple.py 
+Log Message:
+new script converts txt to ROOT Ntuple using pyroot
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Jan  8 11:45:01 PST 2007
 calibGenCAL/python
 
