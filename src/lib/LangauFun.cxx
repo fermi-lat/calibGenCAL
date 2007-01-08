@@ -1,4 +1,4 @@
-// $Header:$
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/LangauFun.cxx,v 1.1 2007/01/04 23:23:01 fewtrell Exp $
 
 /** @file
     @author Zach Fewtrell
@@ -14,6 +14,7 @@
 
 // STD INCLUDES
 #include <cmath>
+#include <sstream>
 
 using namespace std;
 using namespace CGCUtil;
@@ -63,15 +64,20 @@ namespace {
     float step;
     unsigned short i;
 
+    // landau & gausian wid given as fraction
+    // of mpv
+    float real_lan = par[PARM_LAN_WID]*par[PARM_MPV];
+    float real_gau = par[PARM_GAU_WID]*par[PARM_MPV];
+
 
     // MP shift correction
 
-    mpc  = par[PARM_MPV]-mpshift*par[PARM_LAN_WID];
+    mpc  = par[PARM_MPV]-mpshift*real_lan;
 
     // Range of convolution integral
 
-    xlow = x[0]-sc*par[PARM_GAU_WID];
-    xupp = x[0]+sc*par[PARM_GAU_WID];
+    xlow = x[0]-sc*real_gau;
+    xupp = x[0]+sc*real_gau;
     step = (xupp-xlow)/np;
 
     // Convolution integral of Landau and Gaussian by sum
@@ -79,30 +85,34 @@ namespace {
     for (i = 1; i <= np/2; i++)
       {
         xx    = xlow+(i-.5)* step;
-        fland = TMath::Landau(xx, mpc, par[PARM_LAN_WID])/par[PARM_LAN_WID];
+        fland = TMath::Landau(xx, mpc, real_lan)/real_lan;
         sum  += fland *TMath::Gaus(x[0],
                                    xx,
-                                   par[PARM_GAU_WID]);
+                                   real_gau);
 
         xx    = xupp-(i-.5)*step;
-        fland = TMath::Landau(xx, mpc, par[PARM_LAN_WID])/par[PARM_LAN_WID];
+        fland = TMath::Landau(xx, mpc, real_lan)/real_lan;
         sum  += fland *TMath::Gaus(x[0],
                                    xx,
-                                   par[PARM_GAU_WID]);
+                                   real_gau);
       }
 
     // combine sigmas for both landau & gaussian
-    float convolved_width = sqrt(par[PARM_GAU_WID]*par[PARM_GAU_WID] + par[PARM_LAN_WID]*par[PARM_LAN_WID]);
+    float convolved_width = sqrt(real_gau*real_gau + real_lan*real_lan);
     float bkgnd = bckgnd_model(x[0],  
                                par[PARM_BKGND_HEIGHT], // bckgnd height
                                par[PARM_MPV], // mpv
                                convolved_width);
-                               
-                               
 
+    float retVal = par[PARM_LAN_AREA]*step*sum*invsq2pi/real_gau + bkgnd;
+
+//     LogStream::get() << x[0] << " "
+//                      << str_join(par, par+N_PARMS)
+//                      << real_lan << " " 
+//                      << real_gau << " " 
+//                      << retVal << endl;
           
-
-    return par[PARM_LAN_AREA]*step*sum*invsq2pi/par[PARM_GAU_WID] + bkgnd;
+    return retVal;
   }
 
   TF1 *buildLangauDAC() {
@@ -128,16 +138,16 @@ namespace {
 
     //----- parameters limits
 
-    pllo[PARM_LAN_WID]      = .5;     plhi[PARM_LAN_WID] = 5.0;
-    pllo[PARM_MPV]          = 10.0;   plhi[PARM_MPV] = 70.0;
-    pllo[PARM_GAU_WID]      = .1;    plhi[PARM_GAU_WID] = 10.0;
+    pllo[PARM_LAN_WID]      = 1/50.0;  plhi[PARM_LAN_WID] = 1;
+    pllo[PARM_MPV]          = 10.0;    plhi[PARM_MPV] = 70.0;
+    pllo[PARM_GAU_WID]      = 1/25.0;  plhi[PARM_GAU_WID] = 1;
 
     //----- parameters starting values
 
-    startVal[PARM_LAN_WID]        = 1.6;
+    startVal[PARM_LAN_WID]        = 1/18.0;
     startVal[PARM_MPV]            = 30.0;
     startVal[PARM_LAN_AREA]       = 5000.0;
-    startVal[PARM_GAU_WID]        = 1.9;
+    startVal[PARM_GAU_WID]        = 1/18.0;
     startVal[PARM_BKGND_HEIGHT]   = 1;
 
     TF1 *ffit = new TF1("langau", langaufun, fitRange[0], fitRange[1], N_PARMS);
@@ -175,17 +185,17 @@ namespace {
 
     //----- parameters limits
 
-    pllo[PARM_LAN_WID]      = 1.0;     plhi[PARM_LAN_WID]      = 100;
-    pllo[PARM_MPV]          = 100.0;   plhi[PARM_MPV]          = 800.0;
-    pllo[PARM_GAU_WID]      = 2;       plhi[PARM_GAU_WID]      = 100.0;
+    pllo[PARM_LAN_WID]      = 1/50.0;     plhi[PARM_LAN_WID] = 1;
+    pllo[PARM_MPV]          = 100.0;      plhi[PARM_MPV]     = 800.0;
+    pllo[PARM_GAU_WID]      = 1/25.0;     plhi[PARM_GAU_WID] = 1;
     
 
     //----- parameters starting values
 
-    startVal[PARM_LAN_WID]      = 20;
+    startVal[PARM_LAN_WID]      = 1/18.0;
     startVal[PARM_MPV]          = 350.0;
-    startVal[PARM_LAN_AREA]      = 5000.0;
-    startVal[PARM_GAU_WID]      = 20;
+    startVal[PARM_LAN_AREA]     = 5000.0;
+    startVal[PARM_GAU_WID]      = 1/18.0;
     startVal[PARM_BKGND_HEIGHT] = 1;
 
     TF1 *ffit_adc = new TF1("langau_adc", langaufun, fitRange[0], fitRange[1], N_PARMS);
@@ -208,8 +218,6 @@ namespace {
   /// use static auto_ptr so that singletons are properly destroyed on exit.
   /// not entirely necessary, but keeps things clean
   std::auto_ptr<TF1> langauADC;
-
-  
 };
 
 /// retrieve gaussian convolved landau fuction with limits & initial values appropriate for LE CIDAC scale

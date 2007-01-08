@@ -171,6 +171,13 @@ void AsymHists::fitHists(CalAsym &calAsym) {
         // update new mean & sigma
         av = slice.GetMean(); rms = slice.GetRMS();
 
+		LogStream::get() << xtalIdx.val() << " " 
+			             << asymType << " "
+			             << i   << " "
+			             << av  << " "
+						 << rms << " "
+						 << endl;
+
         calAsym.getPtsAsym(xtalIdx, asymType).push_back(av);
         calAsym.getPtsErr(xtalIdx, asymType).push_back(rms);
 
