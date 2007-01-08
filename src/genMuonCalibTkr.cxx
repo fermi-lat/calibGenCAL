@@ -211,7 +211,7 @@ int main(int argc,
     }
 
     LogStream::get() << __FILE__ << ": fitting asymmetry histograms." << endl;
-    asymHists.fitHists(calAsym);
+    //asymHists.fitHists(calAsym);
 
     LogStream::get() << __FILE__ << ": fitting MeVPerDAC histograms." << endl;
     mpdHists.fitHists(calMPD);

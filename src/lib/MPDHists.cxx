@@ -142,6 +142,11 @@ void MPDHists::fitHists(CalMPD &calMPD) {
 
     float mpv, width;
     fitChannel(histLL, mpv,width);
+	LogStream::get() << xtalIdx.val() << " "
+		             << mpv << " "
+					 << width << " "
+					 << endl;
+		           
 
     // create histogram of residual after fit
     //createResidHist(histLL);
@@ -246,6 +251,9 @@ void MPDHists::fitChannel(TH1 &hist,
   case FitMethods::LANGAU:
     width = sqrt(pow(m_fitFunc->GetParameter(0),2) + 
                  pow(m_fitFunc->GetParameter(3),2));
+	// width is calc'd as fraction of mpv
+	// i want to save it in dac units.
+	width *= mpv;
     break;
   default:
     throw invalid_argument("invalid fit_method");
