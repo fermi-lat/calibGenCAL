@@ -14,9 +14,9 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL mevPerDAC XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/08/11 16:30:18 $"
-__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
-__release__     = "$Name: HEAD $"
+__date__        = "$Date: 2007/01/04 23:23:00 $"
+__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
+__release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
 import sys
@@ -248,10 +248,10 @@ for twr in mpdTwrs1:
                          array.array('d',smErr2),
                          array.array('d',[1]*len(smErr1)))
 
-lrg_prof.Fit("pol1")
-sm_prof.Fit("pol1")
-lrg_err_prof.Fit("pol1")
-sm_err_prof.Fit("pol1")
+lrg_prof.Fit("pol1","Q")
+sm_prof.Fit("pol1","Q")
+lrg_err_prof.Fit("pol1","Q")
+sm_err_prof.Fit("pol1","Q")
 
 log.info("Writing %s"%rootPath)
 rootFile.Write()
