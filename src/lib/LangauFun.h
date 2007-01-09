@@ -1,17 +1,22 @@
 #ifndef LangauFun_h
 #define LangauFun_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/LangauFun.h,v 1.1 2007/01/04 23:23:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/LangauFun.h,v 1.2 2007/01/05 17:25:34 fewtrell Exp $
 
 // LOCAL INCLUDES
 
 // GLAST INCLUDES
+#include "CalUtil/CalDefs.h"
 
 // EXTLIB INCLUDES
-#include "TF1.h"
+#include "Rtypes.h"
 
 // STD INCLUDES
 #include <memory>
+
+class TNtuple;
+class TH1;
+class TF1;
 
 /** @file
     @author Zach Fewtrell, Alexandre Chekhtman
@@ -36,10 +41,14 @@ class LangauFun {
  public:
   /// retrieve gaussian convolved landau fuction with limits & initial values appropriate for LE CIDAC scale
   static TF1 &getLangauDAC();
-  /// retrieve gaussian convolved landau fuction with limits & initial values appropriate for LEX8 ADC scale
-  static TF1 &getLangauADC();
 
+  /// build ROOT TNtuple obj w/ fields formatted for this function
+  static TNtuple &buildTuple();
 
+  /// fill ROOT TNtuple w/ fitted parms for this func / hist
+  static Int_t fillTuple(CalUtil::XtalIdx xtalId,
+	                     const TH1 &hist, 
+						 TNtuple &tuple);
 };
 
 #endif

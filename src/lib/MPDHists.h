@@ -97,6 +97,9 @@ class MPDHists {
     m_dacL2SSlopeProfs[xtalIdx]->Fill(dacL, dacS);
   }
 
+  /// build tuple with fit outputs
+  void buildTuple();
+
  private:
   /// fit single channel w/ specified function & store
   /// mpv and width 

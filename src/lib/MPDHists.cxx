@@ -142,11 +142,11 @@ void MPDHists::fitHists(CalMPD &calMPD) {
 
     float mpv, width;
     fitChannel(histLL, mpv,width);
-	LogStream::get() << xtalIdx.val() << " "
-		             << mpv << " "
-					 << width << " "
-					 << endl;
-		           
+    LogStream::get() << xtalIdx.val() << " "
+                     << mpv << " "
+                     << width << " "
+                     << endl;
+                           
 
     // create histogram of residual after fit
     //createResidHist(histLL);
@@ -251,9 +251,9 @@ void MPDHists::fitChannel(TH1 &hist,
   case FitMethods::LANGAU:
     width = sqrt(pow(m_fitFunc->GetParameter(0),2) + 
                  pow(m_fitFunc->GetParameter(3),2));
-	// width is calc'd as fraction of mpv
-	// i want to save it in dac units.
-	width *= mpv;
+    // width is calc'd as fraction of mpv
+    // i want to save it in dac units.
+    width *= mpv;
     break;
   default:
     throw invalid_argument("invalid fit_method");
@@ -370,4 +370,32 @@ void MPDHists::fillDacLL(CalUtil::XtalIdx xtalIdx,
   m_perTwrLyr[twr]->Fill(lyr.val());
   m_perTwrCol[twr]->Fill(col.val());
 }
+
+void MPDHists::buildTuple() {
+  TNtuple *tuple;
+  
+  switch (m_fitMethod) {
+  case FitMethods::LANDAU:
+    break;
+  case FitMethods::LANGAU:
+	  tuple = &(LangauFun::buildTuple());
+    break;
+  default:
+    throw invalid_argument("invalid fit_method");
+  }
+
+  for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
+    switch (m_fitMethod) {
+    case FitMethods::LANDAU:
+      break;
+    case FitMethods::LANGAU:
+		LangauFun::fillTuple(xtalIdx, 
+			                 *(m_dacLLHists[xtalIdx]), 
+							 *tuple);
+      break;
+    }    
+    
+  }
+}
+
 
