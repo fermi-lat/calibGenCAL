@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Jan  9 11:56:33 PST 2007
+calibGenCAL/src
+
+Modified Files:
+	genMuonCalibTkr.cxx 
+Log Message:
+added fit result tuple output
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Jan  8 14:25:27 PST 2007
 calibGenCAL/src
 
