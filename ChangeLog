@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Jan  9 11:59:02 PST 2007
+calibGenCAL/src/lib
+
+Modified Files:
+	LangauFun.cxx LangauFun.h MPDHists.cxx MPDHists.h 
+Log Message:
+added fit result tuple output to MeVPerDAC
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Jan  9 11:56:33 PST 2007
 calibGenCAL/src
 
