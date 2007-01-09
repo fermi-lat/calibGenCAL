@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/LangauFun.cxx,v 1.1 2007/01/04 23:23:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/LangauFun.cxx,v 1.2 2007/01/08 22:19:36 fewtrell Exp $
 
 /** @file
     @author Zach Fewtrell
@@ -11,6 +11,8 @@
 
 // EXTLIB INCLUDES
 #include "TF1.h"
+#include "TH1.h"
+#include "TNtuple.h"
 
 // STD INCLUDES
 #include <cmath>
@@ -18,8 +20,12 @@
 
 using namespace std;
 using namespace CGCUtil;
+using namespace CalUtil;
 
 namespace {
+  /// function name id
+  const static string func_name("langau");
+
   /// fit parameters
   enum PARMS {
     PARM_LAN_WID,
@@ -106,11 +112,11 @@ namespace {
 
     float retVal = par[PARM_LAN_AREA]*step*sum*invsq2pi/real_gau + bkgnd;
 
-//     LogStream::get() << x[0] << " "
-//                      << str_join(par, par+N_PARMS)
-//                      << real_lan << " " 
-//                      << real_gau << " " 
-//                      << retVal << endl;
+    //     LogStream::get() << x[0] << " "
+    //                      << str_join(par, par+N_PARMS)
+    //                      << real_lan << " " 
+    //                      << real_gau << " " 
+    //                      << retVal << endl;
           
     return retVal;
   }
@@ -140,7 +146,7 @@ namespace {
 
     pllo[PARM_LAN_WID]      = 1/50.0;  plhi[PARM_LAN_WID] = 1;
     pllo[PARM_MPV]          = 10.0;    plhi[PARM_MPV] = 70.0;
-    pllo[PARM_GAU_WID]      = 1/25.0;  plhi[PARM_GAU_WID] = 1;
+    pllo[PARM_GAU_WID]      = .01;  plhi[PARM_GAU_WID] = 1;
 
     //----- parameters starting values
 
@@ -150,7 +156,11 @@ namespace {
     startVal[PARM_GAU_WID]        = 1/18.0;
     startVal[PARM_BKGND_HEIGHT]   = 1;
 
-    TF1 *ffit = new TF1("langau", langaufun, fitRange[0], fitRange[1], N_PARMS);
+    TF1 *ffit = new TF1(func_name.c_str(), 
+		                langaufun, 
+						fitRange[0], 
+						fitRange[1], 
+						N_PARMS);
     ffit->SetParameters(startVal);
     ffit->SetParNames("Landau width", "MP", "Area", "Gaussian #sigma", "Background Level");
 
@@ -163,71 +173,73 @@ namespace {
     return ffit;
   }
 
-  TF1 *buildLangauADC() {
-    //// ADC VERSION (different parameter scaling) /////
-    double fitRange[2], 
-      pllo[N_PARMS], 
-      plhi[N_PARMS], 
-      startVal[N_PARMS];
-    // whether or not to use limits in fit.
-    bool useLimits[N_PARMS];
-        
-    fill(pllo, pllo+N_PARMS, 0.0);
-    fill(plhi, plhi+N_PARMS, 0.0);
-    fill(startVal, startVal+N_PARMS, 0.0);
-    fill(useLimits, useLimits+N_PARMS, true);
-    useLimits[PARM_LAN_AREA] = false;
-    useLimits[PARM_BKGND_HEIGHT] = false;
-
-    //----- fitting range
-
-    fitRange[0]   = 0.0; fitRange[1] = 1200.0;
-
-    //----- parameters limits
-
-    pllo[PARM_LAN_WID]      = 1/50.0;     plhi[PARM_LAN_WID] = 1;
-    pllo[PARM_MPV]          = 100.0;      plhi[PARM_MPV]     = 800.0;
-    pllo[PARM_GAU_WID]      = 1/25.0;     plhi[PARM_GAU_WID] = 1;
-    
-
-    //----- parameters starting values
-
-    startVal[PARM_LAN_WID]      = 1/18.0;
-    startVal[PARM_MPV]          = 350.0;
-    startVal[PARM_LAN_AREA]     = 5000.0;
-    startVal[PARM_GAU_WID]      = 1/18.0;
-    startVal[PARM_BKGND_HEIGHT] = 1;
-
-    TF1 *ffit_adc = new TF1("langau_adc", langaufun, fitRange[0], fitRange[1], N_PARMS);
-    ffit_adc->SetParameters(startVal);
-    ffit_adc->SetParNames("Landau width", "MP", "Area", "Gaussian #sigma", "Background level");
-
-    for (int i = 0; i < N_PARMS; i++)
-      if (useLimits[i])
-        ffit_adc->SetParLimits(i, pllo[i], plhi[i]);
-
-    ffit_adc->SetNpx(1000);
-
-    return ffit_adc;
-  }
-
   /// use static auto_ptr so that singletons are properly destroyed on exit.
   /// not entirely necessary, but keeps things clean
   std::auto_ptr<TF1> langauDAC;
 
-  /// use static auto_ptr so that singletons are properly destroyed on exit.
-  /// not entirely necessary, but keeps things clean
-  std::auto_ptr<TF1> langauADC;
+  /// list of field names for tuple
+  static const string tuple_field_str[] = {
+    "XTAL",
+    "MPV",
+    "LAN_WID",
+    "GAU_WID",
+    "BKGND",
+    "CHISQ",
+    "NDF",
+    "NENTRIES"
+  };
+
+  enum tuple_fields {
+    FIELD_XTAL,
+    FIELD_MPV,
+    FIELD_LAN_WID,
+    FIELD_GAU_WID,
+    FIELD_BKGND,
+    FIELD_CHISQ,
+    FIELD_NDF,
+    FIELD_NENTRIES,
+    N_TUPLE_FIELDS
+  };
+
 };
 
 /// retrieve gaussian convolved landau fuction with limits & initial values appropriate for LE CIDAC scale
-TF1 &::LangauFun::getLangauDAC() {
+TF1 &LangauFun::getLangauDAC() {
   if (!langauDAC.get()) langauDAC.reset(buildLangauDAC());
   return *(langauDAC.get());
 }
 
-/// retrieve gaussian convolved landau fuction with limits & initial values appropriate for LEX8 ADC scale
-TF1 &::LangauFun::getLangauADC() {
-  if (!langauADC.get()) langauADC.reset(buildLangauADC());
-  return *(langauADC.get());
+
+/// build ROOT TNtuple obj w/ fields formatted for this function
+TNtuple &LangauFun::buildTuple() {
+  string tuple_def(str_join(tuple_field_str,
+                            tuple_field_str + N_TUPLE_FIELDS,
+                            ":"));
+  // remove trailing ':' from join() method
+  tuple_def = tuple_def.substr(0,tuple_def.size()-1);
+  
+  return *(new TNtuple("langau_mpd_fit",
+                     "langau_mpd_fit",
+                     tuple_def.c_str()));
+}
+
+/// fill ROOT TNtuple w/ fitted parms for this func / hist
+Int_t LangauFun::fillTuple(XtalIdx xtalId,
+                       const TH1 &hist, 
+                       TNtuple &tuple) {
+  float tuple_data[N_TUPLE_FIELDS];
+
+  const TF1 &func = *(hist.GetFunction(func_name.c_str()));
+
+  tuple_data[FIELD_XTAL] = xtalId.val();
+  float mpv = func.GetParameter(PARM_MPV);
+  tuple_data[FIELD_MPV] = mpv;
+  tuple_data[FIELD_LAN_WID] = func.GetParameter(PARM_LAN_WID)*mpv;
+  tuple_data[FIELD_GAU_WID] = func.GetParameter(PARM_GAU_WID)*mpv;
+  tuple_data[FIELD_BKGND] = func.GetParameter(PARM_BKGND_HEIGHT);
+  tuple_data[FIELD_CHISQ] = func.GetChisquare();
+  tuple_data[FIELD_NDF] = func.GetNDF();
+  tuple_data[FIELD_NENTRIES] = hist.GetEntries();
+
+  return tuple.Fill(tuple_data);
 }
