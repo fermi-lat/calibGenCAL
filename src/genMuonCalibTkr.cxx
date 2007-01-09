@@ -210,11 +210,17 @@ int main(int argc,
       //histFile->Write();
     }
 
-    LogStream::get() << __FILE__ << ": fitting asymmetry histograms." << endl;
-    asymHists.fitHists(calAsym);
+	bool skipFitAsym = cfgFile.getVal<bool>("MUON_CALIB_TKR", "SKIP_FIT_ASYM", false);
+	if (!skipFitAsym) {
+		LogStream::get() << __FILE__ << ": fitting asymmetry histograms." << endl;
+		asymHists.fitHists(calAsym);
+	}
 
-    LogStream::get() << __FILE__ << ": fitting MeVPerDAC histograms." << endl;
-    mpdHists.fitHists(calMPD);
+	bool skipFitMPD = cfgFile.getVal<bool>("MUON_CALIB_TKR", "SKIP_FIT_MPD", false);
+	if (!skipFitMPD) {
+		LogStream::get() << __FILE__ << ": fitting MeVPerDAC histograms." << endl;
+		mpdHists.fitHists(calMPD);
+	}
 
     LogStream::get() << __FILE__ << ": writing muon asymmetry: "
                      << asymTXTFile << endl;
@@ -223,6 +229,11 @@ int main(int argc,
     LogStream::get() << __FILE__ << ": writing muon mevPerDAC: "
                      << mpdTXTFile << endl;
     calMPD.writeTXT(mpdTXTFile);
+
+    LogStream::get() << __FILE__ << ": writing fit result tuple: "
+                     << mpdTXTFile << endl;
+    mpdHists.buildTuple();
+
 
     LogStream::get() << __FILE__ << ": writing histogram file: "
                      << histFilename << endl;
