@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Thu Jan 11 15:31:59 PST 2007
+calibGenCAL/src/lib
+
+Modified Files:
+	LangauFun.cxx MPDHists.cxx 
+Log Message:
+fit parameter tuple now includes errors on fit parms
+
+    *
+------------------------------------------------------------
+User: fewtrell  Thu Jan 11 15:31:59 PST 2007
 calibGenCAL/src
 
 Modified Files:
