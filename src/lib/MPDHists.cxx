@@ -372,7 +372,7 @@ void MPDHists::fillDacLL(CalUtil::XtalIdx xtalIdx,
 }
 
 void MPDHists::buildTuple() {
-  TNtuple *tuple;
+  TNtuple *tuple=0;
   
   switch (m_fitMethod) {
   case FitMethods::LANDAU:
