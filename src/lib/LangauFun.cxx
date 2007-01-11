@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/LangauFun.cxx,v 1.2 2007/01/08 22:19:36 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/LangauFun.cxx,v 1.3 2007/01/09 19:59:02 fewtrell Exp $
 
 /** @file
     @author Zach Fewtrell
@@ -24,7 +24,7 @@ using namespace CalUtil;
 
 namespace {
   /// function name id
-  const static string func_name("langau");
+  static const string func_name("langau");
 
   /// fit parameters
   enum PARMS {
@@ -181,9 +181,13 @@ namespace {
   static const string tuple_field_str[] = {
     "XTAL",
     "MPV",
+    "MPV_ERR",
     "LAN_WID",
+    "LAN_WID_ERR",
     "GAU_WID",
+    "GAU_WID_ERR"
     "BKGND",
+    "BKGND_ERR",
     "CHISQ",
     "NDF",
     "NENTRIES"
@@ -192,9 +196,13 @@ namespace {
   enum tuple_fields {
     FIELD_XTAL,
     FIELD_MPV,
+    FIELD_MPV_ERR,
     FIELD_LAN_WID,
+    FIELD_LAN_WID_ERR,
     FIELD_GAU_WID,
+    FIELD_GAU_WID_ERR,
     FIELD_BKGND,
+    FIELD_BKGND_ERR,
     FIELD_CHISQ,
     FIELD_NDF,
     FIELD_NENTRIES,
@@ -219,14 +227,14 @@ TNtuple &LangauFun::buildTuple() {
   tuple_def = tuple_def.substr(0,tuple_def.size()-1);
   
   return *(new TNtuple("langau_mpd_fit",
-                     "langau_mpd_fit",
-                     tuple_def.c_str()));
+                       "langau_mpd_fit",
+                       tuple_def.c_str()));
 }
 
 /// fill ROOT TNtuple w/ fitted parms for this func / hist
 Int_t LangauFun::fillTuple(XtalIdx xtalId,
-                       const TH1 &hist, 
-                       TNtuple &tuple) {
+                           const TH1 &hist, 
+                           TNtuple &tuple) {
   float tuple_data[N_TUPLE_FIELDS];
 
   const TF1 &func = *(hist.GetFunction(func_name.c_str()));
@@ -234,9 +242,13 @@ Int_t LangauFun::fillTuple(XtalIdx xtalId,
   tuple_data[FIELD_XTAL] = xtalId.val();
   float mpv = func.GetParameter(PARM_MPV);
   tuple_data[FIELD_MPV] = mpv;
+  tuple_data[FIELD_MPV_ERR] = func.GetParError(PARM_MPV);
   tuple_data[FIELD_LAN_WID] = func.GetParameter(PARM_LAN_WID)*mpv;
+  tuple_data[FIELD_LAN_WID_ERR] = func.GetParError(PARM_LAN_WID)*mpv;
   tuple_data[FIELD_GAU_WID] = func.GetParameter(PARM_GAU_WID)*mpv;
+  tuple_data[FIELD_GAU_WID_ERR] = func.GetParError(PARM_GAU_WID)*mpv;
   tuple_data[FIELD_BKGND] = func.GetParameter(PARM_BKGND_HEIGHT);
+  tuple_data[FIELD_BKGND_ERR] = func.GetParError(PARM_BKGND_HEIGHT);
   tuple_data[FIELD_CHISQ] = func.GetChisquare();
   tuple_data[FIELD_NDF] = func.GetNDF();
   tuple_data[FIELD_NENTRIES] = hist.GetEntries();

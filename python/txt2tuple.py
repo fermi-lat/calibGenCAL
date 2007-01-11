@@ -6,9 +6,9 @@ txt2tuple input.txt output.root
 __facility__  = "Offline"
 __abstract__  = "Tool to generate ROOT ntuple file from txt."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/08/03 13:11:03 $"
-__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
-__release__   = "$Name: HEAD $"
+__date__      = "$Date: 2007/01/08 22:05:26 $"
+__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 import sys, os
@@ -54,7 +54,7 @@ if __name__ == '__main__':
 
     # create ROOT File & Ntuple
     outfile = ROOT.TFile(outPath, "RECREATE")
-    tuple = ROOT.TNtuple('txt2tuple', 'txt2tuple', col_def)
+    tuple = ROOT.TNtuple(inPath, inPath, col_def)
 
     for line in lines:
         vals = line.split()

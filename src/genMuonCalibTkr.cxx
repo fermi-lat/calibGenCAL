@@ -210,13 +210,13 @@ int main(int argc,
       //histFile->Write();
     }
 
-	bool skipFitAsym = cfgFile.getVal<bool>("MUON_CALIB_TKR", "SKIP_FIT_ASYM", false);
+	bool skipFitAsym = cfgFile.getVal<bool>("MUON_CALIB_TKR", "SKIP_ASYM_FIT", false);
 	if (!skipFitAsym) {
 		LogStream::get() << __FILE__ << ": fitting asymmetry histograms." << endl;
 		asymHists.fitHists(calAsym);
 	}
 
-	bool skipFitMPD = cfgFile.getVal<bool>("MUON_CALIB_TKR", "SKIP_FIT_MPD", false);
+	bool skipFitMPD = cfgFile.getVal<bool>("MUON_CALIB_TKR", "SKIP_MPD_FIT", false);
 	if (!skipFitMPD) {
 		LogStream::get() << __FILE__ << ": fitting MeVPerDAC histograms." << endl;
 		mpdHists.fitHists(calMPD);
