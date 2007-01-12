@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Jan 12 08:03:46 PST 2007
+calibGenCAL/src/lib
+
+Modified Files:
+	LangauFun.cxx 
+Log Message:
+fix bugi n tuple field string names array
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Jan 12 08:01:15 PST 2007
 calibGenCAL/src/lib
 
