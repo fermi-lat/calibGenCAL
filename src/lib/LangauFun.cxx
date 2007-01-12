@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/LangauFun.cxx,v 1.3 2007/01/09 19:59:02 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/LangauFun.cxx,v 1.4 2007/01/11 23:31:59 fewtrell Exp $
 
 /** @file
     @author Zach Fewtrell
@@ -35,6 +35,48 @@ namespace {
     PARM_BKGND_HEIGHT,
     N_PARMS
   };
+
+  double startVals[N_PARMS] = {
+    .0526,
+    30.81,
+    5000,
+    .0618,
+    1.76
+  };
+
+  bool fixParms[N_PARMS] = {
+    true,
+    false,
+    false,
+    true,
+    false
+  };
+
+  bool useLimits[N_PARMS] = {
+    true,
+    true,
+    false,
+    true,
+    true
+  };
+
+  double parmLo[N_PARMS] = {
+    .01,
+    1,
+    0,
+    .01,
+    0
+  };
+
+  double parmHi[N_PARMS] = {
+    10,
+    10000,
+    1e9,
+    10,
+    1e6
+  };
+
+  double fitRange[2] = {0,100};
 
   /// \brief calculate background model for muon peak fit
   /// 
@@ -112,61 +154,31 @@ namespace {
 
     float retVal = par[PARM_LAN_AREA]*step*sum*invsq2pi/real_gau + bkgnd;
 
-    //     LogStream::get() << x[0] << " "
-    //                      << str_join(par, par+N_PARMS)
-    //                      << real_lan << " " 
-    //                      << real_gau << " " 
-    //                      << retVal << endl;
-          
+/*         LogStream::get() << x[0] << " "
+                          << str_join(par, par+N_PARMS)
+                          << real_lan << " " 
+                          << real_gau << " " 
+                          << retVal << endl;
+  */        
     return retVal;
   }
 
   TF1 *buildLangauDAC() {
-    //----- fit with (Landau-Gauss convolution + linear bkgd) function
-
-    double fitRange[2], 
-      pllo[N_PARMS], 
-      plhi[N_PARMS], 
-      startVal[N_PARMS];
-    // whether or not to use limits in fit.
-    bool useLimits[N_PARMS];
-        
-    fill(pllo, pllo+N_PARMS, 0.0);
-    fill(plhi, plhi+N_PARMS, 0.0);
-    fill(startVal, startVal+N_PARMS, 0.0);
-    fill(useLimits, useLimits+N_PARMS, true);
-    useLimits[PARM_LAN_AREA] = false;
-    useLimits[PARM_BKGND_HEIGHT] = false;
-
-    //----- fitting range
-
-    fitRange[0]   = 0.0; fitRange[1] = 100.0;
-
-    //----- parameters limits
-
-    pllo[PARM_LAN_WID]      = 1/50.0;  plhi[PARM_LAN_WID] = 1;
-    pllo[PARM_MPV]          = 10.0;    plhi[PARM_MPV] = 70.0;
-    pllo[PARM_GAU_WID]      = .01;  plhi[PARM_GAU_WID] = 1;
-
-    //----- parameters starting values
-
-    startVal[PARM_LAN_WID]        = 1/18.0;
-    startVal[PARM_MPV]            = 30.0;
-    startVal[PARM_LAN_AREA]       = 5000.0;
-    startVal[PARM_GAU_WID]        = 1/18.0;
-    startVal[PARM_BKGND_HEIGHT]   = 1;
 
     TF1 *ffit = new TF1(func_name.c_str(), 
-		                langaufun, 
-						fitRange[0], 
-						fitRange[1], 
-						N_PARMS);
-    ffit->SetParameters(startVal);
+                        langaufun, 
+                        fitRange[0], 
+                        fitRange[1], 
+                        N_PARMS);
+    ffit->SetParameters(startVals);
     ffit->SetParNames("Landau width", "MP", "Area", "Gaussian #sigma", "Background Level");
 
-    for (int i = 0; i < N_PARMS; i++)
+    for (int i = 0; i < N_PARMS; i++) {
       if (useLimits[i])
-        ffit->SetParLimits(i, pllo[i], plhi[i]);
+        ffit->SetParLimits(i, parmLo[i], parmHi[i]);
+      if (fixParms[i])
+        ffit->FixParameter(i, startVals[i]);
+    }
 
     ffit->SetNpx(1000);
 
