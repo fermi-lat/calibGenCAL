@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Jan 12 08:01:15 PST 2007
+calibGenCAL/src/lib
+
+Modified Files:
+	LangauFun.cxx 
+Log Message:
+allow for locking certain parms no
+Allow for locking certain parms
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Jan 12 07:59:17 PST 2007
 calibGenCAL/src
 
