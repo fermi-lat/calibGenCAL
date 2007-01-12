@@ -6,8 +6,8 @@ txt2tuple input.txt output.root
 __facility__  = "Offline"
 __abstract__  = "Tool to generate ROOT ntuple file from txt."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/01/08 22:05:26 $"
-__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/01/11 23:31:58 $"
+__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
