@@ -15,18 +15,14 @@ where:
      xtalk.xml     intNonlin XML file contains LE->HE crosstalk values in HE channels.
      output.xml    output, xtalk corrected, intNonlin XML file
 
-where:
-   cidac2adc.xml input cidac2adc file w/out crosstalk correction.
-   xtalk.xml cidac2adc file w/ crosstalk values in HE channels.
-   output.xml new cidac2adc file corrected for LE->HE diode crosstalk.
 
 """
 
 __facility__  = "Offline"
 __abstract__  = "Tool to apply cross-diode crosstalk correction to intNonlin XML files"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/08/11 15:04:57 $"
-__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/10/03 21:12:24 $"
+__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
