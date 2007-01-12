@@ -36,7 +36,7 @@ namespace {
     N_PARMS
   };
 
-  double startVals[N_PARMS] = {
+  static double startVals[N_PARMS] = {
     .0526,
     30.81,
     5000,
@@ -44,15 +44,15 @@ namespace {
     1.76
   };
 
-  bool fixParms[N_PARMS] = {
+  static bool fixParms[N_PARMS] = {
     true,
     false,
     false,
-    true,
+    false,
     false
   };
 
-  bool useLimits[N_PARMS] = {
+  static bool useLimits[N_PARMS] = {
     true,
     true,
     false,
@@ -60,7 +60,7 @@ namespace {
     true
   };
 
-  double parmLo[N_PARMS] = {
+  static double parmLo[N_PARMS] = {
     .01,
     1,
     0,
@@ -68,7 +68,7 @@ namespace {
     0
   };
 
-  double parmHi[N_PARMS] = {
+  static double parmHi[N_PARMS] = {
     10,
     10000,
     1e9,
@@ -76,7 +76,7 @@ namespace {
     1e6
   };
 
-  double fitRange[2] = {0,100};
+  static double fitRange[2] = {0,100};
 
   /// \brief calculate background model for muon peak fit
   /// 
@@ -163,7 +163,7 @@ namespace {
     return retVal;
   }
 
-  TF1 *buildLangauDAC() {
+  static TF1 *buildLangauDAC() {
 
     TF1 *ffit = new TF1(func_name.c_str(), 
                         langaufun, 
@@ -187,23 +187,7 @@ namespace {
 
   /// use static auto_ptr so that singletons are properly destroyed on exit.
   /// not entirely necessary, but keeps things clean
-  std::auto_ptr<TF1> langauDAC;
-
-  /// list of field names for tuple
-  static const string tuple_field_str[] = {
-    "XTAL",
-    "MPV",
-    "MPV_ERR",
-    "LAN_WID",
-    "LAN_WID_ERR",
-    "GAU_WID",
-    "GAU_WID_ERR"
-    "BKGND",
-    "BKGND_ERR",
-    "CHISQ",
-    "NDF",
-    "NENTRIES"
-  };
+  static std::auto_ptr<TF1> langauDAC;
 
   enum tuple_fields {
     FIELD_XTAL,
@@ -221,6 +205,21 @@ namespace {
     N_TUPLE_FIELDS
   };
 
+  /// list of field names for tuple
+  static const string tuple_field_str[N_TUPLE_FIELDS] = {
+    "XTAL",
+    "MPV",
+    "MPV_ERR",
+    "LAN_WID",
+    "LAN_WID_ERR",
+    "GAU_WID",
+    "GAU_WID_ERR",
+    "BKGND",
+    "BKGND_ERR",
+    "CHISQ",
+    "NDF",
+    "NENTRIES"
+  };
 };
 
 /// retrieve gaussian convolved landau fuction with limits & initial values appropriate for LE CIDAC scale
