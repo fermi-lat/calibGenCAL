@@ -397,5 +397,3 @@ void MPDHists::buildTuple() {
     
   }
 }
-
-
