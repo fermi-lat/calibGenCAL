@@ -21,8 +21,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to apply cross-diode crosstalk correction to intNonlin XML files"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/10/03 21:12:24 $"
-__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/01/12 20:45:49 $"
+__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -125,11 +125,11 @@ if __name__ == '__main__':
     if muonGain:
         log.info("Clipping xtalk splines")
         for twr in inTwrSet:
-            for lyr in range(8):
+            for lyr in range(calConstant.NUM_LAYER):
                 # calCalibXML uses 'row' indexing, not layer
                 row = calCalibXML.layerToRow(lyr)
-                for col in range(12):
-                    for face in range(2):
+                for col in range(calConstant.NUM_FE):
+                    for face in range(calConstant.NUM_END):
                         online_face = zachUtil.offline_face_to_online[face]
                         for rng in range(2,4):
                             # find 1st point which will saturate dac scale after normalizing

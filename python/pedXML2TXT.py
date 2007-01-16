@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Dump offline pedestal xml file to .txt file"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/02/22 21:20:07 $"
-__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/08/03 13:11:03 $"
+__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -30,8 +30,6 @@ import Numeric
 import calCalibXML
 import calConstant
 import zachUtil
-
-
                   
 if __name__ == '__main__':
     usage = "usage: python pedXML2TXT.py [-d delim] <input_xml_file>"
@@ -66,13 +64,13 @@ if __name__ == '__main__':
 
     # print out txt file.
     for twr in towers:
-        for lyr in range(8):
+        for lyr in range(calConstant.NUM_LAYER):
             # calCalibXML uses 'row' indexing, not layer
             row = calCalibXML.layerToRow(lyr)
-            for col in range(12):
-                for face in range(2):
+            for col in range(calConstant.NUM_FE):
+                for face in range(calConstant.NUM_END):
                     online_face = zachUtil.offline_face_to_online[face]
-                    for rng in range(4):
+                    for rng in range(calConstant.NUM_RANGE):
                         print delim.join([str(x) for x in twr, lyr, col, face, rng,
                                           pedData[twr][row][online_face][col][rng][0],
                                           pedData[twr][row][online_face][col][rng][1]])
