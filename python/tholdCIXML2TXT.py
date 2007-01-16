@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Dump tholdci file to .txt file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2006/02/22 21:20:07 $"
-__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/08/03 13:11:03 $"
+__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -83,11 +83,3 @@ if __name__ == '__main__':
                                      pedData[twr][row][online_face][col][1],\
                                      pedData[twr][row][online_face][col][2],\
                                      pedData[twr][row][online_face][col][3]])
-
- 
-
- 
- 
-
-
- 
