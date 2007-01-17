@@ -5,9 +5,9 @@ collection of simple utilities shared throughout my code
 __facility__  = "Offline"
 __abstract__  = "apply calibGain correction to asymmetry xml file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2006/09/03 21:28:07 $"
-__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
-__release__   = "$Name: HEAD $"
+__date__      = "$Date: 2007/01/04 23:23:00 $"
+__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
+__release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 import calConstant
@@ -83,8 +83,8 @@ def build_inl_splines(data, twrSet):
                         if length <= 1:
                             continue
 
-                        dacArray = array.array('d', dac[rng][twr,row,online_face,col,0:length].tolist())
-                        adcArray = array.array('d', adc[rng][twr,row,online_face,col,0:length].tolist())
+                        dacArray = array.array('d', dac[rng][twr,row,online_face,col,0:length])
+                        adcArray = array.array('d', adc[rng][twr,row,online_face,col,0:length])
 
                         a2dSpline = ROOT.TSpline3("%d_%d_%d_%d_%d_adc2dac"%(twr,lyr,col,face,rng),
                                                   adcArray,

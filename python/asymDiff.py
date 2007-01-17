@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL asymmetry XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/08/10 15:18:15 $"
-__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__        = "$Date: 2006/09/07 18:41:47 $"
+__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -74,7 +74,7 @@ if (xpos1 != xpos2):
 length = len(xpos1)
 xpos = array.array('f',xpos1)
 # just using zero for xerror as it is not measured
-xerror = array.array('f',Numeric.zeros(10,Numeric.Float32).tolist())
+xerror = array.array('f',Numeric.zeros(10,Numeric.Float32))
 
 # set up pyROOT
 import ROOT
@@ -127,13 +127,13 @@ for twr in asymTwrs1:
                     errDiff  = error2 - error1
 
                     # convert to standard arrays
-                    asymDiff = array.array('f',asymDiff.tolist())
-                    errDiff  = array.array('f',errDiff.tolist())
+                    asymDiff = array.array('f',asymDiff)
+                    errDiff  = array.array('f',errDiff)
 
-                    channel1  = array.array('f',channel1.tolist())
-                    channel2  = array.array('f',channel2.tolist())
-                    error1  = array.array('f',error1.tolist())
-                    error2  = array.array('f',error2.tolist())
+                    channel1  = array.array('f',channel1)
+                    channel2  = array.array('f',channel2)
+                    error1  = array.array('f',error1)
+                    error2  = array.array('f',error2)
 
                     ## FILL HISTS ##
                     for asym in asymDiff:
