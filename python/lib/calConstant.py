@@ -6,8 +6,8 @@ Global calorimeter constant values
 __facility__      = "Online"
 __abstract__      = "Global calorimeter constant values"
 __author__        = "D.L. Wood"
-__date__          = "$Date: 2006/07/18 17:49:15 $"
-__version__       = "$Revision: 1.3 $, $Author: dwood $"
+__date__          = "$Date: 2006/10/06 16:20:09 $"
+__version__       = "$Revision: 1.4 $, $Author: dwood $"
 __release__       = "$Name:  $"
 __credits__       = "NRL code 7650"
 
@@ -35,6 +35,10 @@ CRNG_LEX8 = 0
 CRNG_LEX1 = 1
 CRNG_HEX8 = 2
 CRNG_HEX1 = 3
+
+# Calorimeter symbolic names for diode sizes
+CDIODE_LRG = 0
+CDIODE_SM  = 1
 
 # Calorimeter layer number to string mapping
 
@@ -88,6 +92,9 @@ NUM_TEM = 16
 # Number of calorimeter energy ranges
 
 NUM_RNG = 4
+
+# Number of calorimeter diode sizes
+NUM_DIODE = 2
 
 # Symbolic names for the towers/tems as modules
 
