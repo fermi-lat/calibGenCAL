@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Jan 24 08:36:21 PST 2007
+calibGenCAL/python
+
+Added Files:
+	linearDAC.bat linearDAC.py linearDAC.sh 
+Log Message:
+new script enforces linear dac scale on portions on cidac2adc curve
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Jan 17 11:19:27 PST 2007
 calibGenCAL/python
 
