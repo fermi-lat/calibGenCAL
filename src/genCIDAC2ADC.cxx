@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.9 2007/01/04 23:23:00 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.10 2007/01/05 17:25:33 fewtrell Exp $
 
 /** @file Gen CIDAC2ADC calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
@@ -119,11 +119,17 @@ int main(int argc,
       adcMeans.writeTXT(adcMeanFile);
     }
 
-    LogStream::get() << __FILE__ << ": generating smoothed spline points: " << rootFileHE << endl;
-    intNonlin.genSplinePts(adcMeans, cidac2adc);
+    bool skipSmoothing = cfgFile.getVal("CIDAC2ADC",
+                                        "SKIP_SMOOTHING",
+                                        false);
 
-    LogStream::get() << __FILE__ << ": writing smoothed spline points: " << outputTXTFile << endl;
-    cidac2adc.writeTXT(outputTXTFile);
+    if (!skipSmoothing) {
+      LogStream::get() << __FILE__ << ": generating smoothed spline points: " << rootFileHE << endl;
+      intNonlin.genSplinePts(adcMeans, cidac2adc);
+
+      LogStream::get() << __FILE__ << ": writing smoothed spline points: " << outputTXTFile << endl;
+      cidac2adc.writeTXT(outputTXTFile);
+    }
   } catch (exception e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
   }
