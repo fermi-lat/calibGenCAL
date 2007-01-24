@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Jan 24 08:41:08 PST 2007
+calibGenCAL/python
+
+Modified Files:
+	zachUtil.py 
+Log Message:
+moved diode enum over to lib/calConstant.py
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Jan 24 08:40:37 PST 2007
 calibGenCAL/python
 
