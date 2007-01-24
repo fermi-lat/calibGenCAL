@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to extract effect of calibGain setting from two intNonlin XML files"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/08/11 15:04:57 $"
-__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/08/28 20:11:55 $"
+__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -82,7 +82,6 @@ if __name__ == '__main__':
 
                     # HEX8 only
                     rng = 2
-
                     cgOnSpline = adc2dacOn[(twr,row,online_face,col,rng)]
                     cgOffSpline = adc2dacOff[(twr,row,online_face,col,rng)]
 

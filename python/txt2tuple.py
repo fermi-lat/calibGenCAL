@@ -6,8 +6,8 @@ txt2tuple input.txt output.root
 __facility__  = "Offline"
 __abstract__  = "Tool to generate ROOT ntuple file from txt."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/01/12 15:59:16 $"
-__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/01/24 16:40:37 $"
+__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -75,5 +75,3 @@ if __name__ == '__main__':
     outfile.Close()
 
     sys.exit(0)                            
-
-    
