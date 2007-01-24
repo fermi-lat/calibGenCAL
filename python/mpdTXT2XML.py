@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL mevPerDAC calibration XML files from TXT."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/08/10 18:06:43 $"
-__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/08/10 20:06:10 $"
+__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -107,7 +107,7 @@ if __name__ == '__main__':
 
         valIdx = zachUtil.mpdBigValIdx
         sigIdx = zachUtil.mpdBigSigIdx
-        if (diode == zachUtil.DIODE_SM):
+        if (diode == calConstant.CDIODE_SM):
             valIdx = zachUtil.mpdSmallValIdx
             sigIdx = zachUtil.mpdSmallSigIdx
             
