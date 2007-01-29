@@ -246,7 +246,7 @@ int main(int argc,
                            "txt");
 
     LogStream::get() << __FILE__ << ": writing muon adc2nrg: " << adc2nrgFile << endl;
-    calAsym.genSplines()
+    calAsym.genSplines();
     ADC2NRG::writeTXT(adc2nrgFile, calAsym, dac2adc, calMPD);
 
     LogStream::get() << __FILE__ << ": writing histogram file: "
