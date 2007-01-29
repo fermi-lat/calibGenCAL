@@ -1,6 +1,6 @@
 #ifndef CalAsym_h
 #define CalAsym_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalAsym.h,v 1.4 2007/01/04 23:23:00 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalAsym.h,v 1.5 2007/01/05 17:25:33 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -42,13 +42,14 @@ class CalAsym {
   static const unsigned short N_ASYM_PTS = 10;
 
   /// creates & populates Asymmetry splines from m_asym
-  void buildSplines();
+  void genSplines();
 
   /// uses asym2pos splines to convert asymmetry value to xtal position for
   /// energy centroid
   /// \note uses calibGenCAL internal xtal-pitch units w/ origin at negative
   /// face.
   /// \return INVALID_ASYM on error
+  /// \warning you _must_ call genSplines method before using.
   float asym2pos(CalUtil::XtalIdx xtalIdx,
                  CalUtil::DiodeNum diode,
                  float asym) const {
@@ -62,6 +63,7 @@ class CalAsym {
   /// \note uses calibGenCAL internal xtal-pitch units w/ origin at negative
   /// face.
   /// \return INVALID_ASYM on error
+  /// \warning you _must_ call genSplines method before using.
   float pos2asym(CalUtil::XtalIdx xtalIdx,
                  CalUtil::DiodeNum diode,
                  float pos) const {

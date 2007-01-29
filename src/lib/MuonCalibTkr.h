@@ -1,6 +1,6 @@
 #ifndef MuonCalibTkr_h
 #define MuonCalibTkr_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonCalibTkr.h,v 1.1 2007/01/04 23:23:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonCalibTkr.h,v 1.2 2007/01/05 17:25:34 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -47,9 +47,15 @@ class MuonCalibTkr {
                MPDHists &mpdHists);
 
   /// populate histograms from digi root event file
+  /// \param nEntries Run until all active channel histograms have at least nEntries fills
+  /// \param digiFileList list of digi files to process
+  /// \param svacFileList list of svac files to process (must match digiFileList event for event
+  /// \param startEvent start processing @ specific event (default = 0)
   void        fillHists(unsigned nEntries,
                         const std::vector<std::string> &digiFileList,
-                        const std::vector<std::string> &svacFileList);
+                        const std::vector<std::string> &svacFileList,
+                        unsigned startEvent = 0
+                        );
 
  private:
   /// process a single event for histogram fill

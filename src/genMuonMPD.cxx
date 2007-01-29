@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.11 2007/01/04 23:23:00 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.12 2007/01/05 17:25:33 fewtrell Exp $
 
 /** @file Gen MevPerDAC calibrations from Muon event files using Cal Digi Hodoscope
     for track & hit information
@@ -154,7 +154,7 @@ int main(int argc,
   LogStream::get() << __FILE__ << ": reading in muon asym file: " << asymTXTFile << endl;
   asym.readTXT(asymTXTFile);
   LogStream::get() << __FILE__ << ": building asymmetry splines: " << endl;
-  asym.buildSplines();
+  asym.genSplines();
 
   //-- MUON MPD
 
