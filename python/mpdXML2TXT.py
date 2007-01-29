@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Dump offline mevPerDAC xml file to .txt file"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/02/21 23:37:19 $"
-__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/08/03 13:11:03 $"
+__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -64,11 +64,11 @@ if __name__ == '__main__':
 
     # print out txt file.
     for twr in towers:
-        for lyr in range(8):
+        for lyr in range(calConstant.NUM_ROW):
             # calCalibXML uses 'row' indexing, not layer
             row = calCalibXML.layerToRow(lyr)
-            for col in range(12):
-                for diode in range(2):
+            for col in range(calConstant.NUM_FE):
+                for diode in range(calConstant.NUM_DIODE):
                     # from calCalibXML doc, array layout is as follows
                     #Returns: A Numeric array containing the energy conversion data
                     #         of shape (16, 8, 12, 8) The last dimension contains

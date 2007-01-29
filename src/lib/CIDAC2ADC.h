@@ -1,6 +1,6 @@
 #ifndef CIDAC2ADC_h
 #define CIDAC2ADC_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CIDAC2ADC.h,v 1.7 2007/01/04 23:23:00 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CIDAC2ADC.h,v 1.8 2007/01/05 17:25:33 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -62,6 +62,7 @@ class CIDAC2ADC {
   void genSplines();
 
   /// uses intNonlin to convert adc 2 dac for specified xtal/adc range
+  /// \warning you _must_ call genSplines method before using.
   float adc2dac(CalUtil::RngIdx rngIdx,
                 float adc) const {
     if (!m_splinesADC2DAC[rngIdx])
@@ -71,6 +72,7 @@ class CIDAC2ADC {
   }
 
   /// uses intNonlin to convert dac 2 adc for specified xtal/adc range
+  /// \warning you _must_ call genSplines method before using.
   float dac2adc(CalUtil::RngIdx rngIdx,
                 float dac) const {
     if (!m_splinesDAC2ADC[rngIdx])

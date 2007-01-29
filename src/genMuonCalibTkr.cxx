@@ -14,6 +14,7 @@
 #include "lib/CalAsym.h"
 #include "lib/CalMPD.h"
 #include "lib/CGCUtil.h"
+#include "lib/ADC2NRG.h"
 
 // GLAST INCLUDES
 
@@ -199,9 +200,14 @@ int main(int argc,
     } else {
       LogStream::get() << __FILE__ << ": reading root event file(s) starting w/ "
                        << digiFileList[0] << endl;
+      unsigned startEvent = cfgFile.getVal<unsigned>("MUON_CALIB_TKR",
+                                                     "START_EVENT",
+                                                     0);
+
       tkrCalib.fillHists(nEntries,
                          digiFileList,
-                         svacFileList);
+                         svacFileList,
+                         startEvent);
       mpdHists.trimHists();
       asymHists.trimHists();
       
@@ -210,17 +216,17 @@ int main(int argc,
       //histFile->Write();
     }
 
-	bool skipFitAsym = cfgFile.getVal<bool>("MUON_CALIB_TKR", "SKIP_ASYM_FIT", false);
-	if (!skipFitAsym) {
-		LogStream::get() << __FILE__ << ": fitting asymmetry histograms." << endl;
-		asymHists.fitHists(calAsym);
-	}
+    bool skipFitAsym = cfgFile.getVal<bool>("MUON_CALIB_TKR", "SKIP_ASYM_FIT", false);
+    if (!skipFitAsym) {
+      LogStream::get() << __FILE__ << ": fitting asymmetry histograms." << endl;
+      asymHists.fitHists(calAsym);
+    }
 
-	bool skipFitMPD = cfgFile.getVal<bool>("MUON_CALIB_TKR", "SKIP_MPD_FIT", false);
-	if (!skipFitMPD) {
-		LogStream::get() << __FILE__ << ": fitting MeVPerDAC histograms." << endl;
-		mpdHists.fitHists(calMPD);
-	}
+    bool skipFitMPD = cfgFile.getVal<bool>("MUON_CALIB_TKR", "SKIP_MPD_FIT", false);
+    if (!skipFitMPD) {
+      LogStream::get() << __FILE__ << ": fitting MeVPerDAC histograms." << endl;
+      mpdHists.fitHists(calMPD);
+    }
 
     LogStream::get() << __FILE__ << ": writing muon asymmetry: "
                      << asymTXTFile << endl;
@@ -234,6 +240,14 @@ int main(int argc,
                      << mpdTXTFile << endl;
     mpdHists.buildTuple();
 
+    string adc2nrgFile =
+      ADC2NRG::genFilename(outputDir,
+                           digiFileList[0],
+                           "txt");
+
+    LogStream::get() << __FILE__ << ": writing muon adc2nrg: " << adc2nrgFile << endl;
+    calAsym.genSplines()
+    ADC2NRG::writeTXT(adc2nrgFile, calAsym, dac2adc, calMPD);
 
     LogStream::get() << __FILE__ << ": writing histogram file: "
                      << histFilename << endl;

@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Dump offline asymmetry xml file to .txt file"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/09/13 18:05:30 $"
-__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/09/26 21:04:13 $"
+__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -56,8 +56,7 @@ if __name__ == '__main__':
     # retrieve commandline parms
     inName  = args[0]
 
-    # open and read XML Pedestal file
-
+    # open and read XML Asymmetry file
     xmlFile = calCalibXML.calAsymCalibXML(inName)
     (xpos, asymData) = xmlFile.read()
     towers = xmlFile.getTowers()

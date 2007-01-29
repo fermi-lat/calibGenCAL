@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalAsym.cxx,v 1.4 2007/01/04 23:23:00 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalAsym.cxx,v 1.5 2007/01/05 17:25:33 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -84,7 +84,7 @@ void CalAsym::readTXT(const string &filename) {
   }
 }
 
-void CalAsym::buildSplines() {
+void CalAsym::genSplines() {
   m_a2pSplines.resize(DiodeNum::N_VALS);
   m_p2aSplines.resize(DiodeNum::N_VALS);
 
