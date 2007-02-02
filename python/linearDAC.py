@@ -12,7 +12,7 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Force linear dac scale over portions of cidac2adc curve where cidac is non-linear."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/10/03 21:12:24 $"
+__date__      = "$Date: 2007/01/24 16:36:21 $"
 __version__   = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
@@ -121,7 +121,7 @@ if __name__ == '__main__':
             row = calCalibXML.layerToRow(lyr)
             for col in range(calConstant.NUM_FE):
                 for face in range(calConstant.NUM_END):
-                    online_face = zachUtil.offline_face_to_online[face]
+                    online_face = calConstant.offline_face_to_online[face]
 
                     for rng in range(calConstant.NUM_RNG):
 

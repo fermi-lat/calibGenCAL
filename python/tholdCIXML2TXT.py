@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Dump tholdci file to .txt file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2006/08/03 13:11:03 $"
-__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/01/16 17:22:14 $"
+__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -70,7 +70,7 @@ if __name__ == '__main__':
             row = calCalibXML.layerToRow(lyr)
             for col in range(0,12):
                 for face in range(0,2):
-                    online_face = zachUtil.offline_face_to_online[face]
+                    online_face = calConstant.offline_face_to_online[face]
                     print delim.join([str(x) for x in twr, lyr, col, face,\
                                      adcData[twr][row][online_face][col][0],
                                      adcData[twr][row][online_face][col][1],\

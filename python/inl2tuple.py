@@ -11,8 +11,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Convert cidac2adc (intNonlin) xml data file into root tuples (1 per channel)"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/01/16 17:22:14 $"
-__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/01/17 15:48:45 $"
+__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -69,7 +69,7 @@ if __name__ == '__main__':
             row = calCalibXML.layerToRow(lyr)
             for col in range(calConstant.NUM_FE):
                 for face in range(calConstant.NUM_END):
-                    online_face = zachUtil.offline_face_to_online[face]
+                    online_face = calConstant.offline_face_to_online[face]
                     for rng in range(calConstant.NUM_RNG):
                         ## retrieve data for this channel ##
                         len = inLen[rng][twr, row, online_face, col]
