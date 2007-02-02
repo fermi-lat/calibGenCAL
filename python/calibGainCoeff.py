@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to extract effect of calibGain setting from two intNonlin XML files"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/08/28 20:11:55 $"
-__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/01/24 16:45:39 $"
+__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -78,7 +78,7 @@ if __name__ == '__main__':
             row = calCalibXML.layerToRow(lyr)
             for col in range(12):
                 for face in range(2):
-                    online_face = zachUtil.offline_face_to_online[face]
+                    online_face = calConstant.offline_face_to_online[face]
 
                     # HEX8 only
                     rng = 2

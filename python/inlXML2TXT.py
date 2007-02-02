@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Dump offline intNonlin xml file to .txt file"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/08/03 13:11:03 $"
-__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/01/29 19:28:00 $"
+__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -72,7 +72,7 @@ if __name__ == '__main__':
             row = calCalibXML.layerToRow(lyr)
             for col in range(calConstant.NUM_FE):
                 for face in range(calConstant.NUM_END):
-                    online_face = zachUtil.offline_face_to_online[face]
+                    online_face = calConstant.offline_face_to_online[face]
                     for rng in range(4):
                         for pt in range(lenData[rng][twr][row][online_face][col]):
                             print delim.join([str(x) for x in twr, lyr, col, face, rng,

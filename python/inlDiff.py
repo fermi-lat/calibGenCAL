@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL CIDAC2ADC XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/09/13 18:05:30 $"
-__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__        = "$Date: 2006/11/03 22:53:44 $"
+__version__     = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -105,7 +105,7 @@ for twr in inlTwrs1:
         row = calCalibXML.layerToRow(lyr)
         for col in range(calConstant.NUM_FE):
             for face in range(calConstant.NUM_END):
-                online_face = zachUtil.offline_face_to_online[face]
+                online_face = calConstant.offline_face_to_online[face]
 
                 for rng in range(calConstant.NUM_RNG):
                     # pick 1st channel to saturate as i don't want to compare after saturation

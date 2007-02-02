@@ -21,8 +21,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to apply cross-diode crosstalk correction to intNonlin XML files"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/01/12 20:45:49 $"
-__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/01/16 17:22:14 $"
+__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -130,7 +130,7 @@ if __name__ == '__main__':
                 row = calCalibXML.layerToRow(lyr)
                 for col in range(calConstant.NUM_FE):
                     for face in range(calConstant.NUM_END):
-                        online_face = zachUtil.offline_face_to_online[face]
+                        online_face = calConstant.offline_face_to_online[face]
                         for rng in range(2,4):
                             # find 1st point which will saturate dac scale after normalizing
                             saturated = xtalkDAC[rng][twr,row,online_face,col] > max_dac_muon
@@ -174,7 +174,7 @@ if __name__ == '__main__':
                 row = calCalibXML.layerToRow(lyr)
                 for col in range(12):
                     for face in range(2):
-                        online_face = zachUtil.offline_face_to_online[face]
+                        online_face = calConstant.offline_face_to_online[face]
                         for rng in range(2,4):
 
                             xtalkSpline = dac2adcXtalk[(twr,row,online_face,col,rng)]
@@ -230,7 +230,7 @@ if __name__ == '__main__':
             row = calCalibXML.layerToRow(lyr)
             for col in range(12):
                 for face in range(2):
-                    online_face = zachUtil.offline_face_to_online[face]
+                    online_face = calConstant.offline_face_to_online[face]
                     for rng in range(2,4):
                         for idx in range(inLen[rng][twr,row,online_face,col,0]):
                             # get dac value for this data point #
