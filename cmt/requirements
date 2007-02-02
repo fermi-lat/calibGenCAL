@@ -37,11 +37,13 @@ application genMuonAsym genMuonAsym.cxx
 
 application genMuonMPD genMuonMPD.cxx 
 
-application runMuTrigEff runMuTrigEff.cxx 
+# not currently used, uncomment to enable
+#application runMuTrigEff runMuTrigEff.cxx 
 
 #application genGCRMPD genGCRMPD.cxx
 
-application emiAnal emiAnal.cxx
+# not currently used, uncomment to enable
+#application emiAnal emiAnal.cxx
 
 application genMuonCalibTkr genMuonCalibTkr.cxx
 
