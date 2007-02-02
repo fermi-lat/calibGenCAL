@@ -1,4 +1,18 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Feb  2 12:32:40 PST 2007
+calibGenCAL/src/lib
+
+Modified Files:
+	ADC2NRG.cxx CalAsym.cxx CalAsym.h CalHodoscope.cxx 
+Log Message:
+BUGFIX: adc2nrg calculation mistakenly applied asymmetry correction twice.
+
+FEATURE: added READ_IN_TXT option to genMuonCalibTkr
+
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Feb  2 12:32:39 PST 2007
 calibGenCAL/src
 
