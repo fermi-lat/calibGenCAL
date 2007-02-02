@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Feb  2 13:33:23 PST 2007
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+commented out some apps which aren't used much to save compile time
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Feb  2 12:34:31 PST 2007
 calibGenCAL/python
 
