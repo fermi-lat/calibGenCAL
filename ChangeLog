@@ -1,4 +1,18 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Feb  2 12:32:39 PST 2007
+calibGenCAL/src
+
+Modified Files:
+	genMuonCalibTkr.cxx 
+Log Message:
+BUGFIX: adc2nrg calculation mistakenly applied asymmetry correction twice.
+
+FEATURE: added READ_IN_TXT option to genMuonCalibTkr
+
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Feb  2 12:28:42 PST 2007
 calibGenCAL/python/lib
 
