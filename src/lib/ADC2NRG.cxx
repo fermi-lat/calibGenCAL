@@ -52,16 +52,22 @@ void ADC2NRG::writeTXT(const string &filename,
     float asym_ctr = 0.25*asym.pos2asym(xtalIdx,
                                         diode,
                                         6.0);   // is center of xtal, coords range from 0-12
+
     asym_ctr = exp(asym_ctr);
 
     float dac = MPDHists::MUON_ENERGY/mpd;
+
 
     dac = (face == POS_FACE) ?
       dac * asym_ctr :
       dac / asym_ctr;
 
-    float adc     = dac2adc.dac2adc(rngIdx, dac*asym_ctr);
+
+
+    float adc     = dac2adc.dac2adc(rngIdx, dac);
+
     float adc2nrg = MPDHists::MUON_ENERGY/adc;
+
     outfile << twr
             << " " << lyr
             << " " << col
