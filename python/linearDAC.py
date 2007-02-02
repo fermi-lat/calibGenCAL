@@ -12,8 +12,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Force linear dac scale over portions of cidac2adc curve where cidac is non-linear."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/01/24 16:36:21 $"
-__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/02/02 20:28:42 $"
+__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -241,11 +241,10 @@ if __name__ == '__main__':
 
                         
                         
-                        # insert 0,0 point @ beginning of curve
+                        # insure 0,0 point @ beginning of curve
                         if dac[0] != 0:
-                            dac = Numeric.concatenate(([0],dac))
-                            adc = Numeric.concatenate(([0],adc))
-                            length += 1
+                            dac[0] = 0
+                            adc[0] = 0
 
                         #print "zero"
                         #print length
