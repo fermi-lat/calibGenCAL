@@ -1,4 +1,22 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Feb  2 12:28:42 PST 2007
+calibGenCAL/python
+
+Modified Files:
+	adc2nrgTXT2XML.py biasTXT2XML.py calibGainCoeff.py 
+	inl2tuple.py inlDiff.py inlTXT2XML.py inlXML2TXT.py 
+	linearDAC.py muSlopeTXT2XML.py pedTXT2XML.py pedXML2TXT.py 
+	tholdCIXML2TXT.py xdiodeXtalk.py zachUtil.py 
+Added Files:
+	adc2nrgXML2TXT.bat adc2nrgXML2TXT.py adc2nrgXML2TXT.sh 
+	genADC2NRG.bat genADC2NRG.py genADC2NRG.sh 
+Log Message:
+addition of adc2nrgXML2TXT, genADC2NRG scripts
+moved zachUtil.offline_face_to_online to calConstant module
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Jan 29 11:33:47 PST 2007
 calibGenCAL/src
 
