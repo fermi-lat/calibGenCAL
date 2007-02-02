@@ -1,5 +1,17 @@
 ------------------------------------------------------------
 User: fewtrell  Fri Feb  2 12:28:42 PST 2007
+calibGenCAL/python/lib
+
+Modified Files:
+	calConstant.py 
+Log Message:
+addition of adc2nrgXML2TXT, genADC2NRG scripts
+moved zachUtil.offline_face_to_online to calConstant module
+
+
+    *
+------------------------------------------------------------
+User: fewtrell  Fri Feb  2 12:28:42 PST 2007
 calibGenCAL/python
 
 Modified Files:
