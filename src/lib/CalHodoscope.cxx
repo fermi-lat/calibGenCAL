@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalHodoscope.cxx,v 1.1 2007/01/04 23:23:00 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalHodoscope.cxx,v 1.2 2007/01/05 17:25:34 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -97,7 +97,6 @@ void CalHodoscope::addHit(const CalDigi &calDigi) {
   count++;  // increment total # hits
 
   perLyr[lyr]++;
-  //cout << "hscope add: " << xtalIdx.getCalXtalId() << endl;
   hitList.push_back(xtalIdx);
 }
 

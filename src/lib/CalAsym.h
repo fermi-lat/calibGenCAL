@@ -1,6 +1,6 @@
 #ifndef CalAsym_h
 #define CalAsym_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalAsym.h,v 1.5 2007/01/05 17:25:33 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalAsym.h,v 1.6 2007/01/29 19:28:00 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -72,10 +72,6 @@ class CalAsym {
 
     if (!splinePtr)
       return INVALID_ASYM;
-
-    /*     cout << splinePtr->GetName()  */
-    /*          << " " << pos << " " << splinePtr->Eval(pos) */
-    /*          << endl; */
 
     return splinePtr->Eval(pos);
   }

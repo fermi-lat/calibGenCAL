@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalAsym.cxx,v 1.5 2007/01/05 17:25:33 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalAsym.cxx,v 1.6 2007/01/29 19:28:00 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -141,11 +141,6 @@ void CalAsym::genSplines() {
         TSpline3     *mySpline = new TSpline3(name.str().c_str(),
                                               pos, asym, N_ASYM_PTS+2);
         mySpline->SetName(name.str().c_str());
-
-        //         cout << mySpline->GetName() << " ";
-        //         for (unsigned short i = 0; i < N_ASYM_PTS+2; i++)
-        //           cout << pos[i] << " " << asym[i] << " ";
-        //         cout << endl;
 
         m_p2aSplines[diode][xtalIdx] = mySpline;
       }

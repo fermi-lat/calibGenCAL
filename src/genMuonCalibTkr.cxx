@@ -192,7 +192,7 @@ int main(int argc,
                           asymHists,
                           mpdHists);
 
-    // used when creating histgrams
+    // READ IN HISTOGRAMS (SKIP HISTOGRAM FILLS)
     if (readInHists) {
       // skip event file processing & read in histograms directly
       mpdHists.loadHists();
@@ -216,29 +216,38 @@ int main(int argc,
       //histFile->Write();
     }
 
-    bool skipFitAsym = cfgFile.getVal<bool>("MUON_CALIB_TKR", "SKIP_ASYM_FIT", false);
-    if (!skipFitAsym) {
-      LogStream::get() << __FILE__ << ": fitting asymmetry histograms." << endl;
-      asymHists.fitHists(calAsym);
+    // READ IN TXT OUTPUT (SKIP HISTOGRAM FITS)
+    bool readInTXT = cfgFile.getVal<bool>("MUON_CALIB_TKR",
+                                          "READ_IN_TXT",
+                                          false);
+    if (readInTXT) {
+      calAsym.readTXT(asymTXTFile);
+      calMPD.readTXT(mpdTXTFile);
+    } else {
+      bool skipFitAsym = cfgFile.getVal<bool>("MUON_CALIB_TKR", "SKIP_ASYM_FIT", false);
+      if (!skipFitAsym) {
+        LogStream::get() << __FILE__ << ": fitting asymmetry histograms." << endl;
+        asymHists.fitHists(calAsym);
+      }
+      
+      bool skipFitMPD = cfgFile.getVal<bool>("MUON_CALIB_TKR", "SKIP_MPD_FIT", false);
+      if (!skipFitMPD) {
+        LogStream::get() << __FILE__ << ": fitting MeVPerDAC histograms." << endl;
+        mpdHists.fitHists(calMPD);
+      }
+
+      LogStream::get() << __FILE__ << ": writing muon asymmetry: "
+                       << asymTXTFile << endl;
+      calAsym.writeTXT(asymTXTFile);
+      
+      LogStream::get() << __FILE__ << ": writing muon mevPerDAC: "
+                       << mpdTXTFile << endl;
+      calMPD.writeTXT(mpdTXTFile);
+
+      LogStream::get() << __FILE__ << ": generating fit result tuple: " << endl;
+      mpdHists.buildTuple();
     }
 
-    bool skipFitMPD = cfgFile.getVal<bool>("MUON_CALIB_TKR", "SKIP_MPD_FIT", false);
-    if (!skipFitMPD) {
-      LogStream::get() << __FILE__ << ": fitting MeVPerDAC histograms." << endl;
-      mpdHists.fitHists(calMPD);
-    }
-
-    LogStream::get() << __FILE__ << ": writing muon asymmetry: "
-                     << asymTXTFile << endl;
-    calAsym.writeTXT(asymTXTFile);
-
-    LogStream::get() << __FILE__ << ": writing muon mevPerDAC: "
-                     << mpdTXTFile << endl;
-    calMPD.writeTXT(mpdTXTFile);
-
-    LogStream::get() << __FILE__ << ": writing fit result tuple: "
-                     << mpdTXTFile << endl;
-    mpdHists.buildTuple();
 
     string adc2nrgFile =
       ADC2NRG::genFilename(outputDir,
