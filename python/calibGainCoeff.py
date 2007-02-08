@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to extract effect of calibGain setting from two intNonlin XML files"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/01/24 16:45:39 $"
-__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/02/02 20:28:42 $"
+__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -73,11 +73,11 @@ if __name__ == '__main__':
     log.info("Evalutating ratios")
     # calc & print calibGainFactor for each channel
     for twr in cgOnTwrSet:
-        for lyr in range(8):
+        for lyr in range(calConstant.NUM_LAYER):
             # calCalibXML uses 'row' indexing, not layer
             row = calCalibXML.layerToRow(lyr)
-            for col in range(12):
-                for face in range(2):
+            for col in range(calConstant.NUM_FE):
+                for face in range(calConstant.NUM_END):
                     online_face = calConstant.offline_face_to_online[face]
 
                     # HEX8 only

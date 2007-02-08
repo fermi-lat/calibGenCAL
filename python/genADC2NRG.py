@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL ADC2NRG calibration XML files from asymmetry, cidac2adc & mevPerDAC xml files"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/08/03 13:11:03 $"
-__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/02/02 20:28:42 $"
+__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -116,7 +116,7 @@ if __name__ == '__main__':
 
     # print out txt file.
     for twr in towers:
-        for lyr in range(calConstant.NUM_ROW):
+        for lyr in range(calConstant.NUM_LAYER):
             # calCalibXML uses 'row' indexing, not layer
             row = calCalibXML.layerToRow(lyr)
             for col in range(calConstant.NUM_FE):
