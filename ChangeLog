@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Thu Feb  8 13:26:17 PST 2007
+calibGenCAL/unit_test
+
+Modified Files:
+	calibGenCAL_suite.cfg 
+Log Message:
+removal of "GENERAL" section of cfg file & removal of 'output_dir' option
+
+    *
+------------------------------------------------------------
+User: fewtrell  Thu Feb  8 13:26:17 PST 2007
 calibGenCAL/src
 
 Modified Files:
