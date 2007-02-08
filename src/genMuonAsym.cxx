@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.10 2007/01/04 23:23:00 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.11 2007/01/05 17:25:33 fewtrell Exp $
 
 /** @file generate Light Asymmetry calibrations from Muon event filesusing Cal Digi Hodoscope
     for track & hit information
@@ -44,11 +44,6 @@ int main(int argc,
     //-- CONFIG FILE --//
     SimpleIniFile cfgFile(argv[1]);
 
-    // output dir
-    string outputDir = cfgFile.getVal("GENERAL",
-                                      "OUTPUT_DIR",
-                                      string("./"));
-
     // input file(s)
     vector<string> rootFileList(cfgFile.getVector<string>("MUON_ASYM",
                                                           "ROOT_FILES",
@@ -63,6 +58,7 @@ int main(int argc,
     /// simultaneously to cout and to logfile
     LogStream::addStream(cout);
     // generate logfile name
+    const string outputDir("./");
     string logfile =
       CalAsym::genFilename(outputDir,
                            rootFileList[0],

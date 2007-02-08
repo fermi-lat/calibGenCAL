@@ -43,11 +43,6 @@ int main(int argc,
     //-- CONFIG FILE --//
     SimpleIniFile cfgFile(argv[1]);
 
-    // output dir
-    string outputDir = cfgFile.getVal("GENERAL",
-                                      "OUTPUT_DIR",
-                                      string("./"));
-
     // input file(s)
     vector<string> digiFileList(cfgFile.getVector<string>("MUON_CALIB_TKR",
                                                           "DIGI_FILES",
@@ -70,6 +65,7 @@ int main(int argc,
     /// simultaneously to cout and to logfile
     LogStream::addStream(cout);
     // generate logfile name
+    const string outputDir("./");
     string logfile =
       CGCUtil::genOutputFilename(outputDir,
                                  "muonCalib",

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.10 2007/01/04 23:23:00 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.11 2007/01/05 17:25:33 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -37,10 +37,6 @@ int main(int argc,
     //-- CONFIG FILE --//
     SimpleIniFile cfgFile(argv[1]);
 
-    // output dir
-    string outputDir = cfgFile.getVal("GENERAL",
-                                      "OUTPUT_DIR",
-                                      string("./"));
     // input files
     vector<string> rootFileList(cfgFile.getVector<string>("MUON_PEDS",
                                                           "ROOT_FILES",
@@ -56,6 +52,7 @@ int main(int argc,
     LogStream::addStream(cout);
 
     // generate logfile name
+    const string outputDir("./");
     string logfile =
       CalPed::genFilename(outputDir,
                           rootFileList[0],

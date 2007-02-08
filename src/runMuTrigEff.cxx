@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runMuTrigEff.cxx,v 1.25 2007/01/04 23:23:00 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runMuTrigEff.cxx,v 1.26 2007/01/05 17:25:33 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -40,9 +40,7 @@ int main(int argc,
     SimpleIniFile cfgFile(argv[1]);
 
     // output dir
-    string outputDir        = cfgFile.getVal("GENERAL",
-                                             "OUTPUT_DIR",
-                                             string("./"));
+    const string outputDir("./");
     // input files
     string rootFileCI       = cfgFile.getVal("MU_TRIG",
                                              "ROOTFILE_CI",
