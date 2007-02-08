@@ -21,8 +21,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to apply cross-diode crosstalk correction to intNonlin XML files"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/01/16 17:22:14 $"
-__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/02/02 20:28:42 $"
+__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -131,6 +131,7 @@ if __name__ == '__main__':
                 for col in range(calConstant.NUM_FE):
                     for face in range(calConstant.NUM_END):
                         online_face = calConstant.offline_face_to_online[face]
+                        # only dealing w/ HEX1 / HEX8 ranges
                         for rng in range(2,4):
                             # find 1st point which will saturate dac scale after normalizing
                             saturated = xtalkDAC[rng][twr,row,online_face,col] > max_dac_muon
@@ -169,11 +170,11 @@ if __name__ == '__main__':
     else:
         log.info("Extrapolating xtalk splines")
         for twr in inTwrSet:
-            for lyr in range(8):
+            for lyr in range(calConstant.NUM_LAYER):
                 # calCalibXML uses 'row' indexing, not layer
                 row = calCalibXML.layerToRow(lyr)
-                for col in range(12):
-                    for face in range(2):
+                for col in range(calConstant.NUM_FE):
+                    for face in range(calConstant.NUM_END):
                         online_face = calConstant.offline_face_to_online[face]
                         for rng in range(2,4):
 
@@ -213,33 +214,72 @@ if __name__ == '__main__':
     xtalkSplines = zachUtil.build_inl_splines(xtalkData, xtalkTwrSet)
     (adc2dacXtalk, dac2adcXtalk) = xtalkSplines
 
+
+    ## calculate average xtalk ##
+    log.info("Calculating average xtalk")
+    # create output data arrays
+    avgXtalkDAC = zachUtil.CIDAC_TEST_VALS
+    avgXtalkADC = dict()
+    avgXtalkSpline = dict()
+    for rng  in range(2,4):
+        nChannels = 0
+        avgXtalkADC[rng] = Numeric.zeros(len(avgXtalkDAC))
+        for twr in inTwrSet:
+            for lyr in range(calConstant.NUM_LAYER):
+                # calCalibXML uses 'row' indexing, not layer
+                row = calCalibXML.layerToRow(lyr)
+                for col in range(calConstant.NUM_FE):
+                    for face in range(calConstant.NUM_END):
+                        online_face = calConstant.offline_face_to_online[face]
+                        nChannels += 1
+                        xtalkSpline = dac2adcXtalk[(twr,row,online_face,col,rng)]
+                        current_adc = Numeric.array([xtalkSpline.Eval(x) for x in avgXtalkDAC])
+                        avgXtalkADC[rng] =  avgXtalkADC[rng] + current_adc
+
+        # divide to find average
+        avgXtalkADC[rng] =  avgXtalkADC[rng] / nChannels
+        avgXtalkSpline[rng] = ROOT.TSpline3("avgXtalk%s"%rng,
+                                            array.array('d',avgXtalkDAC),
+                                            array.array('d',avgXtalkADC[rng]),
+                                            len(avgXtalkDAC)
+                                            )
+
+
     ## output new xtalk file ##
-    (basename,ext) = os.path.splitext(xtalkPath)
-    xtalkOutPath = basename + ".xdiodeXtalkNormalized.xml"
-    log.info("output final xtalk values:%s",xtalkOutPath)
-    xtalkOutFile = calCalibXML.calIntNonlinCalibXML(xtalkOutPath, calCalibXML.MODE_CREATE)
-    xtalkOutFile.write(xtalkLen, xtalkDAC, xtalkADC, tems=xtalkTwrSet)
-    xtalkOutFile.close()
-    calCalibXML.insertDTD(xtalkOutPath, dtdPath)
+#     (basename,ext) = os.path.splitext(xtalkPath)
+#     xtalkOutPath = basename + ".xdiodeXtalkNormalized.xml"
+#     log.info("output final xtalk values:%s",xtalkOutPath)
+#     xtalkOutFile = calCalibXML.calIntNonlinCalibXML(xtalkOutPath, calCalibXML.MODE_CREATE)
+#     xtalkOutFile.write(xtalkLen, xtalkDAC, xtalkADC, tems=xtalkTwrSet)
+#     xtalkOutFile.close()
+#     calCalibXML.insertDTD(xtalkOutPath, dtdPath)
+
+    log.info("Average xtalk")
+    for rng in range(2,4):
+        for idx in range(len(avgXtalkDAC)):
+            print [rng,  
+                   avgXtalkDAC[idx], 
+                   avgXtalkADC[rng][idx]]
+
+
 
     ## add xtalk ##
     log.info("Applying xtalk correction")
     for twr in inTwrSet:
-        for lyr in range(8):
+        for lyr in range(calConstant.NUM_LAYER):
             # calCalibXML uses 'row' indexing, not layer
             row = calCalibXML.layerToRow(lyr)
-            for col in range(12):
-                for face in range(2):
+            for col in range(calConstant.NUM_FE):
+                for face in range(calConstant.NUM_END):
                     online_face = calConstant.offline_face_to_online[face]
                     for rng in range(2,4):
                         for idx in range(inLen[rng][twr,row,online_face,col,0]):
                             # get dac value for this data point #
                             dac = inDAC[rng][twr,row,online_face,col,idx]
                             adc = inADC[rng][twr,row,online_face,col,idx]
-                            spline =  dac2adcXtalk[(twr,row,online_face,col,rng)]
                                              
                             # add crosstalk to adc for corresponding data point #
-                            xtalk_adc = spline.Eval(dac)
+                            xtalk_adc = avgXtalkSpline[rng].Eval(dac)
                             new_adc = adc + xtalk_adc
 
                             #print twr, lyr, col, face, rng, dac, adc, xtalk_adc, new_adc
