@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runMuTrigEff.cxx,v 1.26 2007/01/05 17:25:33 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runMuTrigEff.cxx,v 1.27 2007/02/08 21:26:17 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -147,7 +147,7 @@ int main(int argc,
 
     histFile.Write();
     histFile.Close();
-  } catch (exception e) {
+  } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
   }
   return 0;

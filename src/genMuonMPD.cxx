@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.13 2007/01/29 19:28:00 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.14 2007/02/08 21:26:17 fewtrell Exp $
 
 /** @file Gen MevPerDAC calibrations from Muon event files using Cal Digi Hodoscope
     for track & hit information
@@ -230,7 +230,7 @@ int main(int argc,
   LogStream::get() << __FILE__ << ": writing histogram file: " << histFilename << endl;
   histFile->Write();
 
-} catch (exception e) {
+} catch (exception &e) {
   cout << __FILE__ << ": exception thrown: " << e.what() << endl;
   return -1;
 }
