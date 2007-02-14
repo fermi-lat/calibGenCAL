@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.11 2007/01/05 17:25:33 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.12 2007/02/08 21:26:17 fewtrell Exp $
 
 /** @file generate Light Asymmetry calibrations from Muon event filesusing Cal Digi Hodoscope
     for track & hit information
@@ -196,7 +196,7 @@ int main(int argc,
     LogStream::get() << __FILE__ << ": writing histogram file: "
                      << histFilename << endl;
     histFile->Write();
-  } catch (exception e) {
+  } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
   }
 

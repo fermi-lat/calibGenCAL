@@ -257,7 +257,7 @@ int main(int argc,
     LogStream::get() << __FILE__ << ": writing histogram file: "
                      << histFilename << endl;
     histFile->Write();
-  } catch (exception e) {
+  } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
   }
 
