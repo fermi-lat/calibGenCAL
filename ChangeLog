@@ -1,4 +1,46 @@
 ------------------------------------------------------------
+User: dwood  Fri Feb 16 10:57:36 PST 2007
+calibGenCAL/python/bin
+
+Added Files:
+	adc2nrgTXT2XML.bat adc2nrgTXT2XML.sh adc2nrgVal.bat 
+	adc2nrgVal.sh adc2nrgXML2TXT.bat adc2nrgXML2TXT.sh adcplot.bat 
+	adcplot.sh adcsmooth.bat adcsmooth.sh asymApplyCalibGain.bat 
+	asymApplyCalibGain.sh asymDiff.bat asymDiff.sh asymMerge.bat 
+	asymMerge.sh asymTXT2XML.bat asymTXT2XML.sh asymVal.bat 
+	asymVal.sh asymXML2TXT.bat asymXML2TXT.sh biasTXT2XML.bat 
+	biasTXT2XML.sh biasVal.bat biasVal.sh build_adcsmooth.bat 
+	build_adcsmooth.sh calCalibApplyRelgain.bat 
+	calCalibApplyRelgain.sh calFitsMerge.bat calFitsMerge.sh 
+	calibGainCoeff.bat calibGainCoeff.sh charVal.bat charVal.sh 
+	charplot.bat charplot.sh checkXML.bat checkXML.sh dacDiff.bat 
+	dacDiff.sh dacSlopesGen.bat dacSlopesGen.sh dacSlopesPlot.bat 
+	dacSlopesPlot.sh dacSlopesVal.bat dacSlopesVal.sh 
+	dacXML2TXT.bat dacXML2TXT.sh dumpROOTPlots.bat 
+	dumpROOTPlots.sh genADC2NRG.bat genADC2NRG.sh 
+	genDACsettings.bat genDACsettings.sh genFlightGain.sh 
+	genFlightPed.bat genFlightPed.sh inl2tuple.bat inl2tuple.sh 
+	inlDiff.bat inlDiff.sh inlPedSubtract.bat inlPedSubtract.sh 
+	inlTXT2XML.bat inlTXT2XML.sh inlXML2TXT.bat inlXML2TXT.sh 
+	intNonlinMerge.bat intNonlinMerge.sh intNonlinVal.bat 
+	intNonlinVal.sh linearDAC.bat linearDAC.sh mevPerDacMerge.bat 
+	mevPerDacMerge.sh mevPerDacVal.bat mevPerDacVal.sh 
+	mpdApplyCalibGain.bat mpdApplyCalibGain.sh mpdDiff.bat 
+	mpdDiff.sh mpdTXT2XML.bat mpdTXT2XML.sh mpdXML2TXT.bat 
+	mpdXML2TXT.sh muSlopeDiff.bat muSlopeDiff.sh 
+	muSlopeTXT2XML.bat muSlopeTXT2XML.sh muSlopeVal.bat 
+	muSlopeVal.sh pedDiff.bat pedDiff.sh pedMerge.bat pedMerge.sh 
+	pedTXT2XML.bat pedTXT2XML.sh pedVal.bat pedVal.sh 
+	pedXML2TXT.bat pedXML2TXT.sh tholdCIGen.bat tholdCIGen.sh 
+	tholdCIVal.bat tholdCIVal.sh tholdCIXML2TXT.bat 
+	tholdCIXML2TXT.sh txt2tuple.bat txt2tuple.sh 
+	valDACsettings.bat valDACsettings.sh xdiodeXtalk.bat 
+	xdiodeXtalk.sh 
+Log Message:
+Moved launcher shell scrips to bin subdirectory; moved depricated DAC calibration application scripts to old subdirectory.
+
+    *
+------------------------------------------------------------
 User: dwood  Fri Feb 16 10:57:34 PST 2007
 calibGenCAL/python
 
