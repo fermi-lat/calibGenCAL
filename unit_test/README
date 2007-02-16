@@ -1,3 +1,0 @@
-calibGenCAL/unit_test contains:
-        - environment is expected to be SLAC linux as data files are available via nfs
-        - correct output is saved in unit_test/output.tgz
