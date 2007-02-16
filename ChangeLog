@@ -1,5 +1,17 @@
 ------------------------------------------------------------
 User: dwood  Fri Feb 16 11:30:12 PST 2007
+calibGenCAL/python/old
+
+Added Files:
+	build_gensettings_cfg.cfg genFHEsettings.cfg 
+	genFLEsettings.cfg genLACsettings.cfg genULDsettings.cfg 
+	get_slac_calibdac.cfg 
+Log Message:
+Moved config scripts for deprecated DAC calibration applications from cfg subdirectory to python/old subdirectory.
+
+    *
+------------------------------------------------------------
+User: dwood  Fri Feb 16 11:30:12 PST 2007
 calibGenCAL/cfg
 
 Removed Files:
