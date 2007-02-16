@@ -1,5 +1,5 @@
 // (Special "header" just for doxygen)
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/mainpage.h,v 1.45 2006/10/07 00:46:20 dwood Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/mainpage.h,v 1.46 2007/01/04 23:23:00 fewtrell Exp $
 
 
 /*! 
@@ -45,11 +45,8 @@
   - \b genMuonPed.exe
   Generate ADC pedestals from 4-range non-zero suppressed event data.
 
-  - \b genMuonAsym.exe
-  Generate light-asymmetry calibration from muon event data.
-
-  - \b genMuonMPD.exe
-  Generate MeVPerDAC calibration from muon event data.
+  - \b genMuonCalibTkr.exe
+  Generate light-asymmetry & mevPerDAC calibration from muon event data.
 
   -  \b runMuTrigEff.exe
   calculate FLE threshold vs Muon deposit & charge injection.
@@ -207,6 +204,9 @@
   - <tt> inlTXT2XML [-doptional.dtd] input.txt output.xml </tt>
   - <tt> biasTXT2XML </tt>
   - <tt> dacXML2TXT </tt>
+  - <tt> adc2nrgTXT2XML </tt>
+  - <tt> inl2tuple </tt>
+  - <tt> txt2tuple </tt>
 
   Each of the TXT2XML scripts converts one offline calibration file type
   from space delimited TXT file to proper XML file format.
