@@ -472,9 +472,10 @@ The tholdCIGen application has been updated to support 16-tower DAC settings fil
 
   
 
----------------------
-v4r5 fewtrell
----------------------
+-------
+v4r5 , v4r5p1
+-------
+**
 - Addition of genMuonCalibTkr application, which uses tracker based muon/mip
 tracks to simultaneously calibrate asymmetery & mevPerDAC.  Better track
 leads to signficantly less noise hits.  Also uses more sophisticated fitting 
@@ -485,3 +486,14 @@ method w/ gaussian-convolved landau and stepped background model.
 	ADC2NRG, AsymHists, MPDHists
 - new modules added
 	CalHodoscope, MuonCalibTkr, LangauFun
+- xdiodeXtalk.py script (in development) corrects for cross diode electronic crosstalk
+- linearDAC.py script (in development) corrects for 
+- bug in C++ adc2nrg calculation fixed.
+- addition of adc2nrgXML2TXT.py & genADC2NRG.py scripts
+- addition of inl2tuple.py & txt2tuple.py analysis scripts
+
+** v4r5 dwood
+- deprecated python code now moved to python/old directory
+- python 'launcher' scripts separated from python code into python/bin
+- .sh launcher scripts now unset DISPLAY environment variable (this eliminates annoying plots to screen during batch processing)
+- python path environment variable now setup by cmt requirements file (moved out of launcher scripts)
