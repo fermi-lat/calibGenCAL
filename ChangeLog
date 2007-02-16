@@ -1,5 +1,38 @@
 ------------------------------------------------------------
 User: fewtrell  Fri Feb 16 10:11:48 PST 2007
+calibGenCAL/python
+
+Modified Files:
+	adc2nrgTXT2XML.sh adc2nrgVal.sh adc2nrgXML2TXT.sh adcplot.sh 
+	adcsmooth.sh asymApplyCalibGain.sh asymDiff.sh asymMerge.sh 
+	asymTXT2XML.sh asymVal.sh asymXML2TXT.sh biasTXT2XML.sh 
+	biasVal.sh build_adcsmooth.sh build_dacslopes_cfg.sh 
+	build_gensettings_cfg.sh build_tholdci_cfg.sh 
+	calCalibApplyRelgain.sh calFitsMerge.sh calibGainCoeff.sh 
+	charVal.sh charplot.sh checkXML.sh dacDiff.sh dacSlopesGen.sh 
+	dacSlopesPlot.sh dacSlopesVal.sh dacVal.sh dacXML2TXT.sh 
+	dumpROOTPlots.sh genADC2NRG.sh genDACsettings.sh 
+	genFHEsettings.sh genFLEsettings.sh genFlightGain.sh 
+	genFlightPed.sh genLACsettings.sh genULDsettings.sh 
+	gensettings.sh get_slac_calibdac.sh inl2tuple.sh inlDiff.sh 
+	inlPedSubtract.sh inlTXT2XML.sh inlXML2TXT.sh 
+	intNonlinMerge.sh intNonlinVal.sh linearDAC.sh 
+	mevPerDacMerge.sh mevPerDacVal.sh mpdApplyCalibGain.sh 
+	mpdDiff.sh mpdTXT2XML.sh mpdXML2TXT.sh muSlopeDiff.sh 
+	muSlopeTXT2XML.sh muSlopeVal.sh pedDiff.sh pedMerge.sh 
+	pedTXT2XML.sh pedVal.sh pedXML2TXT.sh tholdCIGen.sh 
+	tholdCIVal.sh tholdCIXML2TXT.sh txt2tuple.sh uldVal.sh 
+	valDACsettings.sh xdiodeXtalk.sh 
+Removed Files:
+	zachUtil.py 
+Log Message:
+python environment re-organization:
+PYTHONPATH now set w/ requirements file
+DISPLAY environment var now removed by python launcher scripts
+
+    *
+------------------------------------------------------------
+User: fewtrell  Fri Feb 16 10:11:48 PST 2007
 calibGenCAL/cmt
 
 Modified Files:
