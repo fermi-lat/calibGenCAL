@@ -1,7 +1,6 @@
 #! /bin/sh
-#$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/valDACsettings.sh,v 1.1 2006/08/03 00:30:12 dwood Exp $
+#$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/valDACsettings.sh,v 1.2 2006/09/18 20:19:20 fewtrell Exp $
+export -n DISPLAY
 
-PYTHONPATH=${CALIBGENCALROOT}/python/lib:$ROOTSYS/lib:${PYTHONPATH}
-export PYTHONPATH
 
 python ${CALIBGENCALROOT}/python/valDACsettings.py "$@"

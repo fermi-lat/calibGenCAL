@@ -1,7 +1,6 @@
 #! /bin/sh
-#$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/calFitsMerge.sh,v 1.1 2006/06/27 19:30:16 fewtrell Exp $
+#$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/calFitsMerge.sh,v 1.2 2006/09/18 20:19:20 fewtrell Exp $
+export -n DISPLAY
 
-PYTHONPATH=${CALIBGENCALROOT}/python/lib:$ROOTSYS/lib:${PYTHONPATH}
-export PYTHONPATH
 
 python ${CALIBGENCALROOT}/python/calFitsMerge.py "$@"

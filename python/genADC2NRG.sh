@@ -1,8 +1,7 @@
 #! /bin/sh
-#$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/genADC2NRG.sh,v 1.2 2006/09/18 20:19:20 fewtrell Exp $
+#$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/genADC2NRG.sh,v 1.1 2007/02/02 20:28:42 fewtrell Exp $
+export -n DISPLAY
 
-PYTHONPATH=${CALIBGENCALROOT}/python/lib:$ROOTSYS/lib:${PYTHONPATH}
-export PYTHONPATH
 
 python ${CALIBGENCALROOT}/python/genADC2NRG.py "$@"
 

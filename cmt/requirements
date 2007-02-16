@@ -25,6 +25,10 @@ macro_append ROOT_libs " -lHist -lGraf -lGpad -lPostscript -lMinuit" \
 path_append PATH ${CALIBGENCALROOT}/python
 path_append PATH ${CALIBGENCALROOT}/${CMTCONFIG}
 
+# append python libraries to PYTHONPATH
+path_append PYTHONPATH ${CALIBGENCALROOT}/python/lib
+path_append PYTHONPATH ${ROOTSYS}/lib
+
 apply_pattern shared_library
 
 library calibGenCAL  lib/*.cxx lib/*.h 

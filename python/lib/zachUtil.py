@@ -5,8 +5,8 @@ collection of simple utilities shared throughout my code
 __facility__  = "Offline"
 __abstract__  = "apply calibGain correction to asymmetry xml file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2007/02/02 20:28:42 $"
-__version__   = "$Revision: 1.10 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/02/08 16:37:30 $"
+__version__   = "$Revision: 1.11 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
