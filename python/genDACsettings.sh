@@ -1,8 +1,7 @@
 #! /bin/sh
-#$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/genDACsettings.sh,v 1.1 2006/07/18 20:40:40 dwood Exp $
+#$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/genDACsettings.sh,v 1.2 2006/09/18 20:19:20 fewtrell Exp $
+export -n DISPLAY
 
-PYTHONPATH=${CALIBGENCALROOT}/python/lib:$ROOTSYS/lib:${PYTHONPATH}
-export PYTHONPATH
 
 python ${CALIBGENCALROOT}/python/genDACsettings.py "$@"
 
