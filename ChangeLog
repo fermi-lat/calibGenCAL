@@ -1,5 +1,18 @@
 ------------------------------------------------------------
 User: dwood  Fri Feb 16 10:57:36 PST 2007
+calibGenCAL/python/old
+
+Added Files:
+	build_dacslopes_cfg.py build_gensettings_cfg.py 
+	build_tholdci_cfg.py dacVal.py genFHEsettings.py 
+	genFLEsettings.py genLACsettings.py genULDsettings.py 
+	gensettings.py get_slac_calibdac.py uldVal.py 
+Log Message:
+Moved launcher shell scrips to bin subdirectory; moved depricated DAC calibration application scripts to old subdirectory.
+
+    *
+------------------------------------------------------------
+User: dwood  Fri Feb 16 10:57:36 PST 2007
 calibGenCAL/python/bin
 
 Added Files:
