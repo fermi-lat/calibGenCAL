@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Feb 16 12:14:13 PST 2007
+calibGenCAL/doc
+
+Modified Files:
+	calibGenCAL_description.doc calibGenCAL_description.pdf 
+Added Files:
+	CU06_Notes.html 
+Log Message:
+new file documents alternate developing process for calibating the CU06 Cal Calibration unit.
+
+    *
+------------------------------------------------------------
 User: dwood  Fri Feb 16 11:30:12 PST 2007
 calibGenCAL/python/old
 
