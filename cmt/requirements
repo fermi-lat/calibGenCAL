@@ -22,7 +22,7 @@ macro_append ROOT_libs " -lHist -lGraf -lGpad -lPostscript -lMinuit" \
              ${ROOT_PATH}/lib/libMinuit.lib"
 
 # append needed executables & batch scripts to system path
-path_append PATH ${CALIBGENCALROOT}/python
+path_append PATH ${CALIBGENCALROOT}/python/bin
 path_append PATH ${CALIBGENCALROOT}/${CMTCONFIG}
 
 # append python libraries to PYTHONPATH
