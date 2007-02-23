@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/SimpleOptParse.cxx,v 1.6 2007/01/05 17:31:59 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CfgMgr.cxx,v 1.1 2007/02/15 18:42:11 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -73,7 +73,9 @@ namespace CfgMgr {
   void CmdLineParser::parseCmdLine(unsigned argc, 
                                    const char **argv,
                                    bool allowAnonArgs,
-                                   bool skipFirst) {
+                                   bool skipFirst,
+                                   bool ignoreErrors
+                                   ) {
 
     // skip empty lists
     if (argc == 0 || argv == 0)
@@ -105,7 +107,7 @@ namespace CfgMgr {
           anonArgList.push_back(str);
 
         // CASE 1C: anonymous positional args not allowed
-        else
+        else if (!ignoreErrors)
           throw InvalidCmdLine("Too many positional args @: " + str);
 
         // CASE 2: short optional var (single '-')
@@ -125,7 +127,7 @@ namespace CfgMgr {
             
             // check that next token exists...
             idx++;
-            if (idx >= argc) 
+            if (idx >= argc && !ignoreErrors) 
               throw InvalidCmdLine("No arg found for option: " + str);
             
             shortVar->second->setVal(argv[idx]);
@@ -138,7 +140,7 @@ namespace CfgMgr {
           ShortSwitchMap::const_iterator shortSwitch(shortSwitchMap.find(shortName));
           if (shortSwitch != shortSwitchMap.end())
             shortSwitch->second->setVal();
-          else
+          else if (!ignoreErrors)
             throw InvalidCmdLine("Undefined cmdline switch: " + str);
           
         } while (++charIdx < str.size()); // keep looping until we're out of characters
@@ -166,7 +168,7 @@ namespace CfgMgr {
           string val(str.substr(eqpos+1,str.npos));
 
           LongVarMap::const_iterator longVar(longVarMap.find(name));
-          if (longVar == longVarMap.end())
+          if (longVar == longVarMap.end() && !ignoreErrors)
             throw InvalidCmdLine("Unknown cmdline variable: " + name);
           longVar->second->setVal(val);
         }
@@ -175,19 +177,25 @@ namespace CfgMgr {
         else {
           // check that current var is registered
           LongVarMap::const_iterator longVar(longVarMap.find(str));
-          if (longVar == longVarMap.end())
+          if (longVar == longVarMap.end() && !ignoreErrors)
             throw InvalidCmdLine("Unknown cmdline variable: " + str);
 
           // check that next token exists...
           idx++;
-          if (idx >= argc) 
+          if (idx >= argc && !ignoreErrors) 
             throw InvalidCmdLine("No arg found for option: " + str);
             
           longVar->second->setVal(argv[idx]);
         }
-      } else
+      } else if (!ignoreErrors)
         throw InvalidCmdLine("Undefined argument: " + str);
     } // argc looop
+
+    //-- Final checks --//
+    
+    // check that all required arguments have been filled
+    if (nPositionalArgs < argList.size() && !ignoreErrors)
+      throw InvalidCmdLine("Not enough required arguments, need " + toStr(argList.size()));
   }
   
   void CmdLineParser::printStatus(std::ostream &strm) const {
@@ -223,8 +231,8 @@ namespace CfgMgr {
       strm << "\t";
 
       strm  << (**var).getStrVal() << "\t"
-           << (**var).getHelp() << "\t"
-           << endl;
+            << (**var).getHelp() << "\t"
+            << endl;
     }
 
 
@@ -294,7 +302,21 @@ namespace CfgMgr {
     }
   }
 
-  
+  void CmdLineParser::printUsage(std::ostream &strm) const {
+    strm << "Usage: '";
 
-  
+    //-- INITIAL USAGE STR --//
+    // patterned after "grep [options] PATTERN [FILE...]"
+    if (switchList.size() && varList.size())
+      strm << "[options] ";
+    
+    for (unsigned i = 0; i < argList.size(); i++)
+      strm << argList[i]->getLongName() << " ";
+
+    strm << "'" << endl;
+
+    //-- OPTIONS / ARG DESCRIPTIONS --//
+    strm << "Where: " << endl;
+    printHelp(strm);
+  }
 };
