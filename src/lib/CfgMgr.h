@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CfgMgr.h,v 1.6 2007/01/05 17:31:59 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CfgMgr.h,v 1.1 2007/02/15 18:42:11 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -100,6 +100,7 @@ namespace CfgMgr {
     /// \pre at least one of  longName or shortName needs to be defined.
     /// \pre longName should consist of word delimited by the '-' character, it should
     ///      avoid commandline special characters
+    /// \thows InvalidVardef
     CmdSwitch(const std::string &longName,
               char shortName,
               const std::string &help) :
@@ -147,6 +148,7 @@ namespace CfgMgr {
     /// \pre longName should contain only letters & '-' character. 
     /// Optionally may be "" to disable longName
     /// \pre shortName may be (char)0 in order to disable shortName
+    /// \throws InvalidVarDef
     CmdOptVar(const std::string &longName,
               char shortName,
               const std::string &help,
@@ -241,8 +243,10 @@ namespace CfgMgr {
 
     void registerArg(ICmdArg &arg);
 
+    /// \throws DulicateNameError
     void registerSwitch(ICmdSwitch &sw);
     
+    /// \throws DulicateNameError
     void registerVar(ICmdOptVar &var);
     
     
@@ -254,14 +258,19 @@ namespace CfgMgr {
     ///                      a variable.
     /// \note this method attempts to follow the definitions stated in python optparse documentation
     ///       here: http://docs.python.org/lib/optparse-terminology.html
+    /// \throw InvalidCmdLine
     void parseCmdLine(unsigned argc, 
                       const char **argv,
                       bool allowAnonArgs=false,
-                      bool skipFirst=true);
+                      bool skipFirst=true,
+                      bool ignoreErrors=false
+                      );
 
     void printStatus(std::ostream &strm=std::cout) const;
 
     void printHelp(std::ostream &strm=std::cout) const;
+
+    void printUsage(std::ostream &strm=std::cout) const;
 
     const std::vector<std::string> &getAnonArgs() {return anonArgList;}
 
