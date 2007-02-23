@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Feb 22 16:41:01 PST 2007
+calibGenCAL/src/lib
+
+Modified Files:
+	CfgMgr.cxx CfgMgr.h 
+Log Message:
+added ignoreErrors option to parseCmdLine
+added printUsage() method to CmdLineParser
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v4r5p3, operation: add
 Package: calibGenCAL
