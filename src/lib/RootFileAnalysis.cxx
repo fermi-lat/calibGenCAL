@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/RootFileAnalysis.cxx,v 1.5 2007/01/04 23:23:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/RootFileAnalysis.cxx,v 1.6 2007/01/05 17:25:34 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -12,6 +12,8 @@
 #include "digiRootData/DigiEvent.h"
 #include "reconRootData/ReconEvent.h"
 #include "mcRootData/McEvent.h"
+#include "gcrSelectRootData/GcrSelectEvent.h"
+
 
 // EXTLIB INCLUDES
 #include "TChainElement.h"
@@ -28,14 +30,18 @@ using namespace CGCUtil;
 RootFileAnalysis::RootFileAnalysis(const vector<string> *mcFilenames,
                                    const vector<string> *digiFilenames,
                                    const vector<string> *reconFilenames,
-                                   const vector<string> *svacFilenames) :
+                                   const vector<string> *svacFilenames,
+                                   const vector<string> *gcrSelectFilenames) :
   m_mcChain("MC"),
   m_mcEvt(0),
   m_digiChain("Digi"),
   m_digiEvt(0),
   m_reconChain("Recon"),
   m_reconEvt(0),
-  m_svacChain("Output") // nice name guys! no need for all that detail though!
+  m_svacChain("Output"),
+  m_gcrSelectChain("GcrSelect"),
+  m_gcrSelectEvt(0)
+
 {
   // add mc file list into mc ROOT chain
   if (mcFilenames) {
@@ -98,6 +104,18 @@ RootFileAnalysis::RootFileAnalysis(const vector<string> *mcFilenames,
     }
     m_chainArr.Add(&m_svacChain);
   }
+
+  // add gcrSelect file list into mc ROOT chain
+  if (gcrSelectFilenames) {
+    for(vector<string>::const_iterator itr = gcrSelectFilenames->begin();
+        itr != gcrSelectFilenames->end(); ++itr) {
+      LogStream::get() << "gcrSelect file added to chain: " << *itr << endl;
+      m_gcrSelectChain.Add(itr->c_str());
+    }
+    m_gcrSelectChain.SetBranchAddress("GcrSelectEvent",&m_gcrSelectEvt);
+    m_chainArr.Add(&m_gcrSelectChain);
+  }
+
 }
 
 RootFileAnalysis::~RootFileAnalysis() {
@@ -115,6 +133,11 @@ RootFileAnalysis::~RootFileAnalysis() {
     m_reconEvt->Clear();
     delete m_reconEvt;
   }
+
+  if (m_gcrSelectEvt) {
+    m_gcrSelectEvt->Clear();
+    delete m_gcrSelectEvt;
+  }
 }
 
 UInt_t RootFileAnalysis::getEvent(UInt_t iEvt) {
@@ -127,6 +150,11 @@ UInt_t RootFileAnalysis::getEvent(UInt_t iEvt) {
 
   if (m_reconEvt)
     m_reconEvt->Clear();
+
+  if (m_gcrSelectEvt)
+    m_gcrSelectEvt->Clear();
+  
+
 
   UInt_t nBytes = 0;
   // if using chains, check the array of chains and move

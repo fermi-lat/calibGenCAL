@@ -1,7 +1,7 @@
 #ifndef LangauFun_h
 #define LangauFun_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/LangauFun.h,v 1.2 2007/01/05 17:25:34 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/LangauFun.h,v 1.3 2007/01/09 19:59:02 fewtrell Exp $
 
 // LOCAL INCLUDES
 
@@ -47,8 +47,8 @@ class LangauFun {
 
   /// fill ROOT TNtuple w/ fitted parms for this func / hist
   static Int_t fillTuple(CalUtil::XtalIdx xtalId,
-	                     const TH1 &hist, 
-						 TNtuple &tuple);
+                         const TH1 &hist, 
+                         TNtuple &tuple);
 };
 
 #endif
