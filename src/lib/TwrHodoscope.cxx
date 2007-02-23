@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/TwrHodoscope.cxx,v 1.7 2007/01/04 23:23:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/TwrHodoscope.cxx,v 1.8 2007/01/05 17:25:34 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -77,7 +77,7 @@ void TwrHodoscope::addHit(const CalDigi &calDigi) {
 
     float adc = calDigi.getAdcSelectedRange(rng.val(), (CalXtalId::XtalFace)face.val());   // raw adc
     if (adc < 0)
-      //       m_ostrm << "Couldn't get adc val for face=" << face.val()
+      //       LogStream::get() << "Couldn't get adc val for face=" << face.val()
       //               << " rng=" << rng.val() << endl;
       //    return;
       continue;

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/LangauFun.cxx,v 1.4 2007/01/11 23:31:59 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/LangauFun.cxx,v 1.7 2007/01/12 16:03:46 fewtrell Exp $
 
 /** @file
     @author Zach Fewtrell
@@ -154,12 +154,12 @@ namespace {
 
     float retVal = par[PARM_LAN_AREA]*step*sum*invsq2pi/real_gau + bkgnd;
 
-/*         LogStream::get() << x[0] << " "
-                          << str_join(par, par+N_PARMS)
-                          << real_lan << " " 
-                          << real_gau << " " 
-                          << retVal << endl;
-  */        
+    /*         LogStream::get() << x[0] << " "
+               << str_join(par, par+N_PARMS)
+               << real_lan << " " 
+               << real_gau << " " 
+               << retVal << endl;
+    */        
     return retVal;
   }
 

@@ -1,7 +1,7 @@
 #ifndef CGCUtil_H
 #define CGCUtil_H
 
-//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CGCUtil.h,v 1.5 2007/01/04 23:23:00 fewtrell Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CGCUtil.h,v 1.6 2007/01/08 22:19:36 fewtrell Exp $
 
 // LOCAL INCLUDES
 
@@ -180,9 +180,9 @@ namespace CGCUtil {
   /// template method joins a sequence of data items ino
   /// a string, separating each by delim.
   template <class FwdIt>
-  std::string str_join(FwdIt start,
-                       FwdIt stop,
-					   const std::string &delim=" ") {
+    std::string str_join(FwdIt start,
+                         FwdIt stop,
+                         const std::string &delim=" ") {
     std::ostringstream tmp;
     while (start != stop) {
       tmp << *start;

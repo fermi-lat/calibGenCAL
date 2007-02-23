@@ -378,7 +378,7 @@ void MPDHists::buildTuple() {
   case FitMethods::LANDAU:
     break;
   case FitMethods::LANGAU:
-	  tuple = &(LangauFun::buildTuple());
+    tuple = &(LangauFun::buildTuple());
     break;
   default:
     throw invalid_argument("invalid fit_method");
@@ -389,9 +389,9 @@ void MPDHists::buildTuple() {
     case FitMethods::LANDAU:
       break;
     case FitMethods::LANGAU:
-		LangauFun::fillTuple(xtalIdx, 
-			                 *(m_dacLLHists[xtalIdx]), 
-							 *tuple);
+      LangauFun::fillTuple(xtalIdx, 
+                           *(m_dacLLHists[xtalIdx]), 
+                           *tuple);
       break;
     }    
     

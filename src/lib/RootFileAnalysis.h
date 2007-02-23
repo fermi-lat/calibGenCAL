@@ -1,6 +1,6 @@
 #ifndef RootFileAnalysis_h
 #define RootFileAnalysis_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/RootFileAnalysis.h,v 1.7 2007/01/04 23:23:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/RootFileAnalysis.h,v 1.8 2007/01/05 17:25:34 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -19,6 +19,7 @@
 class McEvent;
 class DigiEvent;
 class ReconEvent;
+class GcrSelectEvent;
 
 /** \brief Makes a VCR for GLAST root event files
 
@@ -43,13 +44,15 @@ class RootFileAnalysis {
      \param mcFilenames (set to NULL to disable MC ROOT Chain)
      \param digiFilenames (set to NULL to disable Digi ROOT Chain)
      \param reconFilenames (set to NULL to disable recon ROOT Chain)
-     \param ostrm optional logging ostream
+     \param gcrSelectFilenames (set to NULL to disable gcrSelect ROOT Chain)
 
   */
   RootFileAnalysis(const std::vector<std::string> *mcFilenames = 0,
                    const std::vector<std::string> *digiFilenames = 0,
                    const std::vector<std::string> *reconFilenames = 0,
-                   const std::vector<std::string> *svacFilenames = 0);
+                   const std::vector<std::string> *svacFilenames = 0,
+                   const std::vector<std::string> *gcrSelectFilenames = 0
+                   );
 
   ~RootFileAnalysis();
 
@@ -72,6 +75,11 @@ class RootFileAnalysis {
   ReconEvent  *getReconEvent() const {
     return m_reconEvt;
   }
+  
+  GcrSelectEvent *getGcrSelectEvent() const { 
+    return m_gcrSelectEvt;
+  }
+
 
   TChain *getMcChain()   {
     return &m_mcChain;
@@ -87,6 +95,10 @@ class RootFileAnalysis {
 
   TChain *getSvacChain() {
     return &m_svacChain;
+  }
+  
+  TChain *getGcrSelectChain()  {
+    return &m_gcrSelectChain;
   }
 
  private:
@@ -111,6 +123,12 @@ class RootFileAnalysis {
 
   /// helpful list of all 3 TChains
   TObjArray    m_chainArr;
+  
+  /// Chains store event data for all files
+  TChain       m_gcrSelectChain;
+  /// pointer to current gcrSelectEvent
+  GcrSelectEvent  *m_gcrSelectEvt;
+
 
   /// current event number
   unsigned     m_nextEvt;
