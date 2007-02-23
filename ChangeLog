@@ -1,5 +1,17 @@
 ------------------------------------------------------------
 User: fewtrell  Fri Feb 23 08:37:21 PST 2007
+calibGenCAL/src/lib
+
+Modified Files:
+	AsymHists.cxx CGCUtil.h LangauFun.cxx LangauFun.h MPDHists.cxx 
+	RootFileAnalysis.cxx RootFileAnalysis.h TwrHodoscope.cxx 
+Log Message:
+genGCRHists application added
+GCRHists class added
+gcrSelect root file support added to rootFileAnalysis
+    *
+------------------------------------------------------------
+User: fewtrell  Fri Feb 23 08:37:21 PST 2007
 calibGenCAL/cmt
 
 Modified Files:
