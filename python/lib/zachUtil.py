@@ -1,3 +1,5 @@
+import sys
+
 """
 collection of simple utilities shared throughout my code
 """
@@ -5,8 +7,8 @@ collection of simple utilities shared throughout my code
 __facility__  = "Offline"
 __abstract__  = "apply calibGain correction to asymmetry xml file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2007/02/08 16:37:30 $"
-__version__   = "$Revision: 1.11 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/02/16 18:11:48 $"
+__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -122,8 +124,8 @@ def read_perFace_txt(filename):
         nLine+=1
         vals = line.split()
         if (len(vals) != nTXTFields):
-            log.error("input line# %d expecting %d column input, got %d" % (nLine, nTXTFields, len(vals)) +
-                      "fmt=[twr lyr col face ratio] " + line)
+            print "ERROR: input line# %d expecting %d column input, got %d" % (nLine, nTXTFields, len(vals)) + \
+            "fmt=[twr lyr col face ratio] " + line
             sys.exit(-1)
 
         # convert vals array to floats instead of strings
