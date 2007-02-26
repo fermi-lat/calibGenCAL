@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalMPD.cxx,v 1.3 2007/01/04 23:23:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalMPD.cxx,v 1.4 2007/01/05 17:25:34 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -13,6 +13,7 @@
 
 // STD INCLUDES
 #include <fstream>
+#include <sstream>
 
 using namespace std;
 using namespace CalUtil;
@@ -32,6 +33,10 @@ void CalMPD::writeTXT(const string &filename) const {
 
   if (!outfile.is_open())
     throw runtime_error(string("Unable to open " + filename));
+
+  // output header info as comment
+  outfile << "; twr lyr col diode mpd error" << endl;
+
 
   // PER XTAL LOOP
   for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++)
@@ -57,7 +62,6 @@ void CalMPD::readTXT(const string &filename) {
   unsigned short twr, lyr, col, diode;
   float mpd, sig;
 
-
   // open file
   ifstream infile(filename.c_str());
 
@@ -65,11 +69,18 @@ void CalMPD::readTXT(const string &filename) {
     throw runtime_error(string("Unable to open " + filename));
 
   // loop through each line in file
+  string line;
   while (infile.good()) {
-    // get lyr, col (xtalId)
-    infile >> twr >> lyr >> col >> diode >> mpd >> sig;
+    getline(infile, line);
+    if (infile.fail()) break; // bad get
 
-    if (infile.fail()) break; // bad get()
+    // check for comments
+    if (line[0] == ';')
+      continue;
+
+    istringstream istrm(line);
+    // get lyr, col (xtalId)
+    istrm >> twr >> lyr >> col >> diode >> mpd >> sig;
 
     XtalIdx xtalIdx(twr,
                     lyr,

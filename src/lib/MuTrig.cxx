@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuTrig.cxx,v 1.6 2007/01/04 23:23:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuTrig.cxx,v 1.7 2007/01/05 17:25:34 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -559,6 +559,11 @@ void MuTrig::writeTXT(const string &filename) const {
 
   if (!outfile.is_open())
     throw runtime_error(string("Unable to open " + filename));
+
+  // output header as comment
+  outfile << "; twr lyr col face muThr muThrErr muThrWid muThrWidErr [ciThr ciThrErr ciThrWid ciThrWidErr muThr/ciThr delPed]"
+          << endl;
+    
 
   for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
     TwrNum  twr  = faceIdx.getTwr();
