@@ -1,7 +1,7 @@
 #ifndef CGCUtil_H
 #define CGCUtil_H
 
-//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CGCUtil.h,v 1.6 2007/01/08 22:19:36 fewtrell Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CGCUtil.h,v 1.7 2007/02/23 16:37:21 fewtrell Exp $
 
 // LOCAL INCLUDES
 
@@ -27,7 +27,7 @@
 */
 
 namespace CGCUtil {
-  const std::string CVS_TAG("$Name: HEAD $");
+  const std::string CVS_TAG("$Name:  $");
 
   /// Template function fills any STL type container with zero values
   template <class T> void fill_zero(T &container) {
@@ -39,12 +39,10 @@ namespace CGCUtil {
                              const std::string & delimiters = " ");
 
   /// remove directory portion of full path
-  /// \note works in place on string!
-  void path_remove_dir(std::string &path);
+  std::string path_remove_dir(const std::string &path);
 
   /// remove filename extention portion of path
-  /// \note works in place on string!
-  void path_remove_ext(std::string &path);
+  std::string path_remove_ext(const std::string &path);
 
   /// logStream will support parallel output to mutitple ostream classes
   /// (as many as are added by the addStream method)

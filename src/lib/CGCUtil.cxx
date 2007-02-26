@@ -4,7 +4,7 @@
 
 \brief generic utility functions used in calibGenCAL pkg
 
-$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CGCUtil.cxx,v 1.3 2007/01/04 23:23:00 fewtrell Exp $
+$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CGCUtil.cxx,v 1.4 2007/01/05 17:25:33 fewtrell Exp $
 */
 
 // LOCAL INCLUDES
@@ -50,7 +50,7 @@ namespace CGCUtil {
 
   /// finds position of last directory delimeter ('/' || '\\')
   /// in path, returns path.npos if no delim is found
-  string::size_type path_find_last_delim(string &path) {
+  string::size_type path_find_last_delim(const string &path) {
     // find last directory delimeter.
     string::size_type fwdslash_pos = path.find_last_of('/');
     string::size_type bckslash_pos = path.find_last_of('\\');
@@ -65,26 +65,28 @@ namespace CGCUtil {
     return max(fwdslash_pos, bckslash_pos);
   }
 
-  void path_remove_dir(string &path) {
+  string path_remove_dir(const string &path) {
     string::size_type slash_pos;
-
 
     // if there was no delimeter, return path unaltered
     if ((slash_pos = path_find_last_delim(path)) == path.npos)
-      return;
+      return path;
 
     // else remove everything up to & including the delimeter
+    string retVal(path);
     path.erase(0, slash_pos+1);
+
+    return path;
   }
 
   /// removes filename extension from end of path string.
-  void path_remove_ext(string &path) {
+  string path_remove_ext(const string &path) {
     // return path unaltered if there is no '.'
     string::size_type dot_pos;
 
 
     if ((dot_pos = path.find_last_of('.')) == path.npos)
-      return;
+      return path;
 
     // find last delim (extension must be after this point)
     string::size_type slash_pos = path_find_last_delim(path);
@@ -93,6 +95,8 @@ namespace CGCUtil {
     // or if slash is before the '.'
     if (slash_pos == path.npos || slash_pos < dot_pos)
       path.erase(dot_pos, path.size());
+
+    return path;
   }
 
   void output_env_banner(ostream &ostrm) {
