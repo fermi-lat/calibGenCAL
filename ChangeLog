@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Mon Feb 26 08:35:29 PST 2007
+calibGenCAL/src/lib
+
+Modified Files:
+	CGCUtil.cxx CGCUtil.h CfgMgr.cxx CfgMgr.h 
+Log Message:
+added appName funcitonality to CmdLineParser class.
+
+    *
+------------------------------------------------------------
+User: fewtrell  Mon Feb 26 08:35:29 PST 2007
 calibGenCAL/src
 
 Modified Files:
