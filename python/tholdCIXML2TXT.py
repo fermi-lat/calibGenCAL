@@ -2,7 +2,7 @@
 Dump GLAST Cal offline tholdci calibration xml into column delmited text on stdout
 
 output format is:
-twr, lyr, col, face, lac, fle, fhe, uld0, uld1, uld2, uld3, ped0, ped1, ped2, ped3
+twr lyr col face lac fle fhe uld0 uld1 uld2 uld3 ped0 ped1 ped2 ped3
 
 python tholdciXML2TXT.py [-d delim] <input_xml_file>
 
@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Dump tholdci file to .txt file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2007/01/16 17:22:14 $"
-__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/02/02 20:28:42 $"
+__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -62,6 +62,9 @@ if __name__ == '__main__':
     (adcData, uldData, pedData) = xmlFile.read()
     towers = xmlFile.getTowers()
     xmlFile.close()
+
+    # print out header as comment
+    print "; twr lyr col face lac fle fhe uld0 uld1 uld2 uld3 ped0 ped1 ped2 ped3"
 
     # print out txt file.
     for twr in towers:

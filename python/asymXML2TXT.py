@@ -2,7 +2,7 @@
 Dump GLAST Cal offline asymmetry calibration xml into column delmited text on stdout
 
 output format is:
-twr, lyr, col, face, pos_face_diode, neg_face_diode, asym, sig
+twr lyr col face pos_face_diode neg_face_diode asym sig
 
 asymXML2TXT [-d delim] <input_xml_file>
 
@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Dump offline asymmetry xml file to .txt file"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/09/26 21:04:13 $"
-__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/01/29 19:28:00 $"
+__version__   = "$Revision: 1.8 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -80,6 +80,9 @@ if __name__ == '__main__':
     #     5 = smallSigs value
     #     6 = NsmallPbigSigs value
     #     7 = PsmallNbigSigs value
+
+    # print header as comment
+    print "; twr lyr col face pos_face_diode neg_face_diode asym sig"
 
     # print out txt file.
     for twr in towers:
