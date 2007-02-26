@@ -4,7 +4,7 @@
 
 \brief generic utility functions used in calibGenCAL pkg
 
-$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CGCUtil.cxx,v 1.4 2007/01/05 17:25:33 fewtrell Exp $
+$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CGCUtil.cxx,v 1.5 2007/02/26 16:35:29 fewtrell Exp $
 */
 
 // LOCAL INCLUDES
@@ -65,7 +65,7 @@ namespace CGCUtil {
     return max(fwdslash_pos, bckslash_pos);
   }
 
-  string path_remove_dir(const string &path) {
+  string path_remove_dir(string path) {
     string::size_type slash_pos;
 
     // if there was no delimeter, return path unaltered
@@ -73,14 +73,13 @@ namespace CGCUtil {
       return path;
 
     // else remove everything up to & including the delimeter
-    string retVal(path);
     path.erase(0, slash_pos+1);
 
     return path;
   }
 
   /// removes filename extension from end of path string.
-  string path_remove_ext(const string &path) {
+  string path_remove_ext(string path) {
     // return path unaltered if there is no '.'
     string::size_type dot_pos;
 
@@ -180,8 +179,7 @@ namespace CGCUtil {
     string baseFilename = inputFilename;
 
 
-    path_remove_dir(baseFilename);
-    path_remove_ext(baseFilename);
+    baseFilename = path_remove_ext(path_remove_dir(baseFilename));
 
     return outputDir + '/'
       + outputCalibType + '.'

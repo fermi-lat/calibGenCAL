@@ -1,7 +1,7 @@
 #ifndef CGCUtil_H
 #define CGCUtil_H
 
-//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CGCUtil.h,v 1.7 2007/02/23 16:37:21 fewtrell Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CGCUtil.h,v 1.8 2007/02/26 16:35:29 fewtrell Exp $
 
 // LOCAL INCLUDES
 
@@ -39,10 +39,10 @@ namespace CGCUtil {
                              const std::string & delimiters = " ");
 
   /// remove directory portion of full path
-  std::string path_remove_dir(const std::string &path);
+  std::string path_remove_dir(std::string path);
 
   /// remove filename extention portion of path
-  std::string path_remove_ext(const std::string &path);
+  std::string path_remove_ext(std::string path);
 
   /// logStream will support parallel output to mutitple ostream classes
   /// (as many as are added by the addStream method)
