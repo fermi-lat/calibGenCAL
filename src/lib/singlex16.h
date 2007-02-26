@@ -7,6 +7,15 @@
 @author fewtrell
 */
 
+// LOCAL INCLUDES
+
+// GLAST INCLUDES
+#include "CalUtil/CalDefs.h"
+
+// EXTLIB INCLUDES
+
+// STD INCLUDES
+
 
 namespace singlex16 {
 
@@ -30,22 +39,6 @@ namespace singlex16 {
       3871, 3903,  3935,   3967,   3999,   4031,    4063,    4095
     };
 
-  /// how many points for each smoothing 'group'?  (per adc range)
-  static const unsigned short SMOOTH_GRP_WIDTH[] = {
-    3, 4, 3, 4
-  };
-  /// how many points at beginning of curve to extrapolate from following points
-  static const unsigned short EXTRAP_PTS_LO[]    = {
-    2, 2, 2, 2
-  };
-  /// how many points to extrapolate beginning of curve _from_
-  static const unsigned short EXTRAP_PTS_LO_FROM[] = {
-    5, 5, 5, 5
-  };
-  /// how many points at end of curve not to smooth (simply copy them over verbatim from raw data)
-  static const unsigned short SMOOTH_SKIP_HI[]   = {
-    6, 10, 6, 10
-  };
 
   /// number of CIDAC values tested
   static const unsigned short N_CIDAC_VALS           = sizeof(CIDAC_TEST_VALS)/sizeof(*CIDAC_TEST_VALS);
@@ -53,6 +46,14 @@ namespace singlex16 {
   static const unsigned short N_PULSES_PER_DAC       = 50;
   /// n total pulsees per xtal (or column)
   static const unsigned N_PULSES_PER_XTAL      = N_CIDAC_VALS * N_PULSES_PER_DAC;
+
+  /// total number of pulses in broadcast mode singlex16
+  static const unsigned TOTAL_PULSES_BCAST = N_PULSES_PER_XTAL;
+
+  /// total number of pulses in column-wise singlex16
+  static const unsigned TOTAL_PULSES_COLWISE = N_PULSES_PER_XTAL*CalUtil::ColNum::N_VALS;
+
+
 };
 
 #endif
