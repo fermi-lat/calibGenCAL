@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Feb 26 09:09:46 PST 2007
+calibGenCAL/src/lib
+
+Modified Files:
+	CGCUtil.cxx CGCUtil.h 
+Log Message:
+path_remove_dir() / path_remove_ext() utility functions now create new strings & do not operate in place
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Feb 26 08:35:29 PST 2007
 calibGenCAL/src/lib
 
