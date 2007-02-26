@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Feb 26 15:16:59 PST 2007
+calibGenCAL/src
+
+Modified Files:
+	genCIDAC2ADC.cxx genMuonCalibTkr.cxx 
+Log Message:
+IntNonlin class renamed to IntNonlinAlg
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Feb 26 15:15:58 PST 2007
 calibGenCAL/python/lib
 
