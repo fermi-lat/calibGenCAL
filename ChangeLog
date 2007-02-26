@@ -1,5 +1,24 @@
 ------------------------------------------------------------
 User: fewtrell  Mon Feb 26 15:20:30 PST 2007
+calibGenCAL/src/lib
+
+Modified Files:
+	ADC2NRG.cxx CIDAC2ADC.cxx CalAsym.cxx CalMPD.cxx CalPed.cxx 
+	MuTrig.cxx 
+Added Files:
+	IntNonlinAlg.cxx IntNonlinAlg.h NeighborXtalk.cxx 
+	NeighborXtalk.h NeighborXtalkAlg.cxx NeighborXtalkAlg.h 
+	SplineUtil.cxx SplineUtil.h singlex16.h 
+Removed Files:
+	IntNonlin.cxx IntNonlin.h 
+Log Message:
+IntNonlin class renamed to IntNonlinAlg
+TXT files now support column headers
+TXT files now support comments w/ ';' @ beginning of line
+initial NeighborXtalk code added (not ready yet)
+    *
+------------------------------------------------------------
+User: fewtrell  Mon Feb 26 15:20:30 PST 2007
 calibGenCAL/src
 
 Added Files:
