@@ -1,11 +1,11 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.11 2007/01/24 16:39:12 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.12 2007/02/08 21:26:17 fewtrell Exp $
 
 /** @file Gen CIDAC2ADC calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
 */
 
 // LOCAL INCLUDES
-#include "lib/IntNonlin.h"
+#include "lib/IntNonlinAlg.h"
 #include "lib/CIDAC2ADC.h"
 #include "lib/SimpleIniFile.h"
 #include "lib/CGCUtil.h"
@@ -91,7 +91,7 @@ int main(int argc,
 
     CIDAC2ADC adcMeans;
     CIDAC2ADC cidac2adc;
-    IntNonlin intNonlin;
+    IntNonlinAlg inlAlg;
 
     string    adcMeanFile  =
       CIDAC2ADC::genFilename(outputDir,
@@ -105,12 +105,12 @@ int main(int argc,
     } else {
       if (rootFileLE.length()) {
         LogStream::get() << __FILE__ << ": reading LE calibGen event file: " << rootFileLE << endl;
-        intNonlin.readRootData(rootFileLE, adcMeans, LRG_DIODE, bcastMode);
+        inlAlg.readRootData(rootFileLE, adcMeans, LRG_DIODE, bcastMode);
       }
 
       if (rootFileHE.length()) {
         LogStream::get() << __FILE__ << ": reading HE calibGen event file: " << rootFileHE << endl;
-        intNonlin.readRootData(rootFileHE, adcMeans, SM_DIODE,  bcastMode);
+        inlAlg.readRootData(rootFileHE, adcMeans, SM_DIODE,  bcastMode);
       }
 
       LogStream::get() << __FILE__ << ": saving adc means to txt file: "
@@ -124,7 +124,7 @@ int main(int argc,
 
     if (!skipSmoothing) {
       LogStream::get() << __FILE__ << ": generating smoothed spline points: " << rootFileHE << endl;
-      intNonlin.genSplinePts(adcMeans, cidac2adc);
+      inlAlg.genSplinePts(adcMeans, cidac2adc);
 
       LogStream::get() << __FILE__ << ": writing smoothed spline points: " << outputTXTFile << endl;
       cidac2adc.writeTXT(outputTXTFile);
