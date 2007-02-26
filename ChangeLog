@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Feb 26 15:15:58 PST 2007
+calibGenCAL/python/lib
+
+Modified Files:
+	zachUtil.py 
+Log Message:
+TXT delimited files now allow lines beginning w/ ';' as comment lines.
+also have column header info
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Feb 26 15:15:57 PST 2007
 calibGenCAL/python
 
