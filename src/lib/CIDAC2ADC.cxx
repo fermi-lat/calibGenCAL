@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CIDAC2ADC.cxx,v 1.8 2007/01/04 23:23:00 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CIDAC2ADC.cxx,v 1.9 2007/01/05 17:25:33 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -71,21 +71,25 @@ CIDAC2ADC::CIDAC2ADC() :
 }
 
 void CIDAC2ADC::writeTXT(const string &filename) const {
-  ofstream outFile(filename.c_str());
+  ofstream outfile(filename.c_str());
 
-  if (!outFile.is_open()) {
+  if (!outfile.is_open()) {
     ostringstream tmp;
     tmp << __FILE__ << ":" << __LINE__ << " "
         << "ERROR! unable to open txtFile='" << filename << "'";
     throw runtime_error(tmp.str());
   }
-  outFile.precision(2);
-  outFile.setf(ios_base::fixed);
+
+  // output header info as comment
+  outfile << "; twr lyr col face rng dac adc" << endl;
+
+  outfile.precision(2);
+  outfile.setf(ios_base::fixed);
 
   for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++)
     for (unsigned n = 0; n < m_splinePtsADC[rngIdx].size(); n++) {
       RngNum rng = rngIdx.getRng();
-      outFile << rngIdx.getTwr()  << " "
+      outfile << rngIdx.getTwr()  << " "
               << rngIdx.getLyr()  << " "
               << rngIdx.getCol()  << " "
               << rngIdx.getFace().val() << " "
@@ -97,9 +101,9 @@ void CIDAC2ADC::writeTXT(const string &filename) const {
 }
 
 void CIDAC2ADC::readTXT(const string &filename) {
-  ifstream inFile(filename.c_str());
+  ifstream infile(filename.c_str());
 
-  if (!inFile.is_open()) {
+  if (!infile.is_open()) {
     ostringstream tmp;
     tmp << __FILE__ << ":" << __LINE__ << " "
         << "ERROR! unable to open txtFile='" << filename << "'";
@@ -113,16 +117,26 @@ void CIDAC2ADC::readTXT(const string &filename) {
   unsigned short rng;
   float tmpDAC;
   float tmpADC;
-  while (inFile.good()) {
+  string line;
+  while (infile.good()) {
+
+    getline(infile, line);
+    if (infile.fail()) break; // bad get
+
+    // check for comments
+    if (line[0] == ';')
+      continue;
+
+    istringstream istrm(line);
+
     // load in one spline val w/ coords
-    inFile >> twr
+    istrm >> twr
            >> lyr
            >> col
            >> face
            >> rng
            >> tmpDAC
            >> tmpADC;
-    if (inFile.fail()) break; // quit once we can't read any more values
 
     RngIdx rngIdx(twr,
                   lyr,

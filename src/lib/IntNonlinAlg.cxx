@@ -1,14 +1,15 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/IntNonlin.cxx,v 1.5 2007/01/04 23:23:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/IntNonlin.cxx,v 1.6 2007/01/05 17:25:34 fewtrell Exp $
 
 /** @file
     @author fewtrell
 */
 
 // LOCAL INCLUDES
-#include "IntNonlin.h"
+#include "IntNonlinAlg.h"
 #include "RootFileAnalysis.h"
 #include "CIDAC2ADC.h"
 #include "CalPed.h"
+#include "singlex16.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalVec.h"
@@ -25,56 +26,14 @@
 using namespace CGCUtil;
 using namespace CalUtil;
 using namespace std;
+using namespace singlex16;
 
-static const float CIDAC_TEST_VALS[] =
-  {
-    0,    2,     4,      6,      8,      10,      12,      14,      16,      18,     20,    22,    24,    26,   28,   30,
-    32,
-    34,   36,    38,     40,     42,     44,      46,      48,      50,      52,     54,    56,    58,    60,   62,   64,
-    80,   96,    112,    128,    144,    160,     176,     192,     208,     224,    240,   256,   272,   288,
-    304,  320,   336,    352,    368,    384,     400,     416,     432,     448,    464,   480,   496,   512,
-    543,  575,   607,    639,    671,    703,     735,     767,     799,     831,    863,   895,   927,   959,
-    991,  1023,  1055,   1087,   1119,   1151,    1183,    1215,    1247,    1279,
-    1311, 1343,  1375,   1407,   1439,   1471,    1503,    1535,    1567,    1599,
-    1631, 1663,  1695,   1727,   1759,   1791,    1823,    1855,    1887,    1919,
-    1951, 1983,  2015,   2047,   2079,   2111,    2143,    2175,    2207,    2239,
-    2271, 2303,  2335,   2367,   2399,   2431,    2463,    2495,    2527,    2559,
-    2591, 2623,  2655,   2687,   2719,   2751,    2783,    2815,    2847,    2879,
-    2911, 2943,  2975,   3007,   3039,   3071,    3103,    3135,    3167,    3199,
-    3231, 3263,  3295,   3327,   3359,   3391,    3423,    3455,    3487,    3519,
-    3551, 3583,  3615,   3647,   3679,   3711,    3743,    3775,    3807,    3839,
-    3871, 3903,  3935,   3967,   3999,   4031,    4063,    4095
-  };
 
-/// how many points for each smoothing 'group'?  (per adc range)
-static const unsigned short SMOOTH_GRP_WIDTH[] = {
-  3, 4, 3, 4
-};
-/// how many points at beginning of curve to extrapolate from following points
-static const unsigned short EXTRAP_PTS_LO[]    = {
-  2, 2, 2, 2
-};
-/// how many points to extrapolate beginning of curve _from_
-static const unsigned short EXTRAP_PTS_LO_FROM[] = {
-  5, 5, 5, 5
-};
-/// how many points at end of curve not to smooth (simply copy them over verbatim from raw data)
-static const unsigned short SMOOTH_SKIP_HI[]   = {
-  6, 10, 6, 10
-};
-
-/// number of CIDAC values tested
-static const unsigned short N_CIDAC_VALS           = sizeof(CIDAC_TEST_VALS)/sizeof(*CIDAC_TEST_VALS);
-/// n pulses (events) per CIDAC val
-static const unsigned short N_PULSES_PER_DAC       = 50;
-/// n total pulsees per xtal (or column)
-static const unsigned N_PULSES_PER_XTAL      = N_CIDAC_VALS * N_PULSES_PER_DAC;
-
-IntNonlin::IntNonlin()
+IntNonlinAlg::IntNonlinAlg()
 {
 }
 
-void IntNonlin::AlgData::initHists() {
+void IntNonlinAlg::AlgData::initHists() {
   adcHists = new TObjArray(RngIdx::N_VALS);
 
   // delete histograms w/ TObjArray, do not save in file...
@@ -100,7 +59,7 @@ void IntNonlin::AlgData::initHists() {
   }
 }
 
-void IntNonlin::processEvent(const DigiEvent &digiEvent) {
+void IntNonlinAlg::processEvent(const DigiEvent &digiEvent) {
   const TClonesArray *calDigiCol = digiEvent.getCalDigiCol();
 
 
@@ -142,7 +101,7 @@ void IntNonlin::processEvent(const DigiEvent &digiEvent) {
                      << nDigis << " digis - skipped" << endl;
 }
 
-void IntNonlin::processHit(const CalDigi &cdig) {
+void IntNonlinAlg::processHit(const CalDigi &cdig) {
   CalXtalId id  = cdig.getPackedId();  // get interaction information
 
   // skip if not for current column
@@ -209,7 +168,7 @@ void IntNonlin::processHit(const CalDigi &cdig) {
   }     // foreach readout
 }
 
-void IntNonlin::readRootData(const string &rootFileName,
+void IntNonlinAlg::readRootData(const string &rootFileName,
                              CIDAC2ADC &adcMeans,
                              DiodeNum diode,
                              bool bcastMode) {
@@ -251,7 +210,7 @@ void IntNonlin::readRootData(const string &rootFileName,
   }  // end analysis code in event loop
 }
 
-void IntNonlin::genSplinePts(CIDAC2ADC &adcMeans,
+void IntNonlinAlg::genSplinePts(CIDAC2ADC &adcMeans,
                              CIDAC2ADC &cidac2adc) {
   // Loop through all 4 energy ranges
   for (RngNum rng; rng.isValid(); rng++)
@@ -279,7 +238,7 @@ void IntNonlin::genSplinePts(CIDAC2ADC &adcMeans,
   cidac2adc.pedSubtractADCSplines();
 }
 
-void IntNonlin::smoothSpline(const vector<float> &curADC,
+void IntNonlinAlg::smoothSpline(const vector<float> &curADC,
                              vector<float> &splineADC,
                              vector<float> &splineDAC,
                              RngNum rng

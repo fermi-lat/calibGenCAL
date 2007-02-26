@@ -1,6 +1,6 @@
-#ifndef IntNonlin_h
-#define IntNonlin_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/IntNonlin.h,v 1.6 2007/01/04 23:23:01 fewtrell Exp $
+#ifndef NeighborXtalkAlg_h
+#define NeighborXtalkAlg_h
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/NeighborXtalkAlg.h,v 1.7 2007/01/05 17:25:34 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -8,53 +8,41 @@
 
 // LOCAL INCLUDES
 #include "CGCUtil.h"
+#include "NeighborXtalk.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"
 #include "CalUtil/CalVec.h"
 
 // EXTLIB INCLUDES
-#include "TObjArray.h"
 
 // STD INCLUDES
 
-class CIDAC2ADC;
 class DigiEvent;
 class CalDigi;
 class TProfile;
 
-/** \brief Algorithm class populates CIDAC2ADC calibration data
+/** \brief Algorithm class populates NeighborXtalk calibration data
     object by analyzing calibGen singlex16 digi ROOT files.
 
     @author fewtrell
 */
-class IntNonlin {
- public:
-  IntNonlin();
+class NeighborXtalkAlg {
+public:
+  NeighborXtalkAlg();
 
   /// process digi root event file
   /// \param diode specify whether to analyze HE or LE circuits
   void readRootData(const std::string &rootFileName,
-                    CIDAC2ADC &adcMeans,
-                    CalUtil::DiodeNum diode,
-                    bool bcastMode);
+                    NeighborXtalk &xtalk,
+                    CalUtil::DiodeNum diode);
 
-  /// smooth raw adc means for use in offline spline calibration
-  void genSplinePts(CIDAC2ADC &adcMeans,
-                    CIDAC2ADC &cidac2adc);
-
- private:
+private:
   /// fill histograms w/ data from single event
   void processEvent(const DigiEvent &digiEvent);
 
   /// fill histograms w/ data from single CalDigi hit
   void processHit(const CalDigi &cdig);
-
-  /// apply smoothing algorithm to single ADC curve.
-  void smoothSpline(const vector<float> &curADC,
-                    vector<float> &splineADC,
-                    vector<float> &splineDAC,
-                    CalUtil::RngNum rng);
 
   /// store cfg & status data pertinent to current algorithm run
   struct AlgData {
@@ -65,8 +53,7 @@ class IntNonlin {
 
     void init() {
       diode     = CalUtil::LRG_DIODE;
-      bcastMode = true;
-      adcMeans  = 0;
+      xtalk  = 0;
       initHists();
     }
 
@@ -89,30 +76,26 @@ class IntNonlin {
     /// currently processing 1 of 2 diodes
     CalUtil::DiodeNum diode;
 
-    /// broadcast mode data samples all 12 columns
-    /// simultaneously.
-    bool              bcastMode;
-
     /// fill in the mean values for each DAC setting here.
-    CIDAC2ADC        *adcMeans;
+    NeighborXtalk        *xtalk;
   } algData;
 
   /// store data pertinent to current event
   struct EventData {
-    private:
+  private:
 
-void            init() {
-  eventNum = 0;
-  iGoodEvt = 0;
-  testCol  = 0;
-  iSamp    = 0;
-  testDAC  = 0;
-}
+    void            init() {
+      eventNum = 0;
+      iGoodEvt = 0;
+      testCol  = 0;
+      iSamp    = 0;
+      testDAC  = 0;
+    }
 
-    public:
-EventData() {
-  init();
-}
+  public:
+    EventData() {
+      init();
+    }
 
     /// count events read from root file
     unsigned        eventNum;

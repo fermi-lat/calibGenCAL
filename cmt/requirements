@@ -53,4 +53,6 @@ application genGCRHists genGCRHists.cxx
 
 application genMuonCalibTkr genMuonCalibTkr.cxx
 
+application genNeighborXtalk genNeighborXtalk.cxx
+
 

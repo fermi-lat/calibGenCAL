@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalPed.cxx,v 1.3 2007/01/04 23:23:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalPed.cxx,v 1.4 2007/01/05 17:25:34 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -14,6 +14,7 @@
 
 // STD INCLUDES
 #include <fstream>
+#include <sstream>
 
 using namespace CGCUtil;
 using namespace CalUtil;
@@ -29,6 +30,9 @@ CalPed::CalPed() :
 
 void CalPed::writeTXT(const string &filename) const {
   ofstream outfile(filename.c_str());
+
+  // output header info as comment
+  outfile << "; twr lyr col face rng ped sigma" << endl;
 
   if (!outfile.is_open())
     throw runtime_error(string("Unable to open " + filename));
@@ -51,6 +55,7 @@ void CalPed::readTXT(const string &filename) {
   if (!infile.is_open())
     throw runtime_error(string("Unable to open " + filename));
 
+  string line;
   while (infile.good()) {
     float ped, sig;
     unsigned short twr;
@@ -59,15 +64,22 @@ void CalPed::readTXT(const string &filename) {
     unsigned short face;
     unsigned short rng;
 
-    infile >> twr
-           >> lyr
-           >> col
-           >> face
-           >> rng
-           >> ped
-           >> sig;
-    // quit once we can't read any more values
-    if (infile.fail()) break;
+    getline(infile, line);
+    if (infile.fail()) break; // bad get
+
+    // check for comments
+    if (line[0] == ';')
+      continue;
+
+    istringstream istrm(line);
+
+    istrm >> twr
+          >> lyr
+          >> col
+          >> face
+          >> rng
+          >> ped
+          >> sig;
 
     RngIdx rngIdx(twr,
                   lyr,

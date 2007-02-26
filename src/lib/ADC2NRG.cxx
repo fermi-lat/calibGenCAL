@@ -32,6 +32,9 @@ void ADC2NRG::writeTXT(const string &filename,
   if (!outfile.is_open())
     throw runtime_error(string("Unable to open " + filename));
 
+  // output header info as comment
+  outfile << "; twr lyr col face rng adc2nrg error" << endl;
+
   for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
     TwrNum   twr     = rngIdx.getTwr();
     LyrNum   lyr     = rngIdx.getLyr();
