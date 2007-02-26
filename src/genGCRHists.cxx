@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genGCRHists.cxx,v 1.5 2006/09/18 14:12:53 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genGCRHists.cxx,v 1.1 2007/02/23 16:37:46 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -30,6 +30,7 @@ class AppCfg {
 public:
    AppCfg(const int argc,
           const char **argv) :
+     cmdParser(path_remove_ext(__FILE__)),
      cfgPath("CfgPath",
              "path to configuration file",
              ""),
@@ -55,7 +56,13 @@ public:
 
     cmdParser.registerSwitch(summaryMode);
 
-    cmdParser.parseCmdLine(argc, argv);
+    try {
+      cmdParser.parseCmdLine(argc, argv);
+    } catch (exception &e) {
+      cout << e.what() << endl;
+      cmdParser.printUsage();
+      throw e;
+    }
   }
 
   // construct new parser
@@ -148,7 +155,7 @@ int main(const int argc,
                                                  "ENTRIES_PER_HIST",
                                                  3000); 
 
-    GCRHists gcrMPD(&cfgFile);
+    GCRHists gcrMPD(&cfgFile, cfg.summaryMode.getVal());
     CalMPD calMPD;
 
     // used when creating histgrams

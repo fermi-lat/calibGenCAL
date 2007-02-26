@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CfgMgr.cxx,v 1.1 2007/02/15 18:42:11 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CfgMgr.cxx,v 1.2 2007/02/23 00:41:01 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -303,11 +303,11 @@ namespace CfgMgr {
   }
 
   void CmdLineParser::printUsage(std::ostream &strm) const {
-    strm << "Usage: '";
+    strm << "Usage: '" << appName << " ";
 
     //-- INITIAL USAGE STR --//
     // patterned after "grep [options] PATTERN [FILE...]"
-    if (switchList.size() && varList.size())
+    if (switchList.size() || varList.size())
       strm << "[options] ";
     
     for (unsigned i = 0; i < argList.size(); i++)

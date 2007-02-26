@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CfgMgr.h,v 1.1 2007/02/15 18:42:11 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CfgMgr.h,v 1.2 2007/02/23 00:41:01 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -240,6 +240,9 @@ namespace CfgMgr {
   /// basic implementation of ICmdLineParser
   class CmdLineParser {
   public:
+    /// \param appName optional for usage print-outs, etc
+    CmdLineParser(const std::string &appName="") :
+      appName(appName) {}
 
     void registerArg(ICmdArg &arg);
 
@@ -297,6 +300,8 @@ namespace CfgMgr {
     ArgList argList;
 
     std::vector<std::string> anonArgList;
+
+    std::string appName;
   };
 
 };
