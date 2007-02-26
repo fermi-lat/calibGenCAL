@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/IntNonlin.cxx,v 1.6 2007/01/05 17:25:34 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/IntNonlinAlg.cxx,v 1.1 2007/02/26 23:20:30 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -22,11 +22,30 @@
 
 // STD INCLUDES
 #include <sstream>
+#include <cmath>
 
 using namespace CGCUtil;
 using namespace CalUtil;
 using namespace std;
 using namespace singlex16;
+
+
+/// how many points for each smoothing 'group'?  (per adc range)
+static const unsigned short SMOOTH_GRP_WIDTH[] = {
+  3, 4, 3, 4
+};
+/// how many points at beginning of curve to extrapolate from following points
+static const unsigned short EXTRAP_PTS_LO[]    = {
+  2, 2, 2, 2
+};
+/// how many points to extrapolate beginning of curve _from_
+static const unsigned short EXTRAP_PTS_LO_FROM[] = {
+  5, 5, 5, 5
+};
+/// how many points at end of curve not to smooth (simply copy them over verbatim from raw data)
+static const unsigned short SMOOTH_SKIP_HI[]   = {
+  6, 10, 6, 10
+};
 
 
 IntNonlinAlg::IntNonlinAlg()
@@ -169,9 +188,9 @@ void IntNonlinAlg::processHit(const CalDigi &cdig) {
 }
 
 void IntNonlinAlg::readRootData(const string &rootFileName,
-                             CIDAC2ADC &adcMeans,
-                             DiodeNum diode,
-                             bool bcastMode) {
+                                CIDAC2ADC &adcMeans,
+                                DiodeNum diode,
+                                bool bcastMode) {
   algData.diode     = diode;
   algData.bcastMode = bcastMode;
   algData.adcMeans  = &adcMeans;
@@ -188,6 +207,22 @@ void IntNonlinAlg::readRootData(const string &rootFileName,
   rootFile.getDigiChain()->SetBranchStatus("m_calDigiCloneCol");
 
   unsigned nEvents = rootFile.getEntries();
+
+  unsigned nEventsReq = (bcastMode) ? TOTAL_PULSES_BCAST : TOTAL_PULSES_COLWISE;
+  
+  // 10 % margin is overly cautious.  occasionally there are a 1 or 2 'extra' events.
+  if (fabs((float)nEvents - nEventsReq) > .10*nEventsReq) {
+	  ostringstream tmp;
+
+	  tmp << __FILE__ << ":" << __LINE__ << " "
+		  << "Wrong # of events:"
+    	  << " bcastMode=" << bcastMode
+		  << " nEventsRequired=" << nEventsReq
+		  << " nEventsFound=" << nEvents;
+
+	  throw runtime_error(tmp.str());
+  }
+
   LogStream::get() << __FILE__ << ": Processing: " << nEvents << " events." << endl;
 
   // BEGINNING OF EVENT LOOP
@@ -211,7 +246,7 @@ void IntNonlinAlg::readRootData(const string &rootFileName,
 }
 
 void IntNonlinAlg::genSplinePts(CIDAC2ADC &adcMeans,
-                             CIDAC2ADC &cidac2adc) {
+                                CIDAC2ADC &cidac2adc) {
   // Loop through all 4 energy ranges
   for (RngNum rng; rng.isValid(); rng++)
     // loop through each xtal face.
@@ -239,10 +274,10 @@ void IntNonlinAlg::genSplinePts(CIDAC2ADC &adcMeans,
 }
 
 void IntNonlinAlg::smoothSpline(const vector<float> &curADC,
-                             vector<float> &splineADC,
-                             vector<float> &splineDAC,
-                             RngNum rng
-                             ) {
+                                vector<float> &splineADC,
+                                vector<float> &splineDAC,
+                                RngNum rng
+                                ) {
   // following vals only change w/ rng, so i get them outside the other loops.
   unsigned short grpWid       = SMOOTH_GRP_WIDTH[rng.val()];
   unsigned short extrapLo     = EXTRAP_PTS_LO[rng.val()];
