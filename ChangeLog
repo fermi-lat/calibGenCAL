@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Feb 26 15:15:57 PST 2007
+calibGenCAL/python
+
+Modified Files:
+	adc2nrgTXT2XML.py adc2nrgXML2TXT.py asymTXT2XML.py 
+	asymXML2TXT.py biasTXT2XML.py dacXML2TXT.py inlTXT2XML.py 
+	inlXML2TXT.py mpdTXT2XML.py mpdXML2TXT.py muSlopeTXT2XML.py 
+	pedTXT2XML.py pedXML2TXT.py tholdCIXML2TXT.py 
+Log Message:
+TXT delimited files now allow lines beginning w/ ';' as comment lines.
+also have column header info
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Feb 26 09:09:46 PST 2007
 calibGenCAL/src/lib
 
