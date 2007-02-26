@@ -7,8 +7,8 @@ collection of simple utilities shared throughout my code
 __facility__  = "Offline"
 __abstract__  = "apply calibGain correction to asymmetry xml file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2007/02/16 18:11:48 $"
-__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/02/26 16:28:33 $"
+__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -122,6 +122,12 @@ def read_perFace_txt(filename):
     nLine = -1
     for line in lines:
         nLine+=1
+
+        # discard comments
+        if line[0] == ';':
+            continue
+        
+        
         vals = line.split()
         if (len(vals) != nTXTFields):
             print "ERROR: input line# %d expecting %d column input, got %d" % (nLine, nTXTFields, len(vals)) + \

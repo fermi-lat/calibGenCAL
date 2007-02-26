@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL MUSLOPE calibration XML files from TXT."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/08/03 13:11:03 $"
-__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/02/02 20:28:42 $"
+__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -96,6 +96,11 @@ if __name__ == '__main__':
     nLine = -1
     for line in lines:
         nLine+=1
+
+        # skip comments
+        if line[0] == ';':
+            continue
+
         vals = line.split()
         if (len(vals) != nTXTFields):
             log.error("input line# %d expecting %d column input, got %d" % (nLine, nTXTFields, len(vals)) +

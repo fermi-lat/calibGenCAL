@@ -2,7 +2,7 @@
 Dump GLAST Cal offline adc2nrg calibration xml into column delmited text on stdout
 
 output format is:
-twr, lyr, col, diode, adc2nrg
+twr lyr col diode adc2nrg
 
 adc2nrgXML2TXT [-d delim] <input_xml_file>
 
@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Dump offline adc2nrg xml file to .txt file"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/02/02 20:28:42 $"
-__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/02/08 16:37:30 $"
+__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -62,6 +62,9 @@ if __name__ == '__main__':
     adc2nrgData = xmlFile.read()
     towers = xmlFile.getTowers()
     xmlFile.close()
+
+    # print header as comment
+    print "; twr lyr col diode adc2nrg"
 
     # print out txt file.
     for twr in towers:

@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL mevPerDAC calibration XML files from TXT."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/08/10 20:06:10 $"
-__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/01/24 16:43:26 $"
+__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -91,6 +91,12 @@ if __name__ == '__main__':
     nLine = -1
     for line in lines:
         nLine+=1
+
+        # skip comments
+        if line[0] == ';':
+            continue
+
+
         (twr, lyr, col, diode, mpd, sig)= line.split()
         # convert array index values to integer.
         twr = int(twr)
