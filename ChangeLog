@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Feb 27 07:48:07 PST 2007
+calibGenCAL/src/lib
+
+Modified Files:
+	NeighborXtalk.cxx NeighborXtalk.h 
+Log Message:
+added NeighborXtalk::writeTXT() method
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Feb 26 15:53:19 PST 2007
 calibGenCAL/src/lib
 
