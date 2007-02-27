@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.12 2007/02/08 21:26:17 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.13 2007/02/14 16:11:37 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "lib/MuonPed.h"
@@ -38,9 +38,9 @@ int main(int argc,
     SimpleIniFile cfgFile(argv[1]);
 
     // input files
-    vector<string> rootFileList(cfgFile.getVector<string>("MUON_PEDS",
-                                                          "ROOT_FILES",
-                                                          ", "));
+    vector<string> rootFileList(cfgFile. getVector<string>("MUON_PEDS",
+                                                           "ROOT_FILES",
+                                                           ", "));
     if (rootFileList.size() < 1) {
       cout << __FILE__ << ": No input files specified" << endl;
       return -1;
@@ -53,6 +53,7 @@ int main(int argc,
 
     // generate logfile name
     const string outputDir("./");
+
     string logfile =
       CalPed::genFilename(outputDir,
                           rootFileList[0],
@@ -112,7 +113,8 @@ int main(int argc,
 
     if (!readInHists) {
       // open new output histogram file
-      LogStream::get() << __FILE__ << ": opening output rough pedestal histogram file: " << roughPedHistFileName << endl;
+      LogStream::get() << __FILE__ << ": opening output rough pedestal histogram file: " << roughPedHistFileName <<
+      endl;
       TFile outputHistFile(roughPedHistFileName.c_str(),
                            "RECREATE",
                            "Muon rough pedestals",
@@ -137,7 +139,7 @@ int main(int argc,
     MuonPed  muPed;
     CalPed   calPed;
     // txt output filename
-    string   muPedTXTFile  =
+    string   muPedTXTFile      =
       CalPed::genFilename(outputDir,
                           rootFileList[0],
                           "txt");
@@ -150,6 +152,7 @@ int main(int argc,
     if (readInHists) {
       TFile muPedHistFile(muPedHistFileName.c_str(),
                           "UPDATE");
+
       LogStream::get() << __FILE__ << ": loading muon pedestal histograms: " << muPedHistFileName << endl;
       muPed.loadHists(muPedHistFile);
       LogStream::get() << __FILE__ << ": fitting muon pedestal histograms." << endl;

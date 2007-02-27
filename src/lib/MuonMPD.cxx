@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.cxx,v 1.14 2007/01/04 23:23:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPD.cxx,v 1.15 2007/01/05 17:25:34 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "MuonMPD.h"
@@ -137,10 +137,11 @@ void MuonMPD::processEvent(DigiEvent &digiEvent) {
 
   // loop through each 'hit' in one event
   while ((pCalDigi = (CalDigi *)calDigiIter.Next())) {
-    const  CalDigi &calDigi = *pCalDigi;           // use reference to avoid -> syntax
+    const CalDigi &calDigi = *pCalDigi;            // use reference to avoid -> syntax
 
     //-- XtalId --//
     idents::CalXtalId id(calDigi.getPackedId());   // get interaction information
+
     // retrieve tower info
     TwrNum twr = id.getTower();
 
@@ -167,7 +168,7 @@ void MuonMPD::processTower(TwrHodoscope &hscope) {
   /** Note: 'direction' refers to the direction of xtals which have vertical
       'connect-4' deposits.  For MevPerDAC, the orthogonal hits will be used to
       determine the pathlength for these 4 hits.
-  */
+   */
 
   for (DirNum dir; dir.isValid(); dir++) {
     // skip if we don't have a good track
@@ -248,7 +249,7 @@ void MuonMPD::processTower(TwrHodoscope &hscope) {
 
         // get new position from asym
         float   hitPos  = algData.calAsym.asym2pos(xtalIdx, LRG_DIODE, asymLL);
-        
+
         algData.graph.SetPoint(i, lyr, hitPos);
       }
 
@@ -296,7 +297,8 @@ MuonMPD::AlgData::AlgData(const CalAsym &asym) :
   lineFunc("line", "pol1", 0, 8),
   viewHist("viewHist", "viewHist",
            8, -0.5, 7.5,    //X-limits lyr
-           12, -0.5, 11.5),  //Y-limits col
+           12, -0.5, 11.5),
+                            //Y-limits col
   calAsym(asym)
 {
   init();

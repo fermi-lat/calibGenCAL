@@ -183,14 +183,14 @@ int main(int argc,
           float afeesum = 0.0;
           for (int row = 0; row < 4; row++)
             for (int col = 0; col < 12; col++)
-              {
-                int   lyr  = row*2+xy;
-                float dped = CalXtalAdcPed[twr][lyr][col][face]-avr[twr][lyr][col][face];
-                (pr_ped_chan[twr][lyr][col][face])->Fill(time, dped);
-                latsum  += dped;
-                twrsum  += dped;
-                afeesum += dped;
-              }
+            {
+              int   lyr  = row*2+xy;
+              float dped = CalXtalAdcPed[twr][lyr][col][face]-avr[twr][lyr][col][face];
+              (pr_ped_chan[twr][lyr][col][face])->Fill(time, dped);
+              latsum  += dped;
+              twrsum  += dped;
+              afeesum += dped;
+            }
           pr_ped_afee[twr][xy][face]->Fill(time, afeesum/48.0);
         }
       pr_ped_twr[twr]->Fill(time, twrsum/192.0);
@@ -212,36 +212,36 @@ int main(int argc,
         for (int face = 0; face < 2; face++) {
           for (int row = 0; row < 4; row++)
             for (int col = 0; col < 12; col++)
-              {
-                int   lyr  = xy+row*2;
+            {
+              int   lyr  = xy+row*2;
 
-                float mean = (pr_ped_chan[twr][lyr][col][face])->GetBinContent(i+1);
-                float rms  = ((pr_ped_chan[twr][lyr][col][face])->GetBinError(i+1))
-                  *sqrt((pr_ped_chan[twr][lyr][col][face])->GetBinEntries (i+1));
+              float mean = (pr_ped_chan[twr][lyr][col][face])->GetBinContent(i+1);
+              float rms  = ((pr_ped_chan[twr][lyr][col][face])->GetBinError(i+1))
+                           *sqrt((pr_ped_chan[twr][lyr][col][face])->GetBinEntries (i+1));
 
-                hmean->Fill(mean);
-                hrms->Fill(rms);
-                if (mean > max_mean_dev) n_mean_fail++;
-                if (rms > max_rms) n_rms_fail++;
-                if (rms > warn_rms) (nwarnrms[twr][lyr][col][face])++;
-              }
+              hmean->Fill(mean);
+              hrms->Fill(rms);
+              if (mean > max_mean_dev) n_mean_fail++;
+              if (rms > max_rms) n_rms_fail++;
+              if (rms > warn_rms) (nwarnrms[twr][lyr][col][face])++;
+            }
           float mean = (pr_ped_afee[twr][xy][face])->GetBinContent(i+1);
           float rms  = ((pr_ped_afee[twr][xy][face])->GetBinError(i+1))
-            *sqrt((pr_ped_afee[twr][xy][face])->GetBinEntries (i+1));
+                       *sqrt((pr_ped_afee[twr][xy][face])->GetBinEntries (i+1));
 
           hmeanafee->Fill(mean);
           hrmsafee->Fill(rms);
         }
       float mean = (pr_ped_twr[twr])->GetBinContent(i+1);
       float rms  = ((pr_ped_twr[twr])->GetBinError(i+1))
-        *sqrt((pr_ped_twr[twr])->GetBinEntries (i+1));
+                   *sqrt((pr_ped_twr[twr])->GetBinEntries (i+1));
 
       hmeantwr->Fill(mean);
       hrmstwr->Fill(rms);
     }
     float mean = pr_ped_lat->GetBinContent(i+1);
     float rms  = (pr_ped_lat->GetBinError(i+1))
-      *sqrt(pr_ped_lat->GetBinEntries (i+1));
+                 *sqrt(pr_ped_lat->GetBinEntries (i+1));
 
     hmeanlat->Fill(mean);
     hrmslat->Fill(rms);

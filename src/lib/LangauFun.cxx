@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/LangauFun.cxx,v 1.7 2007/01/12 16:03:46 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/LangauFun.cxx,v 1.8 2007/02/23 16:37:21 fewtrell Exp $
 
 /** @file
     @author Zach Fewtrell
-*/
+ */
 // LOCAL INCLUDES
 #include "LangauFun.h"
 #include "CGCUtil.h"
@@ -44,7 +44,7 @@ namespace {
     1.76
   };
 
-  static bool fixParms[N_PARMS] = {
+  static bool   fixParms[N_PARMS] = {
     true,
     false,
     false,
@@ -52,7 +52,7 @@ namespace {
     false
   };
 
-  static bool useLimits[N_PARMS] = {
+  static bool   useLimits[N_PARMS] = {
     true,
     true,
     false,
@@ -76,15 +76,17 @@ namespace {
     1e6
   };
 
-  static double fitRange[2] = {0,100};
+  static double fitRange[2] = {
+    0, 100
+  };
 
   /// \brief calculate background model for muon peak fit
-  /// 
-  /// background is level @ height below peak mpv & 0 afterwards w/ 
+  ///
+  /// background is level @ height below peak mpv & 0 afterwards w/
   /// exponential decay of width sigma between two regions
-  static inline float bckgnd_model(float x, 
-                                   float height, 
-                                   float mpv, 
+  static inline float bckgnd_model(float x,
+                                   float height,
+                                   float mpv,
                                    float sigma) {
     return height/(1 + exp((x-mpv)/sigma));
   }
@@ -94,8 +96,8 @@ namespace {
   {
     // Numeric constants
 
-    static const float invsq2pi = pow(2*M_PI,-.5);   // (2 pi)^(-1/2)
-    static const float mpshift  = -0.22278298;       // Landau maximum location
+    static const float invsq2pi    = pow(2*M_PI, -.5);      // (2 pi)^(-1/2)
+    static const float mpshift     = -0.22278298;           // Landau maximum location
 
     // Control constants
 
@@ -131,45 +133,46 @@ namespace {
     // Convolution integral of Landau and Gaussian by sum
 
     for (i = 1; i <= np/2; i++)
-      {
-        xx    = xlow+(i-.5)* step;
-        fland = TMath::Landau(xx, mpc, real_lan)/real_lan;
-        sum  += fland *TMath::Gaus(x[0],
-                                   xx,
-                                   real_gau);
+    {
+      xx    = xlow+(i-.5)* step;
+      fland = TMath::Landau(xx, mpc, real_lan)/real_lan;
+      sum  += fland *TMath::Gaus(x[0],
+                                 xx,
+                                 real_gau);
 
-        xx    = xupp-(i-.5)*step;
-        fland = TMath::Landau(xx, mpc, real_lan)/real_lan;
-        sum  += fland *TMath::Gaus(x[0],
-                                   xx,
-                                   real_gau);
-      }
+      xx    = xupp-(i-.5)*step;
+      fland = TMath::Landau(xx, mpc, real_lan)/real_lan;
+      sum  += fland *TMath::Gaus(x[0],
+                                 xx,
+                                 real_gau);
+    }
 
     // combine sigmas for both landau & gaussian
     float convolved_width = sqrt(real_gau*real_gau + real_lan*real_lan);
-    float bkgnd = bckgnd_model(x[0],  
-                               par[PARM_BKGND_HEIGHT], // bckgnd height
-                               par[PARM_MPV], // mpv
-                               convolved_width);
+    float bkgnd  = bckgnd_model(x[0],
+                                par[PARM_BKGND_HEIGHT], // bckgnd height
+                                par[PARM_MPV],          // mpv
+                                convolved_width);
 
     float retVal = par[PARM_LAN_AREA]*step*sum*invsq2pi/real_gau + bkgnd;
 
     /*         LogStream::get() << x[0] << " "
                << str_join(par, par+N_PARMS)
-               << real_lan << " " 
-               << real_gau << " " 
+               << real_lan << " "
+               << real_gau << " "
                << retVal << endl;
-    */        
+     */
     return retVal;
   }
 
   static TF1 *buildLangauDAC() {
-
-    TF1 *ffit = new TF1(func_name.c_str(), 
-                        langaufun, 
-                        fitRange[0], 
-                        fitRange[1], 
+    TF1 *ffit = new TF1(func_name.c_str(),
+                        langaufun,
+                        fitRange[0],
+                        fitRange[1],
                         N_PARMS);
+
+
     ffit->SetParameters(startVals);
     ffit->SetParNames("Landau width", "MP", "Area", "Gaussian #sigma", "Background Level");
 
@@ -228,15 +231,15 @@ TF1 &LangauFun::getLangauDAC() {
   return *(langauDAC.get());
 }
 
-
 /// build ROOT TNtuple obj w/ fields formatted for this function
 TNtuple &LangauFun::buildTuple() {
   string tuple_def(str_join(tuple_field_str,
                             tuple_field_str + N_TUPLE_FIELDS,
                             ":"));
+
   // remove trailing ':' from join() method
-  tuple_def = tuple_def.substr(0,tuple_def.size()-1);
-  
+  tuple_def = tuple_def.substr(0, tuple_def.size()-1);
+
   return *(new TNtuple("langau_mpd_fit",
                        "langau_mpd_fit",
                        tuple_def.c_str()));
@@ -244,25 +247,27 @@ TNtuple &LangauFun::buildTuple() {
 
 /// fill ROOT TNtuple w/ fitted parms for this func / hist
 Int_t LangauFun::fillTuple(XtalIdx xtalId,
-                           const TH1 &hist, 
+                           const TH1 &hist,
                            TNtuple &tuple) {
   float tuple_data[N_TUPLE_FIELDS];
 
   const TF1 &func = *(hist.GetFunction(func_name.c_str()));
 
-  tuple_data[FIELD_XTAL] = xtalId.val();
+
+  tuple_data[FIELD_XTAL]        = xtalId.val();
   float mpv = func.GetParameter(PARM_MPV);
-  tuple_data[FIELD_MPV] = mpv;
-  tuple_data[FIELD_MPV_ERR] = func.GetParError(PARM_MPV);
-  tuple_data[FIELD_LAN_WID] = func.GetParameter(PARM_LAN_WID)*mpv;
+  tuple_data[FIELD_MPV]         = mpv;
+  tuple_data[FIELD_MPV_ERR]     = func.GetParError(PARM_MPV);
+  tuple_data[FIELD_LAN_WID]     = func.GetParameter(PARM_LAN_WID)*mpv;
   tuple_data[FIELD_LAN_WID_ERR] = func.GetParError(PARM_LAN_WID)*mpv;
-  tuple_data[FIELD_GAU_WID] = func.GetParameter(PARM_GAU_WID)*mpv;
+  tuple_data[FIELD_GAU_WID]     = func.GetParameter(PARM_GAU_WID)*mpv;
   tuple_data[FIELD_GAU_WID_ERR] = func.GetParError(PARM_GAU_WID)*mpv;
-  tuple_data[FIELD_BKGND] = func.GetParameter(PARM_BKGND_HEIGHT);
-  tuple_data[FIELD_BKGND_ERR] = func.GetParError(PARM_BKGND_HEIGHT);
-  tuple_data[FIELD_CHISQ] = func.GetChisquare();
+  tuple_data[FIELD_BKGND]       = func.GetParameter(PARM_BKGND_HEIGHT);
+  tuple_data[FIELD_BKGND_ERR]   = func.GetParError(PARM_BKGND_HEIGHT);
+  tuple_data[FIELD_CHISQ]       = func.GetChisquare();
   tuple_data[FIELD_NDF] = func.GetNDF();
-  tuple_data[FIELD_NENTRIES] = hist.GetEntries();
+  tuple_data[FIELD_NENTRIES]    = hist.GetEntries();
 
   return tuple.Fill(tuple_data);
 }
+

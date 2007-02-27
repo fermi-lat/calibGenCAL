@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonCalibTkr.cxx,v 1.2 2007/01/05 17:25:34 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonCalibTkr.cxx,v 1.3 2007/01/29 19:28:00 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "MuonCalibTkr.h"
@@ -91,7 +91,7 @@ void MuonCalibTkr::fillHists(unsigned nEntries,
                              const vector<string> &digiFileList,
                              const vector<string> &svacFileList,
                              unsigned startEvent
-                             ) {
+) {
   m_asymHists.initHists();
   m_mpdHists.initHists();
 
@@ -255,6 +255,7 @@ bool MuonCalibTkr::processTrk() {
 bool MuonCalibTkr::processDigiEvent(const DigiEvent &digiEvent) {
   const TClonesArray *calDigiCol = digiEvent.getCalDigiCol();
 
+
   if (!calDigiCol) {
     LogStream::get() << "no calDigiCol found for event#" << eventData.eventNum << endl;
     return false;
@@ -276,7 +277,7 @@ bool MuonCalibTkr::processDigiEvent(const DigiEvent &digiEvent) {
 }
 
 bool MuonCalibTkr::processFinalHitList() {
-  for (map < XtalIdx, Vec3D >::const_iterator it = eventData.trkHitMap.begin();
+  for (map < XtalIdx, Vec3D > ::const_iterator it = eventData.trkHitMap.begin();
        it != eventData.trkHitMap.end();
        it++) {
     const XtalIdx & xtalIdx(it->first);
@@ -291,10 +292,12 @@ bool MuonCalibTkr::processFinalHitList() {
     CalArray<XtalDiode, float> adc_ped;
     CalArray<XtalDiode, bool> dacValid;
     for (XtalDiode xDiode; xDiode.isValid(); xDiode++) {
-      DiodeIdx diodeIdx(xtalIdx, xDiode);
+      DiodeIdx diodeIdx(xtalIdx,
+                        xDiode);
+
       dac[xDiode]      = eventData.hscope.dac[diodeIdx];
       adc_ped[xDiode]  = eventData.hscope.adc_ped[diodeIdx];
-      
+
       dacValid[xDiode] = (dac[xDiode] != CIDAC2ADC::INVALID_ADC);
     }
 
@@ -310,17 +313,14 @@ bool MuonCalibTkr::processFinalHitList() {
       for (DiodeNum diode; diode.isValid(); diode++) {
         float cosTheta = cos(eventData.theta);
 
-        meanDAC[diode] = (dac[XtalDiode(POS_FACE, diode)] +
-                          dac[XtalDiode(NEG_FACE, diode)]) / 2;
+        meanDAC[diode]  = (dac[XtalDiode(POS_FACE, diode)] +
+                           dac[XtalDiode(NEG_FACE, diode)]) / 2;
         meanDAC[diode] *= cosTheta;
 
-
-        meanADC[diode] = (adc_ped[XtalDiode(POS_FACE, diode)] +
-                          adc_ped[XtalDiode(NEG_FACE, diode)]) / 2;
+        meanADC[diode]  = (adc_ped[XtalDiode(POS_FACE, diode)] +
+                           adc_ped[XtalDiode(NEG_FACE, diode)]) / 2;
         meanADC[diode] *= cosTheta;
       }
-
-
 
       ///////////////////
       //-- ASYMMETRY --//
@@ -335,7 +335,6 @@ bool MuonCalibTkr::processFinalHitList() {
       //-- LE DIODE MPD --//
       algData.mpdLrgFills++;
       m_mpdHists.fillDacLL(xtalIdx, meanDAC[LRG_DIODE]);
-      
 
       //-- HE DIODE MPD --//
       if (dacValid[XtalDiode(POS_FACE, SM_DIODE)] &&
@@ -359,7 +358,7 @@ bool MuonCalibTkr::processFinalHitList() {
 
         algData.asymFills++;
         float asym = dac[XtalDiode(POS_FACE, pDiode)] /
-          dac[XtalDiode(NEG_FACE, nDiode)];
+                     dac[XtalDiode(NEG_FACE, nDiode)];
         asym = log(asym);
 
         m_asymHists.getHist(asymType, xtalIdx)->Fill(segmentNo, asym);
@@ -407,32 +406,32 @@ bool MuonCalibTkr::hitCut() {
 }
 
 void MuonCalibTkr::readCfg(const SimpleIniFile &cfg) {
-  algData.minDeltaEventTime = cfg. getVal<unsigned>("MUON_CALIB_TKR",
-                                                    "MIN_DELTA_EVENT_TIME",
-                                                    2000);
+  algData.minDeltaEventTime = cfg.getVal<unsigned>("MUON_CALIB_TKR",
+                                                   "MIN_DELTA_EVENT_TIME",
+                                                   2000);
 
-  algData.xtalLongCut = cfg.       getVal<float>("MUON_CALIB_TKR",
-                                                 "XTAL_MM_FROM_END",
-                                                 30);
+  algData.xtalLongCut = cfg.getVal<float>("MUON_CALIB_TKR",
+                                          "XTAL_MM_FROM_END",
+                                          30);
 
-  algData.xtalOrthCut = cfg.       getVal<float>("MUON_CALIB_TKR",
-                                                 "XTAL_MM_FROM_EDGE",
-                                                 5);
+  algData.xtalOrthCut = cfg.getVal<float>("MUON_CALIB_TKR",
+                                          "XTAL_MM_FROM_EDGE",
+                                          5);
 
-  float maxThetaDegrees  = cfg.    getVal<float>("MUON_CALIB_TKR",
-                                                 "MAX_TRK_THETA",
-                                                 45);
+  float maxThetaDegrees  = cfg.getVal<float>("MUON_CALIB_TKR",
+                                             "MAX_TRK_THETA",
+                                             45);
 
   // convert from degree to radian
   algData.maxThetaRads  = degreesToRadians(maxThetaDegrees);
 
-  algData.maxNHits      = cfg. getVal<unsigned short>("MUON_CALIB_TKR",
-                                                      "MAX_N_HITS",
-                                                      16);
+  algData.maxNHits      = cfg.getVal<unsigned short>("MUON_CALIB_TKR",
+                                                     "MAX_N_HITS",
+                                                     16);
 
-  algData.maxHitsPerLyr = cfg. getVal<unsigned short>("MUON_CALIB_TKR",
-                                                      "MAX_HITS_PER_LYR",
-                                                      1);
+  algData.maxHitsPerLyr = cfg.getVal<unsigned short>("MUON_CALIB_TKR",
+                                                     "MAX_HITS_PER_LYR",
+                                                     1);
 }
 
 void MuonCalibTkr::EventData::next() {

@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalHodoscope.cxx,v 1.2 2007/01/05 17:25:34 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalHodoscope.cxx,v 1.3 2007/02/02 20:32:40 fewtrell Exp $
 
 /** @file
     @author fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "CalHodoscope.h"
@@ -41,10 +41,11 @@ void CalHodoscope::clear() {
 void CalHodoscope::addHit(const CalDigi &calDigi) {
   //-- XtalId --//
   idents::CalXtalId id(calDigi.getPackedId());  // get interaction information
+
   // skip hits not for current tower.
   LyrNum lyr = id.getLayer();
 
-  XtalIdx           xtalIdx(id);
+  XtalIdx xtalIdx(id);
 
   // load up all adc values for each xtal diode
   // also ped subtraced adc values.

@@ -2,7 +2,7 @@
     Tracker recon (from svac) for track & hit information.
 
     @author Zachary Fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "lib/MuonCalibTkr.h"
@@ -44,17 +44,17 @@ int main(int argc,
     SimpleIniFile cfgFile(argv[1]);
 
     // input file(s)
-    vector<string> digiFileList(cfgFile.getVector<string>("MUON_CALIB_TKR",
-                                                          "DIGI_FILES",
-                                                          ", "));
+    vector<string> digiFileList(cfgFile. getVector<string>("MUON_CALIB_TKR",
+                                                           "DIGI_FILES",
+                                                           ", "));
     if (digiFileList.size() < 1) {
       cout << __FILE__ << ": No input files specified" << endl;
       return -1;
     }
 
-    vector<string> svacFileList(cfgFile.getVector<string>("MUON_CALIB_TKR",
-                                                          "SVAC_FILES",
-                                                          ", "));
+    vector<string> svacFileList(cfgFile. getVector<string>("MUON_CALIB_TKR",
+                                                           "SVAC_FILES",
+                                                           ", "));
     if (svacFileList.size() < 1) {
       cout << __FILE__ << ": No input files specified" << endl;
       return -1;
@@ -66,6 +66,7 @@ int main(int argc,
     LogStream::addStream(cout);
     // generate logfile name
     const string outputDir("./");
+
     string logfile =
       CGCUtil::genOutputFilename(outputDir,
                                  "muonCalib",
@@ -87,13 +88,14 @@ int main(int argc,
     if (!pedTXTFile.size()) {
       // retrieve original input root filename for pedestal process
       // (in order to generate associated 'output' txt filename)
-      vector<string> pedRootFileList(cfgFile.getVector<string>("MUON_PEDS",
-                                                               "ROOT_FILES",
-                                                               ", "));
+      vector<string> pedRootFileList(cfgFile. getVector<string>("MUON_PEDS",
+                                                                "ROOT_FILES",
+                                                                ", "));
       if (pedRootFileList.size() < 1) {
         LogStream::get() << __FILE__ << ": No input files specified" << endl;
         return -1;
       }
+
       // txt output filename
       pedTXTFile =          CalPed::genFilename(outputDir,
                                                 pedRootFileList[0],
@@ -142,24 +144,24 @@ int main(int argc,
                                  "root");
 
     // output txt file name
-    string    asymTXTFile =
+    string   asymTXTFile =
       CalAsym::genFilename(outputDir,
                            digiFileList[0],
                            "txt");
 
-    string    mpdTXTFile  =
+    string   mpdTXTFile  =
       CalMPD::genFilename(outputDir,
                           digiFileList[0],
                           "txt");
 
-    unsigned  nEntries    = cfgFile. getVal<unsigned>("MUON_CALIB_TKR",
-                                                      "ENTRIES_PER_HIST",
-                                                      10000);
+    unsigned nEntries    = cfgFile. getVal<unsigned>("MUON_CALIB_TKR",
+                                                     "ENTRIES_PER_HIST",
+                                                     10000);
 
     // read in Hist file?
-    bool      readInHists = cfgFile.getVal("MUON_CALIB_TKR",
-                                           "READ_IN_HISTS",
-                                           false);
+    bool     readInHists = cfgFile.getVal("MUON_CALIB_TKR",
+                                          "READ_IN_HISTS",
+                                          false);
 
     ///////////////////////////////////////
     //-- OPEN HISTOGRAM FILE             //
@@ -177,9 +179,10 @@ int main(int argc,
                        << histFilename << endl;
       histFile.reset(new TFile(histFilename.c_str(), "RECREATE", "CAL Muon Calib", 9));
     }
-        
+
     AsymHists asymHists;
-    MPDHists  mpdHists(MPDHists::FitMethods::LANGAU);
+    MPDHists     mpdHists(MPDHists::FitMethods::LANGAU);
+
     CalAsym   calAsym;
     CalMPD    calMPD;
     MuonCalibTkr tkrCalib(cfgFile,
@@ -196,9 +199,9 @@ int main(int argc,
     } else {
       LogStream::get() << __FILE__ << ": reading root event file(s) starting w/ "
                        << digiFileList[0] << endl;
-      unsigned startEvent = cfgFile.getVal<unsigned>("MUON_CALIB_TKR",
-                                                     "START_EVENT",
-                                                     0);
+      unsigned startEvent = cfgFile. getVal<unsigned>("MUON_CALIB_TKR",
+                                                      "START_EVENT",
+                                                      0);
 
       tkrCalib.fillHists(nEntries,
                          digiFileList,
@@ -206,27 +209,29 @@ int main(int argc,
                          startEvent);
       mpdHists.trimHists();
       asymHists.trimHists();
-      
 
       // Save file to disk before entering fit portion (saves time if i crash during debugging).
       //histFile->Write();
     }
 
     // READ IN TXT OUTPUT (SKIP HISTOGRAM FITS)
-    bool readInTXT = cfgFile.getVal<bool>("MUON_CALIB_TKR",
-                                          "READ_IN_TXT",
-                                          false);
+    bool   readInTXT = cfgFile. getVal<bool>("MUON_CALIB_TKR",
+                                             "READ_IN_TXT",
+           false);
+
     if (readInTXT) {
       calAsym.readTXT(asymTXTFile);
       calMPD.readTXT(mpdTXTFile);
     } else {
-      bool skipFitAsym = cfgFile.getVal<bool>("MUON_CALIB_TKR", "SKIP_ASYM_FIT", false);
+      bool skipFitAsym = cfgFile. getVal<bool>("MUON_CALIB_TKR", "SKIP_ASYM_FIT", false);
+
       if (!skipFitAsym) {
         LogStream::get() << __FILE__ << ": fitting asymmetry histograms." << endl;
         asymHists.fitHists(calAsym);
       }
-      
-      bool skipFitMPD = cfgFile.getVal<bool>("MUON_CALIB_TKR", "SKIP_MPD_FIT", false);
+
+      bool skipFitMPD = cfgFile. getVal<bool>("MUON_CALIB_TKR", "SKIP_MPD_FIT", false);
+
       if (!skipFitMPD) {
         LogStream::get() << __FILE__ << ": fitting MeVPerDAC histograms." << endl;
         mpdHists.fitHists(calMPD);
@@ -235,7 +240,7 @@ int main(int argc,
       LogStream::get() << __FILE__ << ": writing muon asymmetry: "
                        << asymTXTFile << endl;
       calAsym.writeTXT(asymTXTFile);
-      
+
       LogStream::get() << __FILE__ << ": writing muon mevPerDAC: "
                        << mpdTXTFile << endl;
       calMPD.writeTXT(mpdTXTFile);
@@ -243,7 +248,6 @@ int main(int argc,
       LogStream::get() << __FILE__ << ": generating fit result tuple: " << endl;
       mpdHists.buildTuple();
     }
-
 
     string adc2nrgFile =
       ADC2NRG::genFilename(outputDir,

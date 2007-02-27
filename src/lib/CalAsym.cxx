@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalAsym.cxx,v 1.7 2007/02/02 20:32:39 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalAsym.cxx,v 1.8 2007/02/26 23:20:30 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "CalAsym.h"
@@ -62,6 +62,7 @@ void CalAsym::readTXT(const string &filename) {
   unsigned short twr, lyr, col, pdiode, ndiode;
   float asym, sig;
 
+
   // open file
   ifstream infile(filename.c_str());
 
@@ -83,11 +84,11 @@ void CalAsym::readTXT(const string &filename) {
     // get lyr, col (xtalId)
     istrm >> twr >> lyr >> col >> pdiode >> ndiode >> asym >> sig;
 
-    XtalIdx  xtalIdx(twr,
-                     lyr,
-                     col);
-    AsymType asymType(pdiode,
-                      ndiode);
+    XtalIdx       xtalIdx(twr,
+                          lyr,
+                          col);
+    AsymType      asymType(pdiode,
+                           ndiode);
 
     m_asym[asymType][xtalIdx].push_back(asym);
     m_asymErr[asymType][xtalIdx].push_back(sig);

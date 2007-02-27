@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/TwrHodoscope.cxx,v 1.8 2007/01/05 17:25:34 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/TwrHodoscope.cxx,v 1.9 2007/02/23 16:37:21 fewtrell Exp $
 
 /** @file
     @author fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "TwrHodoscope.h"
@@ -51,11 +51,12 @@ void TwrHodoscope::clear() {
 void TwrHodoscope::addHit(const CalDigi &calDigi) {
   //-- XtalId --//
   idents::CalXtalId id(calDigi.getPackedId());  // get interaction information
+
   // skip hits not for current tower.
   ColNum col = id.getColumn();
   LyrNum lyr = id.getLayer();
 
-  XtalIdx           xtalIdx(id);
+  XtalIdx xtalIdx(id);
 
   // now trying to work w/ 1 range data, just don't fill all hists
   //   // check that we are in 4-range readout mode

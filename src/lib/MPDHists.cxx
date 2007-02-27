@@ -2,7 +2,7 @@
 
 /** @file
     @author Zachary Fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "MPDHists.h"
@@ -19,7 +19,6 @@
 #include "TGraph.h"
 #include "TStyle.h"
 
-
 // STD INCLUDES
 #include <string>
 #include <sstream>
@@ -31,15 +30,14 @@ using namespace CGCUtil;
 
 const float MPDHists::MUON_ENERGY = 11.2;
 
-
 /// map fitting method enum to ROOT TF1 fitting function
-typedef std::map<MPDHists::FitMethods::FitMethod, TF1*> FitFuncMap;
+typedef std::map<MPDHists::FitMethods::FitMethod, TF1 *> FitFuncMap;
 
 /// map fitting method enum to ROOT TF1 fitting function
 static FitFuncMap m_fitFuncMap;
 
 void fillFitFuncMap() {
-  m_fitFuncMap[MPDHists::FitMethods::LANDAU] = new TF1("mpdLandau","landau");;
+  m_fitFuncMap[MPDHists::FitMethods::LANDAU] = new TF1("mpdLandau", "landau");;
   m_fitFuncMap[MPDHists::FitMethods::LANGAU] = &(LangauFun::getLangauDAC());
 }
 
@@ -57,11 +55,11 @@ MPDHists::MPDHists(FitMethods::FitMethod fitMethod) :
     fillFitFuncMap();
 
   m_fitFunc = m_fitFuncMap[m_fitMethod];
-  
 }
 
 void MPDHists::initHists() {
   string histname;
+
 
   histname       = "dacLLSum";
   m_dacLLSumHist = new TH1I(histname.c_str(),
@@ -109,7 +107,7 @@ void MPDHists::initHists() {
                                 histname.c_str(),
                                 LyrNum::N_VALS,
                                 0, LyrNum::N_VALS);
-    
+
     histname = genHistName("hitsPerTwrCol",
                            twr.val() );
     m_perTwrCol[twr] = new TH1I(histname.c_str(),
@@ -121,6 +119,7 @@ void MPDHists::initHists() {
 
 void MPDHists::fitHists(CalMPD &calMPD) {
   TGraph graph;
+
 
   //LogStream::get() << "Muon Peak Fit Results: " << endl;
   //LogStream::get() << " SCALE\tXTAL\tMPV\tLanWid\tGauWid\tTotalWid\tBckgnd" << endl;
@@ -141,16 +140,15 @@ void MPDHists::fitHists(CalMPD &calMPD) {
     ///////////////////////////////////
 
     float mpv, width;
-    fitChannel(histLL, mpv,width);
+    fitChannel(histLL, mpv, width);
     LogStream::get() << xtalIdx.val() << " "
                      << mpv << " "
                      << width << " "
                      << endl;
-                           
 
     // create histogram of residual after fit
     //createResidHist(histLL);
-    
+
     float mpdLrg    = MUON_ENERGY/mpv;
     calMPD.setMPD(xtalIdx, LRG_DIODE, mpdLrg);
 
@@ -197,7 +195,7 @@ void MPDHists::fitHists(CalMPD &calMPD) {
     float relMPDErr  = mpdErrLrg/mpdLrg;
 
     float mpdErrSm   = mpdSm *
-      sqrt(relLineErr *relLineErr + relMPDErr *relMPDErr);
+                       sqrt(relLineErr *relLineErr + relMPDErr *relMPDErr);
 
     calMPD.setMPDErr(xtalIdx, SM_DIODE, mpdErrSm);
 
@@ -228,7 +226,7 @@ void MPDHists::fitHists(CalMPD &calMPD) {
     // bail if for some reason we didn't get any points
     if (nPts < 2) {
       LogStream::get() << __FILE__  << ":"     << __LINE__ << " "
-                       << "Not enough points to find sm diode MPD slope for xtal=" 
+                       << "Not enough points to find sm diode MPD slope for xtal="
                        << xtalIdx.val() << endl;
       continue;
     }
@@ -243,33 +241,35 @@ void MPDHists::fitChannel(TH1 &hist,
                           float &width) {
   hist.Fit(m_fitFunc, "Q");
   mpv = m_fitFunc->GetParameter(1);
-  
+
   switch (m_fitMethod) {
-  case FitMethods::LANDAU:
-    width = m_fitFunc->GetParameter(2);
-    break;
-  case FitMethods::LANGAU:
-    width = sqrt(pow(m_fitFunc->GetParameter(0),2) + 
-                 pow(m_fitFunc->GetParameter(3),2));
-    // width is calc'd as fraction of mpv
-    // i want to save it in dac units.
-    width *= mpv;
-    break;
-  default:
-    throw invalid_argument("invalid fit_method");
+    case FitMethods::LANDAU:
+      width  = m_fitFunc->GetParameter(2);
+      break;
+
+    case FitMethods::LANGAU:
+      width  = sqrt(pow(m_fitFunc->GetParameter(0), 2) +
+                    pow(m_fitFunc->GetParameter(3), 2));
+      // width is calc'd as fraction of mpv
+      // i want to save it in dac units.
+      width *= mpv;
+      break;
+
+    default:
+      throw invalid_argument("invalid fit_method");
   }
 }
 
-
 void MPDHists::loadHists() {
   string histname;
-  
+
+
   for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
     //-- DAC_LL HISTOGRAMS --//
     histname = genHistName("dacLL", xtalIdx.val());
     TH1S *hist_LL = CGCUtil::retrieveHist < TH1S > (*gDirectory, histname);
     if (!hist_LL) continue;
-    
+
     m_dacLLHists[xtalIdx] = hist_LL;
 
     //-- DAC_L2S HISTOGRAMS --//
@@ -361,7 +361,9 @@ void MPDHists::fillDacLL(CalUtil::XtalIdx xtalIdx,
 
   //-- alg statistics histograms
   LyrNum lyr(xtalIdx.getLyr());
+
   TwrNum twr(xtalIdx.getTwr());
+
   ColNum col(xtalIdx.getCol());
 
   m_perLyr->Fill(lyr.val());
@@ -372,28 +374,32 @@ void MPDHists::fillDacLL(CalUtil::XtalIdx xtalIdx,
 }
 
 void MPDHists::buildTuple() {
-  TNtuple *tuple=0;
-  
+  TNtuple *tuple = 0;
+
+
   switch (m_fitMethod) {
-  case FitMethods::LANDAU:
-    break;
-  case FitMethods::LANGAU:
-    tuple = &(LangauFun::buildTuple());
-    break;
-  default:
-    throw invalid_argument("invalid fit_method");
+    case FitMethods::LANDAU:
+      break;
+
+    case FitMethods::LANGAU:
+      tuple = &(LangauFun::buildTuple());
+      break;
+
+    default:
+      throw invalid_argument("invalid fit_method");
   }
 
   for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
     switch (m_fitMethod) {
-    case FitMethods::LANDAU:
-      break;
-    case FitMethods::LANGAU:
-      LangauFun::fillTuple(xtalIdx, 
-                           *(m_dacLLHists[xtalIdx]), 
-                           *tuple);
-      break;
-    }    
-    
+      case FitMethods::LANDAU:
+        break;
+
+      case FitMethods::LANGAU:
+        LangauFun::fillTuple(xtalIdx,
+                             *(m_dacLLHists[xtalIdx]),
+                             *tuple);
+        break;
+    }
   }
 }
+

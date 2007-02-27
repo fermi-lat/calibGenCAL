@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalPed.cxx,v 1.4 2007/01/05 17:25:34 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalPed.cxx,v 1.5 2007/02/26 23:20:30 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "CalPed.h"
@@ -74,12 +74,12 @@ void CalPed::readTXT(const string &filename) {
     istringstream istrm(line);
 
     istrm >> twr
-          >> lyr
-          >> col
-          >> face
-          >> rng
-          >> ped
-          >> sig;
+    >> lyr
+    >> col
+    >> face
+    >> rng
+    >> ped
+    >> sig;
 
     RngIdx rngIdx(twr,
                   lyr,
