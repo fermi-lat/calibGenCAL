@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Feb 27 12:44:12 PST 2007
+calibGenCAL/src
+
+Modified Files:
+	emiAnal.cxx genCIDAC2ADC.cxx genGCRHists.cxx genMuonAsym.cxx 
+	genMuonCalibTkr.cxx genMuonMPD.cxx genMuonPed.cxx 
+	genNeighborXtalk.cxx mainpage.h runMuTrigEff.cxx 
+Log Message:
+ran Uncrustify tool, made globa whitespace updates.
+
+NeighborXtalk code now complete but untested.
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Feb 27 07:48:07 PST 2007
 calibGenCAL/src/lib
 
