@@ -1,6 +1,6 @@
 #ifndef NeighborXtalk_h
 #define NeighborXtalk_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/NeighborXtalk.h,v 1.9 2007/01/29 19:28:00 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/NeighborXtalk.h,v 1.1 2007/02/26 23:20:30 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -30,8 +30,6 @@ class NeighborXtalk {
 
   /// write calibrations to txt file
   void writeTXT(const std::string &filename) const;
-
-  void readTXT(const std::string &filename);
 
   /// \brief retrieve 2d points for crosstalk spline function (x=cidac, y=adc)
   /// for given source_channel, destination_channel pair
