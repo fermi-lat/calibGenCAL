@@ -1,10 +1,10 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.12 2007/02/08 21:26:17 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.13 2007/02/14 16:11:37 fewtrell Exp $
 
 /** @file generate Light Asymmetry calibrations from Muon event filesusing Cal Digi Hodoscope
     for track & hit information
 
     @author Zachary Fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "lib/AsymHists.h"
@@ -45,9 +45,9 @@ int main(int argc,
     SimpleIniFile cfgFile(argv[1]);
 
     // input file(s)
-    vector<string> rootFileList(cfgFile.getVector<string>("MUON_ASYM",
-                                                          "ROOT_FILES",
-                                                          ", "));
+    vector<string> rootFileList(cfgFile. getVector<string>("MUON_ASYM",
+                                                           "ROOT_FILES",
+                                                           ", "));
     if (rootFileList.size() < 1) {
       cout << __FILE__ << ": No input files specified" << endl;
       return -1;
@@ -59,6 +59,7 @@ int main(int argc,
     LogStream::addStream(cout);
     // generate logfile name
     const string outputDir("./");
+
     string logfile =
       CalAsym::genFilename(outputDir,
                            rootFileList[0],
@@ -79,13 +80,14 @@ int main(int argc,
     if (!pedTXTFile.size()) {
       // retrieve original input root filename for pedestal process
       // (in order to generate associated 'output' txt filename)
-      vector<string> pedRootFileList(cfgFile.getVector<string>("MUON_PEDS",
-                                                               "ROOT_FILES",
-                                                               ", "));
+      vector<string> pedRootFileList(cfgFile. getVector<string>("MUON_PEDS",
+                                                                "ROOT_FILES",
+                                                                ", "));
       if (pedRootFileList.size() < 1) {
         LogStream::get() << __FILE__ << ": No input files specified" << endl;
         return -1;
       }
+
       // txt output filename
       pedTXTFile = CalPed::genFilename(outputDir,
                                        pedRootFileList[0],
@@ -169,9 +171,9 @@ int main(int argc,
       // open file to save output histograms.
       LogStream::get() << __FILE__ << ": opening output histogram file: "
                        << histFilename << endl;
-      histFile.reset(new TFile(histFilename.c_str(), 
-                               "RECREATE", 
-                               "CAL Muon Asymmetry", 
+      histFile.reset(new TFile(histFilename.c_str(),
+                               "RECREATE",
+                               "CAL Muon Asymmetry",
                                9));
 
       LogStream::get() << __FILE__ << ": reading root event file(s) starting w/ "
@@ -182,7 +184,6 @@ int main(int argc,
 
       // Save file to disk before entering fit portion (saves time if i crash during debugging).
       //histFile->Write();
-
     }
 
     asymHists.summarizeHists(LogStream::get());

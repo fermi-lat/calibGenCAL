@@ -1,10 +1,10 @@
 #ifndef MuTrig_h
 #define MuTrig_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuTrig.h,v 1.4 2007/01/04 23:23:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuTrig.h,v 1.5 2007/01/05 17:25:34 fewtrell Exp $
 
 /** @file
     @author fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "CGCUtil.h"
@@ -23,15 +23,15 @@ class CalPed;
 
 /** \brief Represents GLAST Cal trigger efficiency calibrations
 
-contains read & write methods to various file formats & code
-to calculate calibrations from digi ROOT event files.
+   contains read & write methods to various file formats & code
+   to calculate calibrations from digi ROOT event files.
 
-calculates efficiency for both CIDAC and Muon tests
+   calculates efficiency for both CIDAC and Muon tests
 
-@author fewtrell
-*/
+   @author fewtrell
+ */
 class MuTrig {
- public:
+public:
   /// describes which cal trigger channels are enabled
   /// in this configuration.
   /// \note 'row' refers to the row number on a single
@@ -53,7 +53,7 @@ class MuTrig {
                      unsigned nEvents,
                      const CalPed &peds,
                      bool calLOEnabled = false
-                     );
+  );
 
   /// \brief measure FLE trigger efficiency against charge injection
   /// \param filename root digi data file w/ diagnostic info
@@ -79,7 +79,7 @@ class MuTrig {
                                       ext);
   }
 
- private:
+private:
   void initHists();
 
   /// determine if xtal is enabled for this
@@ -92,9 +92,9 @@ class MuTrig {
         return true;
       else return false;
     else
-      if (gcrc%2 != col%2)
-        return true;
-      else return false;
+    if (gcrc%2 != col%2)
+      return true;
+    else return false;
   }
 
   std::string genHistName(const std::string &type,

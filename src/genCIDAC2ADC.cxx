@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.12 2007/02/08 21:26:17 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.13 2007/02/26 23:16:59 fewtrell Exp $
 
 /** @file Gen CIDAC2ADC calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "lib/IntNonlinAlg.h"
@@ -40,23 +40,21 @@ int main(int argc,
     SimpleIniFile cfgFile(argv[1]);
 
     // output dir
-    const string outputDir("./");
+    const string  outputDir("./");
 
     // input files
-    string rootFileLE = cfgFile.getVal("CIDAC2ADC",
-                                       "LE_ROOT_FILE", string(""));
-    string rootFileHE = cfgFile.getVal("CIDAC2ADC",
-                                       "HE_ROOT_FILE", string(""));
+    string rootFileLE   = cfgFile.getVal("CIDAC2ADC",
+                                         "LE_ROOT_FILE", string(""));
+    string rootFileHE   = cfgFile.getVal("CIDAC2ADC",
+                                         "HE_ROOT_FILE", string(""));
     // broadcast mode
-    bool bcastMode = cfgFile.getVal("CIDAC2ADC",
-                                    "BCAST_MODE",
-                                    true);
+    bool   bcastMode    = cfgFile.getVal("CIDAC2ADC",
+                                         "BCAST_MODE",
+                                         true);
 
-    bool readADCMeans = cfgFile.getVal("CIDAC2ADC",
-                                       "READ_ADC_MEANS",
-                                       false);
-
-
+    bool   readADCMeans = cfgFile.getVal("CIDAC2ADC",
+                                         "READ_ADC_MEANS",
+                                         false);
 
     // i can process 1 or 2 files, but not none
     if (rootFileLE.length() == 0 && rootFileHE.length() == 0) {
@@ -65,7 +63,7 @@ int main(int argc,
     }
 
     const  string &outputBaseName = (rootFileLE.length()) ?
-      rootFileLE : rootFileHE;
+                                    rootFileLE : rootFileHE;
 
     //-- SETUP LOG FILE --//
     /// multiplexing output streams
@@ -84,16 +82,16 @@ int main(int argc,
     output_env_banner(LogStream::get());
 
     // txt output filename
-    string    outputTXTFile =
+    string       outputTXTFile =
       CIDAC2ADC::genFilename(outputDir,
                              outputBaseName,
                              "txt");
 
-    CIDAC2ADC adcMeans;
-    CIDAC2ADC cidac2adc;
+    CIDAC2ADC    adcMeans;
+    CIDAC2ADC    cidac2adc;
     IntNonlinAlg inlAlg;
 
-    string    adcMeanFile  =
+    string       adcMeanFile  =
       CIDAC2ADC::genFilename(outputDir,
                              outputBaseName,
                              "adcmean.txt");

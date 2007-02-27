@@ -1,10 +1,10 @@
 #ifndef MuonAsym_h
 #define MuonAsym_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.h,v 1.9 2007/01/04 23:23:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.h,v 1.10 2007/01/05 17:25:34 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "CGCUtil.h"
@@ -30,9 +30,9 @@ class AsymHists;
     from Muon collection digi ROOT event files
 
     @author Zachary Fewtrell
-*/
+ */
 class MuonAsym {
- public:
+public:
   MuonAsym(const CalPed &ped,
            const CIDAC2ADC &dac2adc,
            AsymHists &asymHists);
@@ -41,7 +41,7 @@ class MuonAsym {
   void        fillHists(unsigned nEntries,
                         const vector<string> &rootFileList);
 
- private:
+private:
   /// process a single event for histogram fill
   void        processEvent(DigiEvent &digiEvent);
 
@@ -56,7 +56,7 @@ class MuonAsym {
   bool        passCutY(const TwrHodoscope &hscope);
 
   class AlgData {
-  private:
+private:
     void init() {
       nGoodDirs = 0;
       nXDirs    = 0;
@@ -65,7 +65,7 @@ class MuonAsym {
       nBadHits  = 0;
     }
 
-  public:
+public:
     AlgData() {
       init();
     }
@@ -78,21 +78,21 @@ class MuonAsym {
   } algData;
 
   class EventData {
-  private:
+private:
     /// reset all member variables
     void init() {
       eventNum = 0;
       next();
     }
 
-  public:
+public:
     EventData(const CalPed &peds,
               const CIDAC2ADC &dac2adc) :
       hscopes(CalUtil::TwrNum::N_VALS,
               TwrHodoscope(peds, dac2adc)),
       eventNum(0)
-      {
-      }
+    {
+    }
 
     /// rest all member variables that do not retain data
     /// from one event to next.

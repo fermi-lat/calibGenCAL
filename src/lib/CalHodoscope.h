@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalHodoscope.h,v 1.1 2007/01/04 23:23:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalHodoscope.h,v 1.2 2007/01/05 17:25:34 fewtrell Exp $
 
 /** @file
     @author fewtrell
-*/
+ */
 
 #ifndef CalHodoscope_h
 #define CalHodoscope_h
@@ -26,9 +26,9 @@ class CalDigi;
 /** \brief Accumulate crystal hits in Cal summarize into
     information which can be used for track determination.
     @author fewtrell
-*/
+ */
 class CalHodoscope {
- public:
+public:
   CalHodoscope(const CalPed &ped,
                const CIDAC2ADC &cidac2adc) :
     adc_ped(CalUtil::DiodeIdx::N_VALS),
@@ -36,9 +36,9 @@ class CalHodoscope {
     bestRng(CalUtil::FaceIdx::N_VALS),
     m_peds(ped),
     m_cidac2adc(cidac2adc)
-    {
-      clear();
-    }
+  {
+    clear();
+  }
 
   /// 'zero-out' all members
   void clear();

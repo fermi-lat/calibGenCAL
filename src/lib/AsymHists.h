@@ -5,7 +5,7 @@
 
 /** @file
     @author Zachary Fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "CalAsym.h"
@@ -29,13 +29,13 @@ class CalAsym;
 
     @author Zachary Fewtrell
 
-*/
+ */
 class AsymHists {
- public:
+public:
   AsymHists::AsymHists() :
     m_histograms(CalUtil::AsymType::N_VALS)
-    {
-    }
+  {
+  }
 
   /// allocate & create asymmetry histograms & pointer arrays
   void        initHists();
@@ -60,7 +60,7 @@ class AsymHists {
     return m_histograms[asymType][xtalIdx];
   }
 
- private:
+private:
   /// list of histograms for muon asymmetry
   CalUtil::CalVec<CalUtil::AsymType, CalUtil::CalArray<CalUtil::XtalIdx, TH2S *> > m_histograms;
 

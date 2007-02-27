@@ -1,11 +1,11 @@
 #ifndef CalPed_h
 #define CalPed_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalPed.h,v 1.4 2007/01/04 23:23:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalPed.h,v 1.5 2007/01/05 17:25:34 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "CGCUtil.h"
@@ -18,12 +18,12 @@
 
 /** \brief \brief Represents GLAST Cal ADC pedestal calibrations
 
-contains read & write methods to various file formats
+   contains read & write methods to various file formats
 
-@author Zachary Fewtrell
-*/
+   @author Zachary Fewtrell
+ */
 class CalPed {
- public:
+public:
   CalPed();
 
   /// write pedestals to columnar TXTfile
@@ -61,7 +61,7 @@ class CalPed {
                                       ext);
   }
 
- private:
+private:
   /// output pedestal data.
   CalUtil::CalVec<CalUtil::RngIdx, float> m_peds;
   /// corresponding err values for m_calCalPed

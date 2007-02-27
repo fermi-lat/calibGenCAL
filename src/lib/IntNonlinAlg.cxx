@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/IntNonlinAlg.cxx,v 1.1 2007/02/26 23:20:30 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/IntNonlinAlg.cxx,v 1.2 2007/02/26 23:53:19 fewtrell Exp $
 
 /** @file
     @author fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "IntNonlinAlg.h"
@@ -29,7 +29,6 @@ using namespace CalUtil;
 using namespace std;
 using namespace singlex16;
 
-
 /// how many points for each smoothing 'group'?  (per adc range)
 static const unsigned short SMOOTH_GRP_WIDTH[] = {
   3, 4, 3, 4
@@ -46,7 +45,6 @@ static const unsigned short EXTRAP_PTS_LO_FROM[] = {
 static const unsigned short SMOOTH_SKIP_HI[]   = {
   6, 10, 6, 10
 };
-
 
 IntNonlinAlg::IntNonlinAlg()
 {
@@ -76,6 +74,64 @@ void IntNonlinAlg::AlgData::initHists() {
                                       N_CIDAC_VALS-0.5);
     }
   }
+}
+
+void IntNonlinAlg::readRootData(const string &rootFileName,
+                                CIDAC2ADC &adcMeans,
+                                DiodeNum diode,
+                                bool bcastMode) {
+  algData.diode     = diode;
+  algData.bcastMode = bcastMode;
+  algData.adcMeans  = &adcMeans;
+
+  // open input root file.
+  vector<string> rootFileList;
+  rootFileList.push_back(rootFileName);
+  RootFileAnalysis rootFile(0,
+                            &rootFileList,
+                            0);
+
+  // enable only needed branches in root file
+  rootFile.getDigiChain()->SetBranchStatus("*", 0);
+  rootFile.getDigiChain()->SetBranchStatus("m_calDigiCloneCol");
+
+  //-- CHECK N EVENTS --//
+  unsigned nEvents    = rootFile.getEntries();
+  unsigned nEventsReq = (bcastMode) ? TOTAL_PULSES_BCAST : TOTAL_PULSES_COLWISE;
+
+  // 10 % margin is overly cautious.  occasionally there are a 1 or 2 'extra' events.
+  if (abs((long)(nEvents - nEventsReq)) > .10*nEventsReq) {
+    ostringstream tmp;
+
+    tmp << __FILE__ << ":" << __LINE__ << " "
+        << "Wrong # of events:"
+        << " bcastMode=" << bcastMode
+        << " nEventsRequired=" << nEventsReq
+        << " nEventsFound=" << nEvents;
+
+    throw runtime_error(tmp.str());
+  }
+
+  LogStream::get() << __FILE__ << ": Processing: " << nEvents << " events." << endl;
+
+  // BEGINNING OF EVENT LOOP
+  for (eventData.eventNum = 0 ; eventData.eventNum < nEvents; eventData.eventNum++) {
+    if (eventData.eventNum%1000 == 0) {
+      LogStream::get() << " event " << eventData.eventNum << '\n';
+      LogStream::get().flush();
+    }
+
+    rootFile.getEvent(eventData.eventNum);
+
+    const DigiEvent *digiEvent = rootFile.getDigiEvent();
+    if (!digiEvent) {
+      ostringstream tmp;
+      tmp << __FILE__ << ":" << __LINE__ << " "
+          << "No DigiEvent found event #" << eventData.eventNum;
+    }
+
+    processEvent(*digiEvent);
+  }  // end analysis code in event loop
 }
 
 void IntNonlinAlg::processEvent(const DigiEvent &digiEvent) {
@@ -187,64 +243,6 @@ void IntNonlinAlg::processHit(const CalDigi &cdig) {
   }     // foreach readout
 }
 
-void IntNonlinAlg::readRootData(const string &rootFileName,
-                                CIDAC2ADC &adcMeans,
-                                DiodeNum diode,
-                                bool bcastMode) {
-  algData.diode     = diode;
-  algData.bcastMode = bcastMode;
-  algData.adcMeans  = &adcMeans;
-
-  // open input root file.
-  vector<string> rootFileList;
-  rootFileList.push_back(rootFileName);
-  RootFileAnalysis rootFile(0,
-                            &rootFileList,
-                            0);
-
-  // enable only needed branches in root file
-  rootFile.getDigiChain()->SetBranchStatus("*", 0);
-  rootFile.getDigiChain()->SetBranchStatus("m_calDigiCloneCol");
-
-  unsigned nEvents = rootFile.getEntries();
-
-  unsigned nEventsReq = (bcastMode) ? TOTAL_PULSES_BCAST : TOTAL_PULSES_COLWISE;
-  
-  // 10 % margin is overly cautious.  occasionally there are a 1 or 2 'extra' events.
-  if (fabs((float)nEvents - nEventsReq) > .10*nEventsReq) {
-	  ostringstream tmp;
-
-	  tmp << __FILE__ << ":" << __LINE__ << " "
-		  << "Wrong # of events:"
-    	  << " bcastMode=" << bcastMode
-		  << " nEventsRequired=" << nEventsReq
-		  << " nEventsFound=" << nEvents;
-
-	  throw runtime_error(tmp.str());
-  }
-
-  LogStream::get() << __FILE__ << ": Processing: " << nEvents << " events." << endl;
-
-  // BEGINNING OF EVENT LOOP
-  for (eventData.eventNum = 0 ; eventData.eventNum < nEvents; eventData.eventNum++) {
-    if (eventData.eventNum%1000 == 0) {
-      LogStream::get() << " event " << eventData.eventNum << '\n';
-      LogStream::get().flush();
-    }
-
-    rootFile.getEvent(eventData.eventNum);
-
-    const DigiEvent *digiEvent = rootFile.getDigiEvent();
-    if (!digiEvent) {
-      ostringstream tmp;
-      tmp << __FILE__ << ":" << __LINE__ << " "
-          << "No DigiEvent found event #" << eventData.eventNum;
-    }
-
-    processEvent(*digiEvent);
-  }  // end analysis code in event loop
-}
-
 void IntNonlinAlg::genSplinePts(CIDAC2ADC &adcMeans,
                                 CIDAC2ADC &cidac2adc) {
   // Loop through all 4 energy ranges
@@ -277,7 +275,7 @@ void IntNonlinAlg::smoothSpline(const vector<float> &curADC,
                                 vector<float> &splineADC,
                                 vector<float> &splineDAC,
                                 RngNum rng
-                                ) {
+) {
   // following vals only change w/ rng, so i get them outside the other loops.
   unsigned short grpWid       = SMOOTH_GRP_WIDTH[rng.val()];
   unsigned short extrapLo     = EXTRAP_PTS_LO[rng.val()];
@@ -286,12 +284,12 @@ void IntNonlinAlg::smoothSpline(const vector<float> &curADC,
 
 
   // 2 dimensional poly line f() to use for spline fitting.
-  float * tmpADC(new float[N_CIDAC_VALS]);
+  float *tmpADC(new float[N_CIDAC_VALS]);
 
-  TF1     splineFunc("spline_fitter",
-                     "pol2",
-                     0,
-                     4095);
+  TF1 splineFunc("spline_fitter",
+                 "pol2",
+                 0,
+                 4095);
 
   //-- GET UPPER ADC BOUNDARY for this channel --//
   float adc_max  = curADC[N_CIDAC_VALS-1];
@@ -338,6 +336,7 @@ void IntNonlinAlg::smoothSpline(const vector<float> &curADC,
   // start one grp above skiplo & go as hi as you can w/out entering skpHi
   for (unsigned short ctrIdx = extrapLo + grpWid - 1;
        ctrIdx <= last_idx - max<unsigned short>(skpHi, grpWid-1);  // allow last group to overlap skpHi section.
+
        ctrIdx += grpWid) {
     unsigned short lp  = ctrIdx - grpWid;                          // 1st point in group
     unsigned short hp  = ctrIdx + grpWid;                          // last point in group

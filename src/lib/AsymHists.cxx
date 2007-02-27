@@ -2,7 +2,7 @@
 
 /** @file
     @author Zachary Fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "AsymHists.h"
@@ -153,7 +153,7 @@ void AsymHists::fitHists(CalAsym &calAsym) {
         // get slice of 2D histogram for each X bin
         // HISTOGRAM BINS START AT 1 NOT ZERO! (hence 'i+1')
         TH1D &slice = *(h.ProjectionY("slice", i+1, i+1));
-                
+
         // point local references to output values
         float av;
         float rms;
@@ -171,7 +171,7 @@ void AsymHists::fitHists(CalAsym &calAsym) {
         // update new mean & sigma
         av = slice.GetMean(); rms = slice.GetRMS();
 
-        LogStream::get() << xtalIdx.val() << " " 
+        LogStream::get() << xtalIdx.val() << " "
                          << asymType << " "
                          << i   << " "
                          << av  << " "

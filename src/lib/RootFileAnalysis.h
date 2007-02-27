@@ -1,10 +1,10 @@
 #ifndef RootFileAnalysis_h
 #define RootFileAnalysis_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/RootFileAnalysis.h,v 1.8 2007/01/05 17:25:34 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/RootFileAnalysis.h,v 1.9 2007/02/23 16:37:21 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 
@@ -23,36 +23,36 @@ class GcrSelectEvent;
 
 /** \brief Makes a VCR for GLAST root event files
 
-RootFileAnalysis contains the following features...
+   RootFileAnalysis contains the following features...
 
-1) ability to read in one or more GLAST digi, recon and/or mc root files,
-also svac tuple.
-2) ability to step/rewind through events in those files
-3) events are read / stepped in parallel so that digi/recon/mc trees are always
-in sync.
-4) User is responsible for enabling branches within each TTree/TChain
-5) for event data classes (digi,mc,recon) this class will store the pointers
-to the event objects and make them available via getXXXEvent() methods.
-6) for tuple event files, user is responsible for maintaining and assigning
-branch data destination pointers.
+   1) ability to read in one or more GLAST digi, recon and/or mc root files,
+   also svac tuple.
+   2) ability to step/rewind through events in those files
+   3) events are read / stepped in parallel so that digi/recon/mc trees are always
+   in sync.
+   4) User is responsible for enabling branches within each TTree/TChain
+   5) for event data classes (digi,mc,recon) this class will store the pointers
+   to the event objects and make them available via getXXXEvent() methods.
+   6) for tuple event files, user is responsible for maintaining and assigning
+   branch data destination pointers.
 
-*/
+ */
 class RootFileAnalysis {
- public:
+public:
 
   /**
-     \param mcFilenames (set to NULL to disable MC ROOT Chain)
-     \param digiFilenames (set to NULL to disable Digi ROOT Chain)
-     \param reconFilenames (set to NULL to disable recon ROOT Chain)
-     \param gcrSelectFilenames (set to NULL to disable gcrSelect ROOT Chain)
+   \param mcFilenames (set to NULL to disable MC ROOT Chain)
+   \param digiFilenames (set to NULL to disable Digi ROOT Chain)
+   \param reconFilenames (set to NULL to disable recon ROOT Chain)
+   \param gcrSelectFilenames (set to NULL to disable gcrSelect ROOT Chain)
 
-  */
+   */
   RootFileAnalysis(const std::vector<std::string> *mcFilenames = 0,
                    const std::vector<std::string> *digiFilenames = 0,
                    const std::vector<std::string> *reconFilenames = 0,
                    const std::vector<std::string> *svacFilenames = 0,
                    const std::vector<std::string> *gcrSelectFilenames = 0
-                   );
+  );
 
   ~RootFileAnalysis();
 
@@ -75,11 +75,10 @@ class RootFileAnalysis {
   ReconEvent  *getReconEvent() const {
     return m_reconEvt;
   }
-  
-  GcrSelectEvent *getGcrSelectEvent() const { 
+
+  GcrSelectEvent *getGcrSelectEvent() const {
     return m_gcrSelectEvt;
   }
-
 
   TChain *getMcChain()   {
     return &m_mcChain;
@@ -96,42 +95,41 @@ class RootFileAnalysis {
   TChain *getSvacChain() {
     return &m_svacChain;
   }
-  
+
   TChain *getGcrSelectChain()  {
     return &m_gcrSelectChain;
   }
 
- private:
+private:
 
   /// Chains store event data for all files
-  TChain       m_mcChain;
+  TChain           m_mcChain;
   /// Pointer to current McEvent
-  McEvent     *m_mcEvt;
+  McEvent     *    m_mcEvt;
 
   /// Chains store event data for all files
-  TChain       m_digiChain;
+  TChain           m_digiChain;
   /// pointer to current DigiEvent
-  DigiEvent   *m_digiEvt;
+  DigiEvent   *    m_digiEvt;
 
   /// Chains store event data for all files
-  TChain       m_reconChain;
+  TChain           m_reconChain;
   /// pointer to current reconEvent
-  ReconEvent  *m_reconEvt;
+  ReconEvent  *    m_reconEvt;
 
   /// Chains store event data for all files
-  TChain       m_svacChain;
+  TChain           m_svacChain;
 
   /// helpful list of all 3 TChains
-  TObjArray    m_chainArr;
-  
+  TObjArray        m_chainArr;
+
   /// Chains store event data for all files
-  TChain       m_gcrSelectChain;
+  TChain           m_gcrSelectChain;
   /// pointer to current gcrSelectEvent
   GcrSelectEvent  *m_gcrSelectEvt;
 
-
   /// current event number
-  unsigned     m_nextEvt;
+  unsigned         m_nextEvt;
 };
 
 #endif

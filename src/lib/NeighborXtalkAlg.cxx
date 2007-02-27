@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/NeighborXtalk.cxx,v 1.6 2007/01/05 17:25:34 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/NeighborXtalkAlg.cxx,v 1.1 2007/02/26 23:20:30 fewtrell Exp $
 
 /** @file
     @author fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "NeighborXtalkAlg.h"
@@ -18,10 +18,10 @@
 #include "digiRootData/DigiEvent.h"
 
 // EXTLIB INCLUDES
-#include "TProfile.h"
 
 // STD INCLUDES
 #include <sstream>
+#include <cstdlib>
 
 using namespace std;
 using namespace CalUtil;
@@ -34,29 +34,72 @@ NeighborXtalkAlg::NeighborXtalkAlg()
 }
 
 void NeighborXtalkAlg::AlgData::initHists() {
-  adcHists = new TObjArray(RngIdx::N_VALS);
+  adcHists = new TObjArray(DiodeIdx::N_VALS);
 
   // delete histograms w/ TObjArray, do not save in file...
   adcHists->SetOwner(1);
-  for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
+  for (DiodeIdx diodeIdx; diodeIdx.isValid(); diodeIdx++) {
     {
       ostringstream tmp;
-      tmp << "adc" << rngIdx.val();
-      (*adcHists)[rngIdx.val()] = new TH1S(tmp.str().c_str(),
-                                           tmp.str().c_str(),
-                                           4096, -0.5, 4095.5);
-    }
-
-    {
-      ostringstream tmp;
-      tmp << "ciRaw_" << rngIdx.val();
-      profiles[rngIdx] = new TProfile(tmp.str().c_str(),
-                                      tmp.str().c_str(),
-                                      N_CIDAC_VALS,
-                                      -0.5,
-                                      N_CIDAC_VALS-0.5);
+      tmp << "adc" << diodeIdx.val();
+      (*adcHists)[diodeIdx.val()] = new TH1S(tmp.str().c_str(),
+                                             tmp.str().c_str(),
+                                             4096, -0.5, 4095.5);
     }
   }
+}
+
+void NeighborXtalkAlg::readRootData(const string &rootFileName,
+                                    NeighborXtalk &xtalk) {
+  algData.xtalk  = &xtalk;
+
+  // open input root file.
+  vector<string> rootFileList;
+  rootFileList.push_back(rootFileName);
+  RootFileAnalysis rootFile(0,
+                            &rootFileList,
+                            0);
+
+  // enable only needed branches in root file
+  rootFile.getDigiChain()->SetBranchStatus("*", 0);
+  rootFile.getDigiChain()->SetBranchStatus("m_calDigiCloneCol");
+
+  //-- CHECK N EVENTS --//
+  unsigned nEvents    = rootFile.getEntries();
+  unsigned nEventsReq = TOTAL_PULSES_COLWISE;
+
+  // 10 % margin is overly cautious.  occasionally there are a 1 or 2 'extra' events.
+  if (abs((long)(nEvents - nEventsReq)) > .10*nEventsReq) {
+    ostringstream tmp;
+
+    tmp << __FILE__ << ":" << __LINE__ << " "
+        << "Wrong # of events:"
+        << " nEventsRequired=" << nEventsReq
+        << " nEventsFound=" << nEvents;
+
+    throw runtime_error(tmp.str());
+  }
+
+  LogStream::get() << __FILE__ << ": Processing: " << nEvents << " events." << endl;
+
+  // BEGINNING OF EVENT LOOP
+  for (eventData.eventNum = 0 ; eventData.eventNum < nEvents; eventData.eventNum++) {
+    if (eventData.eventNum%1000 == 0) {
+      LogStream::get() << " event " << eventData.eventNum << '\n';
+      LogStream::get().flush();
+    }
+
+    rootFile.getEvent(eventData.eventNum);
+
+    const DigiEvent *digiEvent = rootFile.getDigiEvent();
+    if (!digiEvent) {
+      ostringstream tmp;
+      tmp << __FILE__ << ":" << __LINE__ << " "
+          << "No DigiEvent found event #" << eventData.eventNum;
+    }
+
+    processEvent(*digiEvent);
+  }  // end analysis code in event loop
 }
 
 void NeighborXtalkAlg::processEvent(const DigiEvent &digiEvent) {
@@ -101,47 +144,88 @@ void NeighborXtalkAlg::processEvent(const DigiEvent &digiEvent) {
 }
 
 void NeighborXtalkAlg::processHit(const CalDigi &cdig) {
-}  
+  CalXtalId      id      = cdig.getPackedId(); // get interaction information
 
-void NeighborXtalkAlg::readRootData(const string &rootFileName,
-                                    NeighborXtalk &xtalk,
-                                    DiodeNum diode) {
-  algData.diode     = diode;
-  algData.xtalk  = &xtalk;
+  ColNum         col     = id.getColumn();
+  // only process collumns neighboring the current column.
+  unsigned short colDiff = abs((unsigned short)col - (unsigned short)eventData.testCol);
 
-  // open input root file.
-  vector<string> rootFileList;
-  rootFileList.push_back(rootFileName);
-  RootFileAnalysis rootFile(0,
-                            &rootFileList,
-                            0);
 
-  // enable only needed branches in root file
-  rootFile.getDigiChain()->SetBranchStatus("*", 0);
-  rootFile.getDigiChain()->SetBranchStatus("m_calDigiCloneCol");
+  if (colDiff != 1)
+    return;
+  TwrNum         twr     = id.getTower();
+  LyrNum         lyr     = id.getLayer();
 
-  unsigned nEvents = rootFile.getEntries();
-  LogStream::get() << __FILE__ << ": Processing: " << nEvents << " events." << endl;
+  // Loop through each readout on current xtal
+  unsigned short numRo   = cdig.getNumReadouts();
+  for (unsigned short iRo = 0; iRo < numRo; iRo++) {
+    const CalXtalReadout &acRo = *(cdig.getXtalReadout(iRo));
 
-  // BEGINNING OF EVENT LOOP
-  for (eventData.eventNum = 0 ; eventData.eventNum < nEvents; eventData.eventNum++) {
-    if (eventData.eventNum%1000 == 0) {
-      LogStream::get() << " event " << eventData.eventNum << '\n';
-      LogStream::get().flush();
+    for (FaceNum face; face.isValid(); face++) {
+      RngNum   rng(acRo.getRange ((CalXtalId::XtalFace)face.val()));
+
+      // only interested in current diode!
+      DiodeNum diode(rng.getDiode());
+
+      if (diode != LRG_DIODE) continue;
+
+      // only processing X8 data
+      if (THXNum(rng) != THX8) continue;
+
+      // retrieve adc value
+      unsigned short adc = acRo.getAdc((CalXtalId::XtalFace)face.val());
+
+      // fill histogram
+      DiodeIdx diodeIdx(twr,
+                        lyr,
+                        col,
+                        face,
+                        diode);
+
+      TH1S & h = *((TH1S *)algData.adcHists->At(diodeIdx.val()));
+
+      // reset histogram if we're starting a new DAC setting
+      if (eventData.iSamp == 0) {
+        h.Reset();
+        h.SetAxisRange(-0.5, 4095.5);
+      }
+
+      // fill histogram
+      h.Fill(adc);
+
+      // save histogram data if we're on last sample for current
+      // dac settigns
+      if (eventData.iSamp == (N_PULSES_PER_DAC - 1)) {
+        float av, err;
+        // trim outliers
+        av  = h.GetMean();
+        err = h.GetRMS();
+        for ( unsigned short iter = 0; iter < 3; iter++ ) {
+          h.SetAxisRange(av-3*err, av+3*err);
+          av  = h.GetMean();
+          err = h.GetRMS();
+        }
+
+        // assign to table
+        // 'source' channel is current injected channel.
+        RngIdx srcIdx(twr,
+                      lyr,
+                      eventData.testCol,
+                      face,
+                      rng);
+
+        // 'dest' channel is currently measured channel
+        RngIdx destIdx(twr,
+                       lyr,
+                       col,
+                       face,
+                       rng);
+
+        algData.xtalk->setPoint(destIdx,
+                                srcIdx,
+                                CIDAC_TEST_VALS[eventData.testDAC],
+                                av);
+      }
     }
-
-    rootFile.getEvent(eventData.eventNum);
-
-    const DigiEvent *digiEvent = rootFile.getDigiEvent();
-    if (!digiEvent) {
-      ostringstream tmp;
-      tmp << __FILE__ << ":" << __LINE__ << " "
-          << "No DigiEvent found event #" << eventData.eventNum;
-    }
-
-    processEvent(*digiEvent);
-  }  // end analysis code in event loop
+  }
 }
-
-
-  

@@ -13,16 +13,16 @@
 using namespace std;
 
 namespace SplineUtil {
-
-  TSpline3 *polyline2spline(const Polyline &pLine, 
+  TSpline3 *polyline2spline(const Polyline &pLine,
                             const string &name) {
     unsigned size = pLine.size();
 
-    if (size == 0) 
+
+    if (size == 0)
       return 0;
 
-    double *x = new double[size];
-    double *y = new double[size];
+    double *  x = new double[size];
+    double *  y = new double[size];
 
     for (unsigned i = 0;
          i < size;
@@ -47,13 +47,14 @@ namespace SplineUtil {
                           const std::string &name) {
     unsigned size = min(x.size(), y.size());
 
-    if (size == 0) 
+
+    if (size == 0)
       return 0;
 
     double *ax = new double[size];
     double *ay = new double[size];
 
-    copy(x.begin(), 
+    copy(x.begin(),
          x.end(),
          ax);
     copy(y.begin(),
@@ -70,6 +71,4 @@ namespace SplineUtil {
 
     return retVal;
   }
-
-
 };

@@ -1,10 +1,10 @@
 #ifndef NeighborXtalkAlg_h
 #define NeighborXtalkAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/NeighborXtalkAlg.h,v 1.7 2007/01/05 17:25:34 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/NeighborXtalkAlg.h,v 1.1 2007/02/26 23:20:30 fewtrell Exp $
 
 /** @file
     @author fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "CGCUtil.h"
@@ -20,22 +20,19 @@
 
 class DigiEvent;
 class CalDigi;
-class TProfile;
 
 /** \brief Algorithm class populates NeighborXtalk calibration data
     object by analyzing calibGen singlex16 digi ROOT files.
 
     @author fewtrell
-*/
+ */
 class NeighborXtalkAlg {
 public:
   NeighborXtalkAlg();
 
   /// process digi root event file
-  /// \param diode specify whether to analyze HE or LE circuits
   void readRootData(const std::string &rootFileName,
-                    NeighborXtalk &xtalk,
-                    CalUtil::DiodeNum diode);
+                    NeighborXtalk &xtalk);
 
 private:
   /// fill histograms w/ data from single event
@@ -46,13 +43,12 @@ private:
 
   /// store cfg & status data pertinent to current algorithm run
   struct AlgData {
-    AlgData() :
-      profiles(CalUtil::RngIdx::N_VALS, 0) {
+    AlgData()
+    {
       init();
     }
 
     void init() {
-      diode     = CalUtil::LRG_DIODE;
       xtalk  = 0;
       initHists();
     }
@@ -67,14 +63,8 @@ private:
     /// level.
     TObjArray                                   *adcHists;
 
-    /// profiles owned by current ROOT directory/m_histFile.
-    CalUtil::CalVec<CalUtil::RngIdx, TProfile *> profiles;
-
     /// create new histogram objects and accompanying TObjArray
     void initHists();
-
-    /// currently processing 1 of 2 diodes
-    CalUtil::DiodeNum diode;
 
     /// fill in the mean values for each DAC setting here.
     NeighborXtalk        *xtalk;
@@ -82,7 +72,7 @@ private:
 
   /// store data pertinent to current event
   struct EventData {
-  private:
+private:
 
     void            init() {
       eventNum = 0;
@@ -92,7 +82,7 @@ private:
       testDAC  = 0;
     }
 
-  public:
+public:
     EventData() {
       init();
     }

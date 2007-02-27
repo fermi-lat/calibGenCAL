@@ -1,11 +1,11 @@
 /** @file CGCUtil.cxx
 
-@author Zachary Fewtrell
+   @author Zachary Fewtrell
 
-\brief generic utility functions used in calibGenCAL pkg
+ \brief generic utility functions used in calibGenCAL pkg
 
-$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CGCUtil.cxx,v 1.5 2007/02/26 16:35:29 fewtrell Exp $
-*/
+   $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CGCUtil.cxx,v 1.6 2007/02/26 17:09:46 fewtrell Exp $
+ */
 
 // LOCAL INCLUDES
 #include "CGCUtil.h"
@@ -26,7 +26,7 @@ using namespace std;
 namespace CGCUtil {
   /** \brief splits a delmiited string into a vector of shorter token-strings
       stolen from http://www.linuxselfhelp.com/HOWTO/C++Programming-HOWTO-7.html
-  */
+   */
   void tokenize_str(const string & str,
                     vector<string> & tokens,
                     const string & delims)
@@ -38,14 +38,14 @@ namespace CGCUtil {
 
 
     while (string::npos != pos || string::npos != lastPos)
-      {
-        // Found a token, add it to the vector.
-        tokens.push_back(str.substr(lastPos, pos - lastPos));
-        // Skip delims.  Note the "not_of"
-        lastPos = str.find_first_not_of(delims, pos);
-        // Find next "non-delimiter"
-        pos     = str.find_first_of(delims, lastPos);
-      }
+    {
+      // Found a token, add it to the vector.
+      tokens.push_back(str.substr(lastPos, pos - lastPos));
+      // Skip delims.  Note the "not_of"
+      lastPos = str.find_first_not_of(delims, pos);
+      // Find next "non-delimiter"
+      pos     = str.find_first_of(delims, lastPos);
+    }
   }
 
   /// finds position of last directory delimeter ('/' || '\\')
@@ -67,6 +67,7 @@ namespace CGCUtil {
 
   string path_remove_dir(string path) {
     string::size_type slash_pos;
+
 
     // if there was no delimeter, return path unaltered
     if ((slash_pos = path_find_last_delim(path)) == path.npos)
@@ -182,9 +183,9 @@ namespace CGCUtil {
     baseFilename = path_remove_ext(path_remove_dir(baseFilename));
 
     return outputDir + '/'
-      + outputCalibType + '.'
-      + baseFilename + '.'
-      + outputExt;
+           + outputCalibType + '.'
+           + baseFilename + '.'
+           + outputExt;
   }
 
   typedef std::vector<std::ostream *> streamvector;
@@ -195,7 +196,7 @@ namespace CGCUtil {
    */
   class multiplexor_streambuf :
     public std::streambuf {
-  public:
+public:
     multiplexor_streambuf() :
       std::streambuf() {
     }
@@ -211,7 +212,7 @@ namespace CGCUtil {
       return c;
     }
 
-  public:
+public:
     streamvector _streams;
   };
 
@@ -228,7 +229,7 @@ namespace CGCUtil {
   class multiplexor_ostream :
     public ostream
   {
-  public:
+public:
     multiplexor_ostream() :
       std::ios(0),
       std::ostream(new multiplexor_streambuf()) {
@@ -255,7 +256,7 @@ namespace CGCUtil {
     _logStrm.getostreams().push_back(&ostrm);
   }
 
-  TDirectory &root_safe_mkdir(TDirectory &parent, 
+  TDirectory &root_safe_mkdir(TDirectory &parent,
                               const std::string &dirName) {
     TDirectory &cwd = *gDirectory;
 

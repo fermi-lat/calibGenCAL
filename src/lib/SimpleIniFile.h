@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/SimpleIniFile.h,v 1.5 2007/01/05 17:25:34 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/SimpleIniFile.h,v 1.6 2007/01/05 17:31:59 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
-*/
+ */
 
 #ifndef SimpleIniFile_h
 #define SimpleIniFile_h
@@ -13,7 +13,7 @@
 #include <map>
 
 /**
-   \brief Simple Ini file reading class.
+ \brief Simple Ini file reading class.
 
    Specification:
    - whitespace all leading & trailing ' ' && '\t' are ignored from every line
@@ -25,29 +25,29 @@
    should be no other text on the line
    - entries are of the format "varname = val...."
 
-   \note leading & trailing whitespace is removed from entry names _and_
+ \note leading & trailing whitespace is removed from entry names _and_
    values.
-   \note all text w/in '[]' section names is included....
+ \note all text w/in '[]' section names is included....
    therefore "[mysection]" != "[mysection ]"
-   \note entries with duplicate names will overwrite their predecessors
-   \note sections with dupliate names will be concatenated.
-   \note some error messages will be printed to stderr
-   \note entries defined before any section defnition are stored in the empty
+ \note entries with duplicate names will overwrite their predecessors
+ \note sections with dupliate names will be concatenated.
+ \note some error messages will be printed to stderr
+ \note entries defined before any section defnition are stored in the empty
    "" section
-*/
+ */
 
 class SimpleIniFile
 {
- public:
+public:
   SimpleIniFile(const std::string &filename);
 
   /// template method retrieve a single value, convert to
   /// any desired type that is supported by STL iostream
   /// converters
   template <typename T>
-    T getVal(const std::string &section,
-             const std::string &key,
-             const T & defaultVal) const {
+  T getVal(const std::string &section,
+           const std::string &key,
+           const T & defaultVal) const {
     // retrieve raw std::string from cfg file
     const std::string *ptr = findKey(section, key);
 
@@ -69,10 +69,10 @@ class SimpleIniFile
   /// convert to any desired type that is supported by STL iostream
   /// converters
   template <typename T>
-    std::vector<T> getVector(const std::string &section,
-                             const std::string &key,
-                             const std::string &delims = ",",
-                             const std::vector<T> &defaultVal = std::vector < T > ()) const {
+  std::vector<T> getVector(const std::string &section,
+                           const std::string &key,
+                           const std::string &delims = ",",
+                           const std::vector<T> &defaultVal = std::vector < T > ()) const {
     // retrieve raw string from cfg file
     const std::string *ptr       = findKey(section, key);
     // quit if key doesn't exist.
@@ -84,7 +84,7 @@ class SimpleIniFile
 
     if (quitEarly)
       return defaultVal;
-    
+
     // break string up into string parts.
     std::vector<std::string> tokens;
     tokenize_str(*ptr, tokens, delims);
@@ -104,11 +104,11 @@ class SimpleIniFile
 
   /// return list of section names
   std::vector<std::string> getSectionList();
-							 
+
   /// return list of keys for given section
   std::vector<std::string> getSectionKeys(const std::string &section);
 
- private:
+private:
   /// store new section/key/value combination
   void                addKey(const std::string &section,
                              const std::string &key,
@@ -134,6 +134,5 @@ class SimpleIniFile
   static void tokenize_str(const std::string & str,
                            std::vector<std::string> & tokens,
                            const std::string & delimiters = " ");
-
 };
 #endif

@@ -2,7 +2,7 @@
 
 /** @file
     @author Zachary Fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "ADC2NRG.h"
@@ -60,12 +60,9 @@ void ADC2NRG::writeTXT(const string &filename,
 
     float dac = MPDHists::MUON_ENERGY/mpd;
 
-
     dac = (face == POS_FACE) ?
-      dac * asym_ctr :
-      dac / asym_ctr;
-
-
+          dac * asym_ctr :
+          dac / asym_ctr;
 
     float adc     = dac2adc.dac2adc(rngIdx, dac);
 

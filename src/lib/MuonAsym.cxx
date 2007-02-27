@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.cxx,v 1.13 2007/01/04 23:23:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsym.cxx,v 1.14 2007/01/05 17:25:34 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "MuonAsym.h"
@@ -91,10 +91,11 @@ void MuonAsym::processEvent(DigiEvent &digiEvent) {
 
   //loop through each 'hit' in one event
   while ((pCalDigi = (CalDigi *)calDigiIter.Next())) {
-    const  CalDigi &calDigi = *pCalDigi;           // use reference to avoid -> syntax
+    const CalDigi &calDigi = *pCalDigi;            // use reference to avoid -> syntax
 
     //-- XtalId --//
     idents::CalXtalId id(calDigi.getPackedId());   // get interaction information
+
     // retrieve tower info
     TwrNum twr = id.getTower();
 
@@ -122,7 +123,7 @@ void MuonAsym::processTower(TwrHodoscope &hscope) {
     /** Note: 'direction' refers to the direction of xtals which have vertical
         'connect-4' deposits.  For asymmetry, we use this vertical column
         to calibrate the signal in the orthogonal crystals.
-    */
+     */
     if (dir == X_DIR) {
       if (!passCutX(hscope)) continue;     // skip this direction if track is bad
       pos           = hscope.firstColX;
@@ -180,7 +181,7 @@ void MuonAsym::fillHists(unsigned nEntries,
 
   unsigned nEvents = rootFile.getEntries();
   LogStream::get() <<
-    __FILE__ << ": Processing: " << nEvents << " events." << endl;
+  __FILE__ << ": Processing: " << nEvents << " events." << endl;
 
   // Basic digi-event loop
   for (eventData.eventNum = 0; eventData.eventNum < nEvents; eventData.eventNum++) {

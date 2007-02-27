@@ -1,11 +1,11 @@
-# ifndef MPDHists_h
+#ifndef MPDHists_h
 #define MPDHists_h
 
 // $Header: //
 
 /** @file
     @author Zachary Fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "CalMPD.h"
@@ -30,9 +30,9 @@ class TH1S;
 
     @author Zachary Fewtrell
 
-*/
+ */
 class MPDHists {
- public:
+public:
 
   /// collection of possible fitting methods
   struct FitMethods {
@@ -40,14 +40,14 @@ class MPDHists {
       LANDAU,
       LANGAU
     };
-        
+
     /// 'LANDAU' use this string for simple ROOT landau fit
     static const std::string LANDAU_STR;
-    /// 'LANGAU' use this string for gaussian convolved landau w/ 
+    /// 'LANGAU' use this string for gaussian convolved landau w/
     /// step function background
     static const std::string LANGAU_STR;
 
-    static std::string &str2enum();
+    static       std::string &str2enum();
   };
 
   /// \param parentDir where to load / store histograms for this obj.
@@ -88,7 +88,6 @@ class MPDHists {
   void fillDacLL(CalUtil::XtalIdx xtalIdx,
                  float dac);
 
-  
   void fillL2S(CalUtil::XtalIdx xtalIdx,
                float dacL,
                float dacS) {
@@ -100,9 +99,9 @@ class MPDHists {
   /// build tuple with fit outputs
   void buildTuple();
 
- private:
+private:
   /// fit single channel w/ specified function & store
-  /// mpv and width 
+  /// mpv and width
   /// \param mpv location to store fitted most-probable-value
   /// \param width location to store fitted peak width
   void fitChannel(TH1 &hist,

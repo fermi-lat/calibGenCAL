@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.cxx,v 1.12 2007/01/04 23:23:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.cxx,v 1.13 2007/01/05 17:25:34 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "RootFileAnalysis.h"
@@ -154,6 +154,7 @@ void MuonPed::loadHists(const TFile &histFile) {
 string MuonPed::genHistName(RngIdx rngIdx) {
   ostringstream tmp;
 
+
   tmp << "muonpeds_" << rngIdx.val();
   return tmp.str();
 }
@@ -247,8 +248,9 @@ void MuonPed::processEvent(DigiEvent &digiEvent) {
 void MuonPed::processHit(const CalDigi &calDigi) {
   //-- XtalId --//
   idents::CalXtalId id(calDigi.getPackedId());  // get interaction information
+
   // skip hits not for current tower.
-  XtalIdx           xtalIdx(id);
+  XtalIdx xtalIdx(id);
 
   unsigned nRO = calDigi.getNumReadouts();
 

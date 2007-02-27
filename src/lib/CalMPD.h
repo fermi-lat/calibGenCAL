@@ -1,10 +1,10 @@
 #ifndef CalMPD_h
 #define CalMPD_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalMPD.h,v 1.4 2007/01/04 23:23:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalMPD.h,v 1.5 2007/01/05 17:25:34 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
-*/
+ */
 
 // LOCAL INCLUDES
 #include "CGCUtil.h"
@@ -27,9 +27,9 @@ class CIDAC2ADC;
     contains read & write methods to various file formats
 
     @author Zachary Fewtrell
-*/
+ */
 class CalMPD {
- public:
+public:
   CalMPD();
 
   void writeTXT(const std::string &filename) const;
@@ -69,7 +69,7 @@ class CalMPD {
 
   static const short INVALID_MPD;
 
- private:
+private:
   /// 2d vector N_MPD_PTS lograt mpdvals per xtal/mpdType
   CalUtil::CalVec<CalUtil::DiodeNum, CalUtil::CalArray<CalUtil::XtalIdx, float> > m_mpd;
   /// corresponding error value
