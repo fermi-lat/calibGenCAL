@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Feb 28 11:52:30 PST 2007
+calibGenCAL/src/lib
+
+Modified Files:
+	CfgMgr.cxx CfgMgr.h 
+Log Message:
+minor updates to CfgMgr & NeighborXtalk
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Feb 28 11:52:29 PST 2007
 calibGenCAL/src
 
