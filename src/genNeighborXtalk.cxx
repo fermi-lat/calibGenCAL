@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genNeighborXtalk.cxx,v 1.1 2007/02/26 23:20:30 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genNeighborXtalk.cxx,v 1.2 2007/02/27 20:44:12 fewtrell Exp $
 
 /** @file Gen Neighboring Crystal Cross-talk calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
@@ -29,6 +29,7 @@ class AppCfg {
 public:
   AppCfg(const int argc,
          const char **argv) :
+    cmdParser(argv[0]),
     rootFileLE("rootFileLE",
                "low energy input singlex16 digi root event file",
                ""),
@@ -43,8 +44,14 @@ public:
     cmdParser.registerArg(rootFileLE);
     cmdParser.registerArg(outputBasePath);
 
-    // parse commandline
-    cmdParser.parseCmdLine(argc, argv);
+    try {
+      // parse commandline
+      cmdParser.parseCmdLine(argc, argv);
+    } catch (InvalidCmdLine &e) {
+      cout << e.what() << endl;
+      cmdParser.printUsage();
+      exit(-1);
+    }
   }
 
   // construct new parser
@@ -95,6 +102,13 @@ int main(const int argc,
     LogStream::get() << __FILE__ << ": saving xtalk to txt file: "
                      << txtfile << endl;
     xtalk.writeTXT(txtfile);
+
+    string tuplefile = cfg.outputBasePath.getVal() + ".tuple.root";
+    LogStream::get() << __FILE__ << ": saving xtalk to tuple ROOT file: "
+                     << tuplefile << endl;
+    xtalk.writeTuple(tuplefile);
+    
+    
   } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
   }

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CfgMgr.h,v 1.3 2007/02/26 16:35:29 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CfgMgr.h,v 1.4 2007/02/27 20:44:13 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -271,7 +271,7 @@ private:
   class CmdLineParser {
 public:
     /// \param appName optional for usage print-outs, etc
-    CmdLineParser(const std::string &appName = "") :
+    CmdLineParser(const std::string &appName) :
       appName(appName) {
     }
 
