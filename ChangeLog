@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Feb 28 13:03:07 PST 2007
+calibGenCAL/src/lib
+
+Modified Files:
+	NeighborXtalkAlg.cxx 
+Log Message:
+still debugging NeighborXtalkAlg. 
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Feb 28 11:53:14 PST 2007
 calibGenCAL/cfg
 
