@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Thu Mar  1 11:20:48 PST 2007
+calibGenCAL/src/lib
+
+Modified Files:
+	NeighborXtalk.cxx NeighborXtalk.h NeighborXtalkAlg.cxx 
+Log Message:
+NeghborXtalkAlg now apperas to work.  pedestal subtraction.
+also changed some TFIle.Open() statements in python code to "READ" where possible.
+    *
+------------------------------------------------------------
+User: fewtrell  Thu Mar  1 11:20:48 PST 2007
 calibGenCAL/src
 
 Modified Files:
