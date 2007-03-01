@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/NeighborXtalkAlg.cxx,v 1.2 2007/02/27 20:44:13 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/NeighborXtalkAlg.cxx,v 1.3 2007/02/28 21:03:07 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -168,7 +168,7 @@ void NeighborXtalkAlg::processHit(const CalDigi &cdig) {
       DiodeNum diode(rng.getDiode());
 
       // only processing X8 data
-      if (THXNum(rng) != THX8) continue;
+      if (rng.getTHX() != THX8) continue;
 
       // retrieve adc value
       unsigned short adc = acRo.getAdc((CalXtalId::XtalFace)face.val());

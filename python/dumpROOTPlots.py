@@ -11,8 +11,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Plot all TCanvas & TH?? objects in ROOT file"
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/02/16 21:04:36 $"
-__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__        = "$Date: 2006/03/02 18:53:53 $"
+__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -80,7 +80,7 @@ if imgType not in imgTypes:
 ### MAIN LOOP ###
 # setup ROOT
 gROOT.Reset()
-rootFile = TFile(rootPath)
+rootFile = TFile(rootPath,"READ")
 
 for k in rootFile.GetListOfKeys():
     cls = gROOT.GetClass(k.GetClassName());

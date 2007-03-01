@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/NeighborXtalk.cxx,v 1.2 2007/02/27 15:48:07 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/NeighborXtalk.cxx,v 1.3 2007/02/27 20:44:13 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -177,4 +177,29 @@ void NeighborXtalk::writeTuple(const std::string &filename) const {
 
   rootFile.Write();
   rootFile.Close();
+}
+
+void NeighborXtalk::pedSubtractADC() {
+	/// loop through each dest channel
+	for (XtalkMap::iterator it = m_xtalkMap.begin();
+		it != m_xtalkMap.end();
+		it++) {
+		ChannelSplineMap &splMap = it->second;
+		
+		/// select each polyline for source channel
+		for (ChannelSplineMap::iterator chanIt = splMap.begin();
+			chanIt != splMap.end();
+			chanIt++) {
+
+			Polyline &spline = chanIt->second;
+
+			float adcPed = spline[0].second;
+
+			for (Polyline::iterator splIt = spline.begin();
+				splIt != spline.end();
+				splIt++)
+				splIt->second -= adcPed;
+			}
+		}
+
 }
