@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genNeighborXtalk.cxx,v 1.2 2007/02/27 20:44:12 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genNeighborXtalk.cxx,v 1.3 2007/02/28 19:52:29 fewtrell Exp $
 
 /** @file Gen Neighboring Crystal Cross-talk calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
@@ -79,14 +79,12 @@ int main(const int argc,
     LogStream::addStream(cout);
     // generate logfile name
     const std::string outputDir("./");
-
     string logfile = cfg.outputBasePath.getVal() + ".log.txt";
-
     ofstream          tmpStrm(logfile.c_str());
-
     LogStream::addStream(tmpStrm);
 
-    cfg.cmdParser.printStatus(LogStream::get());
+
+	cfg.cmdParser.printStatus(LogStream::get());
 
     NeighborXtalk       xtalk;
     NeighborXtalkAlg    xtalkAlg;
@@ -97,8 +95,11 @@ int main(const int argc,
     LogStream::get() << __FILE__ << ": reading LE calibGen event file: " << cfg.rootFileLE.getVal() << endl;
     xtalkAlg.readRootData(cfg.rootFileLE.getVal(), xtalk);
 
-    string txtfile = cfg.outputBasePath.getVal() + ".txt";
+	LogStream::get() << __FILE__ << ": pedestal subtract: " << endl;
+	xtalk.pedSubtractADC();
+    
 
+    string txtfile = cfg.outputBasePath.getVal() + ".txt";
     LogStream::get() << __FILE__ << ": saving xtalk to txt file: "
                      << txtfile << endl;
     xtalk.writeTXT(txtfile);
@@ -107,6 +108,8 @@ int main(const int argc,
     LogStream::get() << __FILE__ << ": saving xtalk to tuple ROOT file: "
                      << tuplefile << endl;
     xtalk.writeTuple(tuplefile);
+
+
     
     
   } catch (exception &e) {

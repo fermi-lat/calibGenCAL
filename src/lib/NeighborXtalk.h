@@ -1,6 +1,6 @@
 #ifndef NeighborXtalk_h
 #define NeighborXtalk_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/NeighborXtalk.h,v 1.2 2007/02/27 15:48:07 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/NeighborXtalk.h,v 1.3 2007/02/27 20:44:13 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -56,6 +56,9 @@ public:
                                   CalUtil::RngIdx source,
                                   float dac,
                                   float adc);
+
+  /// for each xtalk spline, subtract spline[0].adc from all points in spline.
+  void pedSubtractADC();
 
 private:
   /// associate cidac2adc splines from other channels w/ a single adc channel
