@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Mar  1 15:49:47 PST 2007
+calibGenCAL/cfg
+
+Modified Files:
+	Makefile 
+Log Message:
+updating Makefile (still under heavy development)
+fix bad printout in genCIDAC2ADC
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Mar  1 11:20:48 PST 2007
 calibGenCAL/src/lib
 
