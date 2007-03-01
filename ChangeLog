@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Mar  1 11:20:48 PST 2007
+calibGenCAL/python
+
+Modified Files:
+	dumpROOTPlots.py roothist2csv.py 
+Log Message:
+NeghborXtalkAlg now apperas to work.  pedestal subtraction.
+also changed some TFIle.Open() statements in python code to "READ" where possible.
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Feb 28 13:03:07 PST 2007
 calibGenCAL/src/lib
 
