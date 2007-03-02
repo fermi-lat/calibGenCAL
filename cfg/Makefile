@@ -146,7 +146,9 @@ ${MPD_PFX}.%.val.root : ${MPD_PFX}.%.xml
 ##########################
 ### TARGET OUTPUTS #######
 ##########################
-all: muopt_val
+all: val
+
+val : muopt_val muon_inl_val muon_ped_val
 
 muon_inl : muon_inl_val
 
