@@ -12,10 +12,10 @@
 
 ### A1: MUON GAIN PEDESTALS
 # cfg file used to drive most C++ muon calibration applications
-MUON_CGC_CFG = calibGenCAL_suite.cfg
+CGC_MUON_CFG = calibGenCAL_suite.cfg
 
 # first digi root input file for pedestal calibration 
-# (this file will be used for output filename generation) - the full list of files should be found in MUON_CGC_CFG file
+# (this file will be used for output filename generation) - the full list of files should be found in CGC_MUON_CFG file
 FIRST_PED_ROOT_INPUT = /nfs/farm/g/glast/u34/Integration/rootData/077003627/v6r070329p16/grRoot/digitization-licos-v3r6p2_077003627_digi_DIGI.root
 
 
@@ -24,9 +24,9 @@ FIRST_PED_ROOT_INPUT = /nfs/farm/g/glast/u34/Integration/rootData/077003627/v6r0
 
 ### B1: MUON GAIN INT-NONLIN
 # input LE singlex16 digi root event file (muon gain, calibGain=on, calibGen element#201)
-INPUT_INL_LE_MUON = /nfs/farm/g/glast/u34/Integration/rootData/077005401/v6r070329p16/grRoot/digitization-licos-v3r6p2_077005401_digi_DIGI.root
+INPUT_INL_MUON_LE = /nfs/farm/g/glast/u34/Integration/rootData/077005401/v6r070329p16/grRoot/digitization-licos-v3r6p2_077005401_digi_DIGI.root
 # input HE singlex16 digi root event file (muon gain), calibGain=off, calibGen element#204)
-INPUT_INL_HE_MUON = /nfs/farm/g/glast/u34/Integration/rootData/077005404/v6r070329p16/grRoot/digitization-licos-v3r6p2_077005404_digi_DIGI.root
+INPUT_INL_MUON_HE = /nfs/farm/g/glast/u34/Integration/rootData/077005404/v6r070329p16/grRoot/digitization-licos-v3r6p2_077005404_digi_DIGI.root
 
 ### B2: FLIGHT GAIN INT-NONLIN
 # input LE singlex16 digi root event file (flight gain)
@@ -44,10 +44,10 @@ INPUT_NEIGHBOR_XTALK = /nfs/slac/g/glast/users/glground/bregeon/DIGICALCI/700002
 
 ### C1: MEVPERDAC / ASYM COMBINED USING TRACKER TRACKS
 # first digi root input file for muon optical response calibration
-# (this file will be used for output filename generation) - the full list of files should be found in MUON_CGC_CFG file
+# (this file will be used for output filename generation) - the full list of files should be found in CGC_MUON_CFG file
 INPUT_FIRST_MUOPT_ROOT = /nfs/farm/g/glast/u34/Integration/rootData/077003627/v6r070329p16/grRoot/digitization-licos-v3r6p2_077003627_digi_DIGI.root
 # first digi root input file for muon optical response calibration
-# (this file will be used for output filename generation) - the full list of files should be found in MUON_CGC_CFG file
+# (this file will be used for output filename generation) - the full list of files should be found in CGC_MUON_CFG file
 
 INPUT_FIRST_MUOPT_SVAC = /nfs/farm/g/glast/u34/Integration/rootData/077003627/v6r070329p16/calib-v1r0/svacTuple/emRootv0r0/svacTuple-v3r6p2_077003627_svac_svac.root
 
@@ -58,19 +58,21 @@ INPUT_FIRST_MUOPT_SVAC = /nfs/farm/g/glast/u34/Integration/rootData/077003627/v6
 #############
 
 # set to '-b' if inl data is in broadcast mode, blank if not
-INL_MUON_BCAST   = -b
-INL_FLIGHT_BCAST = -b
+INL_BCAST   = -b
+INL_MUON_FLIGHT_BCAST = -b
 
 
 #########################
 ### AUTOGEN_FILENAMES ###
 #########################
-INL_PFX   = cidac2adc
-PED_PFX   = calPeds
-ASYM_PFX  = calAsym
-MPD_PFX   = calMPD
+INL_PFX     = cidac2adc
+PED_PFX     = calPeds
+ASYM_PFX    = calAsym
+MPD_PFX     = calMPD
+MUSLOPE_PFX = muSlope
+ADC2NRG_PFX = adc2nrg
 
-INL_MUON_BASE = ${INL_PFX}.$(basename $(notdir ${INPUT_INL_LE_MUON}))
+INL_MUON_BASE = ${INL_PFX}.$(basename $(notdir ${INPUT_INL_MUON_LE}))
 INL_MUON_TXT  = $(addsuffix .txt, ${INL_MUON_BASE})
 INL_MUON_XML  = $(addsuffix .xml, ${INL_MUON_BASE})
 INL_MUON_VAL  = $(addsuffix .val.root, ${INL_MUON_BASE})
@@ -83,31 +85,33 @@ INL_FLIGHT_VAL  = $(addsuffix .val.root, ${INL_FLIGHT_BASE})
 NEIGHBOR_XTALK_BASE = neighborXtalk.$(basename $(notdir ${INPUT_NEIGHBOR_XTALK}))
 NEIGHBOR_XTALK_TXT  = $(addsuffix .txt, ${NEIGHBOR_XTALK_BASE})
 
-MUON_PED_BASE = ${PED_PFX}.$(basename $(notdir ${FIRST_PED_ROOT_INPUT}))
-MUON_PED_TXT  = $(addsuffix .txt, ${MUON_PED_BASE})
-MUON_PED_XML  = $(addsuffix .xml, ${MUON_PED_BASE})
-MUON_PED_VAL  = $(addsuffix .val.root, ${MUON_PED_BASE})
+PED_MUON_BASE = ${PED_PFX}.$(basename $(notdir ${FIRST_PED_ROOT_INPUT}))
+PED_MUON_TXT  = $(addsuffix .txt, ${PED_MUON_BASE})
+PED_MUON_XML  = $(addsuffix .xml, ${PED_MUON_BASE})
+PED_MUON_VAL  = $(addsuffix .val.root, ${PED_MUON_BASE})
 
-MUON_ASYM_BASE = ${ASYM_PFX}.$(basename $(notdir ${INPUT_FIRST_MUOPT_ROOT}))
-MUON_ASYM_TXT  = $(addsuffix .txt, ${MUON_ASYM_BASE})
-MUON_ASYM_XML  = $(addsuffix .xml, ${MUON_ASYM_BASE})
-MUON_ASYM_VAL  = $(addsuffix .val.root, ${MUON_ASYM_BASE})
+ASYM_MUON_BASE = ${ASYM_PFX}.$(basename $(notdir ${INPUT_FIRST_MUOPT_ROOT}))
+ASYM_MUON_TXT  = $(addsuffix .txt, ${ASYM_MUON_BASE})
+ASYM_MUON_XML  = $(addsuffix .xml, ${ASYM_MUON_BASE})
+ASYM_MUON_VAL  = $(addsuffix .val.root, ${ASYM_MUON_BASE})
 
-MUON_MPD_BASE = ${MPD_PFX}.$(basename $(notdir ${INPUT_FIRST_MUOPT_ROOT}))
-MUON_MPD_TXT  = $(addsuffix .txt, ${MUON_MPD_BASE})
-MUON_MPD_XML  = $(addsuffix .xml, ${MUON_MPD_BASE})
-MUON_MPD_VAL  = $(addsuffix .val.root, ${MUON_MPD_BASE})
+MPD_MUON_BASE = ${MPD_PFX}.$(basename $(notdir ${INPUT_FIRST_MUOPT_ROOT}))
+MPD_MUON_TXT  = $(addsuffix .txt, ${MPD_MUON_BASE})
+MPD_MUON_XML  = $(addsuffix .xml, ${MPD_MUON_BASE})
+MPD_MUON_VAL  = $(addsuffix .val.root, ${MPD_MUON_BASE})
 
+MUSLOPE_BASE = ${MUSLOPE_PFX}.$(basename $(notdir ${INPUT_FIRST_MUOPT_ROOT}))
+MUSLOPE_XML  = $(addsuffix .xml, ${MUSLOPE_BASE})
+MUSLOPE_VAL  = $(addsuffix .val.root, ${MUSLOPE_BASE})
 
+ADC2NRG_BASE = ${ADC2NRG_PFX}.$(basename $(notdir ${INPUT_FIRST_MUOPT_ROOT}))
+ADC2NRG_XML  = $(addsuffix .xml, ${ADC2NRG_BASE})
+ADC2NRG_VAL  = $(addsuffix .val.root, ${ADC2NRG_BASE})
 
 #########################
 ## General ENV SETUP ####
 #########################
 #DISPLAY =
-
-
-
-
 
 ####################
 ## GENERIC RULES ###
@@ -136,69 +140,94 @@ ${ASYM_PFX}.%.val.root : ${ASYM_PFX}.%.xml
 
 
 ${MPD_PFX}.%.xml : ${MPD_PFX}.%.txt
-	asymTXT2XML.sh $< $@
+	mpdTXT2XML.sh $< $@
 
 ${MPD_PFX}.%.val.root : ${MPD_PFX}.%.xml
-	asymVal.sh -R $@ $<
+	mevPerDacVal.sh -R $@ $<
 
+${MUSLOPE_PFX}.%.val.root : ${MUSLOPE_PFX}.%.xml
+	muSlopeVal.sh -R $@ $<
+
+${ADC2NRG_PFX}.%.val.root : ${ADC2NRG_PFX}.%.xml
+	adc2nrgVal.sh -R $@ $<
 
 
 ##########################
 ### TARGET OUTPUTS #######
 ##########################
-all: val
+all: ped inl muopt
 
-val : muopt_val muon_inl_val muon_ped_val
+inl : inl_muon_val
 
-muon_inl : muon_inl_val
+inl_muon_val : ${INL_MUON_VAL}
 
-muon_inl_val : ${INL_MUON_VAL} 
+inl_muon_xml : ${INL_MUON_XML} 
 
+inl_muon_txt : ${INL_MUON_TXT} 
 
-muon_inl_xml : ${INL_MUON_XML} 
-
-
-muon_inl_txt : ${INL_MUON_TXT} 
-${INL_MUON_TXT} : ${INPUT_INL_LE_MUON} ${INPUT_INL_HE_MUON}
-	genCIDAC2ADC.exe ${MUON_CGC_CFG}
+${INL_MUON_TXT} : ${INPUT_INL_MUON_LE} ${INPUT_INL_MUON_HE}
+	genCIDAC2ADC.exe ${CGC_MUON_CFG}
 
 neighbor_xtalk : ${NEIGHBOR_XTALK_TXT}
+
 ${NEIGHBOR_XTALK_TXT} : ${INPUT_NEIGHBOR_XTALK}
 	genNeighborXtalk.exe $< ${NEIGHBOR_XTALK_BASE}
 
-peds : muon_ped_val
+peds : ped
 
-muon_ped_val : ${MUON_PED_VAL}
+ped : ped_muon_val
 
-muon_ped_xml : ${MUON_PED_XML}
+ped_muon_val : ${PED_MUON_VAL}
 
-muon_ped_txt : ${MUON_PED_TXT}
-${MUON_PED_TXT} :
-	genMuonPed.exe ${MUON_CGC_CFG}
+ped_muon_xml : ${PED_MUON_XML}
+
+ped_muon_txt : ${PED_MUON_TXT}
+
+${PED_MUON_TXT} :
+	genMuonPed.exe ${CGC_MUON_CFG}
 
 
 
 
 muopt : muopt_val
 
-muopt_val : ${MUON_ASYM_VAL} ${MUON_MPD_VAL}
+muopt_val : ${ASYM_MUON_VAL} ${MPD_MUON_VAL} ${MUSLOPE_VAL} ${ADC2NRG_VAL}
 
-muon_asym_val : ${MUON_ASYM_VAL}
+asym_muon_val : ${ASYM_MUON_VAL}
 
-muon_mpd_val : ${MUON_MPD_VAL}
+mpd_muon_val : ${MPD_MUON_VAL}
 
-muopt_xml : ${MUON_ASYM_XML} ${MUON_MPD_XML}
+muslope_val : ${MUSLOPE_VAL}
 
-muon_asym_xml : ${MUON_ASYM_XML}
-
-muon_mpd_xml : ${MUON_MPD_XML}
-
-muon_asym_txt : ${MUON_ASYM_TXT}
-
-muon_mpd_txt : ${MUON_MPD_TXT}
+adc2nrg_val : ${ADC2NRG_VAL}
 
 
-${MUON_ASYM_TXT} ${MUON_MPD_TXT} : muopt_txt
-muopt_txt: muon_ped_txt muon_inl_txt
-	genMuonCalibTkr.exe ${MUON_CGC_CFG}
 
+muopt_xml : ${ASYM_MUON_XML} ${MPD_MUON_XML} ${MUSLOPE_XML}
+
+asym_muon_xml : ${ASYM_MUON_XML}
+
+muslope_xml : ${MUSLOPE_XML}
+
+mpd_muon_xml : ${MPD_MUON_XML}
+
+# adc2nrg.xml & muslope.xml are created simultaneously
+${ADC2NRG_XML} : ${MUSLOPE_XML}
+
+${MUSLOPE_XML} :  ${INL_MUON_XML} ${ASYM_MUON_XML} ${MPD_MUON_XML}
+	genADC2NRG.sh ${INL_MUON_XML} ${ASYM_MUON_XML} ${MPD_MUON_XML} ${ADC2NRG_XML} ${MUSLOPE_XML}
+
+
+
+asym_muon_txt : ${ASYM_MUON_TXT}
+
+mpd_muon_txt : ${MPD_MUON_TXT}
+
+muopt_txt : ${ASYM_MUON_TXT} ${MPD_MUON_TXT}
+
+
+# asym.txt & mpd.txt are created simultaneously
+${ASYM_MUON_TXT} : ${MPD_MUON_TXT}
+
+${MPD_MUON_TXT} : ${PED_MUON_TXT} ${INL_MUON_TXT}
+	genMuonCalibTkr.exe ${CGC_MUON_CFG}

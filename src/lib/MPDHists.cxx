@@ -161,23 +161,29 @@ void MPDHists::fitHists(CalMPD &calMPD) {
     ////////////////////
 
     // LRG 2 SM Ratio
-    TH1S &histL2S = *m_dacL2SHists[xtalIdx];   // get profile
+    TH1S *histL2S = m_dacL2SHists[xtalIdx];
+    // skip if we have no small diode info for this channel
+    if (!histL2S)
+      continue;
+    if (!histL2S->GetEntries())
+      continue;
+    
 
     // trim outliers - 3 times cut out anything outside 3 sigma
     for (unsigned short iter = 0; iter < 3; iter++) {
       // get current mean & RMS
-      float av  = histL2S.GetMean();
-      float rms = histL2S.GetRMS();
+      float av  = histL2S->GetMean();
+      float rms = histL2S->GetRMS();
 
       // trim new histogram limits
-      histL2S.SetAxisRange(av - 3*rms, av + 3*rms);
+      histL2S->SetAxisRange(av - 3*rms, av + 3*rms);
     }
 
     // fit straight line to get mean ratio
-    histL2S.Fit("gaus", "Q");
+    histL2S->Fit("gaus", "Q");
     // mean ratio of smDac/lrgDac
-    float sm2lrg = ((TF1&)*histL2S.GetFunction("gaus")).GetParameter(1);
-    float s2lsig = ((TF1&)*histL2S.GetFunction("gaus")).GetParameter(2);
+    float sm2lrg = ((TF1&)*histL2S->GetFunction("gaus")).GetParameter(1);
+    float s2lsig = ((TF1&)*histL2S->GetFunction("gaus")).GetParameter(2);
 
     //-- NOTES:
     // MPDLrg     = MeV/LrgDAC

@@ -228,6 +228,10 @@ int main(int argc,
       if (!skipFitAsym) {
         LogStream::get() << __FILE__ << ": fitting asymmetry histograms." << endl;
         asymHists.fitHists(calAsym);
+
+        LogStream::get() << __FILE__ << ": writing muon asymmetry: "
+                         << asymTXTFile << endl;
+        calAsym.writeTXT(asymTXTFile);
       }
 
       bool skipFitMPD = cfgFile. getVal<bool>("MUON_CALIB_TKR", "SKIP_MPD_FIT", false);
@@ -235,18 +239,15 @@ int main(int argc,
       if (!skipFitMPD) {
         LogStream::get() << __FILE__ << ": fitting MeVPerDAC histograms." << endl;
         mpdHists.fitHists(calMPD);
+
+        LogStream::get() << __FILE__ << ": writing muon mevPerDAC: "
+                         << mpdTXTFile << endl;
+        calMPD.writeTXT(mpdTXTFile);
+
+        LogStream::get() << __FILE__ << ": generating mpd fit result tuple: " << endl;
+        mpdHists.buildTuple();
+
       }
-
-      LogStream::get() << __FILE__ << ": writing muon asymmetry: "
-                       << asymTXTFile << endl;
-      calAsym.writeTXT(asymTXTFile);
-
-      LogStream::get() << __FILE__ << ": writing muon mevPerDAC: "
-                       << mpdTXTFile << endl;
-      calMPD.writeTXT(mpdTXTFile);
-
-      LogStream::get() << __FILE__ << ": generating fit result tuple: " << endl;
-      mpdHists.buildTuple();
     }
 
     string adc2nrgFile =
