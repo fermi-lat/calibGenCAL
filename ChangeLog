@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Mar  6 09:40:37 PST 2007
+calibGenCAL/cfg
+
+Modified Files:
+	Makefile 
+Log Message:
+added adc2nrg to Makefile
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Mar  1 17:03:03 PST 2007
 calibGenCAL/cfg
 
