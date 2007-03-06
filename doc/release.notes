@@ -497,3 +497,18 @@ method w/ gaussian-convolved landau and stepped background model.
 - python 'launcher' scripts separated from python code into python/bin
 - .sh launcher scripts now unset DISPLAY environment variable (this eliminates annoying plots to screen during batch processing)
 - python path environment variable now setup by cmt requirements file (moved out of launcher scripts)
+
+-----------------------
+v4r5p3 fewtrell
+-----------------------
+same as v4r5 w/ fix to doc & botched cvs commit
+
+
+--------------------
+v4r5p4 fewtrell
+---------------------
+IntNonlin now checks for correct # of events in input files.
+cgc suite Makefile now in development
+neighborXtalk code now in development.
+gcrCalib code now in development.
+txt files now have column headers w/ ';' @ front of line
