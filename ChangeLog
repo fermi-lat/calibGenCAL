@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Wed Mar  7 17:20:04 PST 2007
+calibGenCAL/python/old
+
+Added Files:
+	tholdCIGen_v4r5.cfg tholdCIGen_v4r5.py 
+Log Message:
+Made copy of v4r5p5 version of tholdCIGen application and example config file; this application is to be overhauled.
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v4r5p5, operation: add
 Package: calibGenCAL
