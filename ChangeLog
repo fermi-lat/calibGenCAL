@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Mon Mar 12 13:52:25 PDT 2007
+calibGenCAL/python
+
+Modified Files:
+	tholdCIGen.py 
+Log Message:
+Complete re-worked tholdCIGen application so that the information is derived from a combination of DacSlopes and MuSlopes files; the raw ADC/DAC characterization tables are no longer needed.
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Mar 12 13:51:01 PDT 2007
 calibGenCAL/python/lib
 
