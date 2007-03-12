@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/20 18:21:22 $"
-__version__   = "$Revision: 1.10 $, $Author: dwood $"
+__date__      = "$Date: 2006/07/31 16:14:26 $"
+__version__   = "$Revision: 1.11 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -220,8 +220,26 @@ class calCalibXML(calXML.calXML):
             towers.append(tem)
 
         return towers
-    
+        
+        
+    def read(self):
+        """
+        Stub for document read method.
+        Must be provided by derived classes.
+        """
+        
+        raise calFileReadExcept, "calCalibXML-derived classes must implement read() method"
+        
+        
+    def write(self):
+        """
+        Stub for document write method.
+        Must be provided by derived classes.
+        """
+        
+        raise calFileWriteExcept, "calCalibXML-derived classes must implement write() method"
 
+    
     
 class calTholdCICalibXML(calCalibXML):
     """
@@ -230,13 +248,6 @@ class calTholdCICalibXML(calCalibXML):
     This class provides methods for accessing CAL threshold charge
     injection calibration data stored in XML format.
     """
-
-    def __init__(self, fileName, mode = MODE_READONLY):
-        """
-        Open a CAL TholdCI calibration XML file.
-        """
-        
-        calCalibXML.__init__(self, fileName, mode)
         
 
     def write(self, dacData, adcData, intNonlinData, intNonlinLength, pedData,
@@ -545,16 +556,6 @@ class calIntNonlinCalibXML(calCalibXML):
     This class provides methods for accessing CAL int non-linearity
     calibration data stored in XML format.
     """
-
-    def __init__(self, fileName, mode = MODE_READONLY):
-        """
-        Open a CAL IntNonlin calibration XML file.
-
-        Param: fileName - The name of the XML file.
-        Param: mode - The XML file access mode (MODE_CREATE or MODE_READONLY).
-        """
-        
-        calCalibXML.__init__(self, fileName, mode)
 
 
     def write(self, lengthData, dacData, adcData, inputSample = None, tems = (0,)):
@@ -1209,13 +1210,6 @@ class calAsymCalibXML(calCalibXML):
     This class provides methods for accessing CAL light asymmetry
     calibration data stored in XML format.
     """
-
-    def __init__(self, fileName, mode = MODE_READONLY):
-        """
-        Open a CAL Asym calibration XML file.
-        """
-        
-        calCalibXML.__init__(self, fileName, mode)
         
 
     def write(self, xposData, asymData, tems = (0,)):
@@ -1519,13 +1513,6 @@ class calMevPerDacCalibXML(calCalibXML):
     This class provides methods for accessing CAL energy conversion
     calibration data stored in XML format.
     """
-
-    def __init__(self, fileName, mode = MODE_READONLY):
-        """
-        Open a CAL MevPerDac calibration XML file.
-        """
-        
-        calCalibXML.__init__(self, fileName, mode)
         
 
     def write(self, energyData, tems = (0,)):
@@ -1745,17 +1732,7 @@ class calPedCalibXML(calCalibXML):
     This class provides methods for accessing CAL pedestal
     calibration data stored in XML format.
     """
-
-    def __init__(self, fileName, mode = MODE_READONLY):
-        """
-        Open a CAL Ped calibration XML file.
-
-        Param: fileName - The XML file name.
-        Param: mode - The XML file access mode.
-        """
-        
-        calCalibXML.__init__(self, fileName, mode)
-        
+            
 
     def write(self, pedData, tems = (0,)):
         """
@@ -1923,8 +1900,7 @@ class calPedCalibXML(calCalibXML):
 
                             cos = float(p.getAttributeNS(None, 'cos'))
                             pedData[tem, row, end, fe, erng, 2] = cos
-                           
-                                    
+                                                 
         return pedData
         
         
@@ -1936,16 +1912,6 @@ class calMuSlopeCalibXML(calCalibXML):
     This class provides methods for accessing CAL simplified gain
     calibration data stored in XML format.
     """
-
-    def __init__(self, fileName, mode = MODE_READONLY):
-        """
-        Open a CAL MuSlope calibration XML file.
-
-        Param: fileName - The XML file name.
-        Param: mode - The XML file access mode.
-        """
-        
-        calCalibXML.__init__(self, fileName, mode)
         
 
     def write(self, slopeData, tems = (0,)):
@@ -2119,13 +2085,6 @@ class calDacSlopesCalibXML(calCalibXML):
     This class provides methods for accessing CAL DAC/energy
     calibration data stored in XML format.
     """
-
-    def __init__(self, fileName, mode = MODE_READONLY):
-        """
-        Open a CAL DacSlopes calibration XML file.
-        """
-        
-        calCalibXML.__init__(self, fileName, mode)
         
 
     def write(self, dacData, uldData, rangeData, tems = (0,)):
