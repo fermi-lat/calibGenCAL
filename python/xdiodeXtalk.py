@@ -21,8 +21,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to apply cross-diode crosstalk correction to intNonlin XML files"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/02/02 20:28:42 $"
-__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/02/08 16:37:30 $"
+__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -37,8 +37,6 @@ import ROOT
 import calCalibXML
 import calConstant
 import zachUtil
-
-import pdb
 
 # CONSTANTS #
 XTALK_FACTOR_FLIGHT_GAIN = 1.0/5.5
@@ -120,7 +118,6 @@ if __name__ == '__main__':
 
     # clip length of dac curve in muon gain
     # maximum dac value that will remain on scale after muon gain factor is applied
-    #pdb.set_trace()
     max_dac_muon = 4095/XTALK_FACTOR_MUON_GAIN
     if muonGain:
         log.info("Clipping xtalk splines")
@@ -142,13 +139,11 @@ if __name__ == '__main__':
                             except ValueError:
                                 # do nothing here.... wish i knew a better way
                                 index = None
-                            #print "index",index,"len",xtalkLen[rng][twr,row,online_face,col,0]
 
                             # extrapolate last point to max_dac_muon
                             # we will only add an extra point if there is space left in the array
                             length = xtalkLen[rng][twr,row,online_face,col,0]
                             if length < len(saturated):
-                                #print "adding extra point"
                                 # only add an extra point if last good point is < max_dac
                                 if xtalkDAC[rng][twr,row,online_face,col,length-1] < max_dac_muon:
                                     length = length + 1
@@ -273,6 +268,9 @@ if __name__ == '__main__':
                 for face in range(calConstant.NUM_END):
                     online_face = calConstant.offline_face_to_online[face]
                     for rng in range(2,4):
+                        npts = inLen[rng][twr,row,online_face,col,0]
+                        max_adc = inADC[rng][twr,row,online_face,col,npts-1].copy()
+
                         for idx in range(inLen[rng][twr,row,online_face,col,0]):
                             # get dac value for this data point #
                             dac = inDAC[rng][twr,row,online_face,col,idx]
@@ -282,12 +280,12 @@ if __name__ == '__main__':
                             xtalk_adc = avgXtalkSpline[rng].Eval(dac)
                             new_adc = adc + xtalk_adc
 
-                            #print twr, lyr, col, face, rng, dac, adc, xtalk_adc, new_adc
 
                             inADC[rng][twr,row,online_face,col,idx] = new_adc
 
                         # check if we've saturated the adc scale
-                        saturated = inADC[rng][twr,row,online_face,col] > .99*4095
+                        saturated = inADC[rng][twr,row,online_face,col,:] > max_adc
+
                         try:
                             index = saturated.tolist().index(1)
                         except ValueError:
@@ -296,15 +294,15 @@ if __name__ == '__main__':
 
                         # set new length to included this last point
                         inLen[rng][twr,row,online_face,col,0] = index+1
-                        # extrapolate this last point out to adc = 4095
+                        # extrapolate this last point out to adc = max_adc
                         adc1 = inADC[rng][twr,row,online_face,col,index-2]
                         adc2 = inADC[rng][twr,row,online_face,col,index-1]
                         dac1 = inDAC[rng][twr,row,online_face,col,index-2]
                         dac2 = inDAC[rng][twr,row,online_face,col,index-1]
-                        adc3 = 4095
+                        adc3 = max_adc
                         dac3 = zachUtil.linear_extrap(adc1,adc2,adc3,
                                                       dac1,dac2)
-                        # clip dac to 4095 if it goes over
+                        # clip dac to 4095 if it goes over (it shouldn't , this op should be truncating the curve)
                         dac3 = min(dac3,4095)
 
                         # reset last point
