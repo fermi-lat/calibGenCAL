@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Mar 15 07:32:38 PDT 2007
+calibGenCAL/python/lib
+
+Modified Files:
+	zachUtil.py 
+Log Message:
+switched to using python standard lib cvs module
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Mar 15 07:32:16 PDT 2007
 calibGenCAL/python
 
