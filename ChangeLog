@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Mar 15 15:59:35 PDT 2007
+calibGenCAL/python
+
+Modified Files:
+	linearDAC.py 
+Added Files:
+	calibSetVal.py 
+Log Message:
+calibSetVal script evaluates full Cal offline calibration as a set.
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Mar 15 10:37:25 PDT 2007
 calibGenCAL/python/lib
 
