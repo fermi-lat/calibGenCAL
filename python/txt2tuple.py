@@ -7,8 +7,8 @@ some assumptions are made about calibGenCAL delimited TXT file conventions
 __facility__  = "Offline"
 __abstract__  = "Tool to generate ROOT ntuple file from txt."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/01/24 16:46:27 $"
-__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/03/06 17:40:37 $"
+__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -16,6 +16,7 @@ import sys, os
 import logging
 import array
 import re
+import csv
 
 import ROOT
 
@@ -40,20 +41,19 @@ if __name__ == '__main__':
     inPath = sys.argv[1]
     outPath = sys.argv[2]
 
-    # read input file
-    inFile = open(inPath, 'r')
+    ### open input 'csv' file ###
+    csv_sample = file(inPath).read(8192)
+    dialect = csv.Sniffer().sniff(csv_sample)
+    has_header = csv.Sniffer().has_header(csv_sample)
+    infile = csv.reader(open(inPath,"r"),dialect = dialect)
 
-    lines = inFile.readlines()
-
-    # read in first line for column headers
-    firstline = lines.pop(0)
-    firstline = firstline.replace(";","")
-    col_names = firstline.split()
-    nTXTFields = len(col_names)
+    # skip optional header in first line
+    header_list = infile.next()
+    header_cols = ':'.join(header_list)
+    nTXTFields = len(header_list)
 
     # create ROOT ntuple definition string for column
     # names
-    col_def = ':'.join(col_names)
 
     # create ROOT File & Ntuple
     outfile = ROOT.TFile(outPath, "RECREATE")
@@ -65,11 +65,10 @@ if __name__ == '__main__':
 
     tuple = ROOT.TNtuple(tuple_name,
                          tuple_name,
-                         col_def)
+                         header_cols)
 
-    for line in lines:
-        vals = line.split()
-        vals = [float(x) for x in vals]
+    for line in infile:
+        vals = [float(x) for x in line]
         data = array.array('f',vals)
         tuple.Fill(data)
 

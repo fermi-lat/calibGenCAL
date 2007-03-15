@@ -7,8 +7,8 @@ collection of simple utilities shared throughout my code
 __facility__  = "Offline"
 __abstract__  = "apply calibGain correction to asymmetry xml file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2007/02/26 16:28:33 $"
-__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/02/26 23:15:58 $"
+__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -98,8 +98,8 @@ def build_inl_splines(data, twrSet):
 read in txt file w/ per-xtal face cal data & return Numeric array
 
 return tuple of (coeffs, twrSet) where:
- - coeffs array shape is [16,8,2,12] for online twr,lyr,col,face
- - twrSet is python set of active LAT towers.
+ - coeffs array shape is [16,8,2,12] for onlin twr,row,col,online_face
+ - twrSet is python list of active LAT towers.
 
 """
 def read_perFace_txt(filename):
@@ -157,7 +157,7 @@ def read_perFace_txt(filename):
 
         outData[twr, row, face, col] = ratio
 
-    return (outData, twrSet)
+    return (outData, list(twrSet))
 
 
 
