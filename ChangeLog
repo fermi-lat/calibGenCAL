@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Mar 15 16:02:15 PDT 2007
+calibGenCAL/python
+
+Modified Files:
+	xdiodeXtalk.py 
+Log Message:
+xdiodeXtalk.py was incorrectly clipping ADC saturation @ high end of inl curves.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Mar 15 15:59:36 PDT 2007
 calibGenCAL/python/bin
 
