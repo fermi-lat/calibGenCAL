@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Mar 15 08:17:04 PDT 2007
+calibGenCAL/python
+
+Modified Files:
+	tholdCIGen.py 
+Log Message:
+Corrected FLE threshold values so that they are in virtual LEX8 ADC units, not LEX1 measured units; added some debug logging.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Mar 15 07:34:58 PDT 2007
 calibGenCAL/python/bin
 
