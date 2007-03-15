@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Mar 15 09:41:48 PDT 2007
+calibGenCAL/python
+
+Modified Files:
+	genDACsettings.py 
+Log Message:
+Made gain specification a command line option (-G) instead of an additional parameter for LAC,FLE,FHE types; defaults to 5 or 15 depeding on DAC type.
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Mar 15 08:17:04 PDT 2007
 calibGenCAL/python
 
