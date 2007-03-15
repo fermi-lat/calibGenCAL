@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Thu Mar 15 10:37:25 PDT 2007
+calibGenCAL/python
+
+Modified Files:
+	genDACsettings.py 
+Log Message:
+Created new module calDacSettings to hold algorithm functions for generating DAC settings from CAL_DacSlopes calibration file information; moved functions dacSettings(), uldSettings(), and setRange() from genDACsettings.py application script into lib in anticipation of re-using the algorithms for the online ConfigSystem package.
+
+    *
+------------------------------------------------------------
 User: dwood  Thu Mar 15 09:41:48 PDT 2007
 calibGenCAL/python
 
