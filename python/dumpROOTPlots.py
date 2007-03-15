@@ -11,8 +11,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Plot all TCanvas & TH?? objects in ROOT file"
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/03/02 18:53:53 $"
-__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/03/01 19:20:48 $"
+__version__     = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -50,14 +50,12 @@ try:
     opts, args = getopt.getopt(sys.argv[1:], "-f:")
 except getopt.GetoptError:
     log.error(usage)
-    sys.ext(1)
+    sys.exit(1)
 
 imgType = "pdf" #default 
 for o, a in opts:
     if o == "-f":
         imgType = a
-    
-        
 
 # now check for req'd params
 if len(args) != 1:
