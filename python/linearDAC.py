@@ -12,8 +12,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Force linear dac scale over portions of cidac2adc curve where cidac is non-linear."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/02/02 20:34:31 $"
-__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/02/08 16:37:30 $"
+__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -161,8 +161,8 @@ if __name__ == '__main__':
                         # find points in range for fit
                         fit_start = LINEFIT_IDX_START[rng]
                         fit_end   = LINEFIT_IDX_END[rng]
-                        fit_dacs = dac[fit_start:fit_end+1]
-                        fit_adcs = adc[fit_start:fit_end+1]
+                        fit_dacs  = dac[fit_start:fit_end+1]
+                        fit_adcs  = adc[fit_start:fit_end+1]
 
                         # create ROOT graph for fitting line
                         g = ROOT.TGraph(len(fit_dacs),
