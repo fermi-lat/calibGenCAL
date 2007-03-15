@@ -2,16 +2,16 @@
 Generate DAC (FHE, FLE, ULD, or LAC) settings XML files using a CAL DacSlopes file as a calibration
 reference.  The command line is:
 
-genDACsettings [-V] FLE|FHE|LAC|ULD <MeV | margin> <dac_slopes_xml_file> <dac_xml_file> [<gain>]
+genDACsettings [-V] [-G <gain>] FLE|FHE|LAC|ULD <MeV | margin> <dac_slopes_xml_file> <dac_xml_file>
 
 where:
     -V              = verbose; turn on debug output
+    -G <gain>       = gain setting (default is 5 for FLE and LAC, 15 for FHE)      
     FLE|FHE|LAC|ULD = DAC type to validate
     <MeV | margin>  = For FLE, FHE, LAC: The threshold energy in MeV units.
                       For ULD: The margin as a percentage of the saturation value.
     <dac_slopes_xml_file> = The CAL_DacSlopes calibration file.                     
-    <dac_xml_file>  = The DAC settings XML file output name.
-    <gain>          = CAL gain setting DAC's are valid for (needed for FLE, FHE, and LAC only). 
+    <dac_xml_file>  = The DAC settings XML file output name.
 """
 
 
@@ -19,8 +19,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/08/03 00:29:11 $"
-__version__     = "$Revision: 1.4 $, $Author: dwood $"
+__date__        = "$Date: 2006/09/28 21:26:48 $"
+__version__     = "$Revision: 1.5 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -80,7 +80,7 @@ def setRange(dacs, rangeData):
 if __name__ == '__main__':
     
     usage = \
-        "genDACsettings [-V] FLE|FHE|LAC|ULD <MeV | margin> <dac_slopes_xml_name> <out_xml_name> [<gain>]"
+        "genDACsettings [-V] [-G <gain>] FLE|FHE|LAC|ULD <MeV | margin> <dac_slopes_xml_name> <out_xml_name>"
 
     # setup logger
 
@@ -93,20 +93,24 @@ if __name__ == '__main__':
     # check command line
 
     try:
-        opts = getopt.getopt(sys.argv[1:], "-V-t:")
+        opts = getopt.getopt(sys.argv[1:], "-V-t:-G:")
     except getopt.GetoptError:
         log.error(usage)
         sys.exit(1)
+
+    gain = None
 
     optList = opts[0]
     for o in optList:
         if o[0] == '-V':
             log.setLevel(logging.DEBUG)
         elif o[0] == '-t':
-            timetag = o[1]    
+            timetag = o[1]  
+        elif o[0] == '-G':
+            gain = int(o[1])  
                 
     args = opts[1]
-    if len(args) < 4:
+    if len(args) != 4:
         log.error(usage)
         sys.exit(1)
 
@@ -120,13 +124,8 @@ if __name__ == '__main__':
         sys.exit(1)
 
     log.debug('Using DAC type %s', dacType)
-    if dacType != 'ULD':
-        if len(args) != 5:
-            log.error(usage)
-            sys.exit(1)
-        gain = int(args[4])    
+    if dacType != 'ULD':   
         log.debug('Using threshold %f MeV', MeV)
-        log.debug('Using gain %d', gain)
     else:
         log.debug('Using margin %f %%', MeV) 
            
@@ -166,12 +165,18 @@ if __name__ == '__main__':
         
     if dacType == 'FHE':
         legain = None
-        hegain = gain
+        if gain is None:
+            hegain = 15
+        else:
+            hegain = gain
     elif dacType == 'ULD':
         legain = None
         hegain = None
     else:
-        legain = gain
+        if gain is None:
+            legain = 5
+        else:
+            legain = gain
         hegain = None
         
     log.info("Creating file %s", outName)
@@ -180,6 +185,8 @@ if __name__ == '__main__':
         engfilename = dacSlopesName, adcmargin = adcmargin, tems = towers)
     fio.close() 
   
+    log.debug("%s DAC\n%s", dacType, settings[0,...])  
+    log.debug("%s DAC RANGE\n%s", dacType, (settings[0,...] >= 64))
  
     sys.exit(0)
      
