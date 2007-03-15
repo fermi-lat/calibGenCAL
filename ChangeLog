@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Mar 15 15:59:36 PDT 2007
+calibGenCAL/python/bin
+
+Added Files:
+	calibSetVal.bat calibSetVal.sh 
+Log Message:
+calibSetVal script evaluates full Cal offline calibration as a set.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Mar 15 15:59:35 PDT 2007
 calibGenCAL/python
 
