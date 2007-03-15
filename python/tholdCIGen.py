@@ -13,8 +13,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL TholdCI XML calibration data files"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/09/28 15:19:54 $"
-__version__   = "$Revision: 1.28 $, $Author: dwood $"
+__date__      = "$Date: 2007/03/12 20:52:25 $"
+__version__   = "$Revision: 1.29 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -486,7 +486,7 @@ if __name__ == '__main__':
     
     uldDacData = (uldDacData - 64)
     
-    # convert FHE thresholds from MeV to ADC counts
+    # convert FHE thresholds from MeV to HEX8 ADC counts
     
     c1 = dacSlopeData[0][...,4]
     c0 = dacSlopeData[0][...,5]
@@ -495,18 +495,22 @@ if __name__ == '__main__':
     bias = biasAdcData[...,1]
     fheAdcData = (eng / gain[...,Numeric.NewAxis]) - bias[...,Numeric.NewAxis]
     fheAdcData = Numeric.clip(fheAdcData, 0, 4095)
+    log.debug("FHE ADC\n%s", fheAdcData[0,0,0,0,:])
     
-    # convert FLE thresholds from MeV to ADC counts
+    # convert FLE thresholds from MeV to LEX8 ADC counts
     
     c1 = dacSlopeData[0][...,2]
     c0 = dacSlopeData[0][...,3]
     eng = linear(c1, c0)
     gain = muSlopeData[...,calConstant.CRNG_LEX1,0]
     bias = biasAdcData[...,0]
-    fleAdcData = (eng / gain[...,Numeric.NewAxis]) - bias[...,Numeric.NewAxis]
-    fleAdcData = Numeric.clip(fleAdcData, 0, 4095)
+    fleAdcData = (eng / gain[...,Numeric.NewAxis])
+    scale = (gain / muSlopeData[...,calConstant.CRNG_LEX8,0])
+    fleAdcData = (fleAdcData * scale[...,Numeric.NewAxis]) - bias[...,Numeric.NewAxis]
+    fleAdcData = Numeric.clip(fleAdcData, 0, 0xffff)
+    log.debug("FLE ADC\n%s", fleAdcData[0,0,0,0,:])
     
-    # convert LAC thresholds from MeV to ADC counts
+    # convert LAC thresholds from MeV to LEX8 ADC counts
     
     c1 = dacSlopeData[0][...,0]
     c0 = dacSlopeData[0][...,1]
@@ -514,8 +518,9 @@ if __name__ == '__main__':
     gain = muSlopeData[...,calConstant.CRNG_LEX8,0]
     lacAdcData = (eng / gain[...,Numeric.NewAxis])
     lacAdcData = Numeric.clip(lacAdcData, 0, 4095)
+    log.debug("LAC ADC\n%s", lacAdcData[0,0,0,0,:])
     
-    # convert ULD thresholds from MeV to ADC counts
+    # convert ULD thresholds from MeV to LEX8, LEX1, HEX8 ADC counts
     
     c1 = dacSlopeData[1][...,0]
     c0 = dacSlopeData[1][...,1]
@@ -550,6 +555,8 @@ if __name__ == '__main__':
     satMask = (uldAdcData[calConstant.CRNG_HEX8,...] > satValue)
     uldAdcData[calConstant.CRNG_HEX8,...] = Numeric.where(satMask, satValue, 
         uldAdcData[calConstant.CRNG_HEX8,...])
+    
+    log.debug("ULD ADC\n%s", uldAdcData[:,0,0,0,0,:])
 
     # create CAL calibration output XML file
 
