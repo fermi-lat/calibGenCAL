@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Mar 15 07:34:58 PDT 2007
+calibGenCAL/python/bin
+
+Added Files:
+	inlDumpSlopes.bat inlDumpSlopes.sh 
+Log Message:
+dumps linear slopes for each intNonlin channel
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Mar 15 07:34:47 PDT 2007
 calibGenCAL/python
 
