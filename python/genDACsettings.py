@@ -19,8 +19,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/09/28 21:26:48 $"
-__version__     = "$Revision: 1.5 $, $Author: dwood $"
+__date__        = "$Date: 2007/03/15 16:41:48 $"
+__version__     = "$Revision: 1.6 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -35,45 +35,10 @@ import Numeric
 import calCalibXML
 import calDacXML
 import calConstant
-
+import calDacSettings
 
 
 DAC_MAP = {'FLE' : 'fle_dac', 'FHE' : 'fhe_dac', 'LAC' : 'log_acpt', 'ULD' : 'rng_uld_dac'} 
-
-
-
-
-def dacSettings(slope, offset, energy):
-
-     d = (energy - offset) / slope
-     d = Numeric.clip(d, 0, 63)
-     d = Numeric.around(d) 
-     return d.astype(Numeric.Int8)
-     
-     
-     
-     
-def uldSettings(slopes, offsets, sats, margin):
-
-    sats = sats - (sats * margin)
-    d = (sats - offsets) / slopes
-    d = Numeric.clip(d, 0, 63)
-    d = Numeric.around(d)
-    lex8 = d[calConstant.CRNG_LEX8, ...]
-    lex1 = d[calConstant.CRNG_LEX1, ...]  
-    hex8 = d[calConstant.CRNG_HEX8, ...]
-    s = Numeric.where((lex8 < lex1), lex8, lex1)
-    s = Numeric.where((s < hex8), s, hex8)
-    return s.astype(Numeric.Int8) 
-              
-     
-     
-     
-def setRange(dacs, rangeData):
-
-    return Numeric.where(rangeData, (dacs + 64), dacs)
-          
-  
 
     
 
@@ -141,17 +106,17 @@ if __name__ == '__main__':
     # generate settings bases on DAC linear fit data
     
     if dacType == 'LAC':
-        settings = dacSettings(dacData[...,0], dacData[...,1], MeV)
-        settings = setRange(settings, rangeData[...,0])
+        settings = calDacSettings.dacSettings(dacData[...,0], dacData[...,1], MeV)
+        settings = calDacSettings.setRange(settings, rangeData[...,0])
     elif dacType == 'FLE':
-        settings = dacSettings(dacData[...,2], dacData[...,3], MeV)
-        settings = setRange(settings, rangeData[...,1])
+        settings = calDacSettings.dacSettings(dacData[...,2], dacData[...,3], MeV)
+        settings = calDacSettings.setRange(settings, rangeData[...,1])
     elif dacType == 'FHE':
-        settings = dacSettings(dacData[...,4], dacData[...,5], MeV)
-        settings = setRange(settings, rangeData[...,2]) 
+        settings = calDacSettings.dacSettings(dacData[...,4], dacData[...,5], MeV)
+        settings = calDacSettings.setRange(settings, rangeData[...,2]) 
     else:
-        settings = uldSettings(uldData[...,0], uldData[...,1], uldData[...,2], (MeV / 100)) 
-        settings = setRange(settings, Numeric.ones((calConstant.NUM_TEM, calConstant.NUM_ROW,
+        settings = calDacSettings.uldSettings(uldData[...,0], uldData[...,1], uldData[...,2], (MeV / 100)) 
+        settings = calDacSettings.setRange(settings, Numeric.ones((calConstant.NUM_TEM, calConstant.NUM_ROW,
             calConstant.NUM_END, calConstant.NUM_FE), Numeric.Int8))       
     
     # create output DAC settings XML file
