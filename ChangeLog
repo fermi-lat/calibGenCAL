@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Mar 15 17:07:18 PDT 2007
+calibGenCAL/python
+
+Modified Files:
+	calibSetVal.py 
+Log Message:
+added pedestal spared test (muon_ped, vs inl_ped, vs thold_ped)
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Mar 15 16:02:15 PDT 2007
 calibGenCAL/python
 
