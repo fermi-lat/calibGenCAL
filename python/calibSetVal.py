@@ -19,8 +19,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL offline calibration set as a suite"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2006/10/16 15:46:32 $"
-__version__   = "$Revision: 1.25 $, $Author: dwood $"
+__date__      = "$Date: 2007/03/15 22:59:35 $"
+__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -104,7 +104,7 @@ intNonlinTowers = xmlFile.getTowers()
 xmlFile.close()
 
 
-### TEST 1 N_TOWERS MATCH ###
+### TEST 1: N_TOWERS MATCH ###
 if (set(intNonlinTowers) != set(pedTowers)):
     log.error("intNonlin towers %s and ped towers %s mismatch!"%(intNonlinTowers, pedTowers))
     nErrors += 1
@@ -119,7 +119,7 @@ asymTowers = xmlFile.getTowers()
 xmlFile.close()
 
 
-### TEST 1 N_TOWERS MATCH ###
+### TEST 1: N_TOWERS MATCH ###
 if (set(asymTowers) != set(pedTowers)):
     log.error("asym towers %s and ped towers %s mismatch!"%(asymTowers, pedTowers))
     nErrors += 1
@@ -133,7 +133,7 @@ mpdData = xmlFile.read()
 mpdTowers = xmlFile.getTowers()
 xmlFile.close()
 
-### TEST 1 N_TOWERS MATCH ###
+### TEST 1: N_TOWERS MATCH ###
 if (set(mpdTowers) != set(pedTowers)):
     log.error("mevPerDac towers %s and ped towers %s mismatch!"%(mpdTowers, pedTowers))
     nErrors += 1
@@ -146,7 +146,7 @@ xmlFile = calCalibXML.calTholdCICalibXML(tholdCIPath)
 tholdCITowers = xmlFile.getTowers()
 xmlFile.close()
 
-### TEST 1 N_TOWERS MATCH ###
+### TEST 1: N_TOWERS MATCH ###
 if (set(tholdCITowers) != set(pedTowers)):
     log.error("tholdCI towers %s and ped towers %s mismatch!"%(tholdCITowers, pedTowers))
     nErrors += 1
@@ -233,18 +233,40 @@ for twr in pedTowers:
                     if uld == 0:
                         log.error("TholdCI ULD data missing: channel=%s"%[twr,lyr,col,face,rng])
                         nErrors += 1
-                        
-                    ### TEST 4 INL_MAX + PED <= 4095 ###
+
+                    ### TEST 4: INL_MAX + PED <= 4095 ###
                     if inlMax + ped > 4095 + 1:
                         log.warning("INL MAX + PED %s > 4095: channel=%s"%(inlMax + ped, [twr,lyr,col,face,rng]))
                         nWarnings += 1
 
-                    # TEST 5 ULD < INL ###
+                    # TEST 5: ULD < INL ###
                     # otherwise simulation will never use next range
                     # uld check only valid for rng = LEX8 -> HEX1
                     if uld > inlMax and rng < 3: 
                         log.error("ULD %s > INL MAX %s: channel=%s"%(uld, inlMax, [twr,lyr,col,face,rng]))
                         nErrors += 1
+
+                    # TEST 6: MUON_PED = THOLD_PED = INL_PED
+                    muonPed = ped[0]
+                    muonPedSig = pedSig[0]
+
+                    tholdPed = tholdPedData[twr,row,online_face,col,rng][0]
+                    inlPed   = 4095 - inlMax
+
+                    pedList = [muonPed, inlPed, tholdPed]
+
+                    pedDiff = max(pedList)-min(pedList)
+                    if pedDiff > pedSig:
+                        log.error("Tholdci, muon, inl pedestals %s spread %s > muon ped sigma %s, channel %s"%(pedList, pedDiff, muonPedSig,[twr,lyr,col,face,rng]))
+                        nWarnings +=1
+
+                    if max(pedList) - min(pedList) > 2*pedSig:
+                        log.error("Tholdci, muon, inl pedestals %s spread %s, > muon ped sigma %s, channel %s"%(pedList, pedDiff, muonPedSig,[twr,lyr,col,face,rng]))
+                        nErrors +=1
+
+                    
+
+                    
 
 log.info("N_ERRORS=%s N_WARNINGS=%s"%(nWarnings, nErrors))
 
