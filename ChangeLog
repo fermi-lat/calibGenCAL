@@ -1,4 +1,20 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Mar 20 12:23:47 PDT 2007
+calibGenCAL/python
+
+Modified Files:
+	adcplot.py asymMerge.py charplot.py intNonlinVal.py 
+	mevPerDacMerge.py pedMerge.py txt2tuple.py 
+Added Files:
+	dacConvertNeighborXtalk.py fitNeighborXtalk.py 
+Log Message:
+dacConvertNeighborXtalk converts neighboring-xtal-xtalk from measured units to units suitable for simulation
+fitNeighborXtalk fits straight line to neighbor xtalk curves.
+zachUtil now includes rngIdx2tuple & tuple2rngIdx method a-la CalDefs.h
+txt2tuple now automagically detects parses csv files _with_ or _without_ header info
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v4r6, operation: add
 Package: calibGenCAL
