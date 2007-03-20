@@ -6,8 +6,8 @@ Tool to smooth CAL ADC/DAC data.
 __facility__  = "Offline"
 __abstract__  = "Tool to smooth CAL ADC/DAC data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/11 22:32:30 $"
-__version__   = "$Revision: 1.2 $, $Author: dwood $"
+__date__      = "$Date: 2006/09/25 23:10:26 $"
+__version__   = "$Revision: 1.3 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 

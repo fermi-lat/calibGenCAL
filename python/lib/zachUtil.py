@@ -7,8 +7,8 @@ collection of simple utilities shared throughout my code
 __facility__  = "Offline"
 __abstract__  = "apply calibGain correction to asymmetry xml file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2007/02/26 23:15:58 $"
-__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/03/15 14:32:38 $"
+__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -239,3 +239,35 @@ CIDAC_TEST_VALS = \
              3551, 3583,  3615,   3647,   3679,   3711,    3743,    3775,    3807,    3839,\
              3871, 3903,  3935,   3967,   3999,   4031,    4063,    4095
              ]
+
+# convert linear index to (twr,lyr,col,face,rng)
+def rngIdx2tuple(rngIdx):
+    rngIdx = int(rngIdx)
+    
+    rng = rngIdx % calConstant.NUM_RNG
+    rngIdx /= calConstant.NUM_RNG
+
+    face = rngIdx % calConstant.NUM_END
+    rngIdx /= calConstant.NUM_END
+
+    col = rngIdx % calConstant.NUM_FE
+    rngIdx /= calConstant.NUM_FE
+
+    lyr = rngIdx % calConstant.NUM_LAYER
+    rngIdx /= calConstant.NUM_LAYER
+
+    twr = rngIdx
+
+    return (twr, lyr, col, face, rng)
+
+# generate linear index from component indices
+# input is tuple (twr,lyr,col,face,rng)
+def tuple2rngIdx(tpl):
+    (twr, lyr, col, face, rng) = tpl
+
+    return rng + calConstant.NUM_RNG* \
+           (face + calConstant.NUM_END* \
+            (col + calConstant.NUM_FE*\
+             (lyr + calConstant.NUM_LAYER*twr)))
+                                      
+           
