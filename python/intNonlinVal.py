@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL IntNonlin calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/08/03 03:26:43 $"
-__version__   = "$Revision: 1.17 $, $Author: dwood $"
+__date__      = "$Date: 2006/10/16 15:46:32 $"
+__version__   = "$Revision: 1.18 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 

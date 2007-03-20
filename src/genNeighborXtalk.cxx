@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genNeighborXtalk.cxx,v 1.3 2007/02/28 19:52:29 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genNeighborXtalk.cxx,v 1.4 2007/03/01 19:20:48 fewtrell Exp $
 
 /** @file Gen Neighboring Crystal Cross-talk calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
@@ -108,9 +108,6 @@ int main(const int argc,
     LogStream::get() << __FILE__ << ": saving xtalk to tuple ROOT file: "
                      << tuplefile << endl;
     xtalk.writeTuple(tuplefile);
-
-
-    
     
   } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
