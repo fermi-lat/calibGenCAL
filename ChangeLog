@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Wed Mar 21 13:10:31 PDT 2007
+calibGenCAL/python/lib
+
+Modified Files:
+	calDacXML.py 
+Log Message:
+Added function calDacXML.rowToCC(); does the converse of ccToRow() - translates CAL row and end numbers to electronics GCCC and GCRC chip addresses.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Mar 20 12:23:47 PDT 2007
 calibGenCAL/src
 
