@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/31 16:14:26 $"
-__version__   = "$Revision: 1.11 $, $Author: dwood $"
+__date__      = "$Date: 2007/03/12 20:51:01 $"
+__version__   = "$Revision: 1.12 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -2406,6 +2406,9 @@ def layerToRow(layer):
     Param: layer - Layer number (0 - 7)
     Returns: The row number (0 - 7)
     """
+    
+    if (layer < 0) or (layer > 7):
+        raise ValueError, "layer parameter limited to range [0,7]"
 
     row = (layer / 2)
     if (layer % 2):
@@ -2420,6 +2423,9 @@ def rowToLayer(row):
     Param: row - Row number (0 - 7)
     Returns: The layer number (0 - 7)
     """
+    
+    if (row < 0) or (row > 7):
+        raise ValueError, "row parameter limited to range [0,7]"
 
     if row < 4:
         layer = (row * 2)
@@ -2439,6 +2445,11 @@ def towerToTem(twrCol, twrRow):
     Returns: The TEM number (0 - 15)
     """
 
+    if (twrCol < 0) or (twrCol > 3):
+        raise ValueError, "twrCol parameter limited to range [0,3]"
+    if (twrRow < 0) or (twrRow > 3):
+        raise ValueError, "twrRow parameter limited to range [0,3]"
+
     return twrCol + (4 * twrRow)
 
 
@@ -2453,6 +2464,9 @@ def temToTower(temNum):
         twrCol - The tower column index (0 - 3)
         twrRow - The tower row index (0 - 3)
     """
+    
+    if (temNum < 0) or (temNum > 15):
+        raise ValueError, "temNum parameter limited to range [0,15]"
 
     twrCol = (temNum % 4)
     twrRow = (temNum / 4)
