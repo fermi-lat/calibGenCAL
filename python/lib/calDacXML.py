@@ -6,8 +6,8 @@ Classes to represent CAL hardware settings XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL DAC settings XML documents"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/18 20:26:08 $"
-__version__   = "$Revision: 1.4 $, $Author: dwood $"
+__date__      = "$Date: 2006/07/27 19:25:32 $"
+__version__   = "$Revision: 1.5 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -575,18 +575,25 @@ def ccToRow(ccc, rc):
     """
     Translate GCCC and GCRC numbers to CAL row and end numbers
 
-    Param: ccc - The GCCC number (0 - 4)
-    Param: rc - The GCRC number (0 - 4)
+    Param: ccc - The GCCC number (0 - 3)
+    Param: rc - The GCRC number (0 - 3)
 
     Returns: (row, end)
         row - The row number (0 - 7)
         end - The end number (0 - 1)
     """
+    
+    if (ccc < 0) or (ccc > 3):
+        raise ValueError, "ccc parameter limited to range [0,3]"
+        
+    if (rc < 0) or (rc > 3):
+        raise ValueError, "rc parameter limited to range [0,3]"
 
     if (ccc % 2) != 0:
         row = (rc + 4)
     else:
         row = rc
+        
     if ccc < 2:
         end = 1
     else:
@@ -595,3 +602,37 @@ def ccToRow(ccc, rc):
     return(row, end)
 
 
+def rowToCC(row, end):
+    """
+    Translate CAL row and end numbers to GCCC and GCRC numbers.
+    
+    Param: row - The CAL row number (0 - 7)
+    Param: end - The CAL end number (0 - 1)
+    
+    Returns: (ccc, rc)
+        ccc - The GCCC number (0 - 3)
+        rc - The GCRC number (0 - 3)
+    """
+    
+    if (row < 0) or (row > 7):
+        raise ValueError, "row parameter limited to range [0,7]"
+        
+    if (end < 0) or (end > 1):
+        raise ValueError, "end parameter limited to range [0,1]"
+    
+    if end == 0:
+        ccc = 2
+    else:
+        ccc = 0
+        
+    if row >= 4:
+        rc = (row - 4)
+        ccc += 1
+    else:
+        rc = row
+        
+    
+    return (ccc, rc)
+    
+
+        
