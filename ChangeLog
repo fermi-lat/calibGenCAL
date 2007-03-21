@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Wed Mar 21 13:20:49 PDT 2007
+calibGenCAL/python/lib
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Added parameter checks to calCalibXML module functions rowToLayer(), layerToRow(), temToTower() and towerToTem().
+
+    *
+------------------------------------------------------------
 User: dwood  Wed Mar 21 13:10:31 PDT 2007
 calibGenCAL/python/lib
 
