@@ -16,8 +16,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Convert neighbor xtalk curves from (src=LECIDAC_CGON, dest=HEX8ADC) to (src=HEDAC_SCINT_CGOFF, dest=HEDAC_SCINT_CGOFF)"
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/03/02 18:53:53 $"
-__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/03/20 19:23:46 $"
+__version__     = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -121,17 +121,14 @@ for row in infile:
     destADC      = float(row[3])
 
     ### set up all needed indices ###
-    (srcTwr, srcLyr, srcCol, srcFace, srcRng) = zachUtil.rngIdx2tuple(srcIdx)
-    (destTwr, destLyr, destCol, destFace, destRng) = zachUtil.rngIdx2tuple(destIdx)
+    (srcTwr, srcLyr, srcCol, srcFace, srcDiode) = zachUtil.diodeIdx2tuple(srcIdx)
+    (destTwr, destLyr, destCol, destFace, destDiode) = zachUtil.diodeIdx2tuple(destIdx)
 
     destRow = calCalibXML.layerToRow(destLyr)
     srcRow = calCalibXML.layerToRow(srcLyr)
 
     destOnlineFace = calConstant.offline_face_to_online[destFace]
     srcOnlineFace  = calConstant.offline_face_to_online[srcFace]
-
-    destDiode = int(destRng)/2
-    srcDiode = int(srcRng)/2
 
     # assume source xtal is in le dac for now
     if srcDiode != calConstant.CDIODE_LRG:
@@ -142,6 +139,7 @@ for row in infile:
     ### DAC SCALE CONVERSION(S) ###
    
     # convert destination xtal ADC -> destination xtal CIDAC, CGOFF
+    destRng = destDiode*2
     destDACCgOff = adc2dac[(destTwr, destRow, destOnlineFace, destCol, destRng)].Eval(destADC)
 
     # convert destination xtal CIDAC, CGOFF -> CGON
@@ -199,8 +197,7 @@ for row in infile:
 
     # change src index to reflect diode coversion
     srcDiode = 1
-    srcRng = 2
-    srcIdx = zachUtil.tuple2rngIdx((srcTwr, srcLyr, srcCol, srcFace, srcRng))
+    srcIdx = zachUtil.tuple2diodeIdx((srcTwr, srcLyr, srcCol, srcFace, srcDiode))
 
     print destIdx, srcIdx, srcHEDACCgOn, destDACCgOn
 
