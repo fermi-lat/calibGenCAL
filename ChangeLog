@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Mar 22 15:26:04 PDT 2007
+calibGenCAL/python
+
+Modified Files:
+	dacConvertNeighborXtalk.py fitNeighborXtalk.py 
+Log Message:
+converted NeighborXtalk code from adc_range indexing to cal_diode indexing.
+updated lib/zachUtil.py accordingly
+    *
+------------------------------------------------------------
 User: dwood  Wed Mar 21 13:20:49 PDT 2007
 calibGenCAL/python/lib
 
