@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Mar 22 15:30:53 PDT 2007
+calibGenCAL/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+converted NeighborXtalk code from adc_range indexing to cal_diode indexing.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Mar 22 15:26:45 PDT 2007
 calibGenCAL/src/lib
 
