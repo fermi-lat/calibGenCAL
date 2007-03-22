@@ -512,3 +512,8 @@ cgc suite Makefile now in development
 neighborXtalk code now in development.
 gcrCalib code now in development.
 txt files now have column headers w/ ';' @ front of line
+------------------v4r7 fewtrell------------------NeighborXtalk now 'officially' released 
+- using Cal Diode for indexing
+dacConvertNeighborXtalk converts neighboring-xtal-xtalk from measured units to units suitable for simulation
+fitNeighborXtalk fits straight line to neighbor xtalk curves.
+txt2tuple now automagically detects parses csv files _with_ or _without_ header info

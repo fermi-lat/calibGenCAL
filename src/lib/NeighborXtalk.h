@@ -1,6 +1,6 @@
 #ifndef NeighborXtalk_h
 #define NeighborXtalk_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/NeighborXtalk.h,v 1.3 2007/02/27 20:44:13 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/NeighborXtalk.h,v 1.4 2007/03/01 19:20:48 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -40,20 +40,20 @@ public:
   /// \return NULL if no such spline exists.
   /// \param dest destination Cal adc channel
   /// \param source source Cal adc channel of xtalk
-  const SplineUtil::Polyline *getPts(CalUtil::RngIdx dest,
-                                     CalUtil::RngIdx source) const;
+  const SplineUtil::Polyline *getPts(CalUtil::DiodeIdx dest,
+                                     CalUtil::DiodeIdx source) const;
 
   /// \brief retrieve 2d points for crosstalk spline function (x=cidac, y=adc)
   /// for given source_channel, destination_channel pair
   /// \return NULL if no such spline exists.
   /// \param dest destination Cal adc channel
   /// \param source source Cal adc channel of xtalk
-  SplineUtil::Polyline * getPts(CalUtil::RngIdx dest,
-                                CalUtil::RngIdx source);
+  SplineUtil::Polyline * getPts(CalUtil::DiodeIdx dest,
+                                CalUtil::DiodeIdx source);
 
   /// \brief set single spline point for given src / dest adc channel
-  void                   setPoint(CalUtil::RngIdx dest,
-                                  CalUtil::RngIdx source,
+  void                   setPoint(CalUtil::DiodeIdx dest,
+                                  CalUtil::DiodeIdx source,
                                   float dac,
                                   float adc);
 
@@ -62,10 +62,10 @@ public:
 
 private:
   /// associate cidac2adc splines from other channels w/ a single adc channel
-  typedef std::map<CalUtil::RngIdx, SplineUtil::Polyline> ChannelSplineMap;
+  typedef std::map<CalUtil::DiodeIdx, SplineUtil::Polyline> ChannelSplineMap;
 
   /// associate a single adc channel w/ a  ChannelSplineMap
-  typedef std::map<CalUtil::RngIdx, ChannelSplineMap>     XtalkMap;
+  typedef std::map<CalUtil::DiodeIdx, ChannelSplineMap>     XtalkMap;
 
   /// \brief ADC Spline points array stored in 3 dims [destChan][sourceChan][pointIdx]
   XtalkMap m_xtalkMap;

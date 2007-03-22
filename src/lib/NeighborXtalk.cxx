@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/NeighborXtalk.cxx,v 1.3 2007/02/27 20:44:13 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/NeighborXtalk.cxx,v 1.4 2007/03/01 19:20:48 fewtrell Exp $
 
 /** @file
     @author fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "NeighborXtalk.h"
@@ -24,9 +24,9 @@ using namespace std;
 using namespace CalUtil;
 using namespace SplineUtil;
 
-const SplineUtil::Polyline *NeighborXtalk::getPts(CalUtil::RngIdx dest,
-                                                  CalUtil::RngIdx source
-) const
+const SplineUtil::Polyline *NeighborXtalk::getPts(CalUtil::DiodeIdx dest,
+                                                  CalUtil::DiodeIdx source
+                                                  ) const
 {
   XtalkMap::const_iterator xtalkIt = m_xtalkMap.find(dest);
 
@@ -43,8 +43,8 @@ const SplineUtil::Polyline *NeighborXtalk::getPts(CalUtil::RngIdx dest,
   return &(it->second);
 }
 
-SplineUtil::Polyline *NeighborXtalk::getPts(CalUtil::RngIdx dest,
-                                            CalUtil::RngIdx source)
+SplineUtil::Polyline *NeighborXtalk::getPts(CalUtil::DiodeIdx dest,
+                                            CalUtil::DiodeIdx source)
 {
   XtalkMap::iterator xtalkIt = m_xtalkMap.find(dest);
 
@@ -72,13 +72,13 @@ void NeighborXtalk::writeTXT(const std::string &filename) const {
   }
 
   // output header info as comment
-  outfile << "; destRngIdx srcRngIdx dac adc" << endl;
+  outfile << "; destDiode srcDiode dac adc" << endl;
 
   outfile.precision(2);
   outfile.setf(ios_base::fixed);
 
   // loop through each destination channel
-  for (RngIdx destIdx; destIdx.isValid(); destIdx++) {
+  for (DiodeIdx destIdx; destIdx.isValid(); destIdx++) {
     XtalkMap::const_iterator xtalkIt = m_xtalkMap.find(destIdx);
     if (xtalkIt == m_xtalkMap.end())
       continue;
@@ -89,7 +89,7 @@ void NeighborXtalk::writeTXT(const std::string &filename) const {
     for (ChannelSplineMap::const_iterator it = destMap.begin();
          it != destMap.end();
          it++) {
-      RngIdx srcIdx = it->first;
+      DiodeIdx srcIdx = it->first;
       const  Polyline &pLine = it->second;
 
       // loop through each point in polyline
@@ -109,8 +109,8 @@ void NeighborXtalk::writeTXT(const std::string &filename) const {
   }
 }
 
-void NeighborXtalk::setPoint(CalUtil::RngIdx dest,
-                             CalUtil::RngIdx source,
+void NeighborXtalk::setPoint(CalUtil::DiodeIdx dest,
+                             CalUtil::DiodeIdx source,
                              float dac,
                              float adc) {
   // find all cross talk entries for given 'destination' channel
@@ -136,11 +136,11 @@ void NeighborXtalk::setPoint(CalUtil::RngIdx dest,
 void NeighborXtalk::writeTuple(const std::string &filename) const {
   // open new root file
   TFile rootFile(filename.c_str(),
-	             "RECREATE",
-				 "GLAST Cal Neighboring Crystal Cross-talk splines");
+                 "RECREATE",
+                 "GLAST Cal Neighboring Crystal Cross-talk splines");
   
   // loop through each destination channel
-  for (RngIdx destIdx; destIdx.isValid(); destIdx++) {
+  for (DiodeIdx destIdx; destIdx.isValid(); destIdx++) {
     XtalkMap::const_iterator xtalkIt = m_xtalkMap.find(destIdx);
     if (xtalkIt == m_xtalkMap.end())
       continue;
@@ -151,17 +151,17 @@ void NeighborXtalk::writeTuple(const std::string &filename) const {
     for (ChannelSplineMap::const_iterator it = destMap.begin();
          it != destMap.end();
          it++) {
-      RngIdx srcIdx = it->first;
+      DiodeIdx srcIdx = it->first;
       const  Polyline &pLine = it->second;
       
-	  string tuple_name("neighbor_xtalk" + destIdx.toStr() + "_from_" +
-		                srcIdx.toStr());
+      string tuple_name("neighbor_xtalk" + destIdx.toStr() + "_from_" +
+                        srcIdx.toStr());
 
-	  TNtuple *tuple = new TNtuple(tuple_name.c_str(),
-		                         tuple_name.c_str(),
-								 "dac:adc");
+      TNtuple *tuple = new TNtuple(tuple_name.c_str(),
+                                   tuple_name.c_str(),
+                                   "dac:adc");
 
-	  float tuple_data[2];
+      float tuple_data[2];
 
       // loop through each point in polyline
       for (Polyline::const_iterator it = pLine.begin();
@@ -180,26 +180,26 @@ void NeighborXtalk::writeTuple(const std::string &filename) const {
 }
 
 void NeighborXtalk::pedSubtractADC() {
-	/// loop through each dest channel
-	for (XtalkMap::iterator it = m_xtalkMap.begin();
-		it != m_xtalkMap.end();
-		it++) {
-		ChannelSplineMap &splMap = it->second;
-		
-		/// select each polyline for source channel
-		for (ChannelSplineMap::iterator chanIt = splMap.begin();
-			chanIt != splMap.end();
-			chanIt++) {
+  /// loop through each dest channel
+  for (XtalkMap::iterator it = m_xtalkMap.begin();
+       it != m_xtalkMap.end();
+       it++) {
+    ChannelSplineMap &splMap = it->second;
+                
+    /// select each polyline for source channel
+    for (ChannelSplineMap::iterator chanIt = splMap.begin();
+         chanIt != splMap.end();
+         chanIt++) {
 
-			Polyline &spline = chanIt->second;
+      Polyline &spline = chanIt->second;
 
-			float adcPed = spline[0].second;
+      float adcPed = spline[0].second;
 
-			for (Polyline::iterator splIt = spline.begin();
-				splIt != spline.end();
-				splIt++)
-				splIt->second -= adcPed;
-			}
-		}
+      for (Polyline::iterator splIt = spline.begin();
+           splIt != spline.end();
+           splIt++)
+        splIt->second -= adcPed;
+    }
+  }
 
 }
