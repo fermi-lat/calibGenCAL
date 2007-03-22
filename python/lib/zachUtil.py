@@ -7,8 +7,8 @@ collection of simple utilities shared throughout my code
 __facility__  = "Offline"
 __abstract__  = "apply calibGain correction to asymmetry xml file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2007/03/15 14:32:38 $"
-__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/03/20 19:23:47 $"
+__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -266,6 +266,37 @@ def tuple2rngIdx(tpl):
     (twr, lyr, col, face, rng) = tpl
 
     return rng + calConstant.NUM_RNG* \
+           (face + calConstant.NUM_END* \
+            (col + calConstant.NUM_FE*\
+             (lyr + calConstant.NUM_LAYER*twr)))
+                                      
+           
+# convert linear index to (twr,lyr,col,face,diode)
+def diodeIdx2tuple(diodeIdx):
+    diodeIdx = int(diodeIdx)
+    
+    diode = diodeIdx % calConstant.NUM_DIODE
+    diodeIdx /= calConstant.NUM_DIODE
+
+    face = diodeIdx % calConstant.NUM_END
+    diodeIdx /= calConstant.NUM_END
+
+    col = diodeIdx % calConstant.NUM_FE
+    diodeIdx /= calConstant.NUM_FE
+
+    lyr = diodeIdx % calConstant.NUM_LAYER
+    diodeIdx /= calConstant.NUM_LAYER
+
+    twr = diodeIdx
+
+    return (twr, lyr, col, face, diode)
+
+# generate linear index from component indices
+# input is tuple (twr,lyr,col,face,diode)
+def tuple2diodeIdx(tpl):
+    (twr, lyr, col, face, diode) = tpl
+
+    return diode + calConstant.NUM_DIODE* \
            (face + calConstant.NUM_END* \
             (col + calConstant.NUM_FE*\
              (lyr + calConstant.NUM_LAYER*twr)))

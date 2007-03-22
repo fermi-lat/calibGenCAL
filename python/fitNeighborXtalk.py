@@ -15,8 +15,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Fit max(0,pol1) to all neighbor xtalk curves."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/03/02 18:53:53 $"
-__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/03/20 19:23:47 $"
+__version__     = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -71,8 +71,8 @@ for row in infile:
     (destChan, srcChan, srcDac, destDac) = row
 
     # skip le->le xtalk & keep only le->he xtalk
-    (twr,lyr,col,face,rng) = zachUtil.rngIdx2tuple(destChan)
-    if rng < 2:
+    (twr,lyr,col,face,diode) = zachUtil.diodeIdx2tuple(destChan)
+    if diode == 0:
         continue
 
     k = (int(destChan), int(srcChan))
