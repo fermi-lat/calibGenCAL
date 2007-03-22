@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Thu Mar 22 15:26:04 PDT 2007
+calibGenCAL/python/lib
+
+Modified Files:
+	zachUtil.py 
+Log Message:
+converted NeighborXtalk code from adc_range indexing to cal_diode indexing.
+updated lib/zachUtil.py accordingly
+    *
+------------------------------------------------------------
+User: fewtrell  Thu Mar 22 15:26:04 PDT 2007
 calibGenCAL/python
 
 Modified Files:
