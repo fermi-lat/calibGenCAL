@@ -1,34 +1,4 @@
 ------------------------------------------------------------
-User: fewtrell  Thu Mar 22 15:26:45 PDT 2007
-calibGenCAL/src/lib
-
-Modified Files:
-	NeighborXtalk.cxx NeighborXtalk.h NeighborXtalkAlg.cxx 
-Log Message:
-converted NeighborXtalk code from adc_range indexing to cal_diode indexing.
-
-    *
-------------------------------------------------------------
-User: fewtrell  Thu Mar 22 15:26:04 PDT 2007
-calibGenCAL/python/lib
-
-Modified Files:
-	zachUtil.py 
-Log Message:
-converted NeighborXtalk code from adc_range indexing to cal_diode indexing.
-updated lib/zachUtil.py accordingly
-    *
-------------------------------------------------------------
-User: fewtrell  Thu Mar 22 15:26:04 PDT 2007
-calibGenCAL/python
-
-Modified Files:
-	dacConvertNeighborXtalk.py fitNeighborXtalk.py 
-Log Message:
-converted NeighborXtalk code from adc_range indexing to cal_diode indexing.
-updated lib/zachUtil.py accordingly
-    *
-------------------------------------------------------------
 User: dwood  Wed Mar 21 13:20:49 PDT 2007
 calibGenCAL/python/lib
 
