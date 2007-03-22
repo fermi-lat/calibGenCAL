@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/NeighborXtalkAlg.cxx,v 1.3 2007/02/28 21:03:07 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/NeighborXtalkAlg.cxx,v 1.4 2007/03/01 19:20:48 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -206,20 +206,13 @@ void NeighborXtalkAlg::processHit(const CalDigi &cdig) {
 
         // assign to table
         // 'source' channel is current injected channel / LEX8
-        RngIdx srcIdx(twr,
+        DiodeIdx srcIdx(twr,
                       lyr,
                       eventData.testCol,
                       face,
-                      LEX8);
+                        LRG_DIODE);
 
-        // 'dest' channel is currently measured channel
-        RngIdx destIdx(twr,
-                       lyr,
-                       col,
-                       face,
-                       rng);
-
-        algData.xtalk->setPoint(destIdx,
+        algData.xtalk->setPoint(diodeIdx,
                                 srcIdx,
                                 CIDAC_TEST_VALS[eventData.testDAC],
                                 av);
