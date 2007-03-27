@@ -1,4 +1,4 @@
-REM $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/muSlopeVal.bat,v 1.1 2006/06/26 20:45:20 dwood Exp $
+REM $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/bin/muSlopeVal.bat,v 1.1 2007/02/16 18:57:35 dwood Exp $
 @echo off
 
 if not defined CALIBGENCALROOT goto :ERROR

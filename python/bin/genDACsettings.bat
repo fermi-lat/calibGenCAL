@@ -1,4 +1,4 @@
-REM $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/genDACsettings.bat,v 1.1 2006/09/28 15:39:21 dwood Exp $
+REM $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/bin/genDACsettings.bat,v 1.1 2007/02/16 18:57:35 dwood Exp $
 @echo off
 
 if not defined CALIBGENCALROOT goto :ERROR

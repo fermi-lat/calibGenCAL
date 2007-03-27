@@ -1,14 +1,14 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.14 2007/02/27 20:44:12 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.15 2007/03/01 23:49:47 fewtrell Exp $
 
 /** @file Gen CIDAC2ADC calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
  */
 
 // LOCAL INCLUDES
-#include "lib/IntNonlinAlg.h"
-#include "lib/CIDAC2ADC.h"
-#include "lib/SimpleIniFile.h"
-#include "lib/CGCUtil.h"
+#include "lib/Algs/IntNonlinAlg.h"
+#include "lib/CalibDataTypes/CIDAC2ADC.h"
+#include "lib/Util/SimpleIniFile.h"
+#include "lib/Util/CGCUtil.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"

@@ -1,4 +1,4 @@
-REM $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/tholdCIVal.bat,v 1.4 2006/06/21 18:43:13 dwood Exp $
+REM $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/bin/tholdCIVal.bat,v 1.1 2007/02/16 18:57:36 dwood Exp $
 @echo off
 
 if not defined CALIBGENCALROOT goto :ERROR

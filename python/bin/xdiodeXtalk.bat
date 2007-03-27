@@ -1,4 +1,4 @@
-REM $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/xdiodeXtalk.bat,v 1.1 2006/10/03 21:12:24 fewtrell Exp $
+REM $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/bin/xdiodeXtalk.bat,v 1.1 2007/02/16 18:57:36 dwood Exp $
 @echo off
 
 if not defined CALIBGENCALROOT goto :ERROR

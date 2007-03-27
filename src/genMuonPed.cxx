@@ -1,14 +1,14 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.13 2007/02/14 16:11:37 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.14 2007/02/27 20:44:12 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
  */
 
 // LOCAL INCLUDES
-#include "lib/MuonPed.h"
-#include "lib/SimpleIniFile.h"
-#include "lib/CalPed.h"
-#include "lib/CGCUtil.h"
+#include "lib/CalibDataTypes/CalPed.h"
+#include "lib/Algs/MuonPedAlg.h"
+#include "lib/Util/SimpleIniFile.h"
+#include "lib/Util/CGCUtil.h"
 
 // GLAST INCLUDES
 
@@ -67,7 +67,7 @@ int main(int argc,
 
     //-- ROUGH PEDS --//
     // - LEX8 only include hits in histograms.
-    MuonPed muonRoughPed;
+    MuonPedAlg muonRoughPed;
     CalPed  roughPed;
 
     // txt output filename
@@ -88,10 +88,10 @@ int main(int argc,
     const string PERIODIC_TRIGGER_CUT("PERIODIC_TRIGGER");
     const string EXTERNAL_TRIGGER_CUT("EXTERNAL_TRIGGER");
 
-    map<string, MuonPed::TRIGGER_CUT> trigCutMap;
-    trigCutMap[PASS_THROUGH_CUT]     = MuonPed::PASS_THROUGH;
-    trigCutMap[PERIODIC_TRIGGER_CUT] = MuonPed::PERIODIC_TRIGGER;
-    trigCutMap[EXTERNAL_TRIGGER_CUT] = MuonPed::EXTERNAL_TRIGGER;
+    map<string, MuonPedAlg::TRIGGER_CUT> trigCutMap;
+    trigCutMap[PASS_THROUGH_CUT]     = MuonPedAlg::PASS_THROUGH;
+    trigCutMap[PERIODIC_TRIGGER_CUT] = MuonPedAlg::PERIODIC_TRIGGER;
+    trigCutMap[EXTERNAL_TRIGGER_CUT] = MuonPedAlg::EXTERNAL_TRIGGER;
     string trigCutStr = cfgFile. getVal<string>("MUON_PEDS",
                                                 "TRIGGER_CUT",
                                                 "PERIODIC_TRIGGER");
@@ -100,7 +100,7 @@ int main(int argc,
       LogStream::get() << __FILE__ << ": ERROR! Invalid trigger_cut string: " << trigCutStr << endl;
       return -1;
     }
-    MuonPed::TRIGGER_CUT trigCut     = trigCutMap[trigCutStr];
+    MuonPedAlg::TRIGGER_CUT trigCut     = trigCutMap[trigCutStr];
 
     unsigned nEntries    = cfgFile. getVal<unsigned>("MUON_PEDS",
                                                      "ENTRIES_PER_HIST",
@@ -136,7 +136,7 @@ int main(int argc,
 
     //-- MUON PEDS --//
     // - LEX8 only include hits in histograms.
-    MuonPed  muPed;
+    MuonPedAlg  muPed;
     CalPed   calPed;
     // txt output filename
     string   muPedTXTFile      =

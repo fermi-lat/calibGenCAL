@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.15 2007/02/14 16:11:37 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.16 2007/02/27 20:44:12 fewtrell Exp $
 
 /** @file Gen MevPerDAC calibrations from Muon event files using Cal Digi Hodoscope
     for track & hit information
@@ -6,15 +6,15 @@
  */
 
 // LOCAL INCLUDES
-#include "lib/MuonMPD.h"
-#include "lib/SimpleIniFile.h"
-#include "lib/CalPed.h"
-#include "lib/CalAsym.h"
-#include "lib/CIDAC2ADC.h"
-#include "lib/CalMPD.h"
-#include "lib/CGCUtil.h"
-#include "lib/MPDHists.h"
-#include "lib/ADC2NRG.h"
+#include "lib/CalibDataTypes/ADC2NRG.h"
+#include "lib/CalibDataTypes/CalPed.h"
+#include "lib/CalibDataTypes/CalAsym.h"
+#include "lib/CalibDataTypes/CIDAC2ADC.h"
+#include "lib/CalibDataTypes/CalMPD.h"
+#include "lib/Hists/MPDHists.h"
+#include "lib/Algs/MuonMPDAlg.h"
+#include "lib/Util/SimpleIniFile.h"
+#include "lib/Util/CGCUtil.h"
 
 // GLAST INCLUDES
 
@@ -196,7 +196,7 @@ int main(int argc,
     }
 
     MPDHists mpdHists(MPDHists::FitMethods::LANDAU);
-    MuonMPD  muonMPD(peds,
+    MuonMPDAlg  muonMPD(peds,
                      dac2adc,
                      asym,
                      mpdHists);

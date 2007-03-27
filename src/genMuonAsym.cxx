@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.13 2007/02/14 16:11:37 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.14 2007/02/27 20:44:12 fewtrell Exp $
 
 /** @file generate Light Asymmetry calibrations from Muon event filesusing Cal Digi Hodoscope
     for track & hit information
@@ -7,13 +7,13 @@
  */
 
 // LOCAL INCLUDES
-#include "lib/AsymHists.h"
-#include "lib/MuonAsym.h"
-#include "lib/SimpleIniFile.h"
-#include "lib/CalPed.h"
-#include "lib/CIDAC2ADC.h"
-#include "lib/CalAsym.h"
-#include "lib/CGCUtil.h"
+#include "lib/CalibDataTypes/CalPed.h"
+#include "lib/CalibDataTypes/CIDAC2ADC.h"
+#include "lib/CalibDataTypes/CalAsym.h"
+#include "lib/Hists/AsymHists.h"
+#include "lib/Algs/MuonAsymAlg.h"
+#include "lib/Util/SimpleIniFile.h"
+#include "lib/Util/CGCUtil.h"
 
 // GLAST INCLUDES
 
@@ -152,7 +152,7 @@ int main(int argc,
                                              false);
 
     AsymHists asymHists;
-    MuonAsym muonAsym(peds,
+    MuonAsymALg muonAsym(peds,
                       dac2adc,
                       asymHists);
 
