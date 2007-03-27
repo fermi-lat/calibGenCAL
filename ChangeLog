@@ -1,4 +1,26 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Mar 27 11:50:49 PDT 2007
+calibGenCAL/src/lib
+
+Removed Files:
+	ADC2NRG.cxx ADC2NRG.h AsymHists.cxx AsymHists.h CGCUtil.cxx 
+	CGCUtil.h CIDAC2ADC.cxx CIDAC2ADC.h CalAsym.cxx CalAsym.h 
+	CalGeom.cxx CalGeom.h CalHodoscope.cxx CalHodoscope.h 
+	CalMPD.cxx CalMPD.h CalPed.cxx CalPed.h CfgMgr.cxx CfgMgr.h 
+	GCRHists.cxx GCRHists.h IntNonlinAlg.cxx IntNonlinAlg.h 
+	LangauFun.cxx LangauFun.h MPDHists.cxx MPDHists.h MuTrig.cxx 
+	MuTrig.h MuonAsym.cxx MuonAsym.h MuonCalibTkr.cxx 
+	MuonCalibTkr.h MuonMPD.cxx MuonMPD.h MuonPed.cxx MuonPed.h 
+	NeighborXtalk.cxx NeighborXtalk.h NeighborXtalkAlg.cxx 
+	NeighborXtalkAlg.h RootFileAnalysis.cxx RootFileAnalysis.h 
+	SimpleIniFile.cxx SimpleIniFile.h SplineUtil.cxx SplineUtil.h 
+	TwrHodoscope.cxx TwrHodoscope.h singlex16.h 
+Log Message:
+moved all library C++ files into subfolders (main 'lib' folder was getting too big)
+broke GCRCalib class into GCRCalibAlg & GCRHist classes
+genGCRCalib now uses newline delimited files for input file listing instead of ini file
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Mar 27 11:50:48 PDT 2007
 calibGenCAL/src
 
