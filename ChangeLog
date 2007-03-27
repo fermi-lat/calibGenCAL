@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Tue Mar 27 08:48:11 PDT 2007
+calibGenCAL/python/lib
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+Some optimimzations made in the read() methods of the XML calib file classes.
+
+    *
+------------------------------------------------------------
 User: dwood  Tue Mar 27 08:29:51 PDT 2007
 calibGenCAL/python
 
