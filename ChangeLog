@@ -1,5 +1,16 @@
 ------------------------------------------------------------
 User: fewtrell  Tue Mar 27 11:50:47 PDT 2007
+calibGenCAL/doc
+
+Modified Files:
+	CU06_Notes.html 
+Log Message:
+moved all library C++ files into subfolders (main 'lib' folder was getting too big)
+broke GCRCalib class into GCRCalibAlg & GCRHist classes
+genGCRCalib now uses newline delimited files for input file listing instead of ini file
+    *
+------------------------------------------------------------
+User: fewtrell  Tue Mar 27 11:50:47 PDT 2007
 calibGenCAL/cmt
 
 Modified Files:
