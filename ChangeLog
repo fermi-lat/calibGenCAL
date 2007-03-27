@@ -1,5 +1,30 @@
 ------------------------------------------------------------
 User: fewtrell  Tue Mar 27 11:50:47 PDT 2007
+calibGenCAL/python/bin
+
+Modified Files:
+	adc2nrgTXT2XML.bat adc2nrgVal.bat adc2nrgXML2TXT.bat 
+	adcplot.bat adcsmooth.bat asymApplyCalibGain.bat asymMerge.bat 
+	asymTXT2XML.bat asymVal.bat asymXML2TXT.bat biasTXT2XML.bat 
+	biasVal.bat build_adcsmooth.bat calCalibApplyRelgain.bat 
+	calFitsMerge.bat calibGainCoeff.bat charVal.bat charplot.bat 
+	checkXML.bat dacSlopesGen.bat dacSlopesPlot.bat 
+	dacSlopesVal.bat dumpROOTPlots.bat genADC2NRG.bat 
+	genDACsettings.bat genFlightPed.bat inl2tuple.bat 
+	inlPedSubtract.bat inlTXT2XML.bat inlXML2TXT.bat 
+	intNonlinMerge.bat intNonlinVal.bat mevPerDacMerge.bat 
+	mevPerDacVal.bat mpdApplyCalibGain.bat mpdTXT2XML.bat 
+	mpdXML2TXT.bat muSlopeTXT2XML.bat muSlopeVal.bat pedMerge.bat 
+	pedTXT2XML.bat pedVal.bat pedXML2TXT.bat tholdCIGen.bat 
+	tholdCIVal.bat tholdCIXML2TXT.bat txt2tuple.bat 
+	xdiodeXtalk.bat 
+Log Message:
+moved all library C++ files into subfolders (main 'lib' folder was getting too big)
+broke GCRCalib class into GCRCalibAlg & GCRHist classes
+genGCRCalib now uses newline delimited files for input file listing instead of ini file
+    *
+------------------------------------------------------------
+User: fewtrell  Tue Mar 27 11:50:47 PDT 2007
 calibGenCAL/doc
 
 Modified Files:
