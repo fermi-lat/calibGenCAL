@@ -1,5 +1,20 @@
 ------------------------------------------------------------
 User: fewtrell  Tue Mar 27 11:50:51 PDT 2007
+calibGenCAL/src/lib/Util
+
+Added Files:
+	CGCUtil.cxx CGCUtil.h CalHodoscope.cxx CalHodoscope.h 
+	CfgMgr.cxx CfgMgr.h LangauFun.cxx LangauFun.h 
+	RootFileAnalysis.cxx RootFileAnalysis.h SimpleIniFile.cxx 
+	SimpleIniFile.h SplineUtil.cxx SplineUtil.h TwrHodoscope.cxx 
+	TwrHodoscope.h 
+Log Message:
+moved all library C++ files into subfolders (main 'lib' folder was getting too big)
+broke GCRCalib class into GCRCalibAlg & GCRHist classes
+genGCRCalib now uses newline delimited files for input file listing instead of ini file
+    *
+------------------------------------------------------------
+User: fewtrell  Tue Mar 27 11:50:51 PDT 2007
 calibGenCAL/src/lib/Specs
 
 Added Files:
