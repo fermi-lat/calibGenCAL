@@ -1,14 +1,14 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genNeighborXtalk.cxx,v 1.4 2007/03/01 19:20:48 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genNeighborXtalk.cxx,v 1.5 2007/03/20 19:23:47 fewtrell Exp $
 
 /** @file Gen Neighboring Crystal Cross-talk calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
  */
 
 // LOCAL INCLUDES
-#include "lib/CGCUtil.h"
-#include "lib/CfgMgr.h"
-#include "lib/NeighborXtalk.h"
-#include "lib/NeighborXtalkAlg.h"
+#include "lib/CalibDataTypes/NeighborXtalk.h"
+#include "lib/Algs/NeighborXtalkAlg.h"
+#include "lib/Util/CGCUtil.h"
+#include "lib/Util/CfgMgr.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"

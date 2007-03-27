@@ -5,16 +5,16 @@
  */
 
 // LOCAL INCLUDES
-#include "lib/MuonCalibTkr.h"
-#include "lib/SimpleIniFile.h"
-#include "lib/CalPed.h"
-#include "lib/CIDAC2ADC.h"
-#include "lib/AsymHists.h"
-#include "lib/MPDHists.h"
-#include "lib/CalAsym.h"
-#include "lib/CalMPD.h"
-#include "lib/CGCUtil.h"
-#include "lib/ADC2NRG.h"
+#include "lib/CalibDataTypes/CalAsym.h"
+#include "lib/CalibDataTypes/CalMPD.h"
+#include "lib/CalibDataTypes/ADC2NRG.h"
+#include "lib/CalibDataTypes/CalPed.h"
+#include "lib/CalibDataTypes/CIDAC2ADC.h"
+#include "lib/Hists/AsymHists.h"
+#include "lib/Hists/MPDHists.h"
+#include "lib/Algs/MuonCalibTkrAlg.h"
+#include "lib/Util/SimpleIniFile.h"
+#include "lib/Util/CGCUtil.h"
 
 // GLAST INCLUDES
 
@@ -185,7 +185,7 @@ int main(int argc,
 
     CalAsym   calAsym;
     CalMPD    calMPD;
-    MuonCalibTkr tkrCalib(cfgFile,
+    MuonCalibTkrAlg tkrCalib(cfgFile,
                           peds,
                           dac2adc,
                           asymHists,

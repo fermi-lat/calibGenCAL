@@ -33,7 +33,12 @@ path_append PYTHONPATH ${ROOTSYS}/lib
 
 apply_pattern shared_library
 
-library calibGenCAL  lib/*.cxx lib/*.h 
+library calibGenCAL  lib/*.cxx lib/*.h \
+                     lib/CalibDataTypes/*.cxx lib/CalibDataTypes/*.h \
+                     lib/Hists/*.cxx lib/Hists/*.h \
+                     lib/Algs/*.cxx lib/Algs/*.h \
+                     lib/Specs/*.cxx lib/Specs/*.h \
+                     lib/Util/*.cxx lib/Util/*.h
 
 application genMuonPed genMuonPed.cxx
 

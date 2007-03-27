@@ -1,4 +1,4 @@
-REM $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/inl2tuple.bat,v 1.1 2007/01/16 17:22:14 fewtrell Exp $
+REM $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/bin/inl2tuple.bat,v 1.1 2007/02/16 18:57:35 dwood Exp $
 @echo off
 
 if not defined CALIBGENCALROOT goto :ERROR

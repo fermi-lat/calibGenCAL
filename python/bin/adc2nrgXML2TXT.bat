@@ -1,4 +1,4 @@
-REM $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/adc2nrgXML2TXT.bat,v 1.1 2007/02/02 20:28:42 fewtrell Exp $
+REM $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/bin/adc2nrgXML2TXT.bat,v 1.1 2007/02/16 18:57:34 dwood Exp $
 @echo off
 
 if not defined CALIBGENCALROOT goto :ERROR

@@ -1,15 +1,15 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runMuTrigEff.cxx,v 1.28 2007/02/14 16:11:37 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runMuTrigEff.cxx,v 1.29 2007/02/27 20:44:12 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
  */
 
 // LOCAL INCLUDES
-#include "lib/CalPed.h"
-#include "lib/MuTrig.h"
-#include "lib/CIDAC2ADC.h"
-#include "lib/SimpleIniFile.h"
-#include "lib/CGCUtil.h"
+#include "lib/CalibDataTypes/CalPed.h"
+#include "lib/Algs/MuTrigAlg.h"
+#include "lib/CalibDataTypes/CIDAC2ADC.h"
+#include "lib/Util/SimpleIniFile.h"
+#include "lib/Util/CGCUtil.h"
 
 // GLAST INCLUDES
 
@@ -68,7 +68,7 @@ int main(int argc,
     LogStream::addStream(cout);
     // generate logfile name
     string logfile =
-      MuTrig::genFilename(outputDir,
+      MuTrigAlg::genFilename(outputDir,
                           rootFileEvenEven,
                           "log.txt");
     ofstream tmpStrm(logfile.c_str());
@@ -102,7 +102,7 @@ int main(int argc,
     //-- CALCULATE TRIG EFFICIENCY --//
     // output histogram file name
     string histFilename =
-      MuTrig::genFilename(outputDir,
+      MuTrigAlg::genFilename(outputDir,
                           rootFileEvenEven,
                           "root");
     TFile histFile(histFilename.c_str(),
@@ -110,7 +110,7 @@ int main(int argc,
                    "Cal MuTrig Analysis",
                    9);
 
-    MuTrig muTrig;
+    MuTrigAlg muTrig;
 
     // reading charge injection file with diagnostic information (tack delay = 70)
     // input files
@@ -126,14 +126,14 @@ int main(int argc,
                                                   "CAL_LO_ENABLED",
              false);
 
-    muTrig.fillMuonHists(MuTrig::EVEN_ROW_EVEN_COL,
+    muTrig.fillMuonHists(MuTrigAlg::EVEN_ROW_EVEN_COL,
                          rootFileEvenEven,
                          nEvents,
                          peds,
                          calLOEnabled);
 
     //  trigger configuration B :   Even Rows Odd Columns
-    muTrig.fillMuonHists(MuTrig::EVEN_ROW_ODD_COL,
+    muTrig.fillMuonHists(MuTrigAlg::EVEN_ROW_ODD_COL,
                          rootFileEvenOdd,
                          nEvents,
                          peds,
@@ -143,7 +143,7 @@ int main(int argc,
 
     // generate txt output name
     string outputTXTFile =
-      MuTrig::genFilename(outputDir,
+      MuTrigAlg::genFilename(outputDir,
                           rootFileEvenEven,
                           "txt");
     muTrig.writeTXT(outputTXTFile);

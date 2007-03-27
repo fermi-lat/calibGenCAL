@@ -1,17 +1,18 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genGCRHists.cxx,v 1.2 2007/02/26 16:35:29 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genGCRHists.cxx,v 1.3 2007/02/27 20:44:12 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
-#include "lib/CalPed.h"
-#include "lib/CIDAC2ADC.h"
-#include "lib/GCRHists.h"
-#include "lib/SimpleIniFile.h"
-#include "lib/CGCUtil.h"
-#include "lib/CalMPD.h"
-#include "lib/CfgMgr.h"
+#include "lib/CalibDataTypes/CalPed.h"
+#include "lib/CalibDataTypes/CIDAC2ADC.h"
+#include "lib/CalibDataTypes/CalMPD.h"
+#include "lib/Hists/GCRHists.h"
+#include "lib/Algs/GCRCalibAlg.h"
+#include "lib/Util/SimpleIniFile.h"
+#include "lib/Util/CGCUtil.h"
+#include "lib/Util/CfgMgr.h"
 
 // GLAST INCLUDES
 
@@ -33,28 +34,41 @@ public:
          const char **argv) :
     cmdParser(path_remove_ext(__FILE__)),
     cfgPath("CfgPath",
+            'c',
             "path to configuration file",
-            ""),
+            "$(CALIBGENCALROOT)/cfg/defaults.cfg"),
     pedTXTFile("pedTXTFile",
                "input pedestal TXT file",
                ""
-    ),
+               ),
     inlTXTFile("inlTXTFIle",
                "input CIDAC2ADC (intNonlin) file",
                ""
-    ),
+               ),
+    digiFilenames("digiFilenames",
+                  "text file w/ newline delimited list of input digi ROOT files (must match input gcr recon root files)",
+                  ""),
+    gcrFilenames("gcrFilenames",
+                 "text file w/ newline delimited list of input gcr recon ROOT files (must match input DIGI root files)",
+                 ""),
     summaryMode("summaryMode",
                 's',
                 "generate summary histograms only (no individual channel hists)"
     )
-  {
-    cmdParser.registerArg(cfgPath);
 
+  {
     cmdParser.registerArg(pedTXTFile);
 
     cmdParser.registerArg(inlTXTFile);
 
+    cmdParser.registerArg(digiFilenames);
+
+    cmdParser.registerArg(gcrFilenames);
+
     cmdParser.registerSwitch(summaryMode);
+
+    cmdParser.registerVar(cfgPath);
+
 
     try {
       cmdParser.parseCmdLine(argc, argv);
@@ -68,13 +82,19 @@ public:
   // construct new parser
   CmdLineParser cmdParser;
 
-  CmdArg<string> cfgPath;
+  CmdOptVar<string> cfgPath;
 
   CmdArg<string> pedTXTFile;
 
   CmdArg<string> inlTXTFile;
 
+  CmdArg<string> digiFilenames;
+
+  CmdArg<string> gcrFilenames;
+
   CmdSwitch summaryMode;
+
+
 };
 
 int main(const int argc,
@@ -89,19 +109,15 @@ int main(const int argc,
     SimpleIniFile                              cfgFile(cfg.cfgPath.getVal());
 
     // input file(s)
-    vector<string> digiRootFileList = cfgFile. getVector<string>("GCR_CALIB",
-                                                                 "DIGI_ROOT_FILES",
-                                                                 ", ");
+    vector<string> digiRootFileList = getLinesFromFile(cfg.digiFilenames.getVal());
 
     if (digiRootFileList.size() < 1) {
       cout << __FILE__ << ": No input files specified" << endl;
       return -1;
     }
 
-    vector<string> gcrSelectRootFileList =
-      cfgFile. getVector<string>("GCR_CALIB",
-                                 "GCRSELECT_ROOT_FILES",
-                                 ", ");
+    vector<string> gcrSelectRootFileList = getLinesFromFile(cfg.gcrFilenames.getVal());
+      
 
     if (gcrSelectRootFileList.size() < 1) {
       cout << __FILE__ << ": No input files specified" << endl;
@@ -157,8 +173,9 @@ int main(const int argc,
                                                   "ENTRIES_PER_HIST",
                                                   3000);
 
-    GCRHists                     gcrMPD( &cfgFile,
-                                        cfg.summaryMode.getVal());
+    GCRHists  gcrHists(cfg.summaryMode.getVal());
+
+    GCRCalibAlg gcrCalib(&cfgFile);
 
     CalMPD calMPD;
 
@@ -170,13 +187,15 @@ int main(const int argc,
     histFile.reset(new TFile(histFilename.c_str(), "RECREATE", "CAL GCR MPD", 9));
 
     LogStream::get() << __FILE__ << ": reading digiRoot event file(s) starting w/ " << digiRootFileList[0] << endl;
-    gcrMPD.fillHists(nEntries,
-                     digiRootFileList,
-                     gcrSelectRootFileList,
-                     peds,
-                     dac2adc);
-    gcrMPD.trimHists();
-    gcrMPD.summarizeHists(LogStream::get());
+    gcrCalib.fillHists(nEntries,
+                       digiRootFileList,
+                       gcrSelectRootFileList,
+                       peds,
+                       dac2adc,
+                       gcrHists
+                       );
+    gcrHists.trimHists();
+    gcrHists.summarizeHists(LogStream::get());
 
     LogStream::get() << __FILE__ << ": writing histogram file: " << histFilename << endl;
     histFile->Write();

@@ -1,4 +1,4 @@
-REM $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/asymApplyCalibGain.bat,v 1.1 2006/08/03 13:11:03 fewtrell Exp $
+REM $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/bin/asymApplyCalibGain.bat,v 1.1 2007/02/16 18:57:34 dwood Exp $
 @echo off
 
 if not defined CALIBGENCALROOT goto :ERROR
