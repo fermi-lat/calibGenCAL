@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Mar 27 11:50:51 PDT 2007
+calibGenCAL/src/lib/Specs
+
+Added Files:
+	CalGeom.cxx CalGeom.h singlex16.h 
+Log Message:
+moved all library C++ files into subfolders (main 'lib' folder was getting too big)
+broke GCRCalib class into GCRCalibAlg & GCRHist classes
+genGCRCalib now uses newline delimited files for input file listing instead of ini file
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Mar 27 11:50:50 PDT 2007
 calibGenCAL/src/lib/Hists
 
