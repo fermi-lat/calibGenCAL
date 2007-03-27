@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2007/03/21 20:20:49 $"
-__version__   = "$Revision: 1.13 $, $Author: dwood $"
+__date__      = "$Date: 2007/03/23 17:41:37 $"
+__version__   = "$Revision: 1.14 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -28,14 +28,18 @@ MODE_READONLY   = calXML.MODE_READONLY
 
 
 
-POSNEG = ('NEG', 'POS')
+_POSNEG = ('NEG', 'POS')
 
-ERNG_MAP = {'LEX8' : calConstant.CRNG_LEX8, 'LEX1' : calConstant.CRNG_LEX1, 
-    'HEX8' : calConstant.CRNG_HEX8, 'HEX1' : calConstant.CRNG_HEX1}
+_ERNG_MAP = {'LEX8' : calConstant.CRNG_LEX8, 
+             'LEX1' : calConstant.CRNG_LEX1, 
+             'HEX8' : calConstant.CRNG_HEX8, 
+             'HEX1' : calConstant.CRNG_HEX1}
 
-POSNEG_MAP = {'NEG' : 0, 'POS' : 1}
+_POSNEG_MAP = {'NEG' : 0, 
+               'POS' : 1}
 
-DRNG_MAP = {'COARSE' : calConstant.CDAC_COARSE, 'FINE' : calConstant.CDAC_FINE}
+_DRNG_MAP = {'COARSE' : calConstant.CDAC_COARSE, 
+            'FINE'  : calConstant.CDAC_FINE}
 
 
 INTNONLIN_MAX_DATA = 256
@@ -352,7 +356,7 @@ class calTholdCICalibXML(calCalibXML):
                         # insert <face> elements
 
                         f = doc.createElementNS(None, 'face')
-                        f.setAttributeNS(None, 'end', POSNEG[end])
+                        f.setAttributeNS(None, 'end', _POSNEG[end])
                         x.appendChild(f)
 
                         # insert <tholdCI> element
@@ -492,8 +496,7 @@ class calTholdCICalibXML(calCalibXML):
 
         # find <tower> elements
 
-        tList = self.getDoc().xpath('.//tower')
-        for t in tList:
+        for t in self.getDoc().xpath('.//tower'):
 
             tRow = int(t.getAttributeNS(None, 'iRow'))
             tCol = int(t.getAttributeNS(None, 'iCol'))
@@ -501,45 +504,39 @@ class calTholdCICalibXML(calCalibXML):
 
             # find <layer> elements
 
-            lList = t.xpath('.//layer')
-            for l in lList:
+            for l in t.xpath('.//layer'):
 
                 layer = int(l.getAttributeNS(None, 'iLayer'))
                 row = layerToRow(layer)
 
                 # find <xtal> elements
-
-                xList = l.xpath('.//xtal')
-                for x in xList:
+ 
+                for x in l.xpath('.//xtal'):
 
                     fe = int(x.getAttributeNS(None, 'iXtal'))
 
                     # find <face> elements
 
-                    fList = x.xpath('.//face')
-                    for f in fList:
+                    for f in x.xpath('.//face'):
 
-                        face = f.getAttributeNS(None, 'end')
-                        end = POSNEG_MAP[face]
+                        end = _POSNEG_MAP[f.getAttributeNS(None, 'end')]
         
                         # find <tholdCI> elements
 
-                        ciList = f.xpath('.//tholdCI')
-                        for ci in ciList:
-
-                            adc = ci.getAttributeNS(None, 'LACVal')
-                            adcData[tem, row, end, fe, 0] = float(adc)
-                            adc = ci.getAttributeNS(None, 'FLEVal')
-                            adcData[tem, row, end, fe, 1] = float(adc)
-                            adc = ci.getAttributeNS(None, 'FHEVal')
-                            adcData[tem, row, end, fe, 2] = float(adc)
+                        for ci in f.xpath('.//tholdCI'):
+                            
+                            ad = adcData[tem, row, end, fe, :]
+                            
+                            ad[0] = float(ci.getAttributeNS(None, 'LACVal'))
+                            ad[1] = float(ci.getAttributeNS(None, 'FLEVal'))
+                            ad[2] = float(ci.getAttributeNS(None, 'FHEVal'))
 
                             # find <tholdCIRange> elements
-
-                            cirList = ci.xpath('.//tholdCIRange')
-                            for cir in cirList:
+ 
+                            for cir in ci.xpath('.//tholdCIRange'):
+                            
                                 erngName = cir.getAttributeNS(None, 'range')
-                                erng = ERNG_MAP[erngName]
+                                erng = _ERNG_MAP[erngName]
                                 adc = cir.getAttributeNS(None, 'ULDVal')
                                 uldData[tem, row, end, fe, erng] = float(adc)
                                 adc = cir.getAttributeNS(None, 'pedVal')
@@ -657,7 +654,7 @@ class calIntNonlinCalibXML(calCalibXML):
                         # insert <face> elements
 
                         f = doc.createElementNS(None, 'face')
-                        f.setAttributeNS(None, 'end', POSNEG[end])
+                        f.setAttributeNS(None, 'end', _POSNEG[end])
                         x.appendChild(f)
 
                         for erng in range(calConstant.NUM_RNG):
@@ -807,7 +804,7 @@ class calIntNonlinCalibXML(calCalibXML):
                         # insert <face> elements
 
                         f = doc.createElementNS(None, 'face')
-                        f.setAttributeNS(None, 'end', POSNEG[end])
+                        f.setAttributeNS(None, 'end', _POSNEG[end])
                         x.appendChild(f)
 
                         for erng in range(calConstant.NUM_RNG):
@@ -955,7 +952,7 @@ class calIntNonlinCalibXML(calCalibXML):
         dList = self.getDoc().xpath('.//dac')
         for d in dList:
             erngName = d.getAttributeNS(None, 'range')
-            erng = ERNG_MAP[erngName]
+            erng = _ERNG_MAP[erngName]
             valueStr = d.getAttributeNS(None, 'values')
             valueList = valueStr.split()
             data = []
@@ -1002,7 +999,7 @@ class calIntNonlinCalibXML(calCalibXML):
                     for f in fList:
 
                         face = f.getAttributeNS(None, 'end')
-                        end = POSNEG_MAP[face]
+                        end = _POSNEG_MAP[face]
 
                         # find <intNonlin> elements
 
@@ -1010,7 +1007,7 @@ class calIntNonlinCalibXML(calCalibXML):
                         for n in nList:
 
                             erngName = n.getAttributeNS(None, 'range')
-                            erng = ERNG_MAP[erngName]
+                            erng = _ERNG_MAP[erngName]
                             valueStr = n.getAttributeNS(None, 'values')
                             valueList = valueStr.split()
                             data = adcData[erng]
@@ -1066,9 +1063,8 @@ class calIntNonlinCalibXML(calCalibXML):
                                   calConstant.NUM_FE, INTNONLIN_MAX_DATA), Numeric.Float32)
 
         # find <tower> elements
-
-        tList = self.getDoc().xpath('.//tower')
-        for t in tList:
+ 
+        for t in self.getDoc().xpath('.//tower'):
 
             tRow = int(t.getAttributeNS(None, 'iRow'))
             tCol = int(t.getAttributeNS(None, 'iCol'))
@@ -1076,34 +1072,30 @@ class calIntNonlinCalibXML(calCalibXML):
 
             # find <layer> elements
 
-            lList = t.xpath('.//layer')
-            for l in lList:
+            for l in t.xpath('.//layer'):
 
                 layer = int(l.getAttributeNS(None, 'iLayer'))
                 row = layerToRow(layer)
 
                 # find <xtal> elements
 
-                xList = l.xpath('.//xtal')
-                for x in xList:
+                for x in l.xpath('.//xtal'):
 
                     fe = int(x.getAttributeNS(None, 'iXtal'))
 
                     # find <face> elements
 
-                    fList = x.xpath('.//face')
-                    for f in fList:
+                    for f in x.xpath('.//face'):
 
                         face = f.getAttributeNS(None, 'end')
-                        end = POSNEG_MAP[face]
+                        end = _POSNEG_MAP[face]
 
                         # find <intNonlin> elements
 
-                        nList = f.xpath('.//intNonlin')
-                        for n in nList:
+                        for n in f.xpath('.//intNonlin'):
 
                             erngName = n.getAttributeNS(None, 'range')
-                            erng = ERNG_MAP[erngName]
+                            erng = _ERNG_MAP[erngName]
                             
                             adata = adcData[erng]
                             ddata = dacData[erng]
@@ -1121,10 +1113,12 @@ class calIntNonlinCalibXML(calCalibXML):
                             ldata[tem, row, end, fe, 0] = len(valueList)
                                                     
                             x = 0
+                            ad = adata[tem, row, end, fe, :]
+                            dd = ddata[tem, row, end, fe, :]
+                            
                             for adc in valueList:
-                                adata[tem, row, end, fe, x] = float(adc)
-                                d = sdacList[x]
-                                ddata[tem, row, end, fe, x] = float(d)
+                                ad[x] = float(adc) 
+                                dd[x] = float(sdacList[x])
                                 x += 1
                                 
         return (lengthData, dacData, adcData)            
@@ -1388,11 +1382,7 @@ class calAsymCalibXML(calCalibXML):
 
         # find <xpos> element
 
-        xpList = self.getDoc().xpath('.//xpos')
-        xpLen = len(xpList)
-        if xpLen != 1:
-            raise calFileReadExcept, "found %d <xpos> elements (expected 1)" % xpLen
-        xp = xpList[0]
+        xp = self.getDoc().xpath('.//xpos')[0]
 
         valueStr = xp.getAttributeNS(None, 'values')
         values = valueStr.split(' ')
@@ -1407,99 +1397,88 @@ class calAsymCalibXML(calCalibXML):
         
         # find <tower> elements
 
-        tList = self.getDoc().xpath('.//tower')
-        for t in tList:
+        for t in self.getDoc().xpath('.//tower'):
 
             tRow = int(t.getAttributeNS(None, 'iRow'))
             tCol = int(t.getAttributeNS(None, 'iCol'))
             tem = towerToTem(tCol, tRow)
 
             # find <layer> elements
-
-            lList = t.xpath('.//layer')
-            for l in lList:
+             
+            for l in t.xpath('.//layer'):
 
                 layer = int(l.getAttributeNS(None, 'iLayer'))
                 row = layerToRow(layer)
 
                 # find <xtal> elements
-
-                xList = l.xpath('.//xtal')
-                for x in xList:
+ 
+                for x in l.xpath('.//xtal'):
 
                     fe = int(x.getAttributeNS(None, 'iXtal'))
 
                     # find <face> elements
 
-                    fList = x.xpath('.//face')
-                    fLen = len(fList)
-                    if fLen != 1:
-                        raise calFileReadExcept, "found %d <face> elements (expected 1)" % fLen
-                    f = fList[0]
-                    face = f.getAttributeNS(None, 'end')
+                    f = x.xpath('.//face')[0]
                     
                     # find <asym> elements
 
-                    asList = f.xpath('.//asym')
-                    asLen = len(asList)
-                    if asLen != 1:
-                        raise calFileReadExcept, "found %d <asym> elements (expected 1)" % asLen
-                    as = asList[0]
+                    as = f.xpath('.//asym')[0]
+                    ad = asymData[tem, row, fe, ...]
 
                     valueList = as.getAttributeNS(None, 'bigVals')
                     values = valueList.split(' ')
                     v = 0
                     for asym in values:
-                        asymData[tem, row, fe, 0, v] = float(asym)
+                        ad[0, v] = float(asym)
                         v += 1
 
                     valueList = as.getAttributeNS(None, 'smallVals')
                     values = valueList.split(' ')
                     v = 0
                     for asym in values:
-                        asymData[tem, row, fe, 1, v] = float(asym)
+                        ad[1, v] = float(asym)
                         v += 1
 
                     valueList = as.getAttributeNS(None, 'NsmallPbigVals')
                     values = valueList.split(' ')
                     v = 0
                     for asym in values:
-                        asymData[tem, row, fe, 2, v] = float(asym)
+                        ad[2, v] = float(asym)
                         v += 1
 
                     valueList = as.getAttributeNS(None, 'PsmallNbigVals')
                     values = valueList.split(' ')
                     v = 0
                     for asym in values:
-                        asymData[tem, row, fe, 3, v] = float(asym)
+                        ad[3, v] = float(asym)
                         v += 1
 
                     valueList = as.getAttributeNS(None, 'bigSigs')
                     values = valueList.split(' ')
                     v = 0
                     for asym in values:
-                        asymData[tem, row, fe, 4, v] = float(asym)
+                        ad[4, v] = float(asym)
                         v += 1
 
                     valueList = as.getAttributeNS(None, 'smallSigs')
                     values = valueList.split(' ')
                     v = 0
                     for asym in values:
-                        asymData[tem, row, fe, 5, v] = float(asym)
+                        ad[5, v] = float(asym)
                         v += 1
 
                     valueList = as.getAttributeNS(None, 'NsmallPbigSigs')
                     values = valueList.split(' ')
                     v = 0
                     for asym in values:
-                        asymData[tem, row, fe, 6, v] = float(asym)
+                        ad[6, v] = float(asym)
                         v += 1
 
                     valueList = as.getAttributeNS(None, 'PsmallNbigSigs')
                     values = valueList.split(' ')
                     v = 0
                     for asym in values:
-                        asymData[tem, row, fe, 7, v] = float(asym)
+                        ad[7, v] = float(asym)
                         v += 1                        
 
         return (xposData, asymData)
@@ -1613,7 +1592,7 @@ class calMevPerDacCalibXML(calCalibXML):
 
                         bs = doc.createElementNS(None, 'bigSmall')
 
-                        bs.setAttributeNS(None, 'end', POSNEG[end])
+                        bs.setAttributeNS(None, 'end', _POSNEG[end])
                         val = energyData[tem, row, fe, (4 + (end * 2))]
                         bs.setAttributeNS(None, 'bigSmallRatioVals', '%0.6f' % val)
                         val = energyData[tem, row, fe, (5 + (end * 2))]
@@ -1656,9 +1635,8 @@ class calMevPerDacCalibXML(calCalibXML):
                                    Numeric.Float32)
 
         # find <tower> elements
-
-        tList = self.getDoc().xpath('.//tower')
-        for t in tList:
+ 
+        for t in self.getDoc().xpath('.//tower'):
 
             tRow = int(t.getAttributeNS(None, 'iRow'))
             tCol = int(t.getAttributeNS(None, 'iCol'))
@@ -1666,60 +1644,42 @@ class calMevPerDacCalibXML(calCalibXML):
 
             # find <layer> elements
 
-            lList = t.xpath('.//layer')
-            for l in lList:
+            for l in t.xpath('.//layer'):
 
                 layer = int(l.getAttributeNS(None, 'iLayer'))
                 row = layerToRow(layer)
 
                 # find <xtal> elements
-
-                xList = l.xpath('.//xtal')
-                for x in xList:
+ 
+                for x in l.xpath('.//xtal'):
 
                     fe = int(x.getAttributeNS(None, 'iXtal'))
 
                     # find <face> elements
 
-                    fList = x.xpath('.//face')
-                    fLen = len(fList)
-                    if fLen != 1:
-                        raise calFileReadExcept, "found %d <face> elements (expected 1)" % fLen
-                    f = fList[0]
-                    face = f.getAttributeNS(None, 'end')
+                    f = x.xpath('.//face')[0]
                     
                     # find <mevPerDac> elements
 
-                    meList = f.xpath('.//mevPerDac')
-                    meLen = len(meList)
-                    if meLen != 1:
-                        raise calFileReadExcept, "found %d <mevPerDac> elements (expected 1)" % meLen
-                    me = meList[0]
-                    eng = me.getAttributeNS(None, 'bigVal')
-                    energyData[tem, row, fe, 0] = float(eng)
-                    eng = me.getAttributeNS(None, 'smallVal')
-                    energyData[tem, row, fe, 1] = float(eng)
-                    eng = me.getAttributeNS(None, 'bigSig')
-                    energyData[tem, row, fe, 2] = float(eng)
-                    eng = me.getAttributeNS(None, 'smallSig')
-                    energyData[tem, row, fe, 3] = float(eng)
+                    me = f.xpath('.//mevPerDac')[0]
+                    ed = energyData[tem, row, fe, :]
+                    
+                    ed[0] = float(me.getAttributeNS(None, 'bigVal'))
+                    ed[1] = float(me.getAttributeNS(None, 'smallVal'))
+                    ed[2] = float(me.getAttributeNS(None, 'bigSig'))
+                    ed[3] = float(me.getAttributeNS(None, 'smallSig'))
 
                     # find <bigSmall> elements
-
-                    bsList = me.xpath('.//bigSmall')
-                    for bs in bsList:
+ 
+                    for bs in me.xpath('.//bigSmall'):
 
                         end = f.getAttributeNS(None, 'end')
                         if end == 'NEG':
-                            eng = bs.getAttributeNS(None, 'bigSmallRatioVals')
-                            energyData[tem, row, fe, 4] = float(eng)
-                            eng = bs.getAttributeNS(None, 'bigSmallRatioSigs')
-                            energyData[tem, row, fe, 5] = float(eng)
+                            ed[4] = float(bs.getAttributeNS(None, 'bigSmallRatioVals'))
+                            ed[5] = float(bs.getAttributeNS(None, 'bigSmallRatioSigs'))
                         else:
-                            eng = bs.getAttributeNS(None, 'bigSmallRatioVals')
-                            energyData[tem, row, fe, 6] = float(eng)
-                            eng = bs.getAttributeNS(None, 'bigSmallRatioSigs')
-                            energyData[tem, row, fe, 7] = float(eng)
+                            ed[6] = float(bs.getAttributeNS(None, 'bigSmallRatioVals'))
+                            ed[7] = float(bs.getAttributeNS(None, 'bigSmallRatioSigs'))
                                     
         return energyData
 
@@ -1763,7 +1723,7 @@ class calPedCalibXML(calCalibXML):
 
         # insert <dimension> element  
             
-        d = self.dimensionWrite(nRange = 4, nFace = 2)
+        d = self.dimensionWrite(nRange = 4, n = 2)
         r.appendChild(d)
 
         for tem in tems:
@@ -1806,7 +1766,7 @@ class calPedCalibXML(calCalibXML):
                         # insert <face> elements
 
                         f = doc.createElementNS(None, 'face')
-                        f.setAttributeNS(None, 'end', POSNEG[end])
+                        f.setAttributeNS(None, 'end', _POSNEG[end])
                         x.appendChild(f)
 
                         # insert <calPed> elements
@@ -1853,9 +1813,8 @@ class calPedCalibXML(calCalibXML):
                                  calConstant.NUM_FE, calConstant.NUM_RNG, 3), Numeric.Float32)
 
         # find <tower> elements
-
-        tList = self.getDoc().xpath('.//tower')
-        for t in tList:
+ 
+        for t in self.getDoc().xpath('.//tower'):
 
             tRow = int(t.getAttributeNS(None, 'iRow'))
             tCol = int(t.getAttributeNS(None, 'iCol'))
@@ -1863,43 +1822,34 @@ class calPedCalibXML(calCalibXML):
 
             # find <layer> elements
 
-            lList = t.xpath('.//layer')
-            for l in lList:
+            for l in t.xpath('.//layer'):
 
                 layer = int(l.getAttributeNS(None, 'iLayer'))
                 row = layerToRow(layer)
 
                 # find <xtal> elements
 
-                xList = l.xpath('.//xtal')
-                for x in xList:
+                for x in l.xpath('.//xtal'):
 
                     fe = int(x.getAttributeNS(None, 'iXtal'))
 
                     # find <face> elements
 
-                    fList = x.xpath('.//face')
-                    for f in fList:
+                    for f in x.xpath('.//face'):
 
                         face = f.getAttributeNS(None, 'end')
-                        end = POSNEG_MAP[face]
+                        end = _POSNEG_MAP[face]
         
                         # find <calPed> elements
 
-                        pList = f.xpath('.//calPed')
-                        for p in pList:
+                        for p in f.xpath('.//calPed'):
 
-                            erngName = p.getAttributeNS(None, 'range')
-                            erng = ERNG_MAP[erngName]
+                            erng = _ERNG_MAP[p.getAttributeNS(None, 'range')]
+                            pd = pedData[tem, row, end, fe, erng, :]
 
-                            avg = float(p.getAttributeNS(None, 'avg'))
-                            pedData[tem, row, end, fe, erng, 0] = avg
-
-                            sig = float(p.getAttributeNS(None, 'sig'))
-                            pedData[tem, row, end, fe, erng, 1] = sig
-
-                            cos = float(p.getAttributeNS(None, 'cos'))
-                            pedData[tem, row, end, fe, erng, 2] = cos
+                            pd[0] = float(p.getAttributeNS(None, 'avg')) 
+                            pd[1] = float(p.getAttributeNS(None, 'sig'))
+                            pd[2] = float(p.getAttributeNS(None, 'cos'))
                                                  
         return pedData
         
@@ -1985,7 +1935,7 @@ class calMuSlopeCalibXML(calCalibXML):
                         # insert <face> elements
 
                         f = doc.createElementNS(None, 'face')
-                        f.setAttributeNS(None, 'end', POSNEG[end])
+                        f.setAttributeNS(None, 'end', _POSNEG[end])
                         x.appendChild(f)
 
                         # insert <muSlope> elements
@@ -2029,50 +1979,42 @@ class calMuSlopeCalibXML(calCalibXML):
                                  calConstant.NUM_FE, calConstant.NUM_RNG, 2), Numeric.Float32)
 
         # find <tower> elements
-
-        tList = self.getDoc().xpath('.//tower')
-        for t in tList:
+ 
+        for t in self.getDoc().xpath('.//tower'):
 
             tRow = int(t.getAttributeNS(None, 'iRow'))
             tCol = int(t.getAttributeNS(None, 'iCol'))
             tem = towerToTem(tCol, tRow)
 
             # find <layer> elements
-
-            lList = t.xpath('.//layer')
-            for l in lList:
+ 
+            for l in t.xpath('.//layer'):
 
                 layer = int(l.getAttributeNS(None, 'iLayer'))
                 row = layerToRow(layer)
 
                 # find <xtal> elements
 
-                xList = l.xpath('.//xtal')
-                for x in xList:
+                for x in l.xpath('.//xtal'):
 
                     fe = int(x.getAttributeNS(None, 'iXtal'))
 
                     # find <face> elements
 
-                    fList = x.xpath('.//face')
-                    for f in fList:
+                    for f in x.xpath('.//face'):
 
                         face = f.getAttributeNS(None, 'end')
-                        end = POSNEG_MAP[face]
+                        end = _POSNEG_MAP[face]
         
                         # find <muSlope> elements
+                        
+                        for m in f.xpath('.//muSlope'):
 
-                        mList = f.xpath('.//muSlope')
-                        for m in mList:
+                            erng = _ERNG_MAP[m.getAttributeNS(None, 'range')]
+                            sd = slopeData[tem, row, end, fe, erng, :]
 
-                            erngName = m.getAttributeNS(None, 'range')
-                            erng = ERNG_MAP[erngName]
-
-                            slope = float(m.getAttributeNS(None, 'slope'))
-                            slopeData[tem, row, end, fe, erng, 0] = slope
-
-                            error = float(m.getAttributeNS(None, 'error'))
-                            slopeData[tem, row, end, fe, erng, 1] = error
+                            sd[0] = float(m.getAttributeNS(None, 'slope'))
+                            sd[1] = float(m.getAttributeNS(None, 'error'))
                                    
         return slopeData                   
 
@@ -2181,7 +2123,7 @@ class calDacSlopesCalibXML(calCalibXML):
                         # insert <face> elements
 
                         f = doc.createElementNS(None, 'face')
-                        f.setAttributeNS(None, 'end', POSNEG[end])
+                        f.setAttributeNS(None, 'end', _POSNEG[end])
                         x.appendChild(f)
 
                         # insert <dacSlopes> element
@@ -2304,9 +2246,8 @@ class calDacSlopesCalibXML(calCalibXML):
             calConstant.NUM_END, calConstant.NUM_FE, 6), Numeric.Int16)
 
         # find <tower> elements
-
-        tList = self.getDoc().xpath('.//tower')
-        for t in tList:
+ 
+        for t in self.getDoc().xpath('.//tower'):
 
             tRow = int(t.getAttributeNS(None, 'iRow'))
             tCol = int(t.getAttributeNS(None, 'iCol'))
@@ -2314,85 +2255,63 @@ class calDacSlopesCalibXML(calCalibXML):
 
             # find <layer> elements
 
-            lList = t.xpath('.//layer')
-            for l in lList:
+            for l in t.xpath('.//layer'):
 
                 layer = int(l.getAttributeNS(None, 'iLayer'))
                 row = layerToRow(layer)
 
                 # find <xtal> elements
 
-                xList = l.xpath('.//xtal')
-                for x in xList:
+                for x in l.xpath('.//xtal'):
 
                     fe = int(x.getAttributeNS(None, 'iXtal'))
 
                     # find <face> elements
 
-                    fList = x.xpath('.//face')
-                    for f in fList:
+                    for f in x.xpath('.//face'):
 
                         face = f.getAttributeNS(None, 'end')
-                        end = POSNEG_MAP[face]
+                        end = _POSNEG_MAP[face]
         
                         # find <dacSlopes> elements
 
-                        dsList = f.xpath('.//dacSlopes')
-                        ds = dsList[0]
+                        ds = f.xpath('.//dacSlopes')[0]
+                        dd = dacData[tem, row, end, fe, :]
+                        rd = rangeData[tem, row, end, fe, :]
+                         
+                        dd[0] = float(ds.getAttributeNS(None, 'LACSlopeVal'))
+                        dd[1] = float(ds.getAttributeNS(None, 'LACOffsetVal'))
+                        dd[2] = float(ds.getAttributeNS(None, 'FLESlopeVal'))
+                        dd[3] = float(ds.getAttributeNS(None, 'FLEOffsetVal'))
+                        dd[4] = float(ds.getAttributeNS(None, 'FHESlopeVal'))
+                        dd[5] = float(ds.getAttributeNS(None, 'FHEOffsetVal'))
+                        dd[6] = float(ds.getAttributeNS(None, 'LACSlopeErr'))
+                        dd[7] = float(ds.getAttributeNS(None, 'LACOffsetErr'))
+                        dd[8] = float(ds.getAttributeNS(None, 'FLESlopeErr'))
+                        dd[9] = float(ds.getAttributeNS(None, 'FLEOffsetErr'))
+                        dd[10] = float(ds.getAttributeNS(None, 'FHESlopeErr'))
+                        dd[11] = float(ds.getAttributeNS(None, 'FHEOffsetErr'))
                         
-                        dsVal = ds.getAttributeNS(None, 'LACSlopeVal')
-                        dacData[tem,row,end,fe,0] = float(dsVal)
-                        dsVal = ds.getAttributeNS(None, 'LACOffsetVal')
-                        dacData[tem,row,end,fe,1] = float(dsVal)
-                        dsVal = ds.getAttributeNS(None, 'FLESlopeVal')
-                        dacData[tem,row,end,fe,2] = float(dsVal)
-                        dsVal = ds.getAttributeNS(None, 'FLEOffsetVal')
-                        dacData[tem,row,end,fe,3] = float(dsVal)
-                        dsVal = ds.getAttributeNS(None, 'FHESlopeVal')
-                        dacData[tem,row,end,fe,4] = float(dsVal)
-                        dsVal = ds.getAttributeNS(None, 'FHEOffsetVal')
-                        dacData[tem,row,end,fe,5] = float(dsVal)
-                        dsVal = ds.getAttributeNS(None, 'LACSlopeErr')
-                        dacData[tem,row,end,fe,6] = float(dsVal)
-                        dsVal = ds.getAttributeNS(None, 'LACOffsetErr')
-                        dacData[tem,row,end,fe,7] = float(dsVal)
-                        dsVal = ds.getAttributeNS(None, 'FLESlopeErr')
-                        dacData[tem,row,end,fe,8] = float(dsVal)
-                        dsVal = ds.getAttributeNS(None, 'FLEOffsetErr')
-                        dacData[tem,row,end,fe,9] = float(dsVal)
-                        dsVal = ds.getAttributeNS(None, 'FHESlopeErr')
-                        dacData[tem,row,end,fe,10] = float(dsVal)
-                        dsVal = ds.getAttributeNS(None, 'FHEOffsetErr')
-                        dacData[tem,row,end,fe,11] = float(dsVal)
-                        dsVal = ds.getAttributeNS(None, 'LACRange')
-                        rangeData[tem,row,end,fe,0] = DRNG_MAP[str(dsVal)]
-                        dsVal = ds.getAttributeNS(None, 'FLERange')
-                        rangeData[tem,row,end,fe,1] = DRNG_MAP[str(dsVal)]
-                        dsVal = ds.getAttributeNS(None, 'FHERange')
-                        rangeData[tem,row,end,fe,2] = DRNG_MAP[str(dsVal)]
+                        rd[0] = _DRNG_MAP[str(ds.getAttributeNS(None, 'LACRange'))]
+                        rd[1] = _DRNG_MAP[str(ds.getAttributeNS(None, 'FLERange'))]
+                        rd[2] = _DRNG_MAP[str(ds.getAttributeNS(None, 'FHERange'))]
 
                         # find <dacSlopesRange> elements
 
-                        dsrList = ds.xpath('.//dacSlopesRange')
-                        for dsr in dsrList:
+                        for dsr in ds.xpath('.//dacSlopesRange'):
                             
                             erngName = dsr.getAttributeNS(None, 'range')
-                            erng = ERNG_MAP[erngName]
+                            erng = _ERNG_MAP[erngName]
+                            ud = uldData[erng, tem, row, end, fe, :]
 
-                            dsrVal = dsr.getAttributeNS(None, 'ULDSlopeVal')
-                            uldData[erng,tem, row, end, fe, 0] = float(dsrVal)
-                            dsrVal = dsr.getAttributeNS(None, 'ULDOffsetVal')
-                            uldData[erng,tem, row, end, fe, 1] = float(dsrVal)
-                            dsrVal = dsr.getAttributeNS(None, 'ULDSatVal')
-                            uldData[erng,tem, row, end, fe, 2] = float(dsrVal)
-                            dsrVal = dsr.getAttributeNS(None, 'ULDSlopeErr')
-                            uldData[erng,tem, row, end, fe, 3] = float(dsrVal)
-                            dsrVal = dsr.getAttributeNS(None, 'ULDOffsetErr')
-                            uldData[erng,tem, row, end, fe, 4] = float(dsrVal)
-                            dsrVal = dsr.getAttributeNS(None, 'ULDSatErr')
-                            uldData[erng,tem, row, end, fe, 5] = float(dsrVal)
-                            dsrVal = dsr.getAttributeNS(None, 'ULDRange')
-                            rangeData[tem,row,end,fe,erng+3] = DRNG_MAP[str(dsrVal)]
+                            ud[0] = float(dsr.getAttributeNS(None, 'ULDSlopeVal'))
+                            ud[1] = float(dsr.getAttributeNS(None, 'ULDOffsetVal'))
+                            ud[2] = float(dsr.getAttributeNS(None, 'ULDSatVal'))
+                            ud[3] = float(dsr.getAttributeNS(None, 'ULDSlopeErr'))
+                            ud[4] = float(dsr.getAttributeNS(None, 'ULDOffsetErr'))
+                            ud[5] = float(dsr.getAttributeNS(None, 'ULDSatErr'))
+                            
+                            rd[erng+3] = _DRNG_MAP[str(dsr.getAttributeNS(None, 'ULDRange'))]
                                
                                         
         return (dacData, uldData, rangeData)
@@ -2428,10 +2347,9 @@ def rowToLayer(row):
         raise ValueError, "row parameter limited to range [0,7]"
 
     if row < 4:
-        layer = (row * 2)
+        return (row * 2)
     else:
-        layer = (((row - 4) * 2) + 1)
-    return layer
+        return (((row - 4) * 2) + 1)
 
     
     
@@ -2450,7 +2368,7 @@ def towerToTem(twrCol, twrRow):
     if (twrRow < 0) or (twrRow > 3):
         raise ValueError, "twrRow parameter limited to range [0,3]"
 
-    return twrCol + (4 * twrRow)
+    return (twrCol + (4 * twrRow))
 
 
 
@@ -2467,10 +2385,8 @@ def temToTower(temNum):
     
     if (temNum < 0) or (temNum > 15):
         raise ValueError, "temNum parameter limited to range [0,15]"
-
-    twrCol = (temNum % 4)
-    twrRow = (temNum / 4)
-    return (twrCol, twrRow)
+ 
+    return ((temNum % 4), (temNum / 4))
 
 
 
