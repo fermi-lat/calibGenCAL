@@ -1,5 +1,18 @@
 ------------------------------------------------------------
 User: fewtrell  Tue Mar 27 11:50:50 PDT 2007
+calibGenCAL/src/lib/CalibDataTypes
+
+Added Files:
+	ADC2NRG.cxx ADC2NRG.h CIDAC2ADC.cxx CIDAC2ADC.h CalAsym.cxx 
+	CalAsym.h CalMPD.cxx CalMPD.h CalPed.cxx CalPed.h 
+	NeighborXtalk.cxx NeighborXtalk.h 
+Log Message:
+moved all library C++ files into subfolders (main 'lib' folder was getting too big)
+broke GCRCalib class into GCRCalibAlg & GCRHist classes
+genGCRCalib now uses newline delimited files for input file listing instead of ini file
+    *
+------------------------------------------------------------
+User: fewtrell  Tue Mar 27 11:50:50 PDT 2007
 calibGenCAL/src/lib/Algs
 
 Added Files:
