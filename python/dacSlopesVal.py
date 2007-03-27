@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL DacSlopes calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/10/10 18:17:25 $"
-__version__   = "$Revision: 1.11 $, $Author: dwood $"
+__date__      = "$Date: 2006/10/16 15:46:32 $"
+__version__   = "$Revision: 1.12 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -975,7 +975,7 @@ if __name__ == '__main__':
     log.info("ULD LEX1 MeV saturation average = %f, stddev=%f", av, sd)
     
     mn = min(Numeric.ravel(uldData[calConstant.CRNG_LEX1,...,2]))
-    log.info("ULD LEX8 MeV saturation minimum = %f", mn)
+    log.info("ULD LEX1 MeV saturation minimum = %f", mn)
     
     # ULD HEX8
     
@@ -985,7 +985,7 @@ if __name__ == '__main__':
     mn = min(data)
     mx = max(data)
     log.info("ULD HEX8 Mev/DAC slope average = %f, stddev=%f", av, sd) 
-    log.info("ULD HEX1 Mev/DAC slope minumum = %f, maximum = %f", mn, mx)
+    log.info("ULD HEX8 Mev/DAC slope minumum = %f, maximum = %f", mn, mx)
     
     av = Numeric.average(uldData[calConstant.CRNG_HEX8,...,1], axis = None) 
     sd = MLab.std(Numeric.ravel(uldData[calConstant.CRNG_HEX8,...,1]))
@@ -996,7 +996,7 @@ if __name__ == '__main__':
     log.info("ULD HEX8 MeV saturation average = %f, stddev=%f", av, sd)
     
     mn = min(Numeric.ravel(uldData[calConstant.CRNG_HEX8,...,2]))
-    log.info("ULD LEX8 MeV saturation minimum = %f", mn)
+    log.info("ULD HEX8 MeV saturation minimum = %f", mn)
 
     # report results
 
