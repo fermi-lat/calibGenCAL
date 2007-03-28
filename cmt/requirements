@@ -53,6 +53,8 @@ application runMuTrigEff runMuTrigEff.cxx
 
 application genGCRHists genGCRHists.cxx
 
+application fitGCRHists fitGCRHists.cxx
+
 # not currently used, uncomment to enable
 #application emiAnal emiAnal.cxx
 
