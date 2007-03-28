@@ -1,7 +1,9 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genGCRHists.cxx,v 1.3 2007/02/27 20:44:12 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genGCRHists.cxx,v 1.4 2007/03/27 18:50:48 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
+
+	Generate CIDAC & ADC signal gain calibration histograms from digi & gcrRecon root files
 */
 
 // LOCAL INCLUDES
@@ -79,7 +81,7 @@ public:
     }
   }
 
-  // construct new parser
+  /// construct new parser
   CmdLineParser cmdParser;
 
   CmdOptVar<string> cfgPath;
