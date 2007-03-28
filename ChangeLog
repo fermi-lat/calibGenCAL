@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: fewtrell  Wed Mar 28 10:48:37 PDT 2007
+calibGenCAL/src/lib/Util
+
+Added Files:
+	MultiPeakGaus.cxx MultiPeakGaus.h 
+Log Message:
+added fitGCRHists application and MultiPeakGaus method / class for fitting multiple Z particle peaks
+    *
+------------------------------------------------------------
+User: fewtrell  Wed Mar 28 10:48:37 PDT 2007
 calibGenCAL/src/lib/Hists
 
 Modified Files:
