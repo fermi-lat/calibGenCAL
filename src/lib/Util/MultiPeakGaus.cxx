@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/MultiGausFun.cxx,v 1.1 2007/03/27 18:50:51 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/MultiPeakGaus.cxx,v 1.1 2007/03/28 17:48:37 fewtrell Exp $
 
 /** @file
     @author Zach Fewtrell
@@ -19,6 +19,7 @@
 #include <algorithm>
 #include <cmath>
 #include <sstream>
+#include <stdexcept>
 
 using namespace std;
 
@@ -59,8 +60,6 @@ namespace {
   for (MultiPeakGaus::ZSet::const_iterator it = zset.begin();
 	  it != zset.end();
 	  it++) {
-		  unsigned short z = *it;
-
 		  unsigned short peakIdx = 1+zIdx;
 		  unsigned short widIdx  = 1+zset.size()+zIdx;
 		  unsigned short normIdx = 1+zset.size()*2+zIdx;
@@ -99,8 +98,9 @@ namespace {
       throw logic_error("getParName() n > num_parms");
     }
 
-	return retval.str();
+    retval << parnum;
 
+    return retval.str();
   }
 
   TF1 * buildFunc() {
