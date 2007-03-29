@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.14 2007/02/27 20:44:12 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.15 2007/03/27 18:50:48 fewtrell Exp $
 
 /** @file generate Light Asymmetry calibrations from Muon event filesusing Cal Digi Hodoscope
     for track & hit information
@@ -152,7 +152,7 @@ int main(int argc,
                                              false);
 
     AsymHists asymHists;
-    MuonAsymALg muonAsym(peds,
+    MuonAsymAlg muonAsym(peds,
                       dac2adc,
                       asymHists);
 

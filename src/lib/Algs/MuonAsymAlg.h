@@ -1,6 +1,6 @@
-#ifndef MuonAsymALg_h
-#define MuonAsymALg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsymALg.h,v 1.11 2007/02/27 20:44:13 fewtrell Exp $
+#ifndef MuonAsymAlg_h
+#define MuonAsymAlg_h
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonAsymAlg.h,v 1.1 2007/03/27 18:50:49 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -31,9 +31,9 @@ class AsymHists;
 
     @author Zachary Fewtrell
  */
-class MuonAsymALg {
+class MuonAsymAlg {
 public:
-  MuonAsymALg(const CalPed &ped,
+  MuonAsymAlg(const CalPed &ped,
            const CIDAC2ADC &dac2adc,
            AsymHists &asymHists);
 

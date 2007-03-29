@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonAsymALg.cxx,v 1.15 2007/02/27 20:44:13 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonAsymAlg.cxx,v 1.1 2007/03/27 18:50:49 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -25,7 +25,7 @@ using namespace std;
 using namespace CalUtil;
 using namespace CGCUtil;
 
-MuonAsymALg::MuonAsymALg(const CalPed &ped,
+MuonAsymAlg::MuonAsymAlg(const CalPed &ped,
                    const CIDAC2ADC &dac2adc,
                    AsymHists &asymHists) :
   eventData(ped, dac2adc),
@@ -33,7 +33,7 @@ MuonAsymALg::MuonAsymALg(const CalPed &ped,
 {
 }
 
-bool MuonAsymALg::passCutX(const TwrHodoscope &hscope) {
+bool MuonAsymAlg::passCutX(const TwrHodoscope &hscope) {
   // max 2 hits on any layer
   if (hscope.maxPerLyr > 2)
     return false;
@@ -53,7 +53,7 @@ bool MuonAsymALg::passCutX(const TwrHodoscope &hscope) {
   return true;
 }
 
-bool MuonAsymALg::passCutY(const TwrHodoscope &hscope) {
+bool MuonAsymAlg::passCutY(const TwrHodoscope &hscope) {
   // max 2 hits on any layer
   if (hscope.maxPerLyr > 2)
     return false;
@@ -73,7 +73,7 @@ bool MuonAsymALg::passCutY(const TwrHodoscope &hscope) {
   return true;
 }
 
-void MuonAsymALg::processEvent(DigiEvent &digiEvent) {
+void MuonAsymAlg::processEvent(DigiEvent &digiEvent) {
   // check that we are in 4 range mode
   EventSummaryData &summary = digiEvent.getEventSummaryData();
   if (!summary.readout4())
@@ -110,7 +110,7 @@ void MuonAsymALg::processEvent(DigiEvent &digiEvent) {
   }  // per tower loop
 }
 
-void MuonAsymALg::processTower(TwrHodoscope &hscope) {
+void MuonAsymAlg::processTower(TwrHodoscope &hscope) {
   // summarize the event for each hodoscope
   hscope.summarizeEvent();
 
@@ -166,7 +166,7 @@ void MuonAsymALg::processTower(TwrHodoscope &hscope) {
   }     // per direction loop
 }
 
-void MuonAsymALg::fillHists(unsigned nEntries,
+void MuonAsymAlg::fillHists(unsigned nEntries,
                          const vector<string> &rootFileList) {
   m_asymHists.initHists();
 

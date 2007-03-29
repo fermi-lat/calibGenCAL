@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genGCRHists.cxx,v 1.4 2007/03/27 18:50:48 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genGCRHists.cxx,v 1.5 2007/03/28 17:48:37 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -17,6 +17,7 @@
 #include "lib/Util/CfgMgr.h"
 
 // GLAST INCLUDES
+#include "facilities/Util.h"
 
 // EXTLIB INCLUDES
 
@@ -29,6 +30,7 @@
 using namespace std;
 using namespace CGCUtil;
 using namespace CfgMgr;
+using namespace facilities;
 
 class AppCfg {
 public:
@@ -37,7 +39,7 @@ public:
     cmdParser(path_remove_ext(__FILE__)),
     cfgPath("CfgPath",
             'c',
-            "path to configuration file",
+            "(optional) path to configuration file",
             "$(CALIBGENCALROOT)/cfg/defaults.cfg"),
     pedTXTFile("pedTXTFile",
                "input pedestal TXT file",
@@ -104,23 +106,22 @@ int main(const int argc,
   // libCalibGenCAL will throw runtime_error
   try {
     //-- COMMAND LINE --//
-    AppCfg                                     cfg(argc,
-                                                   argv);
+    AppCfg  cfg(argc,
+            argv);
 
     //-- CONFIG FILE --//
-    SimpleIniFile                              cfgFile(cfg.cfgPath.getVal());
+	string fullCfgPath(cfg.cfgPath.getVal());
+	Util::expandEnvVar(&fullCfgPath);
+	SimpleIniFile  cfgFile(fullCfgPath);
 
     // input file(s)
     vector<string> digiRootFileList = getLinesFromFile(cfg.digiFilenames.getVal());
-
     if (digiRootFileList.size() < 1) {
       cout << __FILE__ << ": No input files specified" << endl;
       return -1;
     }
 
-    vector<string> gcrSelectRootFileList = getLinesFromFile(cfg.gcrFilenames.getVal());
-      
-
+	vector<string> gcrSelectRootFileList = getLinesFromFile(cfg.gcrFilenames.getVal());    
     if (gcrSelectRootFileList.size() < 1) {
       cout << __FILE__ << ": No input files specified" << endl;
       return -1;

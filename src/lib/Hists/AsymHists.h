@@ -38,6 +38,7 @@ public:
   }
 
   /// allocate & create asymmetry histograms & pointer arrays
+  /// \note you should cal this if you don't call loadHists() from file
   void        initHists();
 
   /// load histograms from ROOT output of previous run

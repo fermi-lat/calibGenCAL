@@ -65,7 +65,8 @@ public:
   /// skip event processing & load histograms from previous analysis
   void        loadHists();
 
-  /// allocate & create mpdmetry histograms & pointer arrays
+  /// allocate & create mpd histograms & pointer arrays
+  /// \note you should cal this if you don't call loadHists() from file
   void        initHists();
 
   /// # of bins in dacL2S profiles
