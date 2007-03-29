@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Mar 29 12:14:26 PDT 2007
+calibGenCAL/src
+
+Modified Files:
+	genGCRHists.cxx genMuonAsym.cxx 
+Log Message:
+still in initial debugging phase of new GCR code
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Mar 28 10:48:37 PDT 2007
 calibGenCAL/src/lib/Util
 
