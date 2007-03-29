@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Mar 29 13:14:22 PDT 2007
+calibGenCAL/src/lib/Util
+
+Modified Files:
+	MultiPeakGaus.cxx 
+Log Message:
+still in inital debug phase of new GCR code
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Mar 29 12:51:19 PDT 2007
 calibGenCAL/cfg
 
