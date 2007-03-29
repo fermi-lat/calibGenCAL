@@ -1,6 +1,6 @@
 #ifndef GCRHists_h
 #define GCRHists_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/GCRHists.h,v 1.2 2007/02/27 20:44:13 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.h,v 1.1 2007/03/27 18:50:50 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -67,10 +67,13 @@ public:
   void fillDacRatio(CalUtil::FaceIdx faceIdx,
 				    float leDAC,
 				    float heDAC);
+  
+  /// allocate & create mpdmetry histograms & pointer arrays
+  /// \note you should cal this if you don't call loadHists() from file
+  void     initHists();
 
 private:
-  /// allocate & create mpdmetry histograms & pointer arrays
-  void     initHists();
+  
 
   /// list of histograms of geometric mean for both ends on each xtal.
   CalUtil::CalVec<CalUtil::DiodeNum,

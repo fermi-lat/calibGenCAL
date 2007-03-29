@@ -1,4 +1,4 @@
-// $Header: $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/GCRCalibAlg.cxx,v 1.1 2007/03/27 18:50:49 fewtrell Exp $
 
 /** @file 
     @author Zach Fewtrell
@@ -108,6 +108,8 @@ void GCRCalibAlg::fillHists(unsigned nEntries,
                          const CIDAC2ADC &dac2adc,
                          GCRHists &gcrHists
                          ) {
+  gcrHists.initHists();
+
   algData.clear();
   algData.calPed  = &peds;
   algData.dac2adc = &dac2adc;
