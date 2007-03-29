@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: fewtrell  Thu Mar 29 12:14:27 PDT 2007
+calibGenCAL/src/lib/Hists
+
+Modified Files:
+	AsymHists.h GCRHists.h MPDHists.h 
+Log Message:
+still in initial debugging phase of new GCR code
+    *
+------------------------------------------------------------
+User: fewtrell  Thu Mar 29 12:14:27 PDT 2007
 calibGenCAL/src/lib/Algs
 
 Modified Files:
