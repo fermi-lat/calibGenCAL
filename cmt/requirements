@@ -49,7 +49,7 @@ application genMuonAsym genMuonAsym.cxx
 application genMuonMPD genMuonMPD.cxx 
 
 # not currently used, uncomment to enable
-application runMuTrigEff runMuTrigEff.cxx 
+#application runMuTrigEff runMuTrigEff.cxx 
 
 application genGCRHists genGCRHists.cxx
 
