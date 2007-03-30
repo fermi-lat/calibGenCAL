@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Fri Mar 30 13:20:57 PDT 2007
+calibGenCAL/doc
+
+Modified Files:
+	CU06_Notes.html 
+Log Message:
+removing runMuTrigEff from default build since it is not used any more
+
+    *
+------------------------------------------------------------
+User: fewtrell  Fri Mar 30 13:20:57 PDT 2007
 calibGenCAL/cmt
 
 Modified Files:
