@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Mar 30 13:16:36 PDT 2007
+calibGenCAL/src/lib/Algs
+
+Modified Files:
+	GCRCalibAlg.cxx 
+Log Message:
+still in initial GCR debuggin phase
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Mar 29 13:14:22 PDT 2007
 calibGenCAL/src/lib/Util
 
