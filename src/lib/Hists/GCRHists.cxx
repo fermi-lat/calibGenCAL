@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.cxx,v 1.1 2007/03/27 18:50:50 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.cxx,v 1.2 2007/03/28 17:48:37 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -22,8 +22,6 @@ using namespace std;
 using namespace CalUtil;
 using namespace CGCUtil;
 
-
-
 GCRHists::GCRHists(bool summaryMode) :
   m_meanDACHists(DiodeNum::N_VALS),
   m_adcHists(RngIdx::N_VALS),
@@ -39,7 +37,6 @@ GCRHists::GCRHists(bool summaryMode) :
 void GCRHists::initHists() {
   //-- INIT SUMMARY HISTS  --//
   string histname;
-
 
   for (DiodeNum diode; diode.isValid(); diode++) {
     histname = genMeanDACSumHistName(diode);
@@ -147,7 +144,7 @@ void GCRHists::loadHists(const string &filename) {
       histname = genMeanDACHistName(diode, xtalIdx);
       TH1S *hist = CGCUtil::retrieveHist < TH1S > (histFile, histname);
       if (!hist) continue;
-
+        
       // move histogram into Global ROOT memory
       // so it is not deleted when input file is closed.
       // this may be a memory leak, i don't think
@@ -171,16 +168,16 @@ void GCRHists::loadHists(const string &filename) {
           m_adcHists[rngIdx] = hist;
         }
 
-		for (FaceNum face; face.isValid(); face++) {
-			FaceIdx faceIdx(xtalIdx, face);
-		histname = genDACRatioProfName(faceIdx);
+    for (FaceNum face; face.isValid(); face++) {
+      FaceIdx faceIdx(xtalIdx, face);
+      histname = genDACRatioProfName(faceIdx);
 
-    TProfile *hist = CGCUtil::retrieveHist < TProfile > (histFile, histname);
-    if (!hist) continue;
-    hist->SetDirectory(0);
+      TProfile *hist = CGCUtil::retrieveHist < TProfile > (histFile, histname);
+      if (!hist) continue;
+      hist->SetDirectory(0);
 
-    m_dacRatioProfs[faceIdx] = hist;
-		}
+      m_dacRatioProfs[faceIdx] = hist;
+    }
 
     for (RngNum rng; rng <= HEX8; rng++) 
       for (FaceNum face; face.isValid(); face++) {
@@ -198,7 +195,6 @@ void GCRHists::loadHists(const string &filename) {
 
 unsigned GCRHists::getMinEntries() const {
   unsigned      retVal   = ULONG_MAX;
-
   unsigned long sum      = 0;
   unsigned      n        = 0;
   unsigned      maxHits  = 0;
@@ -206,7 +202,10 @@ unsigned GCRHists::getMinEntries() const {
 
   for (DiodeNum diode; diode.isValid(); diode++)
     for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
-      unsigned nEntries = (unsigned)m_meanDACHists[diode][xtalIdx]->GetEntries();
+
+      unsigned nEntries = (summaryMode) ? 
+        (unsigned)m_meanDACSumHist[diode]->GetEntries()
+        : (unsigned)m_meanDACHists[diode][xtalIdx]->GetEntries();
 
       // only count histograms that have been filled
       // (some histograms will never be filled if we are
@@ -355,14 +354,14 @@ void GCRHists::trimHists() {
         }
     }
 
-	for (FaceNum face; face.isValid(); face++) {
-		FaceIdx faceIdx(xtalIdx, face);
-	if (m_dacRatioProfs[faceIdx])
-      if (m_dacRatioProfs[faceIdx]->GetEntries() == 0) {
-        delete m_dacRatioProfs[faceIdx];
-        m_dacRatioProfs[faceIdx] = 0;
-      }
-	}
+    for (FaceNum face; face.isValid(); face++) {
+      FaceIdx faceIdx(xtalIdx, face);
+      if (m_dacRatioProfs[faceIdx])
+        if (m_dacRatioProfs[faceIdx]->GetEntries() == 0) {
+          delete m_dacRatioProfs[faceIdx];
+          m_dacRatioProfs[faceIdx] = 0;
+        }
+    }
 
     for (RngNum rng; rng <= HEX8; rng++)
       for (FaceNum face; face.isValid(); face++) {
@@ -378,11 +377,9 @@ void GCRHists::trimHists() {
 
 void GCRHists::fitHists(CalMPD &calMPD, const set<unsigned short> &zList) {
   // build peak ratio initial values & fitting limits
-  
-
 
   // PER XTAL LOOP
-  for (DiodeNum diode; diode.isValid(); diode++)
+  for (DiodeNum diode; diode.isValid(); diode++) {
     for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
       if (!m_meanDACHists[diode][xtalIdx])
         continue;
@@ -392,6 +389,11 @@ void GCRHists::fitHists(CalMPD &calMPD, const set<unsigned short> &zList) {
       if (hist.GetEntries() == 0)
         continue;
     }
+
+    TH1S &hist = *m_meanDACSumHist[diode];
+    if (hist.GetEntries() == 0)
+      continue;
+  }
 }
 
 void GCRHists::fillAdcRatio(RngIdx rngIdx, 
@@ -400,11 +402,9 @@ void GCRHists::fillAdcRatio(RngIdx rngIdx,
   RngNum rng(rngIdx.getRng());
   FaceIdx faceIdx(rngIdx.getFaceIdx());
 
-  if (m_adcRatioProfs[rng][faceIdx]) {
-                
-        
+  if (m_adcRatioProfs[rng][faceIdx])
     m_adcRatioProfs[rng][faceIdx]->Fill(thisADC, nextADC);
-  }
+
   m_adcRatioSumProf[rng]->Fill(thisADC, nextADC);
 }
 
@@ -413,25 +413,27 @@ void GCRHists::fillDacRatio(FaceIdx faceIdx,
                             float heDAC) {
   if (m_dacRatioProfs[faceIdx])
     m_dacRatioProfs[faceIdx]->Fill(leDAC, heDAC);
+
   m_dacRatioSumProf->Fill(leDAC, heDAC);
 }
 
 
 void GCRHists::fillADCHit(RngIdx rngIdx,
-                           float adc) {
+                          float adc) {
   RngNum rng(rngIdx.getRng());
         
-  if (!summaryMode) {
+  if (!summaryMode)
     if (m_adcHists[rngIdx])
       m_adcHists[rngIdx]->Fill(adc);
-  }
         
   m_meanADCSumHist[rng]->Fill(adc);
 
 }
 
 void GCRHists::fillMeanCIDAC(DiodeNum diode, XtalIdx xtalIdx, float cidac) {
-  if (m_meanDACHists[diode][xtalIdx])
-    m_meanDACHists[diode][xtalIdx]->Fill(cidac);
+  if (!summaryMode)
+    if (m_meanDACHists[diode][xtalIdx])
+      m_meanDACHists[diode][xtalIdx]->Fill(cidac);
+
   m_meanDACSumHist[diode]->Fill(cidac);
 }

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/GCRCalibAlg.cxx,v 1.1 2007/03/27 18:50:49 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/GCRCalibAlg.cxx,v 1.2 2007/03/29 19:14:26 fewtrell Exp $
 
 /** @file 
     @author Zach Fewtrell
@@ -102,12 +102,12 @@ void GCRCalibAlg::readCfg(const SimpleIniFile &cfgFile) {
 }
 
 void GCRCalibAlg::fillHists(unsigned nEntries,
-                         const vector<string> &digiRootFileList,
-                         const vector<string> &gcrSelectRootFileList,
-                         const CalPed &peds,
-                         const CIDAC2ADC &dac2adc,
-                         GCRHists &gcrHists
-                         ) {
+                            const vector<string> &digiRootFileList,
+                            const vector<string> &gcrSelectRootFileList,
+                            const CalPed &peds,
+                            const CIDAC2ADC &dac2adc,
+                            GCRHists &gcrHists
+                            ) {
   gcrHists.initHists();
 
   algData.clear();
@@ -197,17 +197,9 @@ void GCRCalibAlg::processGcrEvent() {
     return;
   }
 
-  const TClonesArray *   calDigiCol = eventData.digiEvent->getCalDigiCol();
-  if (!calDigiCol) {
-    LogStream::get() << "no calDigiCol found for event#" << eventData.eventNum << endl;
-    return;
-  }
-
   TIter gcrXtalIter(gcrSelectedXtalCol);
 
   const GcrSelectedXtal *pGcrXtal = 0;
-
-  TIter calDigiIter(calDigiCol);
 
   /////////////////////////////////////////
   /// Xtal Hit Loop ///////////////////////
@@ -260,8 +252,6 @@ void GCRCalibAlg::processGcrHit(const GcrSelectedXtal &gcrXtal) {
 
 void GCRCalibAlg::processDigiEvent() {
   const TClonesArray *calDigiCol = eventData.digiEvent->getCalDigiCol();
-
-
   if (!calDigiCol) {
     LogStream::get() << "no calDigiCol found for event#" << eventData.eventNum << endl;
     return;
@@ -381,28 +371,29 @@ void GCRCalibAlg::processDigiHit(const CalDigi &calDigi) {
                                            xtalADC[xRng],
                                            xtalADC[nextRng]);
                                          
+      }
 
-        //-- FILL DAC HISTOGRAMS --//
-        for (DiodeNum diode; diode.isValid(); diode++) {
-          //-- MEAN DAC --//
+    //-- FILL DAC HISTOGRAMS --//
+    for (DiodeNum diode; diode.isValid(); diode++) {
+      //-- MEAN DAC --//
 
-          if (meanDAC[diode] == INVALID_ADC)
-            continue;
+      if (meanDAC[diode] == INVALID_ADC)
+        continue;
 
-          algData.gcrHists->fillMeanCIDAC(diode, xtalIdx, meanDAC[diode]);
-        }
+      algData.gcrHists->fillMeanCIDAC(diode, xtalIdx, meanDAC[diode]);
+    }
 
-        //-- MEAN DAC RATIO --//
-        for (FaceNum face; face.isValid(); face++) {
-          FaceIdx faceIdx(xtalIdx,face);
-          if (dac[XtalDiode(face,LRG_DIODE)] != INVALID_ADC &&
-              dac[XtalDiode(face,SM_DIODE)] != INVALID_ADC) {
-            algData.gcrHists->fillDacRatio(faceIdx, 
-                                           dac[XtalDiode(face,LRG_DIODE)],
-                                           dac[XtalDiode(face,SM_DIODE)]);
-          }
-        }
-      } // for (rng) /* fill histograms */
+    //-- MEAN DAC RATIO --//
+    for (FaceNum face; face.isValid(); face++) {
+      FaceIdx faceIdx(xtalIdx,face);
+      if (dac[XtalDiode(face,LRG_DIODE)] != INVALID_ADC &&
+          dac[XtalDiode(face,SM_DIODE)] != INVALID_ADC) {
+        algData.gcrHists->fillDacRatio(faceIdx, 
+                                       dac[XtalDiode(face,LRG_DIODE)],
+                                       dac[XtalDiode(face,SM_DIODE)]);
+      }
+
+    } // for (rng) /* fill histograms */
   }   // gcrXtal
 }
 
@@ -425,7 +416,7 @@ bool GCRCalibAlg::crossedFaceCut( unsigned crossedFaces) const {
 }
 
 bool GCRCalibAlg::angleCut(const TVector3 &pathVec,
-                        DirNum dir) const {
+                           DirNum dir) const {
   TVector3 pathDir = pathVec.Unit();
 
   float    xSin    = abs(pathDir.x());
@@ -449,8 +440,8 @@ bool GCRCalibAlg::angleCut(const TVector3 &pathVec,
 }
 
 bool GCRCalibAlg::posCut(XtalIdx xtalIdx,
-                      const TVector3 &entry,
-                      const TVector3 &exit) const {
+                         const TVector3 &entry,
+                         const TVector3 &exit) const {
   TwrNum twr     = xtalIdx.getTwr();
   DirNum dir     = xtalIdx.getLyr().getDir();
 
