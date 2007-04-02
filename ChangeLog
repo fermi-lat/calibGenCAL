@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Apr  2 11:11:08 PDT 2007
+calibGenCAL/src
+
+Modified Files:
+	genCIDAC2ADC.cxx 
+Log Message:
+exception needs to be caught byref, not byval.
+also #include used case-sensitive in-filename
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Apr  2 09:55:06 PDT 2007
 calibGenCAL/src/lib/Hists
 
