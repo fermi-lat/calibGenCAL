@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Apr  2 09:55:06 PDT 2007
+calibGenCAL/src/lib/Hists
+
+Modified Files:
+	GCRHists.cxx 
+Log Message:
+still in early phases of GCR calib devel
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Apr  2 09:55:05 PDT 2007
 calibGenCAL/src
 
