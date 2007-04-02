@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.cxx,v 1.3 2007/03/30 20:16:36 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.cxx,v 1.4 2007/04/02 16:55:06 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -7,7 +7,7 @@
 // LOCAL INCLUDES
 #include "GCRHists.h"
 #include "../Util/CGCUtil.h"
-#include "../util/MultiPeakGaus.h"
+#include "../Util/MultiPeakGaus.h"
 
 // GLAST INCLUDES
 

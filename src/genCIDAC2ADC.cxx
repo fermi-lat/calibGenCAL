@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.15 2007/03/01 23:49:47 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.16 2007/03/27 18:50:48 fewtrell Exp $
 
 /** @file Gen CIDAC2ADC calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
@@ -127,7 +127,7 @@ int main(int argc,
       LogStream::get() << __FILE__ << ": writing smoothed spline points: " << outputTXTFile << endl;
       cidac2adc.writeTXT(outputTXTFile);
     }
-  } catch (exception e) {
+  } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
   }
 
