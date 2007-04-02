@@ -1,4 +1,4 @@
-// $Header: $ //
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/fitGCRHists.cxx,v 1.1 2007/03/28 17:48:37 fewtrell Exp $ //
 
 /** @file 
     @author Zachary Fewtrell
@@ -103,8 +103,7 @@ int main(const int argc,
                           cfg.histFile.getVal(),
                           "txt");
 
-
-
+	calMPD.writeTXT(outputTXTFile);
   } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
   }
