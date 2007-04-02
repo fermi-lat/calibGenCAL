@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: fewtrell  Mon Apr  2 09:55:05 PDT 2007
+calibGenCAL/src
+
+Modified Files:
+	fitGCRHists.cxx 
+Log Message:
+still in early phases of GCR calib devel
+    *
+------------------------------------------------------------
+User: fewtrell  Mon Apr  2 09:55:05 PDT 2007
 calibGenCAL/doc
 
 Modified Files:
