@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.cxx,v 1.2 2007/03/28 17:48:37 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.cxx,v 1.3 2007/03/30 20:16:36 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -7,6 +7,7 @@
 // LOCAL INCLUDES
 #include "GCRHists.h"
 #include "../Util/CGCUtil.h"
+#include "../util/MultiPeakGaus.h"
 
 // GLAST INCLUDES
 
@@ -380,6 +381,9 @@ void GCRHists::fitHists(CalMPD &calMPD, const set<unsigned short> &zList) {
 
   // PER XTAL LOOP
   for (DiodeNum diode; diode.isValid(); diode++) {
+    /// rough mevperdac guess.
+	const float initialMPD = (diode == LRG_DIODE) ? .3 : 20;
+
     for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
       if (!m_meanDACHists[diode][xtalIdx])
         continue;
@@ -388,11 +392,16 @@ void GCRHists::fitHists(CalMPD &calMPD, const set<unsigned short> &zList) {
       // skip empty histograms
       if (hist.GetEntries() == 0)
         continue;
+
+	  MultiPeakGaus::fitHist(hist, zList, initialMPD);
     }
 
     TH1S &hist = *m_meanDACSumHist[diode];
     if (hist.GetEntries() == 0)
       continue;
+	
+	MultiPeakGaus::fitHist(hist, zList, initialMPD);
+
   }
 }
 
