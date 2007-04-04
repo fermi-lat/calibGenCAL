@@ -11,8 +11,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Convert cidac2adc (intNonlin) xml data file into root tuples (1 per channel)"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/01/17 15:48:45 $"
-__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/02/02 20:28:42 $"
+__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -30,7 +30,7 @@ import zachUtil
 if __name__ == '__main__':
 
     # constants
-    usage      = "inl2tuple input.xml output.xml"
+    usage      = "inl2tuple input.xml output.root"
 
     # setup logger
     logging.basicConfig()
