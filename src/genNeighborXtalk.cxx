@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genNeighborXtalk.cxx,v 1.5 2007/03/20 19:23:47 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genNeighborXtalk.cxx,v 1.6 2007/03/27 18:50:48 fewtrell Exp $
 
 /** @file Gen Neighboring Crystal Cross-talk calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "lib/CalibDataTypes/NeighborXtalk.h"
@@ -84,7 +84,7 @@ int main(const int argc,
     LogStream::addStream(tmpStrm);
 
 
-	cfg.cmdParser.printStatus(LogStream::get());
+    cfg.cmdParser.printStatus(LogStream::get());
 
     NeighborXtalk       xtalk;
     NeighborXtalkAlg    xtalkAlg;
@@ -95,8 +95,8 @@ int main(const int argc,
     LogStream::get() << __FILE__ << ": reading LE calibGen event file: " << cfg.rootFileLE.getVal() << endl;
     xtalkAlg.readRootData(cfg.rootFileLE.getVal(), xtalk);
 
-	LogStream::get() << __FILE__ << ": pedestal subtract: " << endl;
-	xtalk.pedSubtractADC();
+    LogStream::get() << __FILE__ << ": pedestal subtract: " << endl;
+    xtalk.pedSubtractADC();
     
 
     string txtfile = cfg.outputBasePath.getVal() + ".txt";
@@ -107,7 +107,7 @@ int main(const int argc,
     string tuplefile = cfg.outputBasePath.getVal() + ".tuple.root";
     LogStream::get() << __FILE__ << ": saving xtalk to tuple ROOT file: "
                      << tuplefile << endl;
-    xtalk.writeTuple(tuplefile);
+    xtalk.writeTuples(tuplefile);
     
   } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
