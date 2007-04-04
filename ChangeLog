@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Wed Apr  4 12:02:57 PDT 2007
+calibGenCAL/src/lib/CalibDataTypes
+
+Modified Files:
+	NeighborXtalk.cxx NeighborXtalk.h 
+Log Message:
+NeighborXtalk::writeTuples() now outputs pretty TGraph objects as well
+
+    *
+------------------------------------------------------------
+User: fewtrell  Wed Apr  4 12:02:57 PDT 2007
 calibGenCAL/src
 
 Modified Files:
