@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/NeighborXtalk.cxx,v 1.5 2007/03/22 22:26:45 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalibDataTypes/NeighborXtalk.cxx,v 1.1 2007/03/27 18:50:50 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -15,6 +15,8 @@
 // EXTLIB INCLUDES
 #include "TFile.h"
 #include "TNtuple.h"
+#include "TGraph.h"
+#include "TCanvas.h"
 
 // STD INCLUDES
 #include <fstream>
@@ -133,7 +135,7 @@ void NeighborXtalk::setPoint(CalUtil::DiodeIdx dest,
 }
 
 
-void NeighborXtalk::writeTuple(const std::string &filename) const {
+void NeighborXtalk::writeTuples(const std::string &filename) const {
   // open new root file
   TFile rootFile(filename.c_str(),
                  "RECREATE",
@@ -161,17 +163,36 @@ void NeighborXtalk::writeTuple(const std::string &filename) const {
                                    tuple_name.c_str(),
                                    "dac:adc");
 
+
+      // build graph
+      TCanvas *c = new TCanvas(tuple_name.c_str(), 
+                               tuple_name.c_str(),
+                               -1);
+      TGraph *gr = new TGraph(pLine.size());
+      c->SetGridx();
+      c->SetGridy();
+      gr->SetTitle(tuple_name.c_str());
+      gr->SetMarkerStyle(kMultiply);
+
       float tuple_data[2];
 
+      
+
       // loop through each point in polyline
-      for (Polyline::const_iterator it = pLine.begin();
-           it != pLine.end();
-           it++) {
-        tuple_data[0] = it->first;
-        tuple_data[1] = it->second;
+      for (unsigned i = 0; i < pLine.size(); i++) {
+        tuple_data[0] = pLine[i].first;
+        tuple_data[1] = pLine[i].second;
 
         tuple->Fill(tuple_data);
+
+        gr->SetPoint(i,
+                     tuple_data[0],
+                     tuple_data[1]);
       }
+
+      gr->Draw("AP");
+      c->Write();
+
     }
   }
 
