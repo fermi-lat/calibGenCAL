@@ -1,5 +1,18 @@
 ------------------------------------------------------------
 User: fewtrell  Tue Apr 10 07:51:01 PDT 2007
+calibGenCAL/src/lib/Algs
+
+Modified Files:
+	GCRCalibAlg.h IntNonlinAlg.cxx IntNonlinAlg.h MuTrigAlg.cxx 
+	MuTrigAlg.h MuonAsymAlg.cxx MuonAsymAlg.h MuonCalibTkrAlg.cxx 
+	MuonCalibTkrAlg.h MuonMPDAlg.cxx MuonMPDAlg.h MuonPedAlg.cxx 
+	MuonPedAlg.h NeighborXtalkAlg.cxx NeighborXtalkAlg.h 
+Log Message:
+- moving c++ apps from cfg file model to makefile model
+---- moving most cfg options to cmdline
+    *
+------------------------------------------------------------
+User: fewtrell  Tue Apr 10 07:51:01 PDT 2007
 calibGenCAL/src
 
 Modified Files:
