@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Tue Apr 10 09:22:20 PDT 2007
+calibGenCAL/python/lib
+
+Modified Files:
+	calCalibXML.py zachUtil.py 
+Log Message:
+debugging for v5 of calibGenCAL
+
+    *
+------------------------------------------------------------
+User: fewtrell  Tue Apr 10 09:22:20 PDT 2007
 calibGenCAL/python
 
 Modified Files:
