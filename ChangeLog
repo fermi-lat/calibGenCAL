@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Apr 10 07:51:02 PDT 2007
+calibGenCAL/src/lib/Hists
+
+Modified Files:
+	AsymHists.cxx AsymHists.h GCRHists.cxx GCRHists.h MPDHists.cxx 
+	MPDHists.h 
+Log Message:
+- moving c++ apps from cfg file model to makefile model
+---- moving most cfg options to cmdline
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Apr 10 07:51:01 PDT 2007
 calibGenCAL/src/lib/CalibDataTypes
 
