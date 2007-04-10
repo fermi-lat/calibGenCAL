@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.17 2007/03/27 18:50:48 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.18 2007/04/10 14:51:01 fewtrell Exp $
 
 /** @file Gen MevPerDAC calibrations from Muon event files using Cal Digi Hodoscope
     for track & hit information
@@ -6,7 +6,6 @@
 */
 
 // LOCAL INCLUDES
-#include "lib/CalibDataTypes/ADC2NRG.h"
 #include "lib/CalibDataTypes/CalPed.h"
 #include "lib/CalibDataTypes/CalAsym.h"
 #include "lib/CalibDataTypes/CIDAC2ADC.h"
@@ -35,7 +34,6 @@ public:
   AppCfg(const int argc,
          const char **argv) :
     cmdParser(path_remove_ext(__FILE__)),
-
     pedTXTFile("pedTXTFile",
                "input cal pedestals txt file",
                ""),
@@ -76,9 +74,9 @@ public:
   }
   /// construct new parser
   CmdLineParser cmdParser;
-  CmdArg<string> asymTXTFile;
   CmdArg<string> pedTXTFile;
   CmdArg<string> inlTXTFile;
+  CmdArg<string> asymTXTFile;
   
   CmdArg<string> digiFilenames;
 
@@ -171,9 +169,6 @@ int main(int argc,
     calMPD.writeTXT(outputTXTFile);
 
     string adc2nrgFile(cfg.outputBasename.getVal() + ".adc2nrg.txt");
-
-    LogStream::get() << __FILE__ << ": writing muon adc2nrg: " << adc2nrgFile << endl;
-    ADC2NRG::writeTXT(adc2nrgFile, asym, dac2adc, calMPD);
 
     LogStream::get() << __FILE__ << ": writing histogram file: " << histFilename << endl;
     histFile.Write();
