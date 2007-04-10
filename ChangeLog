@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Apr 10 07:51:01 PDT 2007
+calibGenCAL/src
+
+Modified Files:
+	emiAnal.cxx fitGCRHists.cxx genCIDAC2ADC.cxx genGCRHists.cxx 
+	genMuonAsym.cxx genMuonCalibTkr.cxx genMuonMPD.cxx 
+	genMuonPed.cxx genNeighborXtalk.cxx mainpage.h 
+	runMuTrigEff.cxx 
+Log Message:
+- moving c++ apps from cfg file model to makefile model
+---- moving most cfg options to cmdline
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Apr 10 07:51:00 PDT 2007
 calibGenCAL/cmt
 
