@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genGCRHists.cxx,v 1.7 2007/04/09 18:58:48 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genGCRHists.cxx,v 1.8 2007/04/10 14:51:01 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -198,6 +198,7 @@ int main(const int argc,
     histFile->Close();
   } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
+    return -1;
   }
 
   return 0;

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/fitGCRHists.cxx,v 1.2 2007/04/02 16:55:05 fewtrell Exp $ //
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/fitGCRHists.cxx,v 1.3 2007/04/10 14:51:01 fewtrell Exp $ //
 
 /** @file 
     @author Zachary Fewtrell
@@ -48,7 +48,7 @@ public:
     } catch (exception &e) {
       cout << e.what() << endl;
       cmdParser.printUsage();
-      throw e;
+      exit(-1);
     }
   }
               
@@ -103,6 +103,7 @@ int main(const int argc,
     calMPD.writeTXT(outputTXTFile);
   } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
+    return -1;
   }
 
   return 0;

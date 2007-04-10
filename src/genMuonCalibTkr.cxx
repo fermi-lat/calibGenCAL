@@ -17,6 +17,7 @@
 
 
 // GLAST INCLUDES
+#include "facilities/Util.h"
 
 // EXTLIB INCLUDES
 
@@ -27,6 +28,7 @@
 using namespace std;
 using namespace CGCUtil;
 using namespace CfgMgr;
+using namespace facilities;
 
 class AppCfg {
 public:
@@ -58,10 +60,10 @@ public:
                's',
                "start processing @ event # n",
                0),
-    cfgFile("cfgFile",
+    cfgPath("cfgPath",
             'c',
             "(optional) read cfg info from this file",
-            "")
+            "$(CALIBGENCALROOT)/cfg/defaults.cfg")
 
 
   {
@@ -72,7 +74,7 @@ public:
     cmdParser.registerArg(outputBasename);
     cmdParser.registerVar(entriesPerHist);
     cmdParser.registerVar(startEvent);
-    cmdParser.registerVar(cfgFile);
+    cmdParser.registerVar(cfgPath);
 
 
     try {
@@ -80,7 +82,7 @@ public:
     } catch (exception &e) {
       cout << e.what() << endl;
       cmdParser.printUsage();
-      throw e;
+      exit(-1);
     }  
   }
 
@@ -97,7 +99,7 @@ public:
   CmdOptVar<unsigned> entriesPerHist;
   CmdOptVar<unsigned> startEvent;
 
-  CmdOptVar<string> cfgFile;
+  CmdOptVar<string> cfgPath;
 
 
 };
@@ -169,11 +171,13 @@ int main(int argc,
 
     CalAsym   calAsym;
     CalMPD    calMPD;
+    string fullCfgPath(cfg.cfgPath.getVal());
+    Util::expandEnvVar(&fullCfgPath);
     MuonCalibTkrAlg tkrCalib(peds,
                              dac2adc,
                              asymHists,
                              mpdHists,
-                             cfg.cfgFile.getVal());
+                             fullCfgPath);
 
     LogStream::get() << __FILE__ << ": reading root event file(s) starting w/ "
                      << digiFileList[0] << endl;
@@ -208,6 +212,7 @@ int main(int argc,
 
   } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
+    return -1;
   }
 
   return 0;
