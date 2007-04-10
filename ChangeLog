@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Apr 10 09:22:20 PDT 2007
+calibGenCAL/python
+
+Modified Files:
+	pedTXT2XML.py 
+Log Message:
+debugging for v5 of calibGenCAL
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Apr 10 07:52:49 PDT 2007
 calibGenCAL/src/lib/CalibDataTypes
 
