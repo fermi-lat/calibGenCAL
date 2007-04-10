@@ -1,5 +1,19 @@
 ------------------------------------------------------------
 User: fewtrell  Tue Apr 10 07:51:02 PDT 2007
+calibGenCAL/src/lib/Util
+
+Modified Files:
+	CGCUtil.cxx CGCUtil.h CalHodoscope.cxx CalHodoscope.h 
+	CfgMgr.cxx CfgMgr.h LangauFun.cxx LangauFun.h 
+	MultiPeakGaus.cxx MultiPeakGaus.h RootFileAnalysis.cxx 
+	RootFileAnalysis.h SimpleIniFile.cxx SimpleIniFile.h 
+	SplineUtil.h TwrHodoscope.cxx TwrHodoscope.h 
+Log Message:
+- moving c++ apps from cfg file model to makefile model
+---- moving most cfg options to cmdline
+    *
+------------------------------------------------------------
+User: fewtrell  Tue Apr 10 07:51:02 PDT 2007
 calibGenCAL/src/lib/Specs
 
 Modified Files:
