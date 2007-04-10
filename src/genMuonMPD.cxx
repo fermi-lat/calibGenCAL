@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.18 2007/04/10 14:51:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.19 2007/04/10 16:22:20 fewtrell Exp $
 
 /** @file Gen MevPerDAC calibrations from Muon event files using Cal Digi Hodoscope
     for track & hit information
@@ -69,7 +69,7 @@ public:
     } catch (exception &e) {
       cout << e.what() << endl;
       cmdParser.printUsage();
-      throw e;
+      exit(-1);
     }
   }
   /// construct new parser
@@ -167,8 +167,6 @@ int main(int argc,
 
     LogStream::get() << __FILE__ << ": writing muon mpd: " << outputTXTFile << endl;
     calMPD.writeTXT(outputTXTFile);
-
-    string adc2nrgFile(cfg.outputBasename.getVal() + ".adc2nrg.txt");
 
     LogStream::get() << __FILE__ << ": writing histogram file: " << histFilename << endl;
     histFile.Write();
