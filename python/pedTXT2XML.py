@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL Ped calibration XML files from TXT."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/02/02 20:28:42 $"
-__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/02/26 23:15:57 $"
+__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -102,8 +102,7 @@ if __name__ == '__main__':
             sys.exit(-1)
 
         # convert vals array to floats instead of strings
-        for i in range(len(vals)):
-            vals[i] = float(vals[i])
+        vals = [float(x) for x in vals]
 
         (twr, lyr, col, face, rng, ped, sig) = vals
         

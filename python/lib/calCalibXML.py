@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2007/03/23 17:41:37 $"
-__version__   = "$Revision: 1.14 $, $Author: dwood $"
+__date__      = "$Date: 2007/03/27 15:48:11 $"
+__version__   = "$Revision: 1.15 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -1723,7 +1723,7 @@ class calPedCalibXML(calCalibXML):
 
         # insert <dimension> element  
             
-        d = self.dimensionWrite(nRange = 4, n = 2)
+        d = self.dimensionWrite(nRange = 4, nFace = 2)
         r.appendChild(d)
 
         for tem in tems:

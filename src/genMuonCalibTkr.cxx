@@ -7,7 +7,6 @@
 // LOCAL INCLUDES
 #include "lib/CalibDataTypes/CalAsym.h"
 #include "lib/CalibDataTypes/CalMPD.h"
-#include "lib/CalibDataTypes/ADC2NRG.h"
 #include "lib/CalibDataTypes/CalPed.h"
 #include "lib/CalibDataTypes/CIDAC2ADC.h"
 #include "lib/Hists/AsymHists.h"
@@ -202,12 +201,6 @@ int main(int argc,
 
     LogStream::get() << __FILE__ << ": generating mpd fit result tuple: " << endl;
     mpdHists.buildTuple();
-
-    string adc2nrgFile(cfg.outputBasename.getVal()+ ".adc2nrg.txt");
-
-    LogStream::get() << __FILE__ << ": writing muon adc2nrg: " << adc2nrgFile << endl;
-    calAsym.genSplines();
-    ADC2NRG::writeTXT(adc2nrgFile, calAsym, dac2adc, calMPD);
 
     LogStream::get() << __FILE__ << ": writing histogram file: "
                      << histFilename << endl;

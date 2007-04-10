@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.15 2007/03/27 18:50:48 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.16 2007/04/10 14:51:01 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -155,9 +155,9 @@ int main(int argc,
     MuonPedAlg  muPed;
     CalPed   calPed;
     // txt output filename
-    string   muPedTXTFile(cfg.outputBasename.getVal() + ".calPed.txt");
+    string   muPedTXTFile(cfg.outputBasename.getVal() + ".txt");
     // output histogram file
-    string   muPedHistFileName(cfg.outputBasename.getVal() + ".calPed.root");
+    string   muPedHistFileName(cfg.outputBasename.getVal() + ".root");
 
     // open new output histogram file
     LogStream::get() << __FILE__ << ": opening muon pedestal output histogram file: " << muPedHistFileName << endl;

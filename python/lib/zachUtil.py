@@ -7,8 +7,8 @@ collection of simple utilities shared throughout my code
 __facility__  = "Offline"
 __abstract__  = "apply calibGain correction to asymmetry xml file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2007/03/20 19:23:47 $"
-__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/03/22 22:26:04 $"
+__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -16,7 +16,6 @@ import calConstant
 import calCalibXML
 import array
 import Numeric
-import ROOT
 
 ### CONSTANTS ###
 mpdBigValIdx   = 0
@@ -52,6 +51,7 @@ dictionaries are indexed by tuples (twr,row,online_face,col,rng)
 input is intNonlin data as returned by calCalibXML.calIntNonlinCalibXML.read()
 """
 def build_inl_splines(data, twrSet):
+    import ROOT
     adc2dac = dict()
     dac2adc = dict()
 
@@ -176,6 +176,8 @@ dictionaries are indexed by tuples (twr, row, online_face, col, diode_size)
 input is cal light asymmetry data as returned by calCalibXML.calIntNonlinCalibXML.read()
 """
 def build_asym_splines(data, twrSet):
+    import ROOT
+
     pos2asym = dict()
     asym2pos = dict()
 
