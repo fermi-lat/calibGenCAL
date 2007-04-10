@@ -1,14 +1,14 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.16 2007/03/27 18:50:48 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.17 2007/04/02 18:11:08 fewtrell Exp $
 
 /** @file Gen CIDAC2ADC calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "lib/Algs/IntNonlinAlg.h"
 #include "lib/CalibDataTypes/CIDAC2ADC.h"
-#include "lib/Util/SimpleIniFile.h"
 #include "lib/Util/CGCUtil.h"
+#include "lib/Util/CfgMgr.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"
@@ -23,57 +23,73 @@
 using namespace std;
 using namespace CalUtil;
 using namespace CGCUtil;
+using namespace CfgMgr;
 
-const string usage_str("genCIDAC2ADC.exe cfg_file");
+class AppCfg {
+public:
+  AppCfg(const int argc,
+         const char **argv) :
+    cmdParser(path_remove_ext(__FILE__)),
+    rootFileHE("rootFileHE",
+               'h',
+               "input HE DIODE singlex16 digi root file",
+               ""),
+    rootFileLE("rootFileLE",
+               'h',
+               "input LE DIODE singlex16 digi root file",
+               ""),
+    columnMode("bcastMode",
+               'b',
+               "singlex16 pulses 12 columns individually"),
+    outputBasename("outputBasename",
+                   "all output files will use this basename + some_ext",
+                   "")
+  {
+    cmdParser.registerArg(outputBasename);
 
-int main(int argc,
-         char **argv) {
-  // libCalibGenCAL will throw runtime_error
-  try {
-    //-- COMMAND LINE --//
-    if (argc != 2) {
-      cout << __FILE__ << ": Usage: " << usage_str << endl;
-      return -1;
+    cmdParser.registerVar(rootFileHE);
+    cmdParser.registerVar(rootFileLE);
+
+
+    try {
+      cmdParser.parseCmdLine(argc, argv);
+    } catch (exception &e) {
+      cout << e.what() << endl;
+      cmdParser.printUsage();
+      throw e;
     }
 
-    //-- CONFIG FILE --//
-    SimpleIniFile cfgFile(argv[1]);
+  }
+  /// construct new parser
+  CmdLineParser cmdParser;
+  
+  CmdOptVar<string> rootFileHE;
+  CmdOptVar<string> rootFileLE;
 
-    // output dir
-    const string  outputDir("./");
+  CmdSwitch columnMode;
+  
+  CmdArg<string> outputBasename;
 
-    // input files
-    string rootFileLE   = cfgFile.getVal("CIDAC2ADC",
-                                         "LE_ROOT_FILE", string(""));
-    string rootFileHE   = cfgFile.getVal("CIDAC2ADC",
-                                         "HE_ROOT_FILE", string(""));
-    // broadcast mode
-    bool   bcastMode    = cfgFile.getVal("CIDAC2ADC",
-                                         "BCAST_MODE",
-                                         true);
+};
 
-    bool   readADCMeans = cfgFile.getVal("CIDAC2ADC",
-                                         "READ_ADC_MEANS",
-                                         false);
+int main(int argc,
+         const char **argv) {
+  // libCalibGenCAL will throw runtime_error
+  try {
+    AppCfg cfg(argc,argv);
 
     // i can process 1 or 2 files, but not none
-    if (rootFileLE.length() == 0 && rootFileHE.length() == 0) {
+    if (cfg.rootFileLE.getVal().length() == 0 && cfg.rootFileHE.getVal().length() == 0) {
       cout << __FILE__ << ": no input files specified." << endl;
       return -1;
     }
-
-    const  string &outputBaseName = (rootFileLE.length()) ?
-                                    rootFileLE : rootFileHE;
 
     //-- SETUP LOG FILE --//
     /// multiplexing output streams
     /// simultaneously to cout and to logfile
     LogStream::addStream(cout);
     // generate logfile name
-    string logfile =
-      CIDAC2ADC::genFilename(outputDir,
-                             outputBaseName,
-                             "log.txt");
+    string logfile(cfg.outputBasename.getVal() + ".log.txt");
     ofstream tmpStrm(logfile.c_str());
 
     LogStream::addStream(tmpStrm);
@@ -82,51 +98,33 @@ int main(int argc,
     output_env_banner(LogStream::get());
 
     // txt output filename
-    string       outputTXTFile =
-      CIDAC2ADC::genFilename(outputDir,
-                             outputBaseName,
-                             "txt");
+    string       outputTXTFile(cfg.outputBasename.getVal() + ".txt");
 
     CIDAC2ADC    adcMeans;
     CIDAC2ADC    cidac2adc;
     IntNonlinAlg inlAlg;
 
-    string       adcMeanFile  =
-      CIDAC2ADC::genFilename(outputDir,
-                             outputBaseName,
-                             "adcmean.txt");
+    string       adcMeanFile(cfg.outputBasename.getVal() + ".adcmean.txt");
 
-    if (readADCMeans) {
-      LogStream::get() << __FILE__ << ": reading in adc means from previous event processing: "
-                       << adcMeanFile << endl;
-      adcMeans.readTXT(adcMeanFile);
-    } else {
-      if (rootFileLE.length()) {
-        LogStream::get() << __FILE__ << ": reading LE calibGen event file: " << rootFileLE << endl;
-        inlAlg.readRootData(rootFileLE, adcMeans, LRG_DIODE, bcastMode);
-      }
-
-      if (rootFileHE.length()) {
-        LogStream::get() << __FILE__ << ": reading HE calibGen event file: " << rootFileHE << endl;
-        inlAlg.readRootData(rootFileHE, adcMeans, SM_DIODE,  bcastMode);
-      }
-
-      LogStream::get() << __FILE__ << ": saving adc means to txt file: "
-                       << adcMeanFile << endl;
-      adcMeans.writeTXT(adcMeanFile);
+    if (cfg.rootFileLE.getVal().length()) {
+      LogStream::get() << __FILE__ << ": reading LE calibGen event file: " << cfg.rootFileLE.getVal() << endl;
+      inlAlg.readRootData(cfg.rootFileLE.getVal(), adcMeans, LRG_DIODE, !cfg.columnMode.getVal());
     }
 
-    bool skipSmoothing = cfgFile.getVal("CIDAC2ADC",
-                                        "SKIP_SMOOTHING",
-                                        false);
-
-    if (!skipSmoothing) {
-      LogStream::get() << __FILE__ << ": generating smoothed spline points: " << endl;
-      inlAlg.genSplinePts(adcMeans, cidac2adc);
-
-      LogStream::get() << __FILE__ << ": writing smoothed spline points: " << outputTXTFile << endl;
-      cidac2adc.writeTXT(outputTXTFile);
+    if (cfg.rootFileHE.getVal().length()) {
+      LogStream::get() << __FILE__ << ": reading HE calibGen event file: " << cfg.rootFileHE.getVal() << endl;
+      inlAlg.readRootData(cfg.rootFileHE.getVal(), adcMeans, SM_DIODE,  !cfg.columnMode.getVal());
     }
+
+    LogStream::get() << __FILE__ << ": saving adc means to txt file: "
+                     << adcMeanFile << endl;
+    adcMeans.writeTXT(adcMeanFile);
+
+    LogStream::get() << __FILE__ << ": generating smoothed spline points: " << endl;
+    inlAlg.genSplinePts(adcMeans, cidac2adc);
+
+    LogStream::get() << __FILE__ << ": writing smoothed spline points: " << outputTXTFile << endl;
+    cidac2adc.writeTXT(outputTXTFile);
   } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
   }

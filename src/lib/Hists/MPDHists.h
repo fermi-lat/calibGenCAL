@@ -5,7 +5,7 @@
 
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "../CalibDataTypes/CalMPD.h"
@@ -30,9 +30,9 @@ class TH1S;
 
     @author Zachary Fewtrell
 
- */
+*/
 class MPDHists {
-public:
+ public:
 
   /// collection of possible fitting methods
   struct FitMethods {
@@ -100,7 +100,7 @@ public:
   /// build tuple with fit outputs
   void buildTuple();
 
-private:
+ private:
   /// fit single channel w/ specified function & store
   /// mpv and width
   /// \param mpv location to store fitted most-probable-value

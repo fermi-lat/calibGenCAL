@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/TwrHodoscope.h,v 1.8 2007/02/27 20:44:13 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/TwrHodoscope.h,v 1.1 2007/03/27 18:50:51 fewtrell Exp $
 
 /** @file
     @author fewtrell
- */
+*/
 
 #ifndef TwrHodoscope_h
 #define TwrHodoscope_h
@@ -26,9 +26,9 @@ class CalDigi;
 /** \brief Accumulate crystal hits in single tower and summarize into
     information which can be used for track determination.
     @author fewtrell
- */
+*/
 class TwrHodoscope {
-public:
+ public:
   /// default ctor
   TwrHodoscope(const CalPed &ped,
                const CIDAC2ADC &cidac2adc) :
@@ -36,9 +36,9 @@ public:
     dac(CalUtil::tDiodeIdx::N_VALS),
     m_peds(ped),
     m_cidac2adc(cidac2adc)
-  {
-    clear();
-  }
+    {
+      clear();
+    }
 
   /// 'zero-out' all members
   void clear();

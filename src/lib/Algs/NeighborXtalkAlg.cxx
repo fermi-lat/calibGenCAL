@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/NeighborXtalkAlg.cxx,v 1.5 2007/03/22 22:26:45 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/NeighborXtalkAlg.cxx,v 1.1 2007/03/27 18:50:50 fewtrell Exp $
 
 /** @file
     @author fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "NeighborXtalkAlg.h"
@@ -207,9 +207,9 @@ void NeighborXtalkAlg::processHit(const CalDigi &cdig) {
         // assign to table
         // 'source' channel is current injected channel / LEX8
         DiodeIdx srcIdx(twr,
-                      lyr,
-                      eventData.testCol,
-                      face,
+                        lyr,
+                        eventData.testCol,
+                        face,
                         LRG_DIODE);
 
         algData.xtalk->setPoint(diodeIdx,

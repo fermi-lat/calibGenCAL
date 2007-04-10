@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonCalibTkrAlg.cxx,v 1.4 2007/02/27 20:44:13 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonCalibTkrAlg.cxx,v 1.1 2007/03/27 18:50:49 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "MuonCalibTkrAlg.h"
@@ -36,16 +36,17 @@ using namespace CalGeom;
 using namespace CGCUtil;
 using namespace CLHEP;
 
-MuonCalibTkrAlg::MuonCalibTkrAlg(const SimpleIniFile &cfg,
-                           const CalPed &ped,
-                           const CIDAC2ADC &dac2adc,
-                           AsymHists &asymHists,
-                           MPDHists &mpdHists) :
+MuonCalibTkrAlg::MuonCalibTkrAlg(const CalPed &ped,
+                                 const CIDAC2ADC &dac2adc,
+                                 AsymHists &asymHists,
+                                 MPDHists &mpdHists,
+                                 const string &cfgFile
+                                 ) :
   m_asymHists(asymHists),
   m_mpdHists(mpdHists),
   eventData(ped, dac2adc)
 {
-  readCfg(cfg);
+  readCfg(cfgFile);
 }
 
 void MuonCalibTkrAlg::cfgBranches(RootFileAnalysis &rootFile) {
@@ -88,10 +89,10 @@ void MuonCalibTkrAlg::cfgBranches(RootFileAnalysis &rootFile) {
 }
 
 void MuonCalibTkrAlg::fillHists(unsigned nEntries,
-                             const vector<string> &digiFileList,
-                             const vector<string> &svacFileList,
-                             unsigned startEvent
-) {
+                                const vector<string> &digiFileList,
+                                const vector<string> &svacFileList,
+                                unsigned startEvent
+                                ) {
   m_asymHists.initHists();
   m_mpdHists.initHists();
 
@@ -358,7 +359,7 @@ bool MuonCalibTkrAlg::processFinalHitList() {
 
         algData.asymFills++;
         float asym = dac[XtalDiode(POS_FACE, pDiode)] /
-                     dac[XtalDiode(NEG_FACE, nDiode)];
+          dac[XtalDiode(NEG_FACE, nDiode)];
         asym = log(asym);
 
         m_asymHists.getHist(asymType, xtalIdx)->Fill(segmentNo, asym);
@@ -405,7 +406,9 @@ bool MuonCalibTkrAlg::hitCut() {
   return true;
 }
 
-void MuonCalibTkrAlg::readCfg(const SimpleIniFile &cfg) {
+void MuonCalibTkrAlg::readCfg(const string &cfgFile) {
+  SimpleIniFile cfg(cfgFile);
+
   algData.minDeltaEventTime = cfg.getVal<unsigned>("MUON_CALIB_TKR",
                                                    "MIN_DELTA_EVENT_TIME",
                                                    2000);
@@ -457,8 +460,8 @@ void MuonCalibTkrAlg::EventData::next() {
 }
 
 Vec3D MuonCalibTkrAlg::trkToZ(const Vec3D &start,
-                           const Vec3D &dir,
-                           float z) {
+                              const Vec3D &dir,
+                              float z) {
   float zTravel = z - start.z();
 
 
@@ -466,8 +469,8 @@ Vec3D MuonCalibTkrAlg::trkToZ(const Vec3D &start,
 }
 
 bool MuonCalibTkrAlg::validXtalIntersect(DirNum dir,
-                                      CalGeom::Vec3D xtalCtr,
-                                      CalGeom::Vec3D intersect) {
+                                         CalGeom::Vec3D xtalCtr,
+                                         CalGeom::Vec3D intersect) {
   Vec3D offset(intersect - xtalCtr);
 
   if (dir == X_DIR) {

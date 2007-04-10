@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/fitGCRHists.cxx,v 1.1 2007/03/28 17:48:37 fewtrell Exp $ //
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/fitGCRHists.cxx,v 1.2 2007/04/02 16:55:05 fewtrell Exp $ //
 
 /** @file 
     @author Zachary Fewtrell
@@ -32,6 +32,9 @@ public:
     histFile("histFile",
              "input ROOT histogram file",
              ""),
+    outputBasename("outputBaseName",
+                   "base filename for all output files",
+                   ""),
     summaryMode("summaryMode",
                 's',
                 "generate summary histograms only (no individual channel hists)")
@@ -55,6 +58,9 @@ public:
   /// input ROOT file w/ histograms
   CmdArg<string> histFile;
 
+  /// base filename for all output files
+  CmdArg<string> outputBasename;
+
   /// operate histograms in 'summary mode' where you use histograms w/ sums of all channels together.
   CmdSwitch summaryMode;
 };
@@ -73,13 +79,7 @@ int main(const int argc,
     /// simultaneously to cout and to logfile
     LogStream::addStream(cout);
     // generate logfile name
-    const string outputDir("./");
-
-    string logfile =
-      CGCUtil::genOutputFilename(outputDir,
-                                 "gcrCalib",
-                                 cfg.histFile.getVal(),
-                                 "log.txt");
+    string logfile(cfg.outputBasename.getVal() + ".log.txt");
     ofstream tmpStrm(logfile.c_str());
 
     LogStream::addStream(tmpStrm);
@@ -89,21 +89,18 @@ int main(const int argc,
 
     GCRHists  gcrHists(cfg.summaryMode.getVal());
 
-	gcrHists.loadHists(cfg.histFile.getVal());
+    gcrHists.loadHists(cfg.histFile.getVal());
 
     CalMPD calMPD;
-	set<unsigned short> zSet;
-	zSet.insert(1);
+    set<unsigned short> zSet;
+    zSet.insert(1);
 
-	gcrHists.fitHists(calMPD, zSet);
+    gcrHists.fitHists(calMPD, zSet);
 
-	// output txt file name
-    string   outputTXTFile =
-      CalMPD::genFilename(outputDir,
-                          cfg.histFile.getVal(),
-                          "txt");
+    // output txt file name
+    string   outputTXTFile(cfg.outputBasename.getVal()+".txt");
 
-	calMPD.writeTXT(outputTXTFile);
+    calMPD.writeTXT(outputTXTFile);
   } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
   }

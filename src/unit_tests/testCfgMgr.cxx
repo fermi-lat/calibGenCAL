@@ -482,7 +482,7 @@ int main() {
     pass &= RUN_TEST(CmdLineParser);
 
     cout << "ALL_TESTS_COMPLETE: " <<
-    string((pass) ? "PASS" : "FAIL");
+      string((pass) ? "PASS" : "FAIL");
     cout << endl;
   } catch (exception &e) {
     cout << "Unexpected exception: " << e.what() << endl;

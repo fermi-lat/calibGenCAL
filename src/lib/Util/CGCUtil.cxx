@@ -4,7 +4,7 @@
 
 \brief generic utility functions used in calibGenCAL pkg
 
-$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CGCUtil.cxx,v 1.7 2007/02/27 20:44:12 fewtrell Exp $
+$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.cxx,v 1.1 2007/03/27 18:50:51 fewtrell Exp $
 */
 
 // LOCAL INCLUDES
@@ -171,22 +171,6 @@ namespace CGCUtil {
     tmp << '"' << tmpStr << '"' << " not a boolean string.";
 
     throw std::runtime_error(tmp.str());
-  }
-
-  std::string genOutputFilename(const string &outputDir,
-                                const string &outputCalibType,
-                                const string &inputFilename,
-                                const string &outputExt) {
-    // extract basename from input file
-    string baseFilename = inputFilename;
-
-
-    baseFilename = path_remove_ext(path_remove_dir(baseFilename));
-
-    return outputDir + '/'
-      + outputCalibType + '.'
-      + baseFilename + '.'
-      + outputExt;
   }
 
   typedef std::vector<std::ostream *> streamvector;

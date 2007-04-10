@@ -1,11 +1,11 @@
 /** @file CalGeom.cxx
 
-   @author Zachary Fewtrell
+@author Zachary Fewtrell
 
- \brief function definitions for CalGeom.h
+\brief function definitions for CalGeom.h
 
-   $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalGeom.cxx,v 1.3 2007/02/27 20:44:13 fewtrell Exp $
- */
+$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Specs/CalGeom.cxx,v 1.1 2007/03/27 18:50:51 fewtrell Exp $
+*/
 
 // LOCAL INCLUDES
 #include "CalGeom.h"

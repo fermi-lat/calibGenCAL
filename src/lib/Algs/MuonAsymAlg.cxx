@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonAsymAlg.cxx,v 1.1 2007/03/27 18:50:49 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonAsymAlg.cxx,v 1.2 2007/03/29 19:14:26 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "MuonAsymAlg.h"
@@ -26,8 +26,8 @@ using namespace CalUtil;
 using namespace CGCUtil;
 
 MuonAsymAlg::MuonAsymAlg(const CalPed &ped,
-                   const CIDAC2ADC &dac2adc,
-                   AsymHists &asymHists) :
+                         const CIDAC2ADC &dac2adc,
+                         AsymHists &asymHists) :
   eventData(ped, dac2adc),
   m_asymHists(asymHists)
 {
@@ -123,7 +123,7 @@ void MuonAsymAlg::processTower(TwrHodoscope &hscope) {
     /** Note: 'direction' refers to the direction of xtals which have vertical
         'connect-4' deposits.  For asymmetry, we use this vertical column
         to calibrate the signal in the orthogonal crystals.
-     */
+    */
     if (dir == X_DIR) {
       if (!passCutX(hscope)) continue;     // skip this direction if track is bad
       pos           = hscope.firstColX;
@@ -167,7 +167,7 @@ void MuonAsymAlg::processTower(TwrHodoscope &hscope) {
 }
 
 void MuonAsymAlg::fillHists(unsigned nEntries,
-                         const vector<string> &rootFileList) {
+                            const vector<string> &rootFileList) {
   m_asymHists.initHists();
 
   RootFileAnalysis rootFile(0,
@@ -181,7 +181,7 @@ void MuonAsymAlg::fillHists(unsigned nEntries,
 
   unsigned nEvents = rootFile.getEntries();
   LogStream::get() <<
-  __FILE__ << ": Processing: " << nEvents << " events." << endl;
+    __FILE__ << ": Processing: " << nEvents << " events." << endl;
 
   // Basic digi-event loop
   for (eventData.eventNum = 0; eventData.eventNum < nEvents; eventData.eventNum++) {

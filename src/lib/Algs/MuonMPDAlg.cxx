@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPDAlg.cxx,v 1.16 2007/02/27 20:44:13 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonMPDAlg.cxx,v 1.1 2007/03/27 18:50:49 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "MuonMPDAlg.h"
@@ -30,9 +30,9 @@ using namespace CalGeom;
 using namespace CGCUtil;
 
 MuonMPDAlg::MuonMPDAlg(const CalPed &ped,
-                 const CIDAC2ADC &dac2adc,
-                 const CalAsym &calAsym,
-                 MPDHists &mpdHists) :
+                       const CIDAC2ADC &dac2adc,
+                       const CalAsym &calAsym,
+                       MPDHists &mpdHists) :
   algData(calAsym),
   eventData(ped, dac2adc),
   m_mpdHists(mpdHists)
@@ -40,7 +40,7 @@ MuonMPDAlg::MuonMPDAlg(const CalPed &ped,
 }
 
 void MuonMPDAlg::fillHists(unsigned nEntries,
-                        const vector<string> &rootFileList) {
+                           const vector<string> &rootFileList) {
   m_mpdHists.initHists();
 
   RootFileAnalysis rootFile(0,
@@ -168,7 +168,7 @@ void MuonMPDAlg::processTower(TwrHodoscope &hscope) {
   /** Note: 'direction' refers to the direction of xtals which have vertical
       'connect-4' deposits.  For MevPerDAC, the orthogonal hits will be used to
       determine the pathlength for these 4 hits.
-   */
+  */
 
   for (DirNum dir; dir.isValid(); dir++) {
     // skip if we don't have a good track
@@ -298,7 +298,7 @@ MuonMPDAlg::AlgData::AlgData(const CalAsym &asym) :
   viewHist("viewHist", "viewHist",
            8, -0.5, 7.5,    //X-limits lyr
            12, -0.5, 11.5),
-                            //Y-limits col
+  //Y-limits col
   calAsym(asym)
 {
   init();

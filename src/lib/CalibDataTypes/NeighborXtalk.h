@@ -1,10 +1,10 @@
 #ifndef NeighborXtalk_h
 #define NeighborXtalk_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalibDataTypes/NeighborXtalk.h,v 1.1 2007/03/27 18:50:50 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalibDataTypes/NeighborXtalk.h,v 1.2 2007/04/04 19:02:57 fewtrell Exp $
 
 /** @file
     @author fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "../Util/SplineUtil.h"
@@ -23,9 +23,9 @@
     contains read & write methods to various file formats
 
     @author fewtrell
- */
+*/
 class NeighborXtalk {
-public:
+ public:
   NeighborXtalk() {
   }
 
@@ -60,7 +60,7 @@ public:
   /// for each xtalk spline, subtract spline[0].adc from all points in spline.
   void pedSubtractADC();
 
-private:
+ private:
   /// associate cidac2adc splines from other channels w/ a single adc channel
   typedef std::map<CalUtil::DiodeIdx, SplineUtil::Polyline> ChannelSplineMap;
 

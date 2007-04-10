@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPedAlg.cxx,v 1.14 2007/02/27 20:44:13 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonPedAlg.cxx,v 1.1 2007/03/27 18:50:49 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "../Util/RootFileAnalysis.h"
@@ -45,9 +45,9 @@ void MuonPedAlg::initHists() {
 }
 
 void MuonPedAlg::fillHists(unsigned nEntries,
-                        const vector<string> &rootFileList,
-                        const CalPed *roughPeds,
-                        TRIGGER_CUT trigCut) {
+                           const vector<string> &rootFileList,
+                           const CalPed *roughPeds,
+                           TRIGGER_CUT trigCut) {
   /////////////////////////////////////////
   /// Initialize Object Data //////////////
   /////////////////////////////////////////

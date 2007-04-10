@@ -1,7 +1,7 @@
 #ifndef LangauFun_h
 #define LangauFun_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/LangauFun.h,v 1.5 2007/02/27 20:44:13 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/LangauFun.h,v 1.1 2007/03/27 18:50:51 fewtrell Exp $
 
 // LOCAL INCLUDES
 
@@ -20,7 +20,7 @@ class TF1;
 
 /** @file
     @author Zach Fewtrell, Alexandre Chekhtman
- */
+*/
 
 /** @brief Singleton-like class provides pointers to ROOT TF1 functions which
     fit with gaussian-convolved landau function.
@@ -36,9 +36,9 @@ class TF1;
     the maximum is located at x=-0.22278298 with the location parameter= 0.
     This shift is corrected within this function, so that the actual
     maximum is identical to the MP parameter.
- */
+*/
 class LangauFun {
-public:
+ public:
   /// retrieve gaussian convolved landau fuction with limits & initial values appropriate for LE CIDAC scale
   static TF1 &     getLangauDAC();
 

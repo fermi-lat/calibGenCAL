@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genNeighborXtalk.cxx,v 1.6 2007/03/27 18:50:48 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genNeighborXtalk.cxx,v 1.7 2007/04/04 19:02:57 fewtrell Exp $
 
 /** @file Gen Neighboring Crystal Cross-talk calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
@@ -77,8 +77,6 @@ int main(const int argc,
     /// multiplexing output streams
     /// simultaneously to cout and to logfile
     LogStream::addStream(cout);
-    // generate logfile name
-    const std::string outputDir("./");
     string logfile = cfg.outputBasePath.getVal() + ".log.txt";
     ofstream          tmpStrm(logfile.c_str());
     LogStream::addStream(tmpStrm);
