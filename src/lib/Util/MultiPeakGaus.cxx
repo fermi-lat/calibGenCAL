@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/MultiPeakGaus.cxx,v 1.1 2007/03/28 17:48:37 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/MultiPeakGaus.cxx,v 1.2 2007/03/29 20:14:22 fewtrell Exp $
 
 /** @file
     @author Zach Fewtrell
@@ -48,28 +48,28 @@ namespace {
   static auto_ptr<TF1> fitFunc;
 
   static void resetMPD(float newMPD) {
-	  initialVals[0] = 11.2*newMPD;
+    initialVals[0] = 11.2*newMPD;
   }
   
   static Double_t multigaufun(Double_t *x,
                               Double_t *par) {
 
-  unsigned short zIdx = 0;
+    unsigned short zIdx = 0;
 
-  Double_t retval = 0;
-  for (MultiPeakGaus::ZSet::const_iterator it = zset.begin();
-	  it != zset.end();
-	  it++) {
-		  unsigned short peakIdx = 1+zIdx;
-		  unsigned short widIdx  = 1+zset.size()+zIdx;
-		  unsigned short normIdx = 1+zset.size()*2+zIdx;
+    Double_t retval = 0;
+    for (MultiPeakGaus::ZSet::const_iterator it = zset.begin();
+         it != zset.end();
+         it++) {
+      unsigned short peakIdx = 1+zIdx;
+      unsigned short widIdx  = 1+zset.size()+zIdx;
+      unsigned short normIdx = 1+zset.size()*2+zIdx;
 
-		  float mpv     = par[peakIdx]*par[0];
-		  float wid     = par[widIdx];
-		  float norm = par[normIdx];
+      float mpv     = par[peakIdx]*par[0];
+      float wid     = par[widIdx];
+      float norm = par[normIdx];
 
-		  retval += TMath::Gaus(x[0], mpv, wid, norm);
-	  }
+      retval += TMath::Gaus(x[0], mpv, wid, norm);
+    }
 
     return retval;
   }
@@ -143,7 +143,7 @@ namespace {
     upperLims.push_back(0);
 
     // set fitting parms for each successive Z
-	for (MultiPeakGaus::ZSet::const_iterator zit = zSet.begin();
+    for (MultiPeakGaus::ZSet::const_iterator zit = zSet.begin();
          zit != zSet.end();
          zit++) {
       float z = *zit;

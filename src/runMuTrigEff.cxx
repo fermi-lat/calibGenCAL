@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runMuTrigEff.cxx,v 1.29 2007/02/27 20:44:12 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runMuTrigEff.cxx,v 1.30 2007/03/27 18:50:48 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "lib/CalibDataTypes/CalPed.h"
@@ -21,8 +21,6 @@
 #include <climits>
 #include <fstream>
 
-const string usage_str("genMuonMPD.exe cfg_file");
-
 using namespace std;
 using namespace CGCUtil;
 
@@ -30,18 +28,6 @@ int main(int argc,
          char **argv) {
   // libCalibGenCAL will throw runtime_error
   try {
-    //-- COMMAND LINE --//
-    if (argc != 2) {
-      cout << __FILE__ << ": Usage: " << usage_str << endl;
-      return -1;
-    }
-
-    //-- CONFIG FILE --//
-    SimpleIniFile cfgFile(argv[1]);
-
-    // output dir
-    const string  outputDir("./");
-
     // input files
     string rootFileCI       = cfgFile.getVal("MU_TRIG",
                                              "ROOTFILE_CI",
@@ -67,10 +53,7 @@ int main(int argc,
     /// simultaneously to cout and to logfile
     LogStream::addStream(cout);
     // generate logfile name
-    string logfile =
-      MuTrigAlg::genFilename(outputDir,
-                          rootFileEvenEven,
-                          "log.txt");
+    string logfile(cfg.outputBasename.getVal() + ".log.txt");
     ofstream tmpStrm(logfile.c_str());
 
     LogStream::addStream(tmpStrm);
@@ -89,22 +72,13 @@ int main(int argc,
       return -1;
     }
 
-    // txt output filename
-    string pedTXTFile =
-      CalPed::genFilename(outputDir,
-                          pedRootFileList[0],
-                          "txt");
-
     CalPed peds;
     LogStream::get() << __FILE__ << ": reading in muon pedestal file: " << pedTXTFile << endl;
     peds.readTXT(pedTXTFile);
 
     //-- CALCULATE TRIG EFFICIENCY --//
     // output histogram file name
-    string histFilename =
-      MuTrigAlg::genFilename(outputDir,
-                          rootFileEvenEven,
-                          "root");
+    string histFilename(cfg.outputBasename.getVal() + ".root");
     TFile histFile(histFilename.c_str(),
                    "RECREATE",
                    "Cal MuTrig Analysis",
@@ -120,11 +94,11 @@ int main(int argc,
     // trigger configuration A :  Even Rows Even Columns
     unsigned nEvents      = cfgFile. getVal<unsigned>("MU_TRIG",
                                                       "N_EVENTS",
-             ULONG_MAX);                                                                             // process all events by default.
+                                                      ULONG_MAX);                                                                             // process all events by default.
 
     bool     calLOEnabled = cfgFile. getVal<bool>("MU_TRIG",
                                                   "CAL_LO_ENABLED",
-             false);
+                                                  false);
 
     muTrig.fillMuonHists(MuTrigAlg::EVEN_ROW_EVEN_COL,
                          rootFileEvenEven,
@@ -142,10 +116,7 @@ int main(int argc,
     muTrig.fitData(peds);
 
     // generate txt output name
-    string outputTXTFile =
-      MuTrigAlg::genFilename(outputDir,
-                          rootFileEvenEven,
-                          "txt");
+    string outputTXTFile(cfg.outputBasename.getVal() + ".txt");
     muTrig.writeTXT(outputTXTFile);
 
     histFile.Write();

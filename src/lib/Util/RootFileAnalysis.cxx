@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/RootFileAnalysis.cxx,v 1.8 2007/02/27 20:44:13 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/RootFileAnalysis.cxx,v 1.1 2007/03/27 18:50:51 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "RootFileAnalysis.h"
@@ -74,7 +74,7 @@ RootFileAnalysis::RootFileAnalysis(const vector<string> *mcFilenames,
       TFile       curFile(curFilenames);
 
       int fileDigiEvtVer = ((TStreamerInfo *)curFile.GetStreamerInfoList()->FindObject("DigiEvent"))->
-                             GetClassVersion();
+        GetClassVersion();
 
       if (fileDigiEvtVer != codeDigiEvtVer)
         LogStream::get() << "WARNING: digFile=" << curFilenames << " created with DigiEvent version"

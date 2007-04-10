@@ -1,7 +1,7 @@
 #ifndef GCRCalibAlg_h
 #define GCRCalibAlg_h
 
-// $Header: $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/GCRCalibAlg.h,v 1.1 2007/03/27 18:50:49 fewtrell Exp $
 
 /** @file
     @author Zach Fewtrell
@@ -46,13 +46,13 @@ class GCRCalibAlg {
                  const std::vector<std::string> &gcrSelectRootFileList,
                  const CalPed &peds,
                  const CIDAC2ADC &dac2adc,
-				 GCRHists &gcrHists);
+                 GCRHists &gcrHists);
 
 
 
  private:
 
-	 /// load parameters from cfg file.
+  /// load parameters from cfg file.
   void readCfg(const SimpleIniFile &cfgFile);
 
   /// perform cuts based on GCRSelect info
@@ -127,7 +127,7 @@ class GCRCalibAlg {
     /// cidac2adc for use by alg
     const CIDAC2ADC *                              dac2adc;
 
-	GCRHists *                               gcrHists;
+    GCRHists *                               gcrHists;
   }     algData;
 
   /// store data pertinent to current event
@@ -155,7 +155,7 @@ class GCRCalibAlg {
     unsigned eventNum;
 
     /// pointer to current digiEvent leaf
-	const DigiEvent *digiEvent;
+    const DigiEvent *digiEvent;
 
     /// pointer to current gcrEvent leaf
     GcrSelectEvent * gcrSelectEvent;

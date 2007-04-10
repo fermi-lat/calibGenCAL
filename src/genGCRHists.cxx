@@ -1,9 +1,9 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genGCRHists.cxx,v 1.6 2007/03/29 19:14:26 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genGCRHists.cxx,v 1.7 2007/04/09 18:58:48 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
 
-	Generate CIDAC & ADC signal gain calibration histograms from digi & gcrRecon root files
+    Generate CIDAC & ADC signal gain calibration histograms from digi & gcrRecon root files
 */
 
 // LOCAL INCLUDES
@@ -58,7 +58,10 @@ public:
     summaryMode("summaryMode",
                 's',
                 "generate summary histograms only (no individual channel hists)"
-    )
+                ),
+    outputBasename("outputBasename",
+                   "all output files will use this basename + some_ext",
+                   "")
 
   {
     cmdParser.registerArg(pedTXTFile);
@@ -68,6 +71,8 @@ public:
     cmdParser.registerArg(digiFilenames);
 
     cmdParser.registerArg(gcrFilenames);
+
+    cmdParser.registerArg(outputBasename);
 
     cmdParser.registerSwitch(summaryMode);
 
@@ -98,7 +103,7 @@ public:
 
   CmdSwitch summaryMode;
 
-
+  CmdArg<string> outputBasename;
 };
 
 int main(const int argc,
@@ -107,21 +112,21 @@ int main(const int argc,
   try {
     //-- COMMAND LINE --//
     AppCfg  cfg(argc,
-            argv);
+                argv);
 
     //-- CONFIG FILE --//
-	string fullCfgPath(cfg.cfgPath.getVal());
-	Util::expandEnvVar(&fullCfgPath);
-	SimpleIniFile  cfgFile(fullCfgPath);
+    string fullCfgPath(cfg.cfgPath.getVal());
+    Util::expandEnvVar(&fullCfgPath);
+    SimpleIniFile  cfgFile(fullCfgPath);
 
     // input file(s)
-    vector<string> digiRootFileList = getLinesFromFile(cfg.digiFilenames.getVal());
+    vector<string> digiRootFileList(getLinesFromFile(cfg.digiFilenames.getVal()));
     if (digiRootFileList.size() < 1) {
       cout << __FILE__ << ": No input files specified" << endl;
       return -1;
     }
 
-	vector<string> gcrSelectRootFileList = getLinesFromFile(cfg.gcrFilenames.getVal());    
+    vector<string> gcrSelectRootFileList(getLinesFromFile(cfg.gcrFilenames.getVal()));    
     if (gcrSelectRootFileList.size() < 1) {
       cout << __FILE__ << ": No input files specified" << endl;
       return -1;
@@ -132,13 +137,7 @@ int main(const int argc,
     /// simultaneously to cout and to logfile
     LogStream::addStream(cout);
     // generate logfile name
-    const string outputDir("./");
-
-    string logfile =
-      CGCUtil::genOutputFilename(outputDir,
-                                 "gcrCalib",
-                                 digiRootFileList[0],
-                                 "log.txt");
+    string logfile(cfg.outputBasename.getVal() + ".log.txt");
     ofstream tmpStrm(logfile.c_str());
 
     LogStream::addStream(tmpStrm);
@@ -161,16 +160,10 @@ int main(const int argc,
     //-- GCR MPD
 
     // output histogram file name
-    string histFilename =
-      CalMPD::genFilename(outputDir,
-                          digiRootFileList[0],
-                          "root");
+    string histFilename(cfg.outputBasename.getVal() + ".root");
 
     // output txt file name
-    string   outputTXTFile =
-      CalMPD::genFilename(outputDir,
-                          digiRootFileList[0],
-                          "txt");
+    string   outputTXTFile(cfg.outputBasename.getVal() + ".txt");
 
     unsigned nEntries = cfgFile. getVal<unsigned>("GCR_CALIB",
                                                   "ENTRIES_PER_HIST",

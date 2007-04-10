@@ -1,10 +1,10 @@
 #ifndef MuonMPDAlg_h
 #define MuonMPDAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonMPDAlg.h,v 1.12 2007/02/27 20:44:13 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonMPDAlg.h,v 1.1 2007/03/27 18:50:49 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "../Util/CGCUtil.h"
@@ -34,19 +34,19 @@ class MPDHists;
     event files
 
     @author Zachary Fewtrell
- */
+*/
 class MuonMPDAlg {
-public:
+ public:
   MuonMPDAlg(const CalPed &ped,
-          const CIDAC2ADC &dac2adc,
-          const CalAsym &asym,
-          MPDHists &mpdHists);
+             const CIDAC2ADC &dac2adc,
+             const CalAsym &asym,
+             MPDHists &mpdHists);
 
   /// populate histograms from digi root event file
   void        fillHists(const unsigned nEntries,
                         const std::vector<std::string> &rootFileList);
 
-private:
+ private:
   /// process a single event for histogram fill
   void        processEvent(DigiEvent &digiEvent);
 
@@ -61,14 +61,14 @@ private:
   bool        passCutY(const TwrHodoscope &hscope);
 
   class AlgData {
-private:
+  private:
     void init() {
       nXEvents = 0;
       nYEvents = 0;
       nXtals   = 0;
     }
 
-public:
+  public:
 
     AlgData(const CalAsym &asym);
 
@@ -85,21 +85,21 @@ public:
   } algData;
 
   class EventData {
-private:
+  private:
     /// reset all member variables
     void init()
-    {
-      eventNum = 0;
-      next();
-    }
+      {
+        eventNum = 0;
+        next();
+      }
 
-public:
+  public:
     EventData(const CalPed &ped,
               const CIDAC2ADC &dac2adc) :
       hscopes(CalUtil::TwrNum::N_VALS, TwrHodoscope(ped, dac2adc))
-    {
-      init();
-    }
+      {
+        init();
+      }
 
     /// rest all member variables that do not retain data
     /// from one event to next.

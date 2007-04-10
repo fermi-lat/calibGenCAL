@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CfgMgr.h,v 1.5 2007/02/28 19:52:30 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CfgMgr.h,v 1.1 2007/03/27 18:50:51 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 #ifndef CfgMgr_h
 #define CfgMgr_h
@@ -15,19 +15,19 @@
 #include <iostream>
 
 /**
- \brief Simple command line option parser.  Inspired by python 'optparse' module
+   \brief Simple command line option parser.  Inspired by python 'optparse' module
 
- \note this package attempts to follow the definitions stated in python optparse documentation
+   \note this package attempts to follow the definitions stated in python optparse documentation
    here: http://docs.python.org/lib/optparse-terminology.html
 
    Example Usage:
 
 
- */
+*/
 
 namespace CfgMgr {
   template <typename _T>
-  std::string toStr(const _T &val) {
+    std::string toStr(const _T &val) {
     std::ostringstream tmp;
 
 
@@ -40,7 +40,7 @@ namespace CfgMgr {
   /// Switches are boolean variables which default to false.
   /// \note truly 'virtual' class has no data members, suitable for virtual/multiple inheritance
   class ICmdSwitch {
-public:
+  public:
     virtual const std::string & getLongName() const = 0;
     virtual char                getShortName() const = 0;
     virtual const std::string & getHelp() const     = 0;
@@ -51,7 +51,7 @@ public:
   /// \brief Abstract Interface Class for Optional position independent commandline which takes an argument
   /// \note truly 'virtual' class has no data members, suitable for virtual/multiple inheritance
   class ICmdOptVar {
-public:
+  public:
     virtual const std::string & getLongName() const  = 0;
     virtual char                getShortName() const = 0;
     virtual const std::string & getHelp() const      = 0;
@@ -62,7 +62,7 @@ public:
   /// \brief Abstract Interface Class for Mandatory: position dependent commandline argument
   /// \note truly 'virtual' class has no data members, suitable for virtual/multiple inheritance
   class ICmdArg {
-public:
+  public:
     virtual const std::string & getLongName() const = 0;
     virtual const std::string & getHelp() const     = 0;
     virtual void                setVal(const std::string &newVal) = 0;
@@ -72,27 +72,27 @@ public:
   /// \brief thrown when variable parameters are inconsistant / illegal
   class InvalidVarDef :
     public std::logic_error {
-public:
+    public:
     InvalidVarDef(const std::string &desc) :
       std::logic_error("Invalid Cfg Variable Definition: " + desc)
-    {
-    }
+      {
+      }
   };
 
   /// \brief thrown when duplicate variable names are registered to same parser
   class DuplicateNameError :
     public std::logic_error {
-public:
+    public:
     DuplicateNameError(const std::string &desc) :
       std::logic_error("Duplicate variable name registered: " + desc)
-    {
-    }
+      {
+      }
   };
 
   /// \brief thrown when user entered argument list is invalid format
   class InvalidCmdLine :
     public std::runtime_error {
-public:
+    public:
     InvalidCmdLine(const std::string &desc) :
       std::runtime_error("Invalid commandline: " + desc) {
     }
@@ -101,7 +101,7 @@ public:
   /// \brief basic implementation of ICmdSwitch
   class CmdSwitch :
     public virtual ICmdSwitch {
-public:
+    public:
     /// \param  Optionally may be "" to disable longName
     /// \param shortName may be (char)0 in order to disable shortName
     /// \pre at least one of  longName or shortName needs to be defined.
@@ -147,7 +147,7 @@ public:
       return val;
     }
 
-private:
+    private:
     std::string longName;
     char shortName;
     std::string help;
@@ -159,9 +159,9 @@ private:
   /// - templatized for use w/ multiple destination
   /// data types
   template <typename _T>
-  class CmdOptVar :
+    class CmdOptVar :
     public virtual ICmdOptVar {
-public:
+    public:
     /// \pre longName should contain only letters & '-' character.
     /// Optionally may be "" to disable longName
     /// \pre shortName may be (char)0 in order to disable shortName
@@ -212,7 +212,7 @@ public:
       return val;
     }
 
-private:
+    private:
     std::string longName;
     char shortName;
     std::string help;
@@ -223,18 +223,18 @@ private:
   ///
   /// - templateized for use w/ mulitple destination data types
   template<typename _T>
-  class CmdArg :
+    class CmdArg :
     public virtual ICmdArg {
-public:
+    public:
     CmdArg(const std::string &name,
            const std::string &help,
            const _T &defVal
-    ) :
+           ) :
       name(name),
       help(help),
       val(defVal)
-    {
-    }
+      {
+      }
 
     virtual ~CmdArg() {
     };
@@ -261,7 +261,7 @@ public:
       return val;
     }
 
-private:
+    private:
     std::string name;
     std::string help;
     _T val;
@@ -269,7 +269,7 @@ private:
 
   /// basic implementation of ICmdLineParser
   class CmdLineParser {
-public:
+  public:
     /// \param appName optional for usage print-outs, etc
     CmdLineParser(const std::string &appName) :
       appName(appName) {
@@ -297,7 +297,7 @@ public:
                       bool allowAnonArgs = false,
                       bool skipFirst = true,
                       bool ignoreErrors = false
-    );
+                      );
 
     void printStatus(std::ostream &strm = std::cout) const;
 
@@ -309,7 +309,7 @@ public:
       return anonArgList;
     }
 
-private:
+  private:
     typedef std::map<char, ICmdSwitch *>        ShortSwitchMap;
     typedef std::map<std::string, ICmdSwitch *> LongSwitchMap;
     typedef std::vector<ICmdSwitch *>           SwitchList;

@@ -1,10 +1,10 @@
 #ifndef MuonPedAlg_h
 #define MuonPedAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPedAlg.h,v 1.12 2007/02/27 20:44:13 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonPedAlg.h,v 1.1 2007/03/27 18:50:49 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 
@@ -31,9 +31,9 @@ class CalDigi;
 
 
     @author Zachary Fewtrell
- */
+*/
 class MuonPedAlg {
-public:
+ public:
   MuonPedAlg();
 
   /// which type of events should be filtered for
@@ -62,7 +62,7 @@ public:
   /// \note useful for data w/ < 16 Cal modules.
   void     trimHists();
 
-private:
+ private:
   /// allocate & create muon pedestal histograms & pointer array
   void     initHists();
 
@@ -83,13 +83,13 @@ private:
 
   /// store cfg & status data pertinent to current algorithm run
   class AlgData {
-private:
+  private:
     void init() {
       roughPeds = 0;
       trigCut   = PERIODIC_TRIGGER;
     }
 
-public:
+  public:
     AlgData() {
       init();
     }
@@ -101,7 +101,7 @@ public:
 
   /// store data pertinent to current event
   class EventData {
-private:
+  private:
     /// reset all member variables
     void init() {
       prev4Range = true;
@@ -109,7 +109,7 @@ private:
       eventNum   = 0;
     }
 
-public:
+  public:
     EventData() {
       init();
     }

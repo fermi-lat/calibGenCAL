@@ -1,8 +1,8 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/IntNonlinAlg.cxx,v 1.3 2007/02/27 20:44:13 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/IntNonlinAlg.cxx,v 1.1 2007/03/27 18:50:49 fewtrell Exp $
 
 /** @file
     @author fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "IntNonlinAlg.h"
@@ -275,7 +275,7 @@ void IntNonlinAlg::smoothSpline(const vector<float> &curADC,
                                 vector<float> &splineADC,
                                 vector<float> &splineDAC,
                                 RngNum rng
-) {
+                                ) {
   // following vals only change w/ rng, so i get them outside the other loops.
   unsigned short grpWid       = SMOOTH_GRP_WIDTH[rng.val()];
   unsigned short extrapLo     = EXTRAP_PTS_LO[rng.val()];

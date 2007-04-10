@@ -1,10 +1,10 @@
 #ifndef MuonCalibTkrAlg_h
 #define MuonCalibTkrAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonCalibTkrAlg.h,v 1.4 2007/02/27 20:44:13 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonCalibTkrAlg.h,v 1.1 2007/03/27 18:50:49 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "../Util/CGCUtil.h"
@@ -37,14 +37,20 @@ class MPDHists;
     event files
 
     @author Zachary Fewtrell
- */
+*/
 class MuonCalibTkrAlg {
-public:
-  MuonCalibTkrAlg(const SimpleIniFile &cfg,
-               const CalPed &ped,
-               const CIDAC2ADC &dac2adc,
-               AsymHists &asymHists,
-               MPDHists &mpdHists);
+ public:
+  /// \param cfgFile path to optional ini style cfg file w/ non-default alg parms
+  /// \param ped cal pedestal calibrations
+  /// \param dac2adc cal intNonlin calibrations
+  /// \param asymHists output asymmetry histograms
+  /// \param mpdHists output mevPerDAC histograms
+  MuonCalibTkrAlg(const CalPed &ped,
+                  const CIDAC2ADC &dac2adc,
+                  AsymHists &asymHists,
+                  MPDHists &mpdHists,
+                  const string &cfgFile
+                  );
 
   /// populate histograms from digi root event file
   /// \param nEntries Run until all active channel histograms have at least nEntries fills
@@ -55,9 +61,9 @@ public:
                         const std::vector<std::string> &digiFileList,
                         const std::vector<std::string> &svacFileList,
                         unsigned startEvent = 0
-  );
+                        );
 
-private:
+ private:
   /// process a single event for histogram fill
   bool           processEvent(const DigiEvent &digiEvent);
 
@@ -95,7 +101,7 @@ private:
   bool           hitCut();
 
   /// read in cfg parameters
-  void           readCfg(const SimpleIniFile &cfg);
+  void           readCfg(const std::string &cfg);
 
   /// enable ROOT TTree branches & assign data destinations
   void           cfgBranches(RootFileAnalysis &rootFile);
@@ -118,7 +124,7 @@ private:
   MPDHists &m_mpdHists;
 
   class AlgData {
-private:
+  private:
     void init() {
       minDeltaEventTime  = 0;
       xtalLongCut        = 0;
@@ -143,7 +149,7 @@ private:
       mpdSmFills         = 0;
     }
 
-public:
+  public:
     AlgData() {
       init();
     }
@@ -204,20 +210,20 @@ public:
   } algData;
 
   class EventData {
-private:
+  private:
     /// reset all member variables
     void init() {
       eventNum = 0;
       next();
     }
 
-public:
+  public:
     EventData(const CalPed &ped,
               const CIDAC2ADC &dac2adc) :
       hscope(ped, dac2adc)
-    {
-      init();
-    }
+      {
+        init();
+      }
 
     /// rest all member variables that do not retain data
     /// from one event to next.

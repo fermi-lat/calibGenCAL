@@ -1,10 +1,10 @@
 #ifndef MuTrigAlg_h
 #define MuTrigAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuTrigAlg.h,v 1.6 2007/02/27 20:44:13 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuTrigAlg.h,v 1.1 2007/03/27 18:50:49 fewtrell Exp $
 
 /** @file
     @author fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "../Util/CGCUtil.h"
@@ -23,15 +23,15 @@ class CalPed;
 
 /** \brief Represents GLAST Cal trigger efficiency calibrations
 
-   contains read & write methods to various file formats & code
-   to calculate calibrations from digi ROOT event files.
+contains read & write methods to various file formats & code
+to calculate calibrations from digi ROOT event files.
 
-   calculates efficiency for both CIDAC and Muon tests
+calculates efficiency for both CIDAC and Muon tests
 
-   @author fewtrell
- */
+@author fewtrell
+*/
 class MuTrigAlg {
-public:
+ public:
   /// describes which cal trigger channels are enabled
   /// in this configuration.
   /// \note 'row' refers to the row number on a single
@@ -53,7 +53,7 @@ public:
                      unsigned nEvents,
                      const CalPed &peds,
                      bool calLOEnabled = false
-  );
+                     );
 
   /// \brief measure FLE trigger efficiency against charge injection
   /// \param filename root digi data file w/ diagnostic info
@@ -69,17 +69,7 @@ public:
   /// write intermediate output to txt
   void writeCIMetavals(const std::string &filename) const;
 
-  /// generate 'official' output filename from inputfile, path, and extension
-  static std::string genFilename(const std::string outputDir,
-                                 const std::string &inFilename,
-                                 const std::string &ext) {
-    return CGCUtil::genOutputFilename(outputDir,
-                                      "muTrig",
-                                      inFilename,
-                                      ext);
-  }
-
-private:
+ private:
   void initHists();
 
   /// determine if xtal is enabled for this
@@ -92,9 +82,9 @@ private:
         return true;
       else return false;
     else
-    if (gcrc%2 != col%2)
-      return true;
-    else return false;
+      if (gcrc%2 != col%2)
+        return true;
+      else return false;
   }
 
   std::string genHistName(const std::string &type,

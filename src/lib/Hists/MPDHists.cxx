@@ -2,7 +2,7 @@
 
 /** @file
     @author Zachary Fewtrell
- */
+*/
 
 // LOCAL INCLUDES
 #include "MPDHists.h"
@@ -201,7 +201,7 @@ void MPDHists::fitHists(CalMPD &calMPD) {
     float relMPDErr  = mpdErrLrg/mpdLrg;
 
     float mpdErrSm   = mpdSm *
-                       sqrt(relLineErr *relLineErr + relMPDErr *relMPDErr);
+      sqrt(relLineErr *relLineErr + relMPDErr *relMPDErr);
 
     calMPD.setMPDErr(xtalIdx, SM_DIODE, mpdErrSm);
 
@@ -249,20 +249,20 @@ void MPDHists::fitChannel(TH1 &hist,
   mpv = m_fitFunc->GetParameter(1);
 
   switch (m_fitMethod) {
-    case FitMethods::LANDAU:
-      width  = m_fitFunc->GetParameter(2);
-      break;
+  case FitMethods::LANDAU:
+    width  = m_fitFunc->GetParameter(2);
+    break;
 
-    case FitMethods::LANGAU:
-      width  = sqrt(pow(m_fitFunc->GetParameter(0), 2) +
-                    pow(m_fitFunc->GetParameter(3), 2));
-      // width is calc'd as fraction of mpv
-      // i want to save it in dac units.
-      width *= mpv;
-      break;
+  case FitMethods::LANGAU:
+    width  = sqrt(pow(m_fitFunc->GetParameter(0), 2) +
+                  pow(m_fitFunc->GetParameter(3), 2));
+    // width is calc'd as fraction of mpv
+    // i want to save it in dac units.
+    width *= mpv;
+    break;
 
-    default:
-      throw invalid_argument("invalid fit_method");
+  default:
+    throw invalid_argument("invalid fit_method");
   }
 }
 
@@ -384,27 +384,27 @@ void MPDHists::buildTuple() {
 
 
   switch (m_fitMethod) {
-    case FitMethods::LANDAU:
-      break;
+  case FitMethods::LANDAU:
+    break;
 
-    case FitMethods::LANGAU:
-      tuple = &(LangauFun::buildTuple());
-      break;
+  case FitMethods::LANGAU:
+    tuple = &(LangauFun::buildTuple());
+    break;
 
-    default:
-      throw invalid_argument("invalid fit_method");
+  default:
+    throw invalid_argument("invalid fit_method");
   }
 
   for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
     switch (m_fitMethod) {
-      case FitMethods::LANDAU:
-        break;
+    case FitMethods::LANDAU:
+      break;
 
-      case FitMethods::LANGAU:
-        LangauFun::fillTuple(xtalIdx,
-                             *(m_dacLLHists[xtalIdx]),
-                             *tuple);
-        break;
+    case FitMethods::LANGAU:
+      LangauFun::fillTuple(xtalIdx,
+                           *(m_dacLLHists[xtalIdx]),
+                           *tuple);
+      break;
     }
   }
 }

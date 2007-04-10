@@ -3,8 +3,8 @@
 // $Header $
 
 /** @file collection of classes for polylines and associated spline functions
-   @author fewtrell
- */
+    @author fewtrell
+*/
 
 // LOCAL INCLUDES
 
