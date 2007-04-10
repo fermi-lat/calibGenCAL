@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Tue Apr 10 07:51:00 PDT 2007
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+- moving c++ apps from cfg file model to makefile model
+---- moving most cfg options to cmdline
+    *
+------------------------------------------------------------
+User: fewtrell  Tue Apr 10 07:51:00 PDT 2007
 calibGenCAL/cfg
 
 Modified Files:
