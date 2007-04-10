@@ -1,5 +1,16 @@
 ------------------------------------------------------------
 User: fewtrell  Tue Apr 10 07:51:01 PDT 2007
+calibGenCAL/src/lib/CalibDataTypes
+
+Modified Files:
+	CIDAC2ADC.cxx CIDAC2ADC.h CalAsym.cxx CalAsym.h CalMPD.cxx 
+	CalMPD.h CalPed.cxx CalPed.h NeighborXtalk.h 
+Log Message:
+- moving c++ apps from cfg file model to makefile model
+---- moving most cfg options to cmdline
+    *
+------------------------------------------------------------
+User: fewtrell  Tue Apr 10 07:51:01 PDT 2007
 calibGenCAL/src/lib/Algs
 
 Modified Files:
