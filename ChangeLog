@@ -1,5 +1,17 @@
 ------------------------------------------------------------
 User: fewtrell  Tue Apr 10 14:26:41 PDT 2007
+calibGenCAL/src
+
+Modified Files:
+	fitGCRHists.cxx genCIDAC2ADC.cxx genGCRHists.cxx 
+	genMuonAsym.cxx genMuonCalibTkr.cxx genMuonMPD.cxx 
+	genMuonPed.cxx genNeighborXtalk.cxx runMuTrigEff.cxx 
+Log Message:
+debugginb calibGenCAL v5
+
+    *
+------------------------------------------------------------
+User: fewtrell  Tue Apr 10 14:26:41 PDT 2007
 calibGenCAL/cfg
 
 Modified Files:
