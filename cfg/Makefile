@@ -1,4 +1,4 @@
-# $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/cfg/Makefile,v 1.6 2007/04/10 21:26:41 fewtrell Exp $
+# $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/cfg/Makefile,v 1.7 2007/04/11 16:46:18 fewtrell Exp $
 # @file calibGenCAL analysis Makefile - manage generation of all calibGenCAL outputs and accessory files
 # @requires GNU Make
 # @requires calibGenCAL package CMT environment setup - this means source your $CALIBGENCALROOT/cmt/setup.(csh|sh|bat)
@@ -17,8 +17,18 @@ MUPED_EVENT_FILTER     = PERIODIC
 # 1000 events minimum per hist is sufficient
 MUPED_NENTRIES_PERHIST = 1000
 
+### A2: FLIGHT GAIN PEDESTALS
+FLIGHTPED_DIGI_FILES = flightped_digi_files.txt
+# options 'PERIODIC' 'EXTERNAL' 'ALL'
+FLIGHTPED_EVENT_FILTER     = PERIODIC
+# 1000 events minimum per hist is sufficient
+FLIGHTPED_NENTRIES_PERHIST = 1000
+
 
 ## SECTION B: INT-NONLIN (CIDAC2ADC) ##
+# set to '-c' if inl data is in column mode, blank if not
+#INL_COLMODE    = -c
+
 ### B1: MUON GAIN INT-NONLIN
 # input LE singlex16 digi root event file (muon gain, calibGain=on, calibGen element#201)
 INL_MUON_DIGI_LE = /nfs/farm/g/glast/u41/Integration/rootData/077014468/v7r0913p10/digi/digitization-licos-v3r9p2_077014468_digi_DIGI.root
@@ -50,58 +60,53 @@ CG_DIGI_CGON  = /nfs/farm/g/glast/u41/Integration/rootData/077014465/v7r0913p10/
 # input HE singlex16 digi root event file (flight_gain, calibGain=off, fle=127, calibGen element #108)
 CG_DIGI_CGOFF = /nfs/farm/g/glast/u41/Integration/rootData/077014467/v7r0913p10/digi/digitization-licos-v3r9p2_077014467_digi_DIGI.root
 
-
-#############
-## OPTIONS ##
-#############
-
-# set to '-c' if inl data is in column mode, blank if not
-#INL_COLMODE    = -c
-
 #########################
 ### AUTOGEN_FILENAMES ###
 #########################
-INL_SFX     = .cidac2adc
-PED_SFX     = .calPed
-ASYM_SFX    = .calAsym
-MPD_SFX     = .calMPD
-MUSLOPE_SFX = .muSlope
-ADC2NRG_SFX = .adc2nrg
-MUOPT_SFX   = .muonOptical
-CG_SFX = .calibGain
+INL_SFX         = .cidac2adc
+PED_SFX         = .calPed
+ASYM_SFX        = .calAsym
+MPD_SFX         = .calMPD
+MUSLOPE_SFX     = .muSlope
+ADC2NRG_SFX     = .adc2nrg
+MUOPT_SFX       = .muonOptical
+CG_SFX          = .calibGain
+FLIGHT_GAIN_SFX = .FLIGHT_GAIN
+MUON_GAIN_SFX   = .MUON_GAIN
 
-INL_MUON_BASE = $(addsuffix ${INL_SFX}, $(basename $(notdir ${INL_MUON_DIGI_LE})))
+INL_MUON_BASE = $(addsuffix ${INL_SFX}, $(addsuffix ${MUON_GAIN_SFX}, $(basename $(notdir ${INL_MUON_DIGI_LE}))))
 INL_MUON_TXT  = $(addsuffix .txt, ${INL_MUON_BASE})
 INL_MUON_XML  = $(addsuffix .xml, ${INL_MUON_BASE})
 INL_MUON_VAL  = $(addsuffix .val.root, ${INL_MUON_BASE})
 
-INL_FLIGHT_BASE = $(addsuffix ${INL_SFX}, $(basename $(notdir ${INL_FLIGHT_DIGI_LE})))
+INL_FLIGHT_BASE = $(addsuffix ${INL_SFX}, $(addsuffix ${FLIGHT_GAIN_SFX}, $(basename $(notdir ${INL_FLIGHT_DIGI_LE}))))
 INL_FLIGHT_TXT  = $(addsuffix .txt, ${INL_FLIGHT_BASE})
 INL_FLIGHT_XML  = $(addsuffix .xml, ${INL_FLIGHT_BASE})
 INL_FLIGHT_VAL  = $(addsuffix .val.root, ${INL_FLIGHT_BASE})
 
-CG_ON_BASE = $(addsuffix ${INL_SFX}, $(basename $(notdir ${CG_DIGI_CGON})))
+CG_BASE    = $(basename $(notdir ${CG_DIGI_CGON}))
+CG_TXT = $(addsuffix .txt, $(addsuffix ${CG_SFX}, ${CG_BASE}))
+
+CG_ON_BASE = $(addsuffix ${INL_SFX}, $(addsuffix .calibGainOn, ${CG_BASE}))
 CG_ON_TXT = $(addsuffix .txt, ${CG_ON_BASE})
 CG_ON_XML = $(addsuffix .xml, ${CG_ON_BASE})
 
-
-CG_OFF_BASE = $(addsuffix ${INL_SFX}, $(basename $(notdir ${CG_DIGI_CGOFF})))
+CG_OFF_BASE = $(addsuffix ${INL_SFX}, $(addsuffix .calibGainOff, $(basename $(notdir ${CG_DIGI_CGOFF}))))
 CG_OFF_TXT = $(addsuffix .txt, ${CG_OFF_BASE})
 CG_OFF_XML = $(addsuffix .xml, ${CG_OFF_BASE})
 
-CG_TXT = $(addsuffix .txt, $(addsuffix ${CG_SFX}, ${CG_ON_BASE}))
 
 NEIGHBOR_XTALK_BASE = $(addsuffix ${NBR_XTALK_SFX}, $(basename $(notdir ${INPUT_NEIGHBOR_XTALK})))
 NEIGHBOR_XTALK_TXT  = $(addsuffix .txt, ${NEIGHBOR_XTALK_BASE})
 
 FIRST_MUPED_DIGI = $(shell head -n 1 ${MUPED_DIGI_FILES})
-PED_MUON_BASE = $(addsuffix ${PED_SFX}, $(basename $(notdir ${FIRST_MUPED_DIGI})))
+PED_MUON_BASE = $(addsuffix ${PED_SFX}, $(addsuffix ${MUON_GAIN_SFX}, $(basename $(notdir ${FIRST_MUPED_DIGI}))))
 PED_MUON_TXT  = $(addsuffix .txt, ${PED_MUON_BASE})
 PED_MUON_XML  = $(addsuffix .xml, ${PED_MUON_BASE})
 PED_MUON_VAL  = $(addsuffix .val.root, ${PED_MUON_BASE})
 
 FIRST_MUOPT_DIGI = $(shell head -n 1 ${MUOPT_DIGI_FILES})
-MUOPT_BASE = $(addsuffix ${MUOPT_SFX}, $(basename $(notdir ${FIRST_MUOPT_DIGI})))
+MUOPT_BASE = $(addsuffix ${MUOPT_SFX}, $(addsuffix ${MUON_GAIN_SFX}, $(basename $(notdir ${FIRST_MUOPT_DIGI}))))
 ASYM_MUON_BASE = $(addsuffix ${ASYM_SFX}, ${MUOPT_BASE})
 ASYM_MUON_TXT  = $(addsuffix .txt, ${ASYM_MUON_BASE})
 ASYM_MUON_XML  = $(addsuffix .xml, ${ASYM_MUON_BASE})
@@ -112,13 +117,40 @@ MPD_MUON_TXT  = $(addsuffix .txt, ${MPD_MUON_BASE})
 MPD_MUON_XML  = $(addsuffix .xml, ${MPD_MUON_BASE})
 MPD_MUON_VAL  = $(addsuffix .val.root, ${MPD_MUON_BASE})
 
-MUSLOPE_BASE = $(addsuffix ${MUSLOPE_SFX}, $(basename $(notdir ${FIRST_MUOPT_DIGI})))
-MUSLOPE_XML  = $(addsuffix .xml, ${MUSLOPE_BASE})
-MUSLOPE_VAL  = $(addsuffix .val.root, ${MUSLOPE_BASE})
+MUSLOPE_MUON_BASE = $(addsuffix ${MUSLOPE_SFX}, $(addsuffix ${MUON_GAIN_SFX}, $(basename $(notdir ${FIRST_MUOPT_DIGI}))))
+MUSLOPE_MUON_XML  = $(addsuffix .xml, ${MUSLOPE_MUON_BASE})
+MUSLOPE_MUON_VAL  = $(addsuffix .val.root, ${MUSLOPE_MUON_BASE})
 
-ADC2NRG_BASE = $(addsuffix ${ADC2NRG_SFX}, $(basename $(notdir ${FIRST_MUOPT_DIGI})))
-ADC2NRG_XML  = $(addsuffix .xml, ${ADC2NRG_BASE})
-ADC2NRG_VAL  = $(addsuffix .val.root, ${ADC2NRG_BASE})
+ADC2NRG_MUON_BASE = $(addsuffix ${ADC2NRG_SFX}, $(addsuffix ${MUON_GAIN_SFX}, $(basename $(notdir ${FIRST_MUOPT_DIGI}))))
+ADC2NRG_MUON_XML  = $(addsuffix .xml, ${ADC2NRG_MUON_BASE})
+ADC2NRG_MUON_VAL  = $(addsuffix .val.root, ${ADC2NRG_MUON_BASE})
+
+MUSLOPE_FLIGHT_BASE = $(addsuffix ${MUSLOPE_SFX}, $(addsuffix ${FLIGHT_GAIN_SFX}, $(basename $(notdir ${FIRST_MUOPT_DIGI}))))
+MUSLOPE_FLIGHT_XML  = $(addsuffix .xml, ${MUSLOPE_FLIGHT_BASE})
+MUSLOPE_FLIGHT_VAL  = $(addsuffix .val.root, ${MUSLOPE_FLIGHT_BASE})
+
+ADC2NRG_FLIGHT_BASE = $(addsuffix ${ADC2NRG_SFX}, $(addsuffix ${FLIGHT_GAIN_SFX}, $(basename $(notdir ${FIRST_MUOPT_DIGI}))))
+ADC2NRG_FLIGHT_XML  = $(addsuffix .xml, ${ADC2NRG_FLIGHT_BASE})
+ADC2NRG_FLIGHT_VAL  = $(addsuffix .val.root, ${ADC2NRG_FLIGHT_BASE})
+
+FIRST_FLIGHTPED_DIGI = $(shell head -n 1 ${FLIGHTPED_DIGI_FILES})
+PED_FLIGHT_BASE = $(addsuffix ${PED_SFX}, $(addsuffix ${FLIGHT_GAIN_SFX}, $(basename $(notdir ${FIRST_FLIGHTPED_DIGI}))))
+PED_FLIGHT_TXT  = $(addsuffix .txt, ${PED_FLIGHT_BASE})
+PED_FLIGHT_XML  = $(addsuffix .xml, ${PED_FLIGHT_BASE})
+PED_FLIGHT_VAL  = $(addsuffix .val.root, ${PED_FLIGHT_BASE})
+
+
+MUOPT_FLIGHT_BASE = $(addsuffix ${MUOPT_SFX}, $(addsuffix ${FLIGHT_GAIN_SFX}, $(basename $(notdir ${FIRST_MUOPT_DIGI}))))
+ASYM_FLIGHT_BASE = $(addsuffix ${ASYM_SFX}, ${MUOPT_FLIGHT_BASE})
+ASYM_FLIGHT_XML  =  $(addsuffix .xml, ${ASYM_FLIGHT_BASE})
+ASYM_FLIGHT_VAL  = $(addsuffix .val.root, ${ASYM_FLIGHT_BASE})
+ 
+MPD_FLIGHT_BASE = $(addsuffix ${MPD_SFX}, ${MUOPT_FLIGHT_BASE})
+MPD_FLIGHT_XML  = $(addsuffix .xml, ${MPD_FLIGHT_BASE})
+MPD_FLIGHT_VAL  = $(addsuffix .val.root, ${MPD_FLIGHT_BASE})
+
+
+
 
 #########################
 ## General ENV SETUP ####
@@ -168,7 +200,7 @@ ADC2NRG_VAL  = $(addsuffix .val.root, ${ADC2NRG_BASE})
 ### TARGET OUTPUTS #######
 ##########################
 .PHONY: all
-all: ped inl muopt
+all: ped inl muopt flight_opt muslope
 
 .PHONY: inl
 inl : inl_muon inl_flight
@@ -222,8 +254,6 @@ ${CG_OFF_TXT}:
 	genCIDAC2ADC.exe  ${INL_COLMODE} -h ${CG_DIGI_CGOFF} ${CG_OFF_BASE}
 
 
-
-
 .PHONY: neighbor_xtalk
 neighbor_xtalk : ${NEIGHBOR_XTALK_TXT}
 
@@ -252,41 +282,23 @@ ${PED_MUON_TXT} : ${MUPED_DIGI_FILES}
 
 
 
+.PHONY : muopt
 muopt : muopt_val
-
 .PHONY: muopt_val 
-muopt_val : ${ASYM_MUON_VAL} ${MPD_MUON_VAL} ${MUSLOPE_VAL} ${ADC2NRG_VAL}
-
+muopt_val : asym_muon_val mpd_muon_val
 .PHONY: asym_muon_val 
 asym_muon_val : ${ASYM_MUON_VAL}
-
 .PHONY: mpd_muon_val 
 mpd_muon_val : ${MPD_MUON_VAL}
 
-.PHONY: muslope_val 
-muslope_val : ${MUSLOPE_VAL}
-.PHONY: adc2nrg_val 
-adc2nrg_val : ${ADC2NRG_VAL}
 
 
-.PHONY: muopt_xml 
-muopt_xml : ${ASYM_MUON_XML} ${MPD_MUON_XML} ${MUSLOPE_XML}
-
+.PHONY: muopt_xml
+muopt_xml : ${ASYM_MUON_XML} ${MPD_MUON_XML}
 .PHONY: asym_muon_xml 
 asym_muon_xml : ${ASYM_MUON_XML}
-
-.PHONY: muslope_xml 
-muslope_xml : ${MUSLOPE_XML}
-
 .PHONY: mpd_muon_xml 
 mpd_muon_xml : ${MPD_MUON_XML}
-
-# adc2nrg.xml & muslope.xml are created simultaneously
-${ADC2NRG_XML} : ${MUSLOPE_XML}
-
-${MUSLOPE_XML} :  ${INL_MUON_XML} ${ASYM_MUON_XML} ${MPD_MUON_XML}
-	genADC2NRG.sh ${INL_MUON_XML} ${ASYM_MUON_XML} ${MPD_MUON_XML} ${ADC2NRG_XML} ${MUSLOPE_XML}
-
 
 .PHONY: asym_muon_txt
 asym_muon_txt : ${ASYM_MUON_TXT}
@@ -304,3 +316,77 @@ ${ASYM_MUON_TXT} : ${MPD_MUON_TXT}
 ${MPD_MUON_TXT} : ${PED_MUON_TXT} ${INL_MUON_TXT} ${MUOPT_DIGI_FILES} ${MUOPT_SVAC_FILES} 
 	genMuonCalibTkr.exe ${PED_MUON_TXT} ${INL_MUON_TXT}  ${MUOPT_DIGI_FILES} ${MUOPT_SVAC_FILES} ${MUOPT_BASE} --entriesPerHist=${MUOPT_NENTRIES_PERHIST}
 
+
+.PHONY: ped_flight_val
+ped_flight_val : ${PED_FLIGHT_VAL}
+ 
+.PHONY: ped_flight_xml
+ped_flight_xml : ${PED_FLIGHT_XML}
+ 
+.PHONY: ped_flight_txt
+ped_flight_txt : ${PED_FLIGHT_TXT}
+ 
+${PED_FLIGHT_TXT} : ${FLIGHTPED_DIGI_FILES}
+	genMuonPed.exe ${FLIGHTPED_DIGI_FILES} ${PED_FLIGHT_BASE} --entriesPerHist=${FLIGHTPED_NENTRIES_PERHIST} --triggerCut=${FLIGHTPED_EVENT_FILTER}
+ 
+
+.PHONY: flight_opt
+flight_opt : flight_asym flight_mpd
+ 
+.PHONY: flight_asym
+flight_asym : ${ASYM_FLIGHT_XML}
+${ASYM_FLIGHT_XML} : ${CG_TXT} ${ASYM_MUON_XML}
+	asymApplyCalibGain.sh ${CG_TXT} ${ASYM_MUON_XML} ${ASYM_FLIGHT_XML}
+ 
+.PHONY: flight_mpd
+flight_mpd : ${MPD_FLIGHT_XML}
+${MPD_FLIGHT_XML} : ${CG_TXT} ${MPD_MUON_XML}
+	mpdApplyCalibGain.sh ${CG_TXT} ${MPD_MUON_XML} ${MPD_FLIGHT_XML}
+
+
+.PHONY: onboard_calib
+onboard_calib : onboard_ped onboard_gain
+
+ 
+.PHONY: onboard_ped
+onboard_ped : cal_pedestals.h
+cal_pedestals.h : ${PED_FLIGHT_XML}
+	genFlightPed.sh ${PED_FLIGHT_XML}
+ 
+.PHONY: onboard_gain
+onboard_gain : cal_gains.h
+cal_gains.h: ${MUSLOPE_FLIGHT_XML}
+	genFlightGain.sh ${FLIGHT_MUSLOPE_XML}
+
+
+.PHONY : muslope
+muslope : muslope_muon_val  muslope_flight_val
+
+.PHONY: muslope_muon_val
+muslope_muon_val : ${MUSLOPE_MUON_VAL}
+.PHONY: adc2nrg_muon_val 
+adc2nrg_muon_val : ${ADC2NRG_MUON_VAL}
+
+.PHONY: muslope_muon_xml 
+muslope_muon_xml : ${MUSLOPE_MUON_XML}
+
+# adc2nrg.xml & muslope.xml are created simultaneously
+${MUSLOPE_MUON_XML} :${ADC2NRG_MUON_XML}
+
+${ADC2NRG_MUON_XML} :  ${INL_MUON_XML} ${ASYM_MUON_XML} ${MPD_MUON_XML}
+	genADC2NRG.sh ${INL_MUON_XML} ${ASYM_MUON_XML} ${MPD_MUON_XML} ${ADC2NRG_MUON_XML} ${MUSLOPE_MUON_XML}
+
+
+.PHONY: muslope_flight_val
+muslope_flight_val : ${MUSLOPE_FLIGHT_VAL}
+.PHONY: adc2nrg_flight_val 
+adc2nrg_flight_val : ${ADC2NRG_FLIGHT_VAL}
+
+.PHONY: muslope_flight_xml 
+muslope_flight_xml : ${MUSLOPE_FLIGHT_XML}
+
+# adc2nrg.xml & muslope.xml are created simultaneously
+${MUSLOPE_FLIGHT_XML} :${ADC2NRG_FLIGHT_XML}
+
+${ADC2NRG_FLIGHT_XML} :  ${INL_FLIGHT_XML} ${ASYM_FLIGHT_XML} ${MPD_FLIGHT_XML}
+	genADC2NRG.sh ${INL_FLIGHT_XML} ${ASYM_FLIGHT_XML} ${MPD_FLIGHT_XML} ${ADC2NRG_FLIGHT_XML} ${MUSLOPE_FLIGHT_XML}

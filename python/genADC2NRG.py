@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL ADC2NRG and muSlope calibration XML files from asymmetry, cidac2adc & mevPerDAC xml files"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/02/08 16:37:30 $"
-__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/03/06 17:40:37 $"
+__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -176,7 +176,7 @@ if __name__ == '__main__':
                             # fill in muSlope array
                             muSlopeData[twr, row, online_face, col, rng, slopeIdx] = adc2nrg
 
-                            print twr, lyr, col, face, rng, adc2nrg
+                           # print twr, lyr, col, face, rng, adc2nrg
 
                             # fill in adc2nrg array
                             if thx == 0:
