@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Apr 12 14:11:34 PDT 2007
+calibGenCAL/cfg
+
+Modified Files:
+	Makefile 
+Log Message:
+preparing Makefile for cgc 5
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Apr 11 09:46:18 PDT 2007
 calibGenCAL/cfg
 
