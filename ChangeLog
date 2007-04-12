@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Apr 12 14:11:35 PDT 2007
+calibGenCAL/python
+
+Modified Files:
+	genADC2NRG.py 
+Log Message:
+preparing Makefile for cgc 5
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Apr 12 14:11:34 PDT 2007
 calibGenCAL/cfg
 
