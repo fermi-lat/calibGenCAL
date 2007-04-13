@@ -1,4 +1,4 @@
-# $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/cfg/Makefile,v 1.8 2007/04/12 21:11:34 fewtrell Exp $
+# $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/cfg/Makefile,v 1.9 2007/04/13 01:16:37 fewtrell Exp $
 # @file calibGenCAL analysis Makefile - manage generation of all calibGenCAL outputs and accessory files
 # @requires GNU Make
 # @requires calibGenCAL package CMT environment setup - this means source your $CALIBGENCALROOT/cmt/setup.(csh|sh|bat)
@@ -484,15 +484,15 @@ ${DACSLOPES_MUON_XML} : ${DACSLOPES_MUON_CFG} ${MUSLOPE_MUON_XML}
 	dacSlopesGen.sh ${DACSLOPES_MUON_CFG} ${DACSLOPES_MUON_XML}
 
 .PHONY: tholdci_flight_xml
-tholdci_flight_xml : ${THOLDCI_FLIGHT_XML}
+tholdci_flight_xml : ${THOLDCI_FLIGHT_XML} 
 .PHONY: dac_settings_flight
-${THOLDCI_FLIGHT_XML} : ${THOLDCI_FLIGHT_CFG} 
+${THOLDCI_FLIGHT_XML} : ${THOLDCI_FLIGHT_CFG} ${INL_FLIGHT_XML}
 	tholdCIGen.sh ${THOLDCI_FLIGHT_CFG} ${THOLDCI_FLIGHT_XML}
 
 .PHONY: tholdci_muon_xml
 tholdci_muon_xml : ${THOLDCI_MUON_XML}
 .PHONY: dac_settings_muon
-${THOLDCI_MUON_XML} : ${THOLDCI_MUON_CFG} 
+${THOLDCI_MUON_XML} : ${THOLDCI_MUON_CFG} ${INL_MUON_XML}
 	tholdCIGen.sh ${THOLDCI_MUON_CFG} ${THOLDCI_MUON_XML}
 
 
