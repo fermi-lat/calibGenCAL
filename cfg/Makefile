@@ -1,4 +1,4 @@
-# $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/cfg/Makefile,v 1.7 2007/04/11 16:46:18 fewtrell Exp $
+# $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/cfg/Makefile,v 1.8 2007/04/12 21:11:34 fewtrell Exp $
 # @file calibGenCAL analysis Makefile - manage generation of all calibGenCAL outputs and accessory files
 # @requires GNU Make
 # @requires calibGenCAL package CMT environment setup - this means source your $CALIBGENCALROOT/cmt/setup.(csh|sh|bat)
@@ -60,6 +60,27 @@ CG_DIGI_CGON  = /nfs/farm/g/glast/u41/Integration/rootData/077014465/v7r0913p10/
 # input HE singlex16 digi root event file (flight_gain, calibGain=off, fle=127, calibGen element #108)
 CG_DIGI_CGOFF = /nfs/farm/g/glast/u41/Integration/rootData/077014467/v7r0913p10/digi/digitization-licos-v3r9p2_077014467_digi_DIGI.root
 
+## SECTION E: DAC SETTINGS GENERATION ##
+DACSLOPES_MUON_CFG = 0407.MUON_GAIN.dacSlopes.cfg
+THOLDCI_MUON_CFG   = 0407.MUON_GAIN.tholdci.cfg
+
+DACSLOPES_FLIGHT_CFG = 0407.FLIGHT_GAIN.dacSlopes.cfg
+THOLDCI_FLIGHT_CFG   = 0407.FLIGHT_GAIN.tholdci.cfg
+
+# most thresholds in MeV
+FLE_FLIGHT_THRESH = 100
+FHE_FLIGHT_THRESH = 1000
+LAC_FLIGHT_THRESH = 2
+# uld threshold in percent of adc range
+ULD_FLIGHT_THRESH = 1.5
+
+# most thresholds in MeV
+FLE_MUON_THRESH = 100
+FHE_MUON_THRESH = 1000
+LAC_MUON_THRESH = 2
+# uld threshold in percent of adc range
+ULD_MUON_THRESH = 1.5
+
 #########################
 ### AUTOGEN_FILENAMES ###
 #########################
@@ -73,6 +94,8 @@ MUOPT_SFX       = .muonOptical
 CG_SFX          = .calibGain
 FLIGHT_GAIN_SFX = .FLIGHT_GAIN
 MUON_GAIN_SFX   = .MUON_GAIN
+DACSLOPES_SFX   = .dacSlopes
+THOLDCI_SFX     = .tholdCI
 
 INL_MUON_BASE = $(addsuffix ${INL_SFX}, $(addsuffix ${MUON_GAIN_SFX}, $(basename $(notdir ${INL_MUON_DIGI_LE}))))
 INL_MUON_TXT  = $(addsuffix .txt, ${INL_MUON_BASE})
@@ -149,13 +172,39 @@ MPD_FLIGHT_BASE = $(addsuffix ${MPD_SFX}, ${MUOPT_FLIGHT_BASE})
 MPD_FLIGHT_XML  = $(addsuffix .xml, ${MPD_FLIGHT_BASE})
 MPD_FLIGHT_VAL  = $(addsuffix .val.root, ${MPD_FLIGHT_BASE})
 
+DACSLOPES_FLIGHT_BASE = $(basename $(notdir ${DACSLOPES_FLIGHT_CFG}))
+DACSLOPES_MUON_BASE = $(basename $(notdir ${DACSLOPES_MUON_CFG}))
+DACSLOPES_FLIGHT_XML = $(addsuffix .xml, ${DACSLOPES_FLIGHT_BASE})
+DACSLOPES_FLIGHT_VAL = $(addsuffix .val.root, ${DACSLOPES_FLIGHT_BASE})
+DACSLOPES_MUON_XML = $(addsuffix .xml, ${DACSLOPES_MUON_BASE})
+DACSLOPES_MUON_VAL = $(addsuffix .val.root, ${DACSLOPES_MUON_BASE})
 
+THOLDCI_FLIGHT_BASE =  $(basename $(notdir ${THOLDCI_FLIGHT_CFG}))
+THOLDCI_MUON_BASE =  $(basename $(notdir ${THOLDCI_MUON_CFG}))
+THOLDCI_FLIGHT_XML = $(addsuffix .xml, ${THOLDCI_FLIGHT_BASE})
+THOLDCI_FLIGHT_VAL = $(addsuffix .val.root, ${THOLDCI_FLIGHT_BASE})
+THOLDCI_MUON_XML = $(addsuffix .xml, ${THOLDCI_MUON_BASE})
+THOLDCI_MUON_VAL = $(addsuffix .val.root, ${THOLDCI_MUON_BASE})
 
+FLE_FLIGHT_XML = ${DACSLOPES_FLIGHT_BASE}.${FLE_FLIGHT_THRESH}MeV.FLIGHT_GAIN.fle.xml
+FHE_FLIGHT_XML = ${DACSLOPES_FLIGHT_BASE}.${FHE_FLIGHT_THRESH}MeV.FLIGHT_GAIN.fhe.xml
+LAC_FLIGHT_XML = ${DACSLOPES_FLIGHT_BASE}.${LAC_FLIGHT_THRESH}MeV.FLIGHT_GAIN.lac.xml
+ULD_FLIGHT_XML = ${DACSLOPES_FLIGHT_BASE}.${ULD_FLIGHT_THRESH}pct.FLIGHT_GAIN.uld.xml
 
-#########################
-## General ENV SETUP ####
-#########################
-#DISPLAY =
+FLE_MUON_XML = ${DACSLOPES_MUON_BASE}.${FLE_MUON_THRESH}MeV.MUON_GAIN.fle.xml
+FHE_MUON_XML = ${DACSLOPES_MUON_BASE}.${FHE_MUON_THRESH}MeV.MUON_GAIN.fhe.xml
+LAC_MUON_XML = ${DACSLOPES_MUON_BASE}.${LAC_MUON_THRESH}MeV.MUON_GAIN.lac.xml
+ULD_MUON_XML = ${DACSLOPES_MUON_BASE}.${ULD_MUON_THRESH}pct.MUON_GAIN.uld.xml
+
+FLE_FLIGHT_VAL = ${DACSLOPES_FLIGHT_BASE}.${FLE_FLIGHT_THRESH}MeV.FLIGHT_GAIN.fle.val.root
+FHE_FLIGHT_VAL = ${DACSLOPES_FLIGHT_BASE}.${FHE_FLIGHT_THRESH}MeV.FLIGHT_GAIN.fhe.val.root
+LAC_FLIGHT_VAL = ${DACSLOPES_FLIGHT_BASE}.${LAC_FLIGHT_THRESH}MeV.FLIGHT_GAIN.lac.val.root
+ULD_FLIGHT_VAL = ${DACSLOPES_FLIGHT_BASE}.${ULD_FLIGHT_THRESH}pct.FLIGHT_GAIN.uld.val.root
+
+FLE_MUON_VAL = ${DACSLOPES_MUON_BASE}.${FLE_MUON_THRESH}MeV.MUON_GAIN.fle.val.root
+FHE_MUON_VAL = ${DACSLOPES_MUON_BASE}.${FHE_MUON_THRESH}MeV.MUON_GAIN.fhe.val.root
+LAC_MUON_VAL = ${DACSLOPES_MUON_BASE}.${LAC_MUON_THRESH}MeV.MUON_GAIN.lac.val.root
+ULD_MUON_VAL = ${DACSLOPES_MUON_BASE}.${ULD_MUON_THRESH}pct.MUON_GAIN.uld.val.root
 
 ####################
 ## GENERIC RULES ###
@@ -195,12 +244,11 @@ MPD_FLIGHT_VAL  = $(addsuffix .val.root, ${MPD_FLIGHT_BASE})
 %${ADC2NRG_SFX}.val.root : %${ADC2NRG_SFX}.xml
 	adc2nrgVal.sh -R $@ $<
 
-
 ##########################
 ### TARGET OUTPUTS #######
 ##########################
 .PHONY: all
-all: ped inl muopt flight_opt muslope
+all: ped inl muopt flight_opt muslope dac_settings tholdci
 
 .PHONY: inl
 inl : inl_muon inl_flight
@@ -371,9 +419,9 @@ adc2nrg_muon_val : ${ADC2NRG_MUON_VAL}
 muslope_muon_xml : ${MUSLOPE_MUON_XML}
 
 # adc2nrg.xml & muslope.xml are created simultaneously
-${MUSLOPE_MUON_XML} :${ADC2NRG_MUON_XML}
+${ADC2NRG_MUON_XML}: ${MUSLOPE_MUON_XML}
 
-${ADC2NRG_MUON_XML} :  ${INL_MUON_XML} ${ASYM_MUON_XML} ${MPD_MUON_XML}
+${MUSLOPE_MUON_XML} :  ${INL_MUON_XML} ${ASYM_MUON_XML} ${MPD_MUON_XML}
 	genADC2NRG.sh ${INL_MUON_XML} ${ASYM_MUON_XML} ${MPD_MUON_XML} ${ADC2NRG_MUON_XML} ${MUSLOPE_MUON_XML}
 
 
@@ -386,7 +434,174 @@ adc2nrg_flight_val : ${ADC2NRG_FLIGHT_VAL}
 muslope_flight_xml : ${MUSLOPE_FLIGHT_XML}
 
 # adc2nrg.xml & muslope.xml are created simultaneously
-${MUSLOPE_FLIGHT_XML} :${ADC2NRG_FLIGHT_XML}
+#${MUSLOPE_FLIGHT_XML} :${ADC2NRG_FLIGHT_XML}
 
-${ADC2NRG_FLIGHT_XML} :  ${INL_FLIGHT_XML} ${ASYM_FLIGHT_XML} ${MPD_FLIGHT_XML}
+${MUSLOPE_FLIGHT_XML} :  ${INL_FLIGHT_XML} ${ASYM_FLIGHT_XML} ${MPD_FLIGHT_XML}
 	genADC2NRG.sh ${INL_FLIGHT_XML} ${ASYM_FLIGHT_XML} ${MPD_FLIGHT_XML} ${ADC2NRG_FLIGHT_XML} ${MUSLOPE_FLIGHT_XML}
+
+
+.PHONY: dacslopes
+dacslopes : dacslopes_val
+.PHONY: dacslopes_val
+dacslopes_val : dacslopes_flight_val dacslopes_muon_val
+
+.PHONY: dacslopes_flight
+dacslopes_flight : dacslopes_flight_val
+.PHONY: dacslopes_flight_val
+dacslopes_flight_val: ${DACSLOPES_FLIGHT_VAL}
+
+
+.PHONY: dacslopes_muon
+dacslopes_muon : dacslopes_muon_val
+.PHONY: dacslopes_muon_val
+dacslopes_muon_val: ${DACSLOPES_MUON_VAL}
+
+.PHONY: tholdci
+tholdci : tholdci_val
+.PHONY: tholdci_val
+tholdci_val : tholdci_flight_val tholdci_muon_val
+
+.PHONY: tholdci_flight
+tholdci_flight : tholdci_flight_val
+.PHONY: tholdci_flight_val
+tholdci_flight_val: ${THOLDCI_FLIGHT_VAL}
+
+.PHONY: tholdci_muon
+tholdci_muon : tholdci_muon_val
+.PHONY: tholdci_muon_val
+tholdci_muon_val: ${THOLDCI_MUON_VAL}
+
+
+
+.PHONY: dacslopes_flight_xml
+dacslopes_flight_xml : ${DACSLOPES_FLIGHT_XML}
+${DACSLOPES_FLIGHT_XML} : ${DACSLOPES_FLIGHT_CFG} ${MUSLOPE_FLIGHT_XML}
+	dacSlopesGen.sh ${DACSLOPES_FLIGHT_CFG} ${DACSLOPES_FLIGHT_XML}
+
+.PHONY: dacslopes_muon_xml
+dacslopes_muon_xml : ${DACSLOPES_MUON_XML}
+${DACSLOPES_MUON_XML} : ${DACSLOPES_MUON_CFG} ${MUSLOPE_MUON_XML}
+	dacSlopesGen.sh ${DACSLOPES_MUON_CFG} ${DACSLOPES_MUON_XML}
+
+.PHONY: tholdci_flight_xml
+tholdci_flight_xml : ${THOLDCI_FLIGHT_XML}
+.PHONY: dac_settings_flight
+${THOLDCI_FLIGHT_XML} : ${THOLDCI_FLIGHT_CFG} 
+	tholdCIGen.sh ${THOLDCI_FLIGHT_CFG} ${THOLDCI_FLIGHT_XML}
+
+.PHONY: tholdci_muon_xml
+tholdci_muon_xml : ${THOLDCI_MUON_XML}
+.PHONY: dac_settings_muon
+${THOLDCI_MUON_XML} : ${THOLDCI_MUON_CFG} 
+	tholdCIGen.sh ${THOLDCI_MUON_CFG} ${THOLDCI_MUON_XML}
+
+
+
+.PHONY : dac_settings
+dac_settings : dac_settings_val
+.PHONY : dac_settings_val
+dac_settings_val : dac_settings_muon_val dac_settings_flight_val
+
+.PHONY: dac_settings_muon
+dac_settings_muon : dac_settings_muon_val
+
+.PHONY: dac_settings_muon_val
+dac_settings_muon_val : fle_muon_val fhe_muon_val uld_muon_val lac_muon_val
+
+.PHONY: fle_muon_val
+fle_muon_val : ${FLE_MUON_VAL}
+
+.PHONY: fhe_muon_val
+fhe_muon_val : ${FHE_MUON_VAL}
+
+.PHONY: uld_muon_val
+uld_muon_val : ${ULD_MUON_VAL}
+
+.PHONY: lac_muon_val
+lac_muon_val : ${LAC_MUON_VAL}
+
+
+${FLE_MUON_XML} : ${DACSLOPES_MUON_XML}
+	genDACsettings.sh FLE ${FLE_MUON_THRESH} ${DACSLOPES_MUON_XML} ${FLE_MUON_XML}
+
+${FHE_MUON_XML} : ${DACSLOPES_MUON_XML}
+	genDACsettings.sh FHE ${FHE_MUON_THRESH} ${DACSLOPES_MUON_XML} ${FHE_MUON_XML}
+
+${LAC_MUON_XML} : ${DACSLOPES_MUON_XML}
+	genDACsettings.sh LAC ${LAC_MUON_THRESH} ${DACSLOPES_MUON_XML} ${LAC_MUON_XML}
+
+${ULD_MUON_XML} : ${DACSLOPES_MUON_XML}
+	genDACsettings.sh ULD ${ULD_MUON_THRESH} ${DACSLOPES_MUON_XML} ${ULD_MUON_XML}
+
+
+${FLE_MUON_VAL}  : ${FLE_MUON_XML} 
+	valDACsettings.sh -R ${FLE_MUON_VAL} FLE ${FLE_MUON_THRESH} ${DACSLOPES_MUON_XML} ${FLE_MUON_XML}
+
+${FHE_MUON_VAL} : ${FHE_MUON_XML} 
+	valDACsettings.sh -R ${FHE_MUON_VAL} FHE ${FHE_MUON_THRESH} ${DACSLOPES_MUON_XML} ${FHE_MUON_XML}
+
+${LAC_MUON_VAL} : ${LAC_MUON_XML} 
+	valDACsettings.sh -R ${LAC_MUON_VAL} LAC ${LAC_MUON_THRESH} ${DACSLOPES_MUON_XML} ${LAC_MUON_XML}
+
+${ULD_MUON_VAL} : ${ULD_MUON_XML} 
+	valDACsettings.sh -R ${ULD_MUON_VAL} ULD ${ULD_MUON_THRESH} ${DACSLOPES_MUON_XML} ${ULD_MUON_XML}
+
+
+.PHONY : dac_settings_flight
+dac_settings_flight: dac_settings_flight_val
+
+.PHONY: dac_settings_flight_val
+dac_settings_flight_val : fle_flight_val fhe_flight_val uld_flight_val lac_flight_val
+
+.PHONY: fle_flight_val
+fle_flight_val : ${FLE_FLIGHT_VAL}
+
+.PHONY: fhe_flight_val
+fhe_flight_val : ${FHE_FLIGHT_VAL}
+
+.PHONY: uld_flight_val
+uld_flight_val : ${ULD_FLIGHT_VAL}
+
+.PHONY: lac_flight_val
+lac_flight_val : ${LAC_FLIGHT_VAL}
+
+
+${FLE_FLIGHT_XML} : ${DACSLOPES_FLIGHT_XML}
+	genDACsettings.sh FLE ${FLE_FLIGHT_THRESH} ${DACSLOPES_FLIGHT_XML} ${FLE_FLIGHT_XML}
+
+${FHE_FLIGHT_XML} : ${DACSLOPES_FLIGHT_XML}
+	genDACsettings.sh FHE ${FHE_FLIGHT_THRESH} ${DACSLOPES_FLIGHT_XML} ${FHE_FLIGHT_XML}
+
+${LAC_FLIGHT_XML} : ${DACSLOPES_FLIGHT_XML}
+	genDACsettings.sh LAC ${LAC_FLIGHT_THRESH} ${DACSLOPES_FLIGHT_XML} ${LAC_FLIGHT_XML}
+
+${ULD_FLIGHT_XML} : ${DACSLOPES_FLIGHT_XML}
+	genDACsettings.sh ULD ${ULD_FLIGHT_THRESH} ${DACSLOPES_FLIGHT_XML} ${ULD_FLIGHT_XML}
+
+
+${FLE_FLIGHT_VAL}  : ${FLE_FLIGHT_XML} 
+	valDACsettings.sh -R ${FLE_FLIGHT_VAL} FLE ${FLE_FLIGHT_THRESH} ${DACSLOPES_FLIGHT_XML} ${FLE_FLIGHT_XML}
+
+${FHE_FLIGHT_VAL} : ${FHE_FLIGHT_XML} 
+	valDACsettings.sh -R ${FHE_FLIGHT_VAL} FHE ${FHE_FLIGHT_THRESH} ${DACSLOPES_FLIGHT_XML} ${FHE_FLIGHT_XML}
+
+${LAC_FLIGHT_VAL} : ${LAC_FLIGHT_XML} 
+	valDACsettings.sh -R ${LAC_FLIGHT_VAL} LAC ${LAC_FLIGHT_THRESH} ${DACSLOPES_FLIGHT_XML} ${LAC_FLIGHT_XML}
+
+${ULD_FLIGHT_VAL} : ${ULD_FLIGHT_XML} 
+	valDACsettings.sh -R ${ULD_FLIGHT_VAL} ULD ${ULD_FLIGHT_THRESH} ${DACSLOPES_FLIGHT_XML} ${ULD_FLIGHT_XML}
+
+
+${DACSLOPES_MUON_VAL} : ${DACSLOPES_MUON_XML}
+	dacSlopesVal.sh -R $@ $<
+
+${THOLDCI_MUON_VAL} : ${THOLDCI_MUON_XML}
+	tholdCIVal.sh -R $@ $<
+
+
+
+${DACSLOPES_FLIGHT_VAL} : ${DACSLOPES_FLIGHT_XML}
+	dacSlopesVal.sh -R $@ $<
+
+${THOLDCI_FLIGHT_VAL} : ${THOLDCI_FLIGHT_XML}
+	tholdCIVal.sh -R $@ $<
