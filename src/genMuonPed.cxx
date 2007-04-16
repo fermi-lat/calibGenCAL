@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.17 2007/04/10 16:22:20 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.18 2007/04/10 21:26:41 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -132,7 +132,7 @@ int main(int argc,
     // open new output histogram file
     LogStream::get() << __FILE__ << ": opening output rough pedestal histogram file: " << roughPedHistFileName <<
       endl;
-    TFile outputHistFile(roughPedHistFileName.c_str(),
+    TFile roughpedHistfile(roughPedHistFileName.c_str(),
                          "RECREATE",
                          "Muon rough pedestals",
                          9);
@@ -143,12 +143,14 @@ int main(int argc,
                            NULL,
                            trigCut);
     muonRoughPed.trimHists();
-    outputHistFile.Write();
+
     
     LogStream::get() << __FILE__ << ": fitting rough pedestal histograms." << endl;
     muonRoughPed.fitHists(roughPed);
     LogStream::get() << __FILE__ << ": writing rough pedestals: " << roughPedTXTFile << endl;
     roughPed.writeTXT(roughPedTXTFile);
+    roughpedHistfile.Write();
+    roughpedHistfile.Close();
 
     //-- MUON PEDS --//
     // - LEX8 only include hits in histograms.
@@ -161,19 +163,26 @@ int main(int argc,
 
     // open new output histogram file
     LogStream::get() << __FILE__ << ": opening muon pedestal output histogram file: " << muPedHistFileName << endl;
+    TFile mupedHistfile(muPedHistFileName.c_str(),
+                        "RECREATE",
+                        "Muon pedestals",
+                        9);
+    
     LogStream::get() << __FILE__ << ": reading root event file(s) starting w/ " << rootFileList[0] << endl;
     muPed.fillHists(nEntries,
                     rootFileList,
                     &roughPed,
                     trigCut);
     muPed.trimHists();
-    outputHistFile.Write();
     
     LogStream::get() << __FILE__ << ": fitting muon pedestal histograms." << endl;
     muPed.fitHists(calPed);
     
     LogStream::get() << __FILE__ << ": writing muon pedestals: " << muPedTXTFile << endl;
     calPed.writeTXT(muPedTXTFile);
+
+    mupedHistfile.Write();
+    mupedHistfile.Close();
   } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
     return -1;

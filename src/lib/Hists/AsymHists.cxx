@@ -85,7 +85,7 @@ string AsymHists::genHistName(AsymType asymType,
   tmp <<  "asym"
       << asymType.getDiode(POS_FACE).val()
       << asymType.getDiode(NEG_FACE).val()
-      << "_" << xtalIdx.val();
+      << "_" << xtalIdx.toStr();
   return tmp.str();
 }
 

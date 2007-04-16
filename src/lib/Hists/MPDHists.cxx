@@ -67,19 +67,19 @@ void MPDHists::initHists() {
                             400, 0, 100);
 
   for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
-    histname = genHistName("dacL2S", xtalIdx.val());
+    histname = genHistName("dacL2S", xtalIdx.toStr());
     m_dacL2SHists[xtalIdx] = new TH1S(histname.c_str(),
                                       histname.c_str(),
                                       400, 0, .4);
 
-    histname = genHistName("dacL2S_slope", xtalIdx.val());
+    histname = genHistName("dacL2S_slope", xtalIdx.toStr());
     m_dacL2SSlopeProfs[xtalIdx] = new TProfile(histname.c_str(),
                                                histname.c_str(),
                                                N_L2S_PTS,
                                                L2S_MIN_LEDAC,
                                                L2S_MAX_LEDAC);
 
-    histname = genHistName("dacLL", xtalIdx.val());
+    histname = genHistName("dacLL", xtalIdx.toStr());
     m_dacLLHists[xtalIdx] = new TH1S(histname.c_str(),
                                      histname.c_str(),
                                      200, 0, 100);
@@ -272,36 +272,26 @@ void MPDHists::loadHists() {
 
   for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
     //-- DAC_LL HISTOGRAMS --//
-    histname = genHistName("dacLL", xtalIdx.val());
+    histname = genHistName("dacLL", xtalIdx.toStr());
     TH1S *hist_LL = CGCUtil::retrieveHist < TH1S > (*gDirectory, histname);
     if (!hist_LL) continue;
 
     m_dacLLHists[xtalIdx] = hist_LL;
 
     //-- DAC_L2S HISTOGRAMS --//
-    histname = genHistName("dacL2S", xtalIdx.val());
+    histname = genHistName("dacL2S", xtalIdx.toStr());
     TH1S *hist_L2S = CGCUtil::retrieveHist < TH1S > (*gDirectory, histname);
     if (!hist_L2S) continue;
 
     m_dacL2SHists[xtalIdx] = hist_L2S;
 
     //-- DAC_L2S HISTOGRAMS --//
-    histname = genHistName("dacL2S_slope", xtalIdx.val());
+    histname = genHistName("dacL2S_slope", xtalIdx.toStr());
     TProfile *hist_L2S_slope = CGCUtil::retrieveHist < TProfile > (*gDirectory, histname);
     if (!hist_L2S_slope) continue;
 
     m_dacL2SSlopeProfs[xtalIdx] = hist_L2S_slope;
   }
-}
-
-string MPDHists::genHistName(const string &type,
-                             unsigned idx) {
-  ostringstream tmp;
-
-
-  tmp <<  type
-      << "_" << idx;
-  return tmp.str();
 }
 
 unsigned MPDHists::getMinEntries() {
