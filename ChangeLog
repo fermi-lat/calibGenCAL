@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Apr 16 13:35:35 PDT 2007
+calibGenCAL/cfg
+
+Modified Files:
+	Makefile 
+Log Message:
+most C++ histograms now have more meaningful channel id strings
+Makefile variables renamed in more consistant way.
+ready for calibGenCAL v5r0
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Apr 12 18:43:08 PDT 2007
 calibGenCAL/cfg
 
