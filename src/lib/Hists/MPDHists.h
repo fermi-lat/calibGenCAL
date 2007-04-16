@@ -20,6 +20,8 @@
 #include "TProfile.h"
 
 // STD INCLUDES
+#include <string>
+#include <sstream>
 
 class TProfile;
 class TH1I;
@@ -79,8 +81,15 @@ class MPDHists {
   /// count min number of entries in all enable histograms
   unsigned    getMinEntries();
 
+  template <typename T>
   std::string genHistName(const std::string &type,
-                          unsigned idx);
+                          const T& idx) {
+      std::ostringstream tmp;
+
+      tmp <<  type
+          << "_" << idx;
+      return tmp.str();
+    }
 
   /// most probable energy deposition of Muon passing vertically
   /// through a GLAST Cal CsI crystal

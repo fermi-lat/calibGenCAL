@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CfgMgr.h,v 1.1 2007/03/27 18:50:51 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CfgMgr.h,v 1.2 2007/04/10 14:51:02 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -29,8 +29,6 @@ namespace CfgMgr {
   template <typename _T>
     std::string toStr(const _T &val) {
     std::ostringstream tmp;
-
-
     tmp << val;
     return tmp.str();
   }

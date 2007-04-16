@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuTrigAlg.cxx,v 1.1 2007/03/27 18:50:49 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuTrigAlg.cxx,v 1.2 2007/04/10 14:51:01 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -550,9 +550,8 @@ string MuTrigAlg::genHistName(const string &type,
                               FaceIdx faceIdx) {
   ostringstream tmp;
 
-
   tmp <<  type
-      << "_" << faceIdx.val();
+      << "_" << faceIdx.toStr();
   return tmp.str();
 }
 

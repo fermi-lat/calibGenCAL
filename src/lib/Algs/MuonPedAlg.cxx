@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonPedAlg.cxx,v 1.1 2007/03/27 18:50:49 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonPedAlg.cxx,v 1.2 2007/04/10 14:51:01 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -154,8 +154,7 @@ void MuonPedAlg::loadHists(const TFile &histFile) {
 string MuonPedAlg::genHistName(RngIdx rngIdx) {
   ostringstream tmp;
 
-
-  tmp << "muonpeds_" << rngIdx.val();
+  tmp << "muonpeds_" << rngIdx.toStr();
   return tmp.str();
 }
 
