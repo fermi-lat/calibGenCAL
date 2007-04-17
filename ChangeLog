@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Apr 17 09:36:41 PDT 2007
+calibGenCAL/cfg
+
+Modified Files:
+	Makefile 
+Log Message:
+debugging Makefile
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v5r0, operation: add
 Package: calibGenCAL
