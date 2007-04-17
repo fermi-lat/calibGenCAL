@@ -19,8 +19,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL offline calibration set as a suite"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2007/03/15 22:59:35 $"
-__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/03/16 00:07:18 $"
+__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -257,11 +257,11 @@ for twr in pedTowers:
 
                     pedDiff = max(pedList)-min(pedList)
                     if pedDiff > pedSig:
-                        log.error("Tholdci, muon, inl pedestals %s spread %s > muon ped sigma %s, channel %s"%(pedList, pedDiff, muonPedSig,[twr,lyr,col,face,rng]))
+                        log.warning("Tholdci, muon, inl pedestals %s spread %s > muon ped sigma %s, channel %s"%(pedList, pedDiff, muonPedSig,[twr,lyr,col,face,rng]))
                         nWarnings +=1
 
-                    if max(pedList) - min(pedList) > 2*pedSig:
-                        log.error("Tholdci, muon, inl pedestals %s spread %s, > muon ped sigma %s, channel %s"%(pedList, pedDiff, muonPedSig,[twr,lyr,col,face,rng]))
+                    if pedDiff > 2*pedSig:
+                        log.error("Tholdci, muon, inl pedestals %s spread %s, > 2x muon ped sigma %s, channel %s"%(pedList, pedDiff, muonPedSig,[twr,lyr,col,face,rng]))
                         nErrors +=1
 
                     
