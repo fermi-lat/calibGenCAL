@@ -1,4 +1,4 @@
-# $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/cfg/Makefile,v 1.11 2007/04/16 20:35:35 fewtrell Exp $
+# $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/cfg/Makefile,v 1.12 2007/04/17 16:36:41 fewtrell Exp $
 # @file calibGenCAL analysis Makefile - manage generation of all calibGenCAL outputs and accessory files
 # @requires GNU Make
 # @requires calibGenCAL package CMT environment setup - this means source your $CALIBGENCALROOT/cmt/setup.(csh|sh|bat)
@@ -427,7 +427,7 @@ flightgain_muslope_val : ${FLIGHTGAIN_MUSLOPE_VAL}
 .PHONY: flightgain_muslope_xml 
 flightgain_muslope_xml : ${FLIGHTGAIN_MUSLOPE_XML}
 
-${FLIGHTGAIN_MUSLOPE_XML} :  ${FLIGHTGAIN_INL_XML} ${FLIGHTGAIN_ASYM_XML} ${FLIGHTGAIN_ASYM_XML}
+${FLIGHTGAIN_MUSLOPE_XML} :  ${FLIGHTGAIN_INL_XML} ${FLIGHTGAIN_ASYM_XML} ${FLIGHTGAIN_MPD_XML}
 	genADC2NRG.sh ${FLIGHTGAIN_INL_XML} ${FLIGHTGAIN_ASYM_XML} ${FLIGHTGAIN_MPD_XML} ${FLIGHTGAIN_ADC2NRG_XML} ${FLIGHTGAIN_MUSLOPE_XML}
 
 
