@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.17 2007/04/10 14:51:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.18 2007/04/10 21:26:41 fewtrell Exp $
 
 /** @file generate Light Asymmetry calibrations from Muon event filesusing Cal Digi Hodoscope
     for track & hit information
@@ -41,7 +41,6 @@ public:
     inlTXTFile("inlTXTFile",
                "input cal cidac2adc txt file",
                ""),
-
     digiFilenames("digiFilenames",
                   "text file w/ newline delimited list of input digi ROOT files (must match input gcr recon root files)",
                   ""),
@@ -51,7 +50,10 @@ public:
     entriesPerHist("entriesPerHist",
                    'e',
                    "quit after all histograms have > n entries",
-                   10000)
+                   10000),
+    help("help",
+         'h',
+         "print usage info")
   
   {
 
@@ -60,11 +62,14 @@ public:
     cmdParser.registerArg(digiFilenames);
     cmdParser.registerArg(outputBasename);
     cmdParser.registerVar(entriesPerHist);
+    cmdParser.registerSwitch(help);
 
     try {
       cmdParser.parseCmdLine(argc, argv);
     } catch (exception &e) {
-      cout << e.what() << endl;
+      // ignore invalid commandline if user asked for help.
+      if (!help.getVal())
+        cout << e.what() << endl;
       cmdParser.printUsage();
       exit(-1);
     }
@@ -76,6 +81,9 @@ public:
   CmdArg<string> digiFilenames;
   CmdArg<string> outputBasename;
   CmdOptVar<unsigned> entriesPerHist;
+  /// print usage string
+  CmdSwitch help;
+
 };
 
 int main(int argc,
