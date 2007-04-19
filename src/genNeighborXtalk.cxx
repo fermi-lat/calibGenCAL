@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genNeighborXtalk.cxx,v 1.8 2007/04/10 14:51:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genNeighborXtalk.cxx,v 1.9 2007/04/10 21:26:41 fewtrell Exp $
 
 /** @file Gen Neighboring Crystal Cross-talk calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
@@ -19,6 +19,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <stdexcept>
 
 using namespace std;
 using namespace CalUtil;
@@ -35,20 +36,25 @@ public:
                ""),
     outputBasename("outputBasename",
                    "output file path w/o extention (file extensions will be appended",
-                   "")
-
+                   ""),
+    help("help",
+         'h',
+         "print usage info")
   {
     // register commandline arguments in order
 
     // register positional arguments
     cmdParser.registerArg(rootFileLE);
     cmdParser.registerArg(outputBasename);
+    cmdParser.registerSwitch(help);
 
     try {
       // parse commandline
       cmdParser.parseCmdLine(argc, argv);
-    } catch (InvalidCmdLine &e) {
-      cout << e.what() << endl;
+    } catch (exception &e) {
+      // ignore invalid commandline if user asked for help.
+      if (!help.getVal())
+        cout << e.what() << endl;
       cmdParser.printUsage();
       exit(-1);
     }
@@ -62,6 +68,9 @@ public:
 
   /// output file path w/o extention (file extensions will be appended)
   CmdArg<string> outputBasename;
+
+  /// print usage string
+  CmdSwitch help;
 };
 
 int main(const int argc,

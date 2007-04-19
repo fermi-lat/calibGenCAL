@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.18 2007/04/10 21:26:41 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.19 2007/04/16 20:35:35 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -42,18 +42,24 @@ public:
                   ),
     outputBasename("outputBasename",
                    "all output files will use this basename + some_ext",
-                   "")
-
+                   ""),
+    help("help",
+         'h',
+         "print usage info")
   {
     cmdParser.registerArg(digiFilenames);
     cmdParser.registerArg(outputBasename);
     cmdParser.registerVar(triggerCut);
     cmdParser.registerVar(entriesPerHist);
+    cmdParser.registerSwitch(help);
+
 
     try {
       cmdParser.parseCmdLine(argc, argv);
     } catch (exception &e) {
-      cout << e.what() << endl;
+      // ignore invalid commandline if user asked for help.
+      if (!help.getVal())
+        cout << e.what() << endl;
       cmdParser.printUsage();
       exit(-1);
     }
@@ -71,6 +77,10 @@ public:
   CmdArg<string> digiFilenames;
   
   CmdArg<string> outputBasename;
+
+  /// print usage string
+  CmdSwitch help;
+
 };
 
 int main(int argc,

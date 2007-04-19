@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genGCRHists.cxx,v 1.8 2007/04/10 14:51:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genGCRHists.cxx,v 1.9 2007/04/10 21:26:41 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -61,7 +61,10 @@ public:
                 ),
     outputBasename("outputBasename",
                    "all output files will use this basename + some_ext",
-                   "")
+                   ""),
+    help("help",
+         'h',
+         "print usage info")
 
   {
     cmdParser.registerArg(pedTXTFile);
@@ -77,12 +80,15 @@ public:
     cmdParser.registerSwitch(summaryMode);
 
     cmdParser.registerVar(cfgPath);
+    cmdParser.registerSwitch(help);
 
 
     try {
       cmdParser.parseCmdLine(argc, argv);
     } catch (exception &e) {
-      cout << e.what() << endl;
+      // ignore invalid commandline if user asked for help.
+      if (!help.getVal())
+        cout << e.what() << endl;
       cmdParser.printUsage();
       exit(-1);
     }
@@ -104,6 +110,9 @@ public:
   CmdSwitch summaryMode;
 
   CmdArg<string> outputBasename;
+
+  /// print usage string
+  CmdSwitch help;
 };
 
 int main(const int argc,

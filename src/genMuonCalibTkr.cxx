@@ -63,7 +63,10 @@ public:
     cfgPath("cfgPath",
             'c',
             "(optional) read cfg info from this file",
-            "$(CALIBGENCALROOT)/cfg/defaults.cfg")
+            "$(CALIBGENCALROOT)/cfg/defaults.cfg"),
+    help("help",
+         'h',
+         "print usage info")
 
 
   {
@@ -75,12 +78,14 @@ public:
     cmdParser.registerVar(entriesPerHist);
     cmdParser.registerVar(startEvent);
     cmdParser.registerVar(cfgPath);
-
+    cmdParser.registerSwitch(help);
 
     try {
       cmdParser.parseCmdLine(argc, argv);
     } catch (exception &e) {
-      cout << e.what() << endl;
+      // ignore invalid commandline if user asked for help.
+      if (!help.getVal())
+        cout << e.what() << endl;
       cmdParser.printUsage();
       exit(-1);
     }  
@@ -101,7 +106,8 @@ public:
 
   CmdOptVar<string> cfgPath;
 
-
+  /// print usage string
+  CmdSwitch help;
 };
 
 int main(int argc,
