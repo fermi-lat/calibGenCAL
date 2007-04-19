@@ -1,7 +1,7 @@
 #ifndef CGCUtil_H
 #define CGCUtil_H
 
-//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.h,v 1.1 2007/03/27 18:50:51 fewtrell Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.h,v 1.2 2007/04/10 14:51:02 fewtrell Exp $
 
 // LOCAL INCLUDES
 
@@ -12,6 +12,7 @@
 #include "TKey.h"
 #include "TF1.h"
 #include "TDirectory.h"
+#include "TROOT.h"
 
 // STD INCLUDES
 #include <ostream>
@@ -20,6 +21,7 @@
 #include <cmath>
 #include <memory>
 #include <algorithm>
+#include <sstream>
 
 /** @file CGCUtil.h
     @author Zachary Fewtrell
@@ -27,7 +29,7 @@
 */
 
 namespace CGCUtil {
-  const std::string CVS_TAG("$Name: HEAD $");
+  const std::string CVS_TAG("$Name:  $");
 
   /// Template function fills any STL type container with zero values
   template <class T> void fill_zero(T &container) {
