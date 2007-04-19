@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Apr 19 08:03:15 PDT 2007
+calibGenCAL/src/lib/Util
+
+Modified Files:
+	CfgMgr.h 
+Log Message:
+added '--help|-h' switch to C++ applications
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Apr 19 08:03:14 PDT 2007
 calibGenCAL/src
 
