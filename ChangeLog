@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Apr 19 08:16:19 PDT 2007
+calibGenCAL/src/lib/Util
+
+Modified Files:
+	CGCUtil.h 
+Log Message:
+missing includes added , error exposed on switch to gcc34.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Apr 19 08:03:15 PDT 2007
 calibGenCAL/src/lib/Util
 
