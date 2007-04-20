@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Apr 20 08:32:44 PDT 2007
+calibGenCAL/cfg
+
+Removed Files:
+	calibGenCAL_suite.cfg 
+Log Message:
+this file is no longer used
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Apr 19 08:16:19 PDT 2007
 calibGenCAL/src/lib/Util
 
