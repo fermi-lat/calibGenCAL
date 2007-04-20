@@ -530,3 +530,10 @@ v5r0
 - C++ apps have been altered to work from commandline _as_much_as_possible_, simplifying the makefile implementation.
 - this code was succesffully used to generate full set of April 07 LAT calibrations
 
+
+------------------
+v5r0p1 fewtrell
+------------------ 
+debugged Makefile a bit
+updated documentation for v5
+some include file fixes to get it running in gcc3.4 env
