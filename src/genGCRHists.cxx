@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genGCRHists.cxx,v 1.9 2007/04/10 21:26:41 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genGCRHists.cxx,v 1.10 2007/04/19 15:03:14 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -37,10 +37,6 @@ public:
   AppCfg(const int argc,
          const char **argv) :
     cmdParser(path_remove_ext(__FILE__)),
-    cfgPath("CfgPath",
-            'c',
-            "(optional) path to configuration file",
-            "$(CALIBGENCALROOT)/cfg/defaults.cfg"),
     pedTXTFile("pedTXTFile",
                "input pedestal TXT file",
                ""
@@ -55,33 +51,36 @@ public:
     gcrFilenames("gcrFilenames",
                  "text file w/ newline delimited list of input gcr recon ROOT files (must match input DIGI root files)",
                  ""),
+    outputBasename("outputBasename",
+                   "all output files will use this basename + some_ext",
+                   ""),
     summaryMode("summaryMode",
                 's',
                 "generate summary histograms only (no individual channel hists)"
                 ),
-    outputBasename("outputBasename",
-                   "all output files will use this basename + some_ext",
-                   ""),
     help("help",
          'h',
-         "print usage info")
-
+         "print usage info"),
+    cfgPath("cfgPath",
+            'c',
+            "(optional) path to configuration file",
+            "$(CALIBGENCALROOT)/cfg/defaults.cfg"),
+    nEntries("nEntries",
+             'n',
+             "stop filling histograms when min nEntries= n",
+             ULONG_MAX)
   {
     cmdParser.registerArg(pedTXTFile);
-
     cmdParser.registerArg(inlTXTFile);
-
     cmdParser.registerArg(digiFilenames);
-
     cmdParser.registerArg(gcrFilenames);
-
     cmdParser.registerArg(outputBasename);
 
+    cmdParser.registerSwitch(help);
     cmdParser.registerSwitch(summaryMode);
 
     cmdParser.registerVar(cfgPath);
-    cmdParser.registerSwitch(help);
-
+    cmdParser.registerVar(nEntries);
 
     try {
       cmdParser.parseCmdLine(argc, argv);
@@ -97,8 +96,6 @@ public:
   /// construct new parser
   CmdLineParser cmdParser;
 
-  CmdOptVar<string> cfgPath;
-
   CmdArg<string> pedTXTFile;
 
   CmdArg<string> inlTXTFile;
@@ -107,12 +104,18 @@ public:
 
   CmdArg<string> gcrFilenames;
 
-  CmdSwitch summaryMode;
-
   CmdArg<string> outputBasename;
+
+  CmdSwitch summaryMode;
 
   /// print usage string
   CmdSwitch help;
+
+  CmdOptVar<string> cfgPath;
+
+  /// stop filling histograms when min nEnties = n (defaulit = MAX_UNSIGNED_INT)
+  CmdOptVar<unsigned> nEntries;
+
 };
 
 int main(const int argc,
@@ -153,6 +156,9 @@ int main(const int argc,
 
     //-- LOG SOFTWARE VERSION INFO --//
     output_env_banner(LogStream::get());
+    LogStream::get() << endl;
+    cfg.cmdParser.printStatus(LogStream::get());
+    LogStream::get() << endl;
 
     //-- RETRIEVE PEDESTALS
     CalPed    peds;
@@ -172,11 +178,7 @@ int main(const int argc,
     string histFilename(cfg.outputBasename.getVal() + ".root");
 
     // output txt file name
-    string   outputTXTFile(cfg.outputBasename.getVal() + ".txt");
-
-    unsigned nEntries = cfgFile. getVal<unsigned>("GCR_CALIB",
-                                                  "ENTRIES_PER_HIST",
-                                                  3000);
+    string outputTXTFile(cfg.outputBasename.getVal() + ".txt");
 
     GCRHists  gcrHists(cfg.summaryMode.getVal());
 
@@ -192,7 +194,7 @@ int main(const int argc,
     histFile.reset(new TFile(histFilename.c_str(), "RECREATE", "CAL GCR MPD", 9));
 
     LogStream::get() << __FILE__ << ": reading digiRoot event file(s) starting w/ " << digiRootFileList[0] << endl;
-    gcrCalib.fillHists(nEntries,
+    gcrCalib.fillHists(cfg.nEntries.getVal(),
                        digiRootFileList,
                        gcrSelectRootFileList,
                        peds,
