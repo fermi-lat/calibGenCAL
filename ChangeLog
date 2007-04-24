@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Tue Apr 24 09:45:06 PDT 2007
+calibGenCAL/src/lib/Algs
+
+Modified Files:
+	IntNonlinAlg.h NeighborXtalkAlg.h 
+Log Message:
+updating GCR code, other small tweaks
+
+    *
+------------------------------------------------------------
+User: fewtrell  Tue Apr 24 09:45:06 PDT 2007
 calibGenCAL/src
 
 Modified Files:
