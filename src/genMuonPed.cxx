@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.19 2007/04/16 20:35:35 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.20 2007/04/19 15:03:14 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -109,6 +109,9 @@ int main(int argc,
 
     //-- LOG SOFTWARE VERSION INFO --//
     output_env_banner(LogStream::get());
+    LogStream::get() << endl;
+    cfg.cmdParser.printStatus(LogStream::get());
+    LogStream::get() << endl;
 
     //-- ROUGH PEDS --//
     // - LEX8 only include hits in histograms.
@@ -144,8 +147,7 @@ int main(int argc,
       endl;
     TFile roughpedHistfile(roughPedHistFileName.c_str(),
                          "RECREATE",
-                         "Muon rough pedestals",
-                         9);
+                         "Muon rough pedestals");
 
     LogStream::get() << __FILE__ << ": reading root event file(s) starting w/ " << rootFileList[0] << endl;
     muonRoughPed.fillHists(nEntries,
@@ -175,8 +177,7 @@ int main(int argc,
     LogStream::get() << __FILE__ << ": opening muon pedestal output histogram file: " << muPedHistFileName << endl;
     TFile mupedHistfile(muPedHistFileName.c_str(),
                         "RECREATE",
-                        "Muon pedestals",
-                        9);
+                        "Muon pedestals");
     
     LogStream::get() << __FILE__ << ": reading root event file(s) starting w/ " << rootFileList[0] << endl;
     muPed.fillHists(nEntries,

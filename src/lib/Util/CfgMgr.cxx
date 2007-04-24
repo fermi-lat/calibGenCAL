@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CfgMgr.cxx,v 1.1 2007/03/27 18:50:51 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CfgMgr.cxx,v 1.2 2007/04/10 14:51:02 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -215,9 +215,7 @@ namespace CfgMgr {
         strm << longName;
       strm << "\t";
 
-      strm << (**sw).getVal() << "\t"
-           << (**sw).getHelp() << "\t"
-           << endl;
+      strm << (**sw).getVal() << endl;
     }
 
     for (VarList::const_iterator var(varList.begin());

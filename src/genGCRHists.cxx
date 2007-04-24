@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genGCRHists.cxx,v 1.10 2007/04/19 15:03:14 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genGCRHists.cxx,v 1.11 2007/04/23 18:23:15 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -191,7 +191,7 @@ int main(const int argc,
 
     // open file to save output histograms.
     LogStream::get() << __FILE__ << ": opening output histogram file: " << histFilename<< endl;
-    histFile.reset(new TFile(histFilename.c_str(), "RECREATE", "CAL GCR MPD", 9));
+    histFile.reset(new TFile(histFilename.c_str(), "RECREATE", "CAL GCR MPD"));
 
     LogStream::get() << __FILE__ << ": reading digiRoot event file(s) starting w/ " << digiRootFileList[0] << endl;
     gcrCalib.fillHists(cfg.nEntries.getVal(),

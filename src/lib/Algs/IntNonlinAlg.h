@@ -1,6 +1,6 @@
 #ifndef IntNonlinAlg_h
 #define IntNonlinAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/IntNonlinAlg.h,v 1.1 2007/03/27 18:50:49 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/IntNonlinAlg.h,v 1.2 2007/04/10 14:51:01 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -71,8 +71,7 @@ class IntNonlinAlg {
     }
 
     ~AlgData() {
-      if (adcHists)
-        delete adcHists;
+      delete adcHists;
     }
 
     /// create one temporary histogram per adc channel.
