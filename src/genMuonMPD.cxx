@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.20 2007/04/10 21:26:41 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.21 2007/04/19 15:03:14 fewtrell Exp $
 
 /** @file Gen MevPerDAC calibrations from Muon event files using Cal Digi Hodoscope
     for track & hit information
@@ -116,6 +116,9 @@ int main(int argc,
 
     //-- LOG SOFTWARE VERSION INFO --//
     output_env_banner(LogStream::get());
+    LogStream::get() << endl;
+    cfg.cmdParser.printStatus(LogStream::get());
+    LogStream::get() << endl;
 
     //-- RETRIEVE PEDESTALS
     CalPed    peds;
@@ -152,7 +155,7 @@ int main(int argc,
     // open file to save output histograms.
     LogStream::get() << __FILE__ << ": opening output histogram file: "
                      << histFilename << endl;
-    TFile histFile(histFilename.c_str(), "RECREATE", "CAL Muon Calib", 9);
+    TFile histFile(histFilename.c_str(), "RECREATE", "CAL Muon Calib");
     
     MPDHists mpdHists(MPDHists::FitMethods::LANDAU);
     MuonMPDAlg  muonMPD(peds,

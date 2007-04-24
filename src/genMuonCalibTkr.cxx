@@ -141,6 +141,9 @@ int main(int argc,
 
     //-- LOG SOFTWARE VERSION INFO --//
     output_env_banner(LogStream::get());
+    LogStream::get() << endl;
+    cfg.cmdParser.printStatus(LogStream::get());
+    LogStream::get() << endl;
 
     //-- RETRIEVE PEDESTALS
     
@@ -170,7 +173,7 @@ int main(int argc,
     // open file to save output histograms.
     LogStream::get() << __FILE__ << ": opening output histogram file: "
                      << histFilename << endl;
-    TFile histFile(histFilename.c_str(), "RECREATE", "CAL Muon Calib", 9);
+    TFile histFile(histFilename.c_str(), "RECREATE", "CAL Muon Calib");
 
     AsymHists asymHists;
     MPDHists     mpdHists(MPDHists::FitMethods::LANGAU);

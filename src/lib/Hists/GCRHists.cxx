@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.cxx,v 1.5 2007/04/02 18:11:08 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.cxx,v 1.6 2007/04/10 14:51:02 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -245,15 +245,13 @@ string GCRHists::genMeanDACHistName(DiodeNum diode,
                                     XtalIdx xtalIdx) const {
   ostringstream tmp;
 
-
-  tmp << "meanDAC_" << xtalIdx.val()
-      << "_" << diode.val();
+  tmp << "meanDAC_" << xtalIdx.toStr()
+      << "_" << diode.toStr();
   return tmp.str();
 }
 
 string GCRHists::genADCHistName(RngIdx rngIdx) const {
   ostringstream tmp;
-
 
   tmp << "meanADC_" << rngIdx.toStr();
   return tmp.str();
@@ -261,7 +259,6 @@ string GCRHists::genADCHistName(RngIdx rngIdx) const {
 
 string GCRHists::genDACRatioProfName(FaceIdx faceIdx) const {
   ostringstream tmp;
-
 
   tmp << "dacRatio_" << faceIdx.toStr();
   return tmp.str();
@@ -271,31 +268,27 @@ string GCRHists::genADCRatioProfName(RngNum rng,
                                      FaceIdx faceIdx) const {
   ostringstream tmp;
 
-
   tmp << "adcRatio_" << faceIdx.toStr()
-      << "_" << rng.val();
+      << "_" << rng.toStr();
   return tmp.str();
 }
 
 string GCRHists::genMeanDACSumHistName(DiodeNum diode) const {
   ostringstream tmp;
 
-
-  tmp << "meanDACSum_" << diode.val();
+  tmp << "meanDACSum_" << diode.toStr();
   return tmp.str();
 }
 
 string GCRHists::genMeanADCSumHistName(RngNum rng) const {
   ostringstream tmp;
 
-
-  tmp << "meanADCSum_" << rng.val();
+  tmp << "meanADCSum_" << rng.toStr();
   return tmp.str();
 }
 
 string GCRHists::genDACRatioSumProfName() const {
   ostringstream tmp;
-
 
   tmp << "dacRatioSum";
   return tmp.str();
@@ -304,8 +297,7 @@ string GCRHists::genDACRatioSumProfName() const {
 string GCRHists::genADCRatioSumProfName(RngNum rng) const {
   ostringstream tmp;
 
-
-  tmp << "adcRatioSum_" << rng.val();
+  tmp << "adcRatioSum_" << rng.toStr();
   return tmp.str();
 }
 
@@ -445,4 +437,47 @@ void GCRHists::fillMeanCIDAC(DiodeNum diode, XtalIdx xtalIdx, float cidac) {
       m_meanDACHists[diode][xtalIdx]->Fill(cidac);
 
   m_meanDACSumHist[diode]->Fill(cidac);
+}
+
+void GCRHists::setHistDir(TDirectory *dir) {
+  for (DiodeNum diode; diode.isValid(); diode++)
+    if (m_meanDACSumHist[diode])
+        m_meanDACSumHist[diode]->SetDirectory(dir);
+
+  for (RngNum rng; rng.isValid(); rng++)
+    if (m_meanADCSumHist[rng])
+        m_meanADCSumHist[rng]->SetDirectory(dir);
+
+  if (m_dacRatioSumProf)
+      m_dacRatioSumProf->SetDirectory(dir);
+
+  for (RngNum rng; rng <= HEX8; rng++)
+    if (m_adcRatioSumProf[rng])
+        m_adcRatioSumProf[rng]->SetDirectory(dir);
+
+  //-- INIT PER-XTAL HISTS --//
+  for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
+    for (DiodeNum diode; diode.isValid(); diode++)
+      if (m_meanDACHists[diode][xtalIdx])
+          m_meanDACHists[diode][xtalIdx]->SetDirectory(dir);
+
+    for (XtalRng xRng; xRng.isValid(); xRng++) {
+      RngIdx rngIdx(xtalIdx, xRng);
+      if (m_adcHists[rngIdx])
+          m_adcHists[rngIdx]->SetDirectory(dir);
+    }
+
+    for (FaceNum face; face.isValid(); face++) {
+      FaceIdx faceIdx(xtalIdx, face);
+      if (m_dacRatioProfs[faceIdx])
+          m_dacRatioProfs[faceIdx]->SetDirectory(dir);
+    }
+
+    for (RngNum rng; rng <= HEX8; rng++)
+      for (FaceNum face; face.isValid(); face++) {
+        FaceIdx faceIdx(xtalIdx, face);
+        if (m_adcRatioProfs[rng][faceIdx])
+            m_adcRatioProfs[rng][faceIdx]->SetDirectory(dir);
+      }
+  }
 }

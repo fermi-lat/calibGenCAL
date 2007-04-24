@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.18 2007/04/10 21:26:41 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.19 2007/04/19 15:03:14 fewtrell Exp $
 
 /** @file generate Light Asymmetry calibrations from Muon event filesusing Cal Digi Hodoscope
     for track & hit information
@@ -110,6 +110,9 @@ int main(int argc,
 
     //-- LOG SOFTWARE VERSION INFO --//
     output_env_banner(LogStream::get());
+    LogStream::get() << endl;
+    cfg.cmdParser.printStatus(LogStream::get());
+    LogStream::get() << endl;
 
     //-- RETRIEVE PEDESTALS
     CalPed peds;
@@ -145,8 +148,7 @@ int main(int argc,
                      << histFilename << endl;
     TFile histFile(histFilename.c_str(),
                    "RECREATE",
-                   "CAL Muon Asymmetry",
-                   9);
+                   "CAL Muon Asymmetry");
 
     LogStream::get() << __FILE__ << ": reading root event file(s) starting w/ "
                      << rootFileList[0] << endl;

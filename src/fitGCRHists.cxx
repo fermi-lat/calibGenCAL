@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/fitGCRHists.cxx,v 1.4 2007/04/10 21:26:41 fewtrell Exp $ //
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/fitGCRHists.cxx,v 1.5 2007/04/19 15:03:14 fewtrell Exp $ //
 
 /** @file 
     @author Zachary Fewtrell
@@ -15,6 +15,7 @@
 // GLAST INCLUDES
 
 // EXTLIB INCLUDES
+#include "TFile.h"
 
 // STD INCLUDES
 #include <fstream>
@@ -43,10 +44,10 @@ public:
          "print usage info")
 
   {
-    cmdParser.registerSwitch(summaryMode);
     cmdParser.registerArg(histFile);
+    cmdParser.registerArg(outputBasename);
+    cmdParser.registerSwitch(summaryMode);
     cmdParser.registerSwitch(help);
-
 
     try {
       cmdParser.parseCmdLine(argc, argv);
@@ -97,11 +98,21 @@ int main(const int argc,
 
     //-- LOG SOFTWARE VERSION INFO --//
     output_env_banner(LogStream::get());
+    LogStream::get() << endl;
+    cfg.cmdParser.printStatus(LogStream::get());
+    LogStream::get() << endl;
 
     GCRHists  gcrHists(cfg.summaryMode.getVal());
 
     gcrHists.loadHists(cfg.histFile.getVal());
 
+
+    string outputROOTFilename(cfg.outputBasename.getVal() + ".root");
+    TFile outputROOTFile(outputROOTFilename.c_str(),
+                         "RECREATE",
+                         "Fitted GCR Histograms");
+    gcrHists.setHistDir(&outputROOTFile);
+    
     CalMPD calMPD;
     set<unsigned short> zSet;
     zSet.insert(1);
@@ -110,8 +121,12 @@ int main(const int argc,
 
     // output txt file name
     string   outputTXTFile(cfg.outputBasename.getVal()+".txt");
+    
 
     calMPD.writeTXT(outputTXTFile);
+    
+    outputROOTFile.Write();
+    outputROOTFile.Close();
   } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
     return -1;

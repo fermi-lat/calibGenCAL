@@ -1,6 +1,6 @@
 #ifndef NeighborXtalkAlg_h
 #define NeighborXtalkAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/NeighborXtalkAlg.h,v 1.1 2007/03/27 18:50:50 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/NeighborXtalkAlg.h,v 1.2 2007/04/10 14:51:01 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -55,8 +55,7 @@ class NeighborXtalkAlg {
     }
 
     ~AlgData() {
-      if (adcHists)
-        delete adcHists;
+      delete adcHists;
     }
 
     /// create one temporary histogram per adc channel.

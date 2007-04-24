@@ -1,6 +1,6 @@
 #ifndef GCRHists_h
 #define GCRHists_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.h,v 1.2 2007/03/29 19:14:27 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.h,v 1.3 2007/04/10 14:51:02 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -23,6 +23,7 @@
 class TH1S;
 class TProfile;
 class CalMPD;
+class TDirectory;
 
 /** \brief Represents GLAST Cal Optical gain calibration constants
     (MeV <-> CIDAC)
@@ -44,6 +45,9 @@ class GCRHists {
   /// delete all internal histograms w/ 0 entries
   void     trimHists();
 
+  /// set directory for each histogram
+  void setHistDir(TDirectory *dir);
+
   /// count min number of entries in all enabled histograms
   unsigned getMinEntries() const;
 
@@ -56,9 +60,11 @@ class GCRHists {
   void fillADCHit(CalUtil::RngIdx rngIdx, float adc);
 
   /// fill all associated histograms w/ valid CIDAC hit for given channel
-  void fillMeanCIDAC(CalUtil::DiodeNum diode, CalUtil::XtalIdx xtalIdx, float cidac);
+  void fillMeanCIDAC(CalUtil::DiodeNum diode, CalUtil::XtalIdx xtalIdx, float 
+                     cidac);
 
-  /// fill all associated histograms w/ ratio of signal between given adc range & next higher range
+  /// fill all associated histograms w/ ratio of signal between given adc range 
+  /// & next higher range
   void fillAdcRatio(CalUtil::RngIdx rngIdx, 
                     float thisADC,
                     float nextADC);

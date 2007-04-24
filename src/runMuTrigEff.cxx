@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runMuTrigEff.cxx,v 1.31 2007/04/10 14:51:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runMuTrigEff.cxx,v 1.32 2007/04/10 21:26:41 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -81,8 +81,7 @@ int main(int argc,
     string histFilename(cfg.outputBasename.getVal() + ".root");
     TFile histFile(histFilename.c_str(),
                    "RECREATE",
-                   "Cal MuTrig Analysis",
-                   9);
+                   "Cal MuTrig Analysis");
 
     MuTrigAlg muTrig;
 
