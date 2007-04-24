@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Apr 24 09:45:06 PDT 2007
+calibGenCAL/src
+
+Modified Files:
+	fitGCRHists.cxx genCIDAC2ADC.cxx genGCRHists.cxx 
+	genMuonAsym.cxx genMuonCalibTkr.cxx genMuonMPD.cxx 
+	genMuonPed.cxx genNeighborXtalk.cxx runMuTrigEff.cxx 
+Log Message:
+updating GCR code, other small tweaks
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Apr 23 11:23:15 PDT 2007
 calibGenCAL/src
 
