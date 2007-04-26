@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.cxx,v 1.6 2007/04/10 14:51:02 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.cxx,v 1.7 2007/04/24 16:45:07 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -33,6 +33,14 @@ GCRHists::GCRHists(bool summaryMode) :
   m_adcRatioSumProf(3),
   summaryMode(summaryMode)
 {
+	for (DiodeNum diode; diode.isValid(); diode++)
+		m_meanDACHists[diode].fill(0);
+
+	for (RngNum rng; rng <= HEX8; rng++)
+		m_adcRatioProfs[rng].fill(0);
+
+	m_meanDACSumHist.fill(0);
+	m_meanADCSumHist.fill(0);
 }
 
 void GCRHists::initHists() {
@@ -303,7 +311,7 @@ string GCRHists::genADCRatioSumProfName(RngNum rng) const {
 
 void GCRHists::trimHists() {
   for (DiodeNum diode; diode.isValid(); diode++)
-    if (!m_meanDACSumHist[diode])
+    if (m_meanDACSumHist[diode])
       if (m_meanDACSumHist[diode]->GetEntries() == 0) {
         delete m_meanDACSumHist[diode];
         m_meanDACSumHist[diode] = 0;
@@ -373,6 +381,10 @@ void GCRHists::fitHists(CalMPD &calMPD, const set<unsigned short> &zList) {
 
   // PER XTAL LOOP
   for (DiodeNum diode; diode.isValid(); diode++) {
+    // temp process lrg diode only
+    if (diode == SM_DIODE)
+      continue;
+
     /// rough mevperdac guess.
     const float initialMPD = (diode == LRG_DIODE) ? .3 : 20;
 
@@ -386,14 +398,18 @@ void GCRHists::fitHists(CalMPD &calMPD, const set<unsigned short> &zList) {
         continue;
 
       MultiPeakGaus::fitHist(hist, zList, initialMPD);
+      hist.Write();
     }
 
+    if (!m_meanDACSumHist[diode])
+      continue;
+
     TH1S &hist = *m_meanDACSumHist[diode];
+    
     if (hist.GetEntries() == 0)
       continue;
-        
+    
     MultiPeakGaus::fitHist(hist, zList, initialMPD);
-
   }
 }
 

@@ -120,7 +120,6 @@ void MPDHists::initHists() {
 void MPDHists::fitHists(CalMPD &calMPD) {
   TGraph graph;
 
-
   //LogStream::get() << "Muon Peak Fit Results: " << endl;
   //LogStream::get() << " SCALE\tXTAL\tMPV\tLanWid\tGauWid\tTotalWid\tBckgnd" << endl;
 
@@ -179,7 +178,7 @@ void MPDHists::fitHists(CalMPD &calMPD) {
       histL2S->SetAxisRange(av - 3*rms, av + 3*rms);
     }
 
-    // fit straight line to get mean ratio
+    // fit gaussian to get mean ratio
     histL2S->Fit("gaus", "Q");
     // mean ratio of smDac/lrgDac
     float sm2lrg = ((TF1&)*histL2S->GetFunction("gaus")).GetParameter(1);
