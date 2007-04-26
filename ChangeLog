@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Apr 26 13:05:08 PDT 2007
+calibGenCAL/src
+
+Modified Files:
+	fitGCRHists.cxx 
+Log Message:
+developing fitGCRHists app
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Apr 26 12:46:56 PDT 2007
 calibGenCAL/src/lib/Util
 
