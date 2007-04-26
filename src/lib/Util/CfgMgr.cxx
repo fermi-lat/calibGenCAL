@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CfgMgr.cxx,v 1.2 2007/04/10 14:51:02 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CfgMgr.cxx,v 1.3 2007/04/24 16:45:07 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -230,9 +230,7 @@ namespace CfgMgr {
         strm << "--" << longName;
       strm << "\t";
 
-      strm  << (**var).getStrVal() << "\t"
-            << (**var).getHelp() << "\t"
-            << endl;
+      strm  << (**var).getStrVal() << endl;
     }
 
     for (ArgList::const_iterator arg(argList.begin());
@@ -241,9 +239,7 @@ namespace CfgMgr {
       const string &longName = (**arg).getLongName();
 
       strm << longName << "\t"
-           << (**arg).getStrVal() << "\t"
-           << (**arg).getHelp() << "\t"
-           << endl;
+           << (**arg).getStrVal() << endl;
     }
 
     for (unsigned idx = 0; idx < anonArgList.size(); idx++) {
