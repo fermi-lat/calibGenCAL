@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/fitGCRHists.cxx,v 1.5 2007/04/19 15:03:14 fewtrell Exp $ //
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/fitGCRHists.cxx,v 1.6 2007/04/24 16:45:06 fewtrell Exp $ //
 
 /** @file 
     @author Zachary Fewtrell
@@ -115,7 +115,7 @@ int main(const int argc,
     
     CalMPD calMPD;
     set<unsigned short> zSet;
-    zSet.insert(1);
+    zSet.insert(12);
 
     gcrHists.fitHists(calMPD, zSet);
 
