@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Apr 30 18:12:08 PDT 2007
+calibGenCAL/src/lib/Util
+
+Modified Files:
+	CfgMgr.cxx CfgMgr.h 
+Log Message:
+added optional positional argument facility to CfgMgr class
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Apr 26 13:05:08 PDT 2007
 calibGenCAL/src
 
