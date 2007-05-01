@@ -1,8 +1,10 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CfgMgr.cxx,v 1.3 2007/04/24 16:45:07 fewtrell Exp $
+// $Header: /home/cvs/SLAC/calibGenCAL/src/lib/CfgMgr.cxx,v 1.4 2007/02/27 20:44:13 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
-*/
+
+
+ */
 
 // LOCAL INCLUDES
 #include "CfgMgr.h"
@@ -14,11 +16,16 @@ using namespace std;
 
 namespace CfgMgr {
   void CmdLineParser::registerArg(ICmdArg &arg) {
+    if (arg.isOptional())
+      nOptionalArgs++;
+    else if (nOptionalArgs > 0)
+      throw invalid_argument("BUG! Non-Optional arg cannot follow optional arg");
+
     argList.push_back(&arg);
   }
 
   void CmdLineParser::registerSwitch(ICmdSwitch &sw) {
-    char  shortName = sw.getShortName();
+    const char  shortName = sw.getShortName();
     const string &longName = sw.getLongName();
 
 
@@ -44,7 +51,7 @@ namespace CfgMgr {
   }
 
   void CmdLineParser::registerVar(ICmdOptVar &var) {
-    char  shortName = var.getShortName();
+    const char  shortName = var.getShortName();
     const string &longName = var.getLongName();
 
 
@@ -71,13 +78,17 @@ namespace CfgMgr {
 
   void CmdLineParser::parseCmdLine(unsigned argc,
                                    const char **argv,
-                                   bool allowAnonArgs,
-                                   bool skipFirst,
-                                   bool ignoreErrors
-                                   ) {
+                                   const bool allowAnonArgs,
+                                   const bool skipFirst,
+                                   const bool ignoreErrors
+  ) {
     // skip empty lists
     if (argc == 0 || argv == 0)
       return;
+
+    // prereq check
+    if (nOptionalArgs > 0 && allowAnonArgs)
+      throw invalid_argument("BUG! cannot support both optional arguments and anonymous arguments!");
 
     // optionally skip first param
     if (skipFirst) {
@@ -93,7 +104,7 @@ namespace CfgMgr {
       // CASE 1: positional argument (no '-')
       if (str[0] != '-' ||
           str[0] == '-' && str.size() == 1 // case of single '-' as positional cmd argument
-          ) {
+      ) {
         nPositionalArgs++;
 
         // CASE 1A: use one of pre-registered positional args
@@ -116,7 +127,7 @@ namespace CfgMgr {
         // Loop over possibly chained option characters
         do {
           // get current letter
-          char shortName = str[charIdx];
+          const char shortName = str[charIdx];
 
           // CASE 2A: 1st check if we need to scan forward for an argument.
           ShortVarMap::const_iterator shortVar(shortVarMap.find (shortName));
@@ -164,8 +175,8 @@ namespace CfgMgr {
         string::size_type eqpos = str.find('=');
         if (eqpos != str.npos) {
           // separate var name & value
-          string                     name(str.substr(0, eqpos));
-          string                     val(str.substr (eqpos+1, str.npos));
+          const string name(str.substr(0, eqpos));
+          const string val(str.substr (eqpos+1, str.npos));
 
           LongVarMap::const_iterator longVar(longVarMap.find (name));
 
@@ -196,7 +207,8 @@ namespace CfgMgr {
     //-- Final checks --//
 
     // check that all required arguments have been filled
-    if (nPositionalArgs < argList.size() && !ignoreErrors)
+    if (nPositionalArgs < argList.size() 
+        && !ignoreErrors)
       throw InvalidCmdLine("Not enough required arguments, need " + toStr(argList.size()));
   }
 
@@ -205,7 +217,7 @@ namespace CfgMgr {
     for (SwitchList::const_iterator sw(switchList.begin());
          sw != switchList.end();
          sw++) {
-      char  shortName = (**sw).getShortName();
+      const char  shortName = (**sw).getShortName();
       const string &longName = (**sw).getLongName();
 
       // print out short name only if we have no long name
@@ -215,13 +227,15 @@ namespace CfgMgr {
         strm << longName;
       strm << "\t";
 
-      strm << (**sw).getVal() << endl;
+      strm << (**sw).getVal() << "\t"
+           << (**sw).getHelp() << "\t"
+           << endl;
     }
 
     for (VarList::const_iterator var(varList.begin());
          var != varList.end();
          var++) {
-      char  shortName = (**var).getShortName();
+      const char  shortName = (**var).getShortName();
       const string &longName = (**var).getLongName();
 
       if (longName.empty())
@@ -230,7 +244,9 @@ namespace CfgMgr {
         strm << "--" << longName;
       strm << "\t";
 
-      strm  << (**var).getStrVal() << endl;
+      strm  << (**var).getStrVal() << "\t"
+            << (**var).getHelp() << "\t"
+            << endl;
     }
 
     for (ArgList::const_iterator arg(argList.begin());
@@ -239,7 +255,9 @@ namespace CfgMgr {
       const string &longName = (**arg).getLongName();
 
       strm << longName << "\t"
-           << (**arg).getStrVal() << endl;
+           << (**arg).getStrVal() << "\t"
+           << (**arg).getHelp() << "\t"
+           << endl;
     }
 
     for (unsigned idx = 0; idx < anonArgList.size(); idx++) {
@@ -249,26 +267,11 @@ namespace CfgMgr {
     }
   }
 
-  void CmdLineParser::printUsage(std::ostream &strm) const {
-    strm << "Usage: '" << appName << " ";
-
-    //-- INITIAL USAGE STR --//
-    // patterned after "grep [options] PATTERN [FILE...]"
-    if (switchList.size() || varList.size())
-      strm << "[options] ";
-
-    for (unsigned i = 0; i < argList.size(); i++)
-      strm << argList[i]->getLongName() << " ";
-
-    strm << "'" << endl;
-
-    //-- OPTIONS / ARG DESCRIPTIONS --//
-    strm << "Where: " << endl;
-
+  void CmdLineParser::printHelp(std::ostream &strm) const {
     for (SwitchList::const_iterator sw(switchList.begin());
          sw != switchList.end();
          sw++) {
-      char  shortName = (**sw).getShortName();
+      const char  shortName = (**sw).getShortName();
       const string &longName = (**sw).getLongName();
 
       strm << "\t";
@@ -283,7 +286,7 @@ namespace CfgMgr {
     for (VarList::const_iterator var(varList.begin());
          var != varList.end();
          var++) {
-      char  shortName = (**var).getShortName();
+      const char  shortName = (**var).getShortName();
       const string &longName = (**var).getLongName();
 
       strm << "\t";
@@ -306,6 +309,23 @@ namespace CfgMgr {
            << (**arg).getHelp() << "\t"
            << endl;
     }
+  }
 
+  void CmdLineParser::printUsage(std::ostream &strm) const {
+    strm << "Usage: '" << appName << " ";
+
+    //-- INITIAL USAGE STR --//
+    // patterned after "grep [options] PATTERN [FILE...]"
+    if (switchList.size() || varList.size())
+      strm << "[options] ";
+
+    for (unsigned i = 0; i < argList.size(); i++)
+      strm << argList[i]->getLongName() << " ";
+
+    strm << "'" << endl;
+
+    //-- OPTIONS / ARG DESCRIPTIONS --//
+    strm << "Where: " << endl;
+    printHelp(strm);
   }
 };
