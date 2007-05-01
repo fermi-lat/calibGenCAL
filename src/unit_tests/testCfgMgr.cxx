@@ -1,5 +1,5 @@
 #include "CfgMgr.h"
-#include "testUtil.h"
+//#include "testUtil.h"
 
 #include <stdexcept>
 #include <iostream>
@@ -8,11 +8,19 @@
 using namespace std;
 using namespace CfgMgr;
 
+
+#define TEST_ASSERT(str, test) if (!(test)) cout << "TESTFAIL! " __FILE__ \
+                                    << ":" << __LINE__ << " "<< str << endl;
+
+int NEW_TEST_INT() {
+  static int currentVal = 0;
+  return currentVal++;
+}
+
 namespace {
   template <typename _T>
   string toStr(const _T &val) {
     ostringstream tmp;
-
 
     tmp << val;
     return tmp.str();
@@ -61,16 +69,24 @@ namespace {
   bool test_CmdArg() {
     bool retVal = true;
 
+    {
+      CmdArg<int> s("test", "help", 5);
+      TEST_ASSERT("get() != ctor",  s.getLongName() == "test");
+      TEST_ASSERT("get() != ctor",   s.getHelp()     == "help");
+      TEST_ASSERT("get() != ctor",   s.getVal()      == 5);
+      TEST_ASSERT("get() != ctor",   s.getStrVal()   == "5");
+      TEST_ASSERT("get() != ctor",   s.isOptional() == false);
 
-    CmdArg<int> s("test", "help", 5);
-    TEST_ASSERT("get() != ctor",  s.getLongName() == "test");
-    TEST_ASSERT("get() != ctor",   s.getHelp()     == "help");
-    TEST_ASSERT("get() != ctor",   s.getVal()      == 5);
-    TEST_ASSERT("get() != ctor",   s.getStrVal()   == "5");
+      s.setVal("6");
+      TEST_ASSERT("setVal() test",
+                  s.getVal() == 6);
+    }
 
-    s.setVal("6");
-    TEST_ASSERT("setVal() test",
-                s.getVal() == 6);
+    {
+      CmdArg<int> s("test", "help", 5,true);
+      TEST_ASSERT("get() != ctor",   s.isOptional() == true);
+      
+    }
 
     return retVal;
   }
@@ -108,10 +124,10 @@ namespace {
 
   /// setup script shared by individual CmdLineParser tests
 #define PARSER_SETUP \
-  CmdLineParser c;
+  CmdLineParser c("UNIT_TEST");
 
 #define ARG_SETUP                                                             \
-  int argDefVal = NEW_TEST_INT;                                               \
+  int argDefVal = NEW_TEST_INT();                                               \
   CmdArg<int> arg("arg",                                                      \
                   "test positional commandline argument",                     \
                   argDefVal);                                                 \
@@ -124,7 +140,7 @@ namespace {
   c.registerSwitch(sw);
 
 #define VAR_SETUP                                                             \
-  int varDefVal = NEW_TEST_INT;                                               \
+  int varDefVal = NEW_TEST_INT();                                               \
   CmdOptVar<int> var("var",                                                   \
                      'v',                                                     \
                      "test optional commandline variable",                    \
@@ -176,7 +192,7 @@ namespace {
     {
       PARSER_SETUP;
       ARG_SETUP;
-      int         testVal = NEW_TEST_INT;
+      int         testVal = NEW_TEST_INT();
 
       unsigned    argc    = 1;
       const char *argv[]  = {
@@ -191,7 +207,7 @@ namespace {
     {
       PARSER_SETUP;
       ARG_SETUP;
-      int         testVal = NEW_TEST_INT;
+      int         testVal = NEW_TEST_INT();
 
       unsigned    argc    = 2;
       const char *argv[]  = {
@@ -206,7 +222,7 @@ namespace {
     {
       PARSER_SETUP;
       ARG_SETUP;
-      int         testVal = NEW_TEST_INT;
+      int         testVal = NEW_TEST_INT();
 
       unsigned    argc    = 1;
       const char *argv[]  = {
@@ -352,7 +368,7 @@ namespace {
       SWITCH_SETUP;
       VAR_SETUP;
 
-      int      testVal = NEW_TEST_INT;
+      int      testVal = NEW_TEST_INT();
 
       unsigned argc    = 2 ;
       string arg1(toShortSwitch (sw.getShortName()));
@@ -373,7 +389,7 @@ namespace {
     {
       PARSER_SETUP;
       VAR_SETUP;
-      int         testVal = NEW_TEST_INT;
+      int         testVal = NEW_TEST_INT();
 
       unsigned    argc    = 1;
       string arg1(toLongSwitch (var.getLongName()));
@@ -392,7 +408,7 @@ namespace {
     {
       PARSER_SETUP;
       VAR_SETUP;
-      int         testVal = NEW_TEST_INT;
+      int         testVal = NEW_TEST_INT();
 
       unsigned    argc    = 2;
       string arg1(toLongSwitch (var.getLongName()));
@@ -464,6 +480,60 @@ namespace {
 
       c.printStatus();
     }
+
+    // test optional args
+    {
+      PARSER_SETUP;
+      CmdArg<string> argOpt("argOpt", "argument 1", "n/a", true);
+
+      c.registerArg(argOpt);
+
+      // w/out optional arg
+      c.parseCmdLine(0,0,false,false);
+      TEST_ASSERT("OPTIONAL ARGS: ", argOpt.getVal() == "n/a");
+      
+
+      // w/ optional arg
+      unsigned    argc   = 1;
+      const char *argv[] = {
+        "anon"
+      };
+
+      c.parseCmdLine(argc,argv,false,false);
+      TEST_ASSERT("OPTIONAL ARGS: ", argOpt.getVal() == "anon");
+
+    }
+
+    // test optional args, order w/ required args
+    {
+      PARSER_SETUP;
+      CmdArg<string> argOpt("argOpt", "argument 1", "n/a", true);
+      CmdArg<string> argReq("argReq", "argument 2", "n/a");
+
+      c.registerArg(argOpt);
+      
+      try {
+        c.registerArg(argReq);
+      } catch (invalid_argument &e) {
+        // do nothing, this is what we want
+      }
+    }
+
+    // test optional args, combinged w/ anon args
+    {
+      PARSER_SETUP;
+      CmdArg<string> argOpt("argOpt", "argument 1", "n/a", true);
+
+      c.registerArg(argOpt);
+
+      try {
+        c.parseCmdLine(0,0,true,false);
+      } catch (invalid_argument &e) {
+        // do nothing, this is what we want
+      }
+    }
+
+    
 
     return retVal;
   }

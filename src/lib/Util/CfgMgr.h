@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CfgMgr.h,v 1.3 2007/04/16 20:35:36 fewtrell Exp $
+// $Header: /home/cvs/SLAC/calibGenCAL/src/lib/Util/CfgMgr.h,v 1.1 2007/03/27 18:50:51 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -27,8 +27,10 @@
 
 namespace CfgMgr {
   template <typename _T>
-    std::string toStr(const _T &val) {
+  std::string toStr(const _T &val) {
     std::ostringstream tmp;
+
+
     tmp << val;
     return tmp.str();
   }
@@ -65,32 +67,33 @@ namespace CfgMgr {
     virtual const std::string & getHelp() const     = 0;
     virtual void                setVal(const std::string &newVal) = 0;
     virtual std::string         getStrVal() const = 0;
+    virtual bool isOptional() const = 0;
   };
 
   /// \brief thrown when variable parameters are inconsistant / illegal
   class InvalidVarDef :
     public std::logic_error {
-    public:
+  public:
     InvalidVarDef(const std::string &desc) :
       std::logic_error("Invalid Cfg Variable Definition: " + desc)
-      {
-      }
+    {
+    }
   };
 
   /// \brief thrown when duplicate variable names are registered to same parser
   class DuplicateNameError :
     public std::logic_error {
-    public:
+  public:
     DuplicateNameError(const std::string &desc) :
       std::logic_error("Duplicate variable name registered: " + desc)
-      {
-      }
+    {
+    }
   };
 
   /// \brief thrown when user entered argument list is invalid format
   class InvalidCmdLine :
     public std::runtime_error {
-    public:
+  public:
     InvalidCmdLine(const std::string &desc) :
       std::runtime_error("Invalid commandline: " + desc) {
     }
@@ -99,15 +102,15 @@ namespace CfgMgr {
   /// \brief basic implementation of ICmdSwitch
   class CmdSwitch :
     public virtual ICmdSwitch {
-    public:
+  public:
     /// \param  Optionally may be "" to disable longName
     /// \param shortName may be (char)0 in order to disable shortName
     /// \pre at least one of  longName or shortName needs to be defined.
-    /// \pre longName should consist of word delimited by the '-' character, it 
-    ///      should avoid commandline special characters
+    /// \pre longName should consist of word delimited by the '-' character, it should
+    ///      avoid commandline special characters
     /// \thows InvalidVardef
     CmdSwitch(const std::string &longName,
-              char shortName,
+              const char shortName,
               const std::string &help) :
       longName(longName),
       shortName(shortName),
@@ -145,10 +148,10 @@ namespace CfgMgr {
       return val;
     }
 
-    private:
-    std::string longName;
-    char shortName;
-    std::string help;
+  private:
+    const std::string longName;
+    const char shortName;
+    const std::string help;
     bool val;
   };
 
@@ -157,15 +160,15 @@ namespace CfgMgr {
   /// - templatized for use w/ multiple destination
   /// data types
   template <typename _T>
-    class CmdOptVar :
+  class CmdOptVar :
     public virtual ICmdOptVar {
-    public:
+  public:
     /// \pre longName should contain only letters & '-' character.
     /// Optionally may be "" to disable longName
     /// \pre shortName may be (char)0 in order to disable shortName
     /// \throws InvalidVarDef
     CmdOptVar(const std::string &longName,
-              char shortName,
+              const char shortName,
               const std::string &help,
               const _T &defVal) :
       longName(longName),
@@ -210,10 +213,10 @@ namespace CfgMgr {
       return val;
     }
 
-    private:
-    std::string longName;
-    char shortName;
-    std::string help;
+  private:
+    const std::string longName;
+    const char shortName;
+    const std::string help;
     _T val;
   };
 
@@ -221,18 +224,20 @@ namespace CfgMgr {
   ///
   /// - templateized for use w/ mulitple destination data types
   template<typename _T>
-    class CmdArg :
+  class CmdArg :
     public virtual ICmdArg {
-    public:
+  public:
     CmdArg(const std::string &name,
            const std::string &help,
-           const _T &defVal
+           const _T &defVal,
+           const bool isOpt=false
            ) :
       name(name),
       help(help),
-      val(defVal)
-      {
-      }
+      val(defVal),
+      isOpt(isOpt)
+    {
+    }
 
     virtual ~CmdArg() {
     };
@@ -259,9 +264,14 @@ namespace CfgMgr {
       return val;
     }
 
-    private:
-    std::string name;
-    std::string help;
+    bool isOptional() const {
+      return isOpt;
+    }
+
+  private:
+    const std::string name;
+    const std::string help;
+    const bool isOpt;
     _T val;
   };
 
@@ -270,9 +280,14 @@ namespace CfgMgr {
   public:
     /// \param appName optional for usage print-outs, etc
     CmdLineParser(const std::string &appName) :
-      appName(appName) {
+      appName(appName),
+      nOptionalArgs(false)
+    {
     }
 
+    /// register positional argument
+    /// \note non-optional arguments cannot follow optional args
+    /// \thows std::invalid_arg if non-optional arg follows optional arg
     void registerArg(ICmdArg &arg);
 
     /// \throws DulicateNameError
@@ -284,17 +299,20 @@ namespace CfgMgr {
     /// \brief parse commandline variables & assign values to all registered variableshap
     /// \param allowAnonArgs if # of positional args > number registered positional args then
     ///                      all subsequent args (non-options, no '-' prefix) will be appended
-    ///                      to anonArgList
+    ///                      to anonArgList.
+    /// \note you cannot combine optional arguments and anonymous args int he same specification
     /// \param skipFirst     skip first argument which is often just the program name & not
     ///                      a variable.
     /// \note this method attempts to follow the definitions stated in python optparse documentation
     ///       here: http://docs.python.org/lib/optparse-terminology.html
-    /// \throw InvalidCmdLine
-    void parseCmdLine(unsigned argc,
+    /// \throw InvalidCmdLine if actual cmdline does not match specifications
+    /// \throw std::invalid_argument if specifications are inconsistent (ex. 'both optional & anonymous args requested)
+
+    void parseCmdLine(const unsigned argc,
                       const char **argv,
-                      bool allowAnonArgs = false,
-                      bool skipFirst = true,
-                      bool ignoreErrors = false
+                      const bool allowAnonArgs = false,
+                      const bool skipFirst = true,
+                      const bool ignoreErrors = false
                       );
 
     void printStatus(std::ostream &strm = std::cout) const;
@@ -303,7 +321,9 @@ namespace CfgMgr {
 
     void printUsage(std::ostream &strm = std::cout) const;
 
-    const std::vector<std::string> &getAnonArgs() {
+    const std::vector<std::string> &getAnonArgs() const {
+      if (nOptionalArgs > 0)
+        throw std::invalid_argument("BUG! Anonymous args cannot be combined w/ optional args!");
       return anonArgList;
     }
 
@@ -324,13 +344,20 @@ namespace CfgMgr {
 
     ShortVarMap    shortVarMap;
     LongVarMap     longVarMap;
-    VarList     varList;
+    VarList varList;
 
-    ArgList     argList;
+    ArgList argList;
 
+    /// list of anonymous
     std::vector<std::string> anonArgList;
 
+    /// application name
     std::string appName;
+
+    /// non-optional positional args cannot follow optional args
+    /// \note cannot be combined w/ anonymous args
+    unsigned nOptionalArgs;
+
   };
 };
 #endif
