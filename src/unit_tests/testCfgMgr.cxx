@@ -9,7 +9,8 @@ using namespace std;
 using namespace CfgMgr;
 
 
-#define TEST_ASSERT(str, test) if (!(test)) cout << "TESTFAIL! " __FILE__ \
+#define TEST_ASSERT(str, test) if (!(test)) retVal = false, \
+                                    cout << "TESTFAIL! " __FILE__ \
                                     << ":" << __LINE__ << " "<< str << endl;
 
 int NEW_TEST_INT() {
@@ -485,25 +486,35 @@ namespace {
     {
       PARSER_SETUP;
       CmdArg<string> argOpt("argOpt", "argument 1", "n/a", true);
+      CmdArg<string> argReq("argReq", "argument 2", "n/a");
 
+      c.registerArg(argReq);
       c.registerArg(argOpt);
-
-      // w/out optional arg
-      c.parseCmdLine(0,0,false,false);
-      TEST_ASSERT("OPTIONAL ARGS: ", argOpt.getVal() == "n/a");
       
+      {
+        // w/out optional arg
+        unsigned    argc   = 1;
+        const char *argv[] = {
+          "req"
+        };
+
+
+        // w/out optional arg (should work w/out exception)
+        c.parseCmdLine(argc,argv,false,false);
+      }      
 
       // w/ optional arg
-      unsigned    argc   = 1;
+      unsigned    argc   = 2;
       const char *argv[] = {
-        "anon"
+        "req",
+        "opt"
       };
 
       c.parseCmdLine(argc,argv,false,false);
-      TEST_ASSERT("OPTIONAL ARGS: ", argOpt.getVal() == "anon");
-
+      TEST_ASSERT("OPTIONAL ARGS: ", argOpt.getVal() == "opt");
+        
     }
-
+      
     // test optional args, order w/ required args
     {
       PARSER_SETUP;
@@ -514,6 +525,7 @@ namespace {
       
       try {
         c.registerArg(argReq);
+        TEST_ASSERT("Optional/nonOptional order enforcement broken",0);
       } catch (invalid_argument &e) {
         // do nothing, this is what we want
       }
@@ -526,8 +538,15 @@ namespace {
 
       c.registerArg(argOpt);
 
+      // w/ optional arg
+      unsigned    argc   = 1;
+      const char *argv[] = {
+        "opt"
+      };
+
       try {
-        c.parseCmdLine(0,0,true,false);
+        c.parseCmdLine(argc,argv,true,false);
+        TEST_ASSERT("Should not be able to combine optional / anonymous args",0);
       } catch (invalid_argument &e) {
         // do nothing, this is what we want
       }

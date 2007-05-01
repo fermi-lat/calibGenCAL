@@ -3,6 +3,7 @@
 /** @file
     @author Zachary Fewtrell
 
+    This code written for previous project by student
 
  */
 
@@ -207,7 +208,7 @@ namespace CfgMgr {
     //-- Final checks --//
 
     // check that all required arguments have been filled
-    if (nPositionalArgs < argList.size() 
+    if (nPositionalArgs + nOptionalArgs < argList.size() 
         && !ignoreErrors)
       throw InvalidCmdLine("Not enough required arguments, need " + toStr(argList.size()));
   }
