@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Tue May  1 04:56:45 PDT 2007
+calibGenCAL/src/unit_tests
+
+Modified Files:
+	testCfgMgr.cxx 
+Log Message:
+fixed bug in optional args for CfgMgr
+
+    *
+------------------------------------------------------------
+User: fewtrell  Tue May  1 04:56:45 PDT 2007
 calibGenCAL/src/lib/Util
 
 Modified Files:
