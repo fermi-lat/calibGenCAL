@@ -1,4 +1,23 @@
 ------------------------------------------------------------
+User: fewtrell  Fri May 25 14:06:48 PDT 2007
+calibGenCAL/src/lib/Hists
+
+Modified Files:
+	AsymHists.cxx AsymHists.h GCRHists.cxx GCRHists.h MPDHists.cxx 
+	MPDHists.h 
+Added Files:
+	HistMap.cxx HistMap.h HistVec.h 
+Log Message:
+genGCRHists now saves histograms per_z and all_z
+fitGCRHists now works w/ basic gaussian fits.
+
+calibGenCAL namespace now wraps all library code
+
+add 'const' in many places.
+
+updated to use 'explicit' constructors in latest rev of CalUtil
+    *
+------------------------------------------------------------
 User: fewtrell  Fri May 25 14:06:47 PDT 2007
 calibGenCAL/src/lib/CalibDataTypes
 
