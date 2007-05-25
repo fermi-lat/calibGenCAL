@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genGCRHists.cxx,v 1.11 2007/04/23 18:23:15 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genGCRHists.cxx,v 1.12 2007/04/24 16:45:06 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -17,7 +17,6 @@
 #include "lib/Util/CfgMgr.h"
 
 // GLAST INCLUDES
-#include "facilities/Util.h"
 
 // EXTLIB INCLUDES
 
@@ -28,9 +27,9 @@
 #include <fstream>
 
 using namespace std;
+using namespace calibGenCAL;
 using namespace CGCUtil;
 using namespace CfgMgr;
-using namespace facilities;
 
 class AppCfg {
 public:
@@ -64,7 +63,7 @@ public:
     cfgPath("cfgPath",
             'c',
             "(optional) path to configuration file",
-            "$(CALIBGENCALROOT)/cfg/defaults.cfg"),
+            ""),
     nEntries("nEntries",
              'n',
              "stop filling histograms when min nEntries= n",
@@ -126,11 +125,6 @@ int main(const int argc,
     AppCfg  cfg(argc,
                 argv);
 
-    //-- CONFIG FILE --//
-    string fullCfgPath(cfg.cfgPath.getVal());
-    Util::expandEnvVar(&fullCfgPath);
-    SimpleIniFile  cfgFile(fullCfgPath);
-
     // input file(s)
     vector<string> digiRootFileList(getLinesFromFile(cfg.digiFilenames.getVal()));
     if (digiRootFileList.size() < 1) {
@@ -177,21 +171,15 @@ int main(const int argc,
     // output histogram file name
     string histFilename(cfg.outputBasename.getVal() + ".root");
 
-    // output txt file name
-    string outputTXTFile(cfg.outputBasename.getVal() + ".txt");
+    // open file to save output histograms.
+    LogStream::get() << __FILE__ << ": opening output histogram file: " << histFilename << endl;
+    // used when creating histgrams
+    TFile histFile(histFilename.c_str(), "RECREATE", "CAL GCR MPD");
+
 
     GCRHists  gcrHists(cfg.summaryMode.getVal());
-
-    GCRCalibAlg gcrCalib(&cfgFile);
-
+    GCRCalibAlg gcrCalib(cfg.cfgPath.getVal());
     CalMPD calMPD;
-
-    // used when creating histgrams
-    auto_ptr<TFile> histFile;
-
-    // open file to save output histograms.
-    LogStream::get() << __FILE__ << ": opening output histogram file: " << histFilename<< endl;
-    histFile.reset(new TFile(histFilename.c_str(), "RECREATE", "CAL GCR MPD"));
 
     LogStream::get() << __FILE__ << ": reading digiRoot event file(s) starting w/ " << digiRootFileList[0] << endl;
     gcrCalib.fillHists(cfg.nEntries.getVal(),
@@ -201,12 +189,17 @@ int main(const int argc,
                        dac2adc,
                        gcrHists
                        );
-    gcrHists.trimHists();
+
     gcrHists.summarizeHists(LogStream::get());
 
     LogStream::get() << __FILE__ << ": writing histogram file: " << histFilename << endl;
-    histFile->Write();
-    histFile->Close();
+    histFile.Write();
+    histFile.Close();
+
+    // output txt file name
+    string outputTXTFile(cfg.outputBasename.getVal() + ".txt");
+
+
   } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
     return -1;

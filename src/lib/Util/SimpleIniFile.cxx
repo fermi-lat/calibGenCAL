@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/SimpleIniFile.cxx,v 1.1 2007/03/27 18:50:51 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/SimpleIniFile.cxx,v 1.2 2007/04/10 14:51:02 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -89,7 +89,7 @@ SimpleIniFile::SimpleIniFile(const string &filename)
   if (!openIniFile(filename)) {
     ostringstream tmp;
     tmp << __FILE__ << ":" << __LINE__ <<
-      ": Cannot open cfg file: " << filename;
+      ": Cannot open cfg file: '" << filename << "'";
     throw std::runtime_error(tmp.str());
   }
 }

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonAsymAlg.cxx,v 1.2 2007/03/29 19:14:26 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonAsymAlg.cxx,v 1.3 2007/04/10 14:51:01 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -21,201 +21,204 @@
 // STD INCLUDES
 #include <sstream>
 
-using namespace std;
-using namespace CalUtil;
-using namespace CGCUtil;
+namespace calibGenCAL {
 
-MuonAsymAlg::MuonAsymAlg(const CalPed &ped,
-                         const CIDAC2ADC &dac2adc,
-                         AsymHists &asymHists) :
-  eventData(ped, dac2adc),
-  m_asymHists(asymHists)
-{
-}
+  using namespace std;
+  using namespace CalUtil;
+  using namespace CGCUtil;
 
-bool MuonAsymAlg::passCutX(const TwrHodoscope &hscope) {
-  // max 2 hits on any layer
-  if (hscope.maxPerLyr > 2)
-    return false;
-
-  // need vertical connect 4 in X dir
-  if (hscope.nLyrsX != 4 || hscope.nColsX != 1)
-    return false;
-
-  // skip extreme ends of xtal, as variance is high.
-  if (hscope.firstColX == 0 || hscope.firstColX == 11)
-    return false;
-
-  // need at least one hit in ortho direction,
-  // otherwise there is nothing to calibrate
-  if (!hscope.nLyrsY) return false;
-
-  return true;
-}
-
-bool MuonAsymAlg::passCutY(const TwrHodoscope &hscope) {
-  // max 2 hits on any layer
-  if (hscope.maxPerLyr > 2)
-    return false;
-
-  // need vertical connect 4 in Y dir
-  if (hscope.nLyrsY != 4 || hscope.nColsY != 1)
-    return false;
-
-  // skip extreme ends of xtal, as variance is high.
-  if (hscope.firstColY == 0 || hscope.firstColY == 11)
-    return false;
-
-  // need at least one hit in ortho direction,
-  // otherwise there is nothing to calibrate
-  if (!hscope.nLyrsX) return false;
-
-  return true;
-}
-
-void MuonAsymAlg::processEvent(DigiEvent &digiEvent) {
-  // check that we are in 4 range mode
-  EventSummaryData &summary = digiEvent.getEventSummaryData();
-  if (!summary.readout4())
-    return;
-
-  const TClonesArray *calDigiCol = digiEvent.getCalDigiCol();
-  if (!calDigiCol) {
-    LogStream::get() << "no calDigiCol found for event#" << eventData.eventNum << endl;
-    return;
+  MuonAsymAlg::MuonAsymAlg(const CalPed &ped,
+                           const CIDAC2ADC &dac2adc,
+                           AsymHists &asymHists) :
+    eventData(ped, dac2adc),
+    m_asymHists(asymHists)
+  {
   }
 
-  TIter calDigiIter(calDigiCol);
+  bool MuonAsymAlg::passCutX(const TwrHodoscope &hscope) {
+    // max 2 hits on any layer
+    if (hscope.maxPerLyr > 2)
+      return false;
 
-  const CalDigi      *pCalDigi = 0;
+    // need vertical connect 4 in X dir
+    if (hscope.nLyrsX != 4 || hscope.nColsX != 1)
+      return false;
 
-  //loop through each 'hit' in one event
-  while ((pCalDigi = (CalDigi *)calDigiIter.Next())) {
-    const CalDigi &calDigi = *pCalDigi;            // use reference to avoid -> syntax
+    // skip extreme ends of xtal, as variance is high.
+    if (hscope.firstColX == 0 || hscope.firstColX == 11)
+      return false;
 
-    //-- XtalId --//
-    idents::CalXtalId id(calDigi.getPackedId());   // get interaction information
+    // need at least one hit in ortho direction,
+    // otherwise there is nothing to calibrate
+    if (!hscope.nLyrsY) return false;
 
-    // retrieve tower info
-    TwrNum twr = id.getTower();
-
-    // add hit to appropriate hodoscope.
-    eventData.hscopes[twr].addHit(calDigi);
+    return true;
   }
 
-  // process each tower for possible good muon event
-  for (TwrNum twr; twr.isValid(); twr++) {
-    TwrHodoscope &hscope = eventData.hscopes[twr];
-    processTower(hscope);
-  }  // per tower loop
-}
+  bool MuonAsymAlg::passCutY(const TwrHodoscope &hscope) {
+    // max 2 hits on any layer
+    if (hscope.maxPerLyr > 2)
+      return false;
 
-void MuonAsymAlg::processTower(TwrHodoscope &hscope) {
-  // summarize the event for each hodoscope
-  hscope.summarizeEvent();
+    // need vertical connect 4 in Y dir
+    if (hscope.nLyrsY != 4 || hscope.nColsY != 1)
+      return false;
 
-  for (DirNum dir; dir.isValid(); dir++) {
-    unsigned short pos;
-    vector<XtalIdx> *pHitList, *pHitListOrtho;
+    // skip extreme ends of xtal, as variance is high.
+    if (hscope.firstColY == 0 || hscope.firstColY == 11)
+      return false;
 
-    // DIRECTION SPECIFIC SETUP //
+    // need at least one hit in ortho direction,
+    // otherwise there is nothing to calibrate
+    if (!hscope.nLyrsX) return false;
 
-    /** Note: 'direction' refers to the direction of xtals which have vertical
-        'connect-4' deposits.  For asymmetry, we use this vertical column
-        to calibrate the signal in the orthogonal crystals.
-    */
-    if (dir == X_DIR) {
-      if (!passCutX(hscope)) continue;     // skip this direction if track is bad
-      pos           = hscope.firstColX;
-      pHitList      = &hscope.hitListX;    // hit list in test direction
-      pHitListOrtho = &hscope.hitListY;    // ortho direction
-      algData.nXDirs++;
-    } else {
-      // Y_DIR
-      if (!passCutY(hscope)) continue;     // skip this direction if track is bad
-      pos           = hscope.firstColY;
-      pHitList      = &hscope.hitListY;    // hit list in test direction
-      pHitListOrtho = &hscope.hitListX;    // ortho direction
-      algData.nYDirs++;
+    return true;
+  }
+
+  void MuonAsymAlg::processEvent(DigiEvent &digiEvent) {
+    // check that we are in 4 range mode
+    EventSummaryData &summary = digiEvent.getEventSummaryData();
+    if (!summary.readout4())
+      return;
+
+    const TClonesArray *calDigiCol = digiEvent.getCalDigiCol();
+    if (!calDigiCol) {
+      LogStream::get() << "no calDigiCol found for event#" << eventData.eventNum << endl;
+      return;
     }
 
-    algData.nGoodDirs++;
+    TIter calDigiIter(calDigiCol);
 
-    // use references to avoid -> notation
-    vector<XtalIdx> &hitListOrtho = *pHitListOrtho;
+    const CalDigi      *pCalDigi = 0;
 
-    // loop through each orthogonal hit
-    for (unsigned i = 0; i < hitListOrtho.size(); i++) {
-      XtalIdx xtalIdx = hitListOrtho[i];
+    //loop through each 'hit' in one event
+    while ((pCalDigi = dynamic_cast<CalDigi *>(calDigiIter.Next()))) {
+      const CalDigi &calDigi = *pCalDigi;            // use reference to avoid -> syntax
 
-      // calcuate the 4 log ratios = log(POS/NEG)
-      for (AsymType asymType; asymType.isValid(); asymType++) {
-        float dacP = hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), POS_FACE, asymType.getDiode(POS_FACE))];
-        float dacN = hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), NEG_FACE, asymType.getDiode(NEG_FACE))];
-        float asym = log(dacP/dacN);
+      //-- XtalId --//
+      const idents::CalXtalId id(calDigi.getPackedId());   // get interaction information
 
-        m_asymHists.getHist(asymType, xtalIdx)->Fill(pos, asym);
+      // retrieve tower info
+      const TwrNum twr (id.getTower());
+
+      // add hit to appropriate hodoscope.
+      eventData.hscopes[twr].addHit(calDigi);
+    }
+
+    // process each tower for possible good muon event
+    for (TwrNum twr; twr.isValid(); twr++) {
+      TwrHodoscope &hscope = eventData.hscopes[twr];
+      processTower(hscope);
+    }  // per tower loop
+  }
+
+  void MuonAsymAlg::processTower(TwrHodoscope &hscope) {
+    // summarize the event for each hodoscope
+    hscope.summarizeEvent();
+
+    for (DirNum dir; dir.isValid(); dir++) {
+      unsigned short pos;
+      vector<XtalIdx> *pHitList, *pHitListOrtho;
+
+      // DIRECTION SPECIFIC SETUP //
+
+      /** Note: 'direction' refers to the direction of xtals which have vertical
+          'connect-4' deposits.  For asymmetry, we use this vertical column
+          to calibrate the signal in the orthogonal crystals.
+      */
+      if (dir == X_DIR) {
+        if (!passCutX(hscope)) continue;     // skip this direction if track is bad
+        pos           = hscope.firstColX;
+        pHitList      = &hscope.hitListX;    // hit list in test direction
+        pHitListOrtho = &hscope.hitListY;    // ortho direction
+        algData.nXDirs++;
+      } else {
+        // Y_DIR
+        if (!passCutY(hscope)) continue;     // skip this direction if track is bad
+        pos           = hscope.firstColY;
+        pHitList      = &hscope.hitListY;    // hit list in test direction
+        pHitListOrtho = &hscope.hitListX;    // ortho direction
+        algData.nYDirs++;
       }
-      //           logStrm << "HIT: " << eventData.eventNum
-      //                   << " " << xtalIdx.val()
-      //                   << " " << m_histograms[ASYM_SS][xtalIdx]->GetEntries()
-      //                   << endl;
 
-      algData.nHits++;
-    }   // per hit loop
-  }     // per direction loop
-}
+      algData.nGoodDirs++;
 
-void MuonAsymAlg::fillHists(unsigned nEntries,
-                            const vector<string> &rootFileList) {
-  m_asymHists.initHists();
+      // use references to avoid -> notation
+      vector<XtalIdx> &hitListOrtho = *pHitListOrtho;
 
-  RootFileAnalysis rootFile(0,
-                            &rootFileList,
-                            0);
+      // loop through each orthogonal hit
+      for (unsigned i = 0; i < hitListOrtho.size(); i++) {
+        const XtalIdx xtalIdx(hitListOrtho[i]);
 
-  // enable only needed branches in root file
-  rootFile.getDigiChain()->SetBranchStatus("*", 0);
-  rootFile.getDigiChain()->SetBranchStatus("m_calDigiCloneCol");
-  rootFile.getDigiChain()->SetBranchStatus("m_summary");
+        // calcuate the 4 log ratios = log(POS/NEG)
+        for (AsymType asymType; asymType.isValid(); asymType++) {
+          const float dacP = hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), POS_FACE, asymType.getDiode(POS_FACE))];
+          const float dacN = hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), NEG_FACE, asymType.getDiode(NEG_FACE))];
+          const float asym = log(dacP/dacN);
 
-  unsigned nEvents = rootFile.getEntries();
-  LogStream::get() <<
-    __FILE__ << ": Processing: " << nEvents << " events." << endl;
+          m_asymHists.getHist(asymType, xtalIdx)->Fill(pos, asym);
+        }
+        //           logStrm << "HIT: " << eventData.eventNum
+        //                   << " " << xtalIdx.val()
+        //                   << " " << m_histograms[ASYM_SS][xtalIdx]->GetEntries()
+        //                   << endl;
 
-  // Basic digi-event loop
-  for (eventData.eventNum = 0; eventData.eventNum < nEvents; eventData.eventNum++) {
-    eventData.next();
-    if (eventData.eventNum % 10000 == 0) {
-      // quit if we have enough entries in each histogram
-      unsigned currentMin = m_asymHists.getMinEntries();
-      if (currentMin >= nEntries) break;
+        algData.nHits++;
+      }   // per hit loop
+    }     // per direction loop
+  }
 
-      LogStream::get() << "Event: " << eventData.eventNum
-                       << " min entries per histogram: " << currentMin
-                       << endl;
-      LogStream::get().flush();
-    }
+  void MuonAsymAlg::fillHists(unsigned nEntries,
+                              const vector<string> &rootFileList) {
+    m_asymHists.initHists();
 
-    if (!rootFile.getEvent(eventData.eventNum)) {
-      LogStream::get() << "Warning, event " << eventData.eventNum << " not read." << endl;
-      continue;
-    }
+    RootFileAnalysis rootFile(0,
+                              &rootFileList,
+                              0);
 
-    DigiEvent *digiEvent = rootFile.getDigiEvent();
-    if (!digiEvent) {
-      LogStream::get() << __FILE__ << ": Unable to read DigiEvent " << eventData.eventNum  << endl;
-      continue;
-    }
+    // enable only needed branches in root file
+    rootFile.getDigiChain()->SetBranchStatus("*", 0);
+    rootFile.getDigiChain()->SetBranchStatus("m_calDigiCloneCol");
+    rootFile.getDigiChain()->SetBranchStatus("m_summary");
 
-    processEvent(*digiEvent);
-  }  // per event loop
+    const unsigned nEvents = rootFile.getEntries();
+    LogStream::get() <<
+      __FILE__ << ": Processing: " << nEvents << " events." << endl;
 
-  LogStream::get() << "Asymmetry histograms filled nEvents=" << algData.nGoodDirs
-                   << " algData.nXDirs="               << algData.nXDirs
-                   << " algData.nYDirs="               << algData.nYDirs << endl;
-  LogStream::get() << " nHits measured="       <<               algData.nHits
-                   << " Bad hits="             << algData.nBadHits
-                   << endl;
-}
+    // Basic digi-event loop
+    for (eventData.eventNum = 0; eventData.eventNum < nEvents; eventData.eventNum++) {
+      eventData.next();
+      if (eventData.eventNum % 10000 == 0) {
+        // quit if we have enough entries in each histogram
+        const unsigned currentMin = m_asymHists.getMinEntries();
+        if (currentMin >= nEntries) break;
 
+        LogStream::get() << "Event: " << eventData.eventNum
+                         << " min entries per histogram: " << currentMin
+                         << endl;
+        LogStream::get().flush();
+      }
+
+      if (!rootFile.getEvent(eventData.eventNum)) {
+        LogStream::get() << "Warning, event " << eventData.eventNum << " not read." << endl;
+        continue;
+      }
+
+      DigiEvent *digiEvent = rootFile.getDigiEvent();
+      if (!digiEvent) {
+        LogStream::get() << __FILE__ << ": Unable to read DigiEvent " << eventData.eventNum  << endl;
+        continue;
+      }
+
+      processEvent(*digiEvent);
+    }  // per event loop
+
+    LogStream::get() << "Asymmetry histograms filled nEvents=" << algData.nGoodDirs
+                     << " algData.nXDirs="               << algData.nXDirs
+                     << " algData.nYDirs="               << algData.nYDirs << endl;
+    LogStream::get() << " nHits measured="       <<               algData.nHits
+                     << " Bad hits="             << algData.nBadHits
+                     << endl;
+  }
+
+}; // namespace calibGenCAL

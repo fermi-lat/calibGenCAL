@@ -1,4 +1,4 @@
-// $Header: /home/cvs/SLAC/calibGenCAL/src/lib/Util/CfgMgr.h,v 1.1 2007/03/27 18:50:51 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CfgMgr.h,v 1.5 2007/05/01 01:12:08 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -24,6 +24,7 @@
 
 
 */
+
 
 namespace CfgMgr {
   template <typename _T>
@@ -234,8 +235,8 @@ namespace CfgMgr {
            ) :
       name(name),
       help(help),
-      val(defVal),
-      isOpt(isOpt)
+      isOpt(isOpt),
+      val(defVal)
     {
     }
 

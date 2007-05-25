@@ -1,6 +1,6 @@
 #ifndef IntNonlinAlg_h
 #define IntNonlinAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/IntNonlinAlg.h,v 1.2 2007/04/10 14:51:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/IntNonlinAlg.h,v 1.3 2007/04/24 16:45:06 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -18,116 +18,120 @@
 
 // STD INCLUDES
 
-class CIDAC2ADC;
 class DigiEvent;
 class CalDigi;
 class TProfile;
 
-/** \brief Algorithm class populates CIDAC2ADC calibration data
-    object by analyzing calibGen singlex16 digi ROOT files.
+namespace calibGenCAL {
 
-    @author fewtrell
-*/
-class IntNonlinAlg {
- public:
-  IntNonlinAlg();
+  class CIDAC2ADC;
 
-  /// process digi root event file
-  /// \param diode specify whether to analyze HE or LE circuits
-  void readRootData(const std::string &rootFileName,
-                    CIDAC2ADC &adcMeans,
-                    CalUtil::DiodeNum diode,
-                    bool bcastMode);
+  /** \brief Algorithm class populates CIDAC2ADC calibration data
+      object by analyzing calibGen singlex16 digi ROOT files.
 
-  /// smooth raw adc means for use in offline spline calibration
-  void genSplinePts(CIDAC2ADC &adcMeans,
-                    CIDAC2ADC &cidac2adc);
+      @author fewtrell
+  */
+  class IntNonlinAlg {
+  public:
+    IntNonlinAlg();
 
- private:
-  /// fill histograms w/ data from single event
-  void processEvent(const DigiEvent &digiEvent);
+    /// process digi root event file
+    /// \param diode specify whether to analyze HE or LE circuits
+    void readRootData(const std::string &rootFileName,
+                      CIDAC2ADC &adcMeans,
+                      const CalUtil::DiodeNum diode,
+                      const bool bcastMode);
 
-  /// fill histograms w/ data from single CalDigi hit
-  void processHit(const CalDigi &cdig);
+    /// smooth raw adc means for use in offline spline calibration
+    static void genSplinePts(const CIDAC2ADC &adcMeans,
+                             CIDAC2ADC &cidac2adc);
 
-  /// apply smoothing algorithm to single ADC curve.
-  void smoothSpline(const vector<float> &curADC,
-                    vector<float> &splineADC,
-                    vector<float> &splineDAC,
-                    CalUtil::RngNum rng);
+  private:
+    /// fill histograms w/ data from single event
+    void processEvent(const DigiEvent &digiEvent);
 
-  /// store cfg & status data pertinent to current algorithm run
-  struct AlgData {
-    AlgData() :
-      profiles(CalUtil::RngIdx::N_VALS, 0) {
-      init();
-    }
+    /// fill histograms w/ data from single CalDigi hit
+    void processHit(const CalDigi &cdig);
 
-    void init() {
-      diode     = CalUtil::LRG_DIODE;
-      bcastMode = true;
-      adcMeans  = 0;
-      initHists();
-    }
+    /// apply smoothing algorithm to single ADC curve.
+    static void smoothSpline(const vector<float> &curADC,
+                      vector<float> &splineADC,
+                      vector<float> &splineDAC,
+                      const CalUtil::RngNum rng);
 
-    ~AlgData() {
-      delete adcHists;
-    }
+    /// store cfg & status data pertinent to current algorithm run
+    struct AlgData {
+      AlgData() :
+        profiles(CalUtil::RngIdx::N_VALS, 0) {
+        init();
+      }
 
-    /// create one temporary histogram per adc channel.
-    /// this histogram will be reused for each new CIDAC
-    /// level.
-    TObjArray                                   *adcHists;
+      void init() {
+        diode     = CalUtil::LRG_DIODE;
+        bcastMode = true;
+        adcMeans  = 0;
+        initHists();
+      }
 
-    /// profiles owned by current ROOT directory/m_histFile.
-    CalUtil::CalVec<CalUtil::RngIdx, TProfile *> profiles;
+      ~AlgData() {
+        delete adcHists;
+      }
 
-    /// create new histogram objects and accompanying TObjArray
-    void initHists();
+      /// create one temporary histogram per adc channel.
+      /// this histogram will be reused for each new CIDAC
+      /// level.
+      TObjArray                                   *adcHists;
 
-    /// currently processing 1 of 2 diodes
-    CalUtil::DiodeNum diode;
+      /// profiles owned by current ROOT directory/m_histFile.
+      CalUtil::CalVec<CalUtil::RngIdx, TProfile *> profiles;
 
-    /// broadcast mode data samples all 12 columns
-    /// simultaneously.
-    bool              bcastMode;
+      /// create new histogram objects and accompanying TObjArray
+      void initHists();
 
-    /// fill in the mean values for each DAC setting here.
-    CIDAC2ADC        *adcMeans;
-  } algData;
+      /// currently processing 1 of 2 diodes
+      CalUtil::DiodeNum diode;
 
-  /// store data pertinent to current event
-  struct EventData {
+      /// broadcast mode data samples all 12 columns
+      /// simultaneously.
+      bool              bcastMode;
+
+      /// fill in the mean values for each DAC setting here.
+      CIDAC2ADC        *adcMeans;
+    } algData;
+
+    /// store data pertinent to current event
+    struct EventData {
     private:
 
-void            init() {
-  eventNum = 0;
-  iGoodEvt = 0;
-  testCol  = 0;
-  iSamp    = 0;
-  testDAC  = 0;
-}
+      void            init() {
+        eventNum = 0;
+        iGoodEvt = 0;
+        testCol  = 0;
+        iSamp    = 0;
+        testDAC  = 0;
+      }
 
     public:
-EventData() {
-  init();
-}
+      EventData() {
+        init();
+      }
 
-    /// count events read from root file
-    unsigned        eventNum;
+      /// count events read from root file
+      unsigned        eventNum;
 
-    /// count 'good' events actually used from root file
-    unsigned        iGoodEvt;
+      /// count 'good' events actually used from root file
+      unsigned        iGoodEvt;
 
-    /// which xtal column is singlex16 currently sampling?
-    CalUtil::ColNum testCol;
+      /// which xtal column is singlex16 currently sampling?
+      CalUtil::ColNum testCol;
 
-    /// how many samples @ current setting?
-    unsigned short  iSamp;
+      /// how many samples @ current setting?
+      unsigned short  iSamp;
 
-    // current CIDAC index
-    unsigned short  testDAC;
-  } eventData;
-};
+      // current CIDAC index
+      unsigned short  testDAC;
+    } eventData;
+  };
 
+}; // namespace calibGenCAL
 #endif

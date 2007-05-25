@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.21 2007/04/19 15:03:14 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.22 2007/04/24 16:45:06 fewtrell Exp $
 
 /** @file Gen MevPerDAC calibrations from Muon event files using Cal Digi Hodoscope
     for track & hit information
@@ -26,6 +26,7 @@
 #include <fstream>
 
 using namespace std;
+using namespace calibGenCAL;
 using namespace CGCUtil;
 using namespace CfgMgr;
 

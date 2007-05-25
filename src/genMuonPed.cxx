@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.20 2007/04/19 15:03:14 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.21 2007/04/24 16:45:06 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -20,6 +20,7 @@
 #include <fstream>
 
 using namespace std;
+using namespace calibGenCAL;
 using namespace CGCUtil;
 using namespace CfgMgr;
 
@@ -102,7 +103,7 @@ int main(int argc,
     LogStream::addStream(cout);
 
     // generate logfile name
-    string logfile(cfg.outputBasename.getVal() + ".log.txt");
+    const string logfile(cfg.outputBasename.getVal() + ".log.txt");
     ofstream tmpStrm(logfile.c_str());
 
     LogStream::addStream(tmpStrm);
@@ -119,9 +120,9 @@ int main(int argc,
     CalPed  roughPed;
 
     // txt output filename
-    string  roughPedTXTFile(cfg.outputBasename.getVal() + ".roughPeds.txt");
+    const string  roughPedTXTFile(cfg.outputBasename.getVal() + ".roughPeds.txt");
     // output histogram file
-    string roughPedHistFileName(cfg.outputBasename.getVal() + ".roughPeds.root");
+    const string roughPedHistFileName(cfg.outputBasename.getVal() + ".roughPeds.root");
 
     // what type of cut?
     const string PASS_THROUGH_CUT("ALL");
@@ -140,7 +141,7 @@ int main(int argc,
     }
     MuonPedAlg::TRIGGER_CUT trigCut     = trigCutMap[trigCutStr];
 
-    unsigned nEntries(cfg.entriesPerHist.getVal());
+    const unsigned nEntries(cfg.entriesPerHist.getVal());
 
     // open new output histogram file
     LogStream::get() << __FILE__ << ": opening output rough pedestal histogram file: " << roughPedHistFileName <<
@@ -169,9 +170,9 @@ int main(int argc,
     MuonPedAlg  muPed;
     CalPed   calPed;
     // txt output filename
-    string   muPedTXTFile(cfg.outputBasename.getVal() + ".txt");
+    const string   muPedTXTFile(cfg.outputBasename.getVal() + ".txt");
     // output histogram file
-    string   muPedHistFileName(cfg.outputBasename.getVal() + ".root");
+    const string   muPedHistFileName(cfg.outputBasename.getVal() + ".root");
 
     // open new output histogram file
     LogStream::get() << __FILE__ << ": opening muon pedestal output histogram file: " << muPedHistFileName << endl;

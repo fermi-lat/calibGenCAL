@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genNeighborXtalk.cxx,v 1.10 2007/04/19 15:03:14 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genNeighborXtalk.cxx,v 1.11 2007/04/24 16:45:06 fewtrell Exp $
 
 /** @file Gen Neighboring Crystal Cross-talk calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
@@ -22,6 +22,7 @@
 #include <stdexcept>
 
 using namespace std;
+using namespace calibGenCAL;
 using namespace CalUtil;
 using namespace CGCUtil;
 using namespace CfgMgr;

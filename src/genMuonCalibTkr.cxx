@@ -26,6 +26,7 @@
 #include <fstream>
 
 using namespace std;
+using namespace calibGenCAL;
 using namespace CGCUtil;
 using namespace CfgMgr;
 using namespace facilities;
@@ -62,8 +63,8 @@ public:
                0),
     cfgPath("cfgPath",
             'c',
-            "(optional) read cfg info from this file",
-            "$(CALIBGENCALROOT)/cfg/defaults.cfg"),
+            "(optional) read cfg info from this file (supports env var expansion)",
+			""),
     help("help",
          'h',
          "print usage info")
@@ -180,13 +181,11 @@ int main(int argc,
 
     CalAsym   calAsym;
     CalMPD    calMPD;
-    string fullCfgPath(cfg.cfgPath.getVal());
-    Util::expandEnvVar(&fullCfgPath);
     MuonCalibTkrAlg tkrCalib(peds,
                              dac2adc,
                              asymHists,
                              mpdHists,
-                             fullCfgPath);
+                             cfg.cfgPath.getVal());
 
     LogStream::get() << __FILE__ << ": reading root event file(s) starting w/ "
                      << digiFileList[0] << endl;
