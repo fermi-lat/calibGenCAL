@@ -1,6 +1,6 @@
 #ifndef MuonAsymAlg_h
 #define MuonAsymAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonAsymAlg.h,v 1.2 2007/03/29 19:14:26 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonAsymAlg.h,v 1.3 2007/04/10 14:51:01 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -19,97 +19,101 @@
 
 // STD INCLUDES
 
-class CalAsym;
-class CalPed;
-class CIDAC2ADC;
-class TwrHodoscope;
 class DigiEvent;
-class AsymHists;
 
-/** \brief Algorithm class populates CalAsym calibration data with values extracted
-    from Muon collection digi ROOT event files
+namespace calibGenCAL {
 
-    @author Zachary Fewtrell
-*/
-class MuonAsymAlg {
- public:
-  MuonAsymAlg(const CalPed &ped,
-              const CIDAC2ADC &dac2adc,
-              AsymHists &asymHists);
+  class CalAsym;
+  class CalPed;
+  class CIDAC2ADC;
+  class TwrHodoscope;
+  class AsymHists;
 
-  /// populate asymmetry profiles w/ nEvt worth of data.
-  void        fillHists(unsigned nEntries,
-                        const vector<string> &rootFileList);
+  /** \brief Algorithm class populates CalAsym calibration data with values extracted
+      from Muon collection digi ROOT event files
 
- private:
-  /// process a single event for histogram fill
-  void        processEvent(DigiEvent &digiEvent);
-
-  /// process a single tower's data in single event for
-  /// histogram fill
-  void        processTower(TwrHodoscope &hscope);
-
-  /// hodoscopic event cut for X direction xtals
-  bool        passCutX(const TwrHodoscope &hscope);
-
-  /// hodoscopic event cut for Y direction xtals
-  bool        passCutY(const TwrHodoscope &hscope);
-
-  class AlgData {
-  private:
-    void init() {
-      nGoodDirs = 0;
-      nXDirs    = 0;
-      nYDirs    = 0;
-      nHits     = 0;
-      nBadHits  = 0;
-    }
-
+      @author Zachary Fewtrell
+  */
+  class MuonAsymAlg {
   public:
-    AlgData() {
-      init();
-    }
+    MuonAsymAlg(const CalPed &ped,
+                const CIDAC2ADC &dac2adc,
+                AsymHists &asymHists);
 
-    unsigned nGoodDirs  ;   // count total # of events used
-    unsigned nXDirs     ;
-    unsigned nYDirs     ;
-    long     nHits      ;   // count total # of xtals measured
-    unsigned nBadHits   ;
-  } algData;
+    /// populate asymmetry profiles w/ nEvt worth of data.
+    void        fillHists(unsigned nEntries,
+                          const vector<string> &rootFileList);
 
-  class EventData {
   private:
-    /// reset all member variables
-    void init() {
-      eventNum = 0;
-      next();
-    }
+    /// process a single event for histogram fill
+    void        processEvent(DigiEvent &digiEvent);
 
-  public:
-    EventData(const CalPed &peds,
-              const CIDAC2ADC &dac2adc) :
-      hscopes(CalUtil::TwrNum::N_VALS,
-              TwrHodoscope(peds, dac2adc)),
-      eventNum(0)
+    /// process a single tower's data in single event for
+    /// histogram fill
+    void        processTower(TwrHodoscope &hscope);
+
+    /// hodoscopic event cut for X direction xtals
+    bool        passCutX(const TwrHodoscope &hscope);
+
+    /// hodoscopic event cut for Y direction xtals
+    bool        passCutY(const TwrHodoscope &hscope);
+
+    class AlgData {
+    private:
+      void init() {
+        nGoodDirs = 0;
+        nXDirs    = 0;
+        nYDirs    = 0;
+        nHits     = 0;
+        nBadHits  = 0;
+      }
+
+    public:
+      AlgData() {
+        init();
+      }
+
+      unsigned nGoodDirs  ;   // count total # of events used
+      unsigned nXDirs     ;
+      unsigned nYDirs     ;
+      long     nHits      ;   // count total # of xtals measured
+      unsigned nBadHits   ;
+    } algData;
+
+    class EventData {
+    private:
+      /// reset all member variables
+      void init() {
+        eventNum = 0;
+        next();
+      }
+
+    public:
+      EventData(const CalPed &peds,
+                const CIDAC2ADC &dac2adc) :
+        hscopes(CalUtil::TwrNum::N_VALS,
+                TwrHodoscope(peds, dac2adc)),
+        eventNum(0)
       {
       }
 
-    /// rest all member variables that do not retain data
-    /// from one event to next.
-    void next() {
-      // clear all hodoscopes
-      for (CalUtil::TwrNum twr; twr.isValid(); twr++)
-        hscopes[twr].clear();
-    }
+      /// rest all member variables that do not retain data
+      /// from one event to next.
+      void next() {
+        // clear all hodoscopes
+        for (CalUtil::TwrNum twr; twr.isValid(); twr++)
+          hscopes[twr].clear();
+      }
 
-    /// need one hodo scope per tower
-    CalUtil::CalVec<CalUtil::TwrNum, TwrHodoscope> hscopes;
+      /// need one hodo scope per tower
+      CalUtil::CalVec<CalUtil::TwrNum, TwrHodoscope> hscopes;
 
-    unsigned eventNum;
-  } eventData;
+      unsigned eventNum;
+    } eventData;
 
-  /// histograms to fill
-  AsymHists &m_asymHists;
-};
+    /// histograms to fill
+    AsymHists &m_asymHists;
+  };
 
+}; // namespace calibGenCAL
 #endif

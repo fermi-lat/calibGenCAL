@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.19 2007/04/19 15:03:14 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.20 2007/04/24 16:45:06 fewtrell Exp $
 
 /** @file generate Light Asymmetry calibrations from Muon event filesusing Cal Digi Hodoscope
     for track & hit information
@@ -26,6 +26,7 @@
 #include <fstream>
 
 using namespace std;
+using namespace calibGenCAL;
 using namespace CGCUtil;
 using namespace CfgMgr;
 

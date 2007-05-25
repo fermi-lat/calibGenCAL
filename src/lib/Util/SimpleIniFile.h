@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/SimpleIniFile.h,v 1.1 2007/03/27 18:50:51 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/SimpleIniFile.h,v 1.2 2007/04/10 14:51:02 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -38,19 +38,18 @@
 
 class SimpleIniFile
 {
- public:
+public:
   SimpleIniFile(const std::string &filename);
 
   /// template method retrieve a single value, convert to
   /// any desired type that is supported by STL iostream
   /// converters
   template <typename T>
-    T getVal(const std::string &section,
-             const std::string &key,
-             const T & defaultVal) const {
+  T getVal(const std::string &section,
+           const std::string &key,
+           const T & defaultVal) const {
     // retrieve raw std::string from cfg file
-    const std::string *ptr = findKey(section, key);
-
+    const std::string * const ptr = findKey(section, key);
 
     // quit if key doesn't exist.
     if (!ptr)
@@ -69,20 +68,17 @@ class SimpleIniFile
   /// convert to any desired type that is supported by STL iostream
   /// converters
   template <typename T>
-    std::vector<T> getVector(const std::string &section,
-                             const std::string &key,
-                             const std::string &delims = ",",
-                             const std::vector<T> &defaultVal = std::vector < T > ()) const {
+  std::vector<T> getVector(const std::string &section,
+                           const std::string &key,
+                           const std::string &delims = ",",
+                           const std::vector<T> &defaultVal = std::vector < T > ()) const {
     // retrieve raw string from cfg file
-    const std::string *ptr       = findKey(section, key);
-    // quit if key doesn't exist.
-    bool quitEarly = false;
+    const std::string * const ptr       = findKey(section, key);
 
-    if (!ptr) quitEarly = true;
+    if (!ptr) 
+      return defaultVal;
 
-    if (*ptr == "") quitEarly = true;
-
-    if (quitEarly)
+    if (*ptr == "") 
       return defaultVal;
 
     // break string up into string parts.
@@ -108,7 +104,7 @@ class SimpleIniFile
   /// return list of keys for given section
   std::vector<std::string> getSectionKeys(const std::string &section);
 
- private:
+private:
   /// store new section/key/value combination
   void                addKey(const std::string &section,
                              const std::string &key,

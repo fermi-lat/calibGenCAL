@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/fitGCRHists.cxx,v 1.6 2007/04/24 16:45:06 fewtrell Exp $ //
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/fitGCRHists.cxx,v 1.7 2007/04/26 20:05:08 fewtrell Exp $ //
 
 /** @file 
     @author Zachary Fewtrell
@@ -22,6 +22,7 @@
 #include <string>
 
 using namespace std;
+using namespace calibGenCAL;
 using namespace CfgMgr;
 using namespace CGCUtil;
 
@@ -91,7 +92,7 @@ int main(const int argc,
     /// simultaneously to cout and to logfile
     LogStream::addStream(cout);
     // generate logfile name
-    string logfile(cfg.outputBasename.getVal() + ".log.txt");
+    const string logfile(cfg.outputBasename.getVal() + ".log.txt");
     ofstream tmpStrm(logfile.c_str());
 
     LogStream::addStream(tmpStrm);
@@ -102,25 +103,21 @@ int main(const int argc,
     cfg.cmdParser.printStatus(LogStream::get());
     LogStream::get() << endl;
 
-    GCRHists  gcrHists(cfg.summaryMode.getVal());
+    /// retrieve histograms from previous analysis.
+    GCRHists  gcrHists(cfg.summaryMode.getVal(), cfg.histFile.getVal());
 
-    gcrHists.loadHists(cfg.histFile.getVal());
 
-
-    string outputROOTFilename(cfg.outputBasename.getVal() + ".root");
+    const string outputROOTFilename(cfg.outputBasename.getVal() + ".root");
     TFile outputROOTFile(outputROOTFilename.c_str(),
                          "RECREATE",
                          "Fitted GCR Histograms");
     gcrHists.setHistDir(&outputROOTFile);
     
     CalMPD calMPD;
-    set<unsigned short> zSet;
-    zSet.insert(12);
-
-    gcrHists.fitHists(calMPD, zSet);
+    gcrHists.fitHists(calMPD);
 
     // output txt file name
-    string   outputTXTFile(cfg.outputBasename.getVal()+".txt");
+    const string   outputTXTFile(cfg.outputBasename.getVal()+".txt");
     
 
     calMPD.writeTXT(outputTXTFile);

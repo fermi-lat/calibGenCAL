@@ -1,11 +1,11 @@
-// $Header: /home/cvs/SLAC/calibGenCAL/src/lib/CfgMgr.cxx,v 1.4 2007/02/27 20:44:13 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CfgMgr.cxx,v 1.6 2007/05/01 11:56:45 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
 
     This code written for previous project by student
 
- */
+*/
 
 // LOCAL INCLUDES
 #include "CfgMgr.h"
@@ -82,7 +82,7 @@ namespace CfgMgr {
                                    const bool allowAnonArgs,
                                    const bool skipFirst,
                                    const bool ignoreErrors
-  ) {
+                                   ) {
     // skip empty lists
     if (argc == 0 || argv == 0)
       return;
@@ -105,7 +105,7 @@ namespace CfgMgr {
       // CASE 1: positional argument (no '-')
       if (str[0] != '-' ||
           str[0] == '-' && str.size() == 1 // case of single '-' as positional cmd argument
-      ) {
+          ) {
         nPositionalArgs++;
 
         // CASE 1A: use one of pre-registered positional args

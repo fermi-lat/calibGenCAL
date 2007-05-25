@@ -22,51 +22,55 @@
 #include <ostream>
 
 class TH2S;
-class CalAsym;
 
-/** \brief Store histograms required to generate Calorimeter Light Asymmetry
-    calibrations
+namespace calibGenCAL {
 
-    @author Zachary Fewtrell
+  class CalAsym;
 
-*/
-class AsymHists {
- public:
-  AsymHists::AsymHists() :
-    m_histograms(CalUtil::AsymType::N_VALS)
+  /** \brief Store histograms required to generate Calorimeter Light Asymmetry
+      calibrations
+
+      @author Zachary Fewtrell
+
+  */
+  class AsymHists {
+  public:
+    AsymHists::AsymHists() :
+      m_histograms(CalUtil::AsymType::N_VALS)
     {
     }
 
-  /// allocate & create asymmetry histograms & pointer arrays
-  /// \note you should cal this if you don't call loadHists() from file
-  void        initHists();
+    /// allocate & create asymmetry histograms & pointer arrays
+    /// \note you should cal this if you don't call loadHists() from file
+    void        initHists();
 
-  /// load histograms from ROOT output of previous run
-  void        loadHists(const TFile &histFile);
+    /// load histograms from ROOT output of previous run
+    void        loadHists(const TFile &histFile);
 
-  /// print histogram summary info to output stream
-  void        summarizeHists(std::ostream &ostrm);
+    /// print histogram summary info to output stream
+    void        summarizeHists(std::ostream &ostrm) const;
 
-  /// delete empty histograms
-  /// \note useful for data w/ < 16 Cal modules.
-  void        trimHists();
+    /// delete empty histograms
+    /// \note useful for data w/ < 16 Cal modules.
+    void        trimHists();
 
-  /// count min number of entries in all enable histograms
-  unsigned    getMinEntries();
+    /// count min number of entries in all enable histograms
+    unsigned    getMinEntries() const;
 
-  void        fitHists(CalAsym &calAsym);
+    void        fitHists(CalAsym &calAsym);
 
-  TH2S *getHist(CalUtil::AsymType asymType,
-                CalUtil::XtalIdx xtalIdx) {
-    return m_histograms[asymType][xtalIdx];
-  }
+    TH2S *getHist(const CalUtil::AsymType asymType,
+                  const CalUtil::XtalIdx xtalIdx) {
+      return m_histograms[asymType][xtalIdx];
+    }
 
- private:
-  /// list of histograms for muon asymmetry
-  CalUtil::CalVec<CalUtil::AsymType, CalUtil::CalArray<CalUtil::XtalIdx, TH2S *> > m_histograms;
+  private:
+    /// list of histograms for muon asymmetry
+    CalUtil::CalVec<CalUtil::AsymType, CalUtil::CalArray<CalUtil::XtalIdx, TH2S *> > m_histograms;
 
-  std::string genHistName(CalUtil::AsymType asymType,
-                          CalUtil::XtalIdx xtalIdx);
-};
+    static std::string genHistName(const CalUtil::AsymType asymType,
+                                   const CalUtil::XtalIdx xtalIdx);
+  };
 
+}; // namespace calibGenCAL
 #endif // AsymHists_h
