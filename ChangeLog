@@ -1,5 +1,27 @@
 ------------------------------------------------------------
 User: fewtrell  Fri May 25 14:06:48 PDT 2007
+calibGenCAL/src/lib/Util
+
+Modified Files:
+	CGCUtil.cxx CGCUtil.h CalHodoscope.cxx CalHodoscope.h 
+	CfgMgr.cxx CfgMgr.h LangauFun.cxx LangauFun.h 
+	RootFileAnalysis.cxx RootFileAnalysis.h SimpleIniFile.cxx 
+	SimpleIniFile.h SplineUtil.cxx SplineUtil.h TwrHodoscope.cxx 
+	TwrHodoscope.h 
+Removed Files:
+	MultiPeakGaus.cxx MultiPeakGaus.h 
+Log Message:
+genGCRHists now saves histograms per_z and all_z
+fitGCRHists now works w/ basic gaussian fits.
+
+calibGenCAL namespace now wraps all library code
+
+add 'const' in many places.
+
+updated to use 'explicit' constructors in latest rev of CalUtil
+    *
+------------------------------------------------------------
+User: fewtrell  Fri May 25 14:06:48 PDT 2007
 calibGenCAL/src/lib/Specs
 
 Modified Files:
