@@ -1,5 +1,22 @@
 ------------------------------------------------------------
 User: fewtrell  Fri May 25 14:06:47 PDT 2007
+calibGenCAL/src/lib/CalibDataTypes
+
+Modified Files:
+	CIDAC2ADC.cxx CIDAC2ADC.h CalAsym.cxx CalAsym.h CalMPD.cxx 
+	CalMPD.h CalPed.cxx CalPed.h NeighborXtalk.cxx NeighborXtalk.h 
+Log Message:
+genGCRHists now saves histograms per_z and all_z
+fitGCRHists now works w/ basic gaussian fits.
+
+calibGenCAL namespace now wraps all library code
+
+add 'const' in many places.
+
+updated to use 'explicit' constructors in latest rev of CalUtil
+    *
+------------------------------------------------------------
+User: fewtrell  Fri May 25 14:06:47 PDT 2007
 calibGenCAL/src/lib/Algs
 
 Modified Files:
