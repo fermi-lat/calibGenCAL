@@ -1,5 +1,25 @@
 ------------------------------------------------------------
 User: fewtrell  Fri May 25 14:06:47 PDT 2007
+calibGenCAL/src/lib/Algs
+
+Modified Files:
+	GCRCalibAlg.cxx GCRCalibAlg.h IntNonlinAlg.cxx IntNonlinAlg.h 
+	MuTrigAlg.cxx MuTrigAlg.h MuonAsymAlg.cxx MuonAsymAlg.h 
+	MuonCalibTkrAlg.cxx MuonCalibTkrAlg.h MuonMPDAlg.cxx 
+	MuonMPDAlg.h MuonPedAlg.cxx MuonPedAlg.h NeighborXtalkAlg.cxx 
+	NeighborXtalkAlg.h 
+Log Message:
+genGCRHists now saves histograms per_z and all_z
+fitGCRHists now works w/ basic gaussian fits.
+
+calibGenCAL namespace now wraps all library code
+
+add 'const' in many places.
+
+updated to use 'explicit' constructors in latest rev of CalUtil
+    *
+------------------------------------------------------------
+User: fewtrell  Fri May 25 14:06:47 PDT 2007
 calibGenCAL/src
 
 Modified Files:
