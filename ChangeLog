@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Tue May 29 09:59:57 PDT 2007
+calibGenCAL/src/lib
+
+Modified Files:
+      Tag: v4r4_emi
+	CGCUtil.h MuonPed.cxx MuonPed.h 
+Log Message:
+branch version for special EMI processing 
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue May 29 09:59:54 PDT 2007
 calibGenCAL/src
 
