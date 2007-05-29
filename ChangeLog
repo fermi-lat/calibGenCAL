@@ -1,4 +1,33 @@
 ------------------------------------------------------------
+User: fewtrell  Tue May 29 09:59:42 PDT 2007
+calibGenCAL/python
+
+Modified Files:
+      Tag: v4r4_emi
+	adc2nrgTXT2XML.py adc2nrgVal.py adcplot.py adcsmooth.py 
+	asymApplyCalibGain.py asymDiff.py asymMerge.py asymTXT2XML.py 
+	asymVal.py asymXML2TXT.py biasTXT2XML.py biasVal.py 
+	build_adcsmooth.py build_dacslopes_cfg.py 
+	build_gensettings_cfg.py build_tholdci_cfg.py 
+	calCalibApplyRelgain.py calFitsMerge.py calibGainCoeff.py 
+	charVal.py charplot.py dacDiff.py dacSlopesGen.py 
+	dacSlopesPlot.py dacSlopesVal.py dacVal.py dacXML2TXT.py 
+	dumpROOTPlots.py genDACsettings.py genFHEsettings.py 
+	genFLEsettings.py genFlightGain.py genFlightPed.py 
+	genLACsettings.py genULDsettings.py gensettings.py 
+	get_slac_calibdac.py inlDiff.py inlPedSubtract.py 
+	inlTXT2XML.py inlXML2TXT.py intNonlinMerge.py intNonlinVal.py 
+	mevPerDacMerge.py mevPerDacVal.py mpdApplyCalibGain.py 
+	mpdDiff.py mpdTXT2XML.py mpdXML2TXT.py muSlopeDiff.py 
+	muSlopeTXT2XML.py muSlopeVal.py pedDiff.py pedMerge.py 
+	pedTXT2XML.py pedVal.py pedXML2TXT.py roothist2csv.py 
+	tholdCIGen.py tholdCIVal.py tholdCIXML2TXT.py uldVal.py 
+	valDACsettings.py xdiodeXtalk.py zachUtil.py 
+Log Message:
+branch version for special EMI processing 
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v4r4_emi, operation: add
 Package: calibGenCAL
