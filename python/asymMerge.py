@@ -14,9 +14,9 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to merge mutilple CAL Asym calibration XML files."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2005/09/12 17:44:28 $"
-__version__   = "$Revision: 1.9 $, $Author: dwood $"
-__release__   = "$Name:  $"
+__date__      = "$Date: 2006/02/06 17:48:16 $"
+__version__   = "$Revision: 1.10 $, $Author: dwood $"
+__release__   = "$Name: v4r4 $"
 __credits__   = "NRL code 7650"
 
 

@@ -15,9 +15,9 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Convert CAL DAC settings XML file to txt."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/08/09 20:14:02 $"
-__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
-__release__     = "$Name:  $"
+__date__        = "$Date: 2006/08/15 21:44:13 $"
+__version__     = "$Revision: 1.1 $, $Author: fewtrell $"
+__release__     = "$Name: v4r4 $"
 __credits__     = "NRL code 7650"
 
 import sys

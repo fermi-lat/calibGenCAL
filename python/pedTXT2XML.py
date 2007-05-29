@@ -14,9 +14,9 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL Ped calibration XML files from TXT."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/02/21 22:41:14 $"
-__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
-__release__   = "$Name:  $"
+__date__      = "$Date: 2006/08/03 13:11:03 $"
+__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
+__release__   = "$Name: v4r4 $"
 __credits__   = "NRL code 7650"
 
 import sys, os

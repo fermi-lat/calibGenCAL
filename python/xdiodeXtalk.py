@@ -25,9 +25,9 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to apply cross-diode crosstalk correction to intNonlin XML files"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/08/11 15:04:57 $"
-__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
-__release__   = "$Name:  $"
+__date__      = "$Date: 2006/10/03 21:12:24 $"
+__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__release__   = "$Name: v4r4 $"
 __credits__   = "NRL code 7650"
 
 import sys, os

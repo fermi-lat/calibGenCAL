@@ -6,9 +6,9 @@ Classes and functions to read and write CAL XML files derived from FITS data set
 __facility__  = "Offline"
 __abstract__  = "Class to read and write CAL XML files derived from FITS data sets"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/27 15:47:46 $"
-__version__   = "$Revision: 1.7 $, $Author: dwood $"
-__release__   = "$Name:  $"
+__date__      = "$Date: 2006/10/11 21:11:11 $"
+__version__   = "$Revision: 1.8 $, $Author: dwood $"
+__release__   = "$Name: v4r4 $"
 __credits__   = "NRL code 7650"
 
 

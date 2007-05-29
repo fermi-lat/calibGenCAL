@@ -5,9 +5,9 @@ collection of simple utilities shared throughout my code
 __facility__  = "Offline"
 __abstract__  = "apply calibGain correction to asymmetry xml file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2006/08/28 20:11:55 $"
-__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
-__release__   = "$Name:  $"
+__date__      = "$Date: 2006/09/03 21:28:07 $"
+__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
+__release__   = "$Name: v4r4 $"
 __credits__   = "NRL code 7650"
 
 import calConstant

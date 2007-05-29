@@ -14,9 +14,9 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate LAC Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2006/03/29 22:01:34 $"
-__version__     = "$Revision: 1.17 $, $Author: dwood $"
-__release__     = "$Name:  $"
+__date__        = "$Date: 2006/04/14 00:56:53 $"
+__version__     = "$Revision: 1.18 $, $Author: dwood $"
+__release__     = "$Name: v4r4 $"
 __credits__     = "NRL code 7650"
 
 

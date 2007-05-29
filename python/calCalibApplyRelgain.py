@@ -22,9 +22,9 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to convert calCalib xml file from one gain setting to another"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2006/06/29 16:02:41 $"
-__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
-__release__   = "$Name:  $"
+__date__      = "$Date: 2006/08/03 13:11:03 $"
+__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
+__release__   = "$Name: v4r4 $"
 __credits__   = "NRL code 7650"
 
 import sys, os

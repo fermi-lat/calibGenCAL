@@ -13,9 +13,9 @@ Where:
 __facility__  = "Offline"
 __abstract__  = "Generate ROOT plots for CAL ADC/DAC characerization data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/05/02 21:49:47 $"
-__version__   = "$Revision: 1.4 $, $Author: dwood $"
-__release__   = "$Name:  $"
+__date__      = "$Date: 2006/07/05 18:35:32 $"
+__version__   = "$Revision: 1.5 $, $Author: dwood $"
+__release__   = "$Name: v4r4 $"
 __credits__   = "NRL code 7650"
 
 

@@ -21,9 +21,9 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Builds configuration file for dacSlopesGen.py script from info in gensettings.py cfg file"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/19 18:34:29 $"
-__version__   = "$Revision: 1.1 $, $Author: dwood $"
-__release__   = "$Name:  $"
+__date__      = "$Date: 2006/07/27 18:01:47 $"
+__version__   = "$Revision: 1.2 $, $Author: dwood $"
+__release__   = "$Name: v4r4 $"
 __credits__   = "NRL code 7650"
 
 import sys, os

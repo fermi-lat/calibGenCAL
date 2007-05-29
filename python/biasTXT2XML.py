@@ -13,9 +13,9 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL BIAS calibration XML files from TXT."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/07/09 16:42:57 $"
-__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
-__release__   = "$Name:  $"
+__date__      = "$Date: 2006/08/03 13:11:03 $"
+__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
+__release__   = "$Name: v4r4 $"
 __credits__   = "NRL code 7650"
 
 import sys, os

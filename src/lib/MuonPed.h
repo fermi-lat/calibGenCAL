@@ -1,6 +1,6 @@
 #ifndef MuonPed_h
 #define MuonPed_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.h,v 1.8 2006/09/28 20:00:24 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Attic/MuonPed.h,v 1.9 2006/09/29 19:11:44 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -13,6 +13,10 @@
 #include "CalUtil/CalVec.h"
 
 // EXTLIB INCLUDES
+
+#include "TH1S.h"
+#include "TFile.h"
+#include "TProfile.h"
 
 // STD INCLUDES
 
@@ -34,7 +38,7 @@ class CalDigi;
 */
 class MuonPed {
  public:
-  MuonPed(ostream &ostrm = cout);
+  MuonPed(ostream &ostrm = cout, float tsl=-1);
 
   /// which type of events should be filtered for 
   /// pedestal processing?
@@ -86,6 +90,27 @@ class MuonPed {
 
   /// process single digi event for pedestal data
   void processEvent(DigiEvent &digiEvt);
+
+  /// EMI test processing histograms
+	TProfile* pr_ped_chan[16][8][12][2];
+	TProfile* pr_ped_lat; 
+	TProfile* pr_ped_twr[16];
+	//	TProfile* pr_ped_afee[16][2][2];
+	TH1F* hcallo;
+	TH1F* hcalhi;
+	
+	double time_sec;
+    double time_sec0;
+
+    double sumtwr[16];
+    double sumlat;
+
+    double time_slice;
+    static const int n_time_slices = 1000;
+
+  /// list of noisy channel flags
+  CalUtil::CalVec<CalUtil::FaceIdx, bool> noisy_channel; 
+
 
   /// list of histograms for 'muon' pedestals
   CalUtil::CalVec<CalUtil::RngIdx, TH1S*> m_histograms; 

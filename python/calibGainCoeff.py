@@ -15,9 +15,9 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to extract effect of calibGain setting from two intNonlin XML files"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/08/11 15:04:57 $"
-__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
-__release__   = "$Name:  $"
+__date__      = "$Date: 2006/08/28 20:11:55 $"
+__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__release__   = "$Name: v4r4 $"
 __credits__   = "NRL code 7650"
 
 import sys, os

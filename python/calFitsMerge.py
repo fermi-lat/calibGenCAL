@@ -19,9 +19,9 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to merge mutilple calFitsXML files."
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2006/02/06 17:48:17 $"
-__version__   = "$Revision: 1.11 $, $Author: dwood $"
-__release__   = "$Name:  $"
+__date__      = "$Date: 2006/06/27 19:30:16 $"
+__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__release__   = "$Name: v4r4 $"
 __credits__   = "NRL code 7650"
 
 

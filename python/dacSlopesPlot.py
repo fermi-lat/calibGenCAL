@@ -12,9 +12,9 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Plot CAL DacSlopes data as ROOT files"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/10/06 20:42:59 $"
-__version__   = "$Revision: 1.1 $, $Author: dwood $"
-__release__   = "$Name:  $"
+__date__      = "$Date: 2006/10/11 17:19:03 $"
+__version__   = "$Revision: 1.2 $, $Author: dwood $"
+__release__   = "$Name: v4r4 $"
 __credits__   = "NRL code 7650"
 
 

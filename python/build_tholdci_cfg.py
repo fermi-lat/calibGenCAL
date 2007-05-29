@@ -23,9 +23,9 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Builds configuration file for tholdCIGen.py script from info in gensettings.py cfg file"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/07/27 18:01:47 $"
-__version__   = "$Revision: 1.6 $, $Author: dwood $"
-__release__   = "$Name:  $"
+__date__      = "$Date: 2006/07/28 01:42:57 $"
+__version__   = "$Revision: 1.7 $, $Author: dwood $"
+__release__   = "$Name: v4r4 $"
 __credits__   = "NRL code 7650"
 
 import sys, os
