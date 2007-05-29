@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Tue May 29 09:59:54 PDT 2007
+calibGenCAL/src
+
+Modified Files:
+      Tag: v4r4_emi
+	emiAnal.cxx genMuonPed.cxx 
+Log Message:
+branch version for special EMI processing 
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue May 29 09:59:51 PDT 2007
 calibGenCAL/python/old
 
