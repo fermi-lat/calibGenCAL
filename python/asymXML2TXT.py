@@ -16,9 +16,9 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Dump offline asymmetry xml file to .txt file"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/09/13 18:05:30 $"
-__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
-__release__   = "$Name:  $"
+__date__      = "$Date: 2006/09/26 21:04:13 $"
+__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
+__release__   = "$Name: v4r4 $"
 __credits__   = "NRL code 7650"
 
 

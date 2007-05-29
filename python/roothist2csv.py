@@ -9,9 +9,9 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Dump all TH?? objects in ROOT file to csv"
 __author__      = "M. Strickman/Z.Fewtrell"
-__date__        = "$Date: 2006/02/16 17:25:04 $"
+__date__        = "$Date: 2006/02/21 22:50:48 $"
 __version__     = "$Revision: 1.1 $, $Author: fewtrell $"
-__release__     = "$Name:  $"
+__release__     = "$Name: v4r4 $"
 __credits__     = "NRL code 7650"
 
 import sys,csv

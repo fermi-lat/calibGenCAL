@@ -1,7 +1,7 @@
 #ifndef CGCUtil_H
 #define CGCUtil_H
 
-//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CGCUtil.h,v 1.3 2006/08/03 13:06:48 fewtrell Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Attic/CGCUtil.h,v 1.4 2006/09/26 18:57:24 fewtrell Exp $
 
 // LOCAL INCLUDES
 
@@ -25,7 +25,7 @@
 
 namespace CGCUtil {
 
-  const std::string CVS_TAG("$Name: HEAD $");
+  const std::string CVS_TAG("$Name: v4r4 $");
 
   /// Template function fills any STL type container with zero values
   template <class T> static void fill_zero(T &container) {

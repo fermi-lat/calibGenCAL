@@ -16,9 +16,9 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate pedestal settings for use by flight software"
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/06/16 20:29:08 $"
-__version__     = "$Revision: 1.3 $, $Author: dwood $"
-__release__     = "$Name:  $"
+__date__        = "$Date: 2006/06/20 19:15:34 $"
+__version__     = "$Revision: 1.4 $, $Author: dwood $"
+__release__     = "$Name: v4r4 $"
 __credits__     = "NRL code 7650"
 
 
@@ -105,7 +105,7 @@ if __name__ == '__main__':
     fio.write('// ser_no:     %d\n' % key) 
     fio.write('\n\n')
     
-    fio.write('// $Id: genFlightPed.py,v 1.3 2006/06/16 20:29:08 dwood Exp $\n\n')
+    fio.write('// $Id: genFlightPed.py,v 1.4 2006/06/20 19:15:34 dwood Exp $\n\n')
     
     # create preamble macros
     

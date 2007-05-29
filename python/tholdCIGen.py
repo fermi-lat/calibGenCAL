@@ -13,9 +13,9 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL TholdCI XML calibration data files"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/28 01:42:57 $"
-__version__   = "$Revision: 1.27 $, $Author: dwood $"
-__release__   = "$Name:  $"
+__date__      = "$Date: 2006/09/28 15:19:54 $"
+__version__   = "$Revision: 1.28 $, $Author: dwood $"
+__release__   = "$Name: v4r4 $"
 __credits__   = "NRL code 7650"
 
 

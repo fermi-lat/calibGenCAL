@@ -9,9 +9,9 @@ note:
 __facility__  = "Offline"
 __abstract__  = "Retrieve DAC settings files from SLAC using SCP"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2005/11/17 21:48:06 $"
-__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
-__release__   = "$Name:  $"
+__date__      = "$Date: 2006/03/08 21:46:06 $"
+__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
+__release__   = "$Name: v4r4 $"
 __credits__   = "NRL code 7650"
 
 import sys, os

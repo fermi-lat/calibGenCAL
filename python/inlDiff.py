@@ -14,9 +14,9 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL CIDAC2ADC XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/09/03 21:28:07 $"
-__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
-__release__     = "$Name:  $"
+__date__        = "$Date: 2006/09/13 18:05:30 $"
+__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
+__release__     = "$Name: v4r4 $"
 __credits__     = "NRL code 7650"
 
 import sys

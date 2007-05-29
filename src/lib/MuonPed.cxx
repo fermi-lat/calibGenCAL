@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/MuonPed.cxx,v 1.10 2006/09/28 20:00:24 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Attic/MuonPed.cxx,v 1.11 2006/09/29 19:11:44 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -26,9 +26,11 @@ using namespace CGCUtil;
 using namespace CalUtil;
 using namespace std;
 
-MuonPed::MuonPed(ostream &ostrm) :
+MuonPed::MuonPed(ostream &ostrm,float tsl) :
   m_histograms(RngIdx::N_VALS),
-  m_ostrm(ostrm)
+  m_ostrm(ostrm),
+  noisy_channel(FaceIdx::N_VALS),
+  time_slice(tsl)
 {
 }
 
@@ -41,6 +43,37 @@ void MuonPed::initHists() {
                                       histname.c_str(),
                                       1000,0.5,1000.5);
     }
+  }
+
+  if(time_slice>0){
+   for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++) noisy_channel[faceIdx] = false;
+
+   noisy_channel[FaceIdx(4,3,4,POS_FACE)]=true;
+   noisy_channel[FaceIdx(6,4,1,POS_FACE)]=true;
+   noisy_channel[FaceIdx(8,6,2,NEG_FACE)]=true;
+
+   pr_ped_lat = new TProfile("prpedlat","prpedlat",n_time_slices,0,n_time_slices*time_slice,-2,2);
+   hcallo = new TH1F("hcallo","CAL_LO rate per time slice",n_time_slices,0,n_time_slices*time_slice);
+   hcalhi = new TH1F("hcalhi","CAL_HI rate per time slice",n_time_slices,0,n_time_slices*time_slice);
+  
+  
+   for(int twr=0;twr<16;twr++){
+    ostringstream prpedtwrname;
+    prpedtwrname << "prpedtwr_T" << twr;
+    pr_ped_twr[twr]=new TProfile(prpedtwrname.str().c_str(),prpedtwrname.str().c_str(),n_time_slices,0,n_time_slices*time_slice,-10,10);
+   }
+
+   for(int twr=0;twr<16;twr++)
+    for(int lyr=0;lyr<8;lyr++)
+      for(int face=0;face<2;face++){
+	for(int col=0;col<12;col++){
+	  ostringstream prpedcorname;
+	  ostringstream prpedname;
+	  prpedname << "prped_T" << twr  << "_L" << lyr << "_C" << col << "_F" << face;
+	  prpedcorname << "prpedcor_T" << twr  << "_L" << lyr << "_C" << col << "_F" << face;
+	  pr_ped_chan[twr][lyr][col][face]=new TProfile(prpedname.str().c_str(),prpedname.str().c_str(),n_time_slices,0,n_time_slices*time_slice,-50,50);
+	}
+      }
   }
 }
 
@@ -70,6 +103,7 @@ void MuonPed::fillHists(unsigned nEntries,
     rootFile.getDigiChain()->SetBranchStatus("m_summary");
   if (algData.trigCut == PERIODIC_TRIGGER || algData.trigCut == EXTERNAL_TRIGGER)
     rootFile.getDigiChain()->SetBranchStatus("m_gem");
+    rootFile.getDigiChain()->SetBranchStatus("m_metaEvent");
 
 
   unsigned nEvents = rootFile.getEntries();
@@ -80,6 +114,10 @@ void MuonPed::fillHists(unsigned nEntries,
   /////////////////////////////////////////
   // in periodic trigger mode we will skip these events
   eventData.init();
+  
+  time_sec =0;
+  time_sec0=0;
+
   for (eventData.eventNum = 0; eventData.eventNum < nEvents; eventData.next()) {
     /////////////////////////////////////////
     /// Load new event //////////////////////
@@ -196,6 +234,10 @@ void MuonPed::processEvent(DigiEvent &digiEvent) {
   /// Event/Trigger level cuts ////////////
   /////////////////////////////////////////
 
+      time_sec = (digiEvent.getMetaEvent()).time().current().timeSecs();
+      if(time_sec0==0.0) time_sec0=time_sec;
+
+
   //-- retrieve trigger data
   const Gem *gem = 0;
   unsigned gemConditionsWord = 0;
@@ -209,7 +251,10 @@ void MuonPed::processEvent(DigiEvent &digiEvent) {
     }
     gemConditionsWord = gem->getConditionSummary();
   }
-  
+  if(time_slice>0){
+      if(gemConditionsWord & 4)hcallo->Fill(time_sec-time_sec0);
+      if(gemConditionsWord & 8)hcalhi->Fill(time_sec-time_sec0);
+  }
   //-- PERIODIC_TRIGGER CUT
   if (algData.trigCut == PERIODIC_TRIGGER) {
     // quick check if we are in 4-range mode
@@ -220,11 +265,11 @@ void MuonPed::processEvent(DigiEvent &digiEvent) {
       return;
     }
     eventData.fourRange = summary.readout4();
-    
+
     float gemDeltaEventTime = gem->getDeltaEventTime()*0.05;
     if(gemConditionsWord != 32 ||  // skip unless we are periodic trigger only
        eventData.prev4Range      ||  // avoid bias from 4 range readout in prev event
-       gemDeltaEventTime < 2000) {   // avoid bias from shaped readout noise from adjacent event
+       gemDeltaEventTime < 500) {   // avoid bias from shaped readout noise from adjacent event
       return;
     }
   }
@@ -241,6 +286,11 @@ void MuonPed::processEvent(DigiEvent &digiEvent) {
     return;
   }
 
+    sumlat=0.0;
+    for(int it=0;it<16;it++){
+      sumtwr[it]=0.0;
+    }
+
   TIter calDigiIter(calDigiCol);
   const CalDigi *pCalDigi = 0;
 
@@ -249,7 +299,14 @@ void MuonPed::processEvent(DigiEvent &digiEvent) {
   /////////////////////////////////////////
   while ((pCalDigi = (CalDigi*)calDigiIter.Next()))
     processHit(*pCalDigi);
-  
+
+  if(time_slice>0){
+	   for(int twr=0;twr<16;twr++){
+	     pr_ped_twr[twr]->Fill(double(time_sec-time_sec0),double(sumtwr[twr]/192.0)); 
+	   }
+	  pr_ped_lat->Fill(double(time_sec-time_sec0),double(sumlat/3072.0)); 
+  }
+
 }
 
 void MuonPed::processHit(const CalDigi &calDigi) {
@@ -259,13 +316,14 @@ void MuonPed::processHit(const CalDigi &calDigi) {
   XtalIdx xtalIdx(id);
 
   unsigned nRO = calDigi.getNumReadouts();
-
+  /*
   if (nRO != 4) {
     ostringstream tmp;
     tmp << __FILE__  << ":"     << __LINE__ << " " 
         << "Event# " << eventData.eventNum << " Invalid nReadouts, expecting 4";
     throw runtime_error(tmp.str());
   }
+  */
 
   // 1st look at LEX8 vals
   CalArray<FaceNum, float> adcL8;
@@ -291,6 +349,27 @@ void MuonPed::processHit(const CalDigi &calDigi) {
     /////////////////////////////////////////
     /// Cut outliers (2nd pass) /////////////
     /////////////////////////////////////////
+
+  if(time_slice>0){
+
+	int twr = xtalIdx.getTwr();
+	int col = xtalIdx.getCol();
+	int lyr = xtalIdx.getLyr();
+	int xy = lyr%2;
+	double dped0 = adcL8[POS_FACE] - algData.roughPeds->getPed(RngIdx(xtalIdx,POS_FACE,LEX8));
+	double dped1 = adcL8[NEG_FACE] - algData.roughPeds->getPed(RngIdx(xtalIdx,NEG_FACE,LEX8));					
+	if( !noisy_channel[FaceIdx(xtalIdx,POS_FACE)]){
+	  sumlat += dped0;
+	  sumtwr[twr] += dped0;
+	  (pr_ped_chan[twr][lyr][col][0])->Fill(double(time_sec-time_sec0),double(dped0));
+	}
+
+	if( !noisy_channel[FaceIdx(xtalIdx,NEG_FACE)]){
+	  sumlat += dped1;
+	  sumtwr[twr] += dped1;
+	  (pr_ped_chan[twr][lyr][col][1])->Fill(double(time_sec-time_sec0),double(dped1));
+	}
+  }
 
     // skip outliers (outside of 5 sigma on either side)
     if (fabs(adcL8[NEG_FACE] - algData.roughPeds->getPed(RngIdx(xtalIdx,NEG_FACE,LEX8))) >=

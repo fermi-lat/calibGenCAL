@@ -19,9 +19,9 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/08/03 00:29:11 $"
-__version__     = "$Revision: 1.4 $, $Author: dwood $"
-__release__     = "$Name:  $"
+__date__        = "$Date: 2006/09/28 21:26:48 $"
+__version__     = "$Revision: 1.5 $, $Author: dwood $"
+__release__     = "$Name: v4r4 $"
 __credits__     = "NRL code 7650"
 
 

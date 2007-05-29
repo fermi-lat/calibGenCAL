@@ -11,9 +11,9 @@ Note:
 __facility__  = "Offline"
 __abstract__  = "Identifies files and builds config file for gensettings.py"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2006/07/13 14:37:08 $"
-__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
-__release__   = "$Name:  $"
+__date__      = "$Date: 2006/07/19 14:47:09 $"
+__version__   = "$Revision: 1.10 $, $Author: dwood $"
+__release__   = "$Name: v4r4 $"
 __credits__   = "NRL code 7650"
 
 

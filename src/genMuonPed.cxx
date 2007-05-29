@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.8 2006/09/26 18:57:23 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.9 2006/09/28 20:00:24 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -19,13 +19,13 @@
 
 using namespace std;
 
-const string usage_str("genMuonPed.exe cfg_file");
+const string usage_str("genMuonPed.exe cfg_file digi_file time_slice ");
 
 int main(int argc, char **argv) {
   // libCalibGenCAL will throw runtime_error         
   try {
     //-- COMMAND LINE --//
-    if (argc != 2) {
+    if (argc > 4) {
       cout << __FILE__ << ": Usage: " << usage_str << endl;
       return -1;
     }
@@ -43,11 +43,24 @@ int main(int argc, char **argv) {
                       "ROOT_FILES", 
                       rootFileList,
                       ", ");
-    if (rootFileList.size() < 1) {
+    if (rootFileList.size() < 1 && argc<3) {
       cout << __FILE__ << ": No input files specified" << endl;
       return -1;
     }
-  
+    if(argc>2){
+      cout << " using digi file name defined by parameter" << endl;
+      string emi_digi_file = argv[2];
+      rootFileList.clear();
+      rootFileList.push_back(emi_digi_file);
+    }
+
+    float tsl=-1;
+    if(argc>3){
+      string str_tsl = argv[3];
+      sscanf(str_tsl.c_str(),"%f",&tsl);
+    }
+
+
     //-- SETUP LOG FILE --//
     /// multiplexing output streams 
     /// simultaneously to cout and to logfile
@@ -142,7 +155,7 @@ int main(int argc, char **argv) {
 
     //-- MUON PEDS --//
     // - LEX8 only include hits in histograms.
-    MuonPed muPed(logStrm);
+    MuonPed muPed(logStrm,tsl);
     CalPed calPed;
     // txt output filename
     string muPedTXTFile;
