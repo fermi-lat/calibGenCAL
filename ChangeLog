@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: fewtrell  Tue May 29 09:59:47 PDT 2007
+calibGenCAL/python/lib
+
+Modified Files:
+      Tag: v4r4_emi
+	calADCFilter.py calCalibXML.py calConstant.py calDacXML.py 
+	calExcept.py calFitsXML.py calXML.py 
+Log Message:
+branch version for special EMI processing 
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue May 29 09:59:42 PDT 2007
 calibGenCAL/python
 
