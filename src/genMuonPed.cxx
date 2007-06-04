@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.9 2006/09/28 20:00:24 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.9.12.1 2007/05/29 16:59:54 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -19,13 +19,13 @@
 
 using namespace std;
 
-const string usage_str("genMuonPed.exe cfg_file digi_file time_slice ");
+const string usage_str("genMuonPed.exe cfg_file digi_file time_slice n_time_slices");
 
 int main(int argc, char **argv) {
   // libCalibGenCAL will throw runtime_error         
   try {
     //-- COMMAND LINE --//
-    if (argc > 4) {
+    if (argc > 5 || argc < 2) {
       cout << __FILE__ << ": Usage: " << usage_str << endl;
       return -1;
     }
@@ -58,6 +58,11 @@ int main(int argc, char **argv) {
     if(argc>3){
       string str_tsl = argv[3];
       sscanf(str_tsl.c_str(),"%f",&tsl);
+    }
+    int ntsl=1000;
+    if(argc>4){
+      string str_ntsl = argv[4];
+      sscanf(str_ntsl.c_str(),"%d",&ntsl);
     }
 
 
@@ -155,7 +160,7 @@ int main(int argc, char **argv) {
 
     //-- MUON PEDS --//
     // - LEX8 only include hits in histograms.
-    MuonPed muPed(logStrm,tsl);
+    MuonPed muPed(logStrm,tsl,ntsl);
     CalPed calPed;
     // txt output filename
     string muPedTXTFile;

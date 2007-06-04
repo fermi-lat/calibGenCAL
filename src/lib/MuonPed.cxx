@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Attic/MuonPed.cxx,v 1.11 2006/09/29 19:11:44 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Attic/MuonPed.cxx,v 1.11.12.1 2007/05/29 16:59:57 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -26,11 +26,12 @@ using namespace CGCUtil;
 using namespace CalUtil;
 using namespace std;
 
-MuonPed::MuonPed(ostream &ostrm,float tsl) :
-  m_histograms(RngIdx::N_VALS),
+MuonPed::MuonPed(ostream &ostrm,float tsl,int ntsl) :
   m_ostrm(ostrm),
+  time_slice(tsl),
+  n_time_slices(ntsl),
   noisy_channel(FaceIdx::N_VALS),
-  time_slice(tsl)
+  m_histograms(RngIdx::N_VALS)
 {
 }
 
@@ -55,7 +56,8 @@ void MuonPed::initHists() {
    pr_ped_lat = new TProfile("prpedlat","prpedlat",n_time_slices,0,n_time_slices*time_slice,-2,2);
    hcallo = new TH1F("hcallo","CAL_LO rate per time slice",n_time_slices,0,n_time_slices*time_slice);
    hcalhi = new TH1F("hcalhi","CAL_HI rate per time slice",n_time_slices,0,n_time_slices*time_slice);
-  
+   hhex8rate = new TH1F("hhex8rate","HEX8 rate per time slice",n_time_slices,0,n_time_slices*time_slice);
+   cout << " hhex8rate histogram created " << endl;
   
    for(int twr=0;twr<16;twr++){
     ostringstream prpedtwrname;
@@ -125,7 +127,7 @@ void MuonPed::fillHists(unsigned nEntries,
     if (eventData.eventNum % 2000 == 0) {
       // quit if we have enough entries in each histogram
       unsigned currentMin = getMinEntries();
-      if (currentMin >= nEntries) break;
+      if (currentMin >= nEntries && time_slice<0) break;
       m_ostrm << "Event: " << eventData.eventNum 
               << " min entries per histogram: " << currentMin
               << endl;
@@ -255,6 +257,24 @@ void MuonPed::processEvent(DigiEvent &digiEvent) {
       if(gemConditionsWord & 4)hcallo->Fill(time_sec-time_sec0);
       if(gemConditionsWord & 8)hcalhi->Fill(time_sec-time_sec0);
   }
+
+
+  const TClonesArray* calDigiCol = digiEvent.getCalDigiCol();
+  if (!calDigiCol) {
+    m_ostrm << "no calDigiCol found for event#" << eventData.eventNum << endl;
+    return;
+  }
+
+  TIter calDigiIter1(calDigiCol);
+  const CalDigi *pCalDigi = 0;
+ if(time_slice>0){  
+   while ((pCalDigi = (CalDigi*)calDigiIter1.Next())){
+    for (FaceNum face; face.isValid(); face++){
+      if(2 == pCalDigi->getRange(0,(CalXtalId::XtalFace)face.val()))hhex8rate->Fill(time_sec-time_sec0);
+    }
+   }
+ }
+
   //-- PERIODIC_TRIGGER CUT
   if (algData.trigCut == PERIODIC_TRIGGER) {
     // quick check if we are in 4-range mode
@@ -279,20 +299,20 @@ void MuonPed::processEvent(DigiEvent &digiEvent) {
     if (gemConditionsWord != 128)
       return;
   }
-
+  /*
   const TClonesArray* calDigiCol = digiEvent.getCalDigiCol();
   if (!calDigiCol) {
     m_ostrm << "no calDigiCol found for event#" << eventData.eventNum << endl;
     return;
   }
-
+  */
     sumlat=0.0;
     for(int it=0;it<16;it++){
       sumtwr[it]=0.0;
     }
 
   TIter calDigiIter(calDigiCol);
-  const CalDigi *pCalDigi = 0;
+   pCalDigi = 0;
 
   /////////////////////////////////////////
   /// Xtal Hit Loop ///////////////////////

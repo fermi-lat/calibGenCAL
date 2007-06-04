@@ -63,8 +63,10 @@ int main(int argc, char** argv) {
 
 	TProfile* pr_ped_lat = (TProfile*)fcal->Get("prpedlat");
 
-	for(int i = 0; i<1000; i++){
-		int nts = 999-i;
+	int nbins = pr_ped_lat->GetNbinsX();
+
+	for(int i = 0; i<nbins; i++){
+		int nts = nbins-i-1;
 		int n = pr_ped_lat->GetBinEntries(nts);
 		if(n > 0){n_time_slices=nts-1; break;}
 	}
