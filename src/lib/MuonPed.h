@@ -1,6 +1,6 @@
 #ifndef MuonPed_h
 #define MuonPed_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Attic/MuonPed.h,v 1.9 2006/09/29 19:11:44 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Attic/MuonPed.h,v 1.9.12.1 2007/05/29 16:59:57 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 */
@@ -38,7 +38,7 @@ class CalDigi;
 */
 class MuonPed {
  public:
-  MuonPed(ostream &ostrm = cout, float tsl=-1);
+  MuonPed(ostream &ostrm = cout, float tsl=-1,int ntsl=1000);
 
   /// which type of events should be filtered for 
   /// pedestal processing?
@@ -98,6 +98,7 @@ class MuonPed {
 	//	TProfile* pr_ped_afee[16][2][2];
 	TH1F* hcallo;
 	TH1F* hcalhi;
+	TH1F* hhex8rate;
 	
 	double time_sec;
     double time_sec0;
@@ -106,7 +107,7 @@ class MuonPed {
     double sumlat;
 
     double time_slice;
-    static const int n_time_slices = 1000;
+    int n_time_slices;
 
   /// list of noisy channel flags
   CalUtil::CalVec<CalUtil::FaceIdx, bool> noisy_channel; 
