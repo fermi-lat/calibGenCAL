@@ -472,3 +472,10 @@ The tholdCIGen application has been updated to support 16-tower DAC settings fil
 
   
 
+-----------------
+v4r4_emi, p1, p2
+A. Chekhtman
+-----------------
+additional parameters for genMuonPed, timeslice & nSlices.  
+if specified, produces specific  histograms for emi analysis
+emi_anal reads pedestal root file rather than svac tuple & cal tuple
