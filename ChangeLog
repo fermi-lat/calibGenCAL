@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: chehtman  Mon Jun  4 12:36:58 PDT 2007
+calibGenCAL/cfg
+
+Modified Files:
+      Tag: v4r4_emi
+	emi_ped.cfg 
+Log Message:
+genMuonPed now supports varying nSlices
+added new nchan_hex8 histogram
+changed default nevents for EMI anal code
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v4r4_emi_p1, operation: add
 Package: calibGenCAL
