@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Jun  7 10:45:42 PDT 2007
+calibGenCAL/src
+
+Modified Files:
+	fitGCRHists.cxx genCIDAC2ADC.cxx genGCRHists.cxx 
+	genMuonAsym.cxx genMuonCalibTkr.cxx genMuonMPD.cxx 
+	genMuonPed.cxx genNeighborXtalk.cxx runMuTrigEff.cxx 
+Log Message:
+GCR Histograms now stored in subfolder tree.  helps since ROOT appears to be inneficient w/ large # of entries in directory.
+    *
+------------------------------------------------------------
 TAG
 Tag name: v4r4_emi_p2, operation: add
 Package: calibGenCAL
