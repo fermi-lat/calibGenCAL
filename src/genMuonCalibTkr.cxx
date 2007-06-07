@@ -134,30 +134,30 @@ int main(int argc,
     //-- SETUP LOG FILE --//
     /// multiplexing output streams
     /// simultaneously to cout and to logfile
-    LogStream::addStream(cout);
+    LogStrm::addStream(cout);
     string logfile(cfg.outputBasename.getVal() + ".log.txt");
     ofstream tmpStrm(logfile.c_str());
 
-    LogStream::addStream(tmpStrm);
+    LogStrm::addStream(tmpStrm);
 
     //-- LOG SOFTWARE VERSION INFO --//
-    output_env_banner(LogStream::get());
-    LogStream::get() << endl;
-    cfg.cmdParser.printStatus(LogStream::get());
-    LogStream::get() << endl;
+    output_env_banner(LogStrm::get());
+    LogStrm::get() << endl;
+    cfg.cmdParser.printStatus(LogStrm::get());
+    LogStrm::get() << endl;
 
     //-- RETRIEVE PEDESTALS
     
     CalPed peds;
-    LogStream::get() << __FILE__ << ": reading in muon pedestal file: " << cfg.pedTXTFile.getVal() << endl;
+    LogStrm::get() << __FILE__ << ": reading in muon pedestal file: " << cfg.pedTXTFile.getVal() << endl;
     peds.readTXT(cfg.pedTXTFile.getVal());
 
     //-- RETRIEVE CIDAC2ADC
     CIDAC2ADC dac2adc;
-    LogStream::get() << __FILE__ << ": reading in dac2adc txt file: " << cfg.inlTXTFile.getVal() << endl;
+    LogStrm::get() << __FILE__ << ": reading in dac2adc txt file: " << cfg.inlTXTFile.getVal() << endl;
     dac2adc.readTXT(cfg.inlTXTFile.getVal());
 
-    LogStream::get() << __FILE__ << ": generating dac2adc splines: " << endl;
+    LogStrm::get() << __FILE__ << ": generating dac2adc splines: " << endl;
     dac2adc.genSplines();
 
     //-- MUON CALIB
@@ -172,7 +172,7 @@ int main(int argc,
     ///////////////////////////////////////
 
     // open file to save output histograms.
-    LogStream::get() << __FILE__ << ": opening output histogram file: "
+    LogStrm::get() << __FILE__ << ": opening output histogram file: "
                      << histFilename << endl;
     TFile histFile(histFilename.c_str(), "RECREATE", "CAL Muon Calib");
 
@@ -187,7 +187,7 @@ int main(int argc,
                              mpdHists,
                              cfg.cfgPath.getVal());
 
-    LogStream::get() << __FILE__ << ": reading root event file(s) starting w/ "
+    LogStrm::get() << __FILE__ << ": reading root event file(s) starting w/ "
                      << digiFileList[0] << endl;
     tkrCalib.fillHists(cfg.entriesPerHist.getVal(),
                        digiFileList,
@@ -197,24 +197,24 @@ int main(int argc,
     asymHists.trimHists();
 
     // READ IN TXT OUTPUT (SKIP HISTOGRAM FITS)
-    LogStream::get() << __FILE__ << ": fitting asymmetry histograms." << endl;
+    LogStrm::get() << __FILE__ << ": fitting asymmetry histograms." << endl;
     asymHists.fitHists(calAsym);
 
-    LogStream::get() << __FILE__ << ": writing muon asymmetry: "
+    LogStrm::get() << __FILE__ << ": writing muon asymmetry: "
                      << asymTXTFile << endl;
     calAsym.writeTXT(asymTXTFile);
 
-    LogStream::get() << __FILE__ << ": fitting MeVPerDAC histograms." << endl;
+    LogStrm::get() << __FILE__ << ": fitting MeVPerDAC histograms." << endl;
     mpdHists.fitHists(calMPD);
 
-    LogStream::get() << __FILE__ << ": writing muon mevPerDAC: "
+    LogStrm::get() << __FILE__ << ": writing muon mevPerDAC: "
                      << mpdTXTFile << endl;
     calMPD.writeTXT(mpdTXTFile);
 
-    LogStream::get() << __FILE__ << ": generating mpd fit result tuple: " << endl;
+    LogStrm::get() << __FILE__ << ": generating mpd fit result tuple: " << endl;
     mpdHists.buildTuple();
 
-    LogStream::get() << __FILE__ << ": writing histogram file: "
+    LogStrm::get() << __FILE__ << ": writing histogram file: "
                      << histFilename << endl;
     histFile.Write();
 

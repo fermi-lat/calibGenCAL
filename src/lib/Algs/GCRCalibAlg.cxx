@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/GCRCalibAlg.cxx,v 1.3 2007/03/30 20:16:36 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/GCRCalibAlg.cxx,v 1.4 2007/05/25 21:06:47 fewtrell Exp $
 
 /** @file 
     @author Zach Fewtrell
@@ -156,7 +156,7 @@ namespace calibGenCAL {
     rootFile.getGcrSelectChain()->SetBranchStatus("m_gcrSelect");
 
     const unsigned nTotalEvents = rootFile.getEntries();
-    LogStream::get() << __FILE__ << ": Processing: " << nTotalEvents << " events." << endl;
+    LogStrm::get() << __FILE__ << ": Processing: " << nTotalEvents << " events." << endl;
 
     ////////////////
     // Event Loop //
@@ -167,28 +167,28 @@ namespace calibGenCAL {
       eventData.next();
 
       if (eventData.eventNum % 10000 == 0 || algData.nEventsAttempted == nEventsMax) {
-        LogStream::get() << "Event: " << eventData.eventNum
-                         << endl;
-        LogStream::get().flush();
+        LogStrm::get() << "Event: " << eventData.eventNum
+                       << endl;
+        LogStrm::get().flush();
       }
 
       if (algData.nEventsAttempted == nEventsMax)
         break;
 
       if (!rootFile.getEvent(eventData.eventNum)) {
-        LogStream::get() << "Warning, event " << eventData.eventNum << " not read." << endl;
+        LogStrm::get() << "Warning, event " << eventData.eventNum << " not read." << endl;
         continue;
       }
 
       eventData.digiEvent = rootFile.getDigiEvent();
       if (!eventData.digiEvent) {
-        LogStream::get() << __FILE__ << ": Unable to read DigiEvent " << eventData.eventNum  << endl;
+        LogStrm::get() << __FILE__ << ": Unable to read DigiEvent " << eventData.eventNum  << endl;
         continue;
       }
 
       eventData.gcrSelectEvent = rootFile.getGcrSelectEvent();
       if (!eventData.gcrSelectEvent) {
-        LogStream::get() << __FILE__ << ": Unable to read GcrSelectedEvent " << eventData.eventNum  << endl;
+        LogStrm::get() << __FILE__ << ": Unable to read GcrSelectedEvent " << eventData.eventNum  << endl;
         continue;
       }
       algData.nEventsRead++;
@@ -199,7 +199,7 @@ namespace calibGenCAL {
         processDigiEvent();
     }
 
-    algData.summarizeAlg(LogStream::get());
+    algData.summarizeAlg(LogStrm::get());
   }
 
   void GCRCalibAlg::AlgData::summarizeAlg(ostream &ostrm) const {
@@ -217,7 +217,7 @@ namespace calibGenCAL {
     GcrSelect *gcrSelect = eventData.gcrSelectEvent->getGcrSelect();
 
     if (!gcrSelect) {
-      LogStream::get() << __FILE__ << ": No GcrSelect data found: " << eventData.eventNum  << endl;
+      LogStrm::get() << __FILE__ << ": No GcrSelect data found: " << eventData.eventNum  << endl;
       return;
     }
 
@@ -228,7 +228,7 @@ namespace calibGenCAL {
 
     const TObjArray *      gcrSelectedXtalCol = gcrSelect->getGcrSelectedXtalCol();
     if (!gcrSelectedXtalCol) {
-      LogStream::get() << __FILE__ << ": No GcrSelectedXtalCol found: " << eventData.eventNum  << endl;
+      LogStrm::get() << __FILE__ << ": No GcrSelectedXtalCol found: " << eventData.eventNum  << endl;
       return;
     }
 
@@ -286,7 +286,7 @@ namespace calibGenCAL {
   void GCRCalibAlg::processDigiEvent() {
     const TClonesArray *calDigiCol = eventData.digiEvent->getCalDigiCol();
     if (!calDigiCol) {
-      LogStream::get() << "no calDigiCol found for event#" << eventData.eventNum << endl;
+      LogStrm::get() << "no calDigiCol found for event#" << eventData.eventNum << endl;
       return;
     }
 
@@ -351,8 +351,8 @@ namespace calibGenCAL {
           const float adc = calDigi.getAdcSelectedRange(rng.val(),
                                                         (CalXtalId::XtalFace)face.val());
           if (adc < 0) {
-            LogStream::get() << "Couldn't get adc val for face=" << face.val()
-                             << " rng=" << rng.val() << endl;
+            LogStrm::get() << "Couldn't get adc val for face=" << face.val()
+                           << " rng=" << rng.val() << endl;
             break;
           }
           
@@ -399,7 +399,6 @@ namespace calibGenCAL {
               algData.gcrHists->fillAdcRatio(rngIdx,
                                              adcPed[xRng],
                                              adcPed[nextRng]);
-                                         
         }
 
       //-- FILL DAC HISTOGRAMS --//

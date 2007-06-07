@@ -1,10 +1,10 @@
-/** @file CGCUtil.cxx
+/** @file 
 
 @author Zachary Fewtrell
 
 \brief generic utility functions used in calibGenCAL pkg
 
-$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.cxx,v 1.2 2007/04/10 14:51:02 fewtrell Exp $
+$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.cxx,v 1.3 2007/05/25 21:06:48 fewtrell Exp $
 */
 
 // LOCAL INCLUDES
@@ -21,6 +21,8 @@ $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.cxx,v 1.2
 #include <ctime>
 #include <stdexcept>
 #include <fstream>
+#include <queue>
+#include <iterator>
 
 namespace calibGenCAL {
 
@@ -31,15 +33,15 @@ namespace calibGenCAL {
     const string CGC_DEFAULT_CFGPATH("$(CALIBGENCALROOT)/cfg/defaults.cfg");
 
 
-    void tokenize_str(const string & str,
-                      vector<string> & tokens,
-                      const string & delims)
+    vector<string> tokenize_str(const string & str,
+                                const string & delims)
     {
       // Skip delims at beginning.
       string::size_type lastPos = str.find_first_not_of(delims, 0);
       // Find first "non-delimiter".
       string::size_type pos     = str.find_first_of(delims, lastPos);
 
+      vector<string> tokens;
 
       while (string::npos != pos || string::npos != lastPos)
         {
@@ -50,6 +52,8 @@ namespace calibGenCAL {
           // Find next "non-delimiter"
           pos     = str.find_first_of(delims, lastPos);
         }
+
+      return tokens;
     }
 
     /// finds position of last directory delimeter ('/' || '\\')
@@ -142,8 +146,8 @@ namespace calibGenCAL {
     }
 
     string &str_toupper(string &str) {
-      std::transform(str.begin(), str.end(), str.begin(),
-                     (int (*)(int))toupper);
+      transform(str.begin(), str.end(), str.begin(),
+                (int (*)(int))toupper);
       return str;
     }
 
@@ -167,20 +171,20 @@ namespace calibGenCAL {
       ostringstream tmp;
       tmp << '"' << str << '"' << " not a boolean string.";
 
-      throw std::runtime_error(tmp.str());
+      throw runtime_error(tmp.str());
     }
 
-    typedef std::vector<std::ostream *> streamvector;
+    typedef vector<ostream *> streamvector;
 
     /** wrapper class for treating multiple streambuf objects as one
      *
      * used by multiplexor_ostream
      */
     class multiplexor_streambuf :
-      public std::streambuf {
+      public streambuf {
     public:
       multiplexor_streambuf() :
-        std::streambuf() {
+        streambuf() {
       }
 
       virtual int overflow(int c) {
@@ -213,8 +217,8 @@ namespace calibGenCAL {
     {
     public:
       multiplexor_ostream() :
-        std::ios(0),
-        std::ostream(new multiplexor_streambuf()) {
+        ios(0),
+        ostream(new multiplexor_streambuf()) {
       }
 
       virtual ~multiplexor_ostream() {
@@ -227,19 +231,19 @@ namespace calibGenCAL {
     };
 
     /// hidden static instance is accessed by other classes
-    /// through LogStream::get() method.
+    /// through LogStrm::get() method.
     static multiplexor_ostream _logStrm;
 
-    ostream &LogStream::get() {
+    ostream &LogStrm::get() {
       return _logStrm;
     }
 
-    void LogStream::addStream(ostream &ostrm) {
+    void LogStrm::addStream(ostream &ostrm) {
       _logStrm.getostreams().push_back(&ostrm);
     }
 
     TDirectory &root_safe_mkdir(TDirectory &parent,
-                                const std::string &dirName) {
+                                const string &dirName) {
       TDirectory &cwd = *gDirectory;
 
       // only create new dir if it doesn't already exist
@@ -253,7 +257,7 @@ namespace calibGenCAL {
       return *(parent.GetDirectory(dirName.c_str()));
     }
 
-    vector<string> getLinesFromFile(const std::string &filename) {
+    vector<string> getLinesFromFile(const string &filename) {
       vector<string> retval;
       ifstream infile(filename.c_str());
       
@@ -271,5 +275,95 @@ namespace calibGenCAL {
 
       return retval;
     }
-  };
+
+
+    /// like STL back_insert_iterator instead it uses push() instead of push_back()
+    template<typename ContainerType> 
+    class push_insert_iterator {
+    private:
+      ContainerType *container;
+    public:
+      typedef ContainerType container_type;
+
+      explicit push_insert_iterator(ContainerType &c) : container(&c) {}
+
+      push_insert_iterator& operator=(const typename container_type::value_type &val) {
+        container->push(val);
+        return *this;
+      }
+      
+      /// Simply returns *this.                                                                    
+      push_insert_iterator&
+      operator*()
+      { return *this; }
+
+      /// Simply returns *this.  (This %iterator does not "move".)                                 
+      push_insert_iterator&
+      operator++()
+      { return *this; }
+
+      /// Simply returns *this.  (This %iterator does not "move".)                                 
+      push_insert_iterator
+      operator++(int)
+      { return *this; }
+
+    };
+
+
+    /// mkdir op creates subfolders as needed
+    static TDirectory *recursiveROOTMkDir(TDirectory &parent,
+                                          const string &childPath) {
+      /// split up subdirs by path delim
+      vector<string> dirlist(tokenize_str(childPath, "/"));
+      
+      queue<string> dirq;
+      copy(dirlist.begin(),
+           dirlist.end(),
+           push_insert_iterator<queue<string> >(dirq));
+
+      // initial value
+      string fullpath(parent.GetPath());
+    
+      // for each subdir, check if it exists & create if needed.
+      TDirectory *child = 0;
+      TDirectory *currentDir = &parent;
+      while (!dirq.empty()) {
+        string childName(dirq.front());
+        dirq.pop();
+
+        
+        // check if childDir exists
+        child = currentDir->GetDirectory(childName.c_str());
+        
+        // else create new child dir
+        if (child == 0) {
+          child = currentDir->mkdir(childName.c_str());
+          if (child == 0)
+            throw runtime_error("Unable to create ROOT dir: " + fullpath);
+        }
+
+        // prepare for next iteration of loop
+        currentDir = child;
+        fullpath += string("/") + childName;
+      }
+    
+      return child;
+    }
+
+    TDirectory *deliverROOTDir(TDirectory *const parent,
+                               const string &childPath) {
+      const string fullpath(string(parent->GetPath()) + childPath);
+      
+      TDirectory *retVal;
+      if ((retVal = parent->GetDirectory(fullpath.c_str())))
+        return retVal;
+    
+    
+      return recursiveROOTMkDir(*parent, childPath);
+    }
+
+
+
+  }; // namespace CGCUtil
+
 }; // namespace calibGenCAL

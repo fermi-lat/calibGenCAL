@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonCalibTkrAlg.cxx,v 1.2 2007/04/10 14:51:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonCalibTkrAlg.cxx,v 1.3 2007/05/25 21:06:47 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -111,7 +111,7 @@ namespace calibGenCAL {
     cfgBranches(rootFile);
 
     const unsigned nEvents = rootFile.getEntries();
-    LogStream::get() << __FILE__ << ": Processing: " << nEvents << " events." << endl;
+    LogStrm::get() << __FILE__ << ": Processing: " << nEvents << " events." << endl;
 
     /////////////////////
     // DIGI Event Loop //
@@ -119,28 +119,28 @@ namespace calibGenCAL {
     //nEvents = 100000;
     for (eventData.eventNum = startEvent; eventData.eventNum < nEvents; eventData.eventNum++) {
       eventData.next();
-      //LogStream::get() << "event: " << eventData.eventNum << endl;
+      //LogStrm::get() << "event: " << eventData.eventNum << endl;
 
       if (eventData.eventNum % 10000 == 0) {
         // quit if we have enough entries in each histogram
         unsigned currentMin = m_mpdHists.getMinEntries();
         if (currentMin >= nEntries) break;
-        LogStream::get() << "Event: " << eventData.eventNum
+        LogStrm::get() << "Event: " << eventData.eventNum
                          << " min entries per histogram: " << currentMin
                          << endl;
-        LogStream::get().flush();
+        LogStrm::get().flush();
 
-        algData.printStatus(LogStream::get());
+        algData.printStatus(LogStrm::get());
       }
 
       if (!rootFile.getEvent(eventData.eventNum)) {
-        LogStream::get() << "Warning, event " << eventData.eventNum << " not read." << endl;
+        LogStrm::get() << "Warning, event " << eventData.eventNum << " not read." << endl;
         continue;
       }
 
       DigiEvent *digiEvent = rootFile.getDigiEvent();
       if (!digiEvent) {
-        LogStream::get() << __FILE__ << ": Unable to read DigiEvent " << eventData.eventNum  << endl;
+        LogStrm::get() << __FILE__ << ": Unable to read DigiEvent " << eventData.eventNum  << endl;
         continue;
       }
 
@@ -229,13 +229,13 @@ namespace calibGenCAL {
       // check that entry/exit point are in proper region of xtal face
       const Vec3D ctrPos(xtalCtrPos (xtalCtr));
 
-      //LogStream::get() << "xtal:\t" << xtalIdx.getCalXtalId() << endl;
-      //LogStream::get() << "trkPos:\t" << tkr1EndPos << endl;
-      //LogStream::get() << "trkDir:\t" << tkr1EndDir << endl;
-      //LogStream::get() << "xtalCtr:\t" << xtalCtr << endl;
-      //LogStream::get() << "trkXtalTop:\t" << trkLyrTopPos << endl;
-      //LogStream::get() << "trkXtalCtr:\t" << trkLyrCtrPos << endl;
-      //LogStream::get() << "trkXtalBtm:\t" << trkLyrBtmPos << endl;
+      //LogStrm::get() << "xtal:\t" << xtalIdx.getCalXtalId() << endl;
+      //LogStrm::get() << "trkPos:\t" << tkr1EndPos << endl;
+      //LogStrm::get() << "trkDir:\t" << tkr1EndDir << endl;
+      //LogStrm::get() << "xtalCtr:\t" << xtalCtr << endl;
+      //LogStrm::get() << "trkXtalTop:\t" << trkLyrTopPos << endl;
+      //LogStrm::get() << "trkXtalCtr:\t" << trkLyrCtrPos << endl;
+      //LogStrm::get() << "trkXtalBtm:\t" << trkLyrBtmPos << endl;
 
       // test that track makes clean pass through 'meat' of xtal
       const DirNum dir(xtalCtr.getLyr ().getDir());
@@ -264,7 +264,7 @@ namespace calibGenCAL {
 
 
     if (!calDigiCol) {
-      LogStream::get() << "no calDigiCol found for event#" << eventData.eventNum << endl;
+      LogStrm::get() << "no calDigiCol found for event#" << eventData.eventNum << endl;
       return false;
     }
 

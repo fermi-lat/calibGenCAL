@@ -122,8 +122,8 @@ namespace calibGenCAL {
   void MPDHists::fitHists(CalMPD &calMPD) {
     TGraph graph;
 
-    //LogStream::get() << "Muon Peak Fit Results: " << endl;
-    //LogStream::get() << " SCALE\tXTAL\tMPV\tLanWid\tGauWid\tTotalWid\tBckgnd" << endl;
+    //LogStrm::get() << "Muon Peak Fit Results: " << endl;
+    //LogStrm::get() << " SCALE\tXTAL\tMPV\tLanWid\tGauWid\tTotalWid\tBckgnd" << endl;
 
     // PER XTAL LOOP
     for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
@@ -142,7 +142,7 @@ namespace calibGenCAL {
 
       float mpv, width;
       fitChannel(histLL, mpv, width);
-      LogStream::get() << xtalIdx.val() << " "
+      LogStrm::get() << xtalIdx.val() << " "
                        << mpv << " "
                        << width << " "
                        << endl;
@@ -232,7 +232,7 @@ namespace calibGenCAL {
 
       // bail if for some reason we didn't get any points
       if (nPts < 2) {
-        LogStream::get() << __FILE__  << ":"     << __LINE__ << " "
+        LogStrm::get() << __FILE__  << ":"     << __LINE__ << " "
                          << "Not enough points to find sm diode MPD slope for xtal="
                          << xtalIdx.val() << endl;
         continue;
@@ -316,7 +316,7 @@ namespace calibGenCAL {
       }
     }
 
-    LogStream::get() << " Channels Detected: "  << n
+    LogStrm::get() << " Channels Detected: "  << n
                      << " Avg Hits/channel: " << ((n) ? (double)sum/n : 0)
                      << " Max: " << maxHits
                      << endl;

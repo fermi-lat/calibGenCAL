@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genGCRHists.cxx,v 1.12 2007/04/24 16:45:06 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genGCRHists.cxx,v 1.13 2007/05/25 21:06:46 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -141,29 +141,29 @@ int main(const int argc,
     //-- SETUP LOG FILE --//
     /// multiplexing output streams
     /// simultaneously to cout and to logfile
-    LogStream::addStream(cout);
+    LogStrm::addStream(cout);
     // generate logfile name
     string logfile(cfg.outputBasename.getVal() + ".log.txt");
     ofstream tmpStrm(logfile.c_str());
 
-    LogStream::addStream(tmpStrm);
+    LogStrm::addStream(tmpStrm);
 
     //-- LOG SOFTWARE VERSION INFO --//
-    output_env_banner(LogStream::get());
-    LogStream::get() << endl;
-    cfg.cmdParser.printStatus(LogStream::get());
-    LogStream::get() << endl;
+    output_env_banner(LogStrm::get());
+    LogStrm::get() << endl;
+    cfg.cmdParser.printStatus(LogStrm::get());
+    LogStrm::get() << endl;
 
     //-- RETRIEVE PEDESTALS
     CalPed    peds;
-    LogStream::get() << __FILE__ << ": reading in muon pedestal file: " << cfg.pedTXTFile.getVal() << endl;
+    LogStrm::get() << __FILE__ << ": reading in muon pedestal file: " << cfg.pedTXTFile.getVal() << endl;
     peds.readTXT(cfg.pedTXTFile.getVal());
 
     //-- RETRIEVE CIDAC2ADC
     CIDAC2ADC dac2adc;
-    LogStream::get() << __FILE__ << ": reading in cidac2adc txt file: " << cfg.inlTXTFile.getVal() << endl;
+    LogStrm::get() << __FILE__ << ": reading in cidac2adc txt file: " << cfg.inlTXTFile.getVal() << endl;
     dac2adc.readTXT(cfg.inlTXTFile.getVal());
-    LogStream::get() << __FILE__ << ": generating cidac2adc splines: " << endl;
+    LogStrm::get() << __FILE__ << ": generating cidac2adc splines: " << endl;
     dac2adc.genSplines();
 
     //-- GCR MPD
@@ -172,16 +172,16 @@ int main(const int argc,
     string histFilename(cfg.outputBasename.getVal() + ".root");
 
     // open file to save output histograms.
-    LogStream::get() << __FILE__ << ": opening output histogram file: " << histFilename << endl;
+    LogStrm::get() << __FILE__ << ": opening output histogram file: " << histFilename << endl;
     // used when creating histgrams
     TFile histFile(histFilename.c_str(), "RECREATE", "CAL GCR MPD");
 
 
-    GCRHists  gcrHists(cfg.summaryMode.getVal());
+    GCRHists  gcrHists(cfg.summaryMode.getVal(), &histFile);
     GCRCalibAlg gcrCalib(cfg.cfgPath.getVal());
     CalMPD calMPD;
 
-    LogStream::get() << __FILE__ << ": reading digiRoot event file(s) starting w/ " << digiRootFileList[0] << endl;
+    LogStrm::get() << __FILE__ << ": reading digiRoot event file(s) starting w/ " << digiRootFileList[0] << endl;
     gcrCalib.fillHists(cfg.nEntries.getVal(),
                        digiRootFileList,
                        gcrSelectRootFileList,
@@ -190,9 +190,9 @@ int main(const int argc,
                        gcrHists
                        );
 
-    gcrHists.summarizeHists(LogStream::get());
+    gcrHists.summarizeHists(LogStrm::get());
 
-    LogStream::get() << __FILE__ << ": writing histogram file: " << histFilename << endl;
+    LogStrm::get() << __FILE__ << ": writing histogram file: " << histFilename << endl;
     histFile.Write();
     histFile.Close();
 

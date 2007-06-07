@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/IntNonlinAlg.cxx,v 1.2 2007/04/10 14:51:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/IntNonlinAlg.cxx,v 1.3 2007/05/25 21:06:47 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -114,13 +114,13 @@ namespace calibGenCAL {
       throw runtime_error(tmp.str());
     }
 
-    LogStream::get() << __FILE__ << ": Processing: " << nEvents << " events." << endl;
+    LogStrm::get() << __FILE__ << ": Processing: " << nEvents << " events." << endl;
 
     // BEGINNING OF EVENT LOOP
     for (eventData.eventNum = 0 ; eventData.eventNum < nEvents; eventData.eventNum++) {
       if (eventData.eventNum%1000 == 0) {
-        LogStream::get() << " event " << eventData.eventNum << '\n';
-        LogStream::get().flush();
+        LogStrm::get() << " event " << eventData.eventNum << '\n';
+        LogStrm::get().flush();
       }
 
       rootFile.getEvent(eventData.eventNum);
@@ -174,7 +174,7 @@ namespace calibGenCAL {
       }                                 // foreach xtal
     }
     else
-      LogStream::get() << " event " << eventData.eventNum << " contains "
+      LogStrm::get() << " event " << eventData.eventNum << " contains "
                        << nDigis << " digis - skipped" << endl;
   }
 

@@ -114,7 +114,7 @@ namespace calibGenCAL {
       }
     }
 
-    LogStream::get() << " Channels Detected: "  << n
+    LogStrm::get() << " Channels Detected: "  << n
                      << " Avg Hits/channel: " << ((n) ? (double)sum/n : 0)
                      << " Max: " << maxHits
                      << endl;
@@ -174,7 +174,7 @@ namespace calibGenCAL {
           // update new mean & sigma
           av = slice.GetMean(); rms = slice.GetRMS();
 
-          LogStream::get() << xtalIdx.val() << " "
+          LogStrm::get() << xtalIdx.val() << " "
                            << asymType.val() << " "
                            << i   << " "
                            << av  << " "
