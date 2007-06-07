@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.21 2007/04/24 16:45:06 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.22 2007/05/25 21:06:46 fewtrell Exp $
 
 /** @file Gen CIDAC2ADC calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
@@ -99,18 +99,18 @@ int main(int argc,
     //-- SETUP LOG FILE --//
     /// multiplexing output streams
     /// simultaneously to cout and to logfile
-    LogStream::addStream(cout);
+    LogStrm::addStream(cout);
     // generate logfile name
     string logfile(cfg.outputBasename.getVal() + ".log.txt");
     ofstream tmpStrm(logfile.c_str());
 
-    LogStream::addStream(tmpStrm);
+    LogStrm::addStream(tmpStrm);
 
     //-- LOG SOFTWARE VERSION INFO --//
-    output_env_banner(LogStream::get());
-    LogStream::get() << endl;
-    cfg.cmdParser.printStatus(LogStream::get());
-    LogStream::get() << endl;
+    output_env_banner(LogStrm::get());
+    LogStrm::get() << endl;
+    cfg.cmdParser.printStatus(LogStrm::get());
+    LogStrm::get() << endl;
 
     // txt output filename
     string       outputTXTFile(cfg.outputBasename.getVal() + ".txt");
@@ -122,23 +122,23 @@ int main(int argc,
     const string       adcMeanFile(cfg.outputBasename.getVal() + ".adcmean.txt");
 
     if (cfg.rootFileLE.getVal().length()) {
-      LogStream::get() << __FILE__ << ": reading LE calibGen event file: " << cfg.rootFileLE.getVal() << endl;
+      LogStrm::get() << __FILE__ << ": reading LE calibGen event file: " << cfg.rootFileLE.getVal() << endl;
       inlAlg.readRootData(cfg.rootFileLE.getVal(), adcMeans, LRG_DIODE, !cfg.columnMode.getVal());
     }
 
     if (cfg.rootFileHE.getVal().length()) {
-      LogStream::get() << __FILE__ << ": reading HE calibGen event file: " << cfg.rootFileHE.getVal() << endl;
+      LogStrm::get() << __FILE__ << ": reading HE calibGen event file: " << cfg.rootFileHE.getVal() << endl;
       inlAlg.readRootData(cfg.rootFileHE.getVal(), adcMeans, SM_DIODE,  !cfg.columnMode.getVal());
     }
 
-    LogStream::get() << __FILE__ << ": saving adc means to txt file: "
+    LogStrm::get() << __FILE__ << ": saving adc means to txt file: "
                      << adcMeanFile << endl;
     adcMeans.writeTXT(adcMeanFile);
 
-    LogStream::get() << __FILE__ << ": generating smoothed spline points: " << endl;
+    LogStrm::get() << __FILE__ << ": generating smoothed spline points: " << endl;
     inlAlg.genSplinePts(adcMeans, cidac2adc);
 
-    LogStream::get() << __FILE__ << ": writing smoothed spline points: " << outputTXTFile << endl;
+    LogStrm::get() << __FILE__ << ": writing smoothed spline points: " << outputTXTFile << endl;
     cidac2adc.writeTXT(outputTXTFile);
   } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;

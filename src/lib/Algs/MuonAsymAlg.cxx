@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonAsymAlg.cxx,v 1.3 2007/04/10 14:51:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonAsymAlg.cxx,v 1.4 2007/05/25 21:06:47 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -83,7 +83,7 @@ namespace calibGenCAL {
 
     const TClonesArray *calDigiCol = digiEvent.getCalDigiCol();
     if (!calDigiCol) {
-      LogStream::get() << "no calDigiCol found for event#" << eventData.eventNum << endl;
+      LogStrm::get() << "no calDigiCol found for event#" << eventData.eventNum << endl;
       return;
     }
 
@@ -182,7 +182,7 @@ namespace calibGenCAL {
     rootFile.getDigiChain()->SetBranchStatus("m_summary");
 
     const unsigned nEvents = rootFile.getEntries();
-    LogStream::get() <<
+    LogStrm::get() <<
       __FILE__ << ": Processing: " << nEvents << " events." << endl;
 
     // Basic digi-event loop
@@ -193,30 +193,30 @@ namespace calibGenCAL {
         const unsigned currentMin = m_asymHists.getMinEntries();
         if (currentMin >= nEntries) break;
 
-        LogStream::get() << "Event: " << eventData.eventNum
+        LogStrm::get() << "Event: " << eventData.eventNum
                          << " min entries per histogram: " << currentMin
                          << endl;
-        LogStream::get().flush();
+        LogStrm::get().flush();
       }
 
       if (!rootFile.getEvent(eventData.eventNum)) {
-        LogStream::get() << "Warning, event " << eventData.eventNum << " not read." << endl;
+        LogStrm::get() << "Warning, event " << eventData.eventNum << " not read." << endl;
         continue;
       }
 
       DigiEvent *digiEvent = rootFile.getDigiEvent();
       if (!digiEvent) {
-        LogStream::get() << __FILE__ << ": Unable to read DigiEvent " << eventData.eventNum  << endl;
+        LogStrm::get() << __FILE__ << ": Unable to read DigiEvent " << eventData.eventNum  << endl;
         continue;
       }
 
       processEvent(*digiEvent);
     }  // per event loop
 
-    LogStream::get() << "Asymmetry histograms filled nEvents=" << algData.nGoodDirs
+    LogStrm::get() << "Asymmetry histograms filled nEvents=" << algData.nGoodDirs
                      << " algData.nXDirs="               << algData.nXDirs
                      << " algData.nYDirs="               << algData.nYDirs << endl;
-    LogStream::get() << " nHits measured="       <<               algData.nHits
+    LogStrm::get() << " nHits measured="       <<               algData.nHits
                      << " Bad hits="             << algData.nBadHits
                      << endl;
   }

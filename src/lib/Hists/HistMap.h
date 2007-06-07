@@ -1,6 +1,12 @@
 #ifndef HistMap_h
 #define HistMap_h
 
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.h,v 1.5 2007/05/25 21:06:47 fewtrell Exp $
+
+/** @file
+    @author Zachary Fewtrell
+*/
+
 // LOCAL INCLUDES
 #include "../Util/CGCUtil.h"
 
@@ -8,8 +14,6 @@
 
 // EXTLIB INCLUDES
 #include "TDirectory.h"
-#include "TTree.h"
-#include "TBranch.h"
 
 // STD INCLUDES
 #include <map>
@@ -18,6 +22,7 @@
 #include <functional>
 #include <stdexcept>
 #include <sstream>
+#include <vector>
 
 /** @file template class represents a collection  of 1D ROOT histograms 
     mapped to some index class
@@ -31,6 +36,7 @@
 
     \note IdxType needs a unsigned IdxType::val() method like the CalUtil::CalDefs idx classes.
     \note IdxType must support a constructor from 'unsigned'
+
 */
 
 namespace calibGenCAL {
@@ -44,30 +50,31 @@ namespace calibGenCAL {
 
   public:
     /// \param m_histBasename all histograms will be created _as_ needed w/ name m_histBasename+idx.toStr()
-    /// \param rootFile if ptr is non-zero, then all matching histograms will be loaded from given file.
+    /// \param writeDir (if non-zero) all histograms will be written out to this directory opun class destruction.
+    /// \param readDir (if non-zero) any associated histograms will be read from this directory upon construction 
     HistMap(const std::string &histBasename,
+            TDirectory *const writeDir=0,
+            TDirectory *const readDir=0,
             const size_t nBins=1000,
             const double loBinLimit=0,
-            const double hiBinLimit=0,
-            const TDirectory *rootFile=0
+            const double hiBinLimit=0
             ) :
       m_histBasename(histBasename),
-      m_histList(0),
       m_nBins(nBins),
       m_loBinLimit(loBinLimit),
       m_hiBinLimit(hiBinLimit),
-      m_treeId(0)
+      m_writeDir(writeDir)
     {
-      // read in histlist & initial histograms if rootFile is set
-      if (rootFile != 0)
-        loadHists(*rootFile);
-      else // else build new empty histlist 
-        m_histList = &buildHistlist(histBasename);
+      /// load data from file
+      if (readDir != 0)
+        loadHists(*readDir);
+
+      setDirectory(writeDir);
     }
 
 
     /// retrieve histogram for given index, build it if it doesn't exist.
-    HistType &checkNGet(const IdxType &idx) {
+    HistType &produceHist(const IdxType &idx) {
       typename MapType::iterator it(m_map.lower_bound(idx));
 
       /// this means that idx has not yet been inserted into the map
@@ -76,126 +83,124 @@ namespace calibGenCAL {
       return *(it->second);
     }
 
-    /// act like STL map
+    /// set directory for all contained histograms
+    void setDirectory(TDirectory *const dir) {
+      for (MapType::iterator it(m_map.begin());
+           it != m_map.end();
+           it++) {
+        IdxType idx(it->first);
+        HistType *const hist_ptr(it->second);
+
+        // construct histogram (relative) path
+        const std::string subdir(genHistPath(idx));
+
+        /// retrieve proper directory for hist (create if needed)
+        TDirectory *const histdir = deliverROOTDir(dir, subdir);
+        if (histdir == 0)
+          throw std::runtime_error(std::string("Unable to create directory: ") +
+                                   dir->GetPath() + "/" + subdir);
+
+        hist_ptr->SetDirectory(histdir);
+        
+      }
+
+      m_writeDir = dir;
+    }
+
     typedef typename MapType::iterator iterator;
-
-    /// act like STL map
     typedef typename MapType::const_iterator const_iterator;
-
-    /// act like STL map
+    
     iterator begin() {return m_map.begin();}
-    /// act like STL map
     const_iterator begin() const {return m_map.begin();}
 
-    /// act like STL map
     iterator end() {return m_map.end();}
-    /// act like STL map
     const_iterator end() const {return m_map.end();}
 
-    /// set ROOT directory for each histogram
-    void setHistDir(TDirectory *const dir) {
-      for_each(CGCUtil::map_val_iterator<MapType>(m_map.begin()),
-               CGCUtil::map_val_iterator<MapType>(m_map.end()),
-               std::bind2nd(std::mem_fun1_t<void, HistType, TDirectory*>(&HistType::SetDirectory),dir));
-    }
 
   private:
-    /// load all associated histogram from histogram file
-    void loadHists(const TDirectory &rootFile) {
-      // load new histList from file
-      m_histList = CGCUtil::retrieveROOTObj<TTree>(rootFile, genHistlistName(m_histBasename));
-      
-      if (m_histList == 0)
-        throw std::runtime_error(std::string("ROOT Obj ") + genHistlistName(m_histBasename) +
-                                 "not found in " + rootFile.GetName());
 
-      // loop through m_histList
-      TBranch *const branch(m_histList->GetBranch(m_branchName.c_str()));
-      if (branch == 0)
-        throw std::runtime_error(std::string("Unable to find branch") + m_branchName);
-      branch->SetAddress(&m_treeId);
 
-      /// loop through each entry in tree
-      const unsigned nHists(branch->GetEntries());
-      for (unsigned i(0); i < nHists; i++) {
-        branch->GetEvent(i);
+    /// insert histogram into proper slot
+    void insertHist(HistType *hist_ptr) {
+      assert(hist_ptr != 0);
+         
+      std::string name(hist_ptr->GetName());
 
-        /// build index type from raw integer
-        const IdxType idx(m_treeId);
-        HistType *hist(CGCUtil::retrieveROOTObj<HistType>(rootFile, genHistName(idx, m_histBasename)));        
-        if (hist == 0) {
-          std::ostringstream msg;
-          const unsigned val(idx.val());
-          msg << "Unable to retrieve histogram " << val << " " << genHistName(idx, m_histBasename);
-          throw std::runtime_error(msg.str());
-        }
-        m_map[idx] = hist;
-      }
+      IdxType idx(name2Idx(name));
+
+      m_map[idx] = hist_ptr;
     }
 
-    static std::string genHistName(const IdxType &idx, const std::string &basename) {
-      return basename + "_" + idx.toStr();
+    /// load all associated histograms from histogram file
+    void loadHists(TDirectory &readDir) {
+      std::vector<HistType*> histList(CGCUtil::harvestROOTObjs<HistType>(readDir, m_histBasename));
+      
+      std::for_each(histList.begin(),
+                    histList.end(),
+                    std::bind1st(std::mem_fun(&HistMap<IdxType,HistType>::insertHist),this));
+               
+    }
+
+    std::string genHistName(const IdxType &idx) {
+      static std::string prefix(m_histBasename + "_");
+      return m_histBasename + "_" + idx.toStr();
+    }
+
+    /// convert histogram name back to index obj
+    IdxType name2Idx(const std::string &name) {
+      static std::string prefix(m_histBasename + "_");
+
+      // first check that histogram name matches pattern
+      if (name.find(prefix) != 0)
+        throw std::runtime_error(string("Histogram : ") + name + "does not belong to collection: " + m_histBasename);
+
+      // trim collection string from histogram name
+      return IdxType(name.substr(prefix.size()));
     }
 
     HistType *genHist(const IdxType &idx) {
-      const std::string name(genHistName(idx, m_histBasename));
+      if (m_writeDir == 0)
+        throw std::runtime_error("HistVec::genHist() : Write directory not set for HistVec class");
 
-      /// update tuple list of existing histograms
-      fillHistList(idx);
+      const std::string histname(genHistName(idx));
 
-      return new HistType(name.c_str(),
-                          name.c_str(),
-                          m_nBins,
-                          m_loBinLimit,
-                          m_hiBinLimit);
+      const std::string subdir(genHistPath(idx));
+
+      HistType *const hist(new HistType(histname.c_str(),
+                                        histname.c_str(),
+                                        m_nBins,
+                                        m_loBinLimit,
+                                        m_hiBinLimit));
+
+      TDirectory *const histdir(CGCUtil::deliverROOTDir(m_writeDir, subdir));
+      hist->SetDirectory(histdir);
+
+      return hist;
     }
 
     MapType m_map;
 
-    /// build m_histList tuple for listing all present histograms in sparse array
-    TTree &buildHistlist(const std::string &basename) {
-      const std::string treename(genHistlistName(basename));
-      
-      TTree &tree(*(new TTree(treename.c_str(),
-                              treename.c_str())));
-      
-      if (!tree.Branch(m_branchName.c_str(), &m_treeId, (m_branchName + "/i").c_str()))
-        throw std::runtime_error("Couldn't create TTree branch");
-      
-      return tree;
-    }
     
-    static std::string genHistlistName(const std::string &basename) {
-      return basename + "_histList";
-    }
-
-    void fillHistList(const IdxType &idx) {
-      /// idx needs to be castable to unsigned integer.
-      m_treeId = idx.val();
-      m_histList->Fill();
+    /// generate appropriate subdirectory for histogram
+    std::string genHistPath(const IdxType &idx) {
+      std::ostringstream tmp;
+      tmp << m_histBasename << "/"
+          << toPath(idx);
+      return tmp.str();
     }
 
     const std::string m_histBasename;
 
-    /// store list of id integers for histograms created so far.
-    TTree *m_histList;
-
+    /// option for creating new histogram
     const size_t m_nBins;
+    /// option for creating new histogram
     const double m_loBinLimit;
+    /// option for creating new histogram
     const double m_hiBinLimit;
 
-    /// used for filling the m_histList tuple
-    UInt_t m_treeId;
+    /// all new (& modified) histograms written to this directory
+    TDirectory * m_writeDir;
 
-    static const std::string &m_branchName;
   };
-  
-
-  extern const std::string HISTMAP_BRANCHNAME;
-
-  template <typename IdxType,
-            typename HistType> 
-  const std::string &HistMap<IdxType,HistType>::m_branchName(HISTMAP_BRANCHNAME);
-
 }; // namespace calibGenCAL
 #endif

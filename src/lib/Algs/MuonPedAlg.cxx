@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonPedAlg.cxx,v 1.3 2007/04/16 20:35:35 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonPedAlg.cxx,v 1.4 2007/05/25 21:06:47 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -74,7 +74,7 @@ namespace calibGenCAL {
       rootFile.getDigiChain()->SetBranchStatus("m_gem");
 
     unsigned nEvents = rootFile.getEntries();
-    LogStream::get() << __FILE__ << ": Processing: " << nEvents << " events." << endl;
+    LogStrm::get() << __FILE__ << ": Processing: " << nEvents << " events." << endl;
 
     /////////////////////////////////////////
     /// Event Loop //////////////////////////
@@ -88,20 +88,20 @@ namespace calibGenCAL {
         // quit if we have enough entries in each histogram
         unsigned currentMin = getMinEntries();
         if (currentMin >= nEntries) break;
-        LogStream::get() << "Event: " << eventData.eventNum
+        LogStrm::get() << "Event: " << eventData.eventNum
                          << " min entries per histogram: " << currentMin
                          << endl;
-        LogStream::get().flush();
+        LogStrm::get().flush();
       }
 
       if (!rootFile.getEvent(eventData.eventNum)) {
-        LogStream::get() << "Warning, event " << eventData.eventNum << " not read." << endl;
+        LogStrm::get() << "Warning, event " << eventData.eventNum << " not read." << endl;
         continue;
       }
 
       DigiEvent *digiEvent = rootFile.getDigiEvent();
       if (!digiEvent) {
-        LogStream::get() << __FILE__ << ": Unable to read DigiEvent " << eventData.eventNum  << endl;
+        LogStrm::get() << __FILE__ << ": Unable to read DigiEvent " << eventData.eventNum  << endl;
         continue;
       }
 
@@ -199,7 +199,7 @@ namespace calibGenCAL {
         algData.trigCut == EXTERNAL_TRIGGER) {
       gem = &(digiEvent.getGem());
       if (&gem == 0) {
-        LogStream::get() << "Warning, gem data not found for event: "
+        LogStrm::get() << "Warning, gem data not found for event: "
                          << eventData.eventNum << endl;
         return;
       }
@@ -211,7 +211,7 @@ namespace calibGenCAL {
       // quick check if we are in 4-range mode
       EventSummaryData & summary = digiEvent.getEventSummaryData();
       if (&summary == 0) {
-        LogStream::get() << "Warning, eventSummary data not found for event: "
+        LogStrm::get() << "Warning, eventSummary data not found for event: "
                          << eventData.eventNum << endl;
         return;
       }
@@ -231,7 +231,7 @@ namespace calibGenCAL {
 
     const TClonesArray *calDigiCol = digiEvent.getCalDigiCol();
     if (!calDigiCol) {
-      LogStream::get() << "no calDigiCol found for event#" << eventData.eventNum << endl;
+      LogStrm::get() << "no calDigiCol found for event#" << eventData.eventNum << endl;
       return;
     }
 
@@ -268,7 +268,7 @@ namespace calibGenCAL {
       adcL8[face] = calDigi.getAdcSelectedRange(LEX8.val(), (CalXtalId::XtalFace)face.val());
       // check for missing readout
       if (adcL8[face] < 0) {
-        LogStream::get() << "Couldn't get LEX8 readout for event=" << eventData.eventNum << endl;
+        LogStrm::get() << "Couldn't get LEX8 readout for event=" << eventData.eventNum << endl;
         return;
       }
     }

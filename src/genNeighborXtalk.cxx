@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genNeighborXtalk.cxx,v 1.11 2007/04/24 16:45:06 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genNeighborXtalk.cxx,v 1.12 2007/05/25 21:06:46 fewtrell Exp $
 
 /** @file Gen Neighboring Crystal Cross-talk calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
@@ -86,37 +86,37 @@ int main(const int argc,
 
     /// multiplexing output streams
     /// simultaneously to cout and to logfile
-    LogStream::addStream(cout);
+    LogStrm::addStream(cout);
     string logfile = cfg.outputBasename.getVal() + ".log.txt";
     ofstream          tmpStrm(logfile.c_str());
-    LogStream::addStream(tmpStrm);
+    LogStrm::addStream(tmpStrm);
 
 
-    cfg.cmdParser.printStatus(LogStream::get());
+    cfg.cmdParser.printStatus(LogStrm::get());
 
     NeighborXtalk       xtalk;
     NeighborXtalkAlg    xtalkAlg;
 
     //-- LOG SOFTWARE VERSION INFO --//
-    output_env_banner(LogStream::get());
-    LogStream::get() << endl;
-    cfg.cmdParser.printStatus(LogStream::get());
-    LogStream::get() << endl;
+    output_env_banner(LogStrm::get());
+    LogStrm::get() << endl;
+    cfg.cmdParser.printStatus(LogStrm::get());
+    LogStrm::get() << endl;
 
-    LogStream::get() << __FILE__ << ": reading LE calibGen event file: " << cfg.rootFileLE.getVal() << endl;
+    LogStrm::get() << __FILE__ << ": reading LE calibGen event file: " << cfg.rootFileLE.getVal() << endl;
     xtalkAlg.readRootData(cfg.rootFileLE.getVal(), xtalk);
 
-    LogStream::get() << __FILE__ << ": pedestal subtract: " << endl;
+    LogStrm::get() << __FILE__ << ": pedestal subtract: " << endl;
     xtalk.pedSubtractADC();
     
 
     string txtfile = cfg.outputBasename.getVal() + ".txt";
-    LogStream::get() << __FILE__ << ": saving xtalk to txt file: "
+    LogStrm::get() << __FILE__ << ": saving xtalk to txt file: "
                      << txtfile << endl;
     xtalk.writeTXT(txtfile);
 
     string tuplefile = cfg.outputBasename.getVal() + ".tuple.root";
-    LogStream::get() << __FILE__ << ": saving xtalk to tuple ROOT file: "
+    LogStrm::get() << __FILE__ << ": saving xtalk to tuple ROOT file: "
                      << tuplefile << endl;
     xtalk.writeTuples(tuplefile);
     

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuTrigAlg.cxx,v 1.3 2007/04/16 20:35:35 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuTrigAlg.cxx,v 1.4 2007/05/25 21:06:47 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -71,7 +71,7 @@ namespace calibGenCAL {
     rootFile.getDigiChain()->SetBranchStatus("m_calDiagnosticCloneCol");
 
     nEvents = min < unsigned > (nEvents, rootFile.getEntries());
-    LogStream::get() << __FILE__ << ": Processing: " << nEvents << " events." << endl;
+    LogStrm::get() << __FILE__ << ": Processing: " << nEvents << " events." << endl;
 
     //-- REUSED ARRAYS (reset after each event) --//
     // pedestal subracted LEX8 adc for each xtal face in cal
@@ -97,18 +97,18 @@ namespace calibGenCAL {
     // Basic digi-event loop
     for (unsigned eventNum = 0; eventNum < nEvents; eventNum++) {
       if (eventNum % 1000 == 0) {
-        LogStream::get() << "Event: " << eventNum << endl;
-        LogStream::get().flush();
+        LogStrm::get() << "Event: " << eventNum << endl;
+        LogStrm::get().flush();
       }
 
       if (!rootFile.getEvent(eventNum)) {
-        LogStream::get() << "Warning, event " << eventNum << " not read." << endl;
+        LogStrm::get() << "Warning, event " << eventNum << " not read." << endl;
         continue;
       }
 
       const DigiEvent *digiEvent = rootFile.getDigiEvent();
       if (!digiEvent) {
-        LogStream::get() << __FILE__ << ": Unable to read DigiEvent " << eventNum  << endl;
+        LogStrm::get() << __FILE__ << ": Unable to read DigiEvent " << eventNum  << endl;
         continue;
       }
 
@@ -151,7 +151,7 @@ namespace calibGenCAL {
       //-- loop through each 'hit' in one event --//
       const TClonesArray *calDigiCol = digiEvent->getCalDigiCol();
       if (!calDigiCol) {
-        LogStream::get() << "no calDigiCol found for event#" << eventNum << endl;
+        LogStrm::get() << "no calDigiCol found for event#" << eventNum << endl;
         continue;
       }
 
@@ -257,7 +257,7 @@ namespace calibGenCAL {
     rootFile.getDigiChain()->SetBranchStatus("m_calDiagnosticCloneCol");
 
     const unsigned nEvents(rootFile.getEntries());
-    LogStream::get() << __FILE__ << ": Processing: " << nEvents << " events." << endl;
+    LogStrm::get() << __FILE__ << ": Processing: " << nEvents << " events." << endl;
 
     // array of all fle bits in cal.
     CalVec<LyrIdx, CalArray<FaceNum, bool> > fle(LyrIdx::N_VALS);
@@ -266,18 +266,18 @@ namespace calibGenCAL {
     // BEGINNING OF EVENT LOOP
     for (unsigned eventNum = 0 ; eventNum < nEvents; eventNum++) {
       if (eventNum%1000 == 0) {
-        LogStream::get() << " event " << eventNum << '\n';
-        LogStream::get().flush();
+        LogStrm::get() << " event " << eventNum << '\n';
+        LogStrm::get().flush();
       }
 
       if (!rootFile.getEvent(eventNum)) {
-        LogStream::get() << "Warning, event " << eventNum << " not read." << endl;
+        LogStrm::get() << "Warning, event " << eventNum << " not read." << endl;
         continue;
       }
 
       const DigiEvent    *digiEvent = rootFile.getDigiEvent();
       if (!digiEvent) {
-        LogStream::get() << __FILE__ << ": Unable to read DigiEvent " << eventNum  << endl;
+        LogStrm::get() << __FILE__ << ": Unable to read DigiEvent " << eventNum  << endl;
         continue;
       }
 

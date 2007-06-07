@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runMuTrigEff.cxx,v 1.33 2007/04/24 16:45:06 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runMuTrigEff.cxx,v 1.34 2007/05/25 21:06:47 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -52,15 +52,15 @@ int main(int argc,
     //-- SETUP LOG FILE --//
     /// multiplexing output streams
     /// simultaneously to cout and to logfile
-    LogStream::addStream(cout);
+    LogStrm::addStream(cout);
     // generate logfile name
     string logfile(cfg.outputBasename.getVal() + ".log.txt");
     ofstream tmpStrm(logfile.c_str());
 
-    LogStream::addStream(tmpStrm);
+    LogStrm::addStream(tmpStrm);
 
     //-- LOG SOFTWARE VERSION INFO --//
-    output_env_banner(LogStream::get());
+    output_env_banner(LogStrm::get());
 
     //-- RETRIEVE PEDESTALS
     // retrieve original input root filename for pedestal process
@@ -69,12 +69,12 @@ int main(int argc,
                                                               "ROOT_FILES",
                                                               " ," ));
     if (pedRootFileList.size() < 1) {
-      LogStream::get() << __FILE__ << ": No input files specified" << endl;
+      LogStrm::get() << __FILE__ << ": No input files specified" << endl;
       return -1;
     }
 
     CalPed peds;
-    LogStream::get() << __FILE__ << ": reading in muon pedestal file: " << pedTXTFile << endl;
+    LogStrm::get() << __FILE__ << ": reading in muon pedestal file: " << pedTXTFile << endl;
     peds.readTXT(pedTXTFile);
 
     //-- CALCULATE TRIG EFFICIENCY --//

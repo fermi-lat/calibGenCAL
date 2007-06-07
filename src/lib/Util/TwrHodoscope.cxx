@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/TwrHodoscope.cxx,v 1.2 2007/04/10 14:51:02 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/TwrHodoscope.cxx,v 1.3 2007/05/25 21:06:48 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -80,7 +80,7 @@ namespace calibGenCAL {
 
       const float adc = calDigi.getAdcSelectedRange(rng.val(), (CalXtalId::XtalFace)face.val());   // raw adc
       if (adc < 0)
-        //       LogStream::get() << "Couldn't get adc val for face=" << face.val()
+        //       LogStrm::get() << "Couldn't get adc val for face=" << face.val()
         //               << " rng=" << rng.val() << endl;
         //    return;
         continue;

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.cxx,v 1.8 2007/04/26 19:46:56 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.cxx,v 1.9 2007/05/25 21:06:47 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -7,7 +7,7 @@
 // LOCAL INCLUDES
 #include "GCRHists.h"
 #include "../Util/CGCUtil.h"
-//#include "../Util/MultiPeakGaus.h"
+
 
 // GLAST INCLUDES
 
@@ -45,105 +45,137 @@ namespace calibGenCAL {
   }
 
 
-  GCRHists::GCRHists(const bool summaryMode, 
-                     const string &rootFilePath) :
-    summaryMode(summaryMode)
+  GCRHists::GCRHists(const bool summaryMode,
+                     TDirectory *const writeDir,
+                     TDirectory *const readDir) :
+    m_summaryMode(summaryMode),
+    m_writeDir(writeDir)
   {
-    /// build new empty histograms
-    if (rootFilePath.empty())
+    if (readDir != 0)
+      loadHists(*readDir);
+    else
       initHists();
-    /// load histograms from previous run.
-    else 
-      loadHists(rootFilePath);
+    
+    /// move loaded histograms to output dir.
+    setDirectory(writeDir);
   }
 
-  void GCRHists::loadHists(const string &filename) {
-    TFile rootFile(filename.c_str(), "READ");
-    // init histogram groups
-    if (!summaryMode) {
-      m_meanDACHists.reset(new MeanDACHistCol(MEANDAC_HISTNAME.c_str(),
-                                              500,
-                                              0,
-                                              0,
-                                              &rootFile));
-      m_meanDACAllZHists.reset(new MeanDACAllZHistCol(MEANDACALLZ_HISTNAME.c_str(),
-                                                      500,
-                                                      0,
-                                                      0,
-                                                      &rootFile));
-
-      m_dacRatioProfs.reset(new DACRatioProfCol(DACRATIO_HISTNAME.c_str(),
-                                                200,
-                                                0,
-                                                0,
-                                                &rootFile));
-      m_adcRatioProfs.reset(new ADCRatioProfCol(ADCRATIO_HISTNAME.c_str(),
-                                                200,
-                                                0,
-                                                0,
-                                                &rootFile));
+  void GCRHists::setDirectory(TDirectory *const dir) {
+    if (!m_summaryMode) {
+      m_meanDACHists->setDirectory(dir);
+      m_meanDACAllZHists->setDirectory(dir);
+      m_dacRatioProfs->setDirectory(dir);
+      m_adcRatioProfs->setDirectory(dir);    
     }
 
-    m_meanDACSumHists.reset(new MeanDACSumHistCol(MEANDACSUM_HISTNAME.c_str(),
-                                                  500,
-                                                  0,
-                                                  0,
-                                                  &rootFile));
-    m_adcRatioSumProfs.reset(new ADCRatioSumProfCol(ADCRATIOSUM_HISTNAME.c_str(),
-                                                    200,
-                                                    0,
-                                                    0,
-                                                    &rootFile));
+    m_meanDACSumHists->setDirectory(dir);
+    m_adcRatioSumProfs->setDirectory(dir);
 
-    //load individual histograms
-    m_meanDACSumAllZ = CGCUtil::retrieveROOTObj<TH1S>(rootFile, MEANDACSUMALLZ_HISTNAME);
-    m_zHist = CGCUtil::retrieveROOTObj<TH1S>(rootFile, Z_HISTNAME);
-    m_dacRatioSumProf = CGCUtil::retrieveROOTObj<TProfile>(rootFile, DACRATIOSUM_HISTNAME);
-
-    // input file will go away, need to set all histograms to global directory
-    setHistDir(0);
+    m_meanDACSumAllZ->SetDirectory(dir);
+    m_zHist->SetDirectory(dir);
+    m_dacRatioSumProf->SetDirectory(dir);
   }
 
-  void GCRHists::initHists() {
+  void GCRHists::loadHists(TDirectory &readDir) {
     // init histogram groups
-    if (!summaryMode) {
+    if (!m_summaryMode) {
       m_meanDACHists.reset(new MeanDACHistCol(MEANDAC_HISTNAME.c_str(),
+                                              m_writeDir,
+                                              &readDir,
                                               500,
                                               0,
                                               0));
       m_meanDACAllZHists.reset(new MeanDACAllZHistCol(MEANDACALLZ_HISTNAME.c_str(),
+                                                      m_writeDir,
+                                                      &readDir,
                                                       500,
                                                       0,
                                                       0));
       m_dacRatioProfs.reset(new DACRatioProfCol(DACRATIO_HISTNAME.c_str(),
+                                                m_writeDir,
+                                                &readDir,
                                                 200,
                                                 0,
                                                 0));
       m_adcRatioProfs.reset(new ADCRatioProfCol(ADCRATIO_HISTNAME.c_str(),
+                                                m_writeDir,
+                                                &readDir,
+                                                200,
+                                                0,
+                                                0));
+    }
+
+    m_meanDACSumHists.reset(new MeanDACSumHistCol(MEANDACSUM_HISTNAME.c_str(),
+                                                  m_writeDir,
+                                                  &readDir,
+                                                  500,
+                                                  0,
+                                                  0));
+    m_adcRatioSumProfs.reset(new ADCRatioSumProfCol(ADCRATIOSUM_HISTNAME.c_str(),
+                                                    m_writeDir,
+                                                    &readDir,
+                                                    200,
+                                                    0,
+                                                    0));
+    //load individual histograms
+    m_meanDACSumAllZ = CGCUtil::retrieveROOTObj<TH1S>(readDir, MEANDACSUMALLZ_HISTNAME);
+    m_zHist = CGCUtil::retrieveROOTObj<TH1S>(readDir, Z_HISTNAME);
+    m_dacRatioSumProf = CGCUtil::retrieveROOTObj<TProfile>(readDir, DACRATIOSUM_HISTNAME);
+  }
+
+  void GCRHists::initHists() {
+    // init histogram groups
+    if (!m_summaryMode) {
+      m_meanDACHists.reset(new MeanDACHistCol(MEANDAC_HISTNAME.c_str(),
+                                              m_writeDir,
+                                              0,
+                                              500,
+                                              0,
+                                              0));
+      m_meanDACAllZHists.reset(new MeanDACAllZHistCol(MEANDACALLZ_HISTNAME.c_str(),
+                                                      m_writeDir,
+                                                      0,
+                                                      500,
+                                                      0,
+                                                      0));
+      m_dacRatioProfs.reset(new DACRatioProfCol(DACRATIO_HISTNAME.c_str(),
+                                                m_writeDir,
+                                                0,
+                                                200,
+                                                0,
+                                                0));
+      m_adcRatioProfs.reset(new ADCRatioProfCol(ADCRATIO_HISTNAME.c_str(),
+                                                m_writeDir,
+                                                0,
                                                 200,
                                                 0,
                                                 0));
     }
     m_meanDACSumHists.reset(new MeanDACSumHistCol(MEANDACSUM_HISTNAME.c_str(),
+                                                  m_writeDir,
+                                                  0,
                                                   500,
                                                   0,
                                                   0));
     m_adcRatioSumProfs.reset(new ADCRatioSumProfCol(ADCRATIOSUM_HISTNAME.c_str(),
+                                                    m_writeDir,
+                                                    0,
                                                     200,
                                                     0,
                                                     0));
-
     // init individual histograms
     m_meanDACSumAllZ = new TH1S(MEANDACSUMALLZ_HISTNAME.c_str(),
                                 MEANDACSUMALLZ_HISTNAME.c_str(),
                                 500,
                                 0,
                                 0);
+    
     m_zHist = new TH1S(Z_HISTNAME.c_str(),
                        Z_HISTNAME.c_str(),
                        MAX_INFERREDZ+1,
                        0,
                        MAX_INFERREDZ+1);
+    
     m_dacRatioSumProf = new TProfile(DACRATIOSUM_HISTNAME.c_str(),
                                      DACRATIOSUM_HISTNAME.c_str(),
                                      500,
@@ -155,11 +187,12 @@ namespace calibGenCAL {
   void GCRHists::summarizeHists(ostream &ostrm) const {
     ostrm << "HIT SUMMARY" << endl;
     ostrm << "INFERREDZ\tDIODE_CLASS\tNHITS" << endl;
+
     for (MeanDACSumHistCol::const_iterator it(m_meanDACSumHists->begin());
          it != m_meanDACSumHists->end();
          it++) {
-      const unsigned short inferredZ(it->first.inferredZ);
-      const DiodeNum diode(it->first.diode);
+      const unsigned short inferredZ(it->first.getInferredZ());
+      const DiodeNum diode(it->first.getDiode());
 
       ostrm << inferredZ << " " 
             << diode.toStr() << " "
@@ -168,16 +201,16 @@ namespace calibGenCAL {
     }
     
 
-    if (!summaryMode) {
+    if (!m_summaryMode) {
       ostrm << "PER CHANNEL HITS" << endl;
       ostrm << "INFERREDZ\tXTAL\tDIODE\tNHITS" << endl;
 
       for (MeanDACHistCol::const_iterator it(m_meanDACHists->begin());
            it != m_meanDACHists->end();
            it++) {
-        const unsigned short inferredZ(it->first.inferredZ);
-        const XtalIdx xtalIdx(it->first.xtalIdx);
-        const DiodeNum diode(it->first.diode);
+        const unsigned short inferredZ(it->first.getInferredZ());
+        const XtalIdx xtalIdx(it->first.getXtalIdx());
+        const DiodeNum diode(it->first.getDiode());
 
 
         ostrm << inferredZ << " "
@@ -188,30 +221,24 @@ namespace calibGenCAL {
       }
     }
   }
-
+  
   void GCRHists::fitHists(CalMPD &calMPD) {
     // build peak ratio initial values & fitting limits
 
     // PER XTAL LOOP
     for (DiodeNum diode; diode.isValid(); diode++) {
 
-      if (!summaryMode)
+      if (!m_summaryMode)
         for (MeanDACHistCol::iterator it(m_meanDACHists->begin());
              it != m_meanDACHists->end();
              it++) {
            
           //const unsigned short inferredZ(it->first.inferredZ);
-          const DiodeNum diode(it->first.diode);
+          const DiodeNum diode(it->first.getDiode());
           TH1S &hist(*(it->second));
            
-          //MultiPeakGaus::fitHist(hist, diode, inferredZ);
           hist.Fit("gaus","Q");
           hist.Write();
-          cout << hist.GetName() << " " 
-               << hist.GetFunction("gaus")->GetParameter(1) << " "
-               << hist.GetFunction("gaus")->GetParameter(2) << " "
-               << endl;
-           
         }
 
       for (MeanDACSumHistCol::iterator it(m_meanDACSumHists->begin());
@@ -219,12 +246,11 @@ namespace calibGenCAL {
            it++) {
 
         //const unsigned short inferredZ(it->first.inferredZ);
-        const DiodeNum diode(it->first.diode);
+        const DiodeNum diode(it->first.getDiode());
         TH1S &hist = *(it->second);
       
-        //MultiPeakGaus::fitHist(hist, diode, inferredZ);
         hist.Fit("gaus","Q");
-        hist.Write();
+        //hist.Write();
         cout << hist.GetName() << " " 
              << hist.GetFunction("gaus")->GetParameter(1) << " "
              << hist.GetFunction("gaus")->GetParameter(2) << " "
@@ -241,16 +267,16 @@ namespace calibGenCAL {
     /// programmer error
     assert(rng != HEX1);
 
-    if (!summaryMode)
-      m_adcRatioProfs->checkNGet(rngIdx).Fill(thisADC, nextADC);
-    m_adcRatioSumProfs->checkNGet(rng).Fill(thisADC, nextADC);
+    if (!m_summaryMode)
+      m_adcRatioProfs->produceHist(rngIdx).Fill(thisADC, nextADC);
+    m_adcRatioSumProfs->produceHist(rng).Fill(thisADC, nextADC);
   }
 
   void GCRHists::fillDACRatio(const FaceIdx faceIdx,
                               const float leDAC,
                               const float heDAC) {
-    if (!summaryMode)
-      m_dacRatioProfs->checkNGet(faceIdx).Fill(leDAC, heDAC);
+    if (!m_summaryMode)
+      m_dacRatioProfs->produceHist(faceIdx).Fill(leDAC, heDAC);
   
     /// this one has only one entry, so index parm is not important.
     m_dacRatioSumProf->Fill(leDAC, heDAC);
@@ -261,64 +287,22 @@ namespace calibGenCAL {
                                 const DiodeNum diode,
                                 const unsigned short inferredZ, 
                                 const float cidac) {
-    if (!summaryMode)
-      m_meanDACHists->checkNGet(MeanDACHistId(inferredZ,xtalIdx,diode)).Fill(cidac);
+    if (!m_summaryMode)
+      m_meanDACHists->produceHist(MeanDacZId(inferredZ,xtalIdx,diode)).Fill(cidac);
 
-    m_meanDACSumHists->checkNGet(MeanDACSumHistId(inferredZ,diode)).Fill(cidac);
+    m_meanDACSumHists->produceHist(ZDiodeId(inferredZ,diode)).Fill(cidac);
     m_zHist->Fill(inferredZ);
   }
 
   void GCRHists::fillMeanCIDAC(const XtalIdx xtalIdx, 
                                const DiodeNum diode,
                                const float cidac) {
-    if (!summaryMode)
-      m_meanDACAllZHists->checkNGet(MeanDACAllZHistId(xtalIdx, diode)).Fill(cidac);
+    if (!m_summaryMode)
+      m_meanDACAllZHists->produceHist(MeanDACId(xtalIdx, diode)).Fill(cidac);
 
     m_meanDACSumAllZ->Fill(cidac);
   }
 
 
-  void GCRHists::setHistDir(TDirectory *const dir) {
-    if (m_meanDACHists.get() != 0)
-      m_meanDACHists->setHistDir(dir);
-
-    if (m_meanDACAllZHists.get() != 0)
-      m_meanDACAllZHists->setHistDir(dir);
-
-    if (m_dacRatioProfs.get() != 0)
-      m_dacRatioProfs->setHistDir(dir);
-
-    if (m_adcRatioProfs.get() != 0)
-      m_adcRatioProfs->setHistDir(dir);
-
-  
-    m_meanDACSumHists->setHistDir(dir);
-
-    m_meanDACSumAllZ->SetDirectory(dir);
-
-    m_zHist->SetDirectory(dir);
-
-    m_dacRatioSumProf->SetDirectory(dir);
-
-    m_adcRatioSumProfs->setHistDir(dir);
-  }
-
-  string GCRHists::MeanDACHistId::toStr() const {
-    ostringstream tmp;
-    tmp << xtalIdx.toStr() + "_" + diode.toStr() + "_Z" << inferredZ;
-    return tmp.str();
-  }
-
-  string GCRHists::MeanDACAllZHistId::toStr() const {
-    ostringstream tmp;
-    tmp << xtalIdx.toStr() + "_" + diode.toStr();
-    return tmp.str();
-  }
-
-  string GCRHists::MeanDACSumHistId::toStr() const {
-    ostringstream tmp;
-    tmp << diode.toStr() + "_Z" << inferredZ;
-    return tmp.str();
-  }
 
 }; // namespace calibGenCAL

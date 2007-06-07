@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.20 2007/04/24 16:45:06 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.21 2007/05/25 21:06:46 fewtrell Exp $
 
 /** @file generate Light Asymmetry calibrations from Muon event filesusing Cal Digi Hodoscope
     for track & hit information
@@ -103,31 +103,31 @@ int main(int argc,
     //-- SETUP LOG FILE --//
     /// multiplexing output streams
     /// simultaneously to cout and to logfile
-    LogStream::addStream(cout);
+    LogStrm::addStream(cout);
     string logfile(cfg.outputBasename.getVal() + ".log.txt");
     ofstream tmpStrm(logfile.c_str());
 
-    LogStream::addStream(tmpStrm);
+    LogStrm::addStream(tmpStrm);
 
     //-- LOG SOFTWARE VERSION INFO --//
-    output_env_banner(LogStream::get());
-    LogStream::get() << endl;
-    cfg.cmdParser.printStatus(LogStream::get());
-    LogStream::get() << endl;
+    output_env_banner(LogStrm::get());
+    LogStrm::get() << endl;
+    cfg.cmdParser.printStatus(LogStrm::get());
+    LogStrm::get() << endl;
 
     //-- RETRIEVE PEDESTALS
     CalPed peds;
-    LogStream::get() << __FILE__ << ": reading in muon pedestal file: "
+    LogStrm::get() << __FILE__ << ": reading in muon pedestal file: "
                      << cfg.pedTXTFile.getVal() << endl;
     peds.readTXT(cfg.pedTXTFile.getVal());
 
     //-- RETRIEVE CIDAC2ADC
     CIDAC2ADC dac2adc;
-    LogStream::get() << __FILE__ << ": reading in dac2adc txt file: "
+    LogStrm::get() << __FILE__ << ": reading in dac2adc txt file: "
                      << cfg.inlTXTFile.getVal() << endl;
     dac2adc.readTXT(cfg.inlTXTFile.getVal());
 
-    LogStream::get() << __FILE__ << ": generating dac2adc splines: " << endl;
+    LogStrm::get() << __FILE__ << ": generating dac2adc splines: " << endl;
     dac2adc.genSplines();
 
     //-- MUON ASYM
@@ -145,13 +145,13 @@ int main(int argc,
     CalAsym   calAsym;
 
     // open file to save output histograms.
-    LogStream::get() << __FILE__ << ": opening output histogram file: "
+    LogStrm::get() << __FILE__ << ": opening output histogram file: "
                      << histFilename << endl;
     TFile histFile(histFilename.c_str(),
                    "RECREATE",
                    "CAL Muon Asymmetry");
 
-    LogStream::get() << __FILE__ << ": reading root event file(s) starting w/ "
+    LogStrm::get() << __FILE__ << ": reading root event file(s) starting w/ "
                      << rootFileList[0] << endl;
     muonAsym.fillHists(cfg.entriesPerHist.getVal(),
                        rootFileList);
@@ -160,15 +160,15 @@ int main(int argc,
     // Save file to disk before entering fit portion (saves time if i crash during debugging).
     //histFile->Write();
     
-    asymHists.summarizeHists(LogStream::get());
+    asymHists.summarizeHists(LogStrm::get());
 
-    LogStream::get() << __FILE__ << ": fitting muon asymmmetry histograms." << endl;
+    LogStrm::get() << __FILE__ << ": fitting muon asymmmetry histograms." << endl;
     asymHists.fitHists(calAsym);
 
-    LogStream::get() << __FILE__ << ": writing muon asymmetry: "
+    LogStrm::get() << __FILE__ << ": writing muon asymmetry: "
                      << outputTXTFile << endl;
     calAsym.writeTXT(outputTXTFile);
-    LogStream::get() << __FILE__ << ": writing histogram file: "
+    LogStrm::get() << __FILE__ << ": writing histogram file: "
                      << histFilename << endl;
     histFile.Write();
   } catch (exception &e) {

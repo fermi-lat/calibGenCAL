@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/RootFileAnalysis.cxx,v 1.2 2007/04/10 14:51:02 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/RootFileAnalysis.cxx,v 1.3 2007/05/25 21:06:48 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -48,7 +48,7 @@ namespace calibGenCAL {
     if (mcFilenames) {
       for (vector < string > ::const_iterator itr = mcFilenames->begin();
            itr != mcFilenames->end(); ++itr) {
-        LogStream::get() << "mc file added to chain: " << *itr << endl;
+        LogStrm::get() << "mc file added to chain: " << *itr << endl;
         m_mcChain.Add(itr->c_str());
       }
       m_mcChain.SetBranchAddress("McEvent", &m_mcEvt);
@@ -59,7 +59,7 @@ namespace calibGenCAL {
     if (digiFilenames) {
       for (vector < string > ::const_iterator itr = digiFilenames->begin();
            itr != digiFilenames->end(); ++itr) {
-        LogStream::get() << "digi file added to chain: " << *itr << endl;
+        LogStrm::get() << "digi file added to chain: " << *itr << endl;
         m_digiChain.Add(itr->c_str());
       }
       m_digiChain.SetBranchAddress("DigiEvent", &m_digiEvt);
@@ -70,7 +70,7 @@ namespace calibGenCAL {
     if (reconFilenames) {
       for (vector < string > ::const_iterator itr = reconFilenames->begin();
            itr != reconFilenames->end(); ++itr) {
-        LogStream::get() << "recon file added to chain: " << *itr << endl;
+        LogStrm::get() << "recon file added to chain: " << *itr << endl;
         m_reconChain.Add(itr->c_str());
       }
       m_reconChain.SetBranchAddress("ReconEvent", &m_reconEvt);
@@ -81,7 +81,7 @@ namespace calibGenCAL {
     if (svacFilenames) {
       for (vector < string > ::const_iterator itr = svacFilenames->begin();
            itr != svacFilenames->end(); ++itr) {
-        LogStream::get() << "svac file added to chain: " << *itr << endl;
+        LogStrm::get() << "svac file added to chain: " << *itr << endl;
         m_svacChain.Add(itr->c_str());
       }
       m_chainArr.Add(&m_svacChain);
@@ -91,7 +91,7 @@ namespace calibGenCAL {
     if (gcrSelectFilenames) {
       for (vector < string > ::const_iterator itr = gcrSelectFilenames->begin();
            itr != gcrSelectFilenames->end(); ++itr) {
-        LogStream::get() << "gcrSelect file added to chain: " << *itr << endl;
+        LogStrm::get() << "gcrSelect file added to chain: " << *itr << endl;
         m_gcrSelectChain.Add(itr->c_str());
       }
       m_gcrSelectChain.SetBranchAddress("GcrSelectEvent", &m_gcrSelectEvt);

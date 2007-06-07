@@ -1,16 +1,17 @@
 #ifndef GCRHists_h
 #define GCRHists_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.h,v 1.4 2007/04/24 16:45:07 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.h,v 1.5 2007/05/25 21:06:47 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
 */
 
 // LOCAL INCLUDES
+#include "HistIdx.h"
+#include "HistVec.h"
 #include "../Util/CGCUtil.h"
 #include "../Specs/singlex16.h"
 #include "HistMap.h"
-#include "HistVec.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"
@@ -41,15 +42,15 @@ namespace calibGenCAL {
   class GCRHists {
   public:
     /// \param summaryMode enable to skip individual xtal histograms & only keep 'summary' histograms
-    /// \param rootFilePath if != "", then all matching histograms will be loaded from given file.
-    GCRHists(const bool summaryMode, 
-             const std::string &rootFilePath="");
+    /// \property rootDir all histograms for this collection are loaded / saved inside this directory
+    /// \param writeDir (if non-zero) all new histograms will be written out to this directory opun class destruction.
+    /// \param readDir (if non-zero) any associated histograms will be read from this directory upon construction 
+    GCRHists(const bool summaryMode,
+             TDirectory *const writeDir=0,
+             TDirectory *const readDir=0);
 
     /// print histogram summary info to output stream
     void summarizeHists(ostream &ostrm) const;
-
-    /// set ROOT directory for each histogram
-    void setHistDir(TDirectory *const dir);
 
     /// fit histograms & save means
     /// \param calMPD write fitted mevPerDAC to calMPD
@@ -59,9 +60,9 @@ namespace calibGenCAL {
     /// fill all associated histograms w/ valid CIDAC hit for given channel & particle Z
     /// \parm inferredZ inferred z for particle
     void fillMeanCIDACZ(const CalUtil::XtalIdx xtalIdx,
-                       const CalUtil::DiodeNum diode, 
-                       const unsigned short inferredZ,
-                       const float cidac);
+                        const CalUtil::DiodeNum diode, 
+                        const unsigned short inferredZ,
+                        const float cidac);
 
     /// fill all associated histograms w/ valid CIDAC hit for given channel
     void fillMeanCIDAC(const CalUtil::XtalIdx xtalIdx,
@@ -83,110 +84,31 @@ namespace calibGenCAL {
     unsigned minEntries() const;
 
   private:
-    /// skip event processing & load histograms from previous analysis
-    void loadHists(const string &filename);
+    /// load all associated histogram from m_readDir
+    void loadHists(TDirectory &dir);
 
     /// build new empty histogram data
     void initHists();
+
+    /// set current directory for all histograms
+    void setDirectory(TDirectory *const dir);
     
-    /// index class for mean CIDAC histogram collection
-    class MeanDACHistId {
-    public:
-      MeanDACHistId(const unsigned short inferredZ,
-                    const CalUtil::XtalIdx xtalIdx,
-                    const CalUtil::DiodeNum diode) :
-        inferredZ(inferredZ),
-        xtalIdx(xtalIdx),
-        diode(diode)
-      {}
-
-      /// construct from raw integer format (same as from val() method)
-      MeanDACHistId(const unsigned raw) :
-        inferredZ((raw/CalUtil::DiodeNum::N_VALS)/CalUtil::XtalIdx::N_VALS),
-        xtalIdx((raw/CalUtil::DiodeNum::N_VALS)%CalUtil::XtalIdx::N_VALS),
-        diode(raw%CalUtil::DiodeNum::N_VALS)
-      {}
-
-      const unsigned short inferredZ;
-      const CalUtil::XtalIdx xtalIdx;
-      const CalUtil::DiodeNum diode;
-
-      /// convert to string representation
-      std::string toStr() const;
-
-      bool operator==(const MeanDACHistId &that) const {
-        return val() == that.val();
-      }
-
-      bool operator!=(const MeanDACHistId &that) const {
-        return !(*this == that);
-      }
-
-      bool operator<(const MeanDACHistId &that) const {
-        return val() < that.val();
-      }
-
-      /// convert to flat index for storage
-      unsigned val() const {
-        return diode.val() + CalUtil::DiodeNum::N_VALS*(xtalIdx.val() + inferredZ*CalUtil::XtalIdx::N_VALS);
-      }
-    };
 
 
     /// collection stores histograms indexed by tuple(inferredZ,XtalIdx,diode)
     /// as needed.
-    typedef HistMap<MeanDACHistId, TH1S> MeanDACHistCol;
+    typedef HistMap<MeanDacZId, TH1S> MeanDACHistCol;
     std::auto_ptr<MeanDACHistCol> m_meanDACHists;
-
-    /// index class for mean CIDAC histogram collection (all Z's combined)
-    class MeanDACAllZHistId {
-    public:
-      MeanDACAllZHistId(const CalUtil::XtalIdx xtalIdx,
-                        const CalUtil::DiodeNum diode) :
-        xtalIdx(xtalIdx),
-        diode(diode)
-      {}
-
-      /// construct from raw integer format (same as from val() method)
-      MeanDACAllZHistId(const unsigned raw) :
-        xtalIdx(raw/CalUtil::DiodeNum::N_VALS),
-        diode(raw%CalUtil::DiodeNum::N_VALS)
-      {}
-
-      const CalUtil::XtalIdx xtalIdx;
-      const CalUtil::DiodeNum diode;
-
-      /// convert to string representation
-      std::string toStr() const;
-
-      bool operator==(const MeanDACAllZHistId &that) const {
-        return val() == that.val();
-      }
-
-      bool operator!=(const MeanDACAllZHistId &that) const {
-        return !(*this == that);
-      }
-
-      bool operator<(const MeanDACAllZHistId &that) const {
-        return val() < that.val();
-      }
-
-      /// convert to flat index for storage
-      unsigned val() const {
-        return diode.val() + CalUtil::DiodeNum::N_VALS*xtalIdx.val();
-      }
-    };
-
 
     /// collection stores histograms indexed by tuple(XtalIdx,DiodeNum)
     /// as needed.
-    typedef HistMap<MeanDACAllZHistId, TH1S> MeanDACAllZHistCol;
+    typedef HistMap<MeanDACId, TH1S> MeanDACAllZHistCol;
     std::auto_ptr<MeanDACAllZHistCol> m_meanDACAllZHists;
     
     
     /// ratio between mean LE & HE CIDAC per xtal
     typedef HistVec<CalUtil::FaceIdx, TProfile> DACRatioProfCol;
-    /// optionally disbaled when summaryMode = false
+    /// optionally disbaled when m_summaryMode = false
     std::auto_ptr<DACRatioProfCol> m_dacRatioProfs;
 
 
@@ -194,51 +116,11 @@ namespace calibGenCAL {
     /// \note outermost index from 0 -> 2 by lower of 2 compared ranges
     /// (i.e. index 0 is rng 0 vs rng 1, index 2 is rng 2 vs rng 3)
     typedef HistVec<CalUtil::RngIdx, TProfile> ADCRatioProfCol;
-    /// optionally disbaled when summaryMode = false
+    /// optionally disbaled when m_summaryMode = false
     std::auto_ptr<ADCRatioProfCol> m_adcRatioProfs;
 
-    /// index class for mean dac summary histograms
-    class MeanDACSumHistId {
-    public:
-      MeanDACSumHistId(const unsigned short inferredZ,
-                       const CalUtil::DiodeNum diode) :
-        inferredZ(inferredZ),
-        diode(diode) {}
-
-      /// construct from raw integer format (same as from val() method)
-      MeanDACSumHistId(const unsigned raw) :
-        inferredZ(raw/CalUtil::DiodeNum::N_VALS),
-        diode(raw%CalUtil::DiodeNum::N_VALS)
-      {
-      }
-
-
-      const unsigned short inferredZ;
-      const CalUtil::DiodeNum diode;
-
-      /// convert to string representation
-      std::string toStr() const;
-
-      bool operator==(const MeanDACSumHistId &that) const {
-        return val() == that.val();
-      }
-
-      bool operator!=(const MeanDACSumHistId &that) const {
-        return !(*this == that);
-      }
-
-      bool operator<(const MeanDACSumHistId &that) const {
-        return val() < that.val();
-      } 
-
-      /// convert to flat index for storage
-      unsigned val() const {
-        return inferredZ*CalUtil::DiodeNum::N_VALS + diode.val();
-      }
-    };
-
     /// sum over all xtals, outer map is for particle inferredZ, inner array for diode
-    typedef HistMap<MeanDACSumHistId, TH1S> MeanDACSumHistCol;
+    typedef HistMap<ZDiodeId, TH1S> MeanDACSumHistCol;
     std::auto_ptr<MeanDACSumHistCol> m_meanDACSumHists;
 
     /// sum over all xtals & all inferredZ's
@@ -255,8 +137,10 @@ namespace calibGenCAL {
     std::auto_ptr<ADCRatioSumProfCol> m_adcRatioSumProfs;
   
     /// generate summary histograms only (no individual channels)
-    const bool  summaryMode;
-  };
+    const bool m_summaryMode;
 
+    /// all new (& modified) histograms written to this directory
+    TDirectory *const m_writeDir;
+  };
 }; // namespace calibGenCAL
 #endif

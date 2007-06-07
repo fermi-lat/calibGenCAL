@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.22 2007/04/24 16:45:06 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.23 2007/05/25 21:06:46 fewtrell Exp $
 
 /** @file Gen MevPerDAC calibrations from Muon event files using Cal Digi Hodoscope
     for track & hit information
@@ -109,35 +109,35 @@ int main(int argc,
     //-- SETUP LOG FILE --//
     /// multiplexing output streams
     /// simultaneously to cout and to logfile
-    LogStream::addStream(cout);
+    LogStrm::addStream(cout);
     string logfile(cfg.outputBasename.getVal() + ".log.txt");
     ofstream tmpStrm(logfile.c_str());
 
-    LogStream::addStream(tmpStrm);
+    LogStrm::addStream(tmpStrm);
 
     //-- LOG SOFTWARE VERSION INFO --//
-    output_env_banner(LogStream::get());
-    LogStream::get() << endl;
-    cfg.cmdParser.printStatus(LogStream::get());
-    LogStream::get() << endl;
+    output_env_banner(LogStrm::get());
+    LogStrm::get() << endl;
+    cfg.cmdParser.printStatus(LogStrm::get());
+    LogStrm::get() << endl;
 
     //-- RETRIEVE PEDESTALS
     CalPed    peds;
-    LogStream::get() << __FILE__ << ": reading in muon pedestal file: " << cfg.pedTXTFile.getVal() << endl;
+    LogStrm::get() << __FILE__ << ": reading in muon pedestal file: " << cfg.pedTXTFile.getVal() << endl;
     peds.readTXT(cfg.pedTXTFile.getVal());
 
     // first see if use has explicitly chosen a txt filename
     CIDAC2ADC dac2adc;
-    LogStream::get() << __FILE__ << ": reading in cidac2adc txt file: " << cfg.inlTXTFile.getVal() << endl;
+    LogStrm::get() << __FILE__ << ": reading in cidac2adc txt file: " << cfg.inlTXTFile.getVal() << endl;
     dac2adc.readTXT(cfg.inlTXTFile.getVal());
-    LogStream::get() << __FILE__ << ": generating cidac2adc splines: " << endl;
+    LogStrm::get() << __FILE__ << ": generating cidac2adc splines: " << endl;
     dac2adc.genSplines();
 
     //-- RETRIEVE ASYM
     CalAsym asym;
-    LogStream::get() << __FILE__ << ": reading in muon asym file: " << cfg.asymTXTFile.getVal() << endl;
+    LogStrm::get() << __FILE__ << ": reading in muon asym file: " << cfg.asymTXTFile.getVal() << endl;
     asym.readTXT(cfg.asymTXTFile.getVal());
-    LogStream::get() << __FILE__ << ": building asymmetry splines: " << endl;
+    LogStrm::get() << __FILE__ << ": building asymmetry splines: " << endl;
     asym.genSplines();
 
     //-- MUON MPD
@@ -154,7 +154,7 @@ int main(int argc,
     ///////////////////////////////////////
 
     // open file to save output histograms.
-    LogStream::get() << __FILE__ << ": opening output histogram file: "
+    LogStrm::get() << __FILE__ << ": opening output histogram file: "
                      << histFilename << endl;
     TFile histFile(histFilename.c_str(), "RECREATE", "CAL Muon Calib");
     
@@ -166,7 +166,7 @@ int main(int argc,
 
     CalMPD calMPD;
 
-    LogStream::get() << __FILE__ << ": reading root event file(s) starting w/ " << rootFileList[0] << endl;
+    LogStrm::get() << __FILE__ << ": reading root event file(s) starting w/ " << rootFileList[0] << endl;
     muonMPD.fillHists(cfg.entriesPerHist.getVal(),
                       rootFileList);
     mpdHists.trimHists();
@@ -174,13 +174,13 @@ int main(int argc,
     // Save file to disk before entering fit portion (saves time if i crash during debugging).
     //histFile->Write();
     
-    LogStream::get() << __FILE__ << ": fitting muon mpd histograms." << endl;
+    LogStrm::get() << __FILE__ << ": fitting muon mpd histograms." << endl;
     mpdHists.fitHists(calMPD);
 
-    LogStream::get() << __FILE__ << ": writing muon mpd: " << outputTXTFile << endl;
+    LogStrm::get() << __FILE__ << ": writing muon mpd: " << outputTXTFile << endl;
     calMPD.writeTXT(outputTXTFile);
 
-    LogStream::get() << __FILE__ << ": writing histogram file: " << histFilename << endl;
+    LogStrm::get() << __FILE__ << ": writing histogram file: " << histFilename << endl;
     histFile.Write();
 
   } catch (exception &e) {

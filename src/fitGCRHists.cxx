@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/fitGCRHists.cxx,v 1.7 2007/04/26 20:05:08 fewtrell Exp $ //
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/fitGCRHists.cxx,v 1.8 2007/05/25 21:06:46 fewtrell Exp $ //
 
 /** @file 
     @author Zachary Fewtrell
@@ -31,7 +31,7 @@ public:
   AppCfg(const int argc,
          const char **argv) :
     cmdParser(path_remove_ext(__FILE__)),
-    histFile("histFile",
+    inputROOTPath("inputROOTPath",
              "input ROOT histogram file",
              ""),
     outputBasename("outputBaseName",
@@ -45,7 +45,7 @@ public:
          "print usage info")
 
   {
-    cmdParser.registerArg(histFile);
+    cmdParser.registerArg(inputROOTPath);
     cmdParser.registerArg(outputBasename);
     cmdParser.registerSwitch(summaryMode);
     cmdParser.registerSwitch(help);
@@ -65,7 +65,7 @@ public:
   CmdLineParser cmdParser;
 
   /// input ROOT file w/ histograms
-  CmdArg<string> histFile;
+  CmdArg<string> inputROOTPath;
 
   /// base filename for all output files
   CmdArg<string> outputBasename;
@@ -90,37 +90,38 @@ int main(const int argc,
     //-- SETUP LOG FILE --//
     /// multiplexing output streams
     /// simultaneously to cout and to logfile
-    LogStream::addStream(cout);
+    LogStrm::addStream(cout);
     // generate logfile name
     const string logfile(cfg.outputBasename.getVal() + ".log.txt");
     ofstream tmpStrm(logfile.c_str());
 
-    LogStream::addStream(tmpStrm);
+    LogStrm::addStream(tmpStrm);
 
     //-- LOG SOFTWARE VERSION INFO --//
-    output_env_banner(LogStream::get());
-    LogStream::get() << endl;
-    cfg.cmdParser.printStatus(LogStream::get());
-    LogStream::get() << endl;
-
-    /// retrieve histograms from previous analysis.
-    GCRHists  gcrHists(cfg.summaryMode.getVal(), cfg.histFile.getVal());
-
+    output_env_banner(LogStrm::get());
+    LogStrm::get() << endl;
+    cfg.cmdParser.printStatus(LogStrm::get());
+    LogStrm::get() << endl;
 
     const string outputROOTFilename(cfg.outputBasename.getVal() + ".root");
+    LogStrm::get() << __FILE__ << ": opening output histogram file: " << outputROOTFilename << endl;
     TFile outputROOTFile(outputROOTFilename.c_str(),
                          "RECREATE",
                          "Fitted GCR Histograms");
-    gcrHists.setHistDir(&outputROOTFile);
+
+    /// retrieve histograms from previous analysis.
+    LogStrm::get() << __FILE__ << ": opening input histogram file: " << cfg.inputROOTPath.getVal() << endl;
+    TFile inputROOTFile(cfg.inputROOTPath.getVal().c_str(),"READ");
+    GCRHists  gcrHists(cfg.summaryMode.getVal(), &outputROOTFile, &inputROOTFile);
+
     
     CalMPD calMPD;
+    LogStrm::get() << __FILE__ << ": fitting histograms" << endl;
     gcrHists.fitHists(calMPD);
 
     // output txt file name
-    const string   outputTXTFile(cfg.outputBasename.getVal()+".txt");
-    
-
-    calMPD.writeTXT(outputTXTFile);
+    //const string   outputTXTFile(cfg.outputBasename.getVal()+".txt");
+    //calMPD.writeTXT(outputTXTFile);
     
     outputROOTFile.Write();
     outputROOTFile.Close();
