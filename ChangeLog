@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Thu Jun  7 10:45:43 PDT 2007
+calibGenCAL/src/lib/Util
+
+Modified Files:
+	CGCUtil.cxx CGCUtil.h LangauFun.cxx RootFileAnalysis.cxx 
+	TwrHodoscope.cxx 
+Log Message:
+GCR Histograms now stored in subfolder tree.  helps since ROOT appears to be inneficient w/ large # of entries in directory.
+    *
+------------------------------------------------------------
+User: fewtrell  Thu Jun  7 10:45:43 PDT 2007
 calibGenCAL/src/lib/Hists
 
 Modified Files:
