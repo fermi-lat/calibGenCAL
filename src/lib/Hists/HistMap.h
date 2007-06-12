@@ -1,7 +1,7 @@
 #ifndef HistMap_h
 #define HistMap_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.h,v 1.5 2007/05/25 21:06:47 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistMap.h,v 1.2 2007/06/07 17:45:43 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -30,10 +30,6 @@
     \note class is intended for use w/ indexes that are spare arrays.  
     fully populated arrays should use HistVec
 
-    \note this class also creates a TTree tuple which is intended to be saved w/
-    the histograms & which can be used as a list of the sparesely populated histograms
-    in retrieval
-
     \note IdxType needs a unsigned IdxType::val() method like the CalUtil::CalDefs idx classes.
     \note IdxType must support a constructor from 'unsigned'
 
@@ -45,10 +41,13 @@ namespace calibGenCAL {
             typename HistType> 
   class HistMap {
   private:
-    typedef std::map<IdxType,HistType*> MapType;
     typedef std::pair<IdxType,HistType*> ValType;
 
   public:
+    typedef std::map<IdxType,HistType*> MapType;
+    typedef IdxType IdxType;
+    typedef HistType HistType;
+    
     /// \param m_histBasename all histograms will be created _as_ needed w/ name m_histBasename+idx.toStr()
     /// \param writeDir (if non-zero) all histograms will be written out to this directory opun class destruction.
     /// \param readDir (if non-zero) any associated histograms will be read from this directory upon construction 

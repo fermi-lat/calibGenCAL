@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/GCRCalibAlg.cxx,v 1.4 2007/05/25 21:06:47 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/GCRCalibAlg.cxx,v 1.5 2007/06/07 17:45:43 fewtrell Exp $
 
 /** @file 
     @author Zach Fewtrell
@@ -221,12 +221,12 @@ namespace calibGenCAL {
       return;
     }
 
-    const GcrSelectVals *gcrSelectVals = dynamic_cast<const GcrSelectVals*>(gcrSelect->getGcrSelectVals());
+    const GcrSelectVals *const gcrSelectVals = dynamic_cast<const GcrSelectVals*>(gcrSelect->getGcrSelectVals());
     if (gcrSelectVals)
       eventData.inferredZ = max(0,gcrSelectVals->getInferedZ());
   
 
-    const TObjArray *      gcrSelectedXtalCol = gcrSelect->getGcrSelectedXtalCol();
+    const TObjArray *const      gcrSelectedXtalCol = gcrSelect->getGcrSelectedXtalCol();
     if (!gcrSelectedXtalCol) {
       LogStrm::get() << __FILE__ << ": No GcrSelectedXtalCol found: " << eventData.eventNum  << endl;
       return;
