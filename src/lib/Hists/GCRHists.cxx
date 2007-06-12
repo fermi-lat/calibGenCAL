@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.cxx,v 1.9 2007/05/25 21:06:47 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.cxx,v 1.10 2007/06/07 17:45:43 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -222,42 +222,6 @@ namespace calibGenCAL {
     }
   }
   
-  void GCRHists::fitHists(CalMPD &calMPD) {
-    // build peak ratio initial values & fitting limits
-
-    // PER XTAL LOOP
-    for (DiodeNum diode; diode.isValid(); diode++) {
-
-      if (!m_summaryMode)
-        for (MeanDACHistCol::iterator it(m_meanDACHists->begin());
-             it != m_meanDACHists->end();
-             it++) {
-           
-          //const unsigned short inferredZ(it->first.inferredZ);
-          const DiodeNum diode(it->first.getDiode());
-          TH1S &hist(*(it->second));
-           
-          hist.Fit("gaus","Q");
-          hist.Write();
-        }
-
-      for (MeanDACSumHistCol::iterator it(m_meanDACSumHists->begin());
-           it != m_meanDACSumHists->end();
-           it++) {
-
-        //const unsigned short inferredZ(it->first.inferredZ);
-        const DiodeNum diode(it->first.getDiode());
-        TH1S &hist = *(it->second);
-      
-        hist.Fit("gaus","Q");
-        //hist.Write();
-        cout << hist.GetName() << " " 
-             << hist.GetFunction("gaus")->GetParameter(1) << " "
-             << hist.GetFunction("gaus")->GetParameter(2) << " "
-             << endl;
-      }
-    }
-  }
 
   void GCRHists::fillAdcRatio(const RngIdx rngIdx, 
                               const float thisADC,

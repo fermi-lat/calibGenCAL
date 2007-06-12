@@ -1,6 +1,6 @@
 #ifndef GCRHists_h
 #define GCRHists_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.h,v 1.5 2007/05/25 21:06:47 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.h,v 1.6 2007/06/07 17:45:43 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -52,11 +52,6 @@ namespace calibGenCAL {
     /// print histogram summary info to output stream
     void summarizeHists(ostream &ostrm) const;
 
-    /// fit histograms & save means
-    /// \param calMPD write fitted mevPerDAC to calMPD
-    /// \param fit a peak to each particle w/ given Zs
-    void fitHists(CalMPD &calMPD);
-
     /// fill all associated histograms w/ valid CIDAC hit for given channel & particle Z
     /// \parm inferredZ inferred z for particle
     void fillMeanCIDACZ(const CalUtil::XtalIdx xtalIdx,
@@ -83,6 +78,12 @@ namespace calibGenCAL {
     /// report minimum # of entries in any histogram
     unsigned minEntries() const;
 
+    typedef HistMap<MeanDacZId, TH1S> MeanDACHistCol;
+    typedef HistMap<ZDiodeId, TH1S> MeanDACSumHistCol;
+    
+    /// \return 0 if collection does not exist.
+    MeanDACHistCol *getMeanDACHists() { return m_meanDACHists.get();}
+    MeanDACSumHistCol &getMeanDACSumHists() { return *m_meanDACSumHists.get();}
   private:
     /// load all associated histogram from m_readDir
     void loadHists(TDirectory &dir);
@@ -92,12 +93,9 @@ namespace calibGenCAL {
 
     /// set current directory for all histograms
     void setDirectory(TDirectory *const dir);
-    
-
 
     /// collection stores histograms indexed by tuple(inferredZ,XtalIdx,diode)
     /// as needed.
-    typedef HistMap<MeanDacZId, TH1S> MeanDACHistCol;
     std::auto_ptr<MeanDACHistCol> m_meanDACHists;
 
     /// collection stores histograms indexed by tuple(XtalIdx,DiodeNum)
@@ -120,7 +118,6 @@ namespace calibGenCAL {
     std::auto_ptr<ADCRatioProfCol> m_adcRatioProfs;
 
     /// sum over all xtals, outer map is for particle inferredZ, inner array for diode
-    typedef HistMap<ZDiodeId, TH1S> MeanDACSumHistCol;
     std::auto_ptr<MeanDACSumHistCol> m_meanDACSumHists;
 
     /// sum over all xtals & all inferredZ's

@@ -1,7 +1,7 @@
 #ifndef HistVec_h
 #define HistVec_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.h,v 1.5 2007/05/25 21:06:47 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistVec.h,v 1.2 2007/06/07 17:45:43 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -41,6 +41,9 @@ namespace calibGenCAL {
             typename HistType> 
   class HistVec {
   public:
+    typedef IdxType IdxType;
+    typedef HistType HistType;
+
     /// \param histBasename all histograms will be created w/ name histBasename+idx.toStr()
     /// \param writeDir (if non-zero) all new histograms will be written out to this directory opun class destruction.
     /// \param readDir (if non-zero) any associated histograms will be read from this directory upon construction 
