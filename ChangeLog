@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Tue Jun 12 10:40:46 PDT 2007
+calibGenCAL/src/lib/Algs
+
+Modified Files:
+	GCRCalibAlg.cxx 
+Log Message:
+added GCRFit module for fitGCRHists alg.
+generates tuple w/ fit results
+    *
+------------------------------------------------------------
+User: fewtrell  Tue Jun 12 10:40:46 PDT 2007
 calibGenCAL/src
 
 Modified Files:
