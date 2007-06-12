@@ -1,5 +1,17 @@
 ------------------------------------------------------------
 User: fewtrell  Tue Jun 12 10:40:46 PDT 2007
+calibGenCAL/src/lib/Hists
+
+Modified Files:
+	GCRHists.cxx GCRHists.h HistMap.h HistVec.h 
+Added Files:
+	GCRFit.cxx GCRFit.h 
+Log Message:
+added GCRFit module for fitGCRHists alg.
+generates tuple w/ fit results
+    *
+------------------------------------------------------------
+User: fewtrell  Tue Jun 12 10:40:46 PDT 2007
 calibGenCAL/src/lib/Algs
 
 Modified Files:
