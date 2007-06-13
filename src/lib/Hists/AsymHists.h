@@ -22,6 +22,7 @@
 #include <ostream>
 
 class TH2S;
+class TDirectory;
 
 namespace calibGenCAL {
 
@@ -45,7 +46,7 @@ namespace calibGenCAL {
     void        initHists();
 
     /// load histograms from ROOT output of previous run
-    void        loadHists(const TFile &histFile);
+    void        loadHists(const TDirectory &readDir);
 
     /// print histogram summary info to output stream
     void        summarizeHists(std::ostream &ostrm) const;

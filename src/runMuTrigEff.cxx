@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runMuTrigEff.cxx,v 1.34 2007/05/25 21:06:47 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runMuTrigEff.cxx,v 1.35 2007/06/07 17:45:42 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -9,7 +9,6 @@
 #include "lib/Algs/MuTrigAlg.h"
 #include "lib/CalibDataTypes/CIDAC2ADC.h"
 #include "lib/Util/SimpleIniFile.h"
-#include "lib/Util/CGCUtil.h"
 
 // GLAST INCLUDES
 
@@ -22,7 +21,6 @@
 #include <fstream>
 
 using namespace std;
-using namespace CGCUtil;
 using namespace calibGenCAL;
 
 int main(int argc,

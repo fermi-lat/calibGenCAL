@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/NeighborXtalkAlg.cxx,v 1.3 2007/05/25 21:06:47 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/NeighborXtalkAlg.cxx,v 1.4 2007/06/07 17:45:43 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -10,8 +10,8 @@
 #include "../CalibDataTypes/NeighborXtalk.h"
 #include "../CalibDataTypes/CalPed.h"
 #include "../Specs/singlex16.h"
-#include "../Util/CGCUtil.h"
 #include "../Util/SplineUtil.h"
+#include "../Util/CGCUtil.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalVec.h"
@@ -28,7 +28,6 @@ namespace calibGenCAL {
   using namespace std;
   using namespace CalUtil;
   using namespace singlex16;
-  using namespace CGCUtil;
   using namespace SplineUtil;
 
   NeighborXtalkAlg::NeighborXtalkAlg()

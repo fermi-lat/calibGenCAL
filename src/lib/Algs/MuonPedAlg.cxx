@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonPedAlg.cxx,v 1.4 2007/05/25 21:06:47 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonPedAlg.cxx,v 1.5 2007/06/07 17:45:43 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -8,6 +8,7 @@
 #include "../Util/RootFileAnalysis.h"
 #include "../Algs/MuonPedAlg.h"
 #include "../CalibDataTypes/CalPed.h"
+#include "../Util/ROOTUtil.h"
 #include "../Util/CGCUtil.h"
 
 // GLAST INCLUDES
@@ -26,7 +27,6 @@
 
 namespace calibGenCAL {
 
-  using namespace CGCUtil;
   using namespace CalUtil;
   using namespace std;
 
@@ -141,11 +141,11 @@ namespace calibGenCAL {
     }
   }
 
-  void MuonPedAlg::loadHists(const TFile &histFile) {
+  void MuonPedAlg::loadHists(const TDirectory &readDir) {
     for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++) {
       const string histname = genHistName(rngIdx);
 
-      TH1S  *hist_ptr = retrieveROOTObj < TH1S > (histFile, histname);
+      TH1S  *hist_ptr = retrieveROOTObj < TH1S > (readDir, histname);
       if (!hist_ptr)
         continue;
 

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonMPDAlg.cxx,v 1.3 2007/05/25 21:06:47 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonMPDAlg.cxx,v 1.4 2007/06/07 17:45:43 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -6,15 +6,15 @@
 
 // LOCAL INCLUDES
 #include "MuonMPDAlg.h"
-#include "../Util/RootFileAnalysis.h"
 #include "../CalibDataTypes/CIDAC2ADC.h"
-#include "../Util/TwrHodoscope.h"
-#include "../Specs/CalGeom.h"
 #include "../CalibDataTypes/CalPed.h"
 #include "../CalibDataTypes/CalAsym.h"
 #include "../CalibDataTypes/CalMPD.h"
-#include "../Util/CGCUtil.h"
 #include "../Hists/MPDHists.h"
+#include "../Specs/CalGeom.h"
+#include "../Util/RootFileAnalysis.h"
+#include "../Util/TwrHodoscope.h"
+#include "../Util/CGCUtil.h"
 
 // GLAST INCLUDES
 #include "digiRootData/DigiEvent.h"
@@ -29,7 +29,6 @@ namespace calibGenCAL {
   using namespace std;
   using namespace CalUtil;
   using namespace CalGeom;
-  using namespace CGCUtil;
 
   MuonMPDAlg::MuonMPDAlg(const CalPed &ped,
                          const CIDAC2ADC &dac2adc,

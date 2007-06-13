@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/IntNonlinAlg.cxx,v 1.3 2007/05/25 21:06:47 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/IntNonlinAlg.cxx,v 1.4 2007/06/07 17:45:43 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -6,10 +6,11 @@
 
 // LOCAL INCLUDES
 #include "IntNonlinAlg.h"
-#include "../Util/RootFileAnalysis.h"
 #include "../CalibDataTypes/CIDAC2ADC.h"
 #include "../CalibDataTypes/CalPed.h"
 #include "../Specs/singlex16.h"
+#include "../Util/RootFileAnalysis.h"
+#include "../Util/CGCUtil.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalVec.h"
@@ -26,7 +27,6 @@
 
 namespace calibGenCAL {
 
-  using namespace CGCUtil;
   using namespace CalUtil;
   using namespace std;
   using namespace singlex16;

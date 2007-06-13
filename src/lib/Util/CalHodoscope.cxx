@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CalHodoscope.cxx,v 1.2 2007/04/10 14:51:02 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CalHodoscope.cxx,v 1.3 2007/05/25 21:06:48 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -6,9 +6,9 @@
 
 // LOCAL INCLUDES
 #include "CalHodoscope.h"
-#include "CGCUtil.h"
 #include "../CalibDataTypes/CalPed.h"
 #include "../CalibDataTypes/CIDAC2ADC.h"
+#include "../Util/stl_util.h"
 
 // GLAST INCLUDES
 #include "digiRootData/CalDigi.h"
@@ -22,7 +22,6 @@
 namespace calibGenCAL {
 
   using namespace CalUtil;
-  using namespace CGCUtil;
 
   void CalHodoscope::clear() {
     // zero out all vectors

@@ -1,7 +1,7 @@
 #ifndef GCRFit_h
 #define GCRFit_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.h,v 1.6 2007/06/07 17:45:43 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRFit.h,v 1.1 2007/06/12 17:40:46 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -22,20 +22,19 @@ namespace calibGenCAL {
   class GCRHists;
   class CalMPD;
 
-  /** \brief Responsible for fitting a collection of GCR histograms 
+  /** \brief Collection of tools for fitting GCR calib histograms
    */
-  class GCRFit {
-  public:
-    /// fit GCR histograms & output fitting results to CalMPD obj
+  namespace GCRFit {
+    /// fit GCR histograms & output fitting results to CalMPD obj w/ simple Gaussian peakshape
     /// \parm calMPD output calibration constants
     /// \parm writeFile location for output fit results tuple
     /// \parm tupleName output tuple fit results name
-    static void fitHists(GCRHists &histCol,
-                         CalMPD &calMPD,
-                         TDirectory *const writeFile,
-                         const std::string &tupleName="GCRFit"
-                         );
-  };
+    void gcrFitGaus(GCRHists &histCol,
+                    CalMPD &calMPD,
+                    TDirectory *const writeFile,
+                    const std::string &tupleName="GCRFitGauss"
+                    );
+  } // namespace GCRFit
 
 } // namespace calibGenCAL 
 

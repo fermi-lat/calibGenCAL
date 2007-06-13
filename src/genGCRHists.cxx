@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genGCRHists.cxx,v 1.13 2007/05/25 21:06:46 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genGCRHists.cxx,v 1.14 2007/06/07 17:45:42 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -13,12 +13,13 @@
 #include "lib/Hists/GCRHists.h"
 #include "lib/Algs/GCRCalibAlg.h"
 #include "lib/Util/SimpleIniFile.h"
-#include "lib/Util/CGCUtil.h"
 #include "lib/Util/CfgMgr.h"
+#include "lib/Util/CGCUtil.h"
 
 // GLAST INCLUDES
 
 // EXTLIB INCLUDES
+#include "TFile.h"
 
 // STD INCLUDES
 #include <iostream>
@@ -28,7 +29,6 @@
 
 using namespace std;
 using namespace calibGenCAL;
-using namespace CGCUtil;
 using namespace CfgMgr;
 
 class AppCfg {

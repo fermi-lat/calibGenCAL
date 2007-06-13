@@ -6,8 +6,9 @@
 
 // LOCAL INCLUDES
 #include "MPDHists.h"
-#include "../Util/CGCUtil.h"
 #include "../Util/LangauFun.h"
+#include "../Util/CGCUtil.h"
+#include "../Util/ROOTUtil.h"
 
 // GLAST INCLUDES
 
@@ -28,7 +29,6 @@ namespace calibGenCAL {
 
   using namespace std;
   using namespace CalUtil;
-  using namespace CGCUtil;
 
   const float MPDHists::MUON_ENERGY = 11.2;
 
@@ -273,21 +273,21 @@ namespace calibGenCAL {
     for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
       //-- DAC_LL HISTOGRAMS --//
       histname = genHistName("dacLL", xtalIdx.toStr());
-      TH1S *hist_LL = CGCUtil::retrieveROOTObj < TH1S > (*gDirectory, histname);
+      TH1S *hist_LL = retrieveROOTObj < TH1S > (*gDirectory, histname);
       if (!hist_LL) continue;
 
       m_dacLLHists[xtalIdx] = hist_LL;
 
       //-- DAC_L2S HISTOGRAMS --//
       histname = genHistName("dacL2S", xtalIdx.toStr());
-      TH1S *hist_L2S = CGCUtil::retrieveROOTObj < TH1S > (*gDirectory, histname);
+      TH1S *hist_L2S = retrieveROOTObj < TH1S > (*gDirectory, histname);
       if (!hist_L2S) continue;
 
       m_dacL2SHists[xtalIdx] = hist_L2S;
 
       //-- DAC_L2S HISTOGRAMS --//
       histname = genHistName("dacL2S_slope", xtalIdx.toStr());
-      TProfile *hist_L2S_slope = CGCUtil::retrieveROOTObj < TProfile > (*gDirectory, histname);
+      TProfile *hist_L2S_slope = retrieveROOTObj < TProfile > (*gDirectory, histname);
       if (!hist_L2S_slope) continue;
 
       m_dacL2SSlopeProfs[xtalIdx] = hist_L2S_slope;

@@ -1,6 +1,6 @@
 #ifndef GCRHists_h
 #define GCRHists_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.h,v 1.6 2007/06/07 17:45:43 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.h,v 1.7 2007/06/12 17:40:46 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -9,7 +9,6 @@
 // LOCAL INCLUDES
 #include "HistIdx.h"
 #include "HistVec.h"
-#include "../Util/CGCUtil.h"
 #include "../Specs/singlex16.h"
 #include "HistMap.h"
 
@@ -21,7 +20,6 @@
 // EXTLIB INCLUDES
 #include "TProfile.h"
 #include "TH1S.h"
-#include "TFile.h"
 
 // STD INCLUDES
 #include <string>
