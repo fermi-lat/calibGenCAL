@@ -1,4 +1,20 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Jun 13 15:42:13 PDT 2007
+calibGenCAL/src/lib/Util
+
+Modified Files:
+	CGCUtil.cxx CGCUtil.h CalHodoscope.cxx LangauFun.cxx 
+	RootFileAnalysis.cxx TwrHodoscope.cxx 
+Added Files:
+	ROOTUtil.cxx ROOTUtil.h stl_util.h string_util.cxx 
+	string_util.h 
+Log Message:
+GCRFit now does automatic outlier rejection
+broke CGCUtil into separate header files (stl_util, string_util, ROOTUtil)
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Jun 13 15:42:12 PDT 2007
 calibGenCAL/src/lib/Specs
 
