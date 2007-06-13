@@ -1,5 +1,19 @@
 ------------------------------------------------------------
 User: fewtrell  Wed Jun 13 15:42:12 PDT 2007
+calibGenCAL/src/lib/Hists
+
+Modified Files:
+	AsymHists.cxx AsymHists.h GCRFit.cxx GCRFit.h GCRHists.cxx 
+	GCRHists.h HistIdx.cxx HistIdx.h HistMap.h HistVec.h 
+	MPDHists.cxx 
+Log Message:
+GCRFit now does automatic outlier rejection
+broke CGCUtil into separate header files (stl_util, string_util, ROOTUtil)
+
+
+    *
+------------------------------------------------------------
+User: fewtrell  Wed Jun 13 15:42:12 PDT 2007
 calibGenCAL/src/lib/CalibDataTypes
 
 Modified Files:
