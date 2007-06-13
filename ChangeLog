@@ -1,5 +1,17 @@
 ------------------------------------------------------------
 User: fewtrell  Wed Jun 13 15:42:12 PDT 2007
+calibGenCAL/src/lib/CalibDataTypes
+
+Modified Files:
+	CIDAC2ADC.h CalAsym.h CalMPD.h CalPed.cxx CalPed.h 
+Log Message:
+GCRFit now does automatic outlier rejection
+broke CGCUtil into separate header files (stl_util, string_util, ROOTUtil)
+
+
+    *
+------------------------------------------------------------
+User: fewtrell  Wed Jun 13 15:42:12 PDT 2007
 calibGenCAL/src/lib/Algs
 
 Modified Files:
