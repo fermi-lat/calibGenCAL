@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.22 2007/05/25 21:06:46 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.23 2007/06/07 17:45:42 fewtrell Exp $
 
 /** @file Gen CIDAC2ADC calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
@@ -7,8 +7,9 @@
 // LOCAL INCLUDES
 #include "lib/Algs/IntNonlinAlg.h"
 #include "lib/CalibDataTypes/CIDAC2ADC.h"
-#include "lib/Util/CGCUtil.h"
 #include "lib/Util/CfgMgr.h"
+#include "lib/Util/CGCUtil.h"
+#include "lib/Util/string_util.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"
@@ -23,7 +24,6 @@
 using namespace std;
 using namespace calibGenCAL;
 using namespace CalUtil;
-using namespace CGCUtil;
 using namespace CfgMgr;
 
 class AppCfg {

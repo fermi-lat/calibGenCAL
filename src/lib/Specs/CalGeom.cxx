@@ -4,12 +4,11 @@
 
 \brief function definitions for CalGeom.h
 
-$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Specs/CalGeom.cxx,v 1.2 2007/04/10 14:51:02 fewtrell Exp $
+$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Specs/CalGeom.cxx,v 1.3 2007/05/25 21:06:48 fewtrell Exp $
 */
 
 // LOCAL INCLUDES
 #include "CalGeom.h"
-#include "../Util/CGCUtil.h"
 
 // GLAST INCLUDES
 
@@ -17,10 +16,9 @@ $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Specs/CalGeom.cxx,v 1.
 
 // STD INCLUDES
 
-namespace calibGenCAL {
+using namespace CalUtil;
 
-  using namespace CalUtil;
-  using namespace CGCUtil;
+namespace calibGenCAL {
 
   namespace CalGeom {
     CalUtil::XtalIdx pos2Xtal(const Vec3D &pos) {

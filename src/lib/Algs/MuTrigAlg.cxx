@@ -1,15 +1,15 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuTrigAlg.cxx,v 1.4 2007/05/25 21:06:47 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuTrigAlg.cxx,v 1.5 2007/06/07 17:45:43 fewtrell Exp $
 
 /** @file
     @author fewtrell
 */
 
 // LOCAL INCLUDES
-#include "../Util/RootFileAnalysis.h"
 #include "MuTrigAlg.h"
 #include "../CalibDataTypes/CalPed.h"
-#include "../Util/CGCUtil.h"
 #include "../Specs/singlex16.h"
+#include "../Util/RootFileAnalysis.h"
+#include "../Util/CGCUtil.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalArray.h"
@@ -28,7 +28,6 @@ namespace calibGenCAL {
 
   using namespace std;
   using namespace CalUtil;
-  using namespace CGCUtil;
   using namespace singlex16;
 
   static const unsigned short N_MUADC_BINS     = 100;

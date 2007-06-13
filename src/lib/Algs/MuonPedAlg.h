@@ -1,6 +1,6 @@
 #ifndef MuonPedAlg_h
 #define MuonPedAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonPedAlg.h,v 1.2 2007/04/10 14:51:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonPedAlg.h,v 1.3 2007/05/25 21:06:47 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -19,6 +19,7 @@
 class TH1S;
 class DigiEvent;
 class CalDigi;
+class TDirectory;
 
 namespace calibGenCAL {
   class CalPed;
@@ -58,7 +59,7 @@ namespace calibGenCAL {
     void     fitHists(CalPed &peds);
 
     /// skip evenmt processing and load histograms from previous run
-    void     loadHists(const TFile &histFile);
+    void     loadHists(const TDirectory &readDir);
 
     /// delete empty histograms
     /// \note useful for data w/ < 16 Cal modules.

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.cxx,v 1.10 2007/06/07 17:45:43 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.cxx,v 1.11 2007/06/12 17:40:46 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -6,7 +6,7 @@
 
 // LOCAL INCLUDES
 #include "GCRHists.h"
-#include "../Util/CGCUtil.h"
+#include "../Util/ROOTUtil.h"
 
 
 // GLAST INCLUDES
@@ -28,7 +28,6 @@ using namespace CalUtil;
   
 namespace calibGenCAL {
 
-  using namespace CGCUtil;
   using namespace singlex16;
 
   namespace {
@@ -118,9 +117,9 @@ namespace calibGenCAL {
                                                     0,
                                                     0));
     //load individual histograms
-    m_meanDACSumAllZ = CGCUtil::retrieveROOTObj<TH1S>(readDir, MEANDACSUMALLZ_HISTNAME);
-    m_zHist = CGCUtil::retrieveROOTObj<TH1S>(readDir, Z_HISTNAME);
-    m_dacRatioSumProf = CGCUtil::retrieveROOTObj<TProfile>(readDir, DACRATIOSUM_HISTNAME);
+    m_meanDACSumAllZ = retrieveROOTObj<TH1S>(readDir, MEANDACSUMALLZ_HISTNAME);
+    m_zHist = retrieveROOTObj<TH1S>(readDir, Z_HISTNAME);
+    m_dacRatioSumProf = retrieveROOTObj<TProfile>(readDir, DACRATIOSUM_HISTNAME);
   }
 
   void GCRHists::initHists() {

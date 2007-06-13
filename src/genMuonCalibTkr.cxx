@@ -12,14 +12,16 @@
 #include "lib/Hists/AsymHists.h"
 #include "lib/Hists/MPDHists.h"
 #include "lib/Algs/MuonCalibTkrAlg.h"
-#include "lib/Util/CGCUtil.h"
 #include "lib/Util/CfgMgr.h"
+#include "lib/Util/CGCUtil.h"
+#include "lib/Util/string_util.h"
 
 
 // GLAST INCLUDES
 #include "facilities/Util.h"
 
 // EXTLIB INCLUDES
+#include "TFile.h"
 
 // STD INCLUDES
 #include <sstream>
@@ -27,7 +29,6 @@
 
 using namespace std;
 using namespace calibGenCAL;
-using namespace CGCUtil;
 using namespace CfgMgr;
 using namespace facilities;
 

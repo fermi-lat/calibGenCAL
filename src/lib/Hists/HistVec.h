@@ -1,14 +1,13 @@
 #ifndef HistVec_h
 #define HistVec_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistVec.h,v 1.2 2007/06/07 17:45:43 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistVec.h,v 1.3 2007/06/12 17:40:46 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
 */
 
 // LOCAL INCLUDES
-#include "../Util/CGCUtil.h"
 
 
 // GLAST INCLUDES
@@ -128,7 +127,7 @@ namespace calibGenCAL {
           continue;
         
         /// try to retrieve obj from dir
-        HistType *const hist_ptr = CGCUtil::retrieveROOTObj<HistType>(*histdir, 
+        HistType *const hist_ptr = retrieveROOTObj<HistType>(*histdir, 
                                                                       histname.c_str());
         /// skip if histogram doesn't exit
         if (hist_ptr == 0)

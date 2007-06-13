@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/RootFileAnalysis.cxx,v 1.3 2007/05/25 21:06:48 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/RootFileAnalysis.cxx,v 1.4 2007/06/07 17:45:43 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -16,7 +16,6 @@
 
 // EXTLIB INCLUDES
 #include "TChainElement.h"
-#include "TFile.h"
 
 // STD INCLUDES
 #include <vector>
@@ -26,7 +25,6 @@
 namespace calibGenCAL {
 
   using namespace std;
-  using namespace CGCUtil;
 
   RootFileAnalysis::RootFileAnalysis(const vector<string> *mcFilenames,
                                      const vector<string> *digiFilenames,

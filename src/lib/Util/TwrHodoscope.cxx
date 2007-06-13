@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/TwrHodoscope.cxx,v 1.3 2007/05/25 21:06:48 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/TwrHodoscope.cxx,v 1.4 2007/06/07 17:45:43 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -6,9 +6,9 @@
 
 // LOCAL INCLUDES
 #include "TwrHodoscope.h"
-#include "CGCUtil.h"
 #include "../CalibDataTypes/CalPed.h"
 #include "../CalibDataTypes/CIDAC2ADC.h"
+#include "stl_util.h"
 
 // GLAST INCLUDES
 #include "digiRootData/CalDigi.h"
@@ -21,7 +21,6 @@
 
 namespace calibGenCAL {
   using namespace CalUtil;
-  using namespace CGCUtil;
 
 
   void TwrHodoscope::clear() {

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/GCRCalibAlg.cxx,v 1.5 2007/06/07 17:45:43 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/GCRCalibAlg.cxx,v 1.6 2007/06/12 17:40:46 fewtrell Exp $
 
 /** @file 
     @author Zach Fewtrell
@@ -6,13 +6,13 @@
 
 // LOCAL INCLUDES
 #include "../Algs/GCRCalibAlg.h"
-#include "../Util/SimpleIniFile.h"
-#include "../Specs/CalGeom.h"
-#include "../Util/RootFileAnalysis.h"
-#include "../Util/CGCUtil.h"
 #include "../Hists/GCRHists.h"
 #include "../CalibDataTypes/CalPed.h"
 #include "../CalibDataTypes/CIDAC2ADC.h"
+#include "../Specs/CalGeom.h"
+#include "../Util/RootFileAnalysis.h"
+#include "../Util/SimpleIniFile.h"
+#include "../Util/CGCUtil.h"
 
 // GLAST INCLUDES
 #include "gcrSelectRootData/GcrSelectEvent.h"
@@ -29,7 +29,6 @@ using namespace CalUtil;
 using namespace facilities;
 
 namespace calibGenCAL {
-  using namespace CGCUtil;
 
   namespace defaults {
     static const float MAX_ORTHOGONAL_SIN(0.5);
@@ -419,6 +418,8 @@ namespace calibGenCAL {
         algData.gcrHists->fillMeanCIDAC(xtalIdx,
                                         diode,
                                         meanDAC[diode]);
+
+        algData.nFills[diode]++;
 
       }
 

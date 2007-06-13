@@ -6,14 +6,15 @@
 
 // LOCAL INCLUDES
 #include "AsymHists.h"
+#include "../Util/ROOTUtil.h"
 #include "../Util/CGCUtil.h"
 
 // GLAST INCLUDES
 
 // EXTLIB INCLUDES
 #include "TH2S.h"
-#include "TFile.h"
 #include "TStyle.h"
+#include "TDirectory.h"
 
 // STD INCLUDES
 #include <sstream>
@@ -22,9 +23,6 @@ using namespace CalUtil;
 using namespace std;
 
 namespace calibGenCAL {
-  using namespace CGCUtil;
-
-
   void AsymHists::initHists() {
     // fill in min & max histogram levels.
     CalArray<AsymType, float> asymMin;
@@ -67,12 +65,12 @@ namespace calibGenCAL {
                 << endl;
   }
 
-  void AsymHists::loadHists(const TFile &histFile) {
+  void AsymHists::loadHists(const TDirectory &readDir) {
     for (AsymType asymType; asymType.isValid(); asymType++)
       // PER XTAL LOOP
       for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
         const string histname = genHistName(asymType, xtalIdx);
-        TH2S  *hist_ptr = CGCUtil::retrieveROOTObj < TH2S > (histFile, histname);
+        TH2S  *hist_ptr = retrieveROOTObj < TH2S > (readDir, histname);
         if (!hist_ptr)
           continue;
 

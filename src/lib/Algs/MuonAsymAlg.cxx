@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonAsymAlg.cxx,v 1.4 2007/05/25 21:06:47 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonAsymAlg.cxx,v 1.5 2007/06/07 17:45:43 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -9,8 +9,8 @@
 #include "../Util/RootFileAnalysis.h"
 #include "../Util/TwrHodoscope.h"
 #include "../CalibDataTypes/CalAsym.h"
-#include "../Util/CGCUtil.h"
 #include "../Hists/AsymHists.h"
+#include "../Util/CGCUtil.h"
 
 // GLAST INCLUDES
 #include "digiRootData/DigiEvent.h"
@@ -25,7 +25,6 @@ namespace calibGenCAL {
 
   using namespace std;
   using namespace CalUtil;
-  using namespace CGCUtil;
 
   MuonAsymAlg::MuonAsymAlg(const CalPed &ped,
                            const CIDAC2ADC &dac2adc,

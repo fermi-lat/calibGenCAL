@@ -1,13 +1,12 @@
 #ifndef MuonCalibTkrAlg_h
 #define MuonCalibTkrAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonCalibTkrAlg.h,v 1.2 2007/04/10 14:51:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonCalibTkrAlg.h,v 1.3 2007/05/25 21:06:47 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
 */
 
 // LOCAL INCLUDES
-#include "../Util/CGCUtil.h"
 #include "../Specs/CalGeom.h"
 #include "../Util/CalHodoscope.h"
 

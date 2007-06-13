@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/fitGCRHists.cxx,v 1.9 2007/06/07 17:45:42 fewtrell Exp $ //
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/fitGCRHists.cxx,v 1.10 2007/06/12 17:40:46 fewtrell Exp $ //
 
 /** @file 
     @author Zachary Fewtrell
@@ -7,10 +7,10 @@
 */
 
 // LOCAL INCLUDES
-#include "lib/Hists/GCRHists.h"
 #include "lib/Util/CfgMgr.h"
 #include "lib/Util/CGCUtil.h"
 #include "lib/CalibDataTypes/CalMPD.h"
+#include "lib/Hists/GCRHists.h"
 #include "lib/Hists/GCRFit.h"
 
 // GLAST INCLUDES
@@ -25,7 +25,6 @@
 using namespace std;
 using namespace calibGenCAL;
 using namespace CfgMgr;
-using namespace CGCUtil;
 
 class AppCfg {
 public:
@@ -118,7 +117,7 @@ int main(const int argc,
     
     CalMPD calMPD;
     LogStrm::get() << __FILE__ << ": fitting histograms" << endl;
-    GCRFit::fitHists(gcrHists, calMPD, &outputROOTFile);
+    GCRFit::gcrFitGaus(gcrHists, calMPD, &outputROOTFile);
 
     // output txt file name
     //const string   outputTXTFile(cfg.outputBasename.getVal()+".txt");

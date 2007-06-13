@@ -2,10 +2,11 @@
 #define IdxPath_h
 
 // LOCAL INCLUDES
-#include "../Util/CGCUtil.h"
+#include "../Util/string_util.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"
+
 
 // EXTLIB INCLUDES
 
@@ -113,7 +114,7 @@ namespace calibGenCAL {
     std::ostringstream tmp;
     tmp << toPath(id.getXtalIdx())      << "/" 
         << toPath(id.getDiode())        << "/" 
-        << "Z" << CGCUtil::toString(id.getInferredZ());
+        << "Z" << toString(id.getInferredZ());
     return tmp.str();
   }
 
@@ -203,7 +204,7 @@ namespace calibGenCAL {
   };
 
   inline std::string toPath(const ZDiodeId &id) {
-    return toPath(id.getDiode()) + "/" + "Z" + CGCUtil::toString(id.getInferredZ());
+    return toPath(id.getDiode()) + "/" + "Z" + toString(id.getInferredZ());
   }
 
 }

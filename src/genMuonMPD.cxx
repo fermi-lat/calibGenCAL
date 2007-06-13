@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.23 2007/05/25 21:06:46 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.24 2007/06/07 17:45:42 fewtrell Exp $
 
 /** @file Gen MevPerDAC calibrations from Muon event files using Cal Digi Hodoscope
     for track & hit information
@@ -12,12 +12,14 @@
 #include "lib/CalibDataTypes/CalMPD.h"
 #include "lib/Hists/MPDHists.h"
 #include "lib/Algs/MuonMPDAlg.h"
-#include "lib/Util/CGCUtil.h"
 #include "lib/Util/CfgMgr.h"
+#include "lib/Util/CGCUtil.h"
+#include "lib/Util/string_util.h"
 
 // GLAST INCLUDES
 
 // EXTLIB INCLUDES
+#include "TFile.h"
 
 // STD INCLUDES
 #include <iostream>
@@ -27,7 +29,6 @@
 
 using namespace std;
 using namespace calibGenCAL;
-using namespace CGCUtil;
 using namespace CfgMgr;
 
 class AppCfg {

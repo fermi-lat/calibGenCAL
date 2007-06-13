@@ -7,6 +7,7 @@
 
 // LOCAL INCLUDES
 #include "HistIdx.h"
+#include "../Util/string_util.h"
 
 // GLAST INCLUDES
 
@@ -24,7 +25,7 @@ namespace calibGenCAL {
   /// construct from string repr
   MeanDacZId::MeanDacZId(const string &name) {
     /// break name up into component parts
-    const vector<string> parts(CGCUtil::tokenize_str(name, string("_Z")));
+    const vector<string> parts(tokenize_str(name, string("_Z")));
 
     if (parts.size() != N_FIELDS)
       throw runtime_error("Invalid MeanDACZId string repr: " + name);
@@ -45,7 +46,7 @@ namespace calibGenCAL {
   /// construct from string repr
   MeanDACId::MeanDACId(const string &name) {
     /// break name up into component parts
-    const vector<string> parts(CGCUtil::tokenize_str(name, string("_")));
+    const vector<string> parts(tokenize_str(name, string("_")));
 
     if (parts.size() != N_FIELDS)
       throw runtime_error("Invalid MeanDACId string repr: " + name);
@@ -61,7 +62,7 @@ namespace calibGenCAL {
   /// construct from string repr
   ZDiodeId::ZDiodeId(const string &name) {
     /// break name up into component parts
-    const vector<string> parts(CGCUtil::tokenize_str(name, string("_Z")));
+    const vector<string> parts(tokenize_str(name, string("_Z")));
 
     if (parts.size() != N_FIELDS)
       throw runtime_error("Invalid ZDiodeId string repr: " + name);
