@@ -9,6 +9,7 @@
 // STD INCLUDES
 #include <algorithm>
 #include <sstream>
+#include <stdexcept>
 
 using namespace std;
 

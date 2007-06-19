@@ -4,7 +4,7 @@
 
     \brief generic utility functions used in calibGenCAL pkg
 
-    $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.cxx,v 1.4 2007/06/07 17:45:43 fewtrell Exp $
+    $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.cxx,v 1.5 2007/06/13 22:42:13 fewtrell Exp $
 */
 
 // LOCAL INCLUDES
@@ -19,6 +19,7 @@
 #include <ctime>
 #include <iostream>
 #include <fstream>
+#include <stdexcept>
 
 using namespace std;
 

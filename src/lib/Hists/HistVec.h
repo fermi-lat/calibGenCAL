@@ -1,14 +1,14 @@
 #ifndef HistVec_h
 #define HistVec_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistVec.h,v 1.3 2007/06/12 17:40:46 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistVec.h,v 1.4 2007/06/13 22:42:12 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
 */
 
 // LOCAL INCLUDES
-
+#include "../Util/ROOTUtil.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalVec.h"
@@ -37,11 +37,11 @@ namespace calibGenCAL {
        \param IdxType intended to be index data type following conventions set in CalUtil::CalDefs
   */
   template <typename IdxType,
-            typename HistType> 
-  class HistVec {
-  public:
-    typedef IdxType IdxType;
-    typedef HistType HistType;
+    typename HistType> 
+    class HistVec {
+    public:
+    typedef IdxType index_type;
+    typedef HistType histogram_type;
 
     /// \param histBasename all histograms will be created w/ name histBasename+idx.toStr()
     /// \param writeDir (if non-zero) all new histograms will be written out to this directory opun class destruction.
@@ -60,12 +60,12 @@ namespace calibGenCAL {
       m_loBinLimit(loBinLimit),
       m_hiBinLimit(hiBinLimit),
       m_writeDir(writeDir)
-    {
-      if (readDir != 0)
-        loadHists(*readDir);
+      {
+        if (readDir != 0)
+          loadHists(*readDir);
 
-      setDirectory(writeDir);
-    }
+        setDirectory(writeDir);
+      }
 
     /// act like STL vector
     typedef HistType& reference;
@@ -109,7 +109,7 @@ namespace calibGenCAL {
       m_writeDir = dir;
     }
 
-  private:
+    private:
     /// load all associated histogram from current ROOT directory 
     void loadHists(TDirectory &readDir) {
       /// loop through all possible histograms & search for each one in current root dir
@@ -128,7 +128,7 @@ namespace calibGenCAL {
         
         /// try to retrieve obj from dir
         HistType *const hist_ptr = retrieveROOTObj<HistType>(*histdir, 
-                                                                      histname.c_str());
+                                                             histname.c_str());
         /// skip if histogram doesn't exit
         if (hist_ptr == 0)
           continue;

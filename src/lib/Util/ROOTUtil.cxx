@@ -8,6 +8,7 @@
 // STD INCLUDES
 #include <string>
 #include <queue>
+#include <stdexcept>
 
 // EXTLIB INCLUDES
 #include "TDirectory.h"
