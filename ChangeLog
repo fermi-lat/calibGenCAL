@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Tue Jun 19 11:11:45 PDT 2007
+calibGenCAL/src/lib/Util
+
+Modified Files:
+	CGCUtil.cxx ROOTUtil.cxx ROOTUtil.h string_util.cxx 
+Log Message:
+minor updates to get linux compile to work
+
+    *
+------------------------------------------------------------
+User: fewtrell  Tue Jun 19 11:11:45 PDT 2007
 calibGenCAL/src/lib/Hists
 
 Modified Files:
