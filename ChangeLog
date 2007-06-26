@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: dwood  Mon Jun 25 19:13:26 PDT 2007
+calibGenCAL/python
+
+Modified Files:
+	tholdCIGen.py 
+Log Message:
+Fixed bug in tholdCIGen where the DAC values in the COARSE range were not being written correctly in the output file comments.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Jun 19 11:11:45 PDT 2007
 calibGenCAL/src/lib/Util
 
