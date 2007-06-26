@@ -13,8 +13,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL TholdCI XML calibration data files"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2007/03/12 20:52:25 $"
-__version__   = "$Revision: 1.29 $, $Author: dwood $"
+__date__      = "$Date: 2007/03/15 15:17:04 $"
+__version__   = "$Revision: 1.30 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -473,19 +473,6 @@ if __name__ == '__main__':
     muSlopeData = muSlopeFile.read()
     muSlopeFile.close()
     
-    # adjust DAC settings to account for range
-    
-    drng = dacSlopeData[2][...,2]
-    fheDacData = setRange(fheDacData, drng)
-    
-    drng = dacSlopeData[2][...,1]
-    fleDacData = setRange(fleDacData, drng)
-    
-    drng = dacSlopeData[2][...,0]
-    lacDacData = setRange(lacDacData, drng)
-    
-    uldDacData = (uldDacData - 64)
-    
     # convert FHE thresholds from MeV to HEX8 ADC counts
     
     c1 = dacSlopeData[0][...,4]
@@ -493,7 +480,11 @@ if __name__ == '__main__':
     eng = linear(c1, c0)
     gain = muSlopeData[...,calConstant.CRNG_HEX8,0]
     bias = biasAdcData[...,1]
-    fheAdcData = (eng / gain[...,Numeric.NewAxis]) - bias[...,Numeric.NewAxis]
+    adc = (eng / gain[...,Numeric.NewAxis]) - bias[...,Numeric.NewAxis]
+    fheAdcData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE, 128), Numeric.Float32)
+    fheAdcData[...,0:64] = adc[:]
+    fheAdcData[...,64:128] = adc[:]
     fheAdcData = Numeric.clip(fheAdcData, 0, 4095)
     log.debug("FHE ADC\n%s", fheAdcData[0,0,0,0,:])
     
@@ -504,9 +495,13 @@ if __name__ == '__main__':
     eng = linear(c1, c0)
     gain = muSlopeData[...,calConstant.CRNG_LEX1,0]
     bias = biasAdcData[...,0]
-    fleAdcData = (eng / gain[...,Numeric.NewAxis])
+    adc = (eng / gain[...,Numeric.NewAxis])
     scale = (gain / muSlopeData[...,calConstant.CRNG_LEX8,0])
-    fleAdcData = (fleAdcData * scale[...,Numeric.NewAxis]) - bias[...,Numeric.NewAxis]
+    adc = (adc * scale[...,Numeric.NewAxis]) - bias[...,Numeric.NewAxis]
+    fleAdcData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE, 128), Numeric.Float32)
+    fleAdcData[...,0:64] = adc[:]
+    fleAdcData[...,64:128] = adc[:]
     fleAdcData = Numeric.clip(fleAdcData, 0, 0xffff)
     log.debug("FLE ADC\n%s", fleAdcData[0,0,0,0,:])
     
@@ -516,7 +511,11 @@ if __name__ == '__main__':
     c0 = dacSlopeData[0][...,1]
     eng = linear(c1, c0)
     gain = muSlopeData[...,calConstant.CRNG_LEX8,0]
-    lacAdcData = (eng / gain[...,Numeric.NewAxis])
+    adc = (eng / gain[...,Numeric.NewAxis])
+    lacAdcData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE, 128), Numeric.Float32)
+    lacAdcData[...,0:64] = adc[:]
+    lacAdcData[...,64:128] = adc[:]
     lacAdcData = Numeric.clip(lacAdcData, 0, 4095)
     log.debug("LAC ADC\n%s", lacAdcData[0,0,0,0,:])
     
@@ -527,34 +526,45 @@ if __name__ == '__main__':
     eng = linearULD(c1, c0)
     
     uldAdcData = Numeric.zeros((3, calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE, 64), Numeric.Float32)
+        calConstant.NUM_FE, 128), Numeric.Float32)
+    
+    # ULD LEX8
     
     gain = muSlopeData[...,calConstant.CRNG_LEX8,0]
-    uldAdcData[calConstant.CRNG_LEX8,...] = (eng[calConstant.CRNG_LEX8,...] / gain[...,Numeric.NewAxis])
+    adc = (eng[calConstant.CRNG_LEX8,...] / gain[...,Numeric.NewAxis])
     satValue = (dacSlopeData[1][calConstant.CRNG_LEX8,...,2] / gain)
     satValue = Numeric.reshape(Numeric.repeat(satValue, 64, -1), (calConstant.NUM_TEM, 
         calConstant.NUM_ROW, calConstant.NUM_END, calConstant.NUM_FE, 64))
-    satMask = (uldAdcData[calConstant.CRNG_LEX8,...] > satValue)
-    uldAdcData[calConstant.CRNG_LEX8,...] = Numeric.where(satMask, satValue, 
-        uldAdcData[calConstant.CRNG_LEX8,...]) 
+    satMask = (adc > satValue)
+    adc = Numeric.where(satMask, satValue, adc)
+    uldAdcData[calConstant.CRNG_LEX8,...,0:64] = adc[:]
+    uldAdcData[calConstant.CRNG_LEX8,...,64:128] = adc[:] 
+    
+    # ULD LEX1
     
     gain = muSlopeData[...,calConstant.CRNG_LEX1,0]
-    uldAdcData[calConstant.CRNG_LEX1,...] = (eng[calConstant.CRNG_LEX1,...] / gain[...,Numeric.NewAxis])
+    adc = (eng[calConstant.CRNG_LEX1,...] / gain[...,Numeric.NewAxis])
     satValue = (dacSlopeData[1][calConstant.CRNG_LEX1,...,2] / gain)
     satValue = Numeric.reshape(Numeric.repeat(satValue, 64, -1), (calConstant.NUM_TEM, 
         calConstant.NUM_ROW, calConstant.NUM_END, calConstant.NUM_FE, 64))
-    satMask = (uldAdcData[calConstant.CRNG_LEX1,...] > satValue)
-    uldAdcData[calConstant.CRNG_LEX1,...] = Numeric.where(satMask, satValue, 
-        uldAdcData[calConstant.CRNG_LEX1,...])
+    satMask = (adc > satValue)
+    adc = Numeric.where(satMask, satValue, adc)
+    uldAdcData[calConstant.CRNG_LEX1,...,0:64] = adc[:]
+    uldAdcData[calConstant.CRNG_LEX1,...,64:128] = adc[:]
         
+    # ULD HEX8
+    
     gain = muSlopeData[...,calConstant.CRNG_HEX8,0]
-    uldAdcData[calConstant.CRNG_HEX8,...] = (eng[calConstant.CRNG_HEX8,...] / gain[...,Numeric.NewAxis])
+    adc = (eng[calConstant.CRNG_HEX8,...] / gain[...,Numeric.NewAxis])
     satValue = (dacSlopeData[1][calConstant.CRNG_HEX8,...,2] / gain)
     satValue = Numeric.reshape(Numeric.repeat(satValue, 64, -1), (calConstant.NUM_TEM, 
         calConstant.NUM_ROW, calConstant.NUM_END, calConstant.NUM_FE, 64))
-    satMask = (uldAdcData[calConstant.CRNG_HEX8,...] > satValue)
-    uldAdcData[calConstant.CRNG_HEX8,...] = Numeric.where(satMask, satValue, 
-        uldAdcData[calConstant.CRNG_HEX8,...])
+    satMask = (adc > satValue)
+    adc = Numeric.where(satMask, satValue, adc)
+    uldAdcData[calConstant.CRNG_HEX8,...,0:64] = adc[:]
+    uldAdcData[calConstant.CRNG_HEX8,...,64:128] = adc[:]
+    
+    uldAdcData = Numeric.clip(uldAdcData, 0, 4095)
     
     log.debug("ULD ADC\n%s", uldAdcData[:,0,0,0,0,:])
 
