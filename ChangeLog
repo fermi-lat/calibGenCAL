@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: dwood  Tue Jul 24 10:55:55 PDT 2007
+calibGenCAL/python/lib
+
+Modified Files:
+	calDacXML.py 
+Log Message:
+Added class calSettingsXML to handle slight variation on DAC settings files
+produced by ConfigSystem online tool.
+
+    *
+------------------------------------------------------------
 User: dwood  Mon Jun 25 19:13:26 PDT 2007
 calibGenCAL/python
 
