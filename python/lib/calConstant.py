@@ -6,8 +6,8 @@ Global calorimeter constant values
 __facility__      = "Online"
 __abstract__      = "Global calorimeter constant values"
 __author__        = "D.L. Wood"
-__date__          = "$Date: 2007/01/24 16:39:45 $"
-__version__       = "$Revision: 1.5 $, $Author: fewtrell $"
+__date__          = "$Date: 2007/02/02 20:28:42 $"
+__version__       = "$Revision: 1.6 $, $Author: fewtrell $"
 __release__       = "$Name:  $"
 __credits__       = "NRL code 7650"
 
@@ -135,6 +135,11 @@ def rowToName(row):
 Convert offline xtal face indexing to online xtal face indexing  (they're reversed, don't blame me :)
 """
 offline_face_to_online = {0:1,1:0}
+
+"""
+Convert face name to online face id
+"""
+name_to_online_face = {"POS":1,"NEG":0}
 
 OFFLINE_FACE_POS = 0
 OFFLINE_FACE_NEG = 1
