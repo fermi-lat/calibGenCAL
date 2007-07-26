@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Thu Jul 26 09:05:28 PDT 2007
+calibGenCAL/python/lib
+
+Modified Files:
+	calConstant.py 
+Log Message:
+adding dacBlockSet.py script
+
+    *
+------------------------------------------------------------
+User: fewtrell  Thu Jul 26 09:05:28 PDT 2007
 calibGenCAL/python/bin
 
 Added Files:
