@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Jul 26 09:05:27 PDT 2007
+calibGenCAL/python
+
+Modified Files:
+	dacXML2TXT.py 
+Added Files:
+	dacBlockSet.py 
+Log Message:
+adding dacBlockSet.py script
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Jul 26 08:56:36 PDT 2007
 calibGenCAL/src/lib/Util
 
