@@ -1,13 +1,14 @@
 #ifndef string_util_h
 #define string_util_h
 
-//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.h,v 1.5 2007/06/07 17:45:43 fewtrell Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/string_util.h,v 1.1 2007/06/13 22:42:13 fewtrell Exp $
 
 // STD INCLUDES
 #include <string>
 #include <vector>
 #include <algorithm>
 #include <iterator>
+#include <sstream>
 
 
 /** @file
