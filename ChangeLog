@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Jul 26 09:05:28 PDT 2007
+calibGenCAL/python/bin
+
+Added Files:
+	dacBlockSet.bat dacBlockSet.sh 
+Log Message:
+adding dacBlockSet.py script
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Jul 26 09:05:27 PDT 2007
 calibGenCAL/python
 
