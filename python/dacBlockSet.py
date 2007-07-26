@@ -15,8 +15,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Write same value to blocks of DAC settings in online DAC setting xml file "
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/02/26 23:15:57 $"
-__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/07/26 16:05:27 $"
+__version__     = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -77,11 +77,10 @@ else:
 
 
 # read in dac xml files
-dacFile = calDacXML.calDacXML(inPath, dacType)
+dacFile = calDacXML.calSettingsXML(inPath, dacType)
 
 # get active towers
 dacTwrs = dacFile.getTowers()
-print dacTwrs
 
 # load up arrays
 dac = dacFile.read()
@@ -93,8 +92,8 @@ if overwriteFace:
         dac[twr,:,online_face,:] = int(val)
 
 # output new file
-outFile = calDacXML.calDacXML(outPath, dacType, calDacXML.MODE_CREATE)
-outFile.write(dac, filename=outPath,tems=dacTwrs)
+outFile = calDacXML.calSettingsXML(outPath, dacType, calDacXML.MODE_CREATE)
+outFile.write(dac, tems=dacTwrs)
 outFile.close()
 
 sys.exit(0)
