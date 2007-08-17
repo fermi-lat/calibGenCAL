@@ -1,4 +1,22 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Aug 17 09:35:29 PDT 2007
+calibGenCAL/python
+
+Modified Files:
+	adc2nrgTXT2XML.py asymApplyCalibGain.py asymDiff.py 
+	asymTXT2XML.py asymXML2TXT.py biasTXT2XML.py calibGainCoeff.py 
+	calibSetVal.py dacBlockSet.py dacConvertNeighborXtalk.py 
+	fitNeighborXtalk.py genADC2NRG.py inl2tuple.py inlDiff.py 
+	inlDumpSlopes.py inlPedSubtract.py inlTXT2XML.py inlXML2TXT.py 
+	linearDAC.py mpdApplyCalibGain.py mpdDiff.py mpdTXT2XML.py 
+	muSlopeDiff.py muSlopeTXT2XML.py pedDiff.py pedTXT2XML.py 
+	pedXML2TXT.py tholdCIXML2TXT.py xdiodeXtalk.py 
+Log Message:
+renamed zachUtil.py to cgc_util.py
+dacBlockSet.py now supports overwriting from file instead of just constants
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Jul 26 14:11:37 PDT 2007
 calibGenCAL/python
 
