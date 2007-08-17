@@ -1,14 +1,14 @@
 import sys
 
 """
-collection of simple utilities shared throughout my code
+collection of simple utilities shared throughout code
 """
 
 __facility__  = "Offline"
 __abstract__  = "apply calibGain correction to asymmetry xml file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2007/03/22 22:26:04 $"
-__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/04/10 16:22:20 $"
+__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -304,3 +304,11 @@ def tuple2diodeIdx(tpl):
              (lyr + calConstant.NUM_LAYER*twr)))
                                       
            
+# test if object can be converted to a number
+# return true if yes, false if no
+def isNumber(v):
+    try:
+        float(v)
+        return True
+    except ValueError:
+        return False

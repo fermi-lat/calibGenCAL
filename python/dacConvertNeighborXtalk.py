@@ -16,8 +16,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Convert neighbor xtalk curves from (src=LECIDAC_CGON, dest=HEX8ADC) to (src=HEDAC_SCINT_CGOFF, dest=HEDAC_SCINT_CGOFF)"
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/03/20 19:23:46 $"
-__version__     = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/03/22 22:26:04 $"
+__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -35,7 +35,7 @@ import ROOT
 import csv
 
 import calConstant
-import zachUtil
+import cgc_util
 import calCalibXML
 
 # setup logger
@@ -65,7 +65,7 @@ inlFile = calCalibXML.calIntNonlinCalibXML(inlHEPath)
 inlData = inlFile.read()
 inlTowers = inlFile.getTowers()
 inlFile.close()
-(adc2dac, dac2adc) = zachUtil.build_inl_splines(inlData, inlTowers)
+(adc2dac, dac2adc) = cgc_util.build_inl_splines(inlData, inlTowers)
 
 # open and read XML MevPerDAC file
 log.info("Opening input mevPerDAC XML file " + mpdXMLPath)
@@ -84,7 +84,7 @@ asymFile = calCalibXML.calAsymCalibXML(asymXMLPath)
 asymTowers = asymFile.getTowers()
 asymData = asymFile.read()
 asymFile.close()
-(pos2asym, asym2pos) = zachUtil.build_asym_splines(asymData, asymTowers)
+(pos2asym, asym2pos) = cgc_util.build_asym_splines(asymData, asymTowers)
 
 if mpdTowers != asymTowers:
     log.error("MPD towers %s && ASYM towers %s mismatch!"%(mpdTowers, asymTowers))
@@ -92,7 +92,7 @@ if mpdTowers != asymTowers:
 
 # open and read calibGainRatio txt file
 log.info("Reading calibGain TXT file: " +  calibGainTXTPath)
-(calibGainData, cgTowers) = zachUtil.read_perFace_txt(calibGainTXTPath)
+(calibGainData, cgTowers) = cgc_util.read_perFace_txt(calibGainTXTPath)
 
 if mpdTowers != cgTowers:
     log.error("MPD towers %s && CALIBGAIN towers %s mismatch!"%(mpdTowers, cgTowers))
@@ -121,8 +121,8 @@ for row in infile:
     destADC      = float(row[3])
 
     ### set up all needed indices ###
-    (srcTwr, srcLyr, srcCol, srcFace, srcDiode) = zachUtil.diodeIdx2tuple(srcIdx)
-    (destTwr, destLyr, destCol, destFace, destDiode) = zachUtil.diodeIdx2tuple(destIdx)
+    (srcTwr, srcLyr, srcCol, srcFace, srcDiode) = cgc_util.diodeIdx2tuple(srcIdx)
+    (destTwr, destLyr, destCol, destFace, destDiode) = cgc_util.diodeIdx2tuple(destIdx)
 
     destRow = calCalibXML.layerToRow(destLyr)
     srcRow = calCalibXML.layerToRow(srcLyr)
@@ -197,7 +197,7 @@ for row in infile:
 
     # change src index to reflect diode coversion
     srcDiode = 1
-    srcIdx = zachUtil.tuple2diodeIdx((srcTwr, srcLyr, srcCol, srcFace, srcDiode))
+    srcIdx = cgc_util.tuple2diodeIdx((srcTwr, srcLyr, srcCol, srcFace, srcDiode))
 
     print destIdx, srcIdx, srcHEDACCgOn, destDACCgOn
 

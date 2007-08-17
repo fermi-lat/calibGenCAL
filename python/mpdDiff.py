@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL mevPerDAC XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/01/08 19:45:01 $"
-__version__     = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/01/17 19:19:27 $"
+__version__     = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -27,7 +27,7 @@ import Numeric
 
 import calCalibXML
 import calConstant
-import zachUtil
+import cgc_util
 
 usage = "Usage: python mpdDiff.py <mpd_xml_file1> <mpd_xml_file2> <output_root_file>"
 
@@ -92,13 +92,13 @@ minDiff = None
 maxDiff = None
 
 for twr in mpdTwrs1:
-    for idx in range(zachUtil.N_MPD_IDX):
+    for idx in range(cgc_util.N_MPD_IDX):
         # first pass only compare against 1st set
         if minVals is None:
-            minVals = Numeric.ones(zachUtil.N_MPD_IDX,'f')*1e5
-            maxVals = Numeric.ones(zachUtil.N_MPD_IDX,'f')*-1e5
-            minDiff = Numeric.ones(zachUtil.N_MPD_IDX,'f')*1e5
-            maxDiff = Numeric.ones(zachUtil.N_MPD_IDX,'f')*-1e5
+            minVals = Numeric.ones(cgc_util.N_MPD_IDX,'f')*1e5
+            maxVals = Numeric.ones(cgc_util.N_MPD_IDX,'f')*-1e5
+            minDiff = Numeric.ones(cgc_util.N_MPD_IDX,'f')*1e5
+            maxDiff = Numeric.ones(cgc_util.N_MPD_IDX,'f')*-1e5
 
             minVals[idx] = min(Numeric.ravel(mpd1[twr, ..., idx]))
             maxVals[idx] = max(Numeric.ravel(mpd1[twr, ..., idx]))
@@ -121,22 +121,22 @@ for twr in mpdTwrs1:
 # gobal summary histograms
 lrg_diff_summary = ROOT.TH1I("lrg_diff_summary",
                              "lrg_diff_summary (mpd2 - mpd1)",
-                             50, minDiff[zachUtil.mpdBigValIdx], maxDiff[zachUtil.mpdBigValIdx])
+                             50, minDiff[cgc_util.mpdBigValIdx], maxDiff[cgc_util.mpdBigValIdx])
 
 
 lrg_err_diff_summary = ROOT.TH1I("lrg_err_diff_summary",
                                  "lrg_err_diff_summary (mpd2 - mpd)",
-                                 50, minDiff[zachUtil.mpdBigSigIdx], maxDiff[zachUtil.mpdBigSigIdx])
+                                 50, minDiff[cgc_util.mpdBigSigIdx], maxDiff[cgc_util.mpdBigSigIdx])
 
 
 sm_diff_summary = ROOT.TH1I("sm_diff_summary",
                             "sm_diff_summary (mpd2 - mpd1)",
-                            50, minDiff[zachUtil.mpdSmallValIdx], maxDiff[zachUtil.mpdSmallValIdx])
+                            50, minDiff[cgc_util.mpdSmallValIdx], maxDiff[cgc_util.mpdSmallValIdx])
 
 
 sm_err_diff_summary = ROOT.TH1I("sm_err_diff_summary",
                                 "sm_err_diff_summary (mpd2 - mpd1)",
-                                50, minDiff[zachUtil.mpdSmallSigIdx], maxDiff[zachUtil.mpdSmallSigIdx])
+                                50, minDiff[cgc_util.mpdSmallSigIdx], maxDiff[cgc_util.mpdSmallSigIdx])
 
 
 
@@ -144,57 +144,57 @@ sm_err_diff_summary = ROOT.TH1I("sm_err_diff_summary",
 
 lrg_scatter = ROOT.TH2S("lrg_scatter",
                         "lrg diode mpd change x=mpd1 y=mpd2",
-                        100, minVals[zachUtil.mpdBigValIdx], maxVals[zachUtil.mpdBigValIdx],
-                        100, minVals[zachUtil.mpdBigValIdx], maxVals[zachUtil.mpdBigValIdx])
+                        100, minVals[cgc_util.mpdBigValIdx], maxVals[cgc_util.mpdBigValIdx],
+                        100, minVals[cgc_util.mpdBigValIdx], maxVals[cgc_util.mpdBigValIdx])
 
 sm_scatter = ROOT.TH2S("sm_scatter",
                        "sm diode mpd change x=mpd1 y=mpd2",
-                       100, minVals[zachUtil.mpdSmallValIdx], maxVals[zachUtil.mpdSmallValIdx],
-                       100, minVals[zachUtil.mpdSmallValIdx], maxVals[zachUtil.mpdSmallValIdx])
+                       100, minVals[cgc_util.mpdSmallValIdx], maxVals[cgc_util.mpdSmallValIdx],
+                       100, minVals[cgc_util.mpdSmallValIdx], maxVals[cgc_util.mpdSmallValIdx])
 
 lrg_err_scatter = ROOT.TH2S("lrg_err_scatter",
                             "lrg diode mpd error change x=mpd1 y=mpd2",
-                            100, minVals[zachUtil.mpdBigSigIdx], maxVals[zachUtil.mpdBigSigIdx],
-                            100, minVals[zachUtil.mpdBigSigIdx], maxVals[zachUtil.mpdBigSigIdx])
+                            100, minVals[cgc_util.mpdBigSigIdx], maxVals[cgc_util.mpdBigSigIdx],
+                            100, minVals[cgc_util.mpdBigSigIdx], maxVals[cgc_util.mpdBigSigIdx])
 
 sm_err_scatter = ROOT.TH2S("sm_err_scatter",
                            "sm diode mpd error change x=mpd1 y=mpd2",
-                           100, minVals[zachUtil.mpdSmallSigIdx], maxVals[zachUtil.mpdSmallSigIdx],
-                           100, minVals[zachUtil.mpdSmallSigIdx], maxVals[zachUtil.mpdSmallSigIdx])
+                           100, minVals[cgc_util.mpdSmallSigIdx], maxVals[cgc_util.mpdSmallSigIdx],
+                           100, minVals[cgc_util.mpdSmallSigIdx], maxVals[cgc_util.mpdSmallSigIdx])
 
 
 lrg_prof = ROOT.TProfile("lrg_prof",
                          "lrg diode mpd change x=mpd1 y=mpd2",
-                         100, 0, maxVals[zachUtil.mpdBigValIdx])
+                         100, 0, maxVals[cgc_util.mpdBigValIdx])
 
 sm_prof = ROOT.TProfile("sm_prof",
                         "sm diode mpd change x=mpd1 y=mpd2",
-                        100, 0, maxVals[zachUtil.mpdSmallValIdx])
+                        100, 0, maxVals[cgc_util.mpdSmallValIdx])
 
 lrg_err_prof = ROOT.TProfile("lrg_err_prof",
                              "lrg diode mpd error change x=mpd1 y=mpd2",
-                             100, 0, maxVals[zachUtil.mpdBigSigIdx])
+                             100, 0, maxVals[cgc_util.mpdBigSigIdx])
 
 sm_err_prof = ROOT.TProfile("sm_err_prof",
                             "sm diode mpd error change x=mpd1 y=mpd2",
-                            100, 0, maxVals[zachUtil.mpdSmallSigIdx])
+                            100, 0, maxVals[cgc_util.mpdSmallSigIdx])
 
 # fill histograms
 for twr in mpdTwrs1:
-    lrgDiff    = Numeric.ravel(mpdDiff[twr, ..., zachUtil.mpdBigValIdx])
-    smDiff     = Numeric.ravel(mpdDiff[twr, ..., zachUtil.mpdSmallValIdx])
-    lrgErrDiff = Numeric.ravel(mpdDiff[twr, ..., zachUtil.mpdBigSigIdx])
-    smErrDiff  = Numeric.ravel(mpdDiff[twr, ..., zachUtil.mpdSmallSigIdx])
+    lrgDiff    = Numeric.ravel(mpdDiff[twr, ..., cgc_util.mpdBigValIdx])
+    smDiff     = Numeric.ravel(mpdDiff[twr, ..., cgc_util.mpdSmallValIdx])
+    lrgErrDiff = Numeric.ravel(mpdDiff[twr, ..., cgc_util.mpdBigSigIdx])
+    smErrDiff  = Numeric.ravel(mpdDiff[twr, ..., cgc_util.mpdSmallSigIdx])
 
-    lrg1    = Numeric.ravel(mpd1[twr, ..., zachUtil.mpdBigValIdx])
-    sm1     = Numeric.ravel(mpd1[twr, ..., zachUtil.mpdSmallValIdx])
-    lrgErr1 = Numeric.ravel(mpd1[twr, ..., zachUtil.mpdBigSigIdx])
-    smErr1  = Numeric.ravel(mpd1[twr, ..., zachUtil.mpdSmallSigIdx])
+    lrg1    = Numeric.ravel(mpd1[twr, ..., cgc_util.mpdBigValIdx])
+    sm1     = Numeric.ravel(mpd1[twr, ..., cgc_util.mpdSmallValIdx])
+    lrgErr1 = Numeric.ravel(mpd1[twr, ..., cgc_util.mpdBigSigIdx])
+    smErr1  = Numeric.ravel(mpd1[twr, ..., cgc_util.mpdSmallSigIdx])
 
-    lrg2    = Numeric.ravel(mpd2[twr, ..., zachUtil.mpdBigValIdx])
-    sm2     = Numeric.ravel(mpd2[twr, ..., zachUtil.mpdSmallValIdx])
-    lrgErr2 = Numeric.ravel(mpd2[twr, ..., zachUtil.mpdBigSigIdx])
-    smErr2  = Numeric.ravel(mpd2[twr, ..., zachUtil.mpdSmallSigIdx])
+    lrg2    = Numeric.ravel(mpd2[twr, ..., cgc_util.mpdBigValIdx])
+    sm2     = Numeric.ravel(mpd2[twr, ..., cgc_util.mpdSmallValIdx])
+    lrgErr2 = Numeric.ravel(mpd2[twr, ..., cgc_util.mpdBigSigIdx])
+    smErr2  = Numeric.ravel(mpd2[twr, ..., cgc_util.mpdSmallSigIdx])
 
 
     lrg_diff_summary.FillN(len(lrgDiff),

@@ -11,8 +11,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Pedestal subtract CAL CIDAC2ADC XML file."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/09/15 16:26:41 $"
-__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/04/02 19:24:40 $"
+__version__     = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -20,7 +20,7 @@ import sys,os
 import calCalibXML
 import calConstant
 import logging
-import zachUtil
+import cgc_util
 import array
 import Numeric
 

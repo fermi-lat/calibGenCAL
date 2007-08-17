@@ -19,8 +19,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL offline calibration set as a suite"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2007/03/16 00:07:18 $"
-__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/04/17 16:36:41 $"
+__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -33,7 +33,7 @@ import Numeric
 
 import calCalibXML
 import calConstant
-import zachUtil
+import cgc_util
 
 # return relative difference between 2 floats, avoid divide-by-zero error
 def rel_diff(a,b):
@@ -166,10 +166,10 @@ for twr in pedTowers:
                 log.error("MPD data missing: channel=%s"%[twr,lyr,col])
                 nErrors += 1
 
-            asymLL = asymData[twr,row,col,zachUtil.asymIdx[(calConstant.CDIODE_LRG,calConstant.CDIODE_LRG,False)]]
-            asymLS = asymData[twr,row,col,zachUtil.asymIdx[(calConstant.CDIODE_LRG,calConstant.CDIODE_SM,False)]]
-            asymSL = asymData[twr,row,col,zachUtil.asymIdx[(calConstant.CDIODE_SM,calConstant.CDIODE_LRG,False)]]
-            asymSS = asymData[twr,row,col,zachUtil.asymIdx[(calConstant.CDIODE_SM,calConstant.CDIODE_SM,False)]]
+            asymLL = asymData[twr,row,col,cgc_util.asymIdx[(calConstant.CDIODE_LRG,calConstant.CDIODE_LRG,False)]]
+            asymLS = asymData[twr,row,col,cgc_util.asymIdx[(calConstant.CDIODE_LRG,calConstant.CDIODE_SM,False)]]
+            asymSL = asymData[twr,row,col,cgc_util.asymIdx[(calConstant.CDIODE_SM,calConstant.CDIODE_LRG,False)]]
+            asymSS = asymData[twr,row,col,cgc_util.asymIdx[(calConstant.CDIODE_SM,calConstant.CDIODE_SM,False)]]
 
             # TEST 3 : ASYM & MPD BIG/SM DIODE RATIOS #
             # posface_smalldiode_dac * negface_smalldiode_dac

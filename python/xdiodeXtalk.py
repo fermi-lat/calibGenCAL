@@ -21,8 +21,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to apply cross-diode crosstalk correction to intNonlin XML files"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/02/08 16:37:30 $"
-__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/03/15 23:02:15 $"
+__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -36,7 +36,7 @@ import ROOT
 
 import calCalibXML
 import calConstant
-import zachUtil
+import cgc_util
 
 # CONSTANTS #
 XTALK_FACTOR_FLIGHT_GAIN = 1.0/5.5
@@ -113,7 +113,7 @@ if __name__ == '__main__':
         sys.exit(-1)
 
     log.info("Building xtalk splines")
-    xtalkSplines = zachUtil.build_inl_splines(xtalkData, xtalkTwrSet)
+    xtalkSplines = cgc_util.build_inl_splines(xtalkData, xtalkTwrSet)
     (adc2dacXtalk, dac2adcXtalk) = xtalkSplines
 
     # clip length of dac curve in muon gain
@@ -157,7 +157,7 @@ if __name__ == '__main__':
                                     dac2 = xtalkDAC[rng][twr,row,online_face,col,index-1]
                                     dac3 = max_dac_muon
                                     
-                                    xtalkADC[rng][twr,row,online_face,col,index] = zachUtil.linear_extrap(dac1, dac2, dac3,
+                                    xtalkADC[rng][twr,row,online_face,col,index] = cgc_util.linear_extrap(dac1, dac2, dac3,
                                                                                                           adc1, adc2)
                                                                         
 
@@ -182,7 +182,7 @@ if __name__ == '__main__':
                             # in order to keep spline from getting 'creative' over a large jump
                             newDAC = 4095 + extrapPitch
                             while (newDAC < extrapDACTo):
-                                newADC = zachUtil.linear_extrap(3500, 4095, newDAC,
+                                newADC = cgc_util.linear_extrap(3500, 4095, newDAC,
                                                               xtalk3500, xtalk4095)
                                 xtalkLen[rng][twr,row,online_face,col,0] = xtalkLen[rng][twr,row,online_face,col,0]+1
                                 length = xtalkLen[rng][twr,row,online_face,col,0]
@@ -192,7 +192,7 @@ if __name__ == '__main__':
 
 
                             # append final point @ dac = extrapDACTo
-                            xtalkMAX = zachUtil.linear_extrap(3500, 4095, extrapDACTo,
+                            xtalkMAX = cgc_util.linear_extrap(3500, 4095, extrapDACTo,
                                                               xtalk3500, xtalk4095)
 
                             xtalkLen[rng][twr,row,online_face,col,0] = xtalkLen[rng][twr,row,online_face,col,0]+1
@@ -206,14 +206,14 @@ if __name__ == '__main__':
         xtalkDAC[rng] = xtalkDAC[rng] * XTALK_FACTOR
 
     log.info("Re-Building xtalk splines")
-    xtalkSplines = zachUtil.build_inl_splines(xtalkData, xtalkTwrSet)
+    xtalkSplines = cgc_util.build_inl_splines(xtalkData, xtalkTwrSet)
     (adc2dacXtalk, dac2adcXtalk) = xtalkSplines
 
 
     ## calculate average xtalk ##
     log.info("Calculating average xtalk")
     # create output data arrays
-    avgXtalkDAC = zachUtil.CIDAC_TEST_VALS
+    avgXtalkDAC = cgc_util.CIDAC_TEST_VALS
     avgXtalkADC = dict()
     avgXtalkSpline = dict()
     for rng  in range(2,4):
@@ -300,7 +300,7 @@ if __name__ == '__main__':
                         dac1 = inDAC[rng][twr,row,online_face,col,index-2]
                         dac2 = inDAC[rng][twr,row,online_face,col,index-1]
                         adc3 = max_adc
-                        dac3 = zachUtil.linear_extrap(adc1,adc2,adc3,
+                        dac3 = cgc_util.linear_extrap(adc1,adc2,adc3,
                                                       dac1,dac2)
                         # clip dac to 4095 if it goes over (it shouldn't , this op should be truncating the curve)
                         dac3 = min(dac3,4095)

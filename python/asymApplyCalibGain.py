@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "apply calibGain correction to asymmetry xml file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2006/08/03 13:11:03 $"
-__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/08/09 20:14:02 $"
+__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -28,7 +28,7 @@ import getopt
 import Numeric
 import calCalibXML
 import calConstant
-import zachUtil
+import cgc_util
 
 if __name__ == '__main__':
     usage = "asymApplyCalibGain [-V] [-doptional.dtd] <calibGainCoef.txt> <input_asym.xml> <output_asym.xml>"
@@ -83,7 +83,7 @@ if __name__ == '__main__':
     
     # open and read calibGainRatio txt file
     log.info("Reading calibGain TXT file: " +  calibGainPath)
-    (calibGainRatio, twrSet) = zachUtil.read_perFace_txt(calibGainPath)
+    (calibGainRatio, twrSet) = cgc_util.read_perFace_txt(calibGainPath)
 
     for twr in twrSet:
         # use online face numbering
@@ -99,7 +99,7 @@ if __name__ == '__main__':
         # muon_asym_LS = log(dacPosLarge/dacNegSmallCGOff)
         # cgNFace      = log(dacNegSmallCGOff/dacNegSmallCGOn)
         # muon_asym_LS + cgNFace = log(dacPosLage/dacNegSmallCgOn) = flight_asym_LS
-        asymLS = asymData[twr,:,:,zachUtil.asymIdx[(0,1,False)],:]
+        asymLS = asymData[twr,:,:,cgc_util.asymIdx[(0,1,False)],:]
         asymLS += calibGainNFace[...,Numeric.NewAxis]
         
 
@@ -108,7 +108,7 @@ if __name__ == '__main__':
         # cgPFace = log(dacPosSmallCGOff/dacPosSmallCGOn)
         # muon_asym_SL - cgPFace = log(dacPosSmallCGOn/dacLarge) = flight_asym_SL
         # val
-        asymSL = asymData[twr,:,:,zachUtil.asymIdx[(1,0,False)]]
+        asymSL = asymData[twr,:,:,cgc_util.asymIdx[(1,0,False)]]
         asymSL -= calibGainPFace[...,Numeric.NewAxis]
 
         # ASYM_SS
@@ -116,7 +116,7 @@ if __name__ == '__main__':
         # cgNFace      = log(dacNegSmallCGOff/dacNegSmallCGOn)
         # cgPFace      = log(dacPosSmallCGOff/dacPosSmallCGOn)
         # muon_asym_ss - cgPFace + cgNFace = log(dacPosSmallCGOn/dacNegSmallCGOn)
-        asymSS = asymData[twr,:,:,zachUtil.asymIdx[(1,1,False)]]
+        asymSS = asymData[twr,:,:,cgc_util.asymIdx[(1,1,False)]]
         asymSS += calibGainNFace[...,Numeric.NewAxis]
         asymSS -= calibGainPFace[...,Numeric.NewAxis]
 

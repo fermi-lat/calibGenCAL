@@ -17,8 +17,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL Asymmetry calibration XML files from TXT."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2006/08/10 18:06:42 $"
-__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/02/26 23:15:57 $"
+__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -31,7 +31,7 @@ import array
 
 import calCalibXML
 import calConstant
-import zachUtil
+import cgc_util
 
 #######################################################################################3
 
@@ -133,8 +133,8 @@ if __name__ == '__main__':
         row = calCalibXML.layerToRow(int(lyr))
 
         # calculate index for asym_type
-        valIdx = zachUtil.asymIdx[(pdiode,ndiode,False)]
-        sigIdx = zachUtil.asymIdx[(pdiode,ndiode,True)]
+        valIdx = cgc_util.asymIdx[(pdiode,ndiode,False)]
+        sigIdx = cgc_util.asymIdx[(pdiode,ndiode,True)]
 
         # set asym & sigma for each point alon xtal
         outData[twr, row, col, valIdx, nPt] = asym

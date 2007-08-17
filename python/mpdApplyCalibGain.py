@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "apply calibGain correction to mevPerDAC xml file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2006/08/09 20:14:02 $"
-__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__      = "$Date: 2006/08/11 16:30:18 $"
+__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -28,7 +28,7 @@ import getopt
 import Numeric
 import calCalibXML
 import calConstant
-import zachUtil
+import cgc_util
 
 ### CONSTANTS ###
 
@@ -85,7 +85,7 @@ if __name__ == '__main__':
     
     # open and read calibGainRatio txt file
     log.info("Reading calibGain TXT file: " +  calibGainPath)
-    (calibGainRatio, twrSet) = zachUtil.read_perFace_txt(calibGainPath)
+    (calibGainRatio, twrSet) = cgc_util.read_perFace_txt(calibGainPath)
 
     mean_ratio = Numeric.sqrt(calibGainRatio[:,:,0,:]*calibGainRatio[:,:,1,:])
 

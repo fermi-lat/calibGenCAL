@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL asymmetry XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/09/07 18:41:47 $"
-__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/01/17 16:58:30 $"
+__version__     = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -23,7 +23,7 @@ import sys
 import calCalibXML
 import calConstant
 import logging
-import zachUtil
+import cgc_util
 import array
 import Numeric
 
@@ -115,8 +115,8 @@ for twr in asymTwrs1:
                     channel_str = "%d_%d_%d_%d_%d"%(twr,lyr,col,pdiode,ndiode)
 
                     ## CALC INDECES ##
-                    asymIdx = zachUtil.asymIdx[(pdiode,ndiode,False)]
-                    errIdx  = zachUtil.asymIdx[(pdiode,ndiode,True)]
+                    asymIdx = cgc_util.asymIdx[(pdiode,ndiode,False)]
+                    errIdx  = cgc_util.asymIdx[(pdiode,ndiode,True)]
 
                     ## GENERATE ARRAYS FOR THIS CHANNEL ##
                     channel1 = asym1[twr,row,col,asymIdx]

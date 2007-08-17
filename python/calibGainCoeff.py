@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to extract effect of calibGain setting from two intNonlin XML files"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/02/02 20:28:42 $"
-__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/02/08 16:37:30 $"
+__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -30,7 +30,7 @@ import ROOT
 
 import calCalibXML
 import calConstant
-import zachUtil
+import cgc_util
 
 #######################################################################################
 if __name__ == '__main__':
@@ -64,8 +64,8 @@ if __name__ == '__main__':
     cgOffTwrSet = xmlOffFile.getTowers()
 
     log.info("Building inl splines")
-    cgOnSplines = zachUtil.build_inl_splines(cgOnData, cgOnTwrSet)
-    cgOffSplines = zachUtil.build_inl_splines(cgOffData, cgOffTwrSet)
+    cgOnSplines = cgc_util.build_inl_splines(cgOnData, cgOnTwrSet)
+    cgOffSplines = cgc_util.build_inl_splines(cgOffData, cgOffTwrSet)
 
     (adc2dacOn, dac2adcOn) = cgOnSplines
     (adc2dacOff, dac2adcOff) = cgOffSplines

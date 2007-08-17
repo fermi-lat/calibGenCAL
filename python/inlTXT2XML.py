@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL CIDAC2ADC calibration XML files from TXT."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/02/02 20:28:42 $"
-__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/02/26 23:15:57 $"
+__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -28,7 +28,7 @@ import array
 
 import calCalibXML
 import calConstant
-import zachUtil
+import cgc_util
 
 
 #######################################################################################
@@ -97,14 +97,14 @@ if __name__ == '__main__':
                                          calConstant.NUM_ROW,
                                          calConstant.NUM_END,
                                          calConstant.NUM_FE,
-                                         zachUtil.N_DAC_PTS),
+                                         cgc_util.N_DAC_PTS),
                                         Numeric.Float32))
 
         adcData.append(Numeric.zeros((calConstant.NUM_TEM,
                                          calConstant.NUM_ROW,
                                          calConstant.NUM_END,
                                          calConstant.NUM_FE,
-                                         zachUtil.N_DAC_PTS),
+                                         cgc_util.N_DAC_PTS),
                                         Numeric.Float32))
 
 
