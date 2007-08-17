@@ -16,7 +16,7 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL muSlope XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/08/11 16:30:18 $"
+__date__        = "$Date: 2006/09/07 21:35:59 $"
 __version__     = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
@@ -30,7 +30,7 @@ import getopt
 
 import calCalibXML
 import calConstant
-import zachUtil
+import cgc_util
 
 # CONSTANTS #
 OPTYPE_DIFF    = 0

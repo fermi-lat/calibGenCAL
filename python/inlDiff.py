@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL CIDAC2ADC XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/11/03 22:53:44 $"
-__version__     = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/02/02 20:28:42 $"
+__version__     = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -23,7 +23,7 @@ import sys
 import calCalibXML
 import calConstant
 import logging
-import zachUtil
+import cgc_util
 import array
 
 usage = "Usage: python inlDiff.py <inl_xml_file1> <inl_xml_file2> <output_root_file>"
@@ -71,11 +71,11 @@ inl2 = inlFile2.read()
 
 # build splines for each channel
 log.info("Building splines for %s"%inlPath1)
-inlSplines1 = zachUtil.build_inl_splines(inl1, inlTwrs1)
+inlSplines1 = cgc_util.build_inl_splines(inl1, inlTwrs1)
 (adc2dac1Splines, dac2adc1Splines) = inlSplines1
 
 log.info("Building splines for %s"%inlPath1)
-inlSplines2 = zachUtil.build_inl_splines(inl2, inlTwrs2)
+inlSplines2 = cgc_util.build_inl_splines(inl2, inlTwrs2)
 (adc2dac2Splines, dac2adc2Splines) = inlSplines2
 
 # set up pyROOT

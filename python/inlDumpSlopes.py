@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Fit straight line IntNonlin channel & dump y_intercept & slope to txt"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/02/26 23:15:57 $"
-__version__   = "$Revision: 1.8 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/03/15 14:34:46 $"
+__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -31,7 +31,7 @@ import ROOT
 
 import calCalibXML
 import calConstant
-import zachUtil
+import cgc_util
                   
 if __name__ == '__main__':
     usage = "usage: python inlDumpSlopes.py [-d delim] <input_xml_file>"

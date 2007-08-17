@@ -11,8 +11,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Convert cidac2adc (intNonlin) xml data file into root tuples (1 per channel)"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/02/02 20:28:42 $"
-__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/04/04 19:02:07 $"
+__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -24,7 +24,7 @@ import ROOT
 
 import calCalibXML
 import calConstant
-import zachUtil
+import cgc_util
 
 #######################################################################################
 if __name__ == '__main__':

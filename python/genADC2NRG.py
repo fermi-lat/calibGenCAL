@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL ADC2NRG and muSlope calibration XML files from asymmetry, cidac2adc & mevPerDAC xml files"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/03/06 17:40:37 $"
-__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/04/12 21:11:35 $"
+__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -32,7 +32,7 @@ import ROOT
 import calDacXML
 import calCalibXML
 import calConstant
-import zachUtil
+import cgc_util
 
 # most probably mev of muon mip vertically through cal xtal
 MUON_PEAK_ENERGY = 11.2
@@ -92,7 +92,7 @@ if __name__ == '__main__':
     towers = xmlFile.getTowers()
     xmlFile.close()
     log.info("Building inl splines")
-    inlSplines = zachUtil.build_inl_splines(inlData, towers)
+    inlSplines = cgc_util.build_inl_splines(inlData, towers)
     (adc2dac, dac2adc) = inlSplines
 
 
@@ -103,7 +103,7 @@ if __name__ == '__main__':
         log.error("asym towers don't match inl towers")
         sys.exit(1)
     xmlFile.close()
-    asymSplines = zachUtil.build_asym_splines((xpos, asymData), towers)
+    asymSplines = cgc_util.build_asym_splines((xpos, asymData), towers)
     (pos2asym, asym2pos) = asymSplines
 
     # open and read XML MevPerDAC file

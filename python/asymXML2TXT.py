@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Dump offline asymmetry xml file to .txt file"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/01/29 19:28:00 $"
-__version__   = "$Revision: 1.8 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/02/26 23:15:57 $"
+__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -30,7 +30,7 @@ import Numeric
 
 import calCalibXML
 import calConstant
-import zachUtil
+import cgc_util
 
 if __name__ == '__main__':
     usage = "usage: python asymXML2TXT.py [-d delim] <input_xml_file>"
@@ -95,8 +95,8 @@ if __name__ == '__main__':
                         for pt in range (0,len(xpos)):
                             print delim.join([str(x) for x in twr, lyr, col,
                                               pdiode, ndiode,
-                                              asymData[twr][row][col][zachUtil.asymIdx[(pdiode,ndiode,False)]][pt], #asym val
-                                              asymData[twr][row][col][zachUtil.asymIdx[(pdiode,ndiode,True)]][pt]])   #sigma
+                                              asymData[twr][row][col][cgc_util.asymIdx[(pdiode,ndiode,False)]][pt], #asym val
+                                              asymData[twr][row][col][cgc_util.asymIdx[(pdiode,ndiode,True)]][pt]])   #sigma
 
 
 

@@ -15,8 +15,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Fit max(0,pol1) to all neighbor xtalk curves."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/03/20 19:23:47 $"
-__version__     = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/03/22 22:26:04 $"
+__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -30,7 +30,7 @@ import math
 import ROOT
 import csv
 
-import zachUtil
+import cgc_util
 
 usage = "fitNeighborXtalk.py <neighborXtalk.txt> <outputROOTPath>"
 
@@ -71,7 +71,7 @@ for row in infile:
     (destChan, srcChan, srcDac, destDac) = row
 
     # skip le->le xtalk & keep only le->he xtalk
-    (twr,lyr,col,face,diode) = zachUtil.diodeIdx2tuple(destChan)
+    (twr,lyr,col,face,diode) = cgc_util.diodeIdx2tuple(destChan)
     if diode == 0:
         continue
 

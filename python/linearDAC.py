@@ -12,8 +12,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Force linear dac scale over portions of cidac2adc curve where cidac is non-linear."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/02/08 16:37:30 $"
-__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/03/15 22:59:35 $"
+__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -27,7 +27,7 @@ import itertools
 
 import calCalibXML
 import calConstant
-import zachUtil
+import cgc_util
 
 # get environment settings
 try:
@@ -43,10 +43,10 @@ dtdPath = os.path.join(calibUtilRoot, 'xml', dtdName)
 # straight line fit through [start,end]
 # indexed by rng num
 DAC_LINEFIT_START = (64,  64, 64, 64)
-LINEFIT_IDX_START = tuple([zachUtil.CIDAC_TEST_VALS.index(x) for x in DAC_LINEFIT_START])
+LINEFIT_IDX_START = tuple([cgc_util.CIDAC_TEST_VALS.index(x) for x in DAC_LINEFIT_START])
 
 DAC_LINEFIT_END = (192, 192, 192, 192)
-LINEFIT_IDX_END = tuple(zachUtil.CIDAC_TEST_VALS.index(x) for x in DAC_LINEFIT_END)
+LINEFIT_IDX_END = tuple(cgc_util.CIDAC_TEST_VALS.index(x) for x in DAC_LINEFIT_END)
 
 
 #######################################################################################
@@ -145,7 +145,7 @@ if __name__ == '__main__':
                         dac2 = dac[-1]
                         adc1 = adc[-2]
                         adc2 = adc[-1]
-                        max_dac = zachUtil.linear_extrap(adc1, adc2, max_adc, dac1, dac2)
+                        max_dac = cgc_util.linear_extrap(adc1, adc2, max_adc, dac1, dac2)
 
                         adc = Numeric.concatenate((adc, [max_adc]))
                         dac = Numeric.concatenate((dac, [max_dac]))

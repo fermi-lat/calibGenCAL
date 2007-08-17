@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL mevPerDAC calibration XML files from TXT."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/01/24 16:43:26 $"
-__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/02/26 23:15:57 $"
+__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -29,7 +29,7 @@ import array
 
 import calCalibXML
 import calConstant
-import zachUtil
+import cgc_util
 
 #######################################################################################
 
@@ -111,11 +111,11 @@ if __name__ == '__main__':
 
         row = calCalibXML.layerToRow(int(lyr))
 
-        valIdx = zachUtil.mpdBigValIdx
-        sigIdx = zachUtil.mpdBigSigIdx
+        valIdx = cgc_util.mpdBigValIdx
+        sigIdx = cgc_util.mpdBigSigIdx
         if (diode == calConstant.CDIODE_SM):
-            valIdx = zachUtil.mpdSmallValIdx
-            sigIdx = zachUtil.mpdSmallSigIdx
+            valIdx = cgc_util.mpdSmallValIdx
+            sigIdx = cgc_util.mpdSmallSigIdx
             
         outData[twr, row, col, valIdx] = mpd
         outData[twr, row, col, sigIdx] = sig
