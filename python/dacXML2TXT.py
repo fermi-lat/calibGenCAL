@@ -15,8 +15,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Convert CAL DAC settings XML file to txt."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/02/26 23:15:57 $"
-__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/07/26 16:05:27 $"
+__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -50,7 +50,7 @@ else:
 
 
 # read in dac xml files
-dacFile = calDacXML.calDacXML(dacPath, dacType)
+dacFile = calDacXML.calSettingsXML(dacPath, dacType)
 
 # check that towers are the same (ok if they are, just print warning)
 dacTwrs = dacFile.getTowers()

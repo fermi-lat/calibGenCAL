@@ -20,8 +20,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/10/10 17:24:18 $"
-__version__     = "$Revision: 1.5 $, $Author: dwood $"
+__date__        = "$Date: 2006/10/16 15:46:32 $"
+__version__     = "$Revision: 1.6 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -286,7 +286,7 @@ if __name__ == '__main__':
     # read DAC settings file
 
     log.info('Reading file %s', dacName)
-    fio = calDacXML.calDacXML(dacName, ftype)
+    fio = calDacXML.calSettingsXML(dacName, ftype)
     twrs = set(fio.getTowers())
     if not twrs.issubset(towers):
         log.error("%s data not found in file %s", twrs, dacName)

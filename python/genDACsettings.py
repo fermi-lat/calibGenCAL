@@ -19,8 +19,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2007/03/15 16:41:48 $"
-__version__     = "$Revision: 1.6 $, $Author: dwood $"
+__date__        = "$Date: 2007/03/15 17:37:25 $"
+__version__     = "$Revision: 1.7 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -145,9 +145,8 @@ if __name__ == '__main__':
         hegain = None
         
     log.info("Creating file %s", outName)
-    fio = calDacXML.calDacXML(outName, DAC_MAP[dacType], calDacXML.MODE_CREATE)
-    fio.write(settings, filename = outName, leGain = legain, heGain = hegain, energy = energy, 
-        engfilename = dacSlopesName, adcmargin = adcmargin, tems = towers)
+    fio = calDacXML.calSettingsXML(outName, DAC_MAP[dacType], calDacXML.MODE_CREATE)
+    fio.write(settings, tems = towers)
     fio.close() 
   
     log.debug("%s DAC\n%s", dacType, settings[0,...])  
