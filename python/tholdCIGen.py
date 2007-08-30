@@ -13,8 +13,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL TholdCI XML calibration data files"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2007/03/15 15:17:04 $"
-__version__   = "$Revision: 1.30 $, $Author: dwood $"
+__date__      = "$Date: 2007/06/26 02:13:26 $"
+__version__   = "$Revision: 1.31 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -310,7 +310,7 @@ if __name__ == '__main__':
     
         f = uldDacFiles[0]  
         log.info("Reading file %s", f.name)  
-        uldDacFile = calDacXML.calDacXML(f.name, 'rng_uld_dac')
+        uldDacFile = calDacXML.calSettingsXML(f.name, 'rng_uld_dac')
         uldDacData = uldDacFile.read()
         uldDacFile.close()
         
@@ -322,7 +322,7 @@ if __name__ == '__main__':
         for f in uldDacFiles:
 
             log.info("Reading file %s", f.name)
-            uldDacFile = calDacXML.calDacXML(f.name, 'rng_uld_dac')
+            uldDacFile = calDacXML.calSettingsXML(f.name, 'rng_uld_dac')
             twrs = uldDacFile.getTowers()
             if f.srcTwr not in twrs:
                 log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
@@ -337,7 +337,7 @@ if __name__ == '__main__':
     
         f = lacDacFiles[0]
         log.info("Reading file %s", f.name)
-        lacDacFile = calDacXML.calDacXML(f.name, 'log_acpt')
+        lacDacFile = calDacXML.calSettingsXML(f.name, 'log_acpt')
         lacDacData = lacDacFile.read()
         lacDacFile.close()
     
@@ -349,7 +349,7 @@ if __name__ == '__main__':
         for f in lacDacFiles:
 
             log.info("Reading file %s", f.name)
-            lacDacFile = calDacXML.calDacXML(f.name, 'log_acpt')
+            lacDacFile = calDacXML.calSettingsXML(f.name, 'log_acpt')
             twrs = lacDacFile.getTowers()
             if f.srcTwr not in twrs:
                 log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
@@ -364,7 +364,7 @@ if __name__ == '__main__':
     
         f = fleDacFiles[0]
         log.info("Reading file %s", f.name)
-        fleDacFile = calDacXML.calDacXML(f.name, 'fle_dac')
+        fleDacFile = calDacXML.calSettingsXML(f.name, 'fle_dac')
         fleDacData = fleDacFile.read()
         fleDacFile.close()
 
@@ -376,7 +376,7 @@ if __name__ == '__main__':
         for f in fleDacFiles:
 
             log.info("Reading file %s", f.name)
-            fleDacFile = calDacXML.calDacXML(f.name, 'fle_dac')
+            fleDacFile = calDacXML.calSettingsXML(f.name, 'fle_dac')
             twrs = fleDacFile.getTowers()
             if f.srcTwr not in twrs:
                 log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
@@ -391,7 +391,7 @@ if __name__ == '__main__':
     
         f = fheDacFiles[0]
         log.info("Reading file %s", f.name)
-        fheDacFile = calDacXML.calDacXML(f.name, 'fhe_dac')
+        fheDacFile = calDacXML.calSettingsXML(f.name, 'fhe_dac')
         fheDacData = fheDacFile.read()
         fheDacFile.close()
         
@@ -403,7 +403,7 @@ if __name__ == '__main__':
         for f in fheDacFiles:
 
             log.info("Reading file %s", f.name)
-            fheDacFile = calDacXML.calDacXML(f.name, 'fhe_dac')
+            fheDacFile = calDacXML.calSettingsXML(f.name, 'fhe_dac')
             twrs = fheDacFile.getTowers()
             if f.srcTwr not in twrs:
                 log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)

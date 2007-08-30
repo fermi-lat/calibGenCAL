@@ -16,8 +16,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL DAC settings XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/08/15 21:44:12 $"
-__version__     = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__        = "$Date: 2006/10/12 15:44:38 $"
+__version__     = "$Revision: 1.5 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -82,8 +82,8 @@ else:
 
 
 # read in dac xml files
-dacFile1 = calDacXML.calDacXML(dacPath1, dacType)
-dacFile2 = calDacXML.calDacXML(dacPath2, dacType)
+dacFile1 = calDacXML.calSettingsXML(dacPath1, dacType)
+dacFile2 = calDacXML.calSettingsXML(dacPath2, dacType)
 
 # check that towers are the same (ok if they are, just print warning)
 dacTwrs1 = set(dacFile1.getTowers())
