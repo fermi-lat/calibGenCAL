@@ -1,5 +1,20 @@
 ------------------------------------------------------------
 User: fewtrell  Thu Aug 30 14:15:56 PDT 2007
+calibGenCAL/python
+
+Modified Files:
+	dacBlockSet.py dacDiff.py dacXML2TXT.py genDACsettings.py 
+	tholdCIGen.py valDACsettings.py 
+Log Message:
+
+ckSet.py now supports overwriting all values in file.
+
+all dac settings files tools now read and write LATC XML instead of snapshot XML
+
+
+    *
+------------------------------------------------------------
+User: fewtrell  Thu Aug 30 14:15:56 PDT 2007
 calibGenCAL/cfg
 
 Modified Files:
