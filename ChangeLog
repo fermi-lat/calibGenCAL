@@ -1,4 +1,18 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Aug 30 14:15:57 PDT 2007
+calibGenCAL/python/old
+
+Modified Files:
+	reverse_uld.py 
+Log Message:
+
+ckSet.py now supports overwriting all values in file.
+
+all dac settings files tools now read and write LATC XML instead of snapshot XML
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Aug 30 14:15:56 PDT 2007
 calibGenCAL/python
 
