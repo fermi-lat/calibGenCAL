@@ -537,3 +537,13 @@ v5r0p1 fewtrell
 debugged Makefile a bit
 updated documentation for v5
 some include file fixes to get it running in gcc3.4 env
+
+
+--------------------
+v5r1 fewtrell
+--------------------
+- all dac settings files tools now read and write LATC XML instead of snapshot XML
+- dacBlockSet.py now supports overwriting all values in file.
+
+
+
