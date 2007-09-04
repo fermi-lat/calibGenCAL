@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Sep  4 07:46:42 PDT 2007
+calibGenCAL/python
+
+Modified Files:
+	dacBlockSet.py 
+Log Message:
+update comments:
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v5r1, operation: add
 Package: calibGenCAL
