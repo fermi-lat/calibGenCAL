@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CfgMgr.h,v 1.5 2007/05/01 01:12:08 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CfgMgr.h,v 1.6 2007/05/25 21:06:48 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -49,7 +49,7 @@ namespace CfgMgr {
     virtual bool                getVal() const = 0;
   };
 
-  /// \brief Abstract Interface Class for Optional position independent commandline which takes an argument
+  /// \brief Abstract Interface Class for Optional position independent commandline variable which takes an argument
   /// \note truly 'virtual' class has no data members, suitable for virtual/multiple inheritance
   class ICmdOptVar {
   public:
