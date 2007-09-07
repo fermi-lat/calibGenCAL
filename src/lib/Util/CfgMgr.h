@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CfgMgr.h,v 1.6 2007/05/25 21:06:48 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CfgMgr.h,v 1.7 2007/09/07 20:27:58 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -19,6 +19,19 @@
 
    \note this package attempts to follow the definitions stated in python optparse documentation
    here: http://docs.python.org/lib/optparse-terminology.html
+
+   Currently supports the following types of commandline parameters :
+   
+   Switch - optional, position independnent, takes no argument
+          - has short name (-s), long name (--switch)
+          - defaults to false
+
+   OptVar  - optional, position independent, takes an argument
+           - has short name (-s val), long name (--switch=val)
+
+   Arg     - required, position dependent
+           - no variable name on commandline, value only
+          
 
    Example Usage:
 
