@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Dump tholdci file to .txt file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2007/02/26 23:15:57 $"
-__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/08/17 16:35:29 $"
+__version__   = "$Revision: 1.8 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -64,7 +64,7 @@ if __name__ == '__main__':
     xmlFile.close()
 
     # print out header as comment
-    print "; twr lyr col face lac fle fhe uld0 uld1 uld2 uld3 ped0 ped1 ped2 ped3"
+    print ";twr lyr col face lac fle fhe uld0 uld1 uld2 uld3 ped0 ped1 ped2 ped3"
 
     # print out txt file.
     for twr in towers:

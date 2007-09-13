@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Dump offline asymmetry xml file to .txt file"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/02/26 23:15:57 $"
-__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/08/17 16:35:28 $"
+__version__   = "$Revision: 1.10 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -82,7 +82,7 @@ if __name__ == '__main__':
     #     7 = PsmallNbigSigs value
 
     # print header as comment
-    print "; twr lyr col face pos_face_diode neg_face_diode asym sig"
+    print ";twr lyr col face pos_face_diode neg_face_diode asym sig"
 
     # print out txt file.
     for twr in towers:

@@ -3,30 +3,36 @@ Override a block of DAC settings in online DAC setting xml file with either cons
 
 Method masks all settings by default.
 Additional masks are ANDed together to select some region of ca.
+All indexes are in offline units
 
 
 The commandline is
-python dacBlockSet.py  [-f POS|NEG] FLE|FHE|LAC|ULD <val_src> <input_xml> <output_xml>
+python dacBlockSet.py  [-t twr] [-l lyr] [-c col] -R pct [-f POS|NEG]  FLE|FHE|LAC|ULD  <input_xml> <val_src> <output_xml>
 
 where:
     FLE|FHE|LAC|ULD   = DAC data type
-    -f <face>         = face = mask only POS or NEG xtal face
+    -t <twr>        = mask single twr (0-15)
+    -l <lyr>          = mask single layer (0-7)   [Offline indexing]
+    -c <col>          = mask single column (0-11)
+    -f <face>         = mask only POS or NEG xtal face
+    -R <rnd_pct>      = create random mask covering rnd_pct percent of settings
     <input_xml>       = input dac settings xml
-    <output_xml>      = output dac settings xml
     <val_src>         = if <val_src> is numeric, then set all masked values to val_src ... else open filename <val_src> & read masked values from that file
+    <output_xml>      = output dac settings xml
 
 """
 
 __facility__    = "Offline"
 __abstract__    = "Override a block of DAC settings in online DAC setting xml file with either constant value or values from 2nd file"
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/08/30 21:15:56 $"
-__version__     = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/09/04 14:46:42 $"
+__version__     = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
 import sys
 import calDacXML
+import calCalibXML
 import calConstant
 import string
 import logging
@@ -34,7 +40,7 @@ import getopt
 import cgc_util
 import Numeric
 
-usage = "python dacBlockSet.py  [-f POS|NEG] FLE|FHE|LAC|ULD <val_src> <input_xml> <output_xml>"
+usage = "python dacBlockSet.py  [-t twr] [-l lyr] [-c col] [-f POS|NEG][-R pct] FLE|FHE|LAC|ULD <input_xml> <val_src> <output_xml>"
 
 # setup logger
 
@@ -43,12 +49,16 @@ log = logging.getLogger('dacBlockSet')
 log.setLevel(logging.INFO)
 
 # cfg values
+owriteTwr  = False
+owriteLyr  = False
+owriteCol  = False
 owriteFace = False
+owriteRnd = False
 
 # check command line
 
 try:
-    OptsArgs = getopt.getopt(sys.argv[1:], "f:")
+    OptsArgs = getopt.getopt(sys.argv[1:], "t:l:c:f:R:")
 except getopt.GetoptError:
     log.error("getopt error")
     log.error(usage)
@@ -59,9 +69,34 @@ except getopt.GetoptError:
 
 for oa in opts:
     (opt,arg) = oa
-    if opt == '-f':
+    if opt == '-t':
+        owriteTwr = True
+        twr = int(arg)
+        if twr < 0 or twr > 15:
+            log.error("inavlid twr #: %d"%twr)
+            sys.exit(-1)
+    elif opt == '-l':
+        owriteLyr = True
+        lyr = int(arg)
+        if (lyr < 0 or lyr > 7):
+            log.error("inavlid layer #: %d"%lyr)
+            sys.exit(-1)
+    elif opt == '-c':
+        owriteCol = True
+        col = int(arg)
+        if (col < 0 or col > 11):
+            log.error("inavlid column #: %d"%col)
+            sys.exit(-1)
+    elif opt == '-f':
         owriteFace = True
         face = string.upper(arg)
+    elif opt == '-R':
+        owriteRnd = True
+        rnd_pct = float(arg)
+        if (rnd_pct < 0 or rnd_pct > 100):
+            log.error("invalid percent: %f"%rnd_pct)
+            sys.exit(-1)
+
 
 #destination variables
 if len(args) != 4:
@@ -70,7 +105,7 @@ if len(args) != 4:
     sys.exit(1)
     
 # get arg values
-(dacType, val_src, inPath, outPath) = args
+(dacType, inPath, val_src, outPath) = args
 
 
 #determine dac dacType
@@ -96,21 +131,58 @@ dacTwrs = dacFile.getTowers()
 
 ## BUILD MASK ##
 # should be same shape as original data
-msk = dac.copy()
 # first enable all channels
-msk[:] = 1
+msk = Numeric.ones(dac.shape)
+
+# apply twr mask
+if owriteTwr:
+    # build new mask to be 'AND'ed
+    tmp_msk = Numeric.zeros(dac.shape)
+    tmp_msk[twr,...] = 1
+
+    # and tmp_msk with current mask
+    msk &= tmp_msk
+
+# apply layer mask
+if owriteLyr:
+    row = calCalibXML.layerToRow(int(lyr))
+    # build new mask to be 'AND'ed
+    tmp_msk = Numeric.zeros(dac.shape)
+    tmp_msk[:] = 0
+    tmp_msk[:,row,...] = 1
+
+    # and tmp_msk with current mask
+    msk &= tmp_msk
+
+# apply column mask
+if owriteCol:
+    # build new mask to be 'AND'ed
+    tmp_msk = Numeric.zeros(dac.shape)
+    tmp_msk[:] = 0
+    tmp_msk[...,col] = 1
+
+    # and tmp_msk with current mask
+    msk = msk & tmp_msk
+
 
 # apply face mask
 if owriteFace:
     online_face = calConstant.name_to_online_face[face]
     # build new mask to be 'AND'ed
-    tmp_msk = dac.copy()
+    tmp_msk = Numeric.zeros(dac.shape)
     tmp_msk[:] = 0
     tmp_msk[...,online_face,:] = 1
 
-    # and new_msk with current msk
+    # and tmp_msk with current msk
     msk &= tmp_msk
 
+# apply random mask
+if owriteRnd:
+    import MLab # included w/ Numeric, provides rand() method
+    tmp_msk = MLab.rand(*dac.shape) < rnd_pct / 100
+
+    # and tmp_msk with current msk
+    msk &= tmp_msk
 
 ## LOAD OWRITE DATA ##
 # constants

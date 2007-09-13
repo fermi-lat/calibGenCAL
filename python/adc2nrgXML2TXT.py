@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Dump offline adc2nrg xml file to .txt file"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/02/26 23:15:57 $"
-__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/03/06 17:40:37 $"
+__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -64,7 +64,7 @@ if __name__ == '__main__':
     xmlFile.close()
 
     # print header as comment
-    print "; twr lyr col face diode adc2nrg"
+    print ";twr lyr col face diode adc2nrg"
 
     # print out txt file.
     for twr in towers:
