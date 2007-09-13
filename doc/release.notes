@@ -546,4 +546,9 @@ v5r1 fewtrell
 - dacBlockSet.py now supports overwriting all values in file.
 
 
+---------------------
+v5r1p1 fewtrell
+---------------------
+- dacBlockSet.py now supports overwriting by twr, lyr, col, face or random mask
+
 
