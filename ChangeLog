@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Sep 13 11:31:45 PDT 2007
+calibGenCAL/python
+
+Modified Files:
+	adc2nrgXML2TXT.py asymXML2TXT.py dacBlockSet.py dacXML2TXT.py 
+	inlXML2TXT.py mpdXML2TXT.py pedXML2TXT.py tholdCIXML2TXT.py 
+Log Message:
+dacBlockSet.py now supports random channel selection as well as by twr,lyr,col,face
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Sep  7 13:52:10 PDT 2007
 calibGenCAL/src/lib/Util
 
