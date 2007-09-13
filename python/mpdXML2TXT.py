@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Dump offline mevPerDAC xml file to .txt file"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/02/08 16:37:30 $"
-__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/02/26 23:15:57 $"
+__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -63,7 +63,7 @@ if __name__ == '__main__':
     xmlFile.close()
 
     # print out header as comment
-    print "; twr lyr col diode mevPerDAC sigma"
+    print ";twr lyr col diode mevPerDAC sigma"
 
     # print out txt file.
     for twr in towers:

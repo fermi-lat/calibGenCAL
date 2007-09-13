@@ -15,8 +15,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Convert CAL DAC settings XML file to txt."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/07/26 16:05:27 $"
-__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/08/30 21:15:56 $"
+__version__     = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -59,7 +59,7 @@ dacTwrs = dacFile.getTowers()
 dac = dacFile.read()
 
 #print header as comment
-print  "; twr row xtal online_face dac"
+print  ";twr row xtal online_face dac"
 
 for twr in dacTwrs:
     for row in range(calConstant.NUM_ROW):
