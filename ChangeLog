@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: golpa  Mon Oct  1 13:42:25 PDT 2007
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+Added missing author line and use commonUtilities
+    *
+------------------------------------------------------------
 TAG
 Tag name: v5r1p1, operation: add
 Package: calibGenCAL
