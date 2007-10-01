@@ -1,6 +1,8 @@
 package calibGenCAL
 private 
 
+author Zachary Fewtrell <zfewtrell@ssd5.nrl.navy.mil>
+
 branches src doc cfg unit_test python
 
 use GlastPolicy   

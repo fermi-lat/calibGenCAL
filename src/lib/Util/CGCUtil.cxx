@@ -4,7 +4,7 @@
 
     \brief generic utility functions used in calibGenCAL pkg
 
-    $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.cxx,v 1.5 2007/06/13 22:42:13 fewtrell Exp $
+    $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.cxx,v 1.6 2007/06/19 18:11:45 fewtrell Exp $
 */
 
 // LOCAL INCLUDES
@@ -12,6 +12,7 @@
 #include "stl_util.h"
 
 // GLAST INCLUDES
+#include "facilities/commonUtilities.h"
 
 // EXTLIB INCLUDES
 
@@ -49,20 +50,20 @@ namespace calibGenCAL {
     ostrm << endl;
 
     // test that enviroment variables are present
-    if (!getenv("CALIBGENCALROOT") ||
-        !getenv("ROOTROOT")        ||
-        !getenv("DIGIROOTDATAROOT") ||
-        !getenv("IDENTSROOT")      ||
-        !getenv("CALIBUTILROOT"))
+    if (facilities::commonUtilities::getPackagePath("calibGenCAL") == "" ||
+	//        !getenv("ROOTROOT")        ||
+        facilities::commonUtilities::getPackagePath("digiRootData") == "" ||
+        facilities::commonUtilities::getPackagePath("idents") == "" ||
+        facilities::commonUtilities::getpackagePath("calibUtil") == "")
       cerr << __FILE__  << ':'     << __LINE__ << ' '
-           << "WARNING. error retrieveing packageROOT paths" << endl;
+           << "WARNING. error retrieveing package paths" << endl;
     else {
       ostrm << " PACKAGE      "  << "PATH" << endl;
-      ostrm << " calibGenCAL  "  << getenv("CALIBGENCALROOT")  << endl;
-      ostrm << " ROOT         "  << getenv("ROOTROOT")         << endl;
-      ostrm << " digiRootData "  << getenv("DIGIROOTDATAROOT") << endl;
-      ostrm << " idents       "  << getenv("IDENTSROOT")       << endl;
-      ostrm << " calibUtil    "  << getenv("CALIBUTILROOT")    << endl;
+      ostrm << " calibGenCAL  "  << facilities::commonUtilities::getPackagePath("calibGenCAL")  << endl;
+      //ostrm << " ROOT         "  << getenv("ROOTROOT")         << endl;
+      ostrm << " digiRootData "  << facilities::commonUtilities::getPackagePath("digiRootData") << endl;
+      ostrm << " idents       "  << facilities::commonUtilities::getPackagePath("idents")       << endl;
+      ostrm << " calibUtil    "  << facilities::commonUtilities::getpackagePath("calibUtil")    << endl;
     }
     ostrm << "****************************************************" << endl;
   }
