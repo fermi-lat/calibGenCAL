@@ -4,7 +4,7 @@
 
     \brief generic utility functions used in calibGenCAL pkg
 
-    $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.cxx,v 1.6 2007/06/19 18:11:45 fewtrell Exp $
+    $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.cxx,v 1.7 2007/10/01 20:42:25 golpa Exp $
 */
 
 // LOCAL INCLUDES
@@ -54,7 +54,7 @@ namespace calibGenCAL {
 	//        !getenv("ROOTROOT")        ||
         facilities::commonUtilities::getPackagePath("digiRootData") == "" ||
         facilities::commonUtilities::getPackagePath("idents") == "" ||
-        facilities::commonUtilities::getpackagePath("calibUtil") == "")
+        facilities::commonUtilities::getPackagePath("calibUtil") == "")
       cerr << __FILE__  << ':'     << __LINE__ << ' '
            << "WARNING. error retrieveing package paths" << endl;
     else {
@@ -63,7 +63,7 @@ namespace calibGenCAL {
       //ostrm << " ROOT         "  << getenv("ROOTROOT")         << endl;
       ostrm << " digiRootData "  << facilities::commonUtilities::getPackagePath("digiRootData") << endl;
       ostrm << " idents       "  << facilities::commonUtilities::getPackagePath("idents")       << endl;
-      ostrm << " calibUtil    "  << facilities::commonUtilities::getpackagePath("calibUtil")    << endl;
+      ostrm << " calibUtil    "  << facilities::commonUtilities::getPackagePath("calibUtil")    << endl;
     }
     ostrm << "****************************************************" << endl;
   }
