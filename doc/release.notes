@@ -551,4 +551,10 @@ v5r1p1 fewtrell
 ---------------------
 - dacBlockSet.py now supports overwriting by twr, lyr, col, face or random mask
 
+---------------------
+v5r1p2 fewtrell
+---------------------
+- now uses facilities::commonUtilities for package paths
+
+
 
