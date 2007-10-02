@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Oct  2 12:05:28 PDT 2007
+calibGenCAL/src/lib/Util
+
+Modified Files:
+	CGCUtil.cxx 
+Log Message:
+fixed compile error with commonUtilities modificaiton
+
+    *
+------------------------------------------------------------
 User: golpa  Mon Oct  1 13:42:25 PDT 2007
 calibGenCAL/src/lib/Util
 
