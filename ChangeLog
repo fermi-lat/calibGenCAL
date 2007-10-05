@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Oct  5 14:07:20 PDT 2007
+calibGenCAL/src/lib/Util
+
+Modified Files:
+	CalHodoscope.cxx SimpleIniFile.cxx 
+Log Message:
+preparing for next tag
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Oct  5 14:07:19 PDT 2007
 calibGenCAL/src/lib/CalibDataTypes
 
