@@ -1,7 +1,7 @@
 #ifndef ROOTUtil_h
 #define ROOTUtil_h
 
-//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/ROOTUtil.h,v 1.1 2007/06/13 22:42:13 fewtrell Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/ROOTUtil.h,v 1.2 2007/06/19 18:11:45 fewtrell Exp $
 
 /** @file
     @author  Zachary Fewtrell
@@ -21,6 +21,9 @@
 
 // LOCAL INCLUDES
 #include "stl_util.h"
+
+// STD INCLUDES
+#include <cassert>
 
 
 namespace calibGenCAL {
