@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Oct  5 04:39:39 PDT 2007
+calibGenCAL/src/lib/Util
+
+Modified Files:
+	ROOTUtil.h 
+Log Message:
+added #include statement needed by msvc
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Oct  5 04:39:38 PDT 2007
 calibGenCAL/doc
 
