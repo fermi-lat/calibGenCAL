@@ -556,5 +556,7 @@ v5r1p2 fewtrell
 ---------------------
 - now uses facilities::commonUtilities for package paths
 
-
-
+---------------------
+v5r1p3 fewtrell
+---------------------
+- added include statement needed by msvc compiler
