@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Oct  5 04:39:38 PDT 2007
+calibGenCAL/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+added #include statement needed by msvc
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v5r1p2, operation: add
 Package: calibGenCAL
