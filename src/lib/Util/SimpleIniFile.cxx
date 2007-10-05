@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/SimpleIniFile.cxx,v 1.2 2007/04/10 14:51:02 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/SimpleIniFile.cxx,v 1.3 2007/05/25 21:06:48 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -155,7 +155,7 @@ const string *SimpleIniFile::findKey(const string &section,
                                      const string &key) const
 {
   // if section does not exist, return false
-  SectionMap::const_iterator smIter = m_sectionMap.find(section);
+  const SectionMap::const_iterator smIter = m_sectionMap.find(section);
 
 
   if (smIter == m_sectionMap.end())
@@ -165,7 +165,7 @@ const string *SimpleIniFile::findKey(const string &section,
   const Section &mySec = (*smIter).second;
 
   // if key does not exist, return false.
-  Section::const_iterator iter = mySec.find(key);
+  const Section::const_iterator iter = mySec.find(key);
   if (iter == mySec.end())
     return NULL;
 
@@ -177,7 +177,7 @@ void SimpleIniFile::addKey(const string &section,
                            const string &key,
                            const string &val) {
   // first look for section
-  SectionMap::iterator smIter = m_sectionMap.find(section);
+  const SectionMap::iterator smIter = m_sectionMap.find(section);
 
 
   // create new seciton if it doesn't exist
@@ -238,7 +238,7 @@ vector<string>  SimpleIniFile::getSectionKeys(const string &section) {
   vector<string> retVal;
 
   // first look for section
-  SectionMap::const_iterator smIter = m_sectionMap.find(section);
+  const SectionMap::const_iterator smIter = m_sectionMap.find(section);
 
   // return empty vector if it doesn't exist
   if (smIter == m_sectionMap.end())

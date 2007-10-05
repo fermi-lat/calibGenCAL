@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuTrigAlg.cxx,v 1.5 2007/06/07 17:45:43 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuTrigAlg.cxx,v 1.6 2007/06/13 22:42:11 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -112,11 +112,11 @@ namespace calibGenCAL {
       }
 
       //-- intialize arrays --//
-      adcPed.fill(0);
+      fill(adcPed.begin(), adcPed.end(), 0);
       for (LyrIdx lyrIdx; lyrIdx.isValid(); lyrIdx++) {
-        fle[lyrIdx].fill(false);
-        hitsPerLyr[lyrIdx].fill(0);
-        columnHit[lyrIdx].fill(0);
+        fill(fle[lyrIdx].begin(), fle[lyrIdx].end(), false);
+        fill(hitsPerLyr[lyrIdx].begin(), hitsPerLyr[lyrIdx].end(), 0);
+        fill(columnHit[lyrIdx].begin(), columnHit[lyrIdx].end(), 0);
       }
       if (calLOEnabled)
         trigList.clear();
@@ -290,7 +290,7 @@ namespace calibGenCAL {
 
       // intialize to false
       for (LyrIdx lyrIdx; lyrIdx.isValid(); lyrIdx++)
-        fle[lyrIdx].fill(false);
+        fill(fle[lyrIdx].begin(), fle[lyrIdx].end(), false);
 
       CalDiagnosticData  *pdiag(0);
       while ((pdiag = dynamic_cast<CalDiagnosticData *>(calDiagIter.Next()))) {

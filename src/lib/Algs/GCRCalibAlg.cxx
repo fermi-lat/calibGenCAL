@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/GCRCalibAlg.cxx,v 1.6 2007/06/12 17:40:46 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/GCRCalibAlg.cxx,v 1.7 2007/06/13 22:42:11 fewtrell Exp $
 
 /** @file 
     @author Zach Fewtrell
@@ -339,9 +339,9 @@ namespace calibGenCAL {
       CalArray<XtalRng, float> adcPed;
       CalArray<DiodeNum, float> meanDAC;
       CalArray<XtalDiode, float> dac;
-      adcPed.fill(CIDAC2ADC::INVALID_ADC);
-      meanDAC.fill(CIDAC2ADC::INVALID_ADC);
-      dac.fill(CIDAC2ADC::INVALID_ADC);
+      fill(adcPed.begin(), adcPed.end(), CIDAC2ADC::INVALID_ADC);
+      fill(meanDAC.begin(), meanDAC.end(), CIDAC2ADC::INVALID_ADC);
+      fill(dac.begin(), dac.end(), CIDAC2ADC::INVALID_ADC);
 
       for (RngNum rng(maxBestRng); rng.isValid(); rng++) {
         const DiodeNum diode(rng.getDiode());

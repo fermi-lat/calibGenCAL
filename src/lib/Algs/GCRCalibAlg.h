@@ -1,7 +1,7 @@
 #ifndef GCRCalibAlg_h
 #define GCRCalibAlg_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/GCRCalibAlg.h,v 1.2 2007/04/10 14:51:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/GCRCalibAlg.h,v 1.3 2007/05/25 21:06:47 fewtrell Exp $
 
 /** @file
     @author Zach Fewtrell
@@ -104,7 +104,7 @@ namespace calibGenCAL {
         nHitsXface       = 0;
         nHitsAngle       = 0;
         nHitsPos         = 0;
-        nFills.fill(0);
+        fill(nFills.begin(), nFills.end(), 0);
         calPed           = 0;
         dac2adc          = 0;
       }
