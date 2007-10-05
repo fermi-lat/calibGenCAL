@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CalHodoscope.cxx,v 1.3 2007/05/25 21:06:48 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CalHodoscope.cxx,v 1.4 2007/06/13 22:42:13 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -28,7 +28,7 @@ namespace calibGenCAL {
     fill(adc_ped.begin(), adc_ped.end(), CIDAC2ADC::INVALID_ADC);
     fill(dac.begin(), dac.end(), CIDAC2ADC::INVALID_ADC);
     fill_zero(perLyr);
-    bestRng.fill(LEX8);
+    fill(bestRng.begin(), bestRng.end(), LEX8);
 
     // empty hit lists
     hitList.clear();

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalibDataTypes/CalMPD.cxx,v 1.2 2007/04/10 14:51:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalibDataTypes/CalMPD.cxx,v 1.3 2007/05/25 21:06:47 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -27,7 +27,7 @@ namespace calibGenCAL {
     m_mpdErr(DiodeNum::N_VALS)
   {
     for (DiodeNum diode; diode.isValid(); diode++)
-      m_mpd[diode].fill(INVALID_MPD);
+      fill(m_mpd[diode].begin(), m_mpd[diode].end(), INVALID_MPD);
   }
 
   void CalMPD::writeTXT(const string &filename) const {

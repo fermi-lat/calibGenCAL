@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalibDataTypes/NeighborXtalk.cxx,v 1.2 2007/04/04 19:02:57 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalibDataTypes/NeighborXtalk.cxx,v 1.3 2007/05/25 21:06:47 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -32,13 +32,12 @@ namespace calibGenCAL {
                                                     const CalUtil::DiodeIdx source
                                                     ) const
   {
-    XtalkMap::const_iterator xtalkIt = m_xtalkMap.find(dest);
-
+    const XtalkMap::const_iterator xtalkIt = m_xtalkMap.find(dest);
 
     if (xtalkIt == m_xtalkMap.end())
       return 0;
 
-    ChannelSplineMap::const_iterator it =
+    const ChannelSplineMap::const_iterator it =
       xtalkIt->second.find(source);
 
     if (it == xtalkIt->second.end())
@@ -50,13 +49,13 @@ namespace calibGenCAL {
   SplineUtil::Polyline *NeighborXtalk::getPts(const CalUtil::DiodeIdx dest,
                                               const CalUtil::DiodeIdx source)
   {
-    XtalkMap::iterator xtalkIt = m_xtalkMap.find(dest);
+    const XtalkMap::iterator xtalkIt = m_xtalkMap.find(dest);
 
 
     if (xtalkIt == m_xtalkMap.end())
       return 0;
 
-    ChannelSplineMap::iterator it =
+    const ChannelSplineMap::iterator it =
       xtalkIt->second.find(source);
 
     if (it == m_xtalkMap[dest].end())
@@ -83,7 +82,7 @@ namespace calibGenCAL {
 
     // loop through each destination channel
     for (DiodeIdx destIdx; destIdx.isValid(); destIdx++) {
-      XtalkMap::const_iterator xtalkIt = m_xtalkMap.find(destIdx);
+      const XtalkMap::const_iterator xtalkIt = m_xtalkMap.find(destIdx);
       if (xtalkIt == m_xtalkMap.end())
         continue;
 
@@ -118,7 +117,7 @@ namespace calibGenCAL {
                                const float dac,
                                const float adc) {
     // find all cross talk entries for given 'destination' channel
-    XtalkMap::iterator xtalkIt = m_xtalkMap.find(dest);
+    const XtalkMap::iterator xtalkIt = m_xtalkMap.find(dest);
 
 
     // create new destination map if needed
@@ -126,7 +125,7 @@ namespace calibGenCAL {
       xtalkIt = m_xtalkMap.insert(XtalkMap::value_type(dest, ChannelSplineMap())).first;
 
     // find curve for given source, destination pair.
-    ChannelSplineMap::iterator chanIt =
+    const ChannelSplineMap::iterator chanIt =
       xtalkIt->second.find(source);
 
     // create new spline curve if needed
@@ -145,7 +144,7 @@ namespace calibGenCAL {
   
     // loop through each destination channel
     for (DiodeIdx destIdx; destIdx.isValid(); destIdx++) {
-      XtalkMap::const_iterator xtalkIt = m_xtalkMap.find(destIdx);
+      const XtalkMap::const_iterator xtalkIt = m_xtalkMap.find(destIdx);
       if (xtalkIt == m_xtalkMap.end())
         continue;
 
