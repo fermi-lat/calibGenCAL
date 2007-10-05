@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Fri Oct  5 14:07:19 PDT 2007
+calibGenCAL/src/lib/CalibDataTypes
+
+Modified Files:
+	CalAsym.cxx CalMPD.cxx NeighborXtalk.cxx 
+Log Message:
+preparing for next tag
+
+    *
+------------------------------------------------------------
+User: fewtrell  Fri Oct  5 14:07:19 PDT 2007
 calibGenCAL/src/lib/Algs
 
 Modified Files:
