@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalibDataTypes/NeighborXtalk.cxx,v 1.3 2007/05/25 21:06:47 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalibDataTypes/NeighborXtalk.cxx,v 1.4 2007/10/05 21:07:19 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -117,7 +117,7 @@ namespace calibGenCAL {
                                const float dac,
                                const float adc) {
     // find all cross talk entries for given 'destination' channel
-    const XtalkMap::iterator xtalkIt = m_xtalkMap.find(dest);
+    XtalkMap::iterator xtalkIt = m_xtalkMap.find(dest);
 
 
     // create new destination map if needed
@@ -125,7 +125,7 @@ namespace calibGenCAL {
       xtalkIt = m_xtalkMap.insert(XtalkMap::value_type(dest, ChannelSplineMap())).first;
 
     // find curve for given source, destination pair.
-    const ChannelSplineMap::iterator chanIt =
+    ChannelSplineMap::iterator chanIt =
       xtalkIt->second.find(source);
 
     // create new spline curve if needed

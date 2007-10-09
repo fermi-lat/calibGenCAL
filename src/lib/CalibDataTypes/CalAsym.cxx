@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalibDataTypes/CalAsym.cxx,v 1.3 2007/05/25 21:06:47 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalibDataTypes/CalAsym.cxx,v 1.4 2007/10/05 21:07:19 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -103,8 +103,8 @@ namespace calibGenCAL {
     m_p2aSplines.resize(DiodeNum::N_VALS);
 
     for (DiodeNum diode; diode.isValid(); diode++) {
-      fill(m_a2pSplines[diode].begin(), m_a2pSplines[diode].end(), 0);
-      fill(m_p2aSplines[diode].begin(), m_p2aSplines[diode].end(), 0);
+      fill(m_a2pSplines[diode].begin(), m_a2pSplines[diode].end(), static_cast<TSpline3*>(0));
+      fill(m_p2aSplines[diode].begin(), m_p2aSplines[diode].end(), static_cast<TSpline3*>(0));
     }
 
     // create position (Y-axis) array
