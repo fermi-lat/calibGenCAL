@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Oct  9 13:38:45 PDT 2007
+calibGenCAL/src/lib/CalibDataTypes
+
+Modified Files:
+	CalAsym.cxx NeighborXtalk.cxx 
+Log Message:
+fixed compile warning related to const qualifiers
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v5r1p4, operation: add
 Package: calibGenCAL
