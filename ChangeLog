@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: golpa  Mon Oct 15 08:27:54 PDT 2007
+calibGenCAL/src/lib/Algs
+
+Modified Files:
+      Tag: Branch-v5r0
+	MuTrigAlg.h NeighborXtalkAlg.cxx 
+Log Message:
+Add missing includes
+    *
+------------------------------------------------------------
 User: golpa  Mon Oct 15 08:17:33 PDT 2007
 calibGenCAL/src/lib/Util
 
