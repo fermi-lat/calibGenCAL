@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/MultiPeakGaus.cxx,v 1.2 2007/03/29 20:14:22 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/Attic/MultiPeakGaus.cxx,v 1.3 2007/04/10 14:51:02 fewtrell Exp $
 
 /** @file
     @author Zach Fewtrell
@@ -11,6 +11,7 @@
 // EXTLIB INCLUDES
 #include "TF1.h"
 #include "TH1.h"
+#include "TMath.h"
 
 // STD INCLUDES
 #include <string>
