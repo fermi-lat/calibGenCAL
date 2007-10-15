@@ -1,6 +1,6 @@
 #ifndef NeighborXtalk_h
 #define NeighborXtalk_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalibDataTypes/NeighborXtalk.h,v 1.2 2007/04/04 19:02:57 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalibDataTypes/NeighborXtalk.h,v 1.3 2007/04/10 14:51:01 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -16,6 +16,7 @@
 // EXTLIB INCLUDES
 
 // STD INCLUDES
+#include <map>
 
 /** \brief Represents electronic crosstalk in adc units upon each Cal crystal
     by neighboring crystals.

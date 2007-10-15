@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/RootFileAnalysis.cxx,v 1.1 2007/03/27 18:50:51 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/RootFileAnalysis.cxx,v 1.2 2007/04/10 14:51:02 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -17,6 +17,7 @@
 // EXTLIB INCLUDES
 #include "TChainElement.h"
 #include "TFile.h"
+#include "TStreamerInfo.h"
 
 // STD INCLUDES
 #include <vector>

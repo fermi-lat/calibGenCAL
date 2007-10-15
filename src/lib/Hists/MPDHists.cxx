@@ -23,6 +23,7 @@
 #include <string>
 #include <sstream>
 #include <stdexcept>
+#include <map>
 
 using namespace std;
 using namespace CalUtil;
