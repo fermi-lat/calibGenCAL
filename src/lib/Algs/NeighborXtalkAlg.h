@@ -1,6 +1,6 @@
 #ifndef NeighborXtalkAlg_h
 #define NeighborXtalkAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/NeighborXtalkAlg.h,v 1.4 2007/05/25 21:06:47 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/NeighborXtalkAlg.h,v 1.5 2007/06/13 22:42:12 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -15,6 +15,7 @@
 #include "CalUtil/CalVec.h"
 
 // EXTLIB INCLUDES
+#include "TObjArray.h"
 
 // STD INCLUDES
 
