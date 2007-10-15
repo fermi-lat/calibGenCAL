@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Oct 15 12:40:52 PDT 2007
+calibGenCAL/src/lib/Algs
+
+Modified Files:
+	NeighborXtalkAlg.h 
+Log Message:
+adding missing include files 
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v5r0p2, operation: add
 Package: calibGenCAL
