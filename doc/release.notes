@@ -565,3 +565,8 @@ v5r1p3 fewtrell
 v5r1p4 fewtrell 
 ---------------------
 - updated to be consistent with CalUtil v3r5
+
+----------------------
+v5r1p5 fewtrell
+----------------------
+- added missing #include statements
