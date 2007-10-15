@@ -1,6 +1,6 @@
 #ifndef RootFileAnalysis_h
 #define RootFileAnalysis_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/RootFileAnalysis.h,v 1.2 2007/04/10 14:51:02 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/RootFileAnalysis.h,v 1.3 2007/05/25 21:06:48 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -15,6 +15,7 @@
 
 // STD INCLUDES
 #include <iostream>
+#include <vector>
 
 class McEvent;
 class DigiEvent;

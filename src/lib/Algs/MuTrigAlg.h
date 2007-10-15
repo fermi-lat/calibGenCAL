@@ -1,6 +1,6 @@
 #ifndef MuTrigAlg_h
 #define MuTrigAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuTrigAlg.h,v 1.3 2007/05/25 21:06:47 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuTrigAlg.h,v 1.4 2007/06/13 22:42:12 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -13,6 +13,7 @@
 #include "CalUtil/CalDefs.h"
 
 // EXTLIB INCLUDES
+#include "TH1.h"
 
 // STD INCLUDES
 

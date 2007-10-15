@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/NeighborXtalkAlg.cxx,v 1.4 2007/06/07 17:45:43 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/NeighborXtalkAlg.cxx,v 1.5 2007/06/13 22:42:12 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -18,6 +18,7 @@
 #include "digiRootData/DigiEvent.h"
 
 // EXTLIB INCLUDES
+#include "TH1.h"
 
 // STD INCLUDES
 #include <sstream>
