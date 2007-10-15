@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/LangauFun.cxx,v 1.4 2007/06/07 17:45:43 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/LangauFun.cxx,v 1.5 2007/06/13 22:42:13 fewtrell Exp $
 
 /** @file
     @author Zach Fewtrell
@@ -13,6 +13,7 @@
 #include "TF1.h"
 #include "TH1.h"
 #include "TNtuple.h"
+#include "TMath.h"
 
 // STD INCLUDES
 #include <cmath>

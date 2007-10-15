@@ -1,6 +1,6 @@
 #ifndef NeighborXtalk_h
 #define NeighborXtalk_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalibDataTypes/NeighborXtalk.h,v 1.3 2007/04/10 14:51:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/CalibDataTypes/NeighborXtalk.h,v 1.4 2007/05/25 21:06:47 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -16,6 +16,7 @@
 // EXTLIB INCLUDES
 
 // STD INCLUDES
+#include <map>
 
 namespace calibGenCAL {
 
