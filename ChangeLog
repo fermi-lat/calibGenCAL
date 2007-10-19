@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Oct 19 08:33:05 PDT 2007
+calibGenCAL/cfg
+
+Modified Files:
+	Makefile 
+Log Message:
+bad makefile syntax
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v5r1p5, operation: add
 Package: calibGenCAL
