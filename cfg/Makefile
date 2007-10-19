@@ -1,4 +1,4 @@
-# $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/cfg/Makefile,v 1.13 2007/04/18 19:57:28 fewtrell Exp $
+# $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/cfg/Makefile,v 1.14 2007/08/30 21:15:56 fewtrell Exp $
 # @file calibGenCAL analysis Makefile - manage generation of all calibGenCAL outputs and accessory files
 # @requires GNU Make
 # @requires calibGenCAL package CMT environment setup - this means source your $CALIBGENCALROOT/cmt/setup.(csh|sh|bat)
@@ -259,7 +259,7 @@ muongain_calib: muongain_ped muongain_inl muongain_muopt muongain_dacslopes muon
 .PHONY: inl
 inl : muongain_inl flightgain_inl
 
-.PHONY : muongain_inl
+.PHONY: muongain_inl
 muongain_inl: muongain_inl_val
 
 .PHONY: muongain_inl_val
@@ -297,12 +297,12 @@ cg_txt: ${CG_TXT}
 ${CG_TXT}: ${CG_ON_XML} ${CG_OFF_XML}
 	calibGainCoeff.sh ${CG_ON_XML} ${CG_OFF_XML} > ${CG_TXT}
 
-.PHONY : cg_on_txt
+.PHONY: cg_on_txt
 cg_on_txt: ${CG_ON_TXT}
 ${CG_ON_TXT}:
 	genCIDAC2ADC.exe  ${INL_COLMODE} -h ${CG_DIGI_CGON} ${CG_ON_BASE}
 
-.PHONY : cg_off_txt
+.PHONY: cg_off_txt
 cg_off_txt: ${CG_OFF_TXT}
 ${CG_OFF_TXT}:
 	genCIDAC2ADC.exe  ${INL_COLMODE} -h ${CG_DIGI_CGOFF} ${CG_OFF_BASE}
@@ -332,7 +332,7 @@ ${MUONGAIN_PED_TXT} : ${MUONGAIN_PED_DIGI_FILES}
 
 
 
-.PHONY : muongain_muopt
+.PHONY: muongain_muopt
 muongain_muopt : muongain_muopt_val
 .PHONY: muongain_muopt_val 
 muongain_muopt_val : muongain_asym_val muongain_mpd_val
@@ -412,7 +412,7 @@ cal_gains.h: ${FLIGHTGAIN_MUSLOPE_XML}
 	genFlightGain.sh ${FLIGHTGAIN_MUSLOPE_XML}
 
 
-.PHONY : muslope
+.PHONY: muslope
 muslope : muongain_muslope_val  flightgain_muslope_val
 
 .PHONY: muongain_muslope_val
@@ -490,9 +490,9 @@ ${MUONGAIN_THOLDCI_XML} : ${MUONGAIN_THOLDCI_CFG} ${MUONGAIN_INL_XML} ${MUONGAIN
 
 
 
-.PHONY : dacsettings
+.PHONY: dacsettings
 dacsettings : dacsettings_val
-.PHONY : dacsettings_val
+.PHONY: dacsettings_val
 dacsettings_val : muongain_dacsettings_val flightgain_dacsettings_val
 
 .PHONY: muongain_dacsettings
@@ -540,7 +540,7 @@ ${MUONGAIN_ULD_VAL} : ${MUONGAIN_ULD_XML}
 	valDACsettings.sh -R ${MUONGAIN_ULD_VAL} ULD ${MUONGAIN_ULD_THRESH} ${MUONGAIN_DACSLOPES_XML} ${MUONGAIN_ULD_XML}
 
 
-.PHONY : flightgain_dacsettings
+.PHONY: flightgain_dacsettings
 flightgain_dacsettings: flightgain_dacsettings_val
 
 .PHONY: flightgain_dacsettings_val
