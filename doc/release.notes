@@ -570,3 +570,8 @@ v5r1p4 fewtrell
 v5r1p5 fewtrell
 ----------------------
 - added missing #include statements
+
+-----------------------
+v5r1p6 fewtrell
+-----------------------
+- fixed bug in genCIDAC2ADC commandline setup

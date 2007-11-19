@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.23 2007/06/07 17:45:42 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.24 2007/06/13 22:42:11 fewtrell Exp $
 
 /** @file Gen CIDAC2ADC calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
@@ -44,10 +44,7 @@ public:
                "singlex16 pulses 12 columns individually"),
     outputBasename("outputBasename",
                    "all output files will use this basename + some_ext",
-                   ""),
-    help("help",
-         'h',
-         "print usage info")
+                   "")
   {
     cmdParser.registerArg(outputBasename);
     
@@ -55,16 +52,12 @@ public:
     cmdParser.registerVar(rootFileLE);
 
     cmdParser.registerSwitch(columnMode);
-    cmdParser.registerSwitch(help);
 
 
 
     try {
       cmdParser.parseCmdLine(argc, argv);
     } catch (exception &e) {
-      // ignore invalid commandline if user asked for help.
-      if (!help.getVal())
-        cout << e.what() << endl;
       cmdParser.printUsage();
       exit(-1);
     }
@@ -79,8 +72,6 @@ public:
   CmdSwitch columnMode;
   
   CmdArg<string> outputBasename;
-  /// print usage string
-  CmdSwitch help;
 
 };
 
