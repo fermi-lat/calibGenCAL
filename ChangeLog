@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Mon Nov 19 11:49:31 PST 2007
+calibGenCAL/src
+
+Modified Files:
+	genCIDAC2ADC.cxx 
+Log Message:
+fixed bug in genCIDAC2ADC commandline setup
+
+    *
+------------------------------------------------------------
+User: fewtrell  Mon Nov 19 11:49:31 PST 2007
 calibGenCAL/doc
 
 Modified Files:
