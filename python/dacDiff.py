@@ -1,14 +1,14 @@
 """
 Diff 2 CAL DAC settings XML files.  The command line is:
 
-dacDiff [-V] FLE|FHE|LAC|ULD <dac_xml_file1> <dac_xml_file2> <output_root_file>
+dacDiff [-V] FLE|FHE|LAC|ULD <dac_xml_file1> <dac_xml_file2> <output_base_filename>
 
 where:
     -V                 = verbose output
     FLE|FHE|LAC|ULD    = DAC dacType to validate
     <dac_xml_file1>    = GLAST Cal dac xml 'fragment' file (minuend)
     <dac_xml_file2>    = GLAST Cal dac xml 'fragment' file (subtrahend)
-    <output_root_file> = ROOT overplots & residuals will be saved here.
+    <output_base_filename> = ROOT & txt logfile will base their filenames on this string
 
     
 """
@@ -16,13 +16,14 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL DAC settings XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2006/10/12 15:44:38 $"
-__version__     = "$Revision: 1.5 $, $Author: dwood $"
+__date__        = "$Date: 2007/08/30 21:15:56 $"
+__version__     = "$Revision: 1.6 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
 
 import sys
+import os
 import logging
 import getopt
 
@@ -65,7 +66,19 @@ if len(args) != 4:
 dacType  = args[0]
 dacPath1 = args[1]
 dacPath2 = args[2]
-rootPath = args[3]
+baseFilename = args[3]
+
+rootPath = baseFilename+".root"
+logPath = baseFilename+".log.txt"
+
+# add logfile
+if os.path.exists(logPath):
+    log.debug('Removing old log file %s', logPath)
+    os.remove(logPath)
+hdl = logging.FileHandler(logPath)
+fmt = logging.Formatter('%(levelname)s %(message)s')
+hdl.setFormatter(fmt)
+log.addHandler(hdl)
 
 #determine dac dacType
 if dacType == 'FLE':
@@ -147,6 +160,11 @@ h2 = ROOT.TH1S(histName2, dacType, 128, 0,128)
 h2.SetLineColor(2)
 h2.SetStats(False) # turn off statistics box in plot
 
+# build diff histogram
+hdiff_name = dacType+"_diff"
+hdiff = ROOT.TH1S(hdiff_name, hdiff_name, 128,0,128)
+
+
 # fill histograms
 for twr in towers:
     for row in range(calConstant.NUM_ROW):
@@ -154,6 +172,7 @@ for twr in towers:
             for fe in range(calConstant.NUM_FE):
                 h1.Fill(dac1[twr, row, end, fe])
                 h2.Fill(dac2[twr, row, end, fe])
+                hdiff.Fill(dacDiff[twr,row,end,fe])
 
 # add legend entries
 leg.AddEntry(h1,dacPath1,"L")
@@ -169,6 +188,7 @@ cs.Update()
 leg.Draw()
 cs.Update()
 cs.Write()
+hdiff.Write()
 
 
 # done!

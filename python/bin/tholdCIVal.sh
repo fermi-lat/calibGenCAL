@@ -1,5 +1,5 @@
-#! /bin/sh
-#$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/tholdCIVal.sh,v 1.5 2007/02/16 18:11:48 fewtrell Exp $
+#! /bin/bash
+#$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/bin/tholdCIVal.sh,v 1.1 2007/02/16 18:57:36 dwood Exp $
 export -n DISPLAY
 
 
