@@ -575,3 +575,9 @@ v5r1p5 fewtrell
 v5r1p6 fewtrell
 -----------------------
 - fixed bug in genCIDAC2ADC commandline setup
+
+-----------------------
+v5r1p7 fewtrell
+-----------------------
+- dacDiff.sh - generates new histograms & creates txt log file
+- python .sh launcher scripts now use bash instead of sh

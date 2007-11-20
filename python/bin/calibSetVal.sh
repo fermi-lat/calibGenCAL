@@ -1,5 +1,5 @@
-#! /bin/sh
-#$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/bin/calibSetVal.sh,v 1.1 2007/02/16 18:57:36 dwood Exp $
+#! /bin/bash
+#$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/bin/calibSetVal.sh,v 1.1 2007/03/15 22:59:36 fewtrell Exp $
 export -n DISPLAY
 
 

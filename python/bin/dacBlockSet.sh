@@ -1,5 +1,5 @@
-#! /bin/sh
-#$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/bin/dacBlockSet.sh,v 1.1 2007/02/16 18:57:35 dwood Exp $
+#! /bin/bash
+#$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/python/bin/dacBlockSet.sh,v 1.1 2007/07/26 16:05:28 fewtrell Exp $
 export -n DISPLAY
 
 
