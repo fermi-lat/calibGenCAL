@@ -16,8 +16,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL DAC settings XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/08/30 21:15:56 $"
-__version__     = "$Revision: 1.6 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/11/20 16:35:02 $"
+__version__     = "$Revision: 1.7 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -162,7 +162,7 @@ h2.SetStats(False) # turn off statistics box in plot
 
 # build diff histogram
 hdiff_name = dacType+"_diff"
-hdiff = ROOT.TH1S(hdiff_name, hdiff_name, 128,0,128)
+hdiff = ROOT.TH1S(hdiff_name, hdiff_name, 256,0,0)
 
 
 # fill histograms
