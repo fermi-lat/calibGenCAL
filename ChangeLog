@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Thu Dec 13 13:56:14 PST 2007
+calibGenCAL/python/bin
+
+Added Files:
+	asymPlot.bat asymPlot.sh 
+Log Message:
+added new script which plots asymmetry splines.
+
+    *
+------------------------------------------------------------
+User: fewtrell  Thu Dec 13 13:56:14 PST 2007
 calibGenCAL/python
 
 Added Files:
