@@ -11,8 +11,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Plot all TCanvas & TH?? objects in ROOT file"
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/03/01 19:20:48 $"
-__version__     = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/03/15 14:30:46 $"
+__version__     = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -40,7 +40,7 @@ def print_canvas(cvs):
 
 # setup logger
 logging.basicConfig()
-log = logging.getLogger('charVal')
+log = logging.getLogger('dumpROOTPlots')
 log.setLevel(logging.INFO)
 
 
