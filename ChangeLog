@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Wed Dec 19 16:36:51 PST 2007
+calibGenCAL/python/lib
+
+Modified Files:
+	calConstant.py 
+Log Message:
+added scripts for reporting on LATC files
+
+    *
+------------------------------------------------------------
+User: fewtrell  Wed Dec 19 16:36:51 PST 2007
 calibGenCAL/python/bin
 
 Added Files:
