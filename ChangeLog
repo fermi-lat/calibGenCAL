@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Dec 20 09:36:46 PST 2007
+calibGenCAL/python/bin
+
+Added Files:
+	summarize_LATC_Cal_Mode.bat summarize_LATC_Cal_Mode.sh 
+Log Message:
+launcher scripts added
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Dec 19 16:36:51 PST 2007
 calibGenCAL/python/lib
 
