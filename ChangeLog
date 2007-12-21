@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Dec 21 09:42:10 PST 2007
+calibGenCAL/python
+
+Modified Files:
+	diff_LATC_Cal_Thresh.py dumpROOTPlots.py 
+	summarize_LATC_CAL_Mode.py 
+Log Message:
+updates to LATC diff & summary scripts
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Dec 20 09:36:46 PST 2007
 calibGenCAL/python/bin
 
