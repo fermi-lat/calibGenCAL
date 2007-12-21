@@ -17,8 +17,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 LATC CFE XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/11/29 21:24:21 $"
-__version__     = "$Revision: 1.8 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/12/20 00:36:50 $"
+__version__     = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -53,10 +53,10 @@ class Cal_Mode_LATC:
     layer_mask_1_bcast = None
     ccc_configuration = Numeric.zeros([16,4],Numeric.UInt32)
     ccc_configuration_bcast = None
-    crc_dac = Numeric.zeros([16,4],Numeric.UInt32)
+    crc_dac = Numeric.zeros([16,4,4],Numeric.UInt32)
     crc_dac_bcast = None
-    #config = Numeric.zeros([16,4],Numeric.UInt32)
-    #config_bcast = None
+    config = Numeric.zeros([16,4,4],Numeric.UInt32)
+    config_bcast = None
     config_0 = Numeric.zeros([16,4,4,12],Numeric.UInt32)
     config_0_bcast = None
     config_1 = Numeric.zeros([16,4,4,12],Numeric.UInt32)
@@ -103,10 +103,17 @@ class Cal_Mode_LATC:
 
         l = t.GetLeaf("crc_dac")
         for idx in range(l.GetLen()):
-            (tem,ccc) = split_ccc_idx(idx)
-            self.crc_dac[tem][ccc] = l.GetValue(idx)
+            (tem,ccc,crc) = split_crc_idx(idx)
+            self.crc_dac[tem][ccc][crc] = l.GetValue(idx)
         l = t.GetLeaf("crc_dac_bcast")
         self.crc_dac_bcast = int(l.GetValue())
+
+        l = t.GetLeaf("config")
+        for idx in range(l.GetLen()):
+            (tem,ccc,crc) = split_crc_idx(idx)
+            self.config[tem][ccc][crc] = l.GetValue(idx)
+        l = t.GetLeaf("config_bcast")
+        self.config_bcast = int(l.GetValue())
 
         l = t.GetLeaf("config_0")
         for idx in range(l.GetLen()):
@@ -175,14 +182,13 @@ def gen_crc_dac_rpt(calMode):
 
 def gen_crc_config_rpt(calMode):
     print "\nField: crc_config"
-    print "BCAST: %X"%(calMode.crc_config_bcast)
+    print "BCAST: %X"%(calMode.config_bcast)
     for tem in range(16):
         for ccc in range(4):
             for crc in range(4):
-                for cfe in range(4):
-                    val = calMode.config_0[tem][ccc][cfe]
-                    if val != calMode.config_0_bcast:
-                        print " TEM=%d CCC=%d CRC=%d CFE%d VAL=%X"%(tem,ccc,crc,cfe,val)
+                val = calMode.config[tem][ccc][crc]
+                if val != calMode.config_bcast:
+                    print " TEM=%d CCC=%d CRC=%d VAL=%X"%(tem,ccc,crc,cfe,val)
                         
 def gen_config_0_rpt(calMode):
     print "\nField: config_0"
@@ -194,7 +200,7 @@ def gen_config_0_rpt(calMode):
                 for cfe in range(4):
                     val = calMode.config_0[tem][ccc][crc][cfe]
                     if val != calMode.config_0_bcast:
-                        print " TEM=%d CCC=%d CRC=%d CFE%d VAL=%X"%(tem,ccc,crc,cfe,val)
+                        print " TEM=%d CCC=%d CRC=%d CFE=%d VAL=%X"%(tem,ccc,crc,cfe,val)
                         
 def gen_config_1_rpt(calMode):
     print "\nField: config_1"
@@ -205,7 +211,7 @@ def gen_config_1_rpt(calMode):
                 for cfe in range(12):
                     val = calMode.config_1[tem][ccc][crc][cfe]
                     if val != calMode.config_1_bcast:
-                        print " TEM=%d CCC=%d CRC=%d CFE%d VAL=%X"%(tem,ccc,crc,cfe,val)
+                        print " TEM=%d CCC=%d CRC=%d CFE=%d VAL=%X"%(tem,ccc,crc,cfe,val)
 
 def gen_ref_dac_rpt(calMode):
     print "\nField: ref_dac"
@@ -216,7 +222,7 @@ def gen_ref_dac_rpt(calMode):
                 for cfe in range(12):
                     val = calMode.ref_dac[tem][ccc][crc][cfe]
                     if val != calMode.ref_dac_bcast:
-                        print " TEM=%d CCC=%d CRC=%d CFE%d VAL=%X"%(tem,ccc,crc,cfe,val)
+                        print " TEM=%d CCC=%d CRC=%d CFE=%d VAL=%X"%(tem,ccc,crc,cfe,val)
 
 
 
@@ -233,7 +239,7 @@ def genCalModeReport(calMode):
 
     gen_crc_dac_rpt(calMode)
 
-    #gen_crc_config_rpt(calMode)
+    gen_crc_config_rpt(calMode)
 
     gen_config_0_rpt(calMode)
 
