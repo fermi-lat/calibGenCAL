@@ -19,8 +19,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 LATC Cal_Thresh XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/11/29 21:24:21 $"
-__version__     = "$Revision: 1.8 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/12/20 00:36:50 $"
+__version__     = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -77,8 +77,9 @@ def genCalDacTuple(data, title):
     t.Write()
 
 def genScatterDiff(ref_data, new_data, dacType, refName, newName):
-    s = ROOT.TH2S(dacType,
-                  dacType,
+    title = dacType+"_scatter"
+    s = ROOT.TH2S(title,
+                  title,
                   128,0,128,
                   128,0,128)
 
@@ -163,7 +164,35 @@ def basename(path):
     import os
     return os.path.splitext(os.path.split(path)[1])[0]
 
-    
+
+def genLACDiffSummary(refData,
+                      newData):
+    """
+    generate diff plots specific to log_acpt CAL register
+    """
+    title = "log_acpt diff per GCCC"
+    h = ROOT.TH2S(title,
+                  title,
+                  4,0,4,
+                  256,-128,128)
+
+    h.SetXTitle("GCCC")
+    h.SetYTitle("log_acpt_diff")
+    h.SetMarkerStyle(ROOT.kFullTriangleUp)
+    h.SetMarkerSize(2)
+
+    diff = newData - refData
+
+    # plot diff by ccc
+    import Numeric
+    import calDacXML
+    for ccc in range(4):
+        for crc in range(4):
+            (row, end) = calDacXML.ccToRow(ccc,crc)
+            for x in Numeric.ravel(diff[:,row,end,:]):
+                h.Fill(ccc,x)
+
+    h.Write()
 
 def genCFEPrecinctDiffSummary(refPath,
                               newPath,
@@ -200,11 +229,12 @@ def genCFEPrecinctDiffSummary(refPath,
 
     # print mean diff report
     import Numeric
-    meanDiff = Numeric.average(Numeric.ravel(new - ref))
+    diff = new - ref
+    meanDiff = Numeric.average(Numeric.ravel(diff))
 
     # MLab is part of Numeric
     import MLab
-    meanRMS = MLab.std(Numeric.ravel(new - ref))
+    meanRMS = MLab.std(Numeric.ravel(diff))
 
     # print mean diff report
     print "\nDAC\tmeanDiff\trms (DAC units)"
@@ -226,6 +256,10 @@ def genCFEPrecinctDiffSummary(refPath,
             ref_val = ref[tem,row,end,fe]
             new_val = new[tem,row,end,fe]
             print "%d\t%d\t%d\t%d\t%d\t%d\t%d"%(tem,ccc,rc,fe,ref_val,new_val,new_val-ref_val)
+
+    # print special reports
+    if dacType == "log_acpt":
+        genLACDiffSummary(ref,new)
 
 
 def genCFEDiffSummary(refPath,
@@ -253,8 +287,10 @@ if __name__ == '__main__':
 
     rootPath = basePath+".root"
 
+
     # open ROOT file
     import ROOT
+    print "Opening " + rootPath + " for write"
     rootFile = ROOT.TFile(rootPath, "RECREATE")
 
     # call library method to do the real work.
