@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Thu Dec 27 13:54:34 PST 2007
+calibGenCAL/python/bin
+
+Added Files:
+	summarize_LATC_Cal_Thresh.bat summarize_LATC_Cal_Thresh.sh 
+Log Message:
+add new script for plooting LATC cal thresholds
+
+    *
+------------------------------------------------------------
+User: fewtrell  Thu Dec 27 13:54:34 PST 2007
 calibGenCAL/python
 
 Modified Files:
