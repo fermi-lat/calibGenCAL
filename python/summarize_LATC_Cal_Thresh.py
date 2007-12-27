@@ -1,26 +1,25 @@
 #! /usr/bin/env python
 """
-Diff 2 LATC Cal_Thresh XML files.
+Summarize LATC Cal_Thresh XML files.
 
 Provide library class for utilization by other python scripts and main routine
 for simple commandline execution.
 
 The commandline is:
-diff_LATC_Cal_Thresh.py xml_reference new_xml output_basefilename
+summarize_LATC_Cal_Thresh.py xml output_basefilename
 
 where:
-     xml_reference       - reference settings for comparison
-     new_xml             - new settings
+     xml             - LATC Cal threshold settings
      output_basefilename - output files are based on this name with added extentions
 
     
 """
 
 __facility__    = "Offline"
-__abstract__    = "Diff 2 LATC Cal_Thresh XML files."
+__abstract__    = "Summarize LATC Cal_Thresh XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/12/21 17:42:09 $"
-__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/12/20 00:36:50 $"
+__version__     = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -76,44 +75,20 @@ def genCalDacTuple(data, title):
 
     t.Write()
 
-def genScatterDiff(ref_data, new_data, dacType, refName, newName):
-    title = dacType+"_scatter"
-    s = ROOT.TH2S(title,
-                  title,
-                  128,0,128,
-                  128,0,128)
-
-    s.SetXTitle(refName)
-    s.SetYTitle(newName)
-    s.SetMarkerStyle(ROOT.kFullTriangleUp)
-    s.SetMarkerSize(2)
-
-    import Numeric
-    for x_ref, x_new in zip(Numeric.ravel(ref_data), Numeric.ravel(new_data)):
-        s.Fill(x_ref, x_new)
-
-    s.Write()
-
-def genDiffHist(ref_data, new_data, dacType, refName, newName):
+def genSummaryHist(data, dacType, name):
     import ROOT
 
-    title = dacType + "_diff"
+    title = dacType + "_summary"
     
     h = ROOT.TH1S(title,title,128,0,0)
 
-    h.SetXTitle(newName + " - " + refName)
-
-    diff = new_data - ref_data
+    h.SetXTitle(name)
 
     import Numeric
-    for x in Numeric.ravel(diff):
+    for x in Numeric.ravel(data):
         h.Fill(x)
 
     h.Write()
-
-def genDiffPlots(ref_data, new_data, dacType, refName, newName):
-    genScatterDiff(ref_data, new_data, dacType, refName, newName)
-    genDiffHist(ref_data, new_data, dacType, refName, newName)
 
 """
 given Cal Dac setting shape array with true & false values
@@ -136,17 +111,13 @@ def findIndices(data):
     return retList
 
 
-def findOutliers(ref_data, new_data, threshold):
-    diff = new_data - ref_data
-
+def findOutliers(data, mean, threshold):
     import Numeric
-    diff = Numeric.fabs(diff)
+    data = Numeric.fabs(data)
 
-    outliers = diff > threshold
+    outliers = data - mean > threshold
 
     return findIndices(outliers)
-    
-
 
 def xml_file_contains_tag(path, tag):
     import Ft
@@ -165,128 +136,107 @@ def basename(path):
     return os.path.splitext(os.path.split(path)[1])[0]
 
 
-def genLACDiffSummary(refData,
-                      newData):
+def ccc_plot(data, name, dacType):
     """
-    generate diff plots specific to log_acpt CAL register
+    scatter plot settings by GCCC
     """
-    title = "log_acpt diff per GCCC"
-    h = ROOT.TH2S(title,
-                  title,
+    h = ROOT.TH2S(name,
+                  name,
                   4,0,4,
                   256,-128,128)
 
     h.SetXTitle("GCCC")
-    h.SetYTitle("log_acpt_diff")
+    h.SetYTitle(dacType)
     h.SetMarkerStyle(ROOT.kFullTriangleUp)
     h.SetMarkerSize(2)
 
-    diff = newData - refData
-
-    # plot diff by ccc
+    # plot by ccc
     import Numeric
     import calDacXML
     for ccc in range(4):
         for crc in range(4):
             (row, end) = calDacXML.ccToRow(ccc,crc)
-            for x in Numeric.ravel(diff[:,row,end,:]):
+            for x in Numeric.ravel(data[:,row,end,:]):
                 h.Fill(ccc,x)
 
     h.Write()
 
-def genCFEPrecinctDiffSummary(refPath,
-                              newPath,
-                              dacType):
+def genCFEPrecinctSummary(path,
+                          dacType):
     import calDacXML
     import Numeric
 
     # check that precinct data is present in both old & new files
-    if not xml_file_contains_tag(refPath, dacType):
+    if not xml_file_contains_tag(path, dacType):
         return
-    print dacType + " precinct data found in " + refPath
-    if not xml_file_contains_tag(newPath, dacType):
-        return
-    print dacType + " precinct data found in " + newPath
+    print dacType + " precinct data found in " + path
 
     # get base filenames for plot & axis titles, etc...
-    refName = basename(refPath)
-    newName = basename(newPath)
+    name = basename(path)
 
-    # get reference settings (convert to signed int so I can get correct diffs)
-    try:
-        ref = calDacXML.calSettingsXML(refPath, dacType).read().astype(Numeric.Int8)
-    except:
-        ref = calDacXML.calDacXML(refPath, dacType).read().astype(Numeric.Int8)
+    # get dac settings 
+    data = calDacXML.calSettingsXML(path, dacType).read()
 
-    # generate tuples based on reference settings
-    genCalDacTuple(ref, refName+"_"+dacType)
+    # generate tuples based on settings
+    genCalDacTuple(data, name+"_"+dacType)
 
-    # get new settings (convert to signed int so I can get correct diffs)
-    new = calDacXML.calSettingsXML(newPath, dacType).read().astype(Numeric.Int8)
+    # generate summary histograms 
+    genSummaryHist(data, dacType, name)
 
-    # create tuples from new settings
-    genCalDacTuple(new, newName+"_"+dacType)
-
-    # generate hitograms of new - ref differences
-    genDiffPlots(ref, new, dacType, refName, newName)
-
-    # print mean diff report
+    # print mean value report
     import Numeric
-    diff = new - ref
-    meanDiff = Numeric.average(Numeric.ravel(diff))
+    mean = Numeric.average(Numeric.ravel(data))
 
     # MLab is part of Numeric
     import MLab
-    meanRMS = MLab.std(Numeric.ravel(diff))
+    rms = MLab.std(Numeric.ravel(data))
 
-    # print mean diff report
-    print "\nDAC\tmeanDiff\trms (DAC units)"
-    print "%s\t%.2f\t%.2f"%(dacType, meanDiff, meanRMS)
+    # print mean 
+    print "\nDAC\tmean\trms (DAC units)"
+    print "%s\t%.2f\t%.2f"%(dacType, mean, rms)
 
     # find outliers
     OUTLIER_N_RMS = 3
-    outliers = findOutliers(ref, new, meanRMS*OUTLIER_N_RMS)
+    outliers = findOutliers(data, mean, rms*OUTLIER_N_RMS)
 
     # print outlier report
     if len(outliers) > 0:
         print "\n%s outliers (> %d RMS)"%(dacType, OUTLIER_N_RMS)
-        print "GTEM\tGCCC\tGCRC\tGCFE\tREF\tNEW\tDIFF"
+        print "GTEM\tGCCC\tGCRC\tGCFE\tDAC"
         for idx in outliers:
             (tem,ccc,rc,fe) = idx
             import calDacXML
             (row, end) = calDacXML.ccToRow(ccc,rc)
 
-            ref_val = ref[tem,row,end,fe]
-            new_val = new[tem,row,end,fe]
-            print "%d\t%d\t%d\t%d\t%d\t%d\t%d"%(tem,ccc,rc,fe,ref_val,new_val,new_val-ref_val)
+            val = data[tem,row,end,fe]
+            print "%d\t%d\t%d\t%d\t%d"%(tem,ccc,rc,fe,val)
 
     # print special reports
     if dacType == "log_acpt":
-        genLACDiffSummary(ref,new)
+        ccc_plot(data, name, dacType)
 
 
-def genCFEDiffSummary(refPath,
-                      newPath):
+def genCFESummary(path):
     # generate summary for each of 4 precincts in CFE LATC component
-    genCFEPrecinctDiffSummary(refPath, newPath, "log_acpt")
-    genCFEPrecinctDiffSummary(refPath, newPath, "fle_dac")
-    genCFEPrecinctDiffSummary(refPath, newPath, "fhe_dac")
-    genCFEPrecinctDiffSummary(refPath, newPath, "rng_uld_dac")
+    genCFEPrecinctSummary(path, "log_acpt")
+    genCFEPrecinctSummary(path, "fle_dac")
+    genCFEPrecinctSummary(path, "fhe_dac")
+    genCFEPrecinctSummary(path, "rng_uld_dac")
 
 
 if __name__ == '__main__':
-    usage = "diff_LATC_CFE.py xml_reference new_xml output_basefilename"
+    usage = "summarize_LATC_Cal_Thresh.py xml output_basefilename"
 
     # check command line
     import sys
     args = sys.argv[1:]
-    if len(args) != 3:
+    if len(args) != 2:
         print usage
         sys.exit(1)
 
 
     # get filenames
-    (refPath, newPath, basePath) = args
+    (path, basePath) = args
 
     rootPath = basePath+".root"
 
@@ -297,7 +247,7 @@ if __name__ == '__main__':
     rootFile = ROOT.TFile(rootPath, "RECREATE")
 
     # call library method to do the real work.
-    genCFEDiffSummary(refPath, newPath)
+    genCFESummary(path)
 
     # close ROOT file
     rootFile.Write()
