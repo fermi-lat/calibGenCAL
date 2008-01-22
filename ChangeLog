@@ -1,5 +1,17 @@
 ------------------------------------------------------------
 User: fewtrell  Tue Jan 22 11:40:59 PST 2008
+calibGenCAL/src/lib/CalibDataTypes
+
+Removed Files:
+	CIDAC2ADC.cxx CIDAC2ADC.h CalAsym.cxx CalAsym.h CalMPD.cxx 
+	CalMPD.h CalPed.cxx CalPed.h NeighborXtalk.cxx NeighborXtalk.h 
+Log Message:
+- CalibDataTypes classes were moved to CalUtil/SimpleCalClaib where they can be available to Gleam test code
+
+
+    *
+------------------------------------------------------------
+User: fewtrell  Tue Jan 22 11:40:59 PST 2008
 calibGenCAL/src/lib/Algs
 
 Modified Files:
