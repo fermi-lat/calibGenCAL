@@ -8,16 +8,15 @@
 */
 
 // LOCAL INCLUDES
-#include "../CalibDataTypes/CalMPD.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"
 #include "CalUtil/CalVec.h"
-#include "CalUtil/CalArray.h"
 
 // EXTLIB INCLUDES
 #include "TH1S.h"
 #include "TProfile.h"
+#include "CalUtil/SimpleCalCalib/CalMPD.h"
 
 // STD INCLUDES
 #include <string>
@@ -61,7 +60,7 @@ namespace calibGenCAL {
     /// fit histograms & save mean gain values to calMPD
     /// \param calMPD output calibration values
     /// \param fitMethod should be member of MPDHists::fitMethods
-    void        fitHists(CalMPD &calMPD);
+	void        fitHists(CalUtil::CalMPD &calMPD);
 
     /// delete empty histograms
     /// \note useful for data w/ < 16 Cal modules.
@@ -144,10 +143,10 @@ namespace calibGenCAL {
     TH1S *m_perXtal;
 
     /// histograms of MPD fills per Cal tower & layer
-    CalUtil::CalArray<CalUtil::TwrNum, TH1I * > m_perTwrLyr;
+    CalUtil::CalVec<CalUtil::TwrNum, TH1I * > m_perTwrLyr;
 
     /// histograms of MPD fills per Cal tower & column
-    CalUtil::CalArray<CalUtil::TwrNum, TH1I * > m_perTwrCol;
+    CalUtil::CalVec<CalUtil::TwrNum, TH1I * > m_perTwrCol;
 
     /// store current fitting method
     const FitMethods::FitMethod m_fitMethod;

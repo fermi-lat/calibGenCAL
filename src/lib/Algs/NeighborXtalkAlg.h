@@ -1,16 +1,15 @@
 #ifndef NeighborXtalkAlg_h
 #define NeighborXtalkAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/NeighborXtalkAlg.h,v 1.5 2007/06/13 22:42:12 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/NeighborXtalkAlg.h,v 1.6 2007/10/15 19:40:52 fewtrell Exp $
 
 /** @file
     @author fewtrell
 */
 
 // LOCAL INCLUDES
-#include "../CalibDataTypes/NeighborXtalk.h"
-
 
 // GLAST INCLUDES
+#include "CalUtil/SimpleCalCalib/NeighborXtalk.h"
 #include "CalUtil/CalDefs.h"
 #include "CalUtil/CalVec.h"
 
@@ -35,7 +34,7 @@ namespace calibGenCAL {
 
     /// process digi root event file
     void readRootData(const std::string &rootFileName,
-                      NeighborXtalk &xtalk);
+		CalUtil::NeighborXtalk &xtalk);
 
   private:
     /// fill histograms w/ data from single event
@@ -69,7 +68,7 @@ namespace calibGenCAL {
       void initHists();
 
       /// fill in the mean values for each DAC setting here.
-      NeighborXtalk        *xtalk;
+	  CalUtil::NeighborXtalk        *xtalk;
     } algData;
 
     /// store data pertinent to current event

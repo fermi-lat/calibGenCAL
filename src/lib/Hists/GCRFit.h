@@ -1,7 +1,7 @@
 #ifndef GCRFit_h
 #define GCRFit_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRFit.h,v 1.1 2007/06/12 17:40:46 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRFit.h,v 1.2 2007/06/13 22:42:12 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -18,9 +18,12 @@
 
 class TDirectory;
 
+namespace CalUtil {
+  class CalMPD;
+}
+
 namespace calibGenCAL {
   class GCRHists;
-  class CalMPD;
 
   /** \brief Collection of tools for fitting GCR calib histograms
    */
@@ -30,7 +33,7 @@ namespace calibGenCAL {
     /// \parm writeFile location for output fit results tuple
     /// \parm tupleName output tuple fit results name
     void gcrFitGaus(GCRHists &histCol,
-                    CalMPD &calMPD,
+			CalUtil::CalMPD &calMPD,
                     TDirectory *const writeFile,
                     const std::string &tupleName="GCRFitGauss"
                     );

@@ -1,16 +1,16 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runMuTrigEff.cxx,v 1.35 2007/06/07 17:45:42 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/runMuTrigEff.cxx,v 1.36 2007/06/13 22:42:11 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
 */
 
 // LOCAL INCLUDES
-#include "lib/CalibDataTypes/CalPed.h"
 #include "lib/Algs/MuTrigAlg.h"
-#include "lib/CalibDataTypes/CIDAC2ADC.h"
 #include "lib/Util/SimpleIniFile.h"
 
 // GLAST INCLUDES
+#include "CalUtil/SimpleCalCalib/CalPed.h"
+#include "CalUtil/SimpleCalCalib/CIDAC2ADC.h"
 
 // EXTLIB INCLUDES
 

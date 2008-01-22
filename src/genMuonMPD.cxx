@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.24 2007/06/07 17:45:42 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonMPD.cxx,v 1.25 2007/06/13 22:42:11 fewtrell Exp $
 
 /** @file Gen MevPerDAC calibrations from Muon event files using Cal Digi Hodoscope
     for track & hit information
@@ -6,10 +6,6 @@
 */
 
 // LOCAL INCLUDES
-#include "lib/CalibDataTypes/CalPed.h"
-#include "lib/CalibDataTypes/CalAsym.h"
-#include "lib/CalibDataTypes/CIDAC2ADC.h"
-#include "lib/CalibDataTypes/CalMPD.h"
 #include "lib/Hists/MPDHists.h"
 #include "lib/Algs/MuonMPDAlg.h"
 #include "lib/Util/CfgMgr.h"
@@ -17,6 +13,10 @@
 #include "lib/Util/string_util.h"
 
 // GLAST INCLUDES
+#include "CalUtil/SimpleCalCalib/CalPed.h"
+#include "CalUtil/SimpleCalCalib/CalAsym.h"
+#include "CalUtil/SimpleCalCalib/CIDAC2ADC.h"
+#include "CalUtil/SimpleCalCalib/CalMPD.h"
 
 // EXTLIB INCLUDES
 #include "TFile.h"
@@ -24,12 +24,12 @@
 // STD INCLUDES
 #include <iostream>
 #include <string>
-#include <climits>
 #include <fstream>
 
 using namespace std;
 using namespace calibGenCAL;
 using namespace CfgMgr;
+using namespace CalUtil;
 
 class AppCfg {
 public:

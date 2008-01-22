@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/IntNonlinAlg.cxx,v 1.4 2007/06/07 17:45:43 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/IntNonlinAlg.cxx,v 1.5 2007/06/13 22:42:11 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -6,8 +6,6 @@
 
 // LOCAL INCLUDES
 #include "IntNonlinAlg.h"
-#include "../CalibDataTypes/CIDAC2ADC.h"
-#include "../CalibDataTypes/CalPed.h"
 #include "../Specs/singlex16.h"
 #include "../Util/RootFileAnalysis.h"
 #include "../Util/CGCUtil.h"
@@ -15,6 +13,8 @@
 // GLAST INCLUDES
 #include "CalUtil/CalVec.h"
 #include "digiRootData/DigiEvent.h"
+#include "CalUtil/SimpleCalCalib/CIDAC2ADC.h"
+#include "CalUtil/SimpleCalCalib/CalPed.h"
 
 // EXTLIB INCLUDES
 #include "TH1S.h"
@@ -53,7 +53,7 @@ namespace calibGenCAL {
   }
 
   void IntNonlinAlg::AlgData::initHists() {
-    adcHists = new TObjArray(RngIdx::N_VALS);
+    adcHists.reset(new TObjArray(RngIdx::N_VALS));
 
     // delete histograms w/ TObjArray, do not save in file...
     adcHists->SetOwner(1);

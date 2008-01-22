@@ -1,6 +1,6 @@
 #ifndef MuonAsymAlg_h
 #define MuonAsymAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonAsymAlg.h,v 1.4 2007/05/25 21:06:47 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonAsymAlg.h,v 1.5 2007/06/13 22:42:12 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -12,7 +12,6 @@
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"
 #include "CalUtil/CalVec.h"
-#include "CalUtil/CalArray.h"
 
 // EXTLIB INCLUDES
 
@@ -20,11 +19,14 @@
 
 class DigiEvent;
 
-namespace calibGenCAL {
-
+namespace CalUtil {
   class CalAsym;
   class CalPed;
   class CIDAC2ADC;
+}
+
+namespace calibGenCAL {
+
   class TwrHodoscope;
   class AsymHists;
 
@@ -35,8 +37,8 @@ namespace calibGenCAL {
   */
   class MuonAsymAlg {
   public:
-    MuonAsymAlg(const CalPed &ped,
-                const CIDAC2ADC &dac2adc,
+	  MuonAsymAlg(const CalUtil::CalPed &ped,
+                const CalUtil::CIDAC2ADC &dac2adc,
                 AsymHists &asymHists);
 
     /// populate asymmetry profiles w/ nEvt worth of data.
@@ -88,8 +90,8 @@ namespace calibGenCAL {
       }
 
     public:
-      EventData(const CalPed &peds,
-                const CIDAC2ADC &dac2adc) :
+		EventData(const CalUtil::CalPed &peds,
+                const CalUtil::CIDAC2ADC &dac2adc) :
         hscopes(CalUtil::TwrNum::N_VALS,
                 TwrHodoscope(peds, dac2adc)),
         eventNum(0)

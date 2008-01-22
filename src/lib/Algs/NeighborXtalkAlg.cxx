@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/NeighborXtalkAlg.cxx,v 1.5 2007/06/13 22:42:12 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/NeighborXtalkAlg.cxx,v 1.6 2007/10/15 15:17:32 golpa Exp $
 
 /** @file
     @author fewtrell
@@ -7,22 +7,21 @@
 // LOCAL INCLUDES
 #include "NeighborXtalkAlg.h"
 #include "../Util/RootFileAnalysis.h"
-#include "../CalibDataTypes/NeighborXtalk.h"
-#include "../CalibDataTypes/CalPed.h"
 #include "../Specs/singlex16.h"
-#include "../Util/SplineUtil.h"
+#include "CalUtil/SimpleCalCalib/SplineUtil.h"
 #include "../Util/CGCUtil.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalVec.h"
 #include "digiRootData/DigiEvent.h"
+#include "CalUtil/SimpleCalCalib/NeighborXtalk.h"
+#include "CalUtil/SimpleCalCalib/CalPed.h"
 
 // EXTLIB INCLUDES
 #include "TH1.h"
 
 // STD INCLUDES
 #include <sstream>
-#include <cstdlib>
 
 namespace calibGenCAL {
 

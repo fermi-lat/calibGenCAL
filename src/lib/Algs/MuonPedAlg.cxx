@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonPedAlg.cxx,v 1.5 2007/06/07 17:45:43 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonPedAlg.cxx,v 1.6 2007/06/13 22:42:12 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -7,14 +7,14 @@
 // LOCAL INCLUDES
 #include "../Util/RootFileAnalysis.h"
 #include "../Algs/MuonPedAlg.h"
-#include "../CalibDataTypes/CalPed.h"
 #include "../Util/ROOTUtil.h"
 #include "../Util/CGCUtil.h"
 
 // GLAST INCLUDES
 #include "digiRootData/Gem.h"
 #include "digiRootData/DigiEvent.h"
-#include "CalUtil/CalArray.h"
+#include "CalUtil/CalVec.h"
+#include "CalUtil/SimpleCalCalib/CalPed.h"
 
 // EXTLIB INCLUDES
 #include "TH1S.h"
@@ -30,8 +30,7 @@ namespace calibGenCAL {
   using namespace CalUtil;
   using namespace std;
 
-  MuonPedAlg::MuonPedAlg() :
-    m_histograms(RngIdx::N_VALS)
+  MuonPedAlg::MuonPedAlg()
   {
   }
 
@@ -263,7 +262,7 @@ namespace calibGenCAL {
     }
 
     // 1st look at LEX8 vals
-    CalArray<FaceNum, float> adcL8;
+    CalVec<FaceNum, float> adcL8;
     for (FaceNum face; face.isValid(); face++) {
       adcL8[face] = calDigi.getAdcSelectedRange(LEX8.val(), (CalXtalId::XtalFace)face.val());
       // check for missing readout

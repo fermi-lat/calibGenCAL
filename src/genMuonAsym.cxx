@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.22 2007/06/07 17:45:42 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.23 2007/06/13 22:42:11 fewtrell Exp $
 
 /** @file generate Light Asymmetry calibrations from Muon event filesusing Cal Digi Hodoscope
     for track & hit information
@@ -7,9 +7,6 @@
 */
 
 // LOCAL INCLUDES
-#include "lib/CalibDataTypes/CalPed.h"
-#include "lib/CalibDataTypes/CIDAC2ADC.h"
-#include "lib/CalibDataTypes/CalAsym.h"
 #include "lib/Hists/AsymHists.h"
 #include "lib/Algs/MuonAsymAlg.h"
 #include "lib/Util/CfgMgr.h"
@@ -17,6 +14,9 @@
 #include "lib/Util/string_util.h"
 
 // GLAST INCLUDES
+#include "CalUtil/SimpleCalCalib/CalPed.h"
+#include "CalUtil/SimpleCalCalib/CIDAC2ADC.h"
+#include "CalUtil/SimpleCalCalib/CalAsym.h"
 
 // EXTLIB INCLUDES
 #include "TFile.h"
@@ -24,12 +24,12 @@
 // STD INCLUDES
 #include <iostream>
 #include <string>
-#include <climits>
 #include <fstream>
 
 using namespace std;
 using namespace calibGenCAL;
 using namespace CfgMgr;
+using namespace CalUtil;
 
 class AppCfg {
 public:

@@ -1,7 +1,7 @@
 #ifndef HistVec_h
 #define HistVec_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistVec.h,v 1.4 2007/06/13 22:42:12 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistVec.h,v 1.5 2007/06/19 18:11:45 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -54,7 +54,6 @@ namespace calibGenCAL {
             const double loBinLimit=0,
             const double hiBinLimit=0
             ) :
-      m_vec(IdxType::N_VALS),
       m_histBasename(histBasename),
       m_nBins(nBins),
       m_loBinLimit(loBinLimit),

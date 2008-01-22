@@ -581,3 +581,8 @@ v5r1p7 fewtrell
 -----------------------
 - dacDiff.sh - generates new histograms & creates txt log file
 - python .sh launcher scripts now use bash instead of sh
+
+------------------------
+v5r2 fewtrell 01/17/08
+------------------------
+- CalibDataTypes classes were moved to CalUtil/SimpleCalClaib where they can be available to Gleam test code

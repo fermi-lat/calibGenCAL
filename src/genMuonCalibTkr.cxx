@@ -5,10 +5,6 @@
 */
 
 // LOCAL INCLUDES
-#include "lib/CalibDataTypes/CalAsym.h"
-#include "lib/CalibDataTypes/CalMPD.h"
-#include "lib/CalibDataTypes/CalPed.h"
-#include "lib/CalibDataTypes/CIDAC2ADC.h"
 #include "lib/Hists/AsymHists.h"
 #include "lib/Hists/MPDHists.h"
 #include "lib/Algs/MuonCalibTkrAlg.h"
@@ -19,6 +15,10 @@
 
 // GLAST INCLUDES
 #include "facilities/Util.h"
+#include "CalUtil/SimpleCalCalib/CalAsym.h"
+#include "CalUtil/SimpleCalCalib/CalMPD.h"
+#include "CalUtil/SimpleCalCalib/CalPed.h"
+#include "CalUtil/SimpleCalCalib/CIDAC2ADC.h"
 
 // EXTLIB INCLUDES
 #include "TFile.h"
@@ -31,6 +31,7 @@ using namespace std;
 using namespace calibGenCAL;
 using namespace CfgMgr;
 using namespace facilities;
+using namespace CalUtil;
 
 class AppCfg {
 public:

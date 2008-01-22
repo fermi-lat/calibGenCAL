@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonMPDAlg.cxx,v 1.4 2007/06/07 17:45:43 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonMPDAlg.cxx,v 1.5 2007/06/13 22:42:12 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -6,10 +6,6 @@
 
 // LOCAL INCLUDES
 #include "MuonMPDAlg.h"
-#include "../CalibDataTypes/CIDAC2ADC.h"
-#include "../CalibDataTypes/CalPed.h"
-#include "../CalibDataTypes/CalAsym.h"
-#include "../CalibDataTypes/CalMPD.h"
 #include "../Hists/MPDHists.h"
 #include "../Specs/CalGeom.h"
 #include "../Util/RootFileAnalysis.h"
@@ -18,6 +14,10 @@
 
 // GLAST INCLUDES
 #include "digiRootData/DigiEvent.h"
+#include "CalUtil/SimpleCalCalib/CIDAC2ADC.h"
+#include "CalUtil/SimpleCalCalib/CalPed.h"
+#include "CalUtil/SimpleCalCalib/CalAsym.h"
+#include "CalUtil/SimpleCalCalib/CalMPD.h"
 
 // EXTLIB INCLUDES
 
@@ -274,7 +274,7 @@ namespace calibGenCAL {
         const XtalIdx xtalIdx(hitList[i]);
 
         // calculate meanDAC for each diode size.
-        CalArray<DiodeNum, float> meanDAC;
+        CalVec<DiodeNum, float> meanDAC;
         for (DiodeNum diode; diode.isValid(); diode++) {
           meanDAC[diode]  = sqrt(hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), POS_FACE, diode)] *
                                  hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), NEG_FACE, diode)]);

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuTrigAlg.cxx,v 1.6 2007/06/13 22:42:11 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuTrigAlg.cxx,v 1.7 2007/10/05 21:07:19 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -6,14 +6,14 @@
 
 // LOCAL INCLUDES
 #include "MuTrigAlg.h"
-#include "../CalibDataTypes/CalPed.h"
 #include "../Specs/singlex16.h"
 #include "../Util/RootFileAnalysis.h"
 #include "../Util/CGCUtil.h"
 
 // GLAST INCLUDES
-#include "CalUtil/CalArray.h"
+#include "CalUtil/CalVec.h"
 #include "digiRootData/DigiEvent.h"
+#include "CalUtil/SimpleCalCalib/CalPed.h"
 
 // EXTLIB INCLUDES
 #include "TGraphErrors.h"
@@ -74,17 +74,17 @@ namespace calibGenCAL {
 
     //-- REUSED ARRAYS (reset after each event) --//
     // pedestal subracted LEX8 adc for each xtal face in cal
-    CalVec<FaceIdx, float> adcPed(FaceIdx::N_VALS);
+    CalVec<FaceIdx, float> adcPed;
     // array of all fle bits in cal.
-    CalVec<LyrIdx, CalArray<FaceNum, bool> >
+    CalVec<LyrIdx, CalVec<FaceNum, bool> >
       fle(LyrIdx::N_VALS);
 
-    CalVec<LyrIdx, CalArray<FaceNum, unsigned short> >
+    CalVec<LyrIdx, CalVec<FaceNum, unsigned short> >
       hitsPerLyr(LyrIdx::N_VALS);
     // keep track of which columns are hit in each layer.
     // since we only process layers w/ 1 column hit, this value
     // will represent the only hit column in this layer
-    CalVec<LyrIdx, CalArray<FaceNum, ColNum> >
+    CalVec<LyrIdx, CalVec<FaceNum, ColNum> >
       columnHit(LyrIdx::N_VALS);
 
     /// list of cal_lo triggers
@@ -259,7 +259,7 @@ namespace calibGenCAL {
     LogStrm::get() << __FILE__ << ": Processing: " << nEvents << " events." << endl;
 
     // array of all fle bits in cal.
-    CalVec<LyrIdx, CalArray<FaceNum, bool> > fle(LyrIdx::N_VALS);
+    CalVec<LyrIdx, CalVec<FaceNum, bool> > fle;
 
     unsigned nGoodEvents = 0;
     // BEGINNING OF EVENT LOOP
