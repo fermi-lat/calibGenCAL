@@ -1,4 +1,19 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Jan 22 11:40:59 PST 2008
+calibGenCAL/src/lib/Algs
+
+Modified Files:
+	GCRCalibAlg.cxx GCRCalibAlg.h IntNonlinAlg.cxx IntNonlinAlg.h 
+	MuTrigAlg.cxx MuTrigAlg.h MuonAsymAlg.cxx MuonAsymAlg.h 
+	MuonCalibTkrAlg.cxx MuonCalibTkrAlg.h MuonMPDAlg.cxx 
+	MuonMPDAlg.h MuonPedAlg.cxx MuonPedAlg.h NeighborXtalkAlg.cxx 
+	NeighborXtalkAlg.h 
+Log Message:
+- CalibDataTypes classes were moved to CalUtil/SimpleCalClaib where they can be available to Gleam test code
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Jan 22 11:40:58 PST 2008
 calibGenCAL/src
 
