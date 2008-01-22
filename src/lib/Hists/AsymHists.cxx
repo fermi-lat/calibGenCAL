@@ -25,8 +25,8 @@ using namespace std;
 namespace calibGenCAL {
   void AsymHists::initHists() {
     // fill in min & max histogram levels.
-    CalArray<AsymType, float> asymMin;
-    CalArray<AsymType, float> asymMax;
+    CalVec<AsymType, float> asymMin;
+    CalVec<AsymType, float> asymMax;
 
     asymMin[ASYM_LL] = -2;
     asymMax[ASYM_LL] = 2;

@@ -8,12 +8,11 @@
 */
 
 // LOCAL INCLUDES
-#include "../CalibDataTypes/CalAsym.h"
 
 // GLAST INCLUDES
-#include "CalUtil/CalVec.h"
 #include "CalUtil/CalDefs.h"
-#include "CalUtil/CalArray.h"
+#include "CalUtil/CalVec.h"
+#include "CalUtil/SimpleCalCalib/CalAsym.h"
 
 // EXTLIB INCLUDES
 
@@ -24,9 +23,12 @@
 class TH2S;
 class TDirectory;
 
-namespace calibGenCAL {
+namespace CalUtil {
 
   class CalAsym;
+}
+
+namespace calibGenCAL {
 
   /** \brief Store histograms required to generate Calorimeter Light Asymmetry
       calibrations
@@ -36,8 +38,7 @@ namespace calibGenCAL {
   */
   class AsymHists {
   public:
-    AsymHists::AsymHists() :
-      m_histograms(CalUtil::AsymType::N_VALS)
+    AsymHists::AsymHists()
     {
     }
 
@@ -58,7 +59,7 @@ namespace calibGenCAL {
     /// count min number of entries in all enable histograms
     unsigned    getMinEntries() const;
 
-    void        fitHists(CalAsym &calAsym);
+	void        fitHists(CalUtil::CalAsym &calAsym);
 
     TH2S *getHist(const CalUtil::AsymType asymType,
                   const CalUtil::XtalIdx xtalIdx) {
@@ -67,7 +68,7 @@ namespace calibGenCAL {
 
   private:
     /// list of histograms for muon asymmetry
-    CalUtil::CalVec<CalUtil::AsymType, CalUtil::CalArray<CalUtil::XtalIdx, TH2S *> > m_histograms;
+    CalUtil::CalVec<CalUtil::AsymType, CalUtil::CalVec<CalUtil::XtalIdx, TH2S *> > m_histograms;
 
     static std::string genHistName(const CalUtil::AsymType asymType,
                                    const CalUtil::XtalIdx xtalIdx);

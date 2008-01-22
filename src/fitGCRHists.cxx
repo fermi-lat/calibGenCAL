@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/fitGCRHists.cxx,v 1.10 2007/06/12 17:40:46 fewtrell Exp $ //
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/fitGCRHists.cxx,v 1.11 2007/06/13 22:42:11 fewtrell Exp $ //
 
 /** @file 
     @author Zachary Fewtrell
@@ -9,11 +9,11 @@
 // LOCAL INCLUDES
 #include "lib/Util/CfgMgr.h"
 #include "lib/Util/CGCUtil.h"
-#include "lib/CalibDataTypes/CalMPD.h"
 #include "lib/Hists/GCRHists.h"
 #include "lib/Hists/GCRFit.h"
 
 // GLAST INCLUDES
+#include "CalUtil/SimpleCalCalib/CalMPD.h"
 
 // EXTLIB INCLUDES
 #include "TFile.h"
@@ -25,6 +25,7 @@
 using namespace std;
 using namespace calibGenCAL;
 using namespace CfgMgr;
+using namespace CalUtil;
 
 class AppCfg {
 public:

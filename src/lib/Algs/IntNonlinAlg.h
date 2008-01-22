@@ -1,6 +1,6 @@
 #ifndef IntNonlinAlg_h
 #define IntNonlinAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/IntNonlinAlg.h,v 1.4 2007/05/25 21:06:47 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/IntNonlinAlg.h,v 1.5 2007/06/13 22:42:11 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -21,9 +21,12 @@ class DigiEvent;
 class CalDigi;
 class TProfile;
 
+namespace CalUtil {
+  class CIDAC2ADC;
+}
+
 namespace calibGenCAL {
 
-  class CIDAC2ADC;
 
   /** \brief Algorithm class populates CIDAC2ADC calibration data
       object by analyzing calibGen singlex16 digi ROOT files.
@@ -37,13 +40,13 @@ namespace calibGenCAL {
     /// process digi root event file
     /// \param diode specify whether to analyze HE or LE circuits
     void readRootData(const std::string &rootFileName,
-                      CIDAC2ADC &adcMeans,
+		CalUtil::CIDAC2ADC &adcMeans,
                       const CalUtil::DiodeNum diode,
                       const bool bcastMode);
 
     /// smooth raw adc means for use in offline spline calibration
-    static void genSplinePts(const CIDAC2ADC &adcMeans,
-                             CIDAC2ADC &cidac2adc);
+	static void genSplinePts(const CalUtil::CIDAC2ADC &adcMeans,
+                             CalUtil::CIDAC2ADC &cidac2adc);
 
   private:
     /// fill histograms w/ data from single event
@@ -60,8 +63,7 @@ namespace calibGenCAL {
 
     /// store cfg & status data pertinent to current algorithm run
     struct AlgData {
-      AlgData() :
-        profiles(CalUtil::RngIdx::N_VALS, 0) {
+      AlgData()  {
         init();
       }
 
@@ -72,14 +74,11 @@ namespace calibGenCAL {
         initHists();
       }
 
-      ~AlgData() {
-        delete adcHists;
-      }
 
       /// create one temporary histogram per adc channel.
       /// this histogram will be reused for each new CIDAC
       /// level.
-      TObjArray                                   *adcHists;
+      auto_ptr<TObjArray>                                   adcHists;
 
       /// profiles owned by current ROOT directory/m_histFile.
       CalUtil::CalVec<CalUtil::RngIdx, TProfile *> profiles;
@@ -95,7 +94,7 @@ namespace calibGenCAL {
       bool              bcastMode;
 
       /// fill in the mean values for each DAC setting here.
-      CIDAC2ADC        *adcMeans;
+	  CalUtil::CIDAC2ADC        *adcMeans;
     } algData;
 
     /// store data pertinent to current event

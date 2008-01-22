@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/TwrHodoscope.h,v 1.2 2007/04/10 14:51:02 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/TwrHodoscope.h,v 1.3 2007/05/25 21:06:48 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -12,7 +12,6 @@
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"
 #include "CalUtil/CalVec.h"
-#include "CalUtil/CalArray.h"
 
 // EXTLIB INCLUDES
 
@@ -21,10 +20,13 @@
 
 class CalDigi;
 
-namespace calibGenCAL {
-
+namespace CalUtil {
   class CalPed;
   class CIDAC2ADC;
+}
+
+namespace calibGenCAL {
+
 
   /** \brief Accumulate crystal hits in single tower and summarize into
       information which can be used for track determination.
@@ -33,10 +35,8 @@ namespace calibGenCAL {
   class TwrHodoscope {
   public:
     /// default ctor
-    TwrHodoscope(const CalPed &ped,
-                 const CIDAC2ADC &cidac2adc) :
-      adc_ped(CalUtil::tDiodeIdx::N_VALS),
-      dac(CalUtil::tDiodeIdx::N_VALS),
+    TwrHodoscope(const CalUtil::CalPed &ped,
+                 const CalUtil::CIDAC2ADC &cidac2adc) :
       m_peds(ped),
       m_cidac2adc(cidac2adc)
     {
@@ -60,13 +60,13 @@ namespace calibGenCAL {
 
     // Hit summary histograms
     /// number of hits per X layer
-    CalUtil::CalArray<CalUtil::GCRCNum, unsigned short> perLyrX;
+    CalUtil::CalVec<CalUtil::GCRCNum, unsigned short> perLyrX;
     /// number of hits per Y layer
-    CalUtil::CalArray<CalUtil::GCRCNum, unsigned short> perLyrY;
+    CalUtil::CalVec<CalUtil::GCRCNum, unsigned short> perLyrY;
     /// # of hits per X column
-    CalUtil::CalArray<CalUtil::ColNum, unsigned short>  perColX;
+    CalUtil::CalVec<CalUtil::ColNum, unsigned short>  perColX;
     /// # of hits per Y column
-    CalUtil::CalArray<CalUtil::ColNum, unsigned short>  perColY;
+    CalUtil::CalVec<CalUtil::ColNum, unsigned short>  perColY;
 
     // Hit lists
     /// list of X direction xtalId's which were hit
@@ -97,10 +97,10 @@ namespace calibGenCAL {
     unsigned short firstColY;
 
     /// reference to pedestal calibrations needed for some operations
-    const CalPed &m_peds;
+    const CalUtil::CalPed &m_peds;
 
     /// reference to cidac2adc calibs needed for some ops
-    const CIDAC2ADC &m_cidac2adc;
+    const CalUtil::CIDAC2ADC &m_cidac2adc;
 
     /// threshold (LEX8 ADCP + ADCN) for couniting a 'hit' xtal
     static const unsigned short hitThresh = 100;

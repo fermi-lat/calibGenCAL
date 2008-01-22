@@ -45,9 +45,6 @@ namespace calibGenCAL {
   }
 
   MPDHists::MPDHists(const FitMethods::FitMethod fitMethod) :
-    m_dacL2SHists(XtalIdx::N_VALS),
-    m_dacL2SSlopeProfs(XtalIdx::N_VALS),
-    m_dacLLHists(XtalIdx::N_VALS),
     m_dacLLSumHist(0),
     m_perLyr(0),
     m_perTwr(0),

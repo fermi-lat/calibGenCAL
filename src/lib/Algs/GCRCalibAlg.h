@@ -1,7 +1,7 @@
 #ifndef GCRCalibAlg_h
 #define GCRCalibAlg_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/GCRCalibAlg.h,v 1.3 2007/05/25 21:06:47 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/GCRCalibAlg.h,v 1.4 2007/10/05 21:07:19 fewtrell Exp $
 
 /** @file
     @author Zach Fewtrell
@@ -11,7 +11,7 @@
 
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"
-#include "CalUtil/CalArray.h"
+#include "CalUtil/CalVec.h"
 
 // EXTLIB INCLUDES
 
@@ -29,16 +29,20 @@ class DigiEvent;
 
 class SimpleIniFile;
 
+namespace CalUtil {
+  class CalPed;
+  class CIDAC2ADC;
+  class CalMPD;
+
+}
+
 namespace calibGenCAL {
+  class GCRHists;
 
   /** \brief Algorithm-type class for generating GLAST Cal optical Calibrations for 
       GCR events
   */
 
-  class CalPed;
-  class CIDAC2ADC;
-  class GCRHists;
-  class CalMPD;
 
   class GCRCalibAlg {
   public:
@@ -50,8 +54,8 @@ namespace calibGenCAL {
     void fillHists(const unsigned nEventsMax,
                    const std::vector<std::string> &digiRootFileList,
                    const std::vector<std::string> &gcrSelectRootFileList,
-                   const CalPed &peds,
-                   const CIDAC2ADC &dac2adc,
+                   const CalUtil::CalPed &peds,
+                   const CalUtil::CIDAC2ADC &dac2adc,
                    GCRHists &gcrHists);
 
 
@@ -124,13 +128,13 @@ namespace calibGenCAL {
       /// number of hits pass the distance xtal pos cut
       unsigned                                       nHitsPos;
       /// number of histogram fills.
-      CalUtil::CalArray<CalUtil::DiodeNum, unsigned> nFills;
+      CalUtil::CalVec<CalUtil::DiodeNum, unsigned> nFills;
 
       /// adc pedestals for use by algorithm
-      const CalPed *                                 calPed;
+      const CalUtil::CalPed *                                 calPed;
 
       /// cidac2adc for use by alg
-      const CIDAC2ADC *                              dac2adc;
+      const CalUtil::CIDAC2ADC *                              dac2adc;
 
       GCRHists *                               gcrHists;
     }     algData;

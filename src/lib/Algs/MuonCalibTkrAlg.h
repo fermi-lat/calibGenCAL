@@ -1,6 +1,6 @@
 #ifndef MuonCalibTkrAlg_h
 #define MuonCalibTkrAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonCalibTkrAlg.h,v 1.3 2007/05/25 21:06:47 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonCalibTkrAlg.h,v 1.4 2007/06/13 22:42:12 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -13,7 +13,6 @@
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"
 #include "CalUtil/CalVec.h"
-#include "CalUtil/CalArray.h"
 
 // EXTLIB INCLUDES
 
@@ -24,13 +23,15 @@
 class DigiEvent;
 class CalDigi;
   
-
-namespace calibGenCAL {
-
+namespace CalUtil {
   class CalPed;
   class CIDAC2ADC;
   class CalAsym;
   class CalMPD;
+}
+
+namespace calibGenCAL {
+
   class RootFileAnalysis;
   class AsymHists;
   class MPDHists;
@@ -47,8 +48,8 @@ namespace calibGenCAL {
     /// \param dac2adc cal intNonlin calibrations
     /// \param asymHists output asymmetry histograms
     /// \param mpdHists output mevPerDAC histograms
-    MuonCalibTkrAlg(const CalPed &ped,
-                    const CIDAC2ADC &dac2adc,
+	  MuonCalibTkrAlg(const CalUtil::CalPed &ped,
+                    const CalUtil::CIDAC2ADC &dac2adc,
                     AsymHists &asymHists,
                     MPDHists &mpdHists,
                     const std::string &cfgPath=""
@@ -220,8 +221,8 @@ namespace calibGenCAL {
       }
 
     public:
-      EventData(const CalPed &ped,
-                const CIDAC2ADC &dac2adc) :
+		EventData(const CalUtil::CalPed &ped,
+                const CalUtil::CIDAC2ADC &dac2adc) :
         hscope(ped, dac2adc)
       {
         init();

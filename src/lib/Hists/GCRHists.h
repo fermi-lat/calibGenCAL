@@ -1,6 +1,6 @@
 #ifndef GCRHists_h
 #define GCRHists_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.h,v 1.7 2007/06/12 17:40:46 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.h,v 1.8 2007/06/13 22:42:12 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -15,7 +15,6 @@
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"
 #include "CalUtil/CalVec.h"
-#include "CalUtil/CalArray.h"
 
 // EXTLIB INCLUDES
 #include "TProfile.h"
@@ -27,8 +26,11 @@
 
 class TDirectory;
 
-namespace calibGenCAL {
+namespace CalUtil {
   class CalMPD;
+}
+
+namespace calibGenCAL {
 
   /** \brief Represents GLAST Cal Optical gain calibration constants
       (MeV <-> CIDAC)

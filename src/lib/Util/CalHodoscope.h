@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CalHodoscope.h,v 1.2 2007/04/10 14:51:02 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CalHodoscope.h,v 1.3 2007/05/25 21:06:48 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -12,7 +12,6 @@
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"
 #include "CalUtil/CalVec.h"
-#include "CalUtil/CalArray.h"
 
 // EXTLIB INCLUDES
 
@@ -21,10 +20,14 @@
 
 class CalDigi;
 
-namespace calibGenCAL {
-
+namespace CalUtil {
   class CalPed;
   class CIDAC2ADC;
+
+}
+
+namespace calibGenCAL {
+
 
   /** \brief Accumulate crystal hits in Cal summarize into
       information which can be used for track determination.
@@ -32,11 +35,8 @@ namespace calibGenCAL {
   */
   class CalHodoscope {
   public:
-    CalHodoscope(const CalPed &ped,
-                 const CIDAC2ADC &cidac2adc) :
-      adc_ped(CalUtil::DiodeIdx::N_VALS),
-      dac(CalUtil::DiodeIdx::N_VALS),
-      bestRng(CalUtil::FaceIdx::N_VALS),
+	  CalHodoscope(const CalUtil::CalPed &ped,
+                 const CalUtil::CIDAC2ADC &cidac2adc) :
       m_peds(ped),
       m_cidac2adc(cidac2adc)
     {
@@ -63,7 +63,7 @@ namespace calibGenCAL {
 
     // Hit summary histograms
     /// number of hits per layer
-    CalUtil::CalArray<CalUtil::LyrNum, unsigned short> perLyr;
+    CalUtil::CalVec<CalUtil::LyrNum, unsigned short> perLyr;
 
     // Hit lists
     /// list of xtalId's which were hit
@@ -78,10 +78,10 @@ namespace calibGenCAL {
     unsigned short maxPerLyr;
 
     /// reference to pedestal calibrations needed for some operations
-    const CalPed &m_peds;
+    const CalUtil::CalPed &m_peds;
 
     /// reference to cidac2adc calibs needed for some ops
-    const CIDAC2ADC &m_cidac2adc;
+    const CalUtil::CIDAC2ADC &m_cidac2adc;
 
     /// threshold (LEX8 ADCP + ADCN) for couniting a 'hit' xtal
     static const unsigned short hitThresh = 100;

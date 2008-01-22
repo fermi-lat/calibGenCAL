@@ -1,6 +1,6 @@
 #ifndef MuonPedAlg_h
 #define MuonPedAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonPedAlg.h,v 1.3 2007/05/25 21:06:47 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonPedAlg.h,v 1.4 2007/06/13 22:42:12 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -21,8 +21,11 @@ class DigiEvent;
 class CalDigi;
 class TDirectory;
 
-namespace calibGenCAL {
+namespace CalUtil {
   class CalPed;
+}
+
+namespace calibGenCAL {
 
   /** \brief Algorithm class populates CalPed calibration object
       by analyzing digi ROOT event files.
@@ -52,11 +55,11 @@ namespace calibGenCAL {
     /// \param histFilename.  output root file for histograms.
     void fillHists(const unsigned nEntries,
                    const std::vector<std::string> &rootFileList,
-                   const CalPed *roughPeds,
+				   const CalUtil::CalPed *roughPeds,
                    const TRIGGER_CUT trigCut);
 
     /// Fit MuonPedAlghist[]'s, assign means to m_calMuonPedAlg
-    void     fitHists(CalPed &peds);
+	void     fitHists(CalUtil::CalPed &peds);
 
     /// skip evenmt processing and load histograms from previous run
     void     loadHists(const TDirectory &readDir);
@@ -97,7 +100,7 @@ namespace calibGenCAL {
         init();
       }
 
-      const CalPed *roughPeds;
+	  const CalUtil::CalPed *roughPeds;
 
       TRIGGER_CUT   trigCut;
     } algData;

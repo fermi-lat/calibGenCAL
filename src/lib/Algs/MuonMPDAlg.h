@@ -1,6 +1,6 @@
 #ifndef MuonMPDAlg_h
 #define MuonMPDAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonMPDAlg.h,v 1.3 2007/05/25 21:06:47 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonMPDAlg.h,v 1.4 2007/06/13 22:42:12 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -24,12 +24,15 @@
 
 class DigiEvent;
 
-namespace calibGenCAL {
-
+namespace CalUtil {
   class CalPed;
   class CIDAC2ADC;
   class CalAsym;
   class CalMPD;
+}
+
+namespace calibGenCAL {
+
   class MPDHists;
 
   /** \brief Algorithm class generates CalMPD calibration data from digi ROOT
@@ -39,9 +42,9 @@ namespace calibGenCAL {
   */
   class MuonMPDAlg {
   public:
-    MuonMPDAlg(const CalPed &ped,
-               const CIDAC2ADC &dac2adc,
-               const CalAsym &asym,
+	  MuonMPDAlg(const CalUtil::CalPed &ped,
+               const CalUtil::CIDAC2ADC &dac2adc,
+               const CalUtil::CalAsym &asym,
                MPDHists &mpdHists);
 
     /// populate histograms from digi root event file
@@ -72,7 +75,7 @@ namespace calibGenCAL {
 
     public:
 
-      AlgData(const CalAsym &asym);
+		AlgData(const CalUtil::CalAsym &asym);
 
       unsigned nXEvents;
       unsigned nYEvents;
@@ -83,7 +86,7 @@ namespace calibGenCAL {
       TF1      lineFunc;
       TH2S     viewHist;
 
-      const    CalAsym &calAsym;
+	  const    CalUtil::CalAsym &calAsym;
     } algData;
 
     class EventData {
@@ -96,8 +99,8 @@ namespace calibGenCAL {
       }
 
     public:
-      EventData(const CalPed &ped,
-                const CIDAC2ADC &dac2adc) :
+		EventData(const CalUtil::CalPed &ped,
+                const CalUtil::CIDAC2ADC &dac2adc) :
         hscopes(CalUtil::TwrNum::N_VALS, TwrHodoscope(ped, dac2adc))
       {
         init();

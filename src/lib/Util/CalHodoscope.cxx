@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CalHodoscope.cxx,v 1.4 2007/06/13 22:42:13 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CalHodoscope.cxx,v 1.5 2007/10/05 21:07:20 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -6,12 +6,12 @@
 
 // LOCAL INCLUDES
 #include "CalHodoscope.h"
-#include "../CalibDataTypes/CalPed.h"
-#include "../CalibDataTypes/CIDAC2ADC.h"
 #include "../Util/stl_util.h"
 
 // GLAST INCLUDES
 #include "digiRootData/CalDigi.h"
+#include "CalUtil/SimpleCalCalib/CalPed.h"
+#include "CalUtil/SimpleCalCalib/CIDAC2ADC.h"
 
 // EXTLIB INCLUDES
 
