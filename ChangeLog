@@ -1,5 +1,18 @@
 ------------------------------------------------------------
 User: fewtrell  Tue Jan 22 11:40:58 PST 2008
+calibGenCAL/src
+
+Modified Files:
+	fitGCRHists.cxx genCIDAC2ADC.cxx genGCRHists.cxx 
+	genMuonAsym.cxx genMuonCalibTkr.cxx genMuonMPD.cxx 
+	genMuonPed.cxx genNeighborXtalk.cxx runMuTrigEff.cxx 
+Log Message:
+- CalibDataTypes classes were moved to CalUtil/SimpleCalClaib where they can be available to Gleam test code
+
+
+    *
+------------------------------------------------------------
+User: fewtrell  Tue Jan 22 11:40:58 PST 2008
 calibGenCAL/doc
 
 Modified Files:
