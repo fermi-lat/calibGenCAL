@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Dump dacSlopes XML file to .txt file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2007/09/13 18:31:45 $"
-__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/02 23:25:39 $"
+__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -71,7 +71,7 @@ if __name__ == '__main__':
         for lyr in range(calConstant.NUM_LAYER):
             # calCalibXML uses 'row' indexing, not layer
             row = calCalibXML.layerToRow(lyr)
-            for col in range(calConstant.NUM_ROW):
+            for col in range(calConstant.NUM_FE):
                 for face in range(calConstant.NUM_END):
                     online_face = calConstant.offline_face_to_online[face]
                     print delim.join([
