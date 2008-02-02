@@ -1,5 +1,16 @@
 ------------------------------------------------------------
 User: fewtrell  Sat Feb  2 15:25:39 PST 2008
+calibGenCAL/python/bin
+
+Added Files:
+	dacSlopesTXT2XML.bat dacSlopesTXT2XML.sh dacSlopesXML2TXT.bat 
+	dacSlopesXML2TXT.sh 
+Log Message:
+added tools to convert dacSlopes file from xml to text
+
+    *
+------------------------------------------------------------
+User: fewtrell  Sat Feb  2 15:25:39 PST 2008
 calibGenCAL/python
 
 Added Files:
