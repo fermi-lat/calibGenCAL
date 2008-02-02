@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Sat Feb  2 15:25:39 PST 2008
+calibGenCAL/python
+
+Added Files:
+	dacSlopesTXT2XML.py dacSlopesXML2TXT.py 
+Log Message:
+added tools to convert dacSlopes file from xml to text
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: v5r2, operation: add
 Package: calibGenCAL
