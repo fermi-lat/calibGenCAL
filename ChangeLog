@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Sat Feb  2 15:50:49 PST 2008
+calibGenCAL/python
+
+Modified Files:
+	dacSlopesXML2TXT.py 
+Log Message:
+fixed bug printing out wrong # of CFE's
+
+    *
+------------------------------------------------------------
 User: fewtrell  Sat Feb  2 15:25:39 PST 2008
 calibGenCAL/python/bin
 
