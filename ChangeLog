@@ -1,4 +1,37 @@
 ------------------------------------------------------------
+User: fewtrell  Sat Feb  2 16:51:50 PST 2008
+calibGenCAL/python
+
+Modified Files:
+	adc2nrgTXT2XML.py adc2nrgVal.py adc2nrgXML2TXT.py adcplot.py 
+	adcsmooth.py asymApplyCalibGain.py asymDiff.py asymMerge.py 
+	asymPlot.py asymTXT2XML.py asymVal.py asymXML2TXT.py 
+	biasTXT2XML.py biasVal.py build_adcsmooth.py 
+	calCalibApplyRelgain.py calFitsMerge.py calibGainCoeff.py 
+	calibSetVal.py charVal.py charplot.py dacBlockSet.py 
+	dacConvertNeighborXtalk.py dacDiff.py dacSlopesGen.py 
+	dacSlopesPlot.py dacSlopesTXT2XML.py dacSlopesVal.py 
+	dacSlopesXML2TXT.py dacXML2TXT.py diff_LATC_Cal_Thresh.py 
+	dumpROOTPlots.py fitNeighborXtalk.py genADC2NRG.py 
+	genDACsettings.py genFlightGain.py genFlightPed.py 
+	inl2tuple.py inlDiff.py inlDumpSlopes.py inlPedSubtract.py 
+	inlTXT2XML.py inlXML2TXT.py intNonlinMerge.py intNonlinVal.py 
+	linearDAC.py mevPerDacMerge.py mevPerDacVal.py 
+	mpdApplyCalibGain.py mpdDiff.py mpdTXT2XML.py mpdXML2TXT.py 
+	muSlopeDiff.py muSlopeTXT2XML.py muSlopeVal.py pedDiff.py 
+	pedMerge.py pedTXT2XML.py pedVal.py pedXML2TXT.py 
+	roothist2csv.py summarize_LATC_CAL_Mode.py 
+	summarize_LATC_Cal_Thresh.py tholdCIGen.py tholdCIVal.py 
+	tholdCIXML2TXT.py txt2tuple.py valDACsettings.py 
+	xdiodeXtalk.py 
+Added Files:
+	dacSlopesXML2Ntuple.py 
+Log Message:
+added new tool dacSlopesXML2Ntuple which creates ntuple from dacSlopes XML calibration file.
+modified 'usage' print outs for all python tools (now simply uses __doc__ docstring)
+
+    *
+------------------------------------------------------------
 User: fewtrell  Sat Feb  2 15:50:49 PST 2008
 calibGenCAL/python
 
