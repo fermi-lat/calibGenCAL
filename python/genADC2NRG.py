@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL ADC2NRG and muSlope calibration XML files from asymmetry, cidac2adc & mevPerDAC xml files"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/04/12 21:11:35 $"
-__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/08/17 16:35:28 $"
+__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -53,7 +53,6 @@ dtdPath = os.path.join(calibUtilRoot, 'xml', dtdName)
 if __name__ == '__main__':
 
     # constants
-    usage      = "genADC2NRG cidac2adc.xml asym.xml mpd.xml adc2nrg.xml muSlope.xml"
     nTXTFields = 7
 
     # setup logger
@@ -74,11 +73,11 @@ if __name__ == '__main__':
     try:
         opts, args = getopt.getopt(sys.argv[1:], "d:")
     except getopt.GetoptError:
-        log.exception("getopt exception: "+usage)
+        log.exception("getopt exception: "+__doc__)
         sys.exit(-1)
 
     if (len(args) != 5):
-        log.error("Need 5 filenames: " + usage)
+        log.error("Need 5 filenames: " + __doc__)
         sys.exit(1)
 
     (inlPath, asymPath, mpdPath, adc2nrgPath, muSlopePath) = args

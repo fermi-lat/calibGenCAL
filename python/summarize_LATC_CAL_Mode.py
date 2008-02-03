@@ -17,8 +17,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 LATC CFE XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/12/20 00:36:50 $"
-__version__     = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/12/21 17:42:09 $"
+__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -249,13 +249,12 @@ def genCalModeReport(calMode):
 
 
 if __name__ == '__main__':
-    usage = 'summarize_LATC_CAL_Mode.py latc_rootfile'
 
     # check command line
     import sys
     args = sys.argv[1:]
     if len(args) != 1:
-        print usage
+        print __doc__
         sys.exit(1)
 
     # get filenames

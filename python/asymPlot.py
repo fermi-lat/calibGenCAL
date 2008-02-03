@@ -13,8 +13,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Create plots of Cal asymmetry curves"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/09/13 18:31:45 $"
-__version__   = "$Revision: 1.11 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/12/13 21:56:14 $"
+__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -28,13 +28,11 @@ import array
 import Numeric
 
 if __name__ == '__main__':
-    usage = "usage: python asymXML2TXT.py <input_xml_file> <output_root_file>"
-
     # check commandline
     try:
         (opts,args) = getopt.getopt(sys.argv[1:], "")
     except getopt.GetoptError:
-        log.error(usage)
+        log.error(__doc__)
         sys.exit(1)
 
     # opts has 2 parts, options (-abc ...) & remaining default params
@@ -42,7 +40,7 @@ if __name__ == '__main__':
 
     if len(args) != 2:
         # should just be the one input file.
-        print usage
+        print __doc__
         sys.exit(1)
 
     # retrieve commandline parms

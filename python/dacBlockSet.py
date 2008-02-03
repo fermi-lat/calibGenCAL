@@ -25,8 +25,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Override a block of DAC settings in online DAC setting xml file with either constant value or values from 2nd file"
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/09/04 14:46:42 $"
-__version__     = "$Revision: 1.5 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/09/13 18:31:45 $"
+__version__     = "$Revision: 1.6 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -39,8 +39,6 @@ import logging
 import getopt
 import cgc_util
 import Numeric
-
-usage = "python dacBlockSet.py  [-t twr] [-l lyr] [-c col] [-f POS|NEG][-R pct] FLE|FHE|LAC|ULD <input_xml> <val_src> <output_xml>"
 
 # setup logger
 
@@ -61,7 +59,7 @@ try:
     OptsArgs = getopt.getopt(sys.argv[1:], "t:l:c:f:R:")
 except getopt.GetoptError:
     log.error("getopt error")
-    log.error(usage)
+    log.error(__doc__)
     sys.exit(1)
 
 
@@ -101,7 +99,7 @@ for oa in opts:
 #destination variables
 if len(args) != 4:
     log.error("bad n args: " + str(len(args)))
-    log.error(usage)
+    log.error(__doc__)
     sys.exit(1)
     
 # get arg values

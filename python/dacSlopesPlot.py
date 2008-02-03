@@ -12,8 +12,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Plot CAL DacSlopes data as ROOT files"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/10/06 20:42:59 $"
-__version__   = "$Revision: 1.1 $, $Author: dwood $"
+__date__      = "$Date: 2006/10/11 17:19:03 $"
+__version__   = "$Revision: 1.2 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -192,7 +192,6 @@ def plotULD(uldData):
 
 if __name__ == '__main__':
 
-    usage = "usage: dacSlopesPlot <xml_file> <root_file>"
 
     # setup logger
 
@@ -203,7 +202,7 @@ if __name__ == '__main__':
     # check command line
 
     if len(sys.argv) != 3:
-        log.error(usage)
+        log.error(__doc__)
         sys.exit(1)    
 
     xmlName = sys.argv[1]

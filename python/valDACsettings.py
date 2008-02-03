@@ -20,8 +20,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/10/16 15:46:32 $"
-__version__     = "$Revision: 1.6 $, $Author: dwood $"
+__date__        = "$Date: 2007/08/30 21:15:56 $"
+__version__     = "$Revision: 1.7 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -187,8 +187,6 @@ def engValULD(dacData, engData, saturation):
 
 if __name__ == '__main__':
     
-    usage = \
-        "valDACsettings [-V] [-r] [-R <root_file>] [-L <log_file>] FLE|FHE|LAC|ULD <MeV | margin> <dac_slopes_file> <dac_xml_file>"
 
     rootOutput = False
     logName = None
@@ -205,7 +203,7 @@ if __name__ == '__main__':
     try:
         opts = getopt.getopt(sys.argv[1:], "-R:-L:-V-r")
     except getopt.GetoptError:
-        log.error(usage)
+        log.error(__doc__)
         sys.exit(1)
 
     optList = opts[0]
@@ -224,7 +222,7 @@ if __name__ == '__main__':
         
     args = opts[1]
     if len(args) != 4:
-        log.error(usage)
+        log.error(__doc__)
         sys.exit(1)
 
     dacType = args[0]

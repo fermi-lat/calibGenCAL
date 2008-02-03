@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL asymmetry XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/01/17 16:58:30 $"
-__version__     = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/08/17 16:35:28 $"
+__version__     = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -27,8 +27,6 @@ import cgc_util
 import array
 import Numeric
 
-usage = "Usage: python asymDiff.py <asym_xml_file1> <asym_xml_file2> <output_root_file>"
-
 # setup logger
 
 logging.basicConfig()
@@ -38,7 +36,7 @@ log.setLevel(logging.INFO)
 # check command line
 if len(sys.argv) != 4:
     log.error("%d args found."%len(sys.argv))
-    log.error(usage)
+    log.error(__doc__)
     sys.exit(1)
 
 

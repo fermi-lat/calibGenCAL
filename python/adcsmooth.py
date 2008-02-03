@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to smooth CAL XML file ADC/DAC characterization data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/03/29 22:01:31 $"
-__version__   = "$Revision: 1.9 $, $Author: dwood $"
+__date__      = "$Date: 2006/04/11 22:49:47 $"
+__version__   = "$Revision: 1.10 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -37,8 +37,6 @@ import calConstant
 
 if __name__ == '__main__':
 
-    usage = "usage: adcsmooth [-V] <in_file> <out_file>"
-
     # setup logger
 
     logging.basicConfig()
@@ -51,7 +49,7 @@ if __name__ == '__main__':
     try:
         opts = getopt.getopt(sys.argv[1:], "-V")
     except getopt.GetoptError:
-        log.error(usage)
+        log.error(__doc__)
         sys.exit(1)
 
     optList = opts[0]
@@ -63,7 +61,7 @@ if __name__ == '__main__':
     args = opts[1]    
 
     if len(args) != 2:
-        log.error(usage)
+        log.error(__doc__)
         sys.exit(1)
     inName = args[0]    
     outName = args[1]

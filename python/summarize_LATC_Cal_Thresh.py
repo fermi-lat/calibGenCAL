@@ -18,7 +18,7 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Summarize LATC Cal_Thresh XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/12/20 00:36:50 $"
+__date__        = "$Date: 2007/12/27 21:54:34 $"
 __version__     = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
@@ -225,13 +225,12 @@ def genCFESummary(path):
 
 
 if __name__ == '__main__':
-    usage = "summarize_LATC_Cal_Thresh.py xml output_basefilename"
 
     # check command line
     import sys
     args = sys.argv[1:]
     if len(args) != 2:
-        print usage
+        print __doc__
         sys.exit(1)
 
 

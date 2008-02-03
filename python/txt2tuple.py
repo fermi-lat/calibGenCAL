@@ -7,8 +7,8 @@ some assumptions are made about calibGenCAL delimited TXT file conventions
 __facility__  = "Offline"
 __abstract__  = "Tool to generate ROOT ntuple file from txt."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/03/15 14:32:16 $"
-__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/03/20 19:23:47 $"
+__version__   = "$Revision: 1.8 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -24,9 +24,6 @@ import ROOT
 
 if __name__ == '__main__':
 
-    # constants
-    usage      = "txt2tuple input.txt output.root"
-
     # setup logger
     logging.basicConfig()
     log = logging.getLogger('txt2tuple')
@@ -34,7 +31,7 @@ if __name__ == '__main__':
 
     # parse commandline
     if (len(sys.argv) != 3):
-        log.error("Need 2 filenames: " + usage)
+        log.error("Need 2 filenames: " + __doc__)
         sys.exit(1)
         
     inPath = sys.argv[1]

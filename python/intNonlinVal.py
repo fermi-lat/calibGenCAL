@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL IntNonlin calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/10/16 15:46:32 $"
-__version__   = "$Revision: 1.18 $, $Author: dwood $"
+__date__      = "$Date: 2007/03/20 19:23:47 $"
+__version__   = "$Revision: 1.19 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -337,7 +337,6 @@ def calcError(lengthData, dacData, adcData):
 
 if __name__ == '__main__':
 
-    usage = "intNonlinVal [-V] [-r] [-L <log_file>] [-R <root_file>] <xml_file>"
 
     rootOutput = False
     logName = None
@@ -353,7 +352,7 @@ if __name__ == '__main__':
     try:
         opts = getopt.getopt(sys.argv[1:], "-R:-L:-V-r")
     except getopt.GetoptError:
-        log.error(usage)
+        log.error(__doc__)
         sys.exit(1)
 
     optList = opts[0]
@@ -371,7 +370,7 @@ if __name__ == '__main__':
         
     args = opts[1]
     if len(args) != 1:
-        log.error(usage)
+        log.error(__doc__)
         sys.exit(1)    
 
     xmlName = args[0]

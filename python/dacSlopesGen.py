@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL DAC XML calibration data file"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/10/10 15:51:41 $"
-__version__   = "$Revision: 1.10 $, $Author: dwood $"
+__date__      = "$Date: 2006/10/10 18:10:40 $"
+__version__   = "$Revision: 1.11 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -295,7 +295,6 @@ def fitULD(tholds):
 if __name__ == '__main__':
 
 
-    usage = "dacSlopesGen [-V] <cfg_file> <out_xml_file>"
 
 
     # setup logger
@@ -317,7 +316,7 @@ if __name__ == '__main__':
     try:
         opts = getopt.getopt(sys.argv[1:], "-V-L:")
     except getopt.GetoptError:
-        log.error(usage)
+        log.error(__doc__)
         sys.exit(1)
 
     optList = opts[0]
@@ -335,7 +334,7 @@ if __name__ == '__main__':
         
     args = opts[1]
     if len(args) != 2:
-        log.error(usage)
+        log.error(__doc__)
         sys.exit(1)
 
     configName = args[0]

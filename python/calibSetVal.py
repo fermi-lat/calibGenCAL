@@ -19,8 +19,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL offline calibration set as a suite"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2007/04/17 16:36:41 $"
-__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/08/17 16:35:28 $"
+__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -43,7 +43,6 @@ def rel_diff(a,b):
         return math.fabs((a-b)/b)
     return 0
 
-usage = "calibSetVal [-V] [-L <log_file>] <ped.xml> <intNonlin.xml> <asym.xml> <mpd.xml> <tholdCI.xml>"
 nWarnings = 0
 nErrors   = 0
 
@@ -58,7 +57,7 @@ logName = None
 try:
     (opts,args) = getopt.getopt(sys.argv[1:], "-L:-V")
 except getopt.GetoptError:
-    log.error(usage)
+    log.error(__doc__)
     sys.exit(1)
 
 for o in opts:
@@ -68,7 +67,7 @@ for o in opts:
         log.setLevel(logging.DEBUG)
 
 if len(args) != 5:
-    log.error("Wrong number of arguments: %s"%usage)
+    log.error("Wrong number of arguments: %s"%__doc__)
     sys.exit(-1)
 
 (pedPath, intNonlinPath, asymPath, mpdPath, tholdCIPath) = args

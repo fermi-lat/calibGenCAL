@@ -12,8 +12,8 @@ Note:
 __facility__  = "Offline"
 __abstract__  = "Build batch file containing commands to run adcsmooth filtering script"
 __author__    = "M.Strickman"
-__date__      = "$Date: 2006/07/20 17:14:12 $"
-__version__   = "$Revision: 1.15 $, $Author: dwood $"
+__date__      = "$Date: 2006/09/22 20:14:22 $"
+__version__   = "$Revision: 1.16 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -28,7 +28,6 @@ import glob
 import os.path
 from optparse import OptionParser
 
-usage = 'build_adcsmooth [-f fileroot | --file fileroot]'
 
 # finds files for gensettings and creates bat and sh files with adcsmooth commands to produce filtered files
 # NOTE:  folder must contain only one file for each module and type

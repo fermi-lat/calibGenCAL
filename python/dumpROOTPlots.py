@@ -11,12 +11,11 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Plot all TCanvas & TH?? objects in ROOT file"
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/12/20 00:36:50 $"
-__version__     = "$Revision: 1.6 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/12/21 17:42:09 $"
+__version__     = "$Revision: 1.7 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
-usage = "python dumpROOTPlots.py [-f ps|pdf|gif|png] <rootFile>"
 
 
 ### IMPORTS ###
@@ -50,7 +49,7 @@ def print_canvas(cvs):
 try:
     opts, args = getopt.getopt(sys.argv[1:], "-f:")
 except getopt.GetoptError:
-    log.error(usage)
+    log.error(__doc__)
     sys.exit(1)
 
 imgType = "pdf" #default 
@@ -60,7 +59,7 @@ for o, a in opts:
 
 # now check for req'd params
 if len(args) != 1:
-    log.error("bad n args: " + str(len(args)) + " " + usage)
+    log.error("bad n args: " + str(len(args)) + " " + __doc__)
     sys.exit(1)
 
 # get filenames
@@ -72,7 +71,7 @@ imgTypes = set(['ps','pdf','gif','png'])
 bmpImgTypes = set(['png','gif'])
 
 if imgType not in imgTypes:
-    log.error("bad imgType: " + imgType + " " + usage)
+    log.error("bad imgType: " + imgType + " " + __doc__)
 
         
 

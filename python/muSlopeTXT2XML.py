@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL MUSLOPE calibration XML files from TXT."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/02/26 23:15:57 $"
-__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/08/17 16:35:29 $"
+__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -35,7 +35,6 @@ import cgc_util
 if __name__ == '__main__':
 
     # constants
-    usage      = "muSlopeTXT2XML [-doptional.dtd] input.txt output.xml"
     dtdName    = "calCalib_v2r3.dtd" #default value
     nTXTFields = 7
 
@@ -57,7 +56,7 @@ if __name__ == '__main__':
     try:
         opts, args = getopt.getopt(sys.argv[1:], "d:")
     except getopt.GetoptError:
-        log.exception("getopt exception: "+usage)
+        log.exception("getopt exception: "+__doc__)
         sys.exit(-1)
 
     for o, a in opts:
@@ -67,7 +66,7 @@ if __name__ == '__main__':
     dtdPath = os.path.join(calibUtilRoot, 'xml', dtdName)
 
     if (len(args) != 2):
-        log.error("Need 2 filenames: " + usage)
+        log.error("Need 2 filenames: " + __doc__)
         sys.exit(1)
         
     inPath = args[0]

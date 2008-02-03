@@ -19,8 +19,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2007/03/15 17:37:25 $"
-__version__     = "$Revision: 1.7 $, $Author: dwood $"
+__date__        = "$Date: 2007/08/30 21:15:56 $"
+__version__     = "$Revision: 1.8 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -44,8 +44,6 @@ DAC_MAP = {'FLE' : 'fle_dac', 'FHE' : 'fhe_dac', 'LAC' : 'log_acpt', 'ULD' : 'rn
 
 if __name__ == '__main__':
     
-    usage = \
-        "genDACsettings [-V] [-G <gain>] FLE|FHE|LAC|ULD <MeV | margin> <dac_slopes_xml_name> <out_xml_name>"
 
     # setup logger
 
@@ -60,7 +58,7 @@ if __name__ == '__main__':
     try:
         opts = getopt.getopt(sys.argv[1:], "-V-t:-G:")
     except getopt.GetoptError:
-        log.error(usage)
+        log.error(__doc__)
         sys.exit(1)
 
     gain = None
@@ -76,7 +74,7 @@ if __name__ == '__main__':
                 
     args = opts[1]
     if len(args) != 4:
-        log.error(usage)
+        log.error(__doc__)
         sys.exit(1)
 
     dacType = args[0]

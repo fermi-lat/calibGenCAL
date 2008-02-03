@@ -16,8 +16,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate pedestal settings for use by flight software"
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/06/16 20:29:08 $"
-__version__     = "$Revision: 1.3 $, $Author: dwood $"
+__date__        = "$Date: 2006/06/20 19:15:34 $"
+__version__     = "$Revision: 1.4 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -38,7 +38,6 @@ END_MAP = ('N', 'P')
 
 if __name__ == '__main__':
     
-    usage = "genFlightPed [-v] [-o] [-k <key>] <ped_xml_file>"
 
     # setup logger
 
@@ -54,7 +53,7 @@ if __name__ == '__main__':
     try:
         opts = getopt.getopt(sys.argv[1:], "-v-o-k:")
     except getopt.GetoptError:
-        log.error(usage)
+        log.error(__doc__)
         sys.exit(1)
 
     optList = opts[0]
@@ -68,7 +67,7 @@ if __name__ == '__main__':
         
     args = opts[1]
     if len(args) != 1:
-        log.error(usage)
+        log.error(__doc__)
         sys.exit(1)
 
     inName = args[0]
@@ -105,7 +104,7 @@ if __name__ == '__main__':
     fio.write('// ser_no:     %d\n' % key) 
     fio.write('\n\n')
     
-    fio.write('// $Id: genFlightPed.py,v 1.3 2006/06/16 20:29:08 dwood Exp $\n\n')
+    fio.write('// $Id: genFlightPed.py,v 1.4 2006/06/20 19:15:34 dwood Exp $\n\n')
     
     # create preamble macros
     
