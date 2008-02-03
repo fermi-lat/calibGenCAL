@@ -12,8 +12,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Convert dacSlopes XML file to .txt file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2008/02/02 23:50:49 $"
-__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/03 00:51:49 $"
+__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -69,6 +69,7 @@ if __name__ == '__main__':
     import ROOT
     log.info("Opening ROOT file: " + outPath)
     rootFile = ROOT.TFile(outPath,"RECREATE")
+    log.info("Creating ROOT tree")
     t = ROOT.TTree("calDacSlopes", "calDacSlopes")
     
     # create ttree target values (arrays of length 1)
@@ -78,40 +79,40 @@ if __name__ == '__main__':
     _col = array.array('B', [0])
     _face = array.array('B', [0])
 
-    lac_slope = array.array('H', [0])
-    lac_offest = array.array('H', [0])
-    fle_slope = array.array('H', [0])
-    fle_offset = array.array('H', [0])
-    fhe_slope = array.array('H', [0])
-    fhe_offset = array.array('H', [0])
+    lac_slope = array.array('f', [0])
+    lac_offest = array.array('f', [0])
+    fle_slope = array.array('f', [0])
+    fle_offset = array.array('f', [0])
+    fhe_slope = array.array('f', [0])
+    fhe_offset = array.array('f', [0])
 
-    lac_slope_err = array.array('H', [0])
-    lac_offset_err = array.array('H', [0])
-    fle_slope_err = array.array('H', [0])
-    fle_offset_err = array.array('H', [0])
-    fhe_slope_err = array.array('H', [0])
-    fhe_offset_err = array.array('H', [0])
+    lac_slope_err = array.array('f', [0])
+    lac_offset_err = array.array('f', [0])
+    fle_slope_err = array.array('f', [0])
+    fle_offset_err = array.array('f', [0])
+    fhe_slope_err = array.array('f', [0])
+    fhe_offset_err = array.array('f', [0])
 
-    lex8_uld_slope = array.array('H', [0])
-    lex8_uld_offset = array.array('H', [0])
-    lex8_uld_saturation = array.array('H', [0])
-    lex8_uld_slope_err = array.array('H', [0])
-    lex8_uld_offset_err = array.array('H', [0])
-    lex8_uld_saturation_err = array.array('H', [0])
+    lex8_uld_slope = array.array('f', [0])
+    lex8_uld_offset = array.array('f', [0])
+    lex8_uld_saturation = array.array('f', [0])
+    lex8_uld_slope_err = array.array('f', [0])
+    lex8_uld_offset_err = array.array('f', [0])
+    lex8_uld_saturation_err = array.array('f', [0])
 
-    lex1_uld_slope = array.array('H', [0])
-    lex1_uld_offset = array.array('H', [0])
-    lex1_uld_saturation = array.array('H', [0])
-    lex1_uld_slope_err = array.array('H', [0])
-    lex1_uld_offset_err = array.array('H', [0])
-    lex1_uld_saturation_err = array.array('H', [0])
+    lex1_uld_slope = array.array('f', [0])
+    lex1_uld_offset = array.array('f', [0])
+    lex1_uld_saturation = array.array('f', [0])
+    lex1_uld_slope_err = array.array('f', [0])
+    lex1_uld_offset_err = array.array('f', [0])
+    lex1_uld_saturation_err = array.array('f', [0])
 
-    hex8_uld_slope = array.array('H', [0])
-    hex8_uld_offset = array.array('H', [0])
-    hex8_uld_saturation = array.array('H', [0])
-    hex8_uld_slope_err = array.array('H', [0])
-    hex8_uld_offset_err = array.array('H', [0])
-    hex8_uld_saturation_err = array.array('H', [0])
+    hex8_uld_slope = array.array('f', [0])
+    hex8_uld_offset = array.array('f', [0])
+    hex8_uld_saturation = array.array('f', [0])
+    hex8_uld_slope_err = array.array('f', [0])
+    hex8_uld_offset_err = array.array('f', [0])
+    hex8_uld_saturation_err = array.array('f', [0])
 
     lac_dac_rng = array.array('B', [0])
     fle_dac_rng = array.array('B', [0])
@@ -121,45 +122,46 @@ if __name__ == '__main__':
     hex8_uld_rng = array.array('B', [0])
 
     # create ttree branches
+    log.info("Creating ROOT branches")
     t.Branch("twr",_twr,"twr/B")
     t.Branch("lyr",_lyr, 'lyr/B')
     t.Branch("col",_col, 'col/B')
     t.Branch("face",_face, 'face/B')
 
-    t.Branch("lac_slope",lac_slope, 'lac_slope/H')
-    t.Branch("lac_offest",lac_offest, 'lac_offest/H')
-    t.Branch("fle_slope",fle_slope, 'fle_slope/H')
-    t.Branch("fle_offset",fle_offset, 'fle_offset/H')
-    t.Branch("fhe_slope",fhe_slope, 'fhe_slope/H')
-    t.Branch("fhe_offset",fhe_offset, 'fhe_offset/H')
+    t.Branch("lac_slope",lac_slope, 'lac_slope/F')
+    t.Branch("lac_offest",lac_offest, 'lac_offest/F')
+    t.Branch("fle_slope",fle_slope, 'fle_slope/F')
+    t.Branch("fle_offset",fle_offset, 'fle_offset/F')
+    t.Branch("fhe_slope",fhe_slope, 'fhe_slope/F')
+    t.Branch("fhe_offset",fhe_offset, 'fhe_offset/F')
 
-    t.Branch("lac_slope_err",lac_slope_err, 'lac_slope_err/H')
-    t.Branch("lac_offset_err",lac_offset_err, 'lac_offset_err/H')
-    t.Branch("fle_slope_err",fle_slope_err, 'fle_slope_err/H')
-    t.Branch("fle_offset_err",fle_offset_err, 'fle_offset_err/H')
-    t.Branch("fhe_slope_err",fhe_slope_err, 'fhe_slope_err/H')
-    t.Branch("fhe_offset_err",fhe_offset_err, 'fhe_offset_err/H')
+    t.Branch("lac_slope_err",lac_slope_err, 'lac_slope_err/F')
+    t.Branch("lac_offset_err",lac_offset_err, 'lac_offset_err/F')
+    t.Branch("fle_slope_err",fle_slope_err, 'fle_slope_err/F')
+    t.Branch("fle_offset_err",fle_offset_err, 'fle_offset_err/F')
+    t.Branch("fhe_slope_err",fhe_slope_err, 'fhe_slope_err/F')
+    t.Branch("fhe_offset_err",fhe_offset_err, 'fhe_offset_err/F')
 
-    t.Branch("lex8_uld_slope",lex8_uld_slope, 'lex8_uld_slope/H')
-    t.Branch("lex8_uld_offset",lex8_uld_offset, 'lex8_uld_offset/H')
-    t.Branch("lex8_uld_saturation",lex8_uld_saturation, 'lex8_uld_saturation/H')
-    t.Branch("lex8_uld_slope_err",lex8_uld_slope_err, 'lex8_uld_slope_err/H')
-    t.Branch("lex8_uld_offset_err",lex8_uld_offset_err, 'lex8_uld_offset_err/H')
-    t.Branch("lex8_uld_saturation_err",lex8_uld_saturation_err, 'lex8_uld_saturation_err/H')
+    t.Branch("lex8_uld_slope",lex8_uld_slope, 'lex8_uld_slope/F')
+    t.Branch("lex8_uld_offset",lex8_uld_offset, 'lex8_uld_offset/F')
+    t.Branch("lex8_uld_saturation",lex8_uld_saturation, 'lex8_uld_saturation/F')
+    t.Branch("lex8_uld_slope_err",lex8_uld_slope_err, 'lex8_uld_slope_err/F')
+    t.Branch("lex8_uld_offset_err",lex8_uld_offset_err, 'lex8_uld_offset_err/F')
+    t.Branch("lex8_uld_saturation_err",lex8_uld_saturation_err, 'lex8_uld_saturation_err/F')
 
-    t.Branch("lex1_uld_slope",lex1_uld_slope, 'lex1_uld_slope/H')
-    t.Branch("lex1_uld_offset",lex1_uld_offset, 'lex1_uld_offset/H')
-    t.Branch("lex1_uld_saturation",lex1_uld_saturation, 'lex1_uld_saturation/H')
-    t.Branch("lex1_uld_slope_err",lex1_uld_slope_err, 'lex1_uld_slope_err/H')
-    t.Branch("lex1_uld_offset_err",lex1_uld_offset_err, 'lex1_uld_offset_err/H')
-    t.Branch("lex1_uld_saturation_err",lex1_uld_saturation_err, 'lex1_uld_saturation_err/H')
+    t.Branch("lex1_uld_slope",lex1_uld_slope, 'lex1_uld_slope/F')
+    t.Branch("lex1_uld_offset",lex1_uld_offset, 'lex1_uld_offset/F')
+    t.Branch("lex1_uld_saturation",lex1_uld_saturation, 'lex1_uld_saturation/F')
+    t.Branch("lex1_uld_slope_err",lex1_uld_slope_err, 'lex1_uld_slope_err/F')
+    t.Branch("lex1_uld_offset_err",lex1_uld_offset_err, 'lex1_uld_offset_err/F')
+    t.Branch("lex1_uld_saturation_err",lex1_uld_saturation_err, 'lex1_uld_saturation_err/F')
 
-    t.Branch("hex8_uld_slope",hex8_uld_slope, 'hex8_uld_slope/H')
-    t.Branch("hex8_uld_offset",hex8_uld_offset, 'hex8_uld_offset/H')
-    t.Branch("hex8_uld_saturation",hex8_uld_saturation, 'hex8_uld_saturation/H')
-    t.Branch("hex8_uld_slope_err",hex8_uld_slope_err, 'hex8_uld_slope_err/H')
-    t.Branch("hex8_uld_offset_err",hex8_uld_offset_err, 'hex8_uld_offset_err/H')
-    t.Branch("hex8_uld_saturation_err",hex8_uld_saturation_err, 'hex8_uld_saturation_err/H')
+    t.Branch("hex8_uld_slope",hex8_uld_slope, 'hex8_uld_slope/F')
+    t.Branch("hex8_uld_offset",hex8_uld_offset, 'hex8_uld_offset/F')
+    t.Branch("hex8_uld_saturation",hex8_uld_saturation, 'hex8_uld_saturation/F')
+    t.Branch("hex8_uld_slope_err",hex8_uld_slope_err, 'hex8_uld_slope_err/F')
+    t.Branch("hex8_uld_offset_err",hex8_uld_offset_err, 'hex8_uld_offset_err/F')
+    t.Branch("hex8_uld_saturation_err",hex8_uld_saturation_err, 'hex8_uld_saturation_err/F')
 
     t.Branch("lac_dac_rng",lac_dac_rng, 'lac_dac_rng/B')
     t.Branch("fle_dac_rng",fle_dac_rng, 'fle_dac_rng/B')
@@ -167,6 +169,8 @@ if __name__ == '__main__':
     t.Branch("lex8_uld_rng",lex8_uld_rng, 'lex8_uld_rng/B')
     t.Branch("lex1_uld_rng",lex1_uld_rng, 'lex1_uld_rng/B')
     t.Branch("hex8_uld_rng",hex8_uld_rng, 'hex8_uld_rng/B')
+
+    log.info("ROOT branches created")
 
     # fill tree
     for twr in towers:
@@ -223,7 +227,7 @@ if __name__ == '__main__':
                     lex1_uld_rng[0] =                    rngData[twr][row][online_face][col][4]
                     hex8_uld_rng[0] =                    rngData[twr][row][online_face][col][5]
 
-                    T.Fill()
+                    t.Fill()
 
 
     t.Write()
