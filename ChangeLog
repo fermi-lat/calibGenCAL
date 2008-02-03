@@ -1,5 +1,16 @@
 ------------------------------------------------------------
 User: fewtrell  Sat Feb  2 16:51:50 PST 2008
+calibGenCAL/python/bin
+
+Added Files:
+	dacSlopesXML2Ntuple.bat dacSlopesXML2Ntuple.sh 
+Log Message:
+added new tool dacSlopesXML2Ntuple which creates ntuple from dacSlopes XML calibration file.
+modified 'usage' print outs for all python tools (now simply uses __doc__ docstring)
+
+    *
+------------------------------------------------------------
+User: fewtrell  Sat Feb  2 16:51:50 PST 2008
 calibGenCAL/python
 
 Modified Files:
