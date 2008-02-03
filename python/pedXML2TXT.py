@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Dump offline pedestal xml file to .txt file"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/08/17 16:35:29 $"
-__version__   = "$Revision: 1.8 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/09/13 18:31:45 $"
+__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -32,14 +32,13 @@ import calConstant
 import cgc_util
                   
 if __name__ == '__main__':
-    usage = "usage: python pedXML2TXT.py [-d delim] <input_xml_file>"
 
     # check commandline
     delim = ' '
     try:
         (opts,args) = getopt.getopt(sys.argv[1:], "d:")
     except getopt.GetoptError:
-        log.error(usage)
+        log.error(__doc__)
         sys.exit(1)
     
     # opts has 2 parts, options (-abc ...) & remaining default params
@@ -49,7 +48,7 @@ if __name__ == '__main__':
 
     if len(args) != 1:
         # should just be the one input file.
-        print "no input file specified: ", usage
+        print "no input file specified: ", __doc__
         sys.exit(1)
 
     # retrieve commandline parms

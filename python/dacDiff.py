@@ -16,8 +16,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL DAC settings XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/11/20 16:35:02 $"
-__version__     = "$Revision: 1.7 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/11/29 21:24:21 $"
+__version__     = "$Revision: 1.8 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -34,9 +34,6 @@ import calConstant
 
 
 
-usage = "dacDiff FLE|FHE|LAC|ULD <dac_xml_file1> <dac_xml_file2> <output_root_file>"
-
-
 # setup logger
 
 logging.basicConfig()
@@ -48,7 +45,7 @@ log.setLevel(logging.INFO)
 try:
     opts = getopt.getopt(sys.argv[1:], "-V")
 except getopt.GetoptError:
-    log.error(usage)
+    log.error(__doc__)
     sys.exit(1)
 
 optList = opts[0]
@@ -58,7 +55,7 @@ for o in optList:
 
 args = opts[1] 
 if len(args) != 4:
-    log.error(usage)
+    log.error(__doc__)
     sys.exit(1)
 
 

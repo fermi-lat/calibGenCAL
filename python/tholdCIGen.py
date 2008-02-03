@@ -13,8 +13,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL TholdCI XML calibration data files"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2007/06/26 02:13:26 $"
-__version__   = "$Revision: 1.31 $, $Author: dwood $"
+__date__      = "$Date: 2007/08/30 21:15:56 $"
+__version__   = "$Revision: 1.32 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -97,7 +97,6 @@ def linearULD(c1, c0):
 if __name__ == '__main__':
 
 
-    usage = "tholdCIGen [-V] <cfg_file> <out_xml_file>"
 
     # setup logger
 
@@ -118,7 +117,7 @@ if __name__ == '__main__':
     try:
         opts = getopt.getopt(sys.argv[1:], "-V")
     except getopt.GetoptError:
-        log.error(usage)
+        log.error(__doc__)
         sys.exit(1)
 
     optList = opts[0]
@@ -128,7 +127,7 @@ if __name__ == '__main__':
         
     args = opts[1]
     if len(args) != 2:
-        log.error(usage)
+        log.error(__doc__)
         sys.exit(1)
 
     configName = args[0]

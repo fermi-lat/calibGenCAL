@@ -12,8 +12,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Force linear dac scale over portions of cidac2adc curve where cidac is non-linear."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/03/15 22:59:35 $"
-__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/08/17 16:35:28 $"
+__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -52,9 +52,6 @@ LINEFIT_IDX_END = tuple(cgc_util.CIDAC_TEST_VALS.index(x) for x in DAC_LINEFIT_E
 #######################################################################################
 if __name__ == '__main__':
 
-    # constants
-    usage      = "linearDAC input.xml output.xml"
-
     # setup logger
     logging.basicConfig()
     log = logging.getLogger('linearDAC')
@@ -65,11 +62,11 @@ if __name__ == '__main__':
         # currently no args supported
         (optList,args) = getopt.getopt(sys.argv[1:],"")
     except getopt.GetoptError:
-        log.error(usage)
+        log.error(__doc__)
         sys.exit(1)
 
     if len(args) != 2:
-        log.error("Wrong # of paramters: %s"%usage)
+        log.error("Wrong # of paramters: %s"%__doc__)
         sys.exit(1)
 
     (inPath, outPath) = args

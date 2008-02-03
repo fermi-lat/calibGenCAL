@@ -15,8 +15,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to extract effect of calibGain setting from two intNonlin XML files"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/02/08 16:37:30 $"
-__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/08/17 16:35:28 $"
+__version__   = "$Revision: 1.8 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -35,16 +35,13 @@ import cgc_util
 #######################################################################################
 if __name__ == '__main__':
 
-    # constants
-    usage      = "calibGainCoeff inl_calibGainOn.xml inl_calibGainOff.xml"
-
     # setup logger
     logging.basicConfig()
     log = logging.getLogger('calibGainCoeff')
     log.setLevel(logging.INFO)
 
     if (len(sys.argv[1:]) != 2):
-        log.error("Need 2 filenames: " + usage)
+        log.error("Need 2 filenames: " + __doc__)
         sys.exit(1)
 
     cgOnPath  = sys.argv[1]

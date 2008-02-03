@@ -11,8 +11,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Pedestal subtract CAL CIDAC2ADC XML file."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/04/02 19:24:40 $"
-__version__     = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/08/17 16:35:28 $"
+__version__     = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -24,7 +24,6 @@ import cgc_util
 import array
 import Numeric
 
-usage = "Usage: python inlPedSubtract.py <input_xml> <output_xml>"
 
 # setup logger
 logging.basicConfig()
@@ -43,7 +42,7 @@ dtdPath = os.path.join(calibUtilRoot, 'xml', dtdName)
 # check command line
 if len(sys.argv) != 3:
     log.error("%d args found."%len(sys.argv))
-    log.error(usage)
+    log.error(__doc__)
     sys.exit(1)
 
 # get filenames

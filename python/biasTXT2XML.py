@@ -13,8 +13,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL BIAS calibration XML files from TXT."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/02/26 23:15:57 $"
-__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/08/17 16:35:28 $"
+__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -35,7 +35,6 @@ import cgc_util
 if __name__ == '__main__':
 
     # constants
-    usage      = "biasTXT2XML input.txt output.xml"
     nTXTFields = 14
 
     # setup logger
@@ -56,11 +55,11 @@ if __name__ == '__main__':
     try:
         opts, args = getopt.getopt(sys.argv[1:], "d:")
     except getopt.GetoptError:
-        log.exception("getopt exception: "+usage)
+        log.exception("getopt exception: "+__doc__)
         sys.exit(-1)
 
     if (len(args) != 2):
-        log.error("Need 2 filenames: " + usage)
+        log.error("Need 2 filenames: " + __doc__)
         sys.exit(1)
         
     inPath = args[0]

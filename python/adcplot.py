@@ -13,8 +13,8 @@ Where:
 __facility__  = "Offline"
 __abstract__  = "Generate ROOT plots for CAL ADC/DAC characerization data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/07/05 18:35:32 $"
-__version__   = "$Revision: 1.5 $, $Author: dwood $"
+__date__      = "$Date: 2007/03/20 19:23:46 $"
+__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -137,7 +137,6 @@ def plotULD(data, info, twrs, fileName):
 
 if __name__ == '__main__':
 
-    usage = "usage: adcplot [-V] <xml_file> <root_file>"
 
     # setup logger
 
@@ -151,7 +150,7 @@ if __name__ == '__main__':
     try:
         opts = getopt.getopt(sys.argv[1:], "-V")
     except getopt.GetoptError:
-        log.error(usage)
+        log.error(__doc__)
         sys.exit(1)
 
     optList = opts[0]
@@ -162,7 +161,7 @@ if __name__ == '__main__':
     args = opts[1]    
 
     if len(args) != 2:
-        log.error(usage)
+        log.error(__doc__)
         sys.exit(1)
 
     xmlName = args[0]

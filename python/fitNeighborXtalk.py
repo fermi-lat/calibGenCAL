@@ -15,8 +15,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Fit max(0,pol1) to all neighbor xtalk curves."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/03/22 22:26:04 $"
-__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/08/17 16:35:28 $"
+__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -32,8 +32,6 @@ import csv
 
 import cgc_util
 
-usage = "fitNeighborXtalk.py <neighborXtalk.txt> <outputROOTPath>"
-
 # setup logger
 logging.basicConfig()
 log = logging.getLogger('charVal')
@@ -44,12 +42,12 @@ log.setLevel(logging.INFO)
 try:
     opts, args = getopt.getopt(sys.argv[1:], "")
 except getopt.GetoptError:
-    log.error(usage)
+    log.error(__doc__)
     sys.exit(1)
 
 # now check for req'd params
 if len(args) != 2:
-    log.error("bad n args: " + str(len(args)) + " " + usage)
+    log.error("bad n args: " + str(len(args)) + " " + __doc__)
     sys.exit(1)
 
 (xtalkPath, rootPath) = args

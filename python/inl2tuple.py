@@ -11,8 +11,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Convert cidac2adc (intNonlin) xml data file into root tuples (1 per channel)"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/04/04 19:02:07 $"
-__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/08/17 16:35:28 $"
+__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -29,9 +29,6 @@ import cgc_util
 #######################################################################################
 if __name__ == '__main__':
 
-    # constants
-    usage      = "inl2tuple input.xml output.root"
-
     # setup logger
     logging.basicConfig()
     log = logging.getLogger('inl2tuple')
@@ -42,11 +39,11 @@ if __name__ == '__main__':
         # currently no args supported
         (optList,args) = getopt.getopt(sys.argv[1:],"")
     except getopt.GetoptError:
-        log.error(usage)
+        log.error(__doc__)
         sys.exit(1)
 
     if len(args) != 2:
-        log.error("Wrong # of paramters: %s"%usage)
+        log.error("Wrong # of paramters: %s"%__doc__)
         sys.exit(1)
 
     (inPath, outPath) = args

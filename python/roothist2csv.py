@@ -9,19 +9,18 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Dump all TH?? objects in ROOT file to csv"
 __author__      = "M. Strickman/Z.Fewtrell"
-__date__        = "$Date: 2006/02/21 22:50:48 $"
-__version__     = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__        = "$Date: 2007/03/01 19:20:48 $"
+__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
 import sys,csv
 from ROOT import TFile, TCanvas, TH1, gROOT
 
-usage = "python roothist2csv.py <rootFile>"
 
 # check command line
 if len(sys.argv) != 2:
-    print usage
+    print __doc__
     sys.exit(1)
 
 # get filenames

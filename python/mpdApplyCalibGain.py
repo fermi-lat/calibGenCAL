@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "apply calibGain correction to mevPerDAC xml file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2006/08/11 16:30:18 $"
-__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/08/17 16:35:28 $"
+__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -33,7 +33,6 @@ import cgc_util
 ### CONSTANTS ###
 
 if __name__ == '__main__':
-    usage = "mpdApplyCalibGain [-V] [-doptional.dtd] <calibGainCoef.txt> <input_mpd.xml> <output_mpd.xml>"
     dtdName    = "calCalib_v2r3.dtd" #default value
 
     # setup logger
@@ -53,7 +52,7 @@ if __name__ == '__main__':
     try:
         opts = getopt.getopt(sys.argv[1:], "-V")
     except getopt.GetoptError:
-        log.error(usage)
+        log.error(__doc__)
         sys.exit(1)
 
     optList = opts[0]
@@ -67,7 +66,7 @@ if __name__ == '__main__':
 
     args = opts[1]
     if len(args) != 3:
-        log.error(usage)
+        log.error(__doc__)
         sys.exit(1)
 
     calibGainPath = args[0]
