@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Sat Feb  2 17:24:49 PST 2008
+calibGenCAL/python
+
+Modified Files:
+	dacSlopesXML2Ntuple.py 
+Log Message:
+still getting initial version to work properly
+
+    *
+------------------------------------------------------------
 User: fewtrell  Sat Feb  2 16:51:50 PST 2008
 calibGenCAL/python/bin
 
