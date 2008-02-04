@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Feb  4 11:31:31 PST 2008
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+removing use of GLAST_EXT provided python as it doesn't yet provide the functionality we need.  better to have the user set up their own version.
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Sat Feb  2 17:24:49 PST 2008
 calibGenCAL/python
 
