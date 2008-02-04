@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Feb  4 12:14:59 PST 2008
+calibGenCAL/python
+
+Modified Files:
+	dacXML2TXT.py 
+Log Message:
+column headers were in wrong order
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Feb  4 11:31:31 PST 2008
 calibGenCAL/cmt
 
