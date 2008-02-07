@@ -5,20 +5,21 @@ Summarize Cal_Mode precinct settings
 Provide library class for utilization by other python scripts and main routine
 for simple commandline execution.
 
-output to stdout
+output to stdout / ROOT file
 
 The commandline is:
-summarize_LATC_CAL_Mode.py latc_rootfile
+summarize_LATC_CAL_Mode.py latc_rootfile output_rootfile
 
 where:
      latc_rootfile       - ROOT file containing LATC configuration.
+     output_rootfile     - destination for ROOT plots
 """
 
 __facility__    = "Offline"
 __abstract__    = "Diff 2 LATC CFE XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/12/21 17:42:09 $"
-__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/02/03 00:51:50 $"
+__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -39,7 +40,39 @@ def split_cfe_idx(idx):
     split cfe index into tem/ccc/rc/fe tuple
     """
     return (idx/(12*4*4), (idx/(12*4))%4, (idx/12)%4, idx%12)
-    
+
+
+def genTrgCheckPlots(data_name,
+                     data):
+    """
+    plot register data by CFE & CRC id (for displaying special calib mode trigger enable patterns)
+
+    args:
+    data_name - string name of precint
+    data - cfe data array
+    """
+    import calConstant
+
+
+    # plot diff by cfe
+    import Numeric
+    import calDacXML
+    for crc in range(calConstant.NUM_GCRC):
+        title = "%s_per_CFE_CRC%d"%(data_name,crc)
+        h = ROOT.TProfile(title,
+                          title,
+                          calConstant.NUM_FE, 0, calConstant.NUM_FE)
+        
+        h.SetXTitle("GCFE")
+        h.SetYTitle("%s"%data_name)
+        h.SetMarkerStyle(ROOT.kFullTriangleUp)
+        h.SetMarkerSize(2)
+        for cfe in range(calConstant.NUM_FE):
+            for x in Numeric.ravel(data[...,crc,cfe]):
+                h.Fill(cfe,x)
+                
+        h.Write()
+
 
 class Cal_Mode_LATC:
     """
@@ -213,6 +246,9 @@ def gen_config_1_rpt(calMode):
                     if val != calMode.config_1_bcast:
                         print " TEM=%d CCC=%d CRC=%d CFE=%d VAL=%X"%(tem,ccc,crc,cfe,val)
 
+    # generate special plot for this register
+    genTrgCheckPlots("config_1", calMode.config_1)
+
 def gen_ref_dac_rpt(calMode):
     print "\nField: ref_dac"
     print "BCAST: %X"%(calMode.ref_dac_bcast)
@@ -248,22 +284,31 @@ def genCalModeReport(calMode):
     gen_ref_dac_rpt(calMode)
 
 
+
 if __name__ == '__main__':
 
     # check command line
     import sys
     args = sys.argv[1:]
-    if len(args) != 1:
+    if len(args) != 2:
         print __doc__
         sys.exit(1)
 
     # get filenames
     inputPath = args[0]
+    outputPath = args[1]
 
     # retrieve LATC data from file
     calMode = Cal_Mode_LATC(inputPath)
+
+    # open ROOT file for write
+    import ROOT
+    outputROOTFile = ROOT.TFile(outputPath,"RECREATE")
 
     # generate report
     print "Filename: %s\n"%inputPath
     genCalModeReport(calMode)
 
+    # close ROOT file
+    outputROOTFile.Write()
+    outputROOTFile.Close()
