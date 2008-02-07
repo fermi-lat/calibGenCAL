@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Feb  7 13:33:55 PST 2008
+calibGenCAL/python
+
+Modified Files:
+	summarize_LATC_CAL_Mode.py 
+Log Message:
+added plot for verifying special cal trigger calibration enable masks
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Feb  4 12:14:59 PST 2008
 calibGenCAL/python
 
