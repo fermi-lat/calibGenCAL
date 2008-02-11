@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate ULD Discriminator settings selected by Energy"
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/05/02 22:37:26 $"
-__version__     = "$Revision: 1.15 $, $Author: dwood $"
+__date__        = "$Date: 2007/02/16 18:57:36 $"
+__version__     = "$Revision: 1.1 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -25,7 +25,7 @@ import logging
 import getopt
 import ConfigParser
 
-import Numeric
+import numarray
 
 import calFitsXML
 import calDacXML
@@ -162,8 +162,8 @@ if __name__ == '__main__':
     # find saturation values    
 
     sat = [127, 127, 127]
-    dacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END, calConstant.NUM_FE),
-                            Numeric.Int16)
+    dacData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END, calConstant.NUM_FE),
+                            numarray.Int16)
 
     for row in range(calConstant.NUM_ROW):
         for end in range(calConstant.NUM_END):

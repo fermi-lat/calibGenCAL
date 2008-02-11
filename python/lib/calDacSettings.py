@@ -7,13 +7,13 @@ information.
 __facility__  = "Offline"
 __abstract__  = "Algorithms for generating DAC settings"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/09/25 23:10:26 $"
-__version__   = "$Revision: 1.3 $, $Author: dwood $"
+__date__      = "$Date: 2007/03/15 17:37:25 $"
+__version__   = "$Revision: 1.1 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 
-import Numeric
+import numarray
 
 import calConstant
 
@@ -30,9 +30,9 @@ def dacSettings(slope, offset, energy):
     """
 
     d = (energy - offset) / slope
-    d = Numeric.clip(d, 0, 63)
-    d = Numeric.around(d) 
-    return d.astype(Numeric.Int8)
+    d = numarray.clip(d, 0, 63)
+    d = numarray.around(d) 
+    return d.astype(numarray.Int8)
      
        
      
@@ -53,14 +53,14 @@ def uldSettings(slopes, offsets, sats, margin):
     
     sats = sats - (sats * margin)
     d = (sats - offsets) / slopes
-    d = Numeric.clip(d, 0, 63)
-    d = Numeric.around(d)
+    d = numarray.clip(d, 0, 63)
+    d = numarray.around(d)
     lex8 = d[calConstant.CRNG_LEX8, ...]
     lex1 = d[calConstant.CRNG_LEX1, ...]  
     hex8 = d[calConstant.CRNG_HEX8, ...]
-    s = Numeric.where((lex8 < lex1), lex8, lex1)
-    s = Numeric.where((s < hex8), s, hex8)
-    return s.astype(Numeric.Int8) 
+    s = numarray.where((lex8 < lex1), lex8, lex1)
+    s = numarray.where((s < hex8), s, hex8)
+    return s.astype(numarray.Int8) 
               
      
      
@@ -75,7 +75,7 @@ def setRange(dacs, rangeData):
              with the range bit (MSB) set if appropriate.
     """
     
-    return Numeric.where(rangeData, (dacs + 64), dacs)
+    return numarray.where(rangeData, (dacs + 64), dacs)
     
     
 

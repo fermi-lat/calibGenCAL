@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Fit straight line IntNonlin channel & dump y_intercept & slope to txt"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/08/17 16:35:28 $"
-__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/03 00:51:49 $"
+__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -26,7 +26,7 @@ import sys, os, math
 import getopt
 import array
 
-import Numeric
+import numarray
 import ROOT
 
 import calCalibXML

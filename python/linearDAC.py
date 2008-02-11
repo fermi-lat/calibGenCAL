@@ -12,15 +12,15 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Force linear dac scale over portions of cidac2adc curve where cidac is non-linear."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/08/17 16:35:28 $"
-__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/03 00:51:50 $"
+__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 import sys, os
 import logging
 import getopt
-import Numeric
+import numarray
 import ROOT
 import array
 import itertools
@@ -144,8 +144,8 @@ if __name__ == '__main__':
                         adc2 = adc[-1]
                         max_dac = cgc_util.linear_extrap(adc1, adc2, max_adc, dac1, dac2)
 
-                        adc = Numeric.concatenate((adc, [max_adc]))
-                        dac = Numeric.concatenate((dac, [max_dac]))
+                        adc = numarray.concatenate((adc, [max_adc]))
+                        dac = numarray.concatenate((dac, [max_dac]))
                         length += 1
 
                         #print "extrap"
@@ -179,9 +179,9 @@ if __name__ == '__main__':
 
                         #                         ### REMOVE NONLINEAR PORTION ###
                         #                         # remove below dac = 256 #
-                        #                         remove_range = Numeric.greater_equal(dac, DAC_LINEFIT_START[rng])
-                        #                         dac = Numeric.compress(remove_range, dac)
-                        #                         adc = Numeric.compress(remove_range, adc)
+                        #                         remove_range = numarray.greater_equal(dac, DAC_LINEFIT_START[rng])
+                        #                         dac = numarray.compress(remove_range, dac)
+                        #                         adc = numarray.compress(remove_range, adc)
 
                         #### DAC SCALE PEDESTAL CORRECTION ###
                         # retrieve dac scale pedestal
@@ -198,7 +198,7 @@ if __name__ == '__main__':
                         slope = 1/slope
 
                         # fill in low end of curve w/ new straight line
-                        adc[0:fit_end] = (dac[0:fit_end]*slope).astype(Numeric.Float32)
+                        adc[0:fit_end] = (dac[0:fit_end]*slope).astype(numarray.Float32)
 
                         #print "linearize"
                         #print length
@@ -207,9 +207,9 @@ if __name__ == '__main__':
 
 
                         # remove portions of curve w/ negative dac
-                        mask = Numeric.greater_equal(dac,0)
-                        dac = Numeric.compress(mask,dac)
-                        adc = Numeric.compress(mask,adc)
+                        mask = numarray.greater_equal(dac,0)
+                        dac = numarray.compress(mask,dac)
+                        adc = numarray.compress(mask,adc)
                         length = len(dac)
 
                         #print "clip_zero"
@@ -230,8 +230,8 @@ if __name__ == '__main__':
                         #print adc
 
                         # write channel data back out to main data array
-                        outDAC[rng][twr,row,online_face,col,0:length] = dac[:].astype(Numeric.Float32)
-                        outADC[rng][twr,row,online_face,col,0:length] = adc[:].astype(Numeric.Float32)
+                        outDAC[rng][twr,row,online_face,col,0:length] = dac[:].astype(numarray.Float32)
+                        outADC[rng][twr,row,online_face,col,0:length] = adc[:].astype(numarray.Float32)
                         outLen[rng][twr,row,online_face,col] = length
 
                         #print "output"

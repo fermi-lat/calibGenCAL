@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2007/03/27 15:48:11 $"
-__version__   = "$Revision: 1.15 $, $Author: dwood $"
+__date__      = "$Date: 2007/04/10 16:22:20 $"
+__version__   = "$Revision: 1.16 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -15,7 +15,7 @@ __credits__   = "NRL code 7650"
 
 import time
 
-import Numeric
+import numarray
 
 import calXML
 import calConstant
@@ -252,39 +252,38 @@ class calTholdCICalibXML(calCalibXML):
     This class provides methods for accessing CAL threshold charge
     injection calibration data stored in XML format.
     """
-        
 
     def write(self, dacData, adcData, intNonlinData, intNonlinLength, pedData,
               lrefGain, hrefGain, biasData, tems = (0,)):
         """
         Write data to a CAL TholdCI XML file
 
-        Param: dacData - A list of Numeric arrays of DAC settings data
+        Param: dacData - A list of numarray arrays of DAC settings data
             (16, 8, 2, 12):
             dacData[0] = ULD DAC settings data
             dacData[1] = LAC DAC settings data
             dacData[2] = FLE DAC settings data
             dacData[3] = FHE DAC settings data
-        Param: adcData - A list of Numeric arrays of ADC/DAC characterization data.
-            adcData[0] = A Numeric array of ULD ADC/DAC characterization data
+        Param: adcData - A list of numarray arrays of ADC/DAC characterization data.
+            adcData[0] = A numarray array of ULD ADC/DAC characterization data
                 (3, 16, 8, 2, 12, 128).
-            adcData[1] = A Numeric array of LAC ADC/DAC characterization data
+            adcData[1] = A numarray array of LAC ADC/DAC characterization data
                 (16, 8, 2, 12, 128). \n
-            adcData[2] = A Numeric array of FLE ADC/DAC characterization data
+            adcData[2] = A numarray array of FLE ADC/DAC characterization data
                 (16, 8, 2, 12, 128). \n
-            adcData[3] = A Numeric array of FHE ADC/DAC characterization data
+            adcData[3] = A numarray array of FHE ADC/DAC characterization data
                 (16, 8, 2, 12, 128). \n
-        Param: intNonlinData - A Numeric array of ADC non-linearity characterization
+        Param: intNonlinData - A numarray array of ADC non-linearity characterization
             data for HEX1 energy range (16, 8, 2, 12, <N>).
-        Param: intNonlinLength = A Numeric array of ADC intnonlin data lengths for
+        Param: intNonlinLength = A numarray array of ADC intnonlin data lengths for
             HEX1 energy range (16, 8, 2, 12, 1)
-        Param: pedData - A Numeric array of pedestal value data
+        Param: pedData - A numarray array of pedestal value data
             (16, 9, 4, 8, 2, 12).
-        Param: lrefGain A Numeric array of LE gain index settings data
+        Param: lrefGain A numarray array of LE gain index settings data
             (16, 8, 2, 12)
-        Param: hrefGain A Numeric array of HE gain index settings data
+        Param: hrefGain A numarray array of HE gain index settings data
             (16, 8, 2, 12).
-        Param: biasData A Numeric array of bias correction values
+        Param: biasData A numarray array of bias correction values
             (16, 8, 2, 12, 2)
         Param: tems A list of TEM ID's to write out.
         """
@@ -367,21 +366,21 @@ class calTholdCICalibXML(calCalibXML):
                         adc = lacAdc[tem, row, end, fe, dac]
                         cs += 'LAC DAC = %d, ' % dac
                         tc.setAttributeNS(None, 'LACVal', "%0.3f" % adc)
-                        tc.setAttributeNS(None, 'LACSig', '1')
+                        tc.setAttributeNS(None, 'LACSig', '0')
                         
                         dac = int(fleDac[tem, row, end, fe])
                         adc = fleAdc[tem, row, end, fe, dac]
                         adc += biasData[tem, row, end, fe, 0]
                         cs += 'FLE DAC = %d, ' % dac
                         tc.setAttributeNS(None, 'FLEVal', "%0.3f" % adc)
-                        tc.setAttributeNS(None, 'FLESig', '1')
+                        tc.setAttributeNS(None, 'FLESig', '0')
 
                         dac = int(fheDac[tem, row, end, fe])
                         adc = fheAdc[tem, row, end, fe, dac]
                         adc += biasData[tem, row, end, fe, 1]
                         cs += 'FHE DAC = %d, ' % dac
                         tc.setAttributeNS(None, 'FHEVal', "%0.3f" % adc)
-                        tc.setAttributeNS(None, 'FHESig', '1')
+                        tc.setAttributeNS(None, 'FHESig', '0')
 
                         dac = int(uldDac[tem, row, end, fe])    
                         cs += 'ULD DAC = %d, ' % dac
@@ -423,7 +422,7 @@ class calTholdCICalibXML(calCalibXML):
 
                             ped = pedData[tem, gain, erng, row, end, fe]                        
                             tcr.setAttributeNS(None, 'pedVal', "%0.3f" % ped)
-                            tcr.setAttributeNS(None, 'pedSig', '1')                            
+                            tcr.setAttributeNS(None, 'pedSig', '0')                            
                             
                             tc.appendChild(tcr)
 
@@ -445,7 +444,7 @@ class calTholdCICalibXML(calCalibXML):
                         gain = int(gain)
                         ped = pedData[tem, gain, calConstant.CRNG_HEX1, row, end, fe]
                         tcr.setAttributeNS(None, 'pedVal', "%0.3f" % ped)
-                        tcr.setAttributeNS(None, 'pedSig', '1')
+                        tcr.setAttributeNS(None, 'pedSig', '0')
                         
                         tc.appendChild(tcr)
                     
@@ -453,25 +452,153 @@ class calTholdCICalibXML(calCalibXML):
 
         self.writeFile()
 
-
-    def read(self):
+    def write(self, adcData, uldData, pedData, tems = (0,)):
         """
-        Read data from a CAL TholdCI XML file
+        write ADC threshold values directly to XML without any calculations.
+        hopefully will replace other implemenation of write() method which is not cohesive and
+        forces coupling between calcuation of thresholds and file write
 
-        Returns: A tuple of references to Numeric arrays and containing the
-        calibration data (adcData, uldData, pedData):
-            adcData - A Numeric array of shape (16, 8, 2, 12, 3).  The last
+        params: (similar to return values of read() method)
+            adcData - A numarray array of shape (16, 8, 2, 12, 3).  The last
             dimension holds the LAC, FLE, and FHE values for the channel:
                 [:, 0] = LAC ADC threshold values
                 [:, 1] = FLE ADC threshold values
                 [:, 2] = FHE ADC threshold values
-            uldData - A Numeric array of shape (16, 8, 2, 12, 4).  The last
+            uldData - A numarray array of shape (16, 8, 2, 12, 4).  The last
             dimension holds the ULD values for each energy range:
                 [:, 0] = LEX8 ULD ADC threshold values
                 [:, 1] = LEX1 ULD ADC threshold values
                 [:, 2] = HEX8 ULD ADC threshold values
                 [:, 3] = HEX1 ULD ADC threshold values
-            pedData - A Numeric array of shape (16, 8, 2, 12, 4).  The last
+            pedData - A numarray array of shape (16, 8, 2, 12, 4).  The last
+            dimension holds the pedestal values for each energy range:
+                [:, 0] = LEX8 ULD pedestal values
+                [:, 1] = LEX1 ULD pedestal values
+                [:, 2] = HEX8 ULD pedestal values
+                [:, 3] = HEX1 ULD pedestal values
+
+            tems: a list of TEM ID's to write out
+            
+        """
+        doc = self.getDoc()        
+
+        # insert root document element <calCalib>
+
+        r = doc.createElementNS(None, 'calCalib')
+        doc.appendChild(r)
+
+        # insert <generic> element
+
+        g = self.genericWrite('CAL_TholdCI')
+        r.appendChild(g)
+
+        # insert <dimension> element  
+
+        d = self.dimensionWrite()            
+        r.appendChild(d)
+
+        for tem in tems:
+
+            # insert <tower> element
+
+            (iCol, iRow) = temToTower(tem)
+            t = doc.createElementNS(None, 'tower')
+            t.setAttributeNS(None, 'iRow', str(iRow))
+            t.setAttributeNS(None, 'iCol', str(iCol))
+            c = doc.createComment('tem number = %d, module = %s' % (tem, calConstant.CMOD[tem]))
+            t.appendChild(c)
+            r.appendChild(t)
+            
+            for layer in range(calConstant.NUM_LAYER):
+
+                row = layerToRow(layer) 
+
+                # insert <layer> elements
+
+                l = doc.createElementNS(None, 'layer')
+                l.setAttributeNS(None, 'iLayer', str(layer))
+                t.appendChild(l)
+
+                c = doc.createComment('layer name = %s' % calConstant.CROW[row])
+                l.appendChild(c)
+                    
+                for fe in range(calConstant.NUM_FE):
+
+                    # insert <xtal> elements
+
+                    x = doc.createElementNS(None, 'xtal')
+                    x.setAttributeNS(None, 'iXtal', str(fe))
+                    l.appendChild(x)
+                        
+                    for end in range(calConstant.NUM_END):
+
+                        cs = ""                        
+
+                        # insert <face> elements
+
+                        f = doc.createElementNS(None, 'face')
+                        f.setAttributeNS(None, 'end', _POSNEG[end])
+                        x.appendChild(f)
+
+                        # insert <tholdCI> element
+
+                        tc = doc.createElementNS(None, 'tholdCI')
+
+                        lac = adcData[tem,row,end,fe,0]
+                        fle = adcData[tem,row,end,fe,1]
+                        fhe = adcData[tem,row,end,fe,2]
+
+                        tc.setAttributeNS(None, 'LACVal', "%0.3f" % lac)
+                        tc.setAttributeNS(None, 'LACSig', '0')
+
+                        tc.setAttributeNS(None, 'FLEVal', "%0.3f" % fle)
+                        tc.setAttributeNS(None, 'FLESig', '0')
+
+                        tc.setAttributeNS(None, 'FHEVal', "%0.3f" % fhe)
+                        tc.setAttributeNS(None, 'FHESig', '0')
+
+                        f.appendChild(tc)
+                                               
+                        for erng in range(calConstant.NUM_RNG):
+
+                            # insert <tholdCIRange> elements
+
+                            tcr = doc.createElementNS(None, 'tholdCIRange')
+                            
+                            tcr.setAttributeNS(None, 'range', calConstant.CRNG[erng])
+
+                            uld = uldData[tem,row,end,fe,erng]
+                            tcr.setAttributeNS(None, 'ULDVal', "%0.3f" % uld)
+                            tcr.setAttributeNS(None, 'ULDSig', '0')
+
+                            ped = pedData[tem,row,end,fe,erng]
+                            tcr.setAttributeNS(None, 'pedVal', "%0.3f" % ped)
+                            tcr.setAttributeNS(None, 'pedSig', '0')                            
+                            
+                            tc.appendChild(tcr)
+
+        # write output XML file
+
+        self.writeFile()
+
+    def read(self):
+        """
+        Read data from a CAL TholdCI XML file
+
+        Returns: A tuple of references to numarray arrays and containing the
+        calibration data (adcData, uldData, pedData):
+            adcData - A numarray array of shape (16, 8, 2, 12, 3).  The last
+            dimension holds the LAC, FLE, and FHE values for the channel:
+                [:, 0] = LAC ADC threshold values
+                [:, 1] = FLE ADC threshold values
+                [:, 2] = FHE ADC threshold values
+            uldData - A numarray array of shape (16, 8, 2, 12, 4).  The last
+            dimension holds the ULD values for each energy range:
+                [:, 0] = LEX8 ULD ADC threshold values
+                [:, 1] = LEX1 ULD ADC threshold values
+                [:, 2] = HEX8 ULD ADC threshold values
+                [:, 3] = HEX1 ULD ADC threshold values
+            pedData - A numarray array of shape (16, 8, 2, 12, 4).  The last
             dimension holds the pedestal values for each energy range:
                 [:, 0] = LEX8 ULD pedestal values
                 [:, 1] = LEX1 ULD pedestal values
@@ -487,12 +614,12 @@ class calTholdCICalibXML(calCalibXML):
 
         # create empty data arrays        
         
-        adcData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                 calConstant.NUM_FE, 3), Numeric.Float32)
-        uldData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                 calConstant.NUM_FE, 4), Numeric.Float32)
-        pedData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                 calConstant.NUM_FE, 4), Numeric.Float32)
+        adcData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                 calConstant.NUM_FE, 3), numarray.Float32)
+        uldData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                 calConstant.NUM_FE, 4), numarray.Float32)
+        pedData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                 calConstant.NUM_FE, 4), numarray.Float32)
 
         # find <tower> elements
 
@@ -559,16 +686,16 @@ class calIntNonlinCalibXML(calCalibXML):
         """
         Write data to a CAL IntNonlin XML file
 
-        Param: lengthData - A list of 4 elements, each a reference to a Numeric
+        Param: lengthData - A list of 4 elements, each a reference to a numarray
                             array of DAC values. The shape of each array is
                             (16, 8, 2, 12, 1), where the last dimension holds
                             the length of the ADC and DAC value lists for that
                             channel.
-        Param: dacData - A list of 4 elements, each a reference to a Numeric
+        Param: dacData - A list of 4 elements, each a reference to a numarray
                          array of DAC values. The shape of each array is
                          (16, 8, 2, 12, <size>), where <size> is the length of
                          the corresponding dacData array for that energy range.
-        Param: adcData - A list of 4 elements, each a reference to a Numeric
+        Param: adcData - A list of 4 elements, each a reference to a numarray
                          array of ADC values. The shape of each array is
                          (16, 8, 2, 12, <size>), where <size> is the length of
                          the corresponding dacData array for that energy range.
@@ -700,7 +827,7 @@ class calIntNonlinCalibXML(calCalibXML):
 
         Param: dacData - A list of DAC values. The length of this array is the
                          number of data points for that energy range.
-        Param: adcData - A list of 4 elements, each a reference to a Numeric
+        Param: adcData - A list of 4 elements, each a reference to a numarray
                          array of ADC values. The shape of each array is
                          (16, 8, 2, 12, <size>), where <size> is the length of
                          the corresponding dacData array for that energy range.
@@ -832,21 +959,21 @@ class calIntNonlinCalibXML(calCalibXML):
         """
         Read data from a CAL IntNonlin XML file
 
-        Returns: A tuple of references to Numeric arrays and containing the
+        Returns: A tuple of references to numarray arrays and containing the
         calibration data (lengthData, dacData, adcData):
-            lengthData - A list of 4 elements, each a reference to a Numeric
+            lengthData - A list of 4 elements, each a reference to a numarray
                          array of length values.  The shape of each array
                          is (16, 8, 2, 12, 1), where the last dimension
                          contains the length of the DAC list for that
                          channel.  This value may be used to determine the
                          number of valid data values in the following
                          dacData and adcData arrays.
-            dacData -   A list of 4 elements, each a reference to a Numeric
+            dacData -   A list of 4 elements, each a reference to a numarray
                         array of DAC values. The shape of each array is
                         (16, 8, 2, 12, 256)  The last dimension contains the
                         DAC values.  The number of valid values is determined
                         by the corresponding value from the lengthData arrays.
-            adcData -   A list of 4 elements, each a reference to a Numeric
+            adcData -   A list of 4 elements, each a reference to a numarray
                         array of ADC values. The shape of each array is
                         (16, 8, 2, 12, 256).  The last dimension contains the
                         ADC values.  The number of valid values is determined
@@ -886,10 +1013,10 @@ class calIntNonlinCalibXML(calCalibXML):
             for erng in range(calConstant.NUM_RNG):
                 
                 size = len(dacDataOld[erng])
-                dacData[erng] = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                  calConstant.NUM_FE, size), Numeric.Float32)
-                lengthData[erng] = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                  calConstant.NUM_FE, 1), Numeric.Int16)
+                dacData[erng] = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                  calConstant.NUM_FE, size), numarray.Float32)
+                lengthData[erng] = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                  calConstant.NUM_FE, 1), numarray.Int16)
 
                 length = lengthData[erng]
                 length[...] = size
@@ -927,11 +1054,11 @@ class calIntNonlinCalibXML(calCalibXML):
         """
         Read data from a CAL IntNonlin XML file, format version v2r2
 
-        Returns: A tuple of references to Numeric arrays and containing the
+        Returns: A tuple of references to numarray arrays and containing the
         calibration data (dacData, adcData):
             dacData -   A list of DAC values. The length of this array
                         is the number of data points for that energy range.
-            adcData -   A list of 4 elements, each a reference to a Numeric
+            adcData -   A list of 4 elements, each a reference to a numarray
                         array of ADC values. The shape of each array is
                         (16, 8, 2, 12, <size>), where <size> is the length of
                         the corresponding dacData array for that energy range.
@@ -965,8 +1092,8 @@ class calIntNonlinCalibXML(calCalibXML):
 
         for erng in range(calConstant.NUM_RNG):
             size = dataSize[erng]
-            data = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                  calConstant.NUM_FE, size), Numeric.Float32)
+            data = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                  calConstant.NUM_FE, size), numarray.Float32)
             adcData[erng] = data
 
         # find <tower> elements
@@ -1026,21 +1153,21 @@ class calIntNonlinCalibXML(calCalibXML):
         """
         Read data from a CAL IntNonlin XML file, format version v2r3
 
-        Returns: A tuple of references to Numeric arrays and containing the
+        Returns: A tuple of references to numarray arrays and containing the
         calibration data (dacData, adcData):
-            lengthData - A list of 4 elements, each a reference to a Numeric
+            lengthData - A list of 4 elements, each a reference to a numarray
                          array of length values.  The shape of each array
                          is (16, 8, 2, 12, 1), where the last dimension
                          contains the length of the DAC list for that
                          channel.  This value may be used to determine the
                          number of valid data values in the following
                          dacData and adcData arrays.
-            dacData -   A list of 4 elements, each a reference to a Numeric
+            dacData -   A list of 4 elements, each a reference to a numarray
                         array of DAC values. The shape of each array is
                         (16, 8, 2, 12, 256)  The last dimension contains the
                         DAC values.  The number of valid values is determined
                         by the corresponding value from the lengthData arrays.
-            adcData -   A list of 4 elements, each a reference to a Numeric
+            adcData -   A list of 4 elements, each a reference to a numarray
                         array of ADC values. The shape of each array is
                         (16, 8, 2, 12, 256).  The last dimension contains the
                         ADC values.  The number of valid values is determined
@@ -1055,12 +1182,12 @@ class calIntNonlinCalibXML(calCalibXML):
 
         for erng in range(calConstant.NUM_RNG):        
 
-            lengthData[erng] = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                  calConstant.NUM_FE, 1), Numeric.Int16)
-            dacData[erng] = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                  calConstant.NUM_FE, INTNONLIN_MAX_DATA), Numeric.Float32)
-            adcData[erng] = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                  calConstant.NUM_FE, INTNONLIN_MAX_DATA), Numeric.Float32)
+            lengthData[erng] = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                  calConstant.NUM_FE, 1), numarray.Int16)
+            dacData[erng] = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                  calConstant.NUM_FE, INTNONLIN_MAX_DATA), numarray.Float32)
+            adcData[erng] = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                  calConstant.NUM_FE, INTNONLIN_MAX_DATA), numarray.Float32)
 
         # find <tower> elements
  
@@ -1212,7 +1339,7 @@ class calAsymCalibXML(calCalibXML):
 
         Param: xposData - A list of position values. The length of this array is the
                           number of data points for each crystal.
-        Param: asymData -   A Numeric array of shape (16, 8, 12, 8, <size>), where
+        Param: asymData -   A numarray array of shape (16, 8, 12, 8, <size>), where
                          <size> is the length of xposData array. The next-to-last
                          dimension contains the following data:
                              0 = bigVals value
@@ -1357,11 +1484,11 @@ class calAsymCalibXML(calCalibXML):
         """
         Read data from a CAL Asym XML file
         
-        Returns: A tuple of references to Numeric arrays and containing the
+        Returns: A tuple of references to numarray arrays and containing the
         calibration data (xposData, asymData):
             xposData -   A list of position values. The length of this array
                          is the number of data points for each crystal.
-            asymData -   A Numeric array of shape (16, 8, 12, 8, <size>), where
+            asymData -   A numarray array of shape (16, 8, 12, 8, <size>), where
                          <size> is the length of xposData array. The next-to-last
                          dimension contains the following data:
                              0 = bigVals value
@@ -1392,8 +1519,8 @@ class calAsymCalibXML(calCalibXML):
 
         # create empty asymmetry data array
 
-        asymData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_FE,
-                                  8, len(xposData)), Numeric.Float32)           
+        asymData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_FE,
+                                  8, len(xposData)), numarray.Float32)           
         
         # find <tower> elements
 
@@ -1499,7 +1626,7 @@ class calMevPerDacCalibXML(calCalibXML):
         Write data to a CAL MevPerDac XML file
 
         Param: energyData -
-            A Numeric array containing the energy conversion data
+            A numarray array containing the energy conversion data
             of shape (16, 8, 12, 8) The last dimension contains
             the following data for each crystal:
                 0 = bigVal value
@@ -1610,7 +1737,7 @@ class calMevPerDacCalibXML(calCalibXML):
         """
         Read data from a CAL MevPerDac XML file\
         
-        Returns: A Numeric array containing the energy conversion data
+        Returns: A numarray array containing the energy conversion data
                  of shape (16, 8, 12, 8) The last dimension contains
                  the following data for each crystal:
                      0 = bigVal value
@@ -1631,8 +1758,8 @@ class calMevPerDacCalibXML(calCalibXML):
 
         # create empty data array        
 
-        energyData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_FE, 8),
-                                   Numeric.Float32)
+        energyData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_FE, 8),
+                                   numarray.Float32)
 
         # find <tower> elements
  
@@ -1699,7 +1826,7 @@ class calPedCalibXML(calCalibXML):
         Write data to a CAL Ped XML file
 
         Param: pedData -
-            A Numeric array containing the pedestal data
+            A numarray array containing the pedestal data
             of shape (16, 8, 2, 12, 4, 3) The last dimension contains
             the following data for each crystal end and energy
             range:
@@ -1792,7 +1919,7 @@ class calPedCalibXML(calCalibXML):
         """
         Read data from a CAL Ped XML file
         
-        Returns: A Numeric array containing the pedestal data
+        Returns: A numarray array containing the pedestal data
                  of shape (16, 8, 2, 12, 4, 3) The last dimension contains
                  the following data for each crystal end and energy
                  range:
@@ -1809,8 +1936,8 @@ class calPedCalibXML(calCalibXML):
 
         # create empty data array
 
-        pedData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                 calConstant.NUM_FE, calConstant.NUM_RNG, 3), Numeric.Float32)
+        pedData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                 calConstant.NUM_FE, calConstant.NUM_RNG, 3), numarray.Float32)
 
         # find <tower> elements
  
@@ -1869,7 +1996,7 @@ class calMuSlopeCalibXML(calCalibXML):
         Write data to a CAL MuSlope XML file
 
         Param: slopeData -
-            A Numeric array containing the simplified gain data
+            A numarray array containing the simplified gain data
             of shape (16, 8, 2, 12, 4, 2) The last dimension contains
             the following data for each crystal end and energy
             range:
@@ -1959,7 +2086,7 @@ class calMuSlopeCalibXML(calCalibXML):
         """
         Read data from a CAL MuSlope XML file
         
-        Returns: A Numeric array containing the simplified gain data
+        Returns: A numarray array containing the simplified gain data
                  of shape (16, 8, 2, 12, 4, 2) The last dimension contains
                  the following data for each crystal end and energy
                  range:
@@ -1975,8 +2102,8 @@ class calMuSlopeCalibXML(calCalibXML):
 
         # create empty data array
 
-        slopeData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                 calConstant.NUM_FE, calConstant.NUM_RNG, 2), Numeric.Float32)
+        slopeData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                 calConstant.NUM_FE, calConstant.NUM_RNG, 2), numarray.Float32)
 
         # find <tower> elements
  
@@ -2032,7 +2159,7 @@ class calDacSlopesCalibXML(calCalibXML):
     def write(self, dacData, uldData, rangeData, tems = (0,)):
         """
         Write data to a CAL DacSlopes XML file
-        Param: dacData - A Numeric array of shape (16, 8, 2, 12, 12).  The last
+        Param: dacData - A numarray array of shape (16, 8, 2, 12, 12).  The last
                dimension holds the LAC, FLE, and FHE values for the channel:
                 0  = LAC DAC/energy slope
                 1  = LAC energy offset
@@ -2047,7 +2174,7 @@ class calDacSlopesCalibXML(calCalibXML):
                 10 = FHE DAC/energy slope error
                 11 = FHE energy offset error
                 
-        Param: uldData - A Numeric array of shape (3, 16, 8, 2, 12, 6).  The last
+        Param: uldData - A numarray array of shape (3, 16, 8, 2, 12, 6).  The last
                dimension holds the ULD values for each energy range:
                 0 = ULD DAC/energy slope
                 1 = ULD energy offset
@@ -2056,7 +2183,7 @@ class calDacSlopesCalibXML(calCalibXML):
                 4 = ULD energy offset error
                 5 = ULD energy saturation error
                 
-        Param: rangeData - A Numeric array of shape (16, 8, 2, 12, 6).  The last
+        Param: rangeData - A numarray array of shape (16, 8, 2, 12, 6).  The last
                dimension holds the DAC range (0=FINE, 1=COARSE) for each DAC:
                 0 = LAC DAC range
                 1 = FLE DAC range
@@ -2193,10 +2320,10 @@ class calDacSlopesCalibXML(calCalibXML):
     def read(self):
         """
         Read data from a CAL DacSlopes XML file.
-        Returns: A tuple of references to Numeric arrays and containing the
+        Returns: A tuple of references to numarray arrays and containing the
         calibration data (dacData, uldData, rangeData):
         
-            dacData - A Numeric array of shape (16, 8, 2, 12, 12).  The last
+            dacData - A numarray array of shape (16, 8, 2, 12, 12).  The last
             dimension holds the LAC, FLE, and FHE values for the channel:
                 0  = LAC DAC/energy slope
                 1  = LAC energy offset
@@ -2211,7 +2338,7 @@ class calDacSlopesCalibXML(calCalibXML):
                 10 = FHE DAC/energy slope error
                 11 = FHE energy offset error
                 
-            uldData - A Numeric array of shape (3, 16, 8, 2, 12, 6).  The last
+            uldData - A numarray array of shape (3, 16, 8, 2, 12, 6).  The last
             dimension holds the ULD values for each energy range:
                 0 = ULD DAC/energy slope
                 1 = ULD energy offset
@@ -2220,7 +2347,7 @@ class calDacSlopesCalibXML(calCalibXML):
                 4 = ULD energy offset error
                 5 = ULD energy saturation error
                 
-            rangeData - A Numeric array of shape (16, 8, 2, 12, 6).  The last
+            rangeData - A numarray array of shape (16, 8, 2, 12, 6).  The last
             dimension holds the DAC range (0=FINE, 1=COARSE) for each DAC:
                 0 = LAC DAC range
                 1 = FLE DAC range
@@ -2238,12 +2365,12 @@ class calDacSlopesCalibXML(calCalibXML):
             
         # create empty data arrays
         
-        dacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW,
-            calConstant.NUM_END, calConstant.NUM_FE, 12), Numeric.Float32)
-        uldData = Numeric.zeros((3, calConstant.NUM_TEM, calConstant.NUM_ROW,
-            calConstant.NUM_END, calConstant.NUM_FE, 6), Numeric.Float32)
-        rangeData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW,
-            calConstant.NUM_END, calConstant.NUM_FE, 6), Numeric.Int16)
+        dacData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW,
+            calConstant.NUM_END, calConstant.NUM_FE, 12), numarray.Float32)
+        uldData = numarray.zeros((3, calConstant.NUM_TEM, calConstant.NUM_ROW,
+            calConstant.NUM_END, calConstant.NUM_FE, 6), numarray.Float32)
+        rangeData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW,
+            calConstant.NUM_END, calConstant.NUM_FE, 6), numarray.Int16)
 
         # find <tower> elements
  

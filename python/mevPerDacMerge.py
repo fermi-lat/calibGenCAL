@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to merge mutilple CAL MevPerDac calibration XML files."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2007/03/20 19:23:47 $"
-__version__   = "$Revision: 1.12 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/03 00:51:50 $"
+__version__   = "$Revision: 1.13 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -25,7 +25,7 @@ import logging
 import ConfigParser
 import getopt
 
-import Numeric
+import numarray
 
 import calCalibXML
 import calConstant
@@ -44,7 +44,7 @@ class inputFile:
         Param: srcTwr The data source tower number (0 - 15).
         Param: destTwr The data destination tower number (0 - 15).
         Param: name The input file name
-        Param: pedData A Numeric ADC data arrays from the input file.
+        Param: pedData A numarray ADC data arrays from the input file.
         """
 
         self.srcTwr = srcTwr
@@ -173,7 +173,7 @@ if __name__ == '__main__':
 
     log.debug('Using ouput info:\n%s', str(info))
 
-    outData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_FE, 8), Numeric.Float32)
+    outData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_FE, 8), numarray.Float32)
 
     for f in inFiles:
         energyData = f.energyData

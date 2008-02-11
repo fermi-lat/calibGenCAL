@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Dump offline asymmetry xml file to .txt file"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/09/13 18:31:45 $"
-__version__   = "$Revision: 1.11 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/03 00:51:49 $"
+__version__   = "$Revision: 1.12 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -26,7 +26,7 @@ import sys, os, math
 import getopt
 import array
 
-import Numeric
+import numarray
 
 import calCalibXML
 import calConstant

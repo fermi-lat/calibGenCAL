@@ -14,7 +14,7 @@ use CalUtil
 use calibUtil
 use CLHEP * IExternal
 use gcrSelectRootData
-#use python * IExternal
+use python * IExternal
 
 
 # make sure we have all graphical root libraries linked (stolen from rootanalysis)

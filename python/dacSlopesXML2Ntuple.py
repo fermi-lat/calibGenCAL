@@ -12,8 +12,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Convert dacSlopes XML file to .txt file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2008/02/03 00:51:49 $"
-__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/03 01:24:49 $"
+__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -22,7 +22,7 @@ import sys, os, math
 import getopt
 import array
 
-import Numeric
+import numarray
 
 import calCalibXML
 import calConstant

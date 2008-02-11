@@ -25,8 +25,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Override a block of DAC settings in online DAC setting xml file with either constant value or values from 2nd file"
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/09/13 18:31:45 $"
-__version__     = "$Revision: 1.6 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/02/03 00:51:49 $"
+__version__     = "$Revision: 1.7 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -38,7 +38,7 @@ import string
 import logging
 import getopt
 import cgc_util
-import Numeric
+import numarray
 
 # setup logger
 
@@ -130,12 +130,12 @@ dacTwrs = dacFile.getTowers()
 ## BUILD MASK ##
 # should be same shape as original data
 # first enable all channels
-msk = Numeric.ones(dac.shape)
+msk = numarray.ones(dac.shape)
 
 # apply twr mask
 if owriteTwr:
     # build new mask to be 'AND'ed
-    tmp_msk = Numeric.zeros(dac.shape)
+    tmp_msk = numarray.zeros(dac.shape)
     tmp_msk[twr,...] = 1
 
     # and tmp_msk with current mask
@@ -145,7 +145,7 @@ if owriteTwr:
 if owriteLyr:
     row = calCalibXML.layerToRow(int(lyr))
     # build new mask to be 'AND'ed
-    tmp_msk = Numeric.zeros(dac.shape)
+    tmp_msk = numarray.zeros(dac.shape)
     tmp_msk[:] = 0
     tmp_msk[:,row,...] = 1
 
@@ -155,7 +155,7 @@ if owriteLyr:
 # apply column mask
 if owriteCol:
     # build new mask to be 'AND'ed
-    tmp_msk = Numeric.zeros(dac.shape)
+    tmp_msk = numarray.zeros(dac.shape)
     tmp_msk[:] = 0
     tmp_msk[...,col] = 1
 
@@ -167,7 +167,7 @@ if owriteCol:
 if owriteFace:
     online_face = calConstant.name_to_online_face[face]
     # build new mask to be 'AND'ed
-    tmp_msk = Numeric.zeros(dac.shape)
+    tmp_msk = numarray.zeros(dac.shape)
     tmp_msk[:] = 0
     tmp_msk[...,online_face,:] = 1
 
@@ -176,7 +176,7 @@ if owriteFace:
 
 # apply random mask
 if owriteRnd:
-    import MLab # included w/ Numeric, provides rand() method
+    import MLab # included w/ numarray, provides rand() method
     tmp_msk = MLab.rand(*dac.shape) < rnd_pct / 100
 
     # and tmp_msk with current msk
@@ -191,7 +191,7 @@ else:
     owrite_val = owrite_dacfile.read()
 
 # choose output value based on mask
-dac = Numeric.choose(msk,(dac,owrite_val))
+dac = numarray.choose(msk,(dac,owrite_val))
 
 # output new file
 outFile = calDacXML.calSettingsXML(outPath, dacType, calDacXML.MODE_CREATE)

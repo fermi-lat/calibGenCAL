@@ -12,8 +12,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Plot CAL DacSlopes data as ROOT files"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/10/11 17:19:03 $"
-__version__   = "$Revision: 1.2 $, $Author: dwood $"
+__date__      = "$Date: 2008/02/03 00:51:49 $"
+__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -24,7 +24,7 @@ import logging
 import array
 
 import ROOT
-import Numeric
+import numarray
 
 import calCalibXML
 import calConstant
@@ -32,7 +32,7 @@ import calConstant
                   
 
 
-DAC = array.array('f', Numeric.arange(0, 64, 1))
+DAC = array.array('f', numarray.arange(0, 64, 1))
 
 
 
@@ -150,8 +150,8 @@ def plotULD(uldData):
                         sat = uldData[erng,tem,row,end,fe,2]
                     
                         eng = linear(slope, offset, DAC)
-                        eng = Numeric.clip(eng, 0, sat)
-                        eng = array.array('f', Numeric.log10(eng))
+                        eng = numarray.clip(eng, 0, sat)
+                        eng = array.array('f', numarray.log10(eng))
                         
                         g = ROOT.TGraph(len(DAC) - 1, DAC, eng)
                         g.SetLineColor(erng + 1)

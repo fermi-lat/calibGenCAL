@@ -20,8 +20,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2007/08/30 21:15:56 $"
-__version__     = "$Revision: 1.7 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/02/03 00:51:50 $"
+__version__     = "$Revision: 1.8 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -31,7 +31,7 @@ import sys, os
 import logging
 import getopt
 
-import Numeric
+import numarray
 
 import calCalibXML
 import calDacXML
@@ -318,7 +318,7 @@ if __name__ == '__main__':
         
     if dacType != 'ULD':
                 
-        dacData = Numeric.where(ranges, (dacData - 64), dacData)    
+        dacData = numarray.where(ranges, (dacData - 64), dacData)    
     
         # convert to MeV
     
@@ -370,31 +370,31 @@ if __name__ == '__main__':
     # do simple stats 
     
     sf = (origDacData < 64)
-    sc = Numeric.logical_not(sf) 
+    sc = numarray.logical_not(sf) 
     
-    fineCount = Numeric.sum(Numeric.ravel(sf))
-    coarseCount = Numeric.sum(Numeric.ravel(sc))
+    fineCount = numarray.sum(numarray.ravel(sf))
+    coarseCount = numarray.sum(numarray.ravel(sc))
     log.info("FINE count = %d, COARSE count = %d", fineCount, coarseCount)  
     
-    data = Numeric.compress(Numeric.ravel(sf), Numeric.ravel(origDacData))
+    data = numarray.compress(numarray.ravel(sf), numarray.ravel(origDacData))
     if len(data) == 0:
         av = 0
         mn = 0
         mx = 0
     else:
-        av = Numeric.average(data.astype(Numeric.Float32))
+        av = numarray.average(data.astype(numarray.Float32))
         mn = min(data)
         mx = max(data)
     log.info("FINE setting average = %0.2f", av)
     log.info("FINE setting minimum = %d, maximum = %d", mn, mx)
     
-    data = Numeric.compress(Numeric.ravel(sc), Numeric.ravel(origDacData))
+    data = numarray.compress(numarray.ravel(sc), numarray.ravel(origDacData))
     if len(data) == 0:
         av = 0
         mn = 0
         mx = 0
     else:
-        av = Numeric.average(data.astype(Numeric.Float32))
+        av = numarray.average(data.astype(numarray.Float32))
         mn = min(data)
         mx = max(data)
     log.info("COARSE setting average = %0.2f", av)

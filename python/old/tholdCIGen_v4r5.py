@@ -13,8 +13,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL TholdCI XML calibration data files"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/09/28 15:19:54 $"
-__version__   = "$Revision: 1.28 $, $Author: dwood $"
+__date__      = "$Date: 2007/03/08 01:20:04 $"
+__version__   = "$Revision: 1.1 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -25,7 +25,7 @@ import logging
 import ConfigParser
 import getopt
 
-import Numeric
+import numarray
 
 import calDacXML
 import calFitsXML
@@ -47,7 +47,7 @@ class inputFile:
         Param: srcTwr The data source tower number (0 - 15).
         Param: destTwr The data destination tower number (0 - 15).
         Param: name The input file name
-        Param: adcData A Numeric ADC data array from the input file.
+        Param: adcData A numarray ADC data array from the input file.
         Param: version The XML format version of the input file.
         """
         
@@ -290,8 +290,8 @@ if __name__ == '__main__':
         
     else:
         
-        uldDacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-            calConstant.NUM_FE), Numeric.UInt8)
+        uldDacData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+            calConstant.NUM_FE), numarray.UInt8)
         
         for f in uldDacFiles:
 
@@ -317,8 +317,8 @@ if __name__ == '__main__':
     
     else:
     
-        lacDacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-            calConstant.NUM_FE), Numeric.UInt8)    
+        lacDacData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+            calConstant.NUM_FE), numarray.UInt8)    
     
         for f in lacDacFiles:
 
@@ -344,8 +344,8 @@ if __name__ == '__main__':
 
     else:
         
-        fleDacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-            calConstant.NUM_FE), Numeric.UInt8)
+        fleDacData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+            calConstant.NUM_FE), numarray.UInt8)
         
         for f in fleDacFiles:
 
@@ -371,8 +371,8 @@ if __name__ == '__main__':
         
     else:
     
-        fheDacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-            calConstant.NUM_FE), Numeric.UInt8)    
+        fheDacData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+            calConstant.NUM_FE), numarray.UInt8)    
 
         for f in fheDacFiles:
 
@@ -388,25 +388,25 @@ if __name__ == '__main__':
 
     # get gain indicies
 
-    leGainData = Numeric.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE), Numeric.UInt8)
-    heGainData = Numeric.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE), Numeric.UInt8)
+    leGainData = numarray.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE), numarray.UInt8)
+    heGainData = numarray.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE), numarray.UInt8)
     leGainData = leGainData * leGain
     heGainData = heGainData * heGain    
 
     # create empty ADC data arrays
 
-    pedData = Numeric.zeros((calConstant.NUM_TEM, 9, calConstant.NUM_RNG, calConstant.NUM_ROW,
-                             calConstant.NUM_END, calConstant.NUM_FE), Numeric.Float32)
-    uldAdcData = Numeric.zeros((3, calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                calConstant.NUM_FE, 128), Numeric.Float32)
-    lacAdcData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                calConstant.NUM_FE, 128), Numeric.Float32)
-    fleAdcData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                calConstant.NUM_FE, 128), Numeric.Float32)
-    fheAdcData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                calConstant.NUM_FE, 128), Numeric.Float32)
+    pedData = numarray.zeros((calConstant.NUM_TEM, 9, calConstant.NUM_RNG, calConstant.NUM_ROW,
+                             calConstant.NUM_END, calConstant.NUM_FE), numarray.Float32)
+    uldAdcData = numarray.zeros((3, calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                calConstant.NUM_FE, 128), numarray.Float32)
+    lacAdcData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                calConstant.NUM_FE, 128), numarray.Float32)
+    fleAdcData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                calConstant.NUM_FE, 128), numarray.Float32)
+    fheAdcData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                calConstant.NUM_FE, 128), numarray.Float32)
 
     # read LAC/ADC characterization file
     
@@ -469,7 +469,7 @@ if __name__ == '__main__':
         adcData = fleAdcFile.read()
         if erng == 'LEX1':
 	        adcData = adcData * 9.0
-        fleAdcData[f.destTwr,...] = adcData[f.srcTwr,...].astype(Numeric.Float32)
+        fleAdcData[f.destTwr,...] = adcData[f.srcTwr,...].astype(numarray.Float32)
         fleAdcFile.close()
         
     # read FHE/ADC characterization files

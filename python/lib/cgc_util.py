@@ -7,15 +7,15 @@ collection of simple utilities shared throughout code
 __facility__  = "Offline"
 __abstract__  = "apply calibGain correction to asymmetry xml file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2007/04/10 16:22:20 $"
-__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
+__date__      = "$Date: 2007/08/17 16:35:29 $"
+__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 import calConstant
 import calCalibXML
 import array
-import Numeric
+import numarray
 
 ### CONSTANTS ###
 mpdBigValIdx   = 0
@@ -95,7 +95,7 @@ def build_inl_splines(data, twrSet):
     return (adc2dac, dac2adc)
 
 """
-read in txt file w/ per-xtal face cal data & return Numeric array
+read in txt file w/ per-xtal face cal data & return numarray array
 
 return tuple of (coeffs, twrSet) where:
  - coeffs array shape is [16,8,2,12] for onlin twr,row,col,online_face
@@ -107,11 +107,11 @@ def read_perFace_txt(filename):
     nTXTFields = 5
     
     # intialize output array
-    outData = Numeric.zeros((calConstant.NUM_TEM,
+    outData = numarray.zeros((calConstant.NUM_TEM,
                              calConstant.NUM_ROW,
                              calConstant.NUM_END,
                              calConstant.NUM_FE),
-                            Numeric.Float32)
+                            numarray.Float32)
     twrSet = set()
 
     # read input file

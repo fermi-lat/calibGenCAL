@@ -22,8 +22,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to convert calCalib xml file from one gain setting to another"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2006/08/03 13:11:03 $"
-__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/03 00:51:49 $"
+__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -31,7 +31,7 @@ import sys, os
 import logging
 import ConfigParser
 import getopt
-import Numeric
+import numarray
 import calFitsXML
 import calCalibXML
 from calConstant import *
@@ -113,8 +113,8 @@ if __name__ == '__main__':
     for rng in (CRNG_LEX8, CRNG_LEX1):
         # relgain is basically measuring the inverse of adc2nrg for each
         # gain setting.  that is how i chose my '*' & '/' operations -zach
-        input_slope[...,rng,:] *= relgain[le_gain_in,rng,...,Numeric.NewAxis]
-        input_slope[...,rng,:] /= relgain[le_gain_out,rng,...,Numeric.NewAxis]
+        input_slope[...,rng,:] *= relgain[le_gain_in,rng,...,numarray.NewAxis]
+        input_slope[...,rng,:] /= relgain[le_gain_out,rng,...,numarray.NewAxis]
 
 
     log.info("Applying HE relgain correction: %d to %d (idx %d to %d)"% \
@@ -122,8 +122,8 @@ if __name__ == '__main__':
     for rng in (CRNG_HEX8, CRNG_HEX1):
         # relgain is basically measuring the inverse of adc2nrg for each
         # gain setting.  that is how i chose my '*' & '/' operations -zach
-        input_slope[...,rng,:] *= relgain[he_gain_in,rng,...,Numeric.NewAxis]
-        input_slope[...,rng,:] /= relgain[he_gain_out,rng,...,Numeric.NewAxis]
+        input_slope[...,rng,:] *= relgain[he_gain_in,rng,...,numarray.NewAxis]
+        input_slope[...,rng,:] /= relgain[he_gain_out,rng,...,numarray.NewAxis]
 
     #save output file
     log.info("Opening %s for write."%output_calCalib_filename)

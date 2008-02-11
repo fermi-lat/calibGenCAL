@@ -6,8 +6,8 @@ Classes and functions to read and write CAL XML files derived from FITS data set
 __facility__  = "Offline"
 __abstract__  = "Class to read and write CAL XML files derived from FITS data sets"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/06/27 15:47:46 $"
-__version__   = "$Revision: 1.7 $, $Author: dwood $"
+__date__      = "$Date: 2006/10/11 21:11:11 $"
+__version__   = "$Revision: 1.8 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -15,7 +15,7 @@ __credits__   = "NRL code 7650"
 import os, time
 import logging
 
-import Numeric
+import numarray
 
 import calXML
 import calConstant
@@ -185,7 +185,7 @@ class calFitsXML(calXML.calXML):
         """
         Write data to a CAL FITS file
 
-        Param: rawEventData - A Numeric array of data to be written in the FITS table.
+        Param: rawEventData - A numarray array of data to be written in the FITS table.
         Param: tems - A list of TEM ID values to include in the output.
         """
         
@@ -429,7 +429,7 @@ class calFitsXML(calXML.calXML):
 
         self.__writeKey(hdrNode, 'TTYPE1', self.__type)
 
-        size = (Numeric.size(data) * data.itemsize())   
+        size = (numarray.size(data) * data.itemsize())   
         self.__writeKey(hdrNode, 'TFORM1', '1PB(%u)' % size)
 
         self.__writeKey(hdrNode, 'TYPECODE', data.typecode())
@@ -528,7 +528,7 @@ class calFitsXML(calXML.calXML):
         """
         Read data from a CAL FITS/XML file
 
-        Returns: A Numeric array of data read from the FITS data table.
+        Returns: A numarray array of data read from the FITS data table.
         """
 
         # get XML document type
@@ -575,8 +575,8 @@ class calFitsXML(calXML.calXML):
 
     def __readDAC(self):        
 
-        data = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                              calConstant.NUM_FE, 128), Numeric.Float32)
+        data = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                              calConstant.NUM_FE, 128), numarray.Float32)
 
         if self.__xmlVersion >= 1:
             elName = 'row'
@@ -642,8 +642,8 @@ class calFitsXML(calXML.calXML):
 
     def __readPED(self):       
 
-        data = Numeric.zeros((9, calConstant.NUM_RNG, calConstant.NUM_ROW, calConstant.NUM_END,
-                              calConstant.NUM_FE), Numeric.Float32)
+        data = numarray.zeros((9, calConstant.NUM_RNG, calConstant.NUM_ROW, calConstant.NUM_END,
+                              calConstant.NUM_FE), numarray.Float32)
 
         if self.__xmlVersion >= 1:
             elName = 'row'
@@ -717,8 +717,8 @@ class calFitsXML(calXML.calXML):
 
     def __readREL(self):       
 
-        data = Numeric.zeros((9, calConstant.NUM_RNG, calConstant.NUM_TEM, calConstant.NUM_ROW,
-                              calConstant.NUM_END, calConstant.NUM_FE), Numeric.Float32)
+        data = numarray.zeros((9, calConstant.NUM_RNG, calConstant.NUM_TEM, calConstant.NUM_ROW,
+                              calConstant.NUM_END, calConstant.NUM_FE), numarray.Float32)
 
         if self.__xmlVersion >= 1:
             elName = 'row'
@@ -792,8 +792,8 @@ class calFitsXML(calXML.calXML):
 
     def __readULD(self):        
 
-        data = Numeric.zeros((3, calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                              calConstant.NUM_FE, 128), Numeric.Float32)
+        data = numarray.zeros((3, calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                              calConstant.NUM_FE, 128), numarray.Float32)
 
         if self.__xmlVersion >= 1:
             elName = 'row'

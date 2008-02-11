@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL DAC XML calibration data file"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/10/10 18:10:40 $"
-__version__   = "$Revision: 1.11 $, $Author: dwood $"
+__date__      = "$Date: 2008/02/03 00:51:49 $"
+__version__   = "$Revision: 1.12 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -26,7 +26,7 @@ import logging
 import ConfigParser
 import getopt
 
-import Numeric
+import numarray
 import mpfit
 
 import calDacXML
@@ -80,7 +80,7 @@ def residuals(p, y, x, fjac = None):
 
 # fit constants    
 
-D0    = Numeric.arange(0.0, 64.0, 1.0)
+D0    = numarray.arange(0.0, 64.0, 1.0)
 PI    = {'fixed':0, 'limited':(0,0), 'mpprint':0}
 PINFO = [PI, PI]
 P0    = (20.0, -300.0)    
@@ -125,18 +125,18 @@ def fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1, limLow, limHigh
                
     # array to hold fit parameters
     
-    mevs = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE, 2), Numeric.Float32)
+    mevs = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE, 2), numarray.Float32)
         
     # array to hold range info 
     
-    ranges = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE), Numeric.Int8)    
+    ranges = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE), numarray.Int8)    
     
     adcs0 = adcs0 - bias
     adcs1 = adcs1 - bias
-    adcs0 = adcs0[...,Numeric.NewAxis]
-    adcs1 = adcs1[...,Numeric.NewAxis]
+    adcs0 = adcs0[...,numarray.NewAxis]
+    adcs1 = adcs1[...,numarray.NewAxis]
     
     # compare upper and lower limits against FINE range thresholds 
     
@@ -153,7 +153,7 @@ def fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1, limLow, limHigh
                     # if there are not enough points in the FINE range or high point is out of range, 
                     # try the COARSE range
                 
-                    if len(Numeric.nonzero(qx)) < 3 or qx[-1]:
+                    if len(numarray.nonzero(qx)) < 3 or qx[-1]:
                     
                         qx[...] = \
                             (coarseThresholds[tem,row,end,fe,:] > adcs0[tem,row,end,fe,:]) & \
@@ -166,9 +166,9 @@ def fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1, limLow, limHigh
                     
                         tholds = fineThresholds[tem,row,end,fe,:]    
                     
-                    tholds = tholds + bias[tem,row,end,fe,Numeric.NewAxis]    
-                    d = Numeric.compress(qx, D0)
-                    a = Numeric.compress(qx, tholds)
+                    tholds = tholds + bias[tem,row,end,fe,numarray.NewAxis]    
+                    d = numarray.compress(qx, D0)
+                    a = numarray.compress(qx, tholds)
                     fkw = {'x' : d, 'y' : a}
                     
                     # try to fit the preferred range data
@@ -216,9 +216,9 @@ def fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1, limLow, limHigh
                         tholds = coarseThresholds[tem,row,end,fe,:]    
                         rng = calConstant.CDAC_COARSE
                         
-                        tholds = tholds + bias[tem,row,end,fe,Numeric.NewAxis]
-                        d = Numeric.compress(qx, D0)
-                        a = Numeric.compress(qx, tholds)
+                        tholds = tholds + bias[tem,row,end,fe,numarray.NewAxis]
+                        d = numarray.compress(qx, D0)
+                        a = numarray.compress(qx, tholds)
                         fkw = {'x' : d, 'y' : a}
                         
                         try:
@@ -252,8 +252,8 @@ def fitULD(tholds):
                
     # array to hold fit parameters
     
-    mevs = Numeric.zeros((3, calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE, 3), Numeric.Float32)
+    mevs = numarray.zeros((3, calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE, 3), numarray.Float32)
     
     for erng in range(3):
         for tem in range(calConstant.NUM_TEM):
@@ -266,8 +266,8 @@ def fitULD(tholds):
                         th = tholds[erng,tem,row,end,fe,:] 
                         sat = th[-1]
                         q =  th < sat
-                        a = Numeric.compress(q, th)
-                        d = Numeric.compress(q, D0)    
+                        a = numarray.compress(q, th)
+                        d = numarray.compress(q, D0)    
                         fkw = {'x' : d, 'y' : a}
                     
                         try:
@@ -504,14 +504,14 @@ if __name__ == '__main__':
 
     # create empty ADC data arrays
 
-    lacAdcData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                calConstant.NUM_FE, 128), Numeric.Float32)
-    fleAdcData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                calConstant.NUM_FE, 128), Numeric.Float32)
-    fheAdcData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                calConstant.NUM_FE, 128), Numeric.Float32)
-    uldAdcData = Numeric.zeros((3, calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                calConstant.NUM_FE, 128), Numeric.Float32)                            
+    lacAdcData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                calConstant.NUM_FE, 128), numarray.Float32)
+    fleAdcData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                calConstant.NUM_FE, 128), numarray.Float32)
+    fheAdcData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                calConstant.NUM_FE, 128), numarray.Float32)
+    uldAdcData = numarray.zeros((3, calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                calConstant.NUM_FE, 128), numarray.Float32)                            
                                 
     # read LAC/ADC characterization file
     
@@ -626,12 +626,12 @@ if __name__ == '__main__':
     
     # create empty output data arrays
     
-    dacDataOut = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE, 12), Numeric.Float32)
-    uldDataOut = Numeric.zeros((3, calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE, 6), Numeric.Float32)
-    rangeDataOut = Numeric.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE, 6), Numeric.Int8)         
+    dacDataOut = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE, 12), numarray.Float32)
+    uldDataOut = numarray.zeros((3, calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE, 6), numarray.Float32)
+    rangeDataOut = numarray.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE, 6), numarray.Int8)         
     
         
     #---------------------------- do FLE processing ---------------------------------------------
@@ -645,10 +645,10 @@ if __name__ == '__main__':
     
     # convert energy to ADC threshold
     
-    adcs0 = Numeric.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE), Numeric.Float32)
-    adcs1 = Numeric.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-       calConstant.NUM_FE), Numeric.Float32)
+    adcs0 = numarray.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE), numarray.Float32)
+    adcs1 = numarray.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+       calConstant.NUM_FE), numarray.Float32)
     adcs0 = adcs0 * fleLow
     adcs1 = adcs1 * fleHigh
     log.debug("FLE adcs[0,0,0,0]:%.3f %.3f", adcs0[0,0,0,0], adcs1[0,0,0,0])    
@@ -683,7 +683,7 @@ if __name__ == '__main__':
     
     # ADC->energy conversion
     
-    mevs *= gain[...,Numeric.NewAxis]
+    mevs *= gain[...,numarray.NewAxis]
     log.debug("FLE mevs[0,0,0,0]:%.3f %.3f gain[0,0,0,0]:%.3f", mevs[0,0,0,0,0], mevs[0,0,0,0,1],
         gain[0,0,0,0]) 
         
@@ -707,10 +707,10 @@ if __name__ == '__main__':
     
     # convert energy to ADC threshold
     
-    adcs0 = Numeric.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-            calConstant.NUM_FE), Numeric.Float32)
-    adcs1 = Numeric.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-            calConstant.NUM_FE), Numeric.Float32)
+    adcs0 = numarray.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+            calConstant.NUM_FE), numarray.Float32)
+    adcs1 = numarray.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+            calConstant.NUM_FE), numarray.Float32)
     adcs0 = adcs0 * fheLow
     adcs1 = adcs1 * fheHigh
     log.debug("FHE adcs[0,0,0,0]:%.3f %.3f", adcs0[0,0,0,0], adcs1[0,0,0,0])
@@ -740,7 +740,7 @@ if __name__ == '__main__':
        
     # ADC->energy conversion
     
-    mevs *= gain[...,Numeric.NewAxis]
+    mevs *= gain[...,numarray.NewAxis]
     log.debug("FHE mevs[0,0,0,0]:%.3f %.3f gain[0,0,0,0]:%.3f", mevs[0,0,0,0,0], mevs[0,0,0,0,1],
         gain[0,0,0,0])  
       
@@ -763,10 +763,10 @@ if __name__ == '__main__':
     
     # convert energy to ADC threshold
     
-    adcs0 = Numeric.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-            calConstant.NUM_FE), Numeric.Float32)
-    adcs1 = Numeric.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-            calConstant.NUM_FE), Numeric.Float32)
+    adcs0 = numarray.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+            calConstant.NUM_FE), numarray.Float32)
+    adcs1 = numarray.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+            calConstant.NUM_FE), numarray.Float32)
     adcs0 = adcs0 * lacLow
     adcs1 = adcs1 * lacHigh
     log.debug("LAC adcs[0,0,0,0]:%.3f %.3f", adcs0[0,0,0,0], adcs1[0,0,0,0])
@@ -781,8 +781,8 @@ if __name__ == '__main__':
             
     # no bias correction
     
-    bias = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW,
-        calConstant.NUM_END, calConstant.NUM_FE), Numeric.Float32)
+    bias = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW,
+        calConstant.NUM_END, calConstant.NUM_FE), numarray.Float32)
             
     # get linear fit parameters
     
@@ -796,7 +796,7 @@ if __name__ == '__main__':
     
     # ADC->energy conversion
     
-    mevs *= gain[...,Numeric.NewAxis]
+    mevs *= gain[...,numarray.NewAxis]
     log.debug("LAC mevs[0,0,0,0]:%.3f %.3f gain[0,0,0,0]:%.3f", mevs[0,0,0,0,0], mevs[0,0,0,0,1],
         gain[0,0,0,0])  
         
@@ -821,14 +821,14 @@ if __name__ == '__main__':
     # get linear fit parameters
     
     log.info("Fitting ULD")
-    adcs0 = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-            calConstant.NUM_FE), Numeric.Float32)
-    adcs1 = Numeric.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-            calConstant.NUM_FE), Numeric.Float32)
+    adcs0 = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+            calConstant.NUM_FE), numarray.Float32)
+    adcs1 = numarray.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+            calConstant.NUM_FE), numarray.Float32)
     adcs1 = adcs1 * 4096.0
     
-    mevData = Numeric.zeros((3, calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE, 3), Numeric.Float32)
+    mevData = numarray.zeros((3, calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE, 3), numarray.Float32)
         
     mevs = fitULD(coarseThresholds)  
                         
@@ -843,9 +843,9 @@ if __name__ == '__main__':
     
     # ADC->energy conversion
     
-    mevs[calConstant.CRNG_LEX8,...] *= gainData[...,calConstant.CRNG_LEX8,0,Numeric.NewAxis]
-    mevs[calConstant.CRNG_LEX1,...] *= gainData[...,calConstant.CRNG_LEX1,0,Numeric.NewAxis]
-    mevs[calConstant.CRNG_HEX8,...] *= gainData[...,calConstant.CRNG_HEX8,0,Numeric.NewAxis]
+    mevs[calConstant.CRNG_LEX8,...] *= gainData[...,calConstant.CRNG_LEX8,0,numarray.NewAxis]
+    mevs[calConstant.CRNG_LEX1,...] *= gainData[...,calConstant.CRNG_LEX1,0,numarray.NewAxis]
+    mevs[calConstant.CRNG_HEX8,...] *= gainData[...,calConstant.CRNG_HEX8,0,numarray.NewAxis]
     log.debug("ULD mevs[0,0,0,0,0]:%.3f %.3f %.3f adc2nrg[0,0,0,0,0]:%.3f", 
         mevs[0,0,0,0,0,0], mevs[0,0,0,0,0,1], mevs[0,0,0,0,0,2],
         gainData[0,0,0,0,calConstant.CRNG_LEX8,0]) 

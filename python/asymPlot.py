@@ -13,8 +13,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Create plots of Cal asymmetry curves"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/12/13 21:56:14 $"
-__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/03 00:51:49 $"
+__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -25,7 +25,7 @@ import calCalibXML
 import ROOT
 import cgc_util
 import array
-import Numeric
+import numarray
 
 if __name__ == '__main__':
     # check commandline
@@ -95,7 +95,7 @@ if __name__ == '__main__':
                         g = ROOT.TGraphErrors(len(xpos), 
                                               array.array('d',xpos), 
                                               array.array('d',asymData[twr][row][col][cgc_util.asymIdx[(pdiode,ndiode,False)]]), 
-                                              array.array('d',Numeric.zeros(len(xpos))), 
+                                              array.array('d',numarray.zeros(len(xpos))), 
                                               array.array('d',asymData[twr][row][col][cgc_util.asymIdx[(pdiode,ndiode,True)]]))
 
                         g.Draw("*")

@@ -14,15 +14,15 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL mevPerDAC XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/08/17 16:35:28 $"
-__version__     = "$Revision: 1.6 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/02/03 00:51:50 $"
+__version__     = "$Revision: 1.7 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
 import sys
 import logging
 import array
-import Numeric
+import numarray
 
 
 import calCalibXML
@@ -94,27 +94,27 @@ for twr in mpdTwrs1:
     for idx in range(cgc_util.N_MPD_IDX):
         # first pass only compare against 1st set
         if minVals is None:
-            minVals = Numeric.ones(cgc_util.N_MPD_IDX,'f')*1e5
-            maxVals = Numeric.ones(cgc_util.N_MPD_IDX,'f')*-1e5
-            minDiff = Numeric.ones(cgc_util.N_MPD_IDX,'f')*1e5
-            maxDiff = Numeric.ones(cgc_util.N_MPD_IDX,'f')*-1e5
+            minVals = numarray.ones(cgc_util.N_MPD_IDX,'f')*1e5
+            maxVals = numarray.ones(cgc_util.N_MPD_IDX,'f')*-1e5
+            minDiff = numarray.ones(cgc_util.N_MPD_IDX,'f')*1e5
+            maxDiff = numarray.ones(cgc_util.N_MPD_IDX,'f')*-1e5
 
-            minVals[idx] = min(Numeric.ravel(mpd1[twr, ..., idx]))
-            maxVals[idx] = max(Numeric.ravel(mpd1[twr, ..., idx]))
-            minVals[idx] = min(minVals[idx], min(Numeric.ravel(mpd2[twr, ..., idx])))
-            maxVals[idx] = max(maxVals[idx], max(Numeric.ravel(mpd2[twr, ..., idx])))
+            minVals[idx] = min(numarray.ravel(mpd1[twr, ..., idx]))
+            maxVals[idx] = max(numarray.ravel(mpd1[twr, ..., idx]))
+            minVals[idx] = min(minVals[idx], min(numarray.ravel(mpd2[twr, ..., idx])))
+            maxVals[idx] = max(maxVals[idx], max(numarray.ravel(mpd2[twr, ..., idx])))
 
-            minDiff[idx] = min(Numeric.ravel(mpdDiff[twr, ..., idx]))
-            maxDiff[idx] = max(Numeric.ravel(mpdDiff[twr, ..., idx]))
+            minDiff[idx] = min(numarray.ravel(mpdDiff[twr, ..., idx]))
+            maxDiff[idx] = max(numarray.ravel(mpdDiff[twr, ..., idx]))
 
         else:
-            minVals[idx] = min(minVals[idx], min(Numeric.ravel(mpd1[twr, ..., idx])))
-            maxVals[idx] = max(maxVals[idx], max(Numeric.ravel(mpd1[twr, ..., idx])))
-            minVals[idx] = min(minVals[idx], min(Numeric.ravel(mpd2[twr, ..., idx])))
-            maxVals[idx] = max(maxVals[idx], max(Numeric.ravel(mpd2[twr, ..., idx])))
+            minVals[idx] = min(minVals[idx], min(numarray.ravel(mpd1[twr, ..., idx])))
+            maxVals[idx] = max(maxVals[idx], max(numarray.ravel(mpd1[twr, ..., idx])))
+            minVals[idx] = min(minVals[idx], min(numarray.ravel(mpd2[twr, ..., idx])))
+            maxVals[idx] = max(maxVals[idx], max(numarray.ravel(mpd2[twr, ..., idx])))
 
-            minDiff[idx] = min(minDiff[idx], min(Numeric.ravel(mpdDiff[twr, ..., idx])))
-            maxDiff[idx] = max(maxDiff[idx], max(Numeric.ravel(mpdDiff[twr, ..., idx])))
+            minDiff[idx] = min(minDiff[idx], min(numarray.ravel(mpdDiff[twr, ..., idx])))
+            maxDiff[idx] = max(maxDiff[idx], max(numarray.ravel(mpdDiff[twr, ..., idx])))
 
 
 # gobal summary histograms
@@ -180,20 +180,20 @@ sm_err_prof = ROOT.TProfile("sm_err_prof",
 
 # fill histograms
 for twr in mpdTwrs1:
-    lrgDiff    = Numeric.ravel(mpdDiff[twr, ..., cgc_util.mpdBigValIdx])
-    smDiff     = Numeric.ravel(mpdDiff[twr, ..., cgc_util.mpdSmallValIdx])
-    lrgErrDiff = Numeric.ravel(mpdDiff[twr, ..., cgc_util.mpdBigSigIdx])
-    smErrDiff  = Numeric.ravel(mpdDiff[twr, ..., cgc_util.mpdSmallSigIdx])
+    lrgDiff    = numarray.ravel(mpdDiff[twr, ..., cgc_util.mpdBigValIdx])
+    smDiff     = numarray.ravel(mpdDiff[twr, ..., cgc_util.mpdSmallValIdx])
+    lrgErrDiff = numarray.ravel(mpdDiff[twr, ..., cgc_util.mpdBigSigIdx])
+    smErrDiff  = numarray.ravel(mpdDiff[twr, ..., cgc_util.mpdSmallSigIdx])
 
-    lrg1    = Numeric.ravel(mpd1[twr, ..., cgc_util.mpdBigValIdx])
-    sm1     = Numeric.ravel(mpd1[twr, ..., cgc_util.mpdSmallValIdx])
-    lrgErr1 = Numeric.ravel(mpd1[twr, ..., cgc_util.mpdBigSigIdx])
-    smErr1  = Numeric.ravel(mpd1[twr, ..., cgc_util.mpdSmallSigIdx])
+    lrg1    = numarray.ravel(mpd1[twr, ..., cgc_util.mpdBigValIdx])
+    sm1     = numarray.ravel(mpd1[twr, ..., cgc_util.mpdSmallValIdx])
+    lrgErr1 = numarray.ravel(mpd1[twr, ..., cgc_util.mpdBigSigIdx])
+    smErr1  = numarray.ravel(mpd1[twr, ..., cgc_util.mpdSmallSigIdx])
 
-    lrg2    = Numeric.ravel(mpd2[twr, ..., cgc_util.mpdBigValIdx])
-    sm2     = Numeric.ravel(mpd2[twr, ..., cgc_util.mpdSmallValIdx])
-    lrgErr2 = Numeric.ravel(mpd2[twr, ..., cgc_util.mpdBigSigIdx])
-    smErr2  = Numeric.ravel(mpd2[twr, ..., cgc_util.mpdSmallSigIdx])
+    lrg2    = numarray.ravel(mpd2[twr, ..., cgc_util.mpdBigValIdx])
+    sm2     = numarray.ravel(mpd2[twr, ..., cgc_util.mpdSmallValIdx])
+    lrgErr2 = numarray.ravel(mpd2[twr, ..., cgc_util.mpdBigSigIdx])
+    smErr2  = numarray.ravel(mpd2[twr, ..., cgc_util.mpdSmallSigIdx])
 
 
     lrg_diff_summary.FillN(len(lrgDiff),

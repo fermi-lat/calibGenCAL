@@ -19,8 +19,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 LATC Cal_Thresh XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/12/27 21:54:34 $"
-__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/02/03 00:51:49 $"
+__version__     = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -88,8 +88,8 @@ def genScatterDiff(ref_data, new_data, dacType, refName, newName):
     s.SetMarkerStyle(ROOT.kFullTriangleUp)
     s.SetMarkerSize(2)
 
-    import Numeric
-    for x_ref, x_new in zip(Numeric.ravel(ref_data), Numeric.ravel(new_data)):
+    import numarray
+    for x_ref, x_new in zip(numarray.ravel(ref_data), numarray.ravel(new_data)):
         s.Fill(x_ref, x_new)
 
     s.Write()
@@ -105,8 +105,8 @@ def genDiffHist(ref_data, new_data, dacType, refName, newName):
 
     diff = new_data - ref_data
 
-    import Numeric
-    for x in Numeric.ravel(diff):
+    import numarray
+    for x in numarray.ravel(diff):
         h.Fill(x)
 
     h.Write()
@@ -139,8 +139,8 @@ def findIndices(data):
 def findOutliers(ref_data, new_data, threshold):
     diff = new_data - ref_data
 
-    import Numeric
-    diff = Numeric.fabs(diff)
+    import numarray
+    diff = numarray.fabs(diff)
 
     outliers = diff > threshold
 
@@ -184,12 +184,12 @@ def genLACDiffSummary(refData,
     diff = newData - refData
 
     # plot diff by ccc
-    import Numeric
+    import numarray
     import calDacXML
     for ccc in range(4):
         for crc in range(4):
             (row, end) = calDacXML.ccToRow(ccc,crc)
-            for x in Numeric.ravel(diff[:,row,end,:]):
+            for x in numarray.ravel(diff[:,row,end,:]):
                 h.Fill(ccc,x)
 
     h.Write()
@@ -198,7 +198,7 @@ def genCFEPrecinctDiffSummary(refPath,
                               newPath,
                               dacType):
     import calDacXML
-    import Numeric
+    import numarray
 
     # check that precinct data is present in both old & new files
     if not xml_file_contains_tag(refPath, dacType):
@@ -214,15 +214,15 @@ def genCFEPrecinctDiffSummary(refPath,
 
     # get reference settings (convert to signed int so I can get correct diffs)
     try:
-        ref = calDacXML.calSettingsXML(refPath, dacType).read().astype(Numeric.Int8)
+        ref = calDacXML.calSettingsXML(refPath, dacType).read().astype(numarray.Int8)
     except:
-        ref = calDacXML.calDacXML(refPath, dacType).read().astype(Numeric.Int8)
+        ref = calDacXML.calDacXML(refPath, dacType).read().astype(numarray.Int8)
 
     # generate tuples based on reference settings
     genCalDacTuple(ref, refName+"_"+dacType)
 
     # get new settings (convert to signed int so I can get correct diffs)
-    new = calDacXML.calSettingsXML(newPath, dacType).read().astype(Numeric.Int8)
+    new = calDacXML.calSettingsXML(newPath, dacType).read().astype(numarray.Int8)
 
     # create tuples from new settings
     genCalDacTuple(new, newName+"_"+dacType)
@@ -231,13 +231,13 @@ def genCFEPrecinctDiffSummary(refPath,
     genDiffPlots(ref, new, dacType, refName, newName)
 
     # print mean diff report
-    import Numeric
+    import numarray
     diff = new - ref
-    meanDiff = Numeric.average(Numeric.ravel(diff))
+    meanDiff = numarray.average(numarray.ravel(diff))
 
-    # MLab is part of Numeric
+    # MLab is part of numarray
     import MLab
-    meanRMS = MLab.std(Numeric.ravel(diff))
+    meanRMS = MLab.std(numarray.ravel(diff))
 
     # print mean diff report
     print "\nDAC\tmeanDiff\trms (DAC units)"

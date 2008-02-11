@@ -16,8 +16,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate CAL gain settings for GCFE Config 0 Register"
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2006/07/28 01:45:12 $"
-__version__     = "$Revision: 1.1 $, $Author: dwood $"
+__date__        = "$Date: 2007/03/20 19:23:47 $"
+__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -26,7 +26,7 @@ import sys, os, time
 import logging
 import getopt
 
-import Numeric
+import numarray
 
 import calDacXML
 
@@ -77,7 +77,7 @@ if __name__ == '__main__':
 
     # create config 0 register values
 
-    dacData = Numeric.zeros((16, 8, 2, 12), Numeric.Int16)
+    dacData = numarray.zeros((16, 8, 2, 12), numarray.Int16)
     reg = (leGain | (heGain << 3))
     log.debug('Using Config 0 register value %hx', reg)
     dacData = (dacData + reg);
