@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Feb 11 13:35:57 PST 2008
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+attempting to convert from Numeric to numarray, which is supported by GLAST_EXT
+added tholdCITXT2XML tool
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Feb  7 13:33:55 PST 2008
 calibGenCAL/python
 
