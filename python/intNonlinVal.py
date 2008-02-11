@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL IntNonlin calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2007/03/20 19:23:47 $"
-__version__   = "$Revision: 1.19 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/03 00:51:49 $"
+__version__   = "$Revision: 1.20 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -28,7 +28,7 @@ import getopt
 import logging
 import array
 
-import Numeric
+import numarray
 
 import calCalibXML
 import calConstant
@@ -283,8 +283,8 @@ def deriv2(d, a):
 
 def calcError(lengthData, dacData, adcData):
 
-    errs = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END, calConstant.NUM_FE,
-                          calConstant.NUM_RNG), Numeric.PyObject)
+    errs = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END, calConstant.NUM_FE,
+                          calConstant.NUM_RNG), numarray.PyObject)
     status = 0
 
     for tem in towers:

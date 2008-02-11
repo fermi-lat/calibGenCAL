@@ -18,8 +18,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 LATC CFE XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2008/02/03 00:51:50 $"
-__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/02/07 21:33:55 $"
+__version__     = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -55,7 +55,7 @@ def genTrgCheckPlots(data_name,
 
 
     # plot diff by cfe
-    import Numeric
+    import numarray
     import calDacXML
     for crc in range(calConstant.NUM_GCRC):
         title = "%s_per_CFE_CRC%d"%(data_name,crc)
@@ -68,7 +68,7 @@ def genTrgCheckPlots(data_name,
         h.SetMarkerStyle(ROOT.kFullTriangleUp)
         h.SetMarkerSize(2)
         for cfe in range(calConstant.NUM_FE):
-            for x in Numeric.ravel(data[...,crc,cfe]):
+            for x in numarray.ravel(data[...,crc,cfe]):
                 h.Fill(cfe,x)
                 
         h.Write()
@@ -78,23 +78,23 @@ class Cal_Mode_LATC:
     """
     Represent all settings in Cal_Mode LATC configuration precinct.
     """
-    import Numeric
+    import numarray
 
-    layer_mask_0 = Numeric.zeros([16,4],Numeric.UInt32)
+    layer_mask_0 = numarray.zeros([16,4],numarray.UInt32)
     layer_mask_0_bcast = None
-    layer_mask_1 = Numeric.zeros([16,4],Numeric.UInt32)
+    layer_mask_1 = numarray.zeros([16,4],numarray.UInt32)
     layer_mask_1_bcast = None
-    ccc_configuration = Numeric.zeros([16,4],Numeric.UInt32)
+    ccc_configuration = numarray.zeros([16,4],numarray.UInt32)
     ccc_configuration_bcast = None
-    crc_dac = Numeric.zeros([16,4,4],Numeric.UInt32)
+    crc_dac = numarray.zeros([16,4,4],numarray.UInt32)
     crc_dac_bcast = None
-    config = Numeric.zeros([16,4,4],Numeric.UInt32)
+    config = numarray.zeros([16,4,4],numarray.UInt32)
     config_bcast = None
-    config_0 = Numeric.zeros([16,4,4,12],Numeric.UInt32)
+    config_0 = numarray.zeros([16,4,4,12],numarray.UInt32)
     config_0_bcast = None
-    config_1 = Numeric.zeros([16,4,4,12],Numeric.UInt32)
+    config_1 = numarray.zeros([16,4,4,12],numarray.UInt32)
     config_1_bcast = None
-    ref_dac = Numeric.zeros([16,4,4,12],Numeric.UInt32)
+    ref_dac = numarray.zeros([16,4,4,12],numarray.UInt32)
     ref_dac_bcast = None
 
 

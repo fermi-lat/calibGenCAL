@@ -2,7 +2,7 @@
 
 import calFitsXML
 import calConstant
-import Numeric
+import numarray
 import sys
 
 
@@ -34,7 +34,7 @@ if __name__ == '__main__':
     print "inshape:    ", inData.shape
 
     # craete output array
-    outData = Numeric.array(inData)
+    outData = numarray.array(inData)
     print "outshape:   ", outData.shape
 
     # copy flipped data into output array

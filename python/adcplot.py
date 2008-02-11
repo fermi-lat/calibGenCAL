@@ -13,8 +13,8 @@ Where:
 __facility__  = "Offline"
 __abstract__  = "Generate ROOT plots for CAL ADC/DAC characerization data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2007/03/20 19:23:46 $"
-__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/03 00:51:49 $"
+__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -24,7 +24,7 @@ import logging
 import array
 import getopt
 
-import Numeric
+import numarray
 
 import ROOT
 

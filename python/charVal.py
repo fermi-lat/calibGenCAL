@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL adc2nrg calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/10/16 15:46:32 $"
-__version__   = "$Revision: 1.12 $, $Author: dwood $"
+__date__      = "$Date: 2008/02/03 00:51:49 $"
+__version__   = "$Revision: 1.13 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -26,7 +26,7 @@ import sys, os
 import getopt
 import logging
 
-import Numeric
+import numarray
 import mpfit
 
 import calFitsXML
@@ -103,7 +103,7 @@ def charVal(data):
     
     pi = {'fixed' : 0, 'limited' : (0, 0), 'mpprint' : 0}
     pinfo = [pi, pi]
-    x0 = Numeric.arange(0.0, 64.0, 1.0)
+    x0 = numarray.arange(0.0, 64.0, 1.0)
     
     
     # check for pedestal subtraction error
@@ -140,9 +140,9 @@ def charVal(data):
 
                     # fit FINE range data                    
                     
-                    z = Numeric.nonzero(fineData)
-                    y = Numeric.take(fineData, z)
-                    x = Numeric.take(x0, z)
+                    z = numarray.nonzero(fineData)
+                    y = numarray.take(fineData, z)
+                    x = numarray.take(x0, z)
                     p0 = (20.0, -200.0)
                     fkw = {'x': x, 'y' : y}
 
@@ -172,9 +172,9 @@ def charVal(data):
 
                     # fit coarse range data
 
-                    z = Numeric.nonzero(coarseData)
-                    y = Numeric.take(coarseData, z)
-                    x = Numeric.take(x0, z)
+                    z = numarray.nonzero(coarseData)
+                    y = numarray.take(coarseData, z)
+                    x = numarray.take(x0, z)
                     p0 = (40, -400)
                     fkw = {'x': x, 'y' : y}
                     
@@ -211,7 +211,7 @@ def uldVal(data):
     
     pi = {'fixed' : 0, 'limited' : (0, 0), 'mpprint' : 0}
     pinfo = [pi, pi]
-    x0 = Numeric.arange(0.0, 64.0, 1.0)
+    x0 = numarray.arange(0.0, 64.0, 1.0)
     
     
     # check for curve linearity
@@ -229,12 +229,12 @@ def uldVal(data):
                         # fit coarse range data
 
                         sat = coarseData[-1]
-                        z = Numeric.nonzero(coarseData)
-                        y = Numeric.take(coarseData, z)
-                        x = Numeric.take(x0, z)
-                        s = Numeric.less(y, sat)
-                        y = Numeric.compress(s, y)
-                        x = Numeric.compress(s, x)
+                        z = numarray.nonzero(coarseData)
+                        y = numarray.take(coarseData, z)
+                        x = numarray.take(x0, z)
+                        s = numarray.less(y, sat)
+                        y = numarray.compress(s, y)
+                        x = numarray.compress(s, x)
                         
                         p0 = (40, -400)
                         fkw = {'x': x, 'y' : y}

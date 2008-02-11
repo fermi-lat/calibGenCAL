@@ -19,8 +19,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to merge mutilple calFitsXML files."
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2006/06/27 19:30:16 $"
-__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/03 00:51:49 $"
+__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -30,7 +30,7 @@ import logging
 import getopt
 import re
 
-import Numeric
+import numarray
 
 import calFitsXML
 import calConstant

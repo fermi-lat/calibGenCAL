@@ -17,8 +17,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL ULD settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2007/02/16 18:57:36 $"
-__version__     = "$Revision: 1.1 $, $Author: dwood $"
+__date__        = "$Date: 2007/03/20 19:23:47 $"
+__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -28,7 +28,7 @@ import logging
 import getopt
 import ConfigParser
 
-import Numeric
+import numarray
 
 import calFitsXML
 import calDacXML

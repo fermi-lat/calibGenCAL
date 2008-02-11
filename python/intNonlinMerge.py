@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to merge mutilple CAL IntNonlin calibration XML files."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2007/01/16 17:22:14 $"
-__version__   = "$Revision: 1.21 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/03 00:51:49 $"
+__version__   = "$Revision: 1.22 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -25,7 +25,7 @@ import logging
 import ConfigParser
 import getopt
 
-import Numeric
+import numarray
 
 import calCalibXML
 import calConstant
@@ -44,8 +44,8 @@ class inputFile:
         Param: srcTwr The data source tower number (0 - 15).
         Param: destTwr The data destination tower number (0 - 15).
         Param: name The input file name
-        Param: dacData A list of Numeric DAC data arrays from the input file.
-        Param: dacData A list of Numeric ADC data arrays from the input file.
+        Param: dacData A list of numarray DAC data arrays from the input file.
+        Param: dacData A list of numarray ADC data arrays from the input file.
         """
         
         self.srcTwr = srcTwr
@@ -193,14 +193,14 @@ if __name__ == '__main__':
     
     for erng in range(calConstant.NUM_RNG):
 
-        lengthDataOut[erng] = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                          calConstant.NUM_FE, 1), Numeric.Int16)
+        lengthDataOut[erng] = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                          calConstant.NUM_FE, 1), numarray.Int16)
 
-        dacDataOut[erng] = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                          calConstant.NUM_FE, calCalibXML.INTNONLIN_MAX_DATA), Numeric.Float32)
+        dacDataOut[erng] = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                          calConstant.NUM_FE, calCalibXML.INTNONLIN_MAX_DATA), numarray.Float32)
         
-        adcDataOut[erng] = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                          calConstant.NUM_FE, calCalibXML.INTNONLIN_MAX_DATA), Numeric.Float32)
+        adcDataOut[erng] = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                          calConstant.NUM_FE, calCalibXML.INTNONLIN_MAX_DATA), numarray.Float32)
                 
 
     for erng in range(calConstant.NUM_RNG):

@@ -17,8 +17,8 @@ Where:
 __facility__  = "Offline"
 __abstract__  = "Generate ROOT plots for CAL ADC/DAC characerization data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2007/03/20 19:23:46 $"
-__version__   = "$Revision: 1.13 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/03 00:51:49 $"
+__version__   = "$Revision: 1.14 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -29,7 +29,7 @@ import logging
 import array
 import getopt
 
-import Numeric
+import numarray
 import mpfit
 import ROOT
 
@@ -59,7 +59,7 @@ def plotDAC(rawData, filterData, info, twrs, rawName, filterName):
 
     pi = {'fixed' : 0, 'limited' : (0, 0), 'mpprint' : 0}
     pinfo = [pi, pi]
-    x0 = Numeric.arange(0.0, 64.0, 1.0)
+    x0 = numarray.arange(0.0, 64.0, 1.0)
     
     for tem in twrs:
         for layer in range(calConstant.NUM_LAYER):
@@ -82,9 +82,9 @@ def plotDAC(rawData, filterData, info, twrs, rawName, filterName):
                     # plot fine fit data
 
                     fineData = filterData[tem, layer, end, fe, 0:64]    
-                    z = Numeric.nonzero(fineData)
-                    yn = Numeric.take(fineData, z)
-                    xn = Numeric.take(x0, z)
+                    z = numarray.nonzero(fineData)
+                    yn = numarray.take(fineData, z)
+                    xn = numarray.take(x0, z)
                     p0 = (20.0, -200.0)
                     fkw = {'x': xn, 'y' : yn}
 
@@ -113,9 +113,9 @@ def plotDAC(rawData, filterData, info, twrs, rawName, filterName):
                     # plot coarse fit data
 
                     coarseData = filterData[tem, layer, end, fe, 64:128]    
-                    z = Numeric.nonzero(coarseData)
-                    yn = Numeric.take(coarseData, z)
-                    xn = Numeric.take(x0, z)
+                    z = numarray.nonzero(coarseData)
+                    yn = numarray.take(coarseData, z)
+                    xn = numarray.take(x0, z)
                     p0 = (20.0, -200.0)
                     fkw = {'x': xn, 'y' : yn}
 
@@ -202,7 +202,7 @@ def plotULD(rawData, filterData, info, twrs, rawName, filterName):
 
     pi = {'fixed' : 0, 'limited' : (0, 0), 'mpprint' : 0}
     pinfo = [pi, pi]
-    x0 = Numeric.arange(0.0, 64.0, 1.0)
+    x0 = numarray.arange(0.0, 64.0, 1.0)
     
     for tem in twrs:
         for layer in range(calConstant.NUM_LAYER):
@@ -231,12 +231,12 @@ def plotULD(rawData, filterData, info, twrs, rawName, filterName):
 
                         coarseData = filterData[erng, tem, layer, end, fe, 64:128]
                         sat = coarseData[-1]
-                        z = Numeric.nonzero(coarseData)
-                        yn = Numeric.take(coarseData, z)
-                        xn = Numeric.take(x0, z)
-                        s = Numeric.less(yn, sat)
-                        yn = Numeric.compress(s, yn)
-                        xn = Numeric.compress(s, xn)
+                        z = numarray.nonzero(coarseData)
+                        yn = numarray.take(coarseData, z)
+                        xn = numarray.take(x0, z)
+                        s = numarray.less(yn, sat)
+                        yn = numarray.compress(s, yn)
+                        xn = numarray.compress(s, xn)
         
                         p0 = (40.0, -400.0)
                         fkw = {'x': xn, 'y' : yn}

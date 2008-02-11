@@ -18,8 +18,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Summarize LATC Cal_Thresh XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/12/27 21:54:34 $"
-__version__     = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/02/03 00:51:50 $"
+__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -84,8 +84,8 @@ def genSummaryHist(data, dacType, name):
 
     h.SetXTitle(name)
 
-    import Numeric
-    for x in Numeric.ravel(data):
+    import numarray
+    for x in numarray.ravel(data):
         h.Fill(x)
 
     h.Write()
@@ -112,8 +112,8 @@ def findIndices(data):
 
 
 def findOutliers(data, mean, threshold):
-    import Numeric
-    data = Numeric.fabs(data)
+    import numarray
+    data = numarray.fabs(data)
 
     outliers = data - mean > threshold
 
@@ -151,12 +151,12 @@ def ccc_plot(data, name, dacType):
     h.SetMarkerSize(2)
 
     # plot by ccc
-    import Numeric
+    import numarray
     import calDacXML
     for ccc in range(4):
         for crc in range(4):
             (row, end) = calDacXML.ccToRow(ccc,crc)
-            for x in Numeric.ravel(data[:,row,end,:]):
+            for x in numarray.ravel(data[:,row,end,:]):
                 h.Fill(ccc,x)
 
     h.Write()
@@ -164,7 +164,7 @@ def ccc_plot(data, name, dacType):
 def genCFEPrecinctSummary(path,
                           dacType):
     import calDacXML
-    import Numeric
+    import numarray
 
     # check that precinct data is present in both old & new files
     if not xml_file_contains_tag(path, dacType):
@@ -184,12 +184,12 @@ def genCFEPrecinctSummary(path,
     genSummaryHist(data, dacType, name)
 
     # print mean value report
-    import Numeric
-    mean = Numeric.average(Numeric.ravel(data))
+    import numarray
+    mean = numarray.average(numarray.ravel(data))
 
-    # MLab is part of Numeric
+    # MLab is part of numarray
     import MLab
-    rms = MLab.std(Numeric.ravel(data))
+    rms = MLab.std(numarray.ravel(data))
 
     # print mean 
     print "\nDAC\tmean\trms (DAC units)"

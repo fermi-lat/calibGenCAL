@@ -11,8 +11,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Pedestal subtract CAL CIDAC2ADC XML file."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/08/17 16:35:28 $"
-__version__     = "$Revision: 1.5 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/02/03 00:51:49 $"
+__version__     = "$Revision: 1.6 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -22,7 +22,7 @@ import calConstant
 import logging
 import cgc_util
 import array
-import Numeric
+import numarray
 
 
 # setup logger
@@ -61,7 +61,7 @@ inl = inlFile.read()
 (inlLen, inlDAC, inlADC) = inl
 
 # from calCalibXML doc
-# adcData -   A list of 4 elements, each a reference to a Numeric
+# adcData -   A list of 4 elements, each a reference to a numarray
 # array of ADC values. The shape of each array is
 # (16, 8, 2, 12, 256).  The last dimension contains the
 # ADC values.  The number of valid values is determined
@@ -71,7 +71,7 @@ inl = inlFile.read()
 # subtract 1st point from each ADC list
 newADC = []
 for rngData in inlADC:
-    rngData = rngData - Numeric.reshape(rngData[...,0],(16,8,2,12,1))
+    rngData = rngData - numarray.reshape(rngData[...,0],(16,8,2,12,1))
     newADC.append(rngData)
 
 # write new output file

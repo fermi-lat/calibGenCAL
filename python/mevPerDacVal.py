@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL MevPerDac calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/10/16 15:46:32 $"
-__version__   = "$Revision: 1.8 $, $Author: dwood $"
+__date__      = "$Date: 2008/02/03 00:51:50 $"
+__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -27,7 +27,7 @@ import sys, os
 import getopt
 import logging
 
-import Numeric
+import numarray
 
 import calCalibXML
 import calConstant
@@ -113,7 +113,7 @@ def rootHists(errData, fileName):
 
 def calcError(energyData):
 
-    errs = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_FE, 2), Numeric.PyObject)
+    errs = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_FE, 2), numarray.PyObject)
     status = 0
 
     for tem in towers:

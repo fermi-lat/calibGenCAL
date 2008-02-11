@@ -16,15 +16,15 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL pedestal XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/08/17 16:35:29 $"
-__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/02/03 00:51:50 $"
+__version__     = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
 import sys
 import logging
 import array
-import Numeric
+import numarray
 import getopt
 
 
@@ -128,7 +128,7 @@ for rng in range(calConstant.NUM_RNG):
 for twr in pedTwrs1:
     # from calCalibXML.py
     #         Param: pedData -
-    #             A Numeric array containing the pedestal data
+    #             A numarray array containing the pedestal data
     #             of shape (16, 8, 2, 12, 4, 3) The last dimension contains
     #             the following data for each crystal end and energy
     #             range:
@@ -140,9 +140,9 @@ for twr in pedTwrs1:
         pedDiff = diff[twr,...,rng,0]
         sigDiff = diff[twr,...,rng,1]
         
-        for p in Numeric.ravel(pedDiff):
+        for p in numarray.ravel(pedDiff):
             pedHists[rng].Fill(p)
-        for s in Numeric.ravel(sigDiff):
+        for s in numarray.ravel(sigDiff):
             sigHists[rng].Fill(s)
 
 log.info("Writing %s"%rootPath)

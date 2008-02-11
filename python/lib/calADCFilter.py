@@ -6,15 +6,15 @@ Tool to smooth CAL ADC/DAC data.
 __facility__  = "Offline"
 __abstract__  = "Tool to smooth CAL ADC/DAC data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/09/25 23:10:26 $"
-__version__   = "$Revision: 1.3 $, $Author: dwood $"
+__date__      = "$Date: 2007/03/20 19:23:47 $"
+__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 
 import logging
 
-import Numeric
+import numarray
 
 import calConstant
 
@@ -59,15 +59,15 @@ class calADCFilter:
         """
         Perform the data smoothing.
 
-        Param: inData - A Numeric array of shape (16,8,2,12,128) or (3,16,8,2,12,128)
+        Param: inData - A numarray array of shape (16,8,2,12,128) or (3,16,8,2,12,128)
                         containing CAL ADC data.
         Param: tems - A list of TEM ID's to run the smoothing on.
 
-        Returns: A Numeric array of shape (16,8,2,12,128) or (3,16,8,2,12,128)
+        Returns: A numarray array of shape (16,8,2,12,128) or (3,16,8,2,12,128)
                  containing smoothed CAL ADC data.        
         """
         
-        outData = Numeric.clip(inData, 0, 4095)
+        outData = numarray.clip(inData, 0, 4095)
 
         if self.__type == DAC_TYPE_FLE or self.__type == DAC_TYPE_FHE \
            or self.__type == DAC_TYPE_LAC:
@@ -96,7 +96,7 @@ class calADCFilter:
 
                         fillLAC = False
                         if self.__type == DAC_TYPE_LAC:
-                            z = Numeric.nonzero(fineData)
+                            z = numarray.nonzero(fineData)
                             if len(z) < 2:
                                 fillLAC = True                        
 
@@ -318,7 +318,7 @@ class calADCFilter:
         """
         Extrapolate ADC values beyond noise range.
 
-        Param: data - A Numeric array containing one range of ADC data.  The first good
+        Param: data - A numarray array containing one range of ADC data.  The first good
                       segment after pedestal noise is used to extrapolate the remaining
                       values in the range. The data is changed in place.              
         """
@@ -364,7 +364,7 @@ class calADCFilter:
         """
         Extrapolate FLE ADC values beyond testing range.
 
-        Param: data - A Numeric array containing one range of ADC data.  The last good
+        Param: data - A numarray array containing one range of ADC data.  The last good
         segment before saturation is used to extrapolate the remaining values in the range.
         The data is changed in place.
         """
@@ -398,7 +398,7 @@ class calADCFilter:
         """
         Extrapolate LAC values from very sparse data (single point at DAC 63).
 
-        Param: data - A Numeric array containing one range of ADC data.  The last good
+        Param: data - A numarray array containing one range of ADC data.  The last good
                       point is used to extrapolate the remaining values in the range.
                       The data is changed in place.              
         """
@@ -423,7 +423,7 @@ class calADCFilter:
         Extrapolate ULD values from sparse data.  Restore saturation plateau of
         full characterization table.
 
-        Param: data - A Numeric array containing one range of ADC data.  The last good
+        Param: data - A numarray array containing one range of ADC data.  The last good
                       segment is used to extrapolate the remaining values in the range.
                       data[63] should contain the saturation value for the data.  This is
                       used to limit the extrapolation values. The data is changed in place.              
@@ -480,7 +480,7 @@ class calADCFilter:
 
             a = data[dac - 2 : dac + 3]            
                                                 
-            adc = Numeric.average(a)
+            adc = numarray.average(a)
             data[dac] = adc
 
     

@@ -16,8 +16,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL DAC settings XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/11/29 21:24:21 $"
-__version__     = "$Revision: 1.8 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/02/03 00:51:49 $"
+__version__     = "$Revision: 1.9 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -27,7 +27,7 @@ import os
 import logging
 import getopt
 
-import Numeric
+import numarray
 
 import calDacXML
 import calConstant
@@ -121,7 +121,7 @@ dacFile1.close()
 dacFile2.close()
 
 # subtract all elements in arrays
-dacDiff = dac2.astype(Numeric.Int8) - dac1.astype(Numeric.Int8)
+dacDiff = dac2.astype(numarray.Int8) - dac1.astype(numarray.Int8)
 
 for twr in towers:
     log.info("Tower %d\n%s", twr, dacDiff[twr,:])

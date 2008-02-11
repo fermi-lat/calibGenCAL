@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL DacSlopes calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2007/03/27 15:29:51 $"
-__version__   = "$Revision: 1.13 $, $Author: dwood $"
+__date__      = "$Date: 2008/02/03 00:51:49 $"
+__version__   = "$Revision: 1.14 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -27,7 +27,7 @@ import sys, os
 import getopt
 import logging
 
-import Numeric
+import numarray
 import MLab
 
 import calCalibXML
@@ -774,53 +774,53 @@ if __name__ == '__main__':
     sf = (rangeData[...,0] == 0)
     sc = (rangeData[...,0] == 1)
     
-    fineCount = Numeric.sum(Numeric.ravel(sf))
-    coarseCount = Numeric.sum(Numeric.ravel(sc))
+    fineCount = numarray.sum(numarray.ravel(sf))
+    coarseCount = numarray.sum(numarray.ravel(sc))
     log.info("LAC FINE count = %d, COARSE count = %d", fineCount, coarseCount)  
     
-    data = Numeric.compress(Numeric.ravel(sf), Numeric.ravel(dacData[...,0]))
+    data = numarray.compress(numarray.ravel(sf), numarray.ravel(dacData[...,0]))
     if len(data) == 0:
         av = 0
         sd = 0
         mn = 0
         mx = 0
     else:    
-        av = Numeric.average(data)
+        av = numarray.average(data)
         sd = MLab.std(data)
         mn = min(data)
         mx = max(data)
     log.info("LAC FINE Mev/DAC slope average=%f, stddev=%f", av, sd)
     log.info("LAC FINE Mev/DAC slope minumum=%f, maximum=%f", mn, mx) 
     
-    data = Numeric.compress(Numeric.ravel(sf), Numeric.ravel(dacData[...,1]))
+    data = numarray.compress(numarray.ravel(sf), numarray.ravel(dacData[...,1]))
     if len(data) == 0:
         av = 0
         sd = 0
     else:    
-        av = Numeric.average(data)
+        av = numarray.average(data)
         sd = MLab.std(data)
     log.info("LAC FINE Mev offset average = %f, stddev=%f", av, sd)
     
-    data = Numeric.compress(Numeric.ravel(sc), Numeric.ravel(dacData[...,0]))
+    data = numarray.compress(numarray.ravel(sc), numarray.ravel(dacData[...,0]))
     if len(data) == 0:
         av = 0
         sd = 0
         mn = 0
         mx = 0
     else:    
-        av = Numeric.average(data)
+        av = numarray.average(data)
         sd = MLab.std(data)
         mn = min(data)
         mx = max(data)
     log.info("LAC COARSE Mev/DAC slope average=%f, stddev=%f", av, sd)
     log.info("LAC COARSE Mev/DAC slope minumum=%f, maximum=%f", mn, mx) 
     
-    data = Numeric.compress(Numeric.ravel(sc), Numeric.ravel(dacData[...,1]))
+    data = numarray.compress(numarray.ravel(sc), numarray.ravel(dacData[...,1]))
     if len(data) == 0:
         av = 0
         sd = 0
     else:    
-        av = Numeric.average(data)
+        av = numarray.average(data)
         sd = MLab.std(data)
     log.info("LAC COARSE Mev offset average = %f, stddev=%f", av, sd)
     
@@ -829,53 +829,53 @@ if __name__ == '__main__':
     sf = (rangeData[...,1] == 0)
     sc = (rangeData[...,1] == 1)
     
-    fineCount = Numeric.sum(Numeric.ravel(sf))
-    coarseCount = Numeric.sum(Numeric.ravel(sc))
+    fineCount = numarray.sum(numarray.ravel(sf))
+    coarseCount = numarray.sum(numarray.ravel(sc))
     log.info("FLE FINE count = %d, COARSE COUNT = %d", fineCount, coarseCount)    
     
-    data = Numeric.compress(Numeric.ravel(sf), Numeric.ravel(dacData[...,2]))  
+    data = numarray.compress(numarray.ravel(sf), numarray.ravel(dacData[...,2]))  
     if len(data) == 0:
         av = 0
         sd = 0
         mn = 0
         mx = 0
     else:    
-        av = Numeric.average(data)
+        av = numarray.average(data)
         sd = MLab.std(data)
         mn = min(data)
         mx = max(data)
     log.info("FLE FINE Mev/DAC slope average = %f, stddev=%f", av, sd)
     log.info("FLE FINE Mev/DAC slope minumum=%f, maximum=%f", mn, mx) 
     
-    data = Numeric.compress(Numeric.ravel(sf), Numeric.ravel(dacData[...,3]))
+    data = numarray.compress(numarray.ravel(sf), numarray.ravel(dacData[...,3]))
     if len(data) == 0:
         av = 0
         sd = 0
     else:    
-        av = Numeric.average(data)
+        av = numarray.average(data)
         sd = MLab.std(data)
     log.info("FLE FINE Mev offset average = %f, stddev=%f", av, sd)
     
-    data = Numeric.compress(Numeric.ravel(sc), Numeric.ravel(dacData[...,2])) 
+    data = numarray.compress(numarray.ravel(sc), numarray.ravel(dacData[...,2])) 
     if len(data) == 0:
         av = 0
         sd = 0
         mn = 0
         mx = 0
     else:    
-        av = Numeric.average(data)
+        av = numarray.average(data)
         sd = MLab.std(data)
         mn = min(data)
         mx = max(data)
     log.info("FLE COARSE Mev/DAC slope average = %f, stddev=%f", av, sd)
     log.info("FLE COARSE Mev/DAC slope minumum=%f, maximum=%f", mn, mx) 
     
-    data = Numeric.compress(Numeric.ravel(sc), Numeric.ravel(dacData[...,3]))
+    data = numarray.compress(numarray.ravel(sc), numarray.ravel(dacData[...,3]))
     if len(data) == 0:
         av = 0
         sd = 0
     else:    
-        av = Numeric.average(data)
+        av = numarray.average(data)
         sd = MLab.std(data)
     log.info("FLE COARSE Mev offset average = %f, stddev=%f", av, sd)
     
@@ -884,117 +884,117 @@ if __name__ == '__main__':
     sf = (rangeData[...,2] == 0)
     sc = (rangeData[...,2] == 1)
     
-    fineCount = Numeric.sum(Numeric.ravel(sf))
-    coarseCount = Numeric.sum(Numeric.ravel(sc))
+    fineCount = numarray.sum(numarray.ravel(sf))
+    coarseCount = numarray.sum(numarray.ravel(sc))
     log.info("FHE FINE count = %d, COARSE count = %d", fineCount, coarseCount)
     
-    data = Numeric.compress(Numeric.ravel(sf), Numeric.ravel(dacData[...,4]))
+    data = numarray.compress(numarray.ravel(sf), numarray.ravel(dacData[...,4]))
     if len(data) == 0:
         av = 0
         sd = 0
         mn = 0
         mx = 0
     else:    
-        av = Numeric.average(data)
+        av = numarray.average(data)
         sd = MLab.std(data)
         mn = min(data)
         mx = max(data)
     log.info("FHE FINE Mev/DAC slope average = %f, stddev=%f", av, sd)
     log.info("FHE FINE Mev/DAC slope minumum=%f, maximum=%f", mn, mx) 
     
-    data = Numeric.compress(Numeric.ravel(sf), Numeric.ravel(dacData[...,5]))
+    data = numarray.compress(numarray.ravel(sf), numarray.ravel(dacData[...,5]))
     if len(data) == 0:
         av = 0
         sd = 0
     else:    
-        av = Numeric.average(data)
+        av = numarray.average(data)
         sd = MLab.std(data)
     log.info("FHE FINE Mev offset average = %f, stddev=%f", av, sd)
     
-    data = Numeric.compress(Numeric.ravel(sc), Numeric.ravel(dacData[...,4]))
+    data = numarray.compress(numarray.ravel(sc), numarray.ravel(dacData[...,4]))
     if len(data) == 0:
         av = 0
         sd = 0
         mn = 0
         mx = 0
     else:    
-        av = Numeric.average(data)
+        av = numarray.average(data)
         sd = MLab.std(data)
         mn = min(data)
         mx = max(data)
     log.info("FHE COARSE Mev/DAC slope average = %f, stddev=%f", av, sd)
     log.info("FHE COARSE Mev/DAC slope minumum=%f, maximum=%f", mn, mx) 
     
-    data = Numeric.compress(Numeric.ravel(sc), Numeric.ravel(dacData[...,5]))
+    data = numarray.compress(numarray.ravel(sc), numarray.ravel(dacData[...,5]))
     if len(data) == 0:
         av = 0
         sd = 0
     else:    
-        av = Numeric.average(data)
+        av = numarray.average(data)
         sd = MLab.std(data)
     log.info("FHE COARSE Mev offset average = %f, stddev=%f", av, sd)
     
     # ULD LEX8
     
-    data = Numeric.ravel(uldData[calConstant.CRNG_LEX8,...,0])
-    av = Numeric.average(data)
+    data = numarray.ravel(uldData[calConstant.CRNG_LEX8,...,0])
+    av = numarray.average(data)
     sd = MLab.std(data)
     mn = min(data)
     mx = max(data)
     log.info("ULD LEX8 Mev/DAC slope average = %f, stddev=%f", av, sd)
     log.info("ULD LEX8 Mev/DAC slope minumum = %f, maximum = %f", mn, mx) 
     
-    av = Numeric.average(uldData[calConstant.CRNG_LEX8,...,1], axis = None)
-    sd = MLab.std(Numeric.ravel(uldData[calConstant.CRNG_LEX8,...,1])) 
+    av = numarray.average(uldData[calConstant.CRNG_LEX8,...,1], axis = None)
+    sd = MLab.std(numarray.ravel(uldData[calConstant.CRNG_LEX8,...,1])) 
     log.info("ULD LEX8 MeV offset average = %f, stddev=%f", av, sd)
     
-    av = Numeric.average(uldData[calConstant.CRNG_LEX8,...,2], axis = None)
-    sd = MLab.std(Numeric.ravel(uldData[calConstant.CRNG_LEX8,...,2]))
+    av = numarray.average(uldData[calConstant.CRNG_LEX8,...,2], axis = None)
+    sd = MLab.std(numarray.ravel(uldData[calConstant.CRNG_LEX8,...,2]))
     log.info("ULD LEX8 MeV saturation average = %f, stddev=%f", av, sd)
     
-    mn = min(Numeric.ravel(uldData[calConstant.CRNG_LEX8,...,2]))
+    mn = min(numarray.ravel(uldData[calConstant.CRNG_LEX8,...,2]))
     log.info("ULD LEX8 MeV saturation minimum = %f", mn)
     
     # ULD LEX1
     
-    data = Numeric.ravel(uldData[calConstant.CRNG_LEX1,...,0])
-    av = Numeric.average(data)
+    data = numarray.ravel(uldData[calConstant.CRNG_LEX1,...,0])
+    av = numarray.average(data)
     sd = MLab.std(data)
     mn = min(data)
     mx = max(data)
     log.info("ULD LEX1 Mev/DAC slope average = %f, stddev=%f", av, sd)
     log.info("ULD LEX1 Mev/DAC slope minumum = %f, maximum = %f", mn, mx)
      
-    av = Numeric.average(uldData[calConstant.CRNG_LEX1,...,1], axis = None) 
-    sd = MLab.std(Numeric.ravel(uldData[calConstant.CRNG_LEX1,...,1]))
+    av = numarray.average(uldData[calConstant.CRNG_LEX1,...,1], axis = None) 
+    sd = MLab.std(numarray.ravel(uldData[calConstant.CRNG_LEX1,...,1]))
     log.info("ULD LEX1 MeV offset average = %f, stddev=%f", av, sd)
     
-    av = Numeric.average(uldData[calConstant.CRNG_LEX1,...,2], axis = None)
-    sd = MLab.std(Numeric.ravel(uldData[calConstant.CRNG_LEX1,...,2]))
+    av = numarray.average(uldData[calConstant.CRNG_LEX1,...,2], axis = None)
+    sd = MLab.std(numarray.ravel(uldData[calConstant.CRNG_LEX1,...,2]))
     log.info("ULD LEX1 MeV saturation average = %f, stddev=%f", av, sd)
     
-    mn = min(Numeric.ravel(uldData[calConstant.CRNG_LEX1,...,2]))
+    mn = min(numarray.ravel(uldData[calConstant.CRNG_LEX1,...,2]))
     log.info("ULD LEX1 MeV saturation minimum = %f", mn)
     
     # ULD HEX8
     
-    data = Numeric.ravel(uldData[calConstant.CRNG_HEX8,...,0])
-    av = Numeric.average(data)
+    data = numarray.ravel(uldData[calConstant.CRNG_HEX8,...,0])
+    av = numarray.average(data)
     sd = MLab.std(data)
     mn = min(data)
     mx = max(data)
     log.info("ULD HEX8 Mev/DAC slope average = %f, stddev=%f", av, sd) 
     log.info("ULD HEX8 Mev/DAC slope minumum = %f, maximum = %f", mn, mx)
     
-    av = Numeric.average(uldData[calConstant.CRNG_HEX8,...,1], axis = None) 
-    sd = MLab.std(Numeric.ravel(uldData[calConstant.CRNG_HEX8,...,1]))
+    av = numarray.average(uldData[calConstant.CRNG_HEX8,...,1], axis = None) 
+    sd = MLab.std(numarray.ravel(uldData[calConstant.CRNG_HEX8,...,1]))
     log.info("ULD HEX8 MeV offset average = %f, stddev=%f", av, sd)
     
-    av = Numeric.average(uldData[calConstant.CRNG_HEX8,...,2], axis = None)
-    sd = MLab.std(Numeric.ravel(uldData[calConstant.CRNG_HEX8,...,2]))
+    av = numarray.average(uldData[calConstant.CRNG_HEX8,...,2], axis = None)
+    sd = MLab.std(numarray.ravel(uldData[calConstant.CRNG_HEX8,...,2]))
     log.info("ULD HEX8 MeV saturation average = %f, stddev=%f", av, sd)
     
-    mn = min(Numeric.ravel(uldData[calConstant.CRNG_HEX8,...,2]))
+    mn = min(numarray.ravel(uldData[calConstant.CRNG_HEX8,...,2]))
     log.info("ULD HEX8 MeV saturation minimum = %f", mn)
 
     # report results

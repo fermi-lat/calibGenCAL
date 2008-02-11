@@ -15,15 +15,15 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to extract effect of calibGain setting from two intNonlin XML files"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/08/17 16:35:28 $"
-__version__   = "$Revision: 1.8 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/03 00:51:49 $"
+__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
 import sys, os
 import logging
 import getopt
-import Numeric
+import numarray
 import sets
 import array
 import ROOT

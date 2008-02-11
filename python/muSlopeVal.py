@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL MuSlope calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/10/16 15:46:32 $"
-__version__   = "$Revision: 1.12 $, $Author: dwood $"
+__date__      = "$Date: 2008/02/03 00:51:50 $"
+__version__   = "$Revision: 1.13 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -28,7 +28,7 @@ import math
 import getopt
 import logging
 
-import Numeric
+import numarray
 import MLab
 
 import calCalibXML
@@ -225,7 +225,7 @@ def average(data, tems):
 
     av = 0
     for t in tems:
-        av += Numeric.average(data[t,...], axis = None)
+        av += numarray.average(data[t,...], axis = None)
     return (av / len(tems))
     
     
@@ -233,7 +233,7 @@ def stddev(data, tems):
 
     av = 0
     for t in tems:
-        sd = MLab.std(Numeric.ravel(data[t,...]))
+        sd = MLab.std(numarray.ravel(data[t,...]))
         av += (sd * sd)
         
     return math.sqrt(av / len(tems))

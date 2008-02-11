@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL bias offset calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2006/10/16 15:46:32 $"
-__version__   = "$Revision: 1.4 $, $Author: dwood $"
+__date__      = "$Date: 2008/02/03 00:51:49 $"
+__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -26,7 +26,7 @@ import sys, os
 import getopt
 import logging
 
-import Numeric
+import numarray
 
 import calDacXML
 import calConstant

@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Generate FHE Discriminator settings selected by Energy"
 __author__      = "Byron Leas <leas@gamma.nrl.navy.mil>"
-__date__        = "$Date: 2006/07/21 18:25:15 $"
-__version__     = "$Revision: 1.18 $, $Author: dwood $"
+__date__        = "$Date: 2007/02/16 18:57:36 $"
+__version__     = "$Revision: 1.1 $, $Author: dwood $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -25,7 +25,7 @@ import getopt
 import logging
 import ConfigParser
 
-import Numeric
+import numarray
 
 import calFitsXML
 import calDacXML
@@ -234,7 +234,7 @@ if __name__ == '__main__':
     # calculate thresholds in ADC units from energy
 
     MeV = float(GeV) * 1000
-    adcs = Numeric.ones((calConstant.NUM_ROW,calConstant.NUM_END,calConstant.NUM_FE),Numeric.Float) * MeV
+    adcs = numarray.ones((calConstant.NUM_ROW,calConstant.NUM_END,calConstant.NUM_FE),numarray.Float) * MeV
     
     # relative gain factor
 
@@ -257,15 +257,15 @@ if __name__ == '__main__':
     # use fine DAC settings unless threshold is out of range
     # use coarse DAC settings for high thresholds
 
-    nomSetting = Numeric.zeros((calConstant.NUM_TEM,calConstant.NUM_ROW,calConstant.NUM_END,calConstant.NUM_FE))
-    q = Numeric.less(fineThresholds,adcs[...,Numeric.NewAxis])
-    q1 = 64 - Numeric.argmax(q[:,:,:,::-1], axis = 3)
-    q1 = Numeric.choose(Numeric.equal(q1,64),(q1,0))
+    nomSetting = numarray.zeros((calConstant.NUM_TEM,calConstant.NUM_ROW,calConstant.NUM_END,calConstant.NUM_FE))
+    q = numarray.less(fineThresholds,adcs[...,numarray.NewAxis])
+    q1 = 64 - numarray.argmax(q[:,:,:,::-1], axis = 3)
+    q1 = numarray.choose(numarray.equal(q1,64),(q1,0))
     nomSetting[destTwr,...] = q1
-    q = Numeric.less(coarseThresholds,adcs[...,Numeric.NewAxis])
-    q1 = (64 - Numeric.argmax(q[:,:,:,::-1], axis = 3)) + 64
-    q1 = Numeric.choose(Numeric.equal(q1,128),(q1,127))
-    nomSetting = Numeric.choose(Numeric.equal(nomSetting,0),(nomSetting,q1))     
+    q = numarray.less(coarseThresholds,adcs[...,numarray.NewAxis])
+    q1 = (64 - numarray.argmax(q[:,:,:,::-1], axis = 3)) + 64
+    q1 = numarray.choose(numarray.equal(q1,128),(q1,127))
+    nomSetting = numarray.choose(numarray.equal(nomSetting,0),(nomSetting,q1))     
 
     # create output file
 

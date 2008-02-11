@@ -13,8 +13,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL TholdCI XML calibration data files"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2007/08/30 21:15:56 $"
-__version__   = "$Revision: 1.32 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/03 00:51:50 $"
+__version__   = "$Revision: 1.33 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -25,7 +25,7 @@ import logging
 import ConfigParser
 import getopt
 
-import Numeric
+import numarray
 
 import calDacXML
 import calFitsXML
@@ -47,7 +47,7 @@ class inputFile:
         Param: srcTwr The data source tower number (0 - 15).
         Param: destTwr The data destination tower number (0 - 15).
         Param: name The input file name
-        Param: adcData A Numeric ADC data array from the input file.
+        Param: adcData A numarray ADC data array from the input file.
         Param: version The XML format version of the input file.
         """
         
@@ -63,27 +63,27 @@ def setRange(dacs, rangeData):
     Adjust DAC values based on FINE/COARSE range.
     """
     
-    return Numeric.where(rangeData, (dacs - 64), dacs)
+    return numarray.where(rangeData, (dacs - 64), dacs)
 
 
 def linear(c1, c0):
 
-    adc = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-            calConstant.NUM_FE, 64), Numeric.Float32)
+    adc = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+            calConstant.NUM_FE, 64), numarray.Float32)
             
     for dac in range(64):
-        adc[...,dac] = ((c1 * dac) + c0).astype(Numeric.Float32)
+        adc[...,dac] = ((c1 * dac) + c0).astype(numarray.Float32)
         
     return adc
     
     
 def linearULD(c1, c0):
 
-    adc = Numeric.zeros((3, calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-            calConstant.NUM_FE, 64), Numeric.Float32)
+    adc = numarray.zeros((3, calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+            calConstant.NUM_FE, 64), numarray.Float32)
             
     for dac in range(64):
-        adc[...,dac] = ((c1 * dac) + c0).astype(Numeric.Float32)
+        adc[...,dac] = ((c1 * dac) + c0).astype(numarray.Float32)
         
     return adc
                    
@@ -315,8 +315,8 @@ if __name__ == '__main__':
         
     else:
         
-        uldDacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-            calConstant.NUM_FE), Numeric.UInt8)
+        uldDacData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+            calConstant.NUM_FE), numarray.UInt8)
         
         for f in uldDacFiles:
 
@@ -342,8 +342,8 @@ if __name__ == '__main__':
     
     else:
     
-        lacDacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-            calConstant.NUM_FE), Numeric.UInt8)    
+        lacDacData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+            calConstant.NUM_FE), numarray.UInt8)    
     
         for f in lacDacFiles:
 
@@ -369,8 +369,8 @@ if __name__ == '__main__':
 
     else:
         
-        fleDacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-            calConstant.NUM_FE), Numeric.UInt8)
+        fleDacData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+            calConstant.NUM_FE), numarray.UInt8)
         
         for f in fleDacFiles:
 
@@ -396,8 +396,8 @@ if __name__ == '__main__':
         
     else:
     
-        fheDacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-            calConstant.NUM_FE), Numeric.UInt8)    
+        fheDacData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+            calConstant.NUM_FE), numarray.UInt8)    
 
         for f in fheDacFiles:
 
@@ -420,17 +420,17 @@ if __name__ == '__main__':
 
     # get gain indicies
 
-    leGainData = Numeric.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE), Numeric.UInt8)
-    heGainData = Numeric.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE), Numeric.UInt8)
+    leGainData = numarray.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE), numarray.UInt8)
+    heGainData = numarray.ones((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE), numarray.UInt8)
     leGainData = leGainData * leGain
     heGainData = heGainData * heGain    
 
     # create empty ADC data arrays
 
-    pedData = Numeric.zeros((calConstant.NUM_TEM, 9, calConstant.NUM_RNG, calConstant.NUM_ROW,
-                             calConstant.NUM_END, calConstant.NUM_FE), Numeric.Float32)
+    pedData = numarray.zeros((calConstant.NUM_TEM, 9, calConstant.NUM_RNG, calConstant.NUM_ROW,
+                             calConstant.NUM_END, calConstant.NUM_FE), numarray.Float32)
 
     # read pedestal values files
 
@@ -479,12 +479,12 @@ if __name__ == '__main__':
     eng = linear(c1, c0)
     gain = muSlopeData[...,calConstant.CRNG_HEX8,0]
     bias = biasAdcData[...,1]
-    adc = (eng / gain[...,Numeric.NewAxis]) - bias[...,Numeric.NewAxis]
-    fheAdcData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE, 128), Numeric.Float32)
+    adc = (eng / gain[...,numarray.NewAxis]) - bias[...,numarray.NewAxis]
+    fheAdcData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE, 128), numarray.Float32)
     fheAdcData[...,0:64] = adc[:]
     fheAdcData[...,64:128] = adc[:]
-    fheAdcData = Numeric.clip(fheAdcData, 0, 4095)
+    fheAdcData = numarray.clip(fheAdcData, 0, 4095)
     log.debug("FHE ADC\n%s", fheAdcData[0,0,0,0,:])
     
     # convert FLE thresholds from MeV to LEX8 ADC counts
@@ -494,14 +494,14 @@ if __name__ == '__main__':
     eng = linear(c1, c0)
     gain = muSlopeData[...,calConstant.CRNG_LEX1,0]
     bias = biasAdcData[...,0]
-    adc = (eng / gain[...,Numeric.NewAxis])
+    adc = (eng / gain[...,numarray.NewAxis])
     scale = (gain / muSlopeData[...,calConstant.CRNG_LEX8,0])
-    adc = (adc * scale[...,Numeric.NewAxis]) - bias[...,Numeric.NewAxis]
-    fleAdcData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE, 128), Numeric.Float32)
+    adc = (adc * scale[...,numarray.NewAxis]) - bias[...,numarray.NewAxis]
+    fleAdcData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE, 128), numarray.Float32)
     fleAdcData[...,0:64] = adc[:]
     fleAdcData[...,64:128] = adc[:]
-    fleAdcData = Numeric.clip(fleAdcData, 0, 0xffff)
+    fleAdcData = numarray.clip(fleAdcData, 0, 0xffff)
     log.debug("FLE ADC\n%s", fleAdcData[0,0,0,0,:])
     
     # convert LAC thresholds from MeV to LEX8 ADC counts
@@ -510,12 +510,12 @@ if __name__ == '__main__':
     c0 = dacSlopeData[0][...,1]
     eng = linear(c1, c0)
     gain = muSlopeData[...,calConstant.CRNG_LEX8,0]
-    adc = (eng / gain[...,Numeric.NewAxis])
-    lacAdcData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE, 128), Numeric.Float32)
+    adc = (eng / gain[...,numarray.NewAxis])
+    lacAdcData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE, 128), numarray.Float32)
     lacAdcData[...,0:64] = adc[:]
     lacAdcData[...,64:128] = adc[:]
-    lacAdcData = Numeric.clip(lacAdcData, 0, 4095)
+    lacAdcData = numarray.clip(lacAdcData, 0, 4095)
     log.debug("LAC ADC\n%s", lacAdcData[0,0,0,0,:])
     
     # convert ULD thresholds from MeV to LEX8, LEX1, HEX8 ADC counts
@@ -524,46 +524,46 @@ if __name__ == '__main__':
     c0 = dacSlopeData[1][...,1]
     eng = linearULD(c1, c0)
     
-    uldAdcData = Numeric.zeros((3, calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE, 128), Numeric.Float32)
+    uldAdcData = numarray.zeros((3, calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+        calConstant.NUM_FE, 128), numarray.Float32)
     
     # ULD LEX8
     
     gain = muSlopeData[...,calConstant.CRNG_LEX8,0]
-    adc = (eng[calConstant.CRNG_LEX8,...] / gain[...,Numeric.NewAxis])
+    adc = (eng[calConstant.CRNG_LEX8,...] / gain[...,numarray.NewAxis])
     satValue = (dacSlopeData[1][calConstant.CRNG_LEX8,...,2] / gain)
-    satValue = Numeric.reshape(Numeric.repeat(satValue, 64, -1), (calConstant.NUM_TEM, 
+    satValue = numarray.reshape(numarray.repeat(satValue, 64, -1), (calConstant.NUM_TEM, 
         calConstant.NUM_ROW, calConstant.NUM_END, calConstant.NUM_FE, 64))
     satMask = (adc > satValue)
-    adc = Numeric.where(satMask, satValue, adc)
+    adc = numarray.where(satMask, satValue, adc)
     uldAdcData[calConstant.CRNG_LEX8,...,0:64] = adc[:]
     uldAdcData[calConstant.CRNG_LEX8,...,64:128] = adc[:] 
     
     # ULD LEX1
     
     gain = muSlopeData[...,calConstant.CRNG_LEX1,0]
-    adc = (eng[calConstant.CRNG_LEX1,...] / gain[...,Numeric.NewAxis])
+    adc = (eng[calConstant.CRNG_LEX1,...] / gain[...,numarray.NewAxis])
     satValue = (dacSlopeData[1][calConstant.CRNG_LEX1,...,2] / gain)
-    satValue = Numeric.reshape(Numeric.repeat(satValue, 64, -1), (calConstant.NUM_TEM, 
+    satValue = numarray.reshape(numarray.repeat(satValue, 64, -1), (calConstant.NUM_TEM, 
         calConstant.NUM_ROW, calConstant.NUM_END, calConstant.NUM_FE, 64))
     satMask = (adc > satValue)
-    adc = Numeric.where(satMask, satValue, adc)
+    adc = numarray.where(satMask, satValue, adc)
     uldAdcData[calConstant.CRNG_LEX1,...,0:64] = adc[:]
     uldAdcData[calConstant.CRNG_LEX1,...,64:128] = adc[:]
         
     # ULD HEX8
     
     gain = muSlopeData[...,calConstant.CRNG_HEX8,0]
-    adc = (eng[calConstant.CRNG_HEX8,...] / gain[...,Numeric.NewAxis])
+    adc = (eng[calConstant.CRNG_HEX8,...] / gain[...,numarray.NewAxis])
     satValue = (dacSlopeData[1][calConstant.CRNG_HEX8,...,2] / gain)
-    satValue = Numeric.reshape(Numeric.repeat(satValue, 64, -1), (calConstant.NUM_TEM, 
+    satValue = numarray.reshape(numarray.repeat(satValue, 64, -1), (calConstant.NUM_TEM, 
         calConstant.NUM_ROW, calConstant.NUM_END, calConstant.NUM_FE, 64))
     satMask = (adc > satValue)
-    adc = Numeric.where(satMask, satValue, adc)
+    adc = numarray.where(satMask, satValue, adc)
     uldAdcData[calConstant.CRNG_HEX8,...,0:64] = adc[:]
     uldAdcData[calConstant.CRNG_HEX8,...,64:128] = adc[:]
     
-    uldAdcData = Numeric.clip(uldAdcData, 0, 4095)
+    uldAdcData = numarray.clip(uldAdcData, 0, 4095)
     
     log.debug("ULD ADC\n%s", uldAdcData[:,0,0,0,0,:])
 

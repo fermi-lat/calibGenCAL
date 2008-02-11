@@ -6,8 +6,8 @@ Classes to represent CAL hardware settings XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL DAC settings XML documents"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2007/03/21 20:10:31 $"
-__version__   = "$Revision: 1.6 $, $Author: dwood $"
+__date__      = "$Date: 2007/07/24 17:55:55 $"
+__version__   = "$Revision: 1.7 $, $Author: dwood $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -15,7 +15,7 @@ __credits__   = "NRL code 7650"
 
 import time
 
-import Numeric
+import numarray
 
 import calXML
 import calConstant
@@ -88,14 +88,14 @@ class calSnapshotXML(calXML.calXML):
 
         Param: dacName - The name of the HW configuration element to read.
 
-        Returns: A Numeric array of data (16, 8, 2, 12) read from the
+        Returns: A numarray array of data (16, 8, 2, 12) read from the
         XML file.
         """
 
         # create empty DAC data array
 
-        dacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                 calConstant.NUM_FE), Numeric.UInt8)
+        dacData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                 calConstant.NUM_FE), numarray.UInt8)
 
         # find <fle_dac> elements
 
@@ -190,7 +190,7 @@ class calDacXML(calSnapshotXML):
         """
         Read data from a CAL DAC configuration XML file
 
-        Returns: A Numeric array of data (16, 8, 2, 12) read from the
+        Returns: A numarray array of data (16, 8, 2, 12) read from the
         XML file.
         """
 
@@ -203,7 +203,7 @@ class calDacXML(calSnapshotXML):
         """
         Write CAL data to a snapshot fragment XML file
 
-        Param: dacData - A Numeric array of data (16, 8, 2, 12) to write to the
+        Param: dacData - A numarray array of data (16, 8, 2, 12) to write to the
         XML file.
         Param: filename - <configuration> element filename value
         Param: cfgfilename - <configuration> element cfgfilename value 
@@ -393,7 +393,7 @@ class calEnergyXML(calXML.calXML):
         """
         Read CAL data from a energy/bias XML file
 
-        Returns: A Numeric array of data (16, 8, 2, 12, 2) read from the
+        Returns: A numarray array of data (16, 8, 2, 12, 2) read from the
         XML file.  The last dimension is as follows:
             0 = LE conversion value
             1 = HE conversion value
@@ -403,8 +403,8 @@ class calEnergyXML(calXML.calXML):
 
         # create empty energy data array
 
-        engData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END, 
-            calConstant.NUM_FE, 2), Numeric.Float32)
+        engData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END, 
+            calConstant.NUM_FE, 2), numarray.Float32)
 
         # find elements
 
@@ -473,7 +473,7 @@ class calEnergyXML(calXML.calXML):
     def write(self, data, tems = (0,)):
         """
         Write data to a CAL energy/bias XML file.
-        Param: data - A Numeric array of data (16, 8, 2, 12, 2) to write to the
+        Param: data - A numarray array of data (16, 8, 2, 12, 2) to write to the
                       XML file.  The last dimension is as follows:
                           0 = LE conversion value
                           1 = HE conversion value
@@ -637,14 +637,14 @@ class calSettingsXML(calXML.calXML):
         """
         Read CAL DAC data from a ConfigSystem settings XML file
 
-        Returns: A Numeric array of data (16, 8, 2, 12) read from the
+        Returns: A numarray array of data (16, 8, 2, 12) read from the
         XML file.
         """
 
         # create empty DAC data array
 
-        dacData = Numeric.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-                                 calConstant.NUM_FE), Numeric.UInt8)
+        dacData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
+                                 calConstant.NUM_FE), numarray.UInt8)
 
         # find <fle_dac> elements
 
@@ -707,7 +707,7 @@ class calSettingsXML(calXML.calXML):
         """
         Write CAL data to a ConfigSystem settings XML file
 
-        Param: dacData - A Numeric array of data (16, 8, 2, 12) to write to the
+        Param: dacData - A numarray array of data (16, 8, 2, 12) to write to the
         XML file.
         Param: tems - A list of TEM ID values to include in the output data set.
         """
