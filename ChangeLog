@@ -1,5 +1,17 @@
 ------------------------------------------------------------
 User: fewtrell  Mon Feb 11 13:35:59 PST 2008
+calibGenCAL/python/lib
+
+Modified Files:
+	calADCFilter.py calCalibXML.py calDacSettings.py calDacXML.py 
+	calFitsXML.py cgc_util.py mpfit.py 
+Log Message:
+attempting to convert from Numeric to numarray, which is supported by GLAST_EXT
+added tholdCITXT2XML tool
+
+    *
+------------------------------------------------------------
+User: fewtrell  Mon Feb 11 13:35:59 PST 2008
 calibGenCAL/python/bin
 
 Added Files:
