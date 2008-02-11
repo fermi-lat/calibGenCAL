@@ -1,4 +1,34 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Feb 11 13:35:58 PST 2008
+calibGenCAL/python
+
+Modified Files:
+	adc2nrgTXT2XML.py adc2nrgVal.py adc2nrgXML2TXT.py adcplot.py 
+	adcsmooth.py asymApplyCalibGain.py asymDiff.py asymMerge.py 
+	asymPlot.py asymTXT2XML.py asymVal.py asymXML2TXT.py 
+	biasTXT2XML.py biasVal.py calCalibApplyRelgain.py 
+	calFitsMerge.py calibGainCoeff.py calibSetVal.py charVal.py 
+	charplot.py dacBlockSet.py dacDiff.py dacSlopesGen.py 
+	dacSlopesPlot.py dacSlopesTXT2XML.py dacSlopesVal.py 
+	dacSlopesXML2Ntuple.py dacSlopesXML2TXT.py 
+	diff_LATC_Cal_Thresh.py genADC2NRG.py genDACsettings.py 
+	inl2tuple.py inlDumpSlopes.py inlPedSubtract.py inlTXT2XML.py 
+	inlXML2TXT.py intNonlinMerge.py intNonlinVal.py linearDAC.py 
+	mevPerDacMerge.py mevPerDacVal.py mpdApplyCalibGain.py 
+	mpdDiff.py mpdTXT2XML.py mpdXML2TXT.py muSlopeDiff.py 
+	muSlopeTXT2XML.py muSlopeVal.py pedDiff.py pedMerge.py 
+	pedTXT2XML.py pedVal.py pedXML2TXT.py 
+	summarize_LATC_CAL_Mode.py summarize_LATC_Cal_Thresh.py 
+	tholdCIGen.py tholdCIVal.py tholdCIXML2TXT.py 
+	valDACsettings.py xdiodeXtalk.py 
+Added Files:
+	tholdCITXT2XML.py 
+Log Message:
+attempting to convert from Numeric to numarray, which is supported by GLAST_EXT
+added tholdCITXT2XML tool
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Feb 11 13:35:57 PST 2008
 calibGenCAL/cmt
 
