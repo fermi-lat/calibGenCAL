@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL DAC XML calibration data file"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2008/02/03 00:51:49 $"
-__version__   = "$Revision: 1.12 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/11 21:35:58 $"
+__version__   = "$Revision: 1.13 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -233,7 +233,6 @@ def fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1, limLow, limHigh
                                 calConstant.CPM[end], fe, e, d, a)
                         
                     # save fit parameters (or substitute)
-                         
                     mevs[tem,row,end,fe,0] = fit.params[0]
                     mevs[tem,row,end,fe,1] = fit.params[1] 
                     ranges[tem,row,end,fe] = rng

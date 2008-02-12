@@ -19,8 +19,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2007/02/16 18:57:36 $"
-__version__     = "$Revision: 1.1 $, $Author: dwood $"
+__date__        = "$Date: 2008/02/11 21:35:59 $"
+__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -32,7 +32,7 @@ import getopt
 import ConfigParser
 
 import numarray
-import MLab
+import numarray.mlab
 
 import calFitsXML
 import calDacXML
@@ -102,7 +102,7 @@ def average(data):
 
 def stddev(data):
 
-    return MLab.std(numarray.ravel(data))
+    return mlab.std(numarray.ravel(data))
      
 
 

@@ -25,8 +25,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Override a block of DAC settings in online DAC setting xml file with either constant value or values from 2nd file"
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2008/02/03 00:51:49 $"
-__version__     = "$Revision: 1.7 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/02/11 21:35:58 $"
+__version__     = "$Revision: 1.8 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -176,8 +176,8 @@ if owriteFace:
 
 # apply random mask
 if owriteRnd:
-    import MLab # included w/ numarray, provides rand() method
-    tmp_msk = MLab.rand(*dac.shape) < rnd_pct / 100
+    import numarray.mlab # included w/ numarray, provides rand() method
+    tmp_msk = mlab.rand(*dac.shape) < rnd_pct / 100
 
     # and tmp_msk with current msk
     msk &= tmp_msk
