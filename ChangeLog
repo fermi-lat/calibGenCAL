@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Feb 12 07:18:06 PST 2008
+calibGenCAL/python/old
+
+Modified Files:
+	dacVal.py 
+Log Message:
+still working on Numeric -> numarray conversion, most code works now, but there's still a few hitches
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Feb 12 07:18:02 PST 2008
 calibGenCAL/python
 
