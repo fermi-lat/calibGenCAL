@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Feb 12 07:18:02 PST 2008
+calibGenCAL/python
+
+Modified Files:
+	asymVal.py dacBlockSet.py dacSlopesGen.py dacSlopesVal.py 
+	diff_LATC_Cal_Thresh.py intNonlinVal.py mevPerDacVal.py 
+	muSlopeVal.py pedVal.py summarize_LATC_Cal_Thresh.py 
+	tholdCIVal.py 
+Log Message:
+still working on Numeric -> numarray conversion, most code works now, but there's still a few hitches
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Feb 11 13:35:59 PST 2008
 calibGenCAL/python/old
 
