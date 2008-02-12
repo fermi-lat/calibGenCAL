@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Asym calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2008/02/03 00:51:49 $"
-__version__   = "$Revision: 1.14 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/11 21:35:57 $"
+__version__   = "$Revision: 1.15 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -220,9 +220,8 @@ def deriv2(p, a):
 
 
 def calcError(xposData, asymData):
-
-    errs = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_FE, 4),
-                         numarray.PyObject)
+    import numarray.objects
+    errs = numarray.objects.array(None,(calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_FE, 4))
     status = 0
 
     for tem in towers:
