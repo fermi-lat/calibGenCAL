@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL adc2nrg calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2008/02/03 00:51:49 $"
-__version__   = "$Revision: 1.13 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/11 21:35:58 $"
+__version__   = "$Revision: 1.14 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -27,19 +27,10 @@ import getopt
 import logging
 
 import numarray
-import mpfit
 
 import calFitsXML
 import calConstant
 
-
-
-
-def residuals(p, y, x, fjac = None):
-  
-    (a, b) = p
-    err = y - a*x -b
-    return (0, err)
 
 
 
@@ -143,8 +134,6 @@ def charVal(data):
                     z = numarray.nonzero(fineData)
                     y = numarray.take(fineData, z)
                     x = numarray.take(x0, z)
-                    p0 = (20.0, -200.0)
-                    fkw = {'x': x, 'y' : y}
 
                     if len(x) < 3:
                         log.error('Too little data: %d,%s%s,%d,FINE', tem, calConstant.CROW[row],
@@ -152,14 +141,17 @@ def charVal(data):
                         valStatus = 1
                     else:
 
-                        fit = mpfit.mpfit(residuals, p0, functkw = fkw, parinfo = pinfo, quiet = 1)
-                        if fit.status <= 0:
-                            log.error('mpfit error - %s', fit.errmsg)
-                            sys.exit(1)
-                        dnorm = (fit.fnorm / len(x))
+                        import ROOTFit
+                        import ROOT
+                        (fitParms, fitErrs, chisq) = ROOTFit.ROOTFit(ROOT.TF1("p1","pol1"),
+                                                                     x,
+                                                                     y,
+                                                                     (20.0, -200.0))
+                        
+                        dnorm = (chisq / len(x))
                         errData[0].append(dnorm)
                         log.debug("%d,%s%s,%d,FINE: %0.1f %0.1f %0.2f", tem, calConstant.CROW[row],
-                                calConstant.CPM[end], fe, fit.params[0], fit.params[1], dnorm)
+                                calConstant.CPM[end], fe, fitParms[0], fitParms[1], dnorm)
 
                         if dnorm > dnormWarnLimit:
                             if dnorm > dnormErrLimit:
@@ -175,22 +167,23 @@ def charVal(data):
                     z = numarray.nonzero(coarseData)
                     y = numarray.take(coarseData, z)
                     x = numarray.take(x0, z)
-                    p0 = (40, -400)
-                    fkw = {'x': x, 'y' : y}
                     
                     if len(x) < 3:
                         log.error('Too little data: %d,%s%s,%d,COARSE', tem, calConstant.CROW[row],
                                       calConstant.CPM[end], fe)
                     else:
 
-                        fit = mpfit.mpfit(residuals, p0, functkw = fkw, parinfo = pinfo, quiet = 1)
-                        if fit.status <= 0:
-                            log.error('mpfit error - %s', fit.errmsg)
-                            sys.exit(1)
-                        dnorm = (fit.fnorm / len(x))
+                        import ROOTFit
+                        import ROOT
+                        (fitParms, fitErrs, chisq) = ROOTFit.ROOTFit(ROOT.TF1("p1","pol1"),
+                                                             x,
+                                                             y,
+                                                             (40,-400))
+
+                        dnorm = (chisq / len(x))
                         errData[1].append(dnorm)
                         log.debug("%d,%s%s,%d,COARSE: %0.1f %0.1f %0.2f", tem, calConstant.CROW[row],
-                                calConstant.CPM[end], fe, fit.params[0], fit.params[1], dnorm)
+                                calConstant.CPM[end], fe, fitParms[0], fitParms[1], dnorm)
 
                         if dnorm > dnormWarnLimit:
                             if dnorm > dnormErrLimit:
@@ -236,22 +229,21 @@ def uldVal(data):
                         y = numarray.compress(s, y)
                         x = numarray.compress(s, x)
                         
-                        p0 = (40, -400)
-                        fkw = {'x': x, 'y' : y}
                     
                         if len(x) < 3:
                             log.error('Too little data: %d,%s%s,%d,%s,COARSE', tem, calConstant.CROW[row],
                                       calConstant.CPM[end], fe, calConstant.CRNG[erng])
                         else:
-
-                            fit = mpfit.mpfit(residuals, p0, functkw = fkw, parinfo = pinfo, quiet = 1)
-                            if fit.status <= 0:
-                                log.error('mpfit error - %s', fit.errmsg)
-                                sys.exit(1)
-                            dnorm = (fit.fnorm / len(x))
+                            import ROOTFit
+                            import ROOT
+                            (fitParms, fitErrs, chisq) = ROOTFit.ROOTFit(ROOT.TF1("p1","pol1"),
+                                                                         x,
+                                                                         y,
+                                                                         (40, -400))
+                            dnorm = (fit.chidq / len(x))
                             errData[1].append(dnorm)
                             log.debug("%d,%s%s,%d,%s,COARSE: %0.1f %0.1f %0.2f", tem, calConstant.CROW[row],
-                                calConstant.CPM[end], fe, calConstant.CRNG[erng], fit.params[0], fit.params[1], dnorm)
+                                calConstant.CPM[end], fe, calConstant.CRNG[erng], fitParms[0], fitParms[1], dnorm)
 
                             if dnorm > dnormWarnLimit:
                                 if dnorm > dnormErrLimit:

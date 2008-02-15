@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL DAC XML calibration data file"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2008/02/11 21:35:58 $"
-__version__   = "$Revision: 1.13 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/12 15:18:01 $"
+__version__   = "$Revision: 1.14 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -27,7 +27,6 @@ import ConfigParser
 import getopt
 
 import numarray
-import mpfit
 
 import calDacXML
 import calFitsXML
@@ -70,11 +69,6 @@ class inputFile:
 
 
 
-def residuals(p, y, x, fjac = None):
-
-    err = y - ((p[0] * x) + p[1])
-    return (0, err)
-    
     
     
 
@@ -169,33 +163,33 @@ def fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1, limLow, limHigh
                     tholds = tholds + bias[tem,row,end,fe,numarray.NewAxis]    
                     d = numarray.compress(qx, D0)
                     a = numarray.compress(qx, tholds)
-                    fkw = {'x' : d, 'y' : a}
                     
                     # try to fit the preferred range data
                     
                     fail = False
                     
                     try:
-                        fit = mpfit.mpfit(residuals, P0, functkw = fkw, parinfo = PINFO, quiet = True) 
-                        if fit.status <= 0:
-                            log.warning("mpfit error on T%d,%s%s,%d: %s,%s,%s", tem, calConstant.CROW[row],
-                                calConstant.CPM[end], fe, fit.errmsg, d, a)
-                            fail = True
-                        else:
-                            dnorm = (fit.fnorm / len(d))
-                            if dnorm > fitLim:
-                                log.warning("fit error > %0.2f on T%d,%s%s,%d", dnorm, tem, 
-                                    calConstant.CROW[row], calConstant.CPM[end], fe)
-                                fail = True     
+                        import ROOTFit
+                        import ROOT
+                        (fitParms, fitErrs, chisq) = ROOTFit.ROOTFit(ROOT.TF1("p1","pol1"),
+                                                                     d,
+                                                                     a,
+                                                                     P0)
+
+                        dnorm = (chisq / len(d))
+                        if dnorm > fitLim:
+                            log.warning("fit error > %0.2f on T%d,%s%s,%d", dnorm, tem, 
+                                        calConstant.CROW[row], calConstant.CPM[end], fe)
+                            fail = True     
                     except ValueError, e:
-                        log.error("mpfit excep on T%d,%s%s,%d: %s,%s,%s", tem, calConstant.CROW[row],
+                        log.error("fit excep on T%d,%s%s,%d: %s,%s,%s", tem, calConstant.CROW[row],
                             calConstant.CPM[end], fe, e, d, a)
                         fail = True
                         
                     # check slope parameter value for reasonableness
                     
                     if not fail and rng == calConstant.CDAC_FINE:
-                        m = fit.params[0]
+                        m = fitParms[0]
                         if m < limLow[tem,row,end,fe] or m > limHigh[tem,row,end,fe]:
                             log.warning("bad slope %0.3f on T%d,%s%s,%d", m, tem, 
                                 calConstant.CROW[row], calConstant.CPM[end], fe)
@@ -219,22 +213,23 @@ def fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1, limLow, limHigh
                         tholds = tholds + bias[tem,row,end,fe,numarray.NewAxis]
                         d = numarray.compress(qx, D0)
                         a = numarray.compress(qx, tholds)
-                        fkw = {'x' : d, 'y' : a}
                         
                         try:
-                            fit = mpfit.mpfit(residuals, P0, functkw = fkw, parinfo = PINFO, quiet = True) 
-                            if fit.status <= 0:
-                                log.error("mpfit error on T%d,%s%s,%d: %s,%s,%s", tem, calConstant.CROW[row],
-                                    calConstant.CPM[end], fe, fit.errmsg, d, a)
-                            else:
-                                fail = False
+                            import ROOTFit
+                            import ROOT
+                            (fitParms, fitErrs, chisq) = ROOTFit.ROOTFit(ROOT.TF1("p1","pol1"),
+                                                                 d,
+                                                                 a,
+                                                                 P0)
+                            
+                            fail = False
                         except ValueError, e:
-                            log.error("mpfit excep on T%d,%s%s,%d: %s,%s,%s", tem, calConstant.CROW[row],
+                            log.error("fit excep on T%d,%s%s,%d: %s,%s,%s", tem, calConstant.CROW[row],
                                 calConstant.CPM[end], fe, e, d, a)
                         
                     # save fit parameters (or substitute)
-                    mevs[tem,row,end,fe,0] = fit.params[0]
-                    mevs[tem,row,end,fe,1] = fit.params[1] 
+                    mevs[tem,row,end,fe,0] = fitParms[0]
+                    mevs[tem,row,end,fe,1] = fitParms[1] 
                     ranges[tem,row,end,fe] = rng
                     
     return (mevs, ranges)
@@ -267,20 +262,21 @@ def fitULD(tholds):
                         q =  th < sat
                         a = numarray.compress(q, th)
                         d = numarray.compress(q, D0)    
-                        fkw = {'x' : d, 'y' : a}
                     
                         try:
-                            fit = mpfit.mpfit(residuals, P0, functkw = fkw, parinfo = PINFO, quiet = True) 
+                            import ROOTFit
+                            import ROOT
+                            (fitParms, fitErrs, chisq) = ROOTFit.ROOTFit(ROOT.TF1("p1","pol1"),
+                                                                 d,
+                                                                 a,
+                                                                 P0)
+                            
                         except ValueError, e:
                             log.error("mpfit excep on %s,T%d,%s%s,%d: %s,%s,%s", calConstant.CRNG[erng],
                                 tem, calConstant.CROW[row], calConstant.CPM[end], fe, e, d, a)
                             
-                        if fit.status <= 0:
-                            log.error("mpfit error on %s,T%d,%s%s,%d: %s,%s,%s", calConstant.CRNG[erng],
-                                tem, calConstant.CROW[row], calConstant.CPM[end], fe, fit.errmsg, d, a)
-                         
-                        mevs[erng,tem,row,end,fe,0] = fit.params[0]
-                        mevs[erng,tem,row,end,fe,1] = fit.params[1] 
+                        mevs[erng,tem,row,end,fe,0] = fitParms[0]
+                        mevs[erng,tem,row,end,fe,1] = fitParms[1] 
                         mevs[erng,tem,row,end,fe,2] = sat
                     
     return mevs

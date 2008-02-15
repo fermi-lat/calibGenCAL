@@ -19,8 +19,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL offline calibration set as a suite"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2008/02/03 00:51:49 $"
-__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/11 21:35:58 $"
+__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -224,6 +224,10 @@ for twr in pedTowers:
 
                     inlLen = inlLenData[rng][twr,row,online_face,col]
                     inlMax = inlAdcData[rng][twr,row,online_face,col,inlLen-1]
+                    inlMax = inlMax[0]
+                    inlLen = inlLen[0]
+
+
                     if inlLen <= 1 and inlMax == 0:
                         log.error("Inl data missing: channel=%s"%[twr,lyr,col,face,rng])
                         nErrors += 1
@@ -246,10 +250,10 @@ for twr in pedTowers:
                         nErrors += 1
 
                     # TEST 6: MUON_PED = THOLD_PED = INL_PED
-                    muonPed = ped[0]
-                    muonPedSig = pedSig[0]
+                    muonPed = ped
+                    muonPedSig = pedSig
 
-                    tholdPed = tholdPedData[twr,row,online_face,col,rng][0]
+                    tholdPed = tholdPedData[twr,row,online_face,col,rng]
                     inlPed   = 4095 - inlMax
 
                     pedList = [muonPed, inlPed, tholdPed]

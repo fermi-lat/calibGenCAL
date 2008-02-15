@@ -17,8 +17,8 @@ Where:
 __facility__  = "Offline"
 __abstract__  = "Generate ROOT plots for CAL ADC/DAC characerization data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2008/02/03 00:51:49 $"
-__version__   = "$Revision: 1.14 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/11 21:35:58 $"
+__version__   = "$Revision: 1.15 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -30,7 +30,6 @@ import array
 import getopt
 
 import numarray
-import mpfit
 import ROOT
 
 import calFitsXML
@@ -43,12 +42,6 @@ def linear(a, b, x):
 
     return a*x + b
 
-
-
-def residuals(p, y, x, fjac = None):
-
-    err = y - linear(p[0], p[1], x)
-    return (0, err)
 
 
 
@@ -85,61 +78,61 @@ def plotDAC(rawData, filterData, info, twrs, rawName, filterName):
                     z = numarray.nonzero(fineData)
                     yn = numarray.take(fineData, z)
                     xn = numarray.take(x0, z)
-                    p0 = (20.0, -200.0)
-                    fkw = {'x': xn, 'y' : yn}
 
-                    fit = mpfit.mpfit(residuals, p0, functkw = fkw, parinfo = pinfo, quiet = 1)
-                    if fit.status <= 0:
-                        log.warning('mpfit error - %s', fit.errmsg)
-                    else:
-                        a = fit.params[0]
-                        b = fit.params[1]
-                        x = array.array('f')
-                        y = array.array('f')
-                        for dac in range(0, 64):
-                            adc = linear(a, b, dac)
-                            if adc < 0.0:
-                                continue
-                            x.append(dac)
-                            y.append(adc)
+                    import ROOTFit
+                    import ROOT
+                    (fitParms, fitErrs, chisq) = ROOTFit.ROOTFit(ROOT.TF1("p1","pol1"),
+                                                         xn,
+                                                         yn,
+                                                         (20,-200))
 
-                        g = ROOT.TGraph(len(x), x, y)
-    
-                        g.SetLineColor(4)
-                        g.SetLineStyle(2)
-                        g.SetLineWidth(2)
-                        lineGraph.append(g)
+                    a = fitParms[0]
+                    b = fitParms[1]
+                    x = array.array('f')
+                    y = array.array('f')
+                    for dac in range(0, 64):
+                        adc = linear(a, b, dac)
+                        if adc < 0.0:
+                            continue
+                        x.append(dac)
+                        y.append(adc)
+                        
+                    g = ROOT.TGraph(len(x), x, y)
+                        
+                    g.SetLineColor(4)
+                    g.SetLineStyle(2)
+                    g.SetLineWidth(2)
+                    lineGraph.append(g)
 
                     # plot coarse fit data
-
                     coarseData = filterData[tem, layer, end, fe, 64:128]    
                     z = numarray.nonzero(coarseData)
                     yn = numarray.take(coarseData, z)
                     xn = numarray.take(x0, z)
-                    p0 = (20.0, -200.0)
-                    fkw = {'x': xn, 'y' : yn}
 
-                    fit = mpfit.mpfit(residuals, p0, functkw = fkw, parinfo = pinfo, quiet = 1)
-                    if fit.status <= 0:
-                        log.warning('mpfit error - %s', fit.errmsg)
-                    else:
-                        a = fit.params[0]
-                        b = fit.params[1]
-                        x = array.array('f')
-                        y = array.array('f')
-                        for dac in range(0, 64):
-                            adc = linear(a, b, dac)
-                            if adc < 0.0:
-                                continue
-                            x.append(dac + 64)
-                            y.append(adc)
 
-                        g = ROOT.TGraph(len(x), x, y)
+                    (fitParms, fitErrs, chisq) = ROOTFit.ROOTFit(ROOT.TF1("p1","pol1"),
+                                                         xn,
+                                                         yn,
+                                                         (20,-200))
 
-                        g.SetLineColor(4)
-                        g.SetLineStyle(2)
-                        g.SetLineWidth(2)
-                        lineGraph.append(g)                    
+                    a = fitParms[0]
+                    b = fitParms[1]
+                    x = array.array('f')
+                    y = array.array('f')
+                    for dac in range(0, 64):
+                        adc = linear(a, b, dac)
+                        if adc < 0.0:
+                            continue
+                        x.append(dac + 64)
+                        y.append(adc)
+
+                    g = ROOT.TGraph(len(x), x, y)
+
+                    g.SetLineColor(4)
+                    g.SetLineStyle(2)
+                    g.SetLineWidth(2)
+                    lineGraph.append(g)                    
 
                     # plot raw data
                     
@@ -238,30 +231,28 @@ def plotULD(rawData, filterData, info, twrs, rawName, filterName):
                         yn = numarray.compress(s, yn)
                         xn = numarray.compress(s, xn)
         
-                        p0 = (40.0, -400.0)
-                        fkw = {'x': xn, 'y' : yn}
+                        (fitParms, fitErrs, chisq) = ROOTFit.ROOTFit(ROOT.TF1("p1","pol1"),
+                                                             xn,
+                                                             yn,
+                                                             (40,-400))
 
-                        fit = mpfit.mpfit(residuals, p0, functkw = fkw, parinfo = pinfo, quiet = 1)
-                        if fit.status <= 0:
-                            log.warning('mpfit error - %s', fit.errmsg)
-                        else:
-                            a = fit.params[0]
-                            b = fit.params[1]
-                            x = array.array('f')
-                            y = array.array('f')
-                            for dac in range(0, 64):
-                                adc = linear(a, b, dac)
-                                if adc < 0.0:
-                                    continue
-                                x.append(dac + 64)
-                                y.append(adc)
+                        a = fitParms[0]
+                        b = fitParms[1]
+                        x = array.array('f')
+                        y = array.array('f')
+                        for dac in range(0, 64):
+                            adc = linear(a, b, dac)
+                            if adc < 0.0:
+                                continue
+                            x.append(dac + 64)
+                            y.append(adc)
 
-                            g = ROOT.TGraph(len(x), x, y)
-
-                            g.SetLineColor(4)
-                            g.SetLineStyle(2)
-                            g.SetLineWidth(2)
-                            lineGraph.append(g)                        
+                        g = ROOT.TGraph(len(x), x, y)
+                        
+                        g.SetLineColor(4)
+                        g.SetLineStyle(2)
+                        g.SetLineWidth(2)
+                        lineGraph.append(g)                        
 
                         # plot raw data
                     

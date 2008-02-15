@@ -18,8 +18,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Summarize LATC Cal_Thresh XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2008/02/11 21:35:58 $"
-__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/02/12 15:18:01 $"
+__version__     = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -189,7 +189,7 @@ def genCFEPrecinctSummary(path,
 
     # mlab is part of numarray
     import numarray.mlab
-    rms = mlab.std(numarray.ravel(data))
+    rms = numarray.mlab.std(numarray.ravel(data))
 
     # print mean 
     print "\nDAC\tmean\trms (DAC units)"
