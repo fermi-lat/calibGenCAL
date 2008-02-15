@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Feb 15 14:47:14 PST 2008
+calibGenCAL/python
+
+Modified Files:
+	calibSetVal.py charVal.py charplot.py dacBlockSet.py 
+	dacSlopesGen.py dacSlopesVal.py diff_LATC_Cal_Thresh.py 
+	muSlopeVal.py summarize_LATC_Cal_Thresh.py tholdCIGen.py 
+	tholdCIVal.py 
+Log Message:
+continued conversion to numarray - code makes it all the way through processing, but i think the answers are wrong
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Feb 12 07:18:06 PST 2008
 calibGenCAL/python/old
 
