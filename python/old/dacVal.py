@@ -19,8 +19,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Validate CAL DAC settings XML files."
 __author__      = "D.L.Wood"
-__date__        = "$Date: 2008/02/11 21:35:59 $"
-__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/02/12 15:18:06 $"
+__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -102,7 +102,7 @@ def average(data):
 
 def stddev(data):
 
-    return mlab.std(numarray.ravel(data))
+    return numarray.mlab.std(numarray.ravel(data))
      
 
 

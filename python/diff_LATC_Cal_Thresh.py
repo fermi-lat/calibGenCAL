@@ -19,8 +19,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 LATC Cal_Thresh XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2008/02/11 21:35:58 $"
-__version__     = "$Revision: 1.5 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/02/12 15:18:01 $"
+__version__     = "$Revision: 1.6 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -237,7 +237,7 @@ def genCFEPrecinctDiffSummary(refPath,
 
     # mlab is part of numarray
     import numarray.mlab
-    meanRMS = mlab.std(numarray.ravel(diff))
+    meanRMS = numarray.mlab.std(numarray.ravel(diff))
 
     # print mean diff report
     print "\nDAC\tmeanDiff\trms (DAC units)"

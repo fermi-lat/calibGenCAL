@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2007/04/10 16:22:20 $"
-__version__   = "$Revision: 1.16 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/11 21:35:59 $"
+__version__   = "$Revision: 1.17 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -253,10 +253,10 @@ class calTholdCICalibXML(calCalibXML):
     injection calibration data stored in XML format.
     """
 
-    def write(self, dacData, adcData, intNonlinData, intNonlinLength, pedData,
-              lrefGain, hrefGain, biasData, tems = (0,)):
+    def generate(self, dacData, adcData, intNonlinData, intNonlinLength, pedData,
+                 lrefGain, hrefGain, biasData, tems = (0,)):
         """
-        Write data to a CAL TholdCI XML file
+        Calculate threshold values in ADC units & write data to a CAL TholdCI XML file
 
         Param: dacData - A list of numarray arrays of DAC settings data
             (16, 8, 2, 12):
