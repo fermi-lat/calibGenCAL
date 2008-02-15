@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Feb 15 14:48:21 PST 2008
+calibGenCAL/python/lib
+
+Added Files:
+	ROOTFit.py 
+Removed Files:
+	mpfit.py 
+Log Message:
+replaced numeric dependent mpfit with ROOT fitting utilities
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Feb 15 14:47:25 PST 2008
 calibGenCAL/python/old
 
