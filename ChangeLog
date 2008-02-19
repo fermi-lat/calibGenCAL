@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Feb 19 15:08:22 PST 2008
+calibGenCAL/python
+
+Modified Files:
+	charVal.py charplot.py dacSlopesGen.py 
+Log Message:
+converting from mpfit (numeric) to ROOT::TGraph::Fit()
+fixed bug with order of fit parameters
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Feb 15 14:48:21 PST 2008
 calibGenCAL/python/lib
 
