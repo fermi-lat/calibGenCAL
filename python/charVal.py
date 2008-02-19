@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL adc2nrg calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2008/02/11 21:35:58 $"
-__version__   = "$Revision: 1.14 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/15 22:47:14 $"
+__version__   = "$Revision: 1.15 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -151,7 +151,7 @@ def charVal(data):
                         dnorm = (chisq / len(x))
                         errData[0].append(dnorm)
                         log.debug("%d,%s%s,%d,FINE: %0.1f %0.1f %0.2f", tem, calConstant.CROW[row],
-                                calConstant.CPM[end], fe, fitParms[0], fitParms[1], dnorm)
+                                calConstant.CPM[end], fe, fitParms[1], fitParms[0], dnorm)
 
                         if dnorm > dnormWarnLimit:
                             if dnorm > dnormErrLimit:
@@ -183,7 +183,7 @@ def charVal(data):
                         dnorm = (chisq / len(x))
                         errData[1].append(dnorm)
                         log.debug("%d,%s%s,%d,COARSE: %0.1f %0.1f %0.2f", tem, calConstant.CROW[row],
-                                calConstant.CPM[end], fe, fitParms[0], fitParms[1], dnorm)
+                                calConstant.CPM[end], fe, fitParms[1], fitParms[0], dnorm)
 
                         if dnorm > dnormWarnLimit:
                             if dnorm > dnormErrLimit:
@@ -243,7 +243,7 @@ def uldVal(data):
                             dnorm = (fit.chidq / len(x))
                             errData[1].append(dnorm)
                             log.debug("%d,%s%s,%d,%s,COARSE: %0.1f %0.1f %0.2f", tem, calConstant.CROW[row],
-                                calConstant.CPM[end], fe, calConstant.CRNG[erng], fitParms[0], fitParms[1], dnorm)
+                                calConstant.CPM[end], fe, calConstant.CRNG[erng], fitParms[1], fitParms[0], dnorm)
 
                             if dnorm > dnormWarnLimit:
                                 if dnorm > dnormErrLimit:
