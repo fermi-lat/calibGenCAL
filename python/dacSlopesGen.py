@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL DAC XML calibration data file"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2008/02/12 15:18:01 $"
-__version__   = "$Revision: 1.14 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/15 22:47:14 $"
+__version__   = "$Revision: 1.15 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -189,7 +189,7 @@ def fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1, limLow, limHigh
                     # check slope parameter value for reasonableness
                     
                     if not fail and rng == calConstant.CDAC_FINE:
-                        m = fitParms[0]
+                        m = fitParms[1]
                         if m < limLow[tem,row,end,fe] or m > limHigh[tem,row,end,fe]:
                             log.warning("bad slope %0.3f on T%d,%s%s,%d", m, tem, 
                                 calConstant.CROW[row], calConstant.CPM[end], fe)
@@ -228,8 +228,8 @@ def fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1, limLow, limHigh
                                 calConstant.CPM[end], fe, e, d, a)
                         
                     # save fit parameters (or substitute)
-                    mevs[tem,row,end,fe,0] = fitParms[0]
-                    mevs[tem,row,end,fe,1] = fitParms[1] 
+                    mevs[tem,row,end,fe,0] = fitParms[1]
+                    mevs[tem,row,end,fe,1] = fitParms[0] 
                     ranges[tem,row,end,fe] = rng
                     
     return (mevs, ranges)
@@ -275,8 +275,8 @@ def fitULD(tholds):
                             log.error("mpfit excep on %s,T%d,%s%s,%d: %s,%s,%s", calConstant.CRNG[erng],
                                 tem, calConstant.CROW[row], calConstant.CPM[end], fe, e, d, a)
                             
-                        mevs[erng,tem,row,end,fe,0] = fitParms[0]
-                        mevs[erng,tem,row,end,fe,1] = fitParms[1] 
+                        mevs[erng,tem,row,end,fe,0] = fitParms[1]
+                        mevs[erng,tem,row,end,fe,1] = fitParms[0] 
                         mevs[erng,tem,row,end,fe,2] = sat
                     
     return mevs

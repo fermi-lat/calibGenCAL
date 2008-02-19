@@ -17,8 +17,8 @@ Where:
 __facility__  = "Offline"
 __abstract__  = "Generate ROOT plots for CAL ADC/DAC characerization data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2008/02/11 21:35:58 $"
-__version__   = "$Revision: 1.15 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/15 22:47:14 $"
+__version__   = "$Revision: 1.16 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -86,8 +86,8 @@ def plotDAC(rawData, filterData, info, twrs, rawName, filterName):
                                                          yn,
                                                          (20,-200))
 
-                    a = fitParms[0]
-                    b = fitParms[1]
+                    a = fitParms[1]
+                    b = fitParms[0]
                     x = array.array('f')
                     y = array.array('f')
                     for dac in range(0, 64):
@@ -116,8 +116,8 @@ def plotDAC(rawData, filterData, info, twrs, rawName, filterName):
                                                          yn,
                                                          (20,-200))
 
-                    a = fitParms[0]
-                    b = fitParms[1]
+                    a = fitParms[1]
+                    b = fitParms[0]
                     x = array.array('f')
                     y = array.array('f')
                     for dac in range(0, 64):
@@ -236,8 +236,8 @@ def plotULD(rawData, filterData, info, twrs, rawName, filterName):
                                                              yn,
                                                              (40,-400))
 
-                        a = fitParms[0]
-                        b = fitParms[1]
+                        a = fitParms[1]
+                        b = fitParms[0]
                         x = array.array('f')
                         y = array.array('f')
                         for dac in range(0, 64):
