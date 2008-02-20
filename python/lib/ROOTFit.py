@@ -6,8 +6,8 @@ simple fitting front end for ROOT fitting code
 __facility__      = "Online"
 __abstract__      = __doc__
 __author__        = "D.L. Wood"
-__date__          = "$Date: 2007/12/20 00:36:51 $"
-__version__       = "$Revision: 1.8 $, $Author: fewtrell $"
+__date__          = "$Date: 2008/02/15 22:48:21 $"
+__version__       = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__       = "$Name:  $"
 __credits__       = "NRL code 7650"
 
@@ -77,6 +77,9 @@ if __name__ == '__main__':
             print "Bad fitted parm %f, epxected %f"%(fit, intent)
             sys.exit(-1)
 
+    print "test f() is 3x^2 + 2"
+    print "intended parms:", intendedParms
+    print "fitted parms:", fitParms
     print "unit test successful"
     sys.exit(0)
 

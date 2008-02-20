@@ -6,8 +6,8 @@ Tool to smooth CAL ADC/DAC data.
 __facility__  = "Offline"
 __abstract__  = "Tool to smooth CAL ADC/DAC data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2007/03/20 19:23:47 $"
-__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/11 21:35:59 $"
+__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -96,7 +96,7 @@ class calADCFilter:
 
                         fillLAC = False
                         if self.__type == DAC_TYPE_LAC:
-                            z = numarray.nonzero(fineData)
+                            z = numarray.nonzero(fineData)[0]
                             if len(z) < 2:
                                 fillLAC = True                        
 
