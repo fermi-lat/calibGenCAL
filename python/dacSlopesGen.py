@@ -14,8 +14,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL DAC XML calibration data file"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2008/02/15 22:47:14 $"
-__version__   = "$Revision: 1.15 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/19 23:08:21 $"
+__version__   = "$Revision: 1.16 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -34,18 +34,10 @@ import calCalibXML
 import calConstant
 
 
-
-
 # relgain table indicies
-
-
 LE_REF_GAIN = 5
 HE_REF_GAIN = 15
 MUON_GAIN   = 8
-
-
-
-
 
 
 class inputFile:
@@ -75,11 +67,7 @@ class inputFile:
 # fit constants    
 
 D0    = numarray.arange(0.0, 64.0, 1.0)
-PI    = {'fixed':0, 'limited':(0,0), 'mpprint':0}
-PINFO = [PI, PI]
-P0    = (20.0, -300.0)    
-    
-
+P0    = (-300.0, 20.0)    
 
 # error limits for FINE range slopes
 
@@ -120,20 +108,19 @@ def fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1, limLow, limHigh
     # array to hold fit parameters
     
     mevs = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE, 2), numarray.Float32)
+                           calConstant.NUM_FE, 2), numarray.Float32)
         
     # array to hold range info 
     
     ranges = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
-        calConstant.NUM_FE), numarray.Int8)    
+                             calConstant.NUM_FE), numarray.Int8)    
     
     adcs0 = adcs0 - bias
     adcs1 = adcs1 - bias
     adcs0 = adcs0[...,numarray.NewAxis]
     adcs1 = adcs1[...,numarray.NewAxis]
-    
-    # compare upper and lower limits against FINE range thresholds 
-    
+
+    # compare upper and lower limits against FINE range thresholds
     q = (fineThresholds > adcs0) & (fineThresholds < adcs1)
     
     for tem in range(calConstant.NUM_TEM):
@@ -146,8 +133,8 @@ def fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1, limLow, limHigh
                                     
                     # if there are not enough points in the FINE range or high point is out of range, 
                     # try the COARSE range
-                
-                    if len(numarray.nonzero(qx)) < 3 or qx[-1]:
+
+                    if len(numarray.nonzero(qx)[0]) < 3 or qx[-1]:
                     
                         qx[...] = \
                             (coarseThresholds[tem,row,end,fe,:] > adcs0[tem,row,end,fe,:]) & \
@@ -160,10 +147,9 @@ def fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1, limLow, limHigh
                     
                         tholds = fineThresholds[tem,row,end,fe,:]    
                     
-                    tholds = tholds + bias[tem,row,end,fe,numarray.NewAxis]    
+                    tholds = tholds + bias[tem,row,end,fe,numarray.NewAxis]
                     d = numarray.compress(qx, D0)
                     a = numarray.compress(qx, tholds)
-                    
                     # try to fit the preferred range data
                     
                     fail = False
@@ -634,9 +620,9 @@ if __name__ == '__main__':
     # split into fine and coarse ranges
     
     fineThresholds = fleAdcData[...,:64]
-    log.debug("FLE fineThresholds[0,0,0,0,:]:\n%s", str(fineThresholds[0,0,0,0,:]))
+    log.debug("FLE fineThresholds[0,0,0,0,:]:\n%s", str(fineThresholds[0,0,0,0,:].tolist()))
     coarseThresholds = fleAdcData[...,64:]
-    log.debug("FLE coarseThresholds[0,0,0,0,:]:\n%s", str(coarseThresholds[0,0,0,0,:]))
+    log.debug("FLE coarseThresholds[0,0,0,0,:]:\n%s", str(coarseThresholds[0,0,0,0,:].tolist()))
     
     # convert energy to ADC threshold
     
@@ -670,7 +656,7 @@ if __name__ == '__main__':
     
     log.info("Fitting FLE")
     (mevs, ranges) = fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1,
-        (FLE_LIM_LOW / gain), (FLE_LIM_HIGH / gain), FLE_LIM_FIT)                       
+                            (FLE_LIM_LOW / gain), (FLE_LIM_HIGH / gain), FLE_LIM_FIT)                       
     
     # convert DAC/ADC slopes to DAC/energy slopes
          
@@ -696,9 +682,9 @@ if __name__ == '__main__':
     # split into fine and coarse ranges
     
     fineThresholds = fheAdcData[...,:64]
-    log.debug("FHE fineThresholds[0,0,0,0,:]:\n%s", str(fineThresholds[0,0,0,0,:]))
+    log.debug("FHE fineThresholds[0,0,0,0,:]:\n%s", str(fineThresholds[0,0,0,0,:].tolist()))
     coarseThresholds = fheAdcData[...,64:]
-    log.debug("FHE coarseThresholds[0,0,0,0,:]:\n%s", str(coarseThresholds[0,0,0,0,:]))
+    log.debug("FHE coarseThresholds[0,0,0,0,:]:\n%s", str(coarseThresholds[0,0,0,0,:].tolist()))
     
     # convert energy to ADC threshold
     
@@ -752,9 +738,9 @@ if __name__ == '__main__':
     # split into fine and coarse ranges
     
     fineThresholds = lacAdcData[...,:64]
-    log.debug("LAC fineThresholds[0,0,0,0,:]:\n%s", str(fineThresholds[0,0,0,0,:]))
+    log.debug("LAC fineThresholds[0,0,0,0,:]:\n%s", str(fineThresholds[0,0,0,0,:].tolist()))
     coarseThresholds = lacAdcData[...,64:]
-    log.debug("LAC coarseThresholds[0,0,0,0,:]:\n%s", str(coarseThresholds[0,0,0,0,:]))
+    log.debug("LAC coarseThresholds[0,0,0,0,:]:\n%s", str(coarseThresholds[0,0,0,0,:].tolist()))
     
     # convert energy to ADC threshold
     
@@ -777,13 +763,13 @@ if __name__ == '__main__':
     # no bias correction
     
     bias = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW,
-        calConstant.NUM_END, calConstant.NUM_FE), numarray.Float32)
+                           calConstant.NUM_END, calConstant.NUM_FE), numarray.Float32)
             
     # get linear fit parameters
     
     log.info("Fitting LAC")
     (mevs, ranges) = fitDAC(fineThresholds, coarseThresholds, bias, adcs0, adcs1,
-        (LAC_LIM_LOW / gain), (LAC_LIM_HIGH / gain), LAC_LIM_FIT)
+                            (LAC_LIM_LOW / gain), (LAC_LIM_HIGH / gain), LAC_LIM_FIT)
     
     # convert DAC/ADC slopes to DAC/energy slopes
          

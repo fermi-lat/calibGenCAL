@@ -17,8 +17,8 @@ Where:
 __facility__  = "Offline"
 __abstract__  = "Generate ROOT plots for CAL ADC/DAC characerization data"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2008/02/15 22:47:14 $"
-__version__   = "$Revision: 1.16 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/19 23:08:21 $"
+__version__   = "$Revision: 1.17 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -75,7 +75,7 @@ def plotDAC(rawData, filterData, info, twrs, rawName, filterName):
                     # plot fine fit data
 
                     fineData = filterData[tem, layer, end, fe, 0:64]    
-                    z = numarray.nonzero(fineData)
+                    z = numarray.nonzero(fineData)[0]
                     yn = numarray.take(fineData, z)
                     xn = numarray.take(x0, z)
 
@@ -84,7 +84,7 @@ def plotDAC(rawData, filterData, info, twrs, rawName, filterName):
                     (fitParms, fitErrs, chisq) = ROOTFit.ROOTFit(ROOT.TF1("p1","pol1"),
                                                          xn,
                                                          yn,
-                                                         (20,-200))
+                                                         (-200.0, 20.0))
 
                     a = fitParms[1]
                     b = fitParms[0]
@@ -106,7 +106,7 @@ def plotDAC(rawData, filterData, info, twrs, rawName, filterName):
 
                     # plot coarse fit data
                     coarseData = filterData[tem, layer, end, fe, 64:128]    
-                    z = numarray.nonzero(coarseData)
+                    z = numarray.nonzero(coarseData)[0]
                     yn = numarray.take(coarseData, z)
                     xn = numarray.take(x0, z)
 
@@ -114,7 +114,7 @@ def plotDAC(rawData, filterData, info, twrs, rawName, filterName):
                     (fitParms, fitErrs, chisq) = ROOTFit.ROOTFit(ROOT.TF1("p1","pol1"),
                                                          xn,
                                                          yn,
-                                                         (20,-200))
+                                                         (-200.0, 20.0))
 
                     a = fitParms[1]
                     b = fitParms[0]
@@ -224,7 +224,7 @@ def plotULD(rawData, filterData, info, twrs, rawName, filterName):
 
                         coarseData = filterData[erng, tem, layer, end, fe, 64:128]
                         sat = coarseData[-1]
-                        z = numarray.nonzero(coarseData)
+                        z = numarray.nonzero(coarseData)[0]
                         yn = numarray.take(coarseData, z)
                         xn = numarray.take(x0, z)
                         s = numarray.less(yn, sat)
@@ -234,7 +234,7 @@ def plotULD(rawData, filterData, info, twrs, rawName, filterName):
                         (fitParms, fitErrs, chisq) = ROOTFit.ROOTFit(ROOT.TF1("p1","pol1"),
                                                              xn,
                                                              yn,
-                                                             (40,-400))
+                                                             (-400.0, 40.0))
 
                         a = fitParms[1]
                         b = fitParms[0]
