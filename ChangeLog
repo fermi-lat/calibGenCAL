@@ -1,4 +1,18 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Feb 21 10:04:53 PST 2008
+calibGenCAL/unit_test
+
+Modified Files:
+	README 
+Added Files:
+	unit_test_input.tgz unit_test_output.tgz 
+Removed Files:
+	build_adcsmooth.cfg build_gensettings_cfg.cfg 
+	calibGenCAL_suite.cfg get_slac_calibdac.cfg output.tgz 
+Log Message:
+updated unit test for latest code
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Feb 20 11:11:49 PST 2008
 calibGenCAL/python/lib
 
