@@ -1,4 +1,4 @@
-$ Header $
+$ Header: $
 v0  creation of calibGenCAL package, add codes to generate calibration constants for CAL pedestal, slope and muon peak
 
 v1 add codes to do the light taper study
@@ -586,3 +586,11 @@ v5r1p7 fewtrell
 v5r2 fewtrell 01/17/08
 ------------------------
 - CalibDataTypes classes were moved to CalUtil/SimpleCalClaib where they can be available to Gleam test code
+
+
+- updated unit test
+- now using GLAST_EXT provided python
+-- converted all python Numeric code to numarray which is supported by GLAST_EXT
+--- moved Numeric based mpfit -> ROOT fitting code
+- added tholdCITXT2XML.py tool
+- added dacSlopesXML2TXT.py, dacSlopesTXT2XML.py tool
