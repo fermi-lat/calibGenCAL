@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Asym calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2008/02/11 21:35:57 $"
-__version__   = "$Revision: 1.15 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/12 15:18:01 $"
+__version__   = "$Revision: 1.16 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -292,7 +292,7 @@ if __name__ == '__main__':
             rootName = o[1]
             rootOutput = True
         elif o[0] == '-L':
-            logName = o[0]
+            logName = o[1]
         elif o[0] == '-V':
             log.setLevel(logging.DEBUG) 
         elif o[0] == '-r':
