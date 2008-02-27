@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Feb 27 12:04:46 PST 2008
+calibGenCAL/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+fixed small bug
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: calibGenCAL-05-03-00, operation: add
 Package: calibGenCAL
