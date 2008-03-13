@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: makeev  Thu Mar 13 12:28:35 PDT 2008
+calibGenCAL/src
+
+Added Files:
+	splitDigi.cxx 
+Log Message:
+added generic application 'splitDigi' for splitting a digi ROOT file into evenly sized number of parts 
+
+    *
+------------------------------------------------------------
+User: makeev  Thu Mar 13 12:28:35 PDT 2008
 calibGenCAL/cmt
 
 Modified Files:
