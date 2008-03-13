@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: makeev  Thu Mar 13 12:28:35 PDT 2008
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+added generic application 'splitDigi' for splitting a digi ROOT file into evenly sized number of parts 
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: calibGenCAL-05-03-01, operation: add
 Package: calibGenCAL
