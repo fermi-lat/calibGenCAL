@@ -11,9 +11,9 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Convert cidac2adc (intNonlin) xml data file into root tuples (1 per channel)"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2008/02/03 00:51:49 $"
-__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
-__release__   = "$Name:  $"
+__date__      = "$Date: 2008/02/11 21:35:58 $"
+__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
+__release__   = "$Name: calibGenCAL-05-03-01 $"
 __credits__   = "NRL code 7650"
 
 import sys, os
@@ -69,7 +69,7 @@ if __name__ == '__main__':
                     online_face = calConstant.offline_face_to_online[face]
                     for rng in range(calConstant.NUM_RNG):
                         ## retrieve data for this channel ##
-                        len = inLen[rng][twr, row, online_face, col]
+                        len = inLen[rng][twr, row, online_face, col][0]
                         
                         # skip channel if data is empty
                         if (len <= 1):
