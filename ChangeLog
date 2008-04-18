@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: chehtman  Fri Apr 18 14:47:42 PDT 2008
+calibGenCAL/src/lib/Util
+
+Modified Files:
+	LangauFun.cxx 
+Log Message:
+modified parameter limits & initial values
+
+    *
+------------------------------------------------------------
 User: chehtman  Fri Apr 18 14:46:26 PDT 2008
 calibGenCAL/src/lib/Specs
 
