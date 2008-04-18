@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: chehtman  Fri Apr 18 14:43:22 PDT 2008
+calibGenCAL/src
+
+Modified Files:
+	genMuonCalibTkr.cxx 
+Added Files:
+	fitMuonCalibTkr.cxx 
+Log Message:
+added fitMuonCalibTkr executable
+fitMuonCalibTkr is a new function to refit existing histograms from genMuonCalibTkr
+Added the support for CU06 geometry to genMuonCalibTkr
+    *
+------------------------------------------------------------
 User: chehtman  Fri Apr 18 14:40:04 PDT 2008
 calibGenCAL/cmt
 
