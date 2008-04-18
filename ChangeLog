@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: chehtman  Fri Apr 18 14:45:09 PDT 2008
+calibGenCAL/src/lib/Hists
+
+Modified Files:
+	MPDHists.cxx 
+Log Message:
+fixed a bug which didn't allow for missing towers
+explicitly set LanGau f() parms before each call
+
+    *
+------------------------------------------------------------
 User: chehtman  Fri Apr 18 14:43:22 PDT 2008
 calibGenCAL/src
 
