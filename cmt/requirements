@@ -63,6 +63,8 @@ application fitGCRHists fitGCRHists.cxx
 
 application genMuonCalibTkr genMuonCalibTkr.cxx
 
+application fitMuonCalibTkr fitMuonCalibTkr.cxx
+
 application genNeighborXtalk genNeighborXtalk.cxx
 
 application splitDigi splitDigi.cxx
