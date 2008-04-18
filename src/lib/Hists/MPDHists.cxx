@@ -244,6 +244,10 @@ namespace calibGenCAL {
   void MPDHists::fitChannel(TH1 &hist,
                             float &mpv,
                             float &width) {
+    m_fitFunc->SetParameter(2,hist.GetEntries()*hist.GetBinWidth(1));
+    m_fitFunc->SetParameter(1,30);
+    m_fitFunc->SetParameter(3,0.6);
+    m_fitFunc->SetParameter(4,0.0);
     hist.Fit(m_fitFunc, "Q");
     mpv = m_fitFunc->GetParameter(1);
 
@@ -389,7 +393,8 @@ namespace calibGenCAL {
         break;
 
       case FitMethods::LANGAU:
-        LangauFun::fillTuple(xtalIdx,
+	if(m_dacLLHists[xtalIdx])
+	  LangauFun::fillTuple(xtalIdx,
                              *(m_dacLLHists[xtalIdx]),
                              *tuple);
         break;
