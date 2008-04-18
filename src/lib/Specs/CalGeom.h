@@ -1,7 +1,7 @@
 #ifndef CalGeom_H
 #define CalGeom_H
 
-//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Specs/CalGeom.h,v 1.2 2007/04/10 14:51:02 fewtrell Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Specs/CalGeom.h,v 1.3 2007/05/25 21:06:48 fewtrell Exp $
 
 // LOCAL INCLUDES=
 
@@ -22,6 +22,8 @@
 namespace calibGenCAL {
 
   namespace CalGeom {
+    static bool CU_GEOM = false;
+
     /// z pos of top surface of Layer 0 Cal Xtal
     static const float CalTopZ       = -48.12;
     static const float CsILength     = 326.  ;
