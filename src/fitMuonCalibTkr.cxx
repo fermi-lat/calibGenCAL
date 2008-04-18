@@ -67,9 +67,6 @@ public:
             'c',
             "(optional) read cfg info from this file (supports env var expansion)",
 			""),
-    cu("calibrationUnit",
-       'u',
-       "use CU06 (calibration unit) geometry"),
     help("help",
          'h',
          "print usage info")
@@ -84,7 +81,6 @@ public:
     cmdParser.registerVar(entriesPerHist);
     cmdParser.registerVar(startEvent);
     cmdParser.registerVar(cfgPath);
-    cmdParser.registerSwitch(cu);
     cmdParser.registerSwitch(help);
 
     try {
@@ -112,8 +108,6 @@ public:
   CmdOptVar<unsigned> startEvent;
 
   CmdOptVar<string> cfgPath;
-
-  CmdSwitch cu;
 
   /// print usage string
   CmdSwitch help;
@@ -182,23 +176,22 @@ int main(int argc,
     // open file to save output histograms.
     LogStrm::get() << __FILE__ << ": opening output histogram file: "
                      << histFilename << endl;
-    TFile histFile(histFilename.c_str(), "RECREATE", "CAL Muon Calib");
+    TFile histFile(histFilename.c_str(), "UPDATE", "CAL Muon Calib");
 
-    AsymHists asymHists;
+    //    AsymHists asymHists;
     MPDHists     mpdHists(MPDHists::FitMethods::LANGAU);
-
-    /// if true, enable CU geometry
-    if (cfg.cu.getVal())
-      CalGeom::CU_GEOM = true;
+    mpdHists.loadHists();
+    //    asymHists.loadHists();
 
     CalAsym   calAsym;
     CalMPD    calMPD;
+/*
     MuonCalibTkrAlg tkrCalib(peds,
                              dac2adc,
                              asymHists,
                              mpdHists,
                              cfg.cfgPath.getVal());
-
+    
     LogStrm::get() << __FILE__ << ": reading root event file(s) starting w/ "
                      << digiFileList[0] << endl;
     tkrCalib.fillHists(cfg.entriesPerHist.getVal(),
@@ -207,7 +200,7 @@ int main(int argc,
                        cfg.startEvent.getVal());
     mpdHists.trimHists();
     asymHists.trimHists();
-
+    
     // READ IN TXT OUTPUT (SKIP HISTOGRAM FITS)
     LogStrm::get() << __FILE__ << ": fitting asymmetry histograms." << endl;
     asymHists.fitHists(calAsym);
@@ -215,7 +208,7 @@ int main(int argc,
     LogStrm::get() << __FILE__ << ": writing muon asymmetry: "
                      << asymTXTFile << endl;
     calAsym.writeTXT(asymTXTFile);
-
+*/
     LogStrm::get() << __FILE__ << ": fitting MeVPerDAC histograms." << endl;
     mpdHists.fitHists(calMPD);
 
