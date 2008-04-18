@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: chehtman  Fri Apr 18 14:46:26 PDT 2008
+calibGenCAL/src/lib/Specs
+
+Modified Files:
+	CalGeom.cxx CalGeom.h 
+Log Message:
+optionally support CU06 geometry
+
+    *
+------------------------------------------------------------
 User: chehtman  Fri Apr 18 14:45:09 PDT 2008
 calibGenCAL/src/lib/Hists
 
