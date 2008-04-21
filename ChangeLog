@@ -1,4 +1,18 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Apr 21 13:32:33 PDT 2008
+calibGenCAL/src/lib/Hists
+
+Modified Files:
+	AsymHists.cxx AsymHists.h GCRFit.cxx GCRHists.cxx GCRHists.h 
+	HistIdx.cxx HistIdx.h HistMap.h HistVec.h MPDHists.cxx 
+Added Files:
+	TrigHists.cxx TrigHists.h 
+Log Message:
+changed some header file paths
+added TrigHists class which handles histogram collections for Cal trigger threshold calibration
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Apr 21 13:31:30 PDT 2008
 calibGenCAL/src/lib/Util
 
