@@ -2,7 +2,7 @@
 #define IdxPath_h
 
 // LOCAL INCLUDES
-#include "../Util/string_util.h"
+#include "src/lib/Util/string_util.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"

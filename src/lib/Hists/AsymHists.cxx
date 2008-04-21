@@ -6,8 +6,8 @@
 
 // LOCAL INCLUDES
 #include "AsymHists.h"
-#include "../Util/ROOTUtil.h"
-#include "../Util/CGCUtil.h"
+#include "src/lib/Util/ROOTUtil.h"
+#include "src/lib/Util/CGCUtil.h"
 
 // GLAST INCLUDES
 

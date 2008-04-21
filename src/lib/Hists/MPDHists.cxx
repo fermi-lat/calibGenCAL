@@ -6,9 +6,9 @@
 
 // LOCAL INCLUDES
 #include "MPDHists.h"
-#include "../Util/LangauFun.h"
-#include "../Util/CGCUtil.h"
-#include "../Util/ROOTUtil.h"
+#include "src/lib/Util/LangauFun.h"
+#include "src/lib/Util/CGCUtil.h"
+#include "src/lib/Util/ROOTUtil.h"
 
 // GLAST INCLUDES
 
