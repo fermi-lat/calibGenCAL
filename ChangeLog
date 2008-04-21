@@ -1,4 +1,18 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Apr 21 13:43:14 PDT 2008
+calibGenCAL/src/Thresh
+
+Added Files:
+	LPAFheAlg.cxx LPAFheAlg.h LPAFleAlg.cxx LPAFleAlg.h 
+	fitLACHists.cxx fitThreshSlopes.cxx fitTrigHists.cxx 
+	fitULDHists.cxx fitULDSlopes.cxx genFHEHists.cxx 
+	genFLEHists.cxx genLACHists.cxx genULDHists.cxx 
+Log Message:
+moved application main() .cxx files to individual sub-folders
+added full suite of Cal Threshold calibration tools from LPA data (instead of LCI)
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Apr 21 13:42:49 PDT 2008
 calibGenCAL/src/Ped
 
