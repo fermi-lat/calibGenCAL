@@ -1,7 +1,7 @@
 #ifndef CGCUtil_H
 #define CGCUtil_H
 
-//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.h,v 1.5 2007/06/07 17:45:43 fewtrell Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.h,v 1.6 2007/06/13 22:42:13 fewtrell Exp $
 
 // LOCAL INCLUDES
 
@@ -63,6 +63,8 @@ namespace calibGenCAL {
                      
   /// return vector of each lin in txt file.
   std::vector<std::string> getLinesFromFile(const std::string &filename);
+
+  std::string to_str(const int n);
 
 }; // namespace calibGenCAL
 #endif // CGCUtil_H
