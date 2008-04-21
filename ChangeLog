@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Apr 21 13:44:08 PDT 2008
+calibGenCAL/src/CIDAC2ADC
+
+Added Files:
+	splitDigi.cxx 
+Log Message:
+preparing for new version
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Apr 21 13:44:05 PDT 2008
 calibGenCAL/cmt
 
