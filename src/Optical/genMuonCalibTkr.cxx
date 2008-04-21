@@ -5,12 +5,12 @@
 */
 
 // LOCAL INCLUDES
-#include "lib/Hists/AsymHists.h"
-#include "lib/Hists/MPDHists.h"
-#include "lib/Algs/MuonCalibTkrAlg.h"
-#include "lib/Util/CfgMgr.h"
-#include "lib/Util/CGCUtil.h"
-#include "lib/Util/string_util.h"
+#include "src/lib/Hists/AsymHists.h"
+#include "src/lib/Hists/MPDHists.h"
+#include "MuonCalibTkrAlg.h"
+#include "src/lib/Util/CfgMgr.h"
+#include "src/lib/Util/CGCUtil.h"
+#include "src/lib/Util/string_util.h"
 
 
 // GLAST INCLUDES
@@ -33,6 +33,7 @@ using namespace CfgMgr;
 using namespace facilities;
 using namespace CalUtil;
 
+/// Manage application configuration parameters
 class AppCfg {
 public:
   AppCfg(const int argc,
@@ -67,9 +68,6 @@ public:
             'c',
             "(optional) read cfg info from this file (supports env var expansion)",
 			""),
-    cu("calibrationUnit",
-       'u',
-       "use CU06 (calibration unit) geometry"),
     help("help",
          'h',
          "print usage info")
@@ -84,7 +82,6 @@ public:
     cmdParser.registerVar(entriesPerHist);
     cmdParser.registerVar(startEvent);
     cmdParser.registerVar(cfgPath);
-    cmdParser.registerSwitch(cu);
     cmdParser.registerSwitch(help);
 
     try {
@@ -112,8 +109,6 @@ public:
   CmdOptVar<unsigned> startEvent;
 
   CmdOptVar<string> cfgPath;
-
-  CmdSwitch cu;
 
   /// print usage string
   CmdSwitch help;
@@ -186,10 +181,6 @@ int main(int argc,
 
     AsymHists asymHists;
     MPDHists     mpdHists(MPDHists::FitMethods::LANGAU);
-
-    /// if true, enable CU geometry
-    if (cfg.cu.getVal())
-      CalGeom::CU_GEOM = true;
 
     CalAsym   calAsym;
     CalMPD    calMPD;

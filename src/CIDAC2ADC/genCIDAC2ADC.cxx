@@ -1,14 +1,14 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.25 2007/11/19 19:49:31 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.26 2008/01/22 19:40:58 fewtrell Exp $
 
 /** @file Gen CIDAC2ADC calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
 */
 
 // LOCAL INCLUDES
-#include "lib/Algs/IntNonlinAlg.h"
-#include "lib/Util/CfgMgr.h"
-#include "lib/Util/CGCUtil.h"
-#include "lib/Util/string_util.h"
+#include "IntNonlinAlg.h"
+#include "src/lib/Util/CfgMgr.h"
+#include "src/lib/Util/CGCUtil.h"
+#include "src/lib/Util/string_util.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"
@@ -26,6 +26,7 @@ using namespace calibGenCAL;
 using namespace CalUtil;
 using namespace CfgMgr;
 
+/// Manage application configuration parameters
 class AppCfg {
 public:
   AppCfg(const int argc,
