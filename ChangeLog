@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Apr 21 13:42:28 PDT 2008
+calibGenCAL/src
+
+Removed Files:
+	emiAnal.cxx fitGCRHists.cxx fitMuonCalibTkr.cxx 
+	genCIDAC2ADC.cxx genGCRHists.cxx genMuonAsym.cxx 
+	genMuonCalibTkr.cxx genMuonMPD.cxx genMuonPed.cxx 
+	genNeighborXtalk.cxx runMuTrigEff.cxx splitDigi.cxx 
+Log Message:
+moved application main() .cxx files to individual sub-folders
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Apr 21 13:38:19 PDT 2008
 calibGenCAL/src/archive
 
