@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Apr 21 07:37:29 PDT 2008
+calibGenCAL/python/lib
+
+Modified Files:
+	calCalibXML.py calConstant.py 
+Log Message:
+added some constants for clarifying array indices
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Apr 21 07:37:04 PDT 2008
 calibGenCAL/python/bin
 
