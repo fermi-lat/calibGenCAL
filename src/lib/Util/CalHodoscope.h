@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CalHodoscope.h,v 1.3 2007/05/25 21:06:48 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CalHodoscope.h,v 1.4 2008/01/22 19:41:00 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -67,7 +67,7 @@ namespace calibGenCAL {
 
     // Hit lists
     /// list of xtalId's which were hit
-    std::vector<CalUtil::XtalIdx>                      hitList;
+    std::vector<CalUtil::XtalIdx> hitList;
 
     // His summary
     /// total # of hit xtals

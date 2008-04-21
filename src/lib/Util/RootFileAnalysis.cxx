@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/RootFileAnalysis.cxx,v 1.5 2007/06/13 22:42:13 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/RootFileAnalysis.cxx,v 1.6 2007/10/15 15:17:32 golpa Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -31,7 +31,8 @@ namespace calibGenCAL {
                                      const vector<string> *digiFilenames,
                                      const vector<string> *reconFilenames,
                                      const vector<string> *svacFilenames,
-                                     const vector<string> *gcrSelectFilenames) :
+                                     const vector<string> *gcrSelectFilenames,
+                                     const vector<string> *calTupleFilenames) :
     m_mcChain("MC"),
     m_mcEvt(0),
     m_digiChain("Digi"),
@@ -40,6 +41,7 @@ namespace calibGenCAL {
     m_reconEvt(0),
     m_svacChain("Output"),
     m_gcrSelectChain("GcrSelect"),
+    m_calTupleChain("CalTuple"),
     m_gcrSelectEvt(0)
 
   {
@@ -95,6 +97,16 @@ namespace calibGenCAL {
       }
       m_gcrSelectChain.SetBranchAddress("GcrSelectEvent", &m_gcrSelectEvt);
       m_chainArr.Add(&m_gcrSelectChain);
+    }
+
+    // add calTuple file list into calTuple ROOT chain
+    if (calTupleFilenames) {
+      for (vector < string > ::const_iterator itr = calTupleFilenames->begin();
+           itr != calTupleFilenames->end(); ++itr) {
+        LogStrm::get() << "calTuple file added to chain: " << *itr << endl;
+        m_calTupleChain.Add(itr->c_str());
+      }
+      m_chainArr.Add(&m_calTupleChain);
     }
 
 

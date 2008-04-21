@@ -4,7 +4,7 @@
 
     \brief generic utility functions used in calibGenCAL pkg
 
-    $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.cxx,v 1.7 2007/10/01 20:42:25 golpa Exp $
+    $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.cxx,v 1.8 2007/10/02 19:05:28 fewtrell Exp $
 */
 
 // LOCAL INCLUDES
@@ -21,6 +21,7 @@
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
+#include <sstream>
 
 using namespace std;
 
@@ -100,6 +101,14 @@ namespace calibGenCAL {
 
   void LogStrm::addStream(ostream &ostrm) {
     _logStrm.getostreams().push_back(&ostrm);
+  }
+
+  std::string to_str(const int n) {
+    ostringstream tmpstrm;
+
+    tmpstrm << n;
+
+    return tmpstrm.str();
   }
 
 }; // namespace calibGenCAL

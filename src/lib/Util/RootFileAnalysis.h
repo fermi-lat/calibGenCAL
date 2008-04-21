@@ -1,6 +1,6 @@
 #ifndef RootFileAnalysis_h
 #define RootFileAnalysis_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/RootFileAnalysis.h,v 1.3 2007/05/25 21:06:48 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/RootFileAnalysis.h,v 1.4 2007/10/15 15:17:32 golpa Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -49,13 +49,15 @@ namespace calibGenCAL {
        \param digiFilenames (set to NULL to disable Digi ROOT Chain)
        \param reconFilenames (set to NULL to disable recon ROOT Chain)
        \param gcrSelectFilenames (set to NULL to disable gcrSelect ROOT Chain)
+       \param calTupleFileanmes (set to NULL to disable calTuple ROOT Chanin)
 
     */
     RootFileAnalysis(const std::vector<std::string> *mcFilenames = 0,
                      const std::vector<std::string> *digiFilenames = 0,
                      const std::vector<std::string> *reconFilenames = 0,
                      const std::vector<std::string> *svacFilenames = 0,
-                     const std::vector<std::string> *gcrSelectFilenames = 0
+                     const std::vector<std::string> *gcrSelectFilenames = 0,
+                     const std::vector<std::string> *calTupleFileanmes = 0
                      );
 
     ~RootFileAnalysis();
@@ -68,19 +70,19 @@ namespace calibGenCAL {
     /// by EventID field
     UInt_t getEvent(UInt_t iEvt);
 
-    McEvent   *getMcEvent() const {
+    const McEvent   *getMcEvent() const {
       return m_mcEvt;
     }
 
-    DigiEvent *getDigiEvent() const {
+    const DigiEvent *getDigiEvent() const {
       return m_digiEvt;
     }
 
-    ReconEvent  *getReconEvent() const {
+    const ReconEvent  *getReconEvent() const {
       return m_reconEvt;
     }
 
-    GcrSelectEvent *getGcrSelectEvent() const {
+    const GcrSelectEvent *getGcrSelectEvent() const {
       return m_gcrSelectEvt;
     }
 
@@ -104,7 +106,14 @@ namespace calibGenCAL {
       return &m_gcrSelectChain;
     }
 
+    TChain *getCalTupleChain() {
+      return &m_calTupleChain;
+    }
+
   private:
+
+    /// helpful list of all TChains
+    TObjArray        m_chainArr;
 
     /// Chains store event data for all files
     TChain           m_mcChain;
@@ -124,13 +133,15 @@ namespace calibGenCAL {
     /// Chains store event data for all files
     TChain           m_svacChain;
 
-    /// helpful list of all 3 TChains
-    TObjArray        m_chainArr;
-
     /// Chains store event data for all files
     TChain           m_gcrSelectChain;
+
+    /// Chains store event data for all files
+    TChain           m_calTupleChain;
+
     /// pointer to current gcrSelectEvent
     GcrSelectEvent  *m_gcrSelectEvt;
+
 
     /// current event number
     unsigned         m_nextEvt;
