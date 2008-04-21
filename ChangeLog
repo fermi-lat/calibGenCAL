@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Apr 21 13:42:38 PDT 2008
+calibGenCAL/src/CIDAC2ADC
+
+Added Files:
+	IntNonlinAlg.cxx IntNonlinAlg.h NeighborXtalkAlg.cxx 
+	NeighborXtalkAlg.h genCIDAC2ADC.cxx genNeighborXtalk.cxx 
+Log Message:
+moved application main() .cxx files to individual sub-folders
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Apr 21 13:42:28 PDT 2008
 calibGenCAL/src
 
