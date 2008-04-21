@@ -29,7 +29,7 @@ INPUTS:
         TXT file columns are space delimited, ';' in 1st character on line indicates comment
         All Cal component indexing uses GLAST offline software conventions (POS_FACE = 0, layers numberd 0-7 along LAT z axis in direction away from tracker.)
         TXT format is as follows:
-        "tower layer column face adc_range slope slope_error dac_range"
+        "tower layer column face adc_range slope slope_error dac_range saturation_mev"
 
         where for dac_range, 0 = FINE and 1 = COARSE
 
@@ -43,8 +43,8 @@ OUTPUTS:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL DAC XML calibration data file from TXT files for each discriminator type"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2008/02/20 19:11:46 $"
-__version__   = "$Revision: 1.17 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/04/21 14:36:57 $"
+__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -124,9 +124,9 @@ def read_uld_slopes_file(txt_path):
     where for dac_range, 0 = FINE and 1 = COARSE
 
     Output:
-    tuple(slopes, offsets, dac_rng, twrSet)
+    tuple(slopes, offsets, dac_rng, saturation, twrSet)
     where:
-      slopes, offsets, dac_rng are numarray arrays of shape (3,16,8,2,12)
+      slopes, offsets, dac_rng, saturation are numarray arrays of shape (3,16,8,2,12)
       twrSet - set of towers included in data set
           
     """
@@ -137,6 +137,7 @@ def read_uld_slopes_file(txt_path):
     slopeData  = numarray.zeros((3,16,8,2,12), numarray.Float32)
     offsetData = numarray.zeros((3,16,8,2,12), numarray.Float32)
     rngData    = numarray.zeros((3,16,8,2,12), numarray.Int8)
+    satData    = numarray.zeros((3,16,8,2,12), numarray.Float32)
     twrSet = set()
 
     # loop over each line in code
@@ -152,7 +153,7 @@ def read_uld_slopes_file(txt_path):
     
         # read in values from current line
         [twr, offline_lyr, col, face, rng,
-         slope, offset, dac_rng] = line.split()
+         slope, offset, dac_rng, saturation] = line.split()
 
 
         # convert array index values to integer.
@@ -164,6 +165,7 @@ def read_uld_slopes_file(txt_path):
         slope = float(slope)
         offset = float(offset)
         dac_rng = int(dac_rng)
+        saturation = float(saturation)
 
         # make sure current tower is on list
         twrSet.add(twr)
@@ -176,8 +178,9 @@ def read_uld_slopes_file(txt_path):
         slopeData[rng][twr][online_row][online_face][col]  = slope
         offsetData[rng][twr][online_row][online_face][col] = offset
         rngData[rng][twr][online_row][online_face][col]    = dac_rng
+        satData[rng][twr][online_row][online_face][col]    = saturation
 
-    return (slopeData, offsetData, rngData, twrSet)
+    return (slopeData, offsetData, rngData, satData, twrSet)
 
 if __name__ == '__main__':
     # setup logger
@@ -233,7 +236,7 @@ if __name__ == '__main__':
     (lac_slopes,  lac_offsets,  lac_rng, lacTwrSet) = read_slopes_file(lac_txt_path)
     (fle_slopes,  fle_offsets,  fle_rng, fleTwrSet) = read_slopes_file(fle_txt_path)
     (fhe_slopes,  fhe_offsets,  fhe_rng, fheTwrSet) = read_slopes_file(fhe_txt_path)
-    (uld_slopes,  uld_offsets,  uld_rng, uldTwrSet) = read_uld_slopes_file(uld_txt_path)
+    (uld_slopes,  uld_offsets,  uld_rng, uld_saturation, uldTwrSet) = read_uld_slopes_file(uld_txt_path)
 
     # process only towers that have all data specified.
     twrSet = lacTwrSet & fleTwrSet & fheTwrSet & uldTwrSet
@@ -260,6 +263,7 @@ if __name__ == '__main__':
 
     uldDataOut[..., calCalibXML.calDacSlopesCalibXML.ULDDATA_SLOPE] = uld_slopes
     uldDataOut[..., calCalibXML.calDacSlopesCalibXML.ULDDATA_OFFSET] = uld_offsets
+    uldDataOut[..., calCalibXML.calDacSlopesCalibXML.ULDDATA_SAT] = uld_saturation
 
     rngDataOut[..., calCalibXML.calDacSlopesCalibXML.RNGDATA_LACDAC] = lac_rng
     rngDataOut[..., calCalibXML.calDacSlopesCalibXML.RNGDATA_FLEDAC] = fle_rng

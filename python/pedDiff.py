@@ -16,8 +16,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL pedestal XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2008/02/03 00:51:50 $"
-__version__     = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/02/11 21:35:58 $"
+__version__     = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -87,8 +87,11 @@ pedTwrs1 = pedFile1.getTowers()
 pedTwrs2 = pedFile2.getTowers()
 
 if (pedTwrs1 != pedTwrs2):
-    log.error("input files have different n towers.  I quit! ;)")
+    log.warning("input files have different n towers.  I quit! ;)")
 
+twrSet = pedTwrs1 & pedTwrs2
+del pedTwrs1, pedTwrs2 # don't want to get confused & use these variables any more (twrSet subsumes them)
+log.info("Processing tower modules: %s"%twrSet)
 
 # load up arrays
 log.info("Reading %s"%pedPath1)
@@ -125,7 +128,7 @@ for rng in range(calConstant.NUM_RNG):
                               "PedestalSigma%s_%s"%(optypeName,calConstant.CRNG[rng]),
                               nbins,xaxismin,xaxismax)
 
-for twr in pedTwrs1:
+for twr in twrSet:
     # from calCalibXML.py
     #         Param: pedData -
     #             A numarray array containing the pedestal data
