@@ -1,4 +1,19 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Apr 21 13:31:30 PDT 2008
+calibGenCAL/src/lib/Util
+
+Modified Files:
+	CGCUtil.cxx CGCUtil.h CalHodoscope.h RootFileAnalysis.cxx 
+	RootFileAnalysis.h 
+Added Files:
+	CalSignalArray.cxx CalSignalArray.h 
+Log Message:
+Added CalTuple support to RootFileAnalysis
+Changed some header file paths
+Added CalSignalArray class, which builds simple array of cal response from CalDigiCol
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Apr 21 13:26:33 PDT 2008
 calibGenCAL/src/Thresh
 
