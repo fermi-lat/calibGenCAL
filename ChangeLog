@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Apr 21 13:42:45 PDT 2008
+calibGenCAL/src/Optical
+
+Added Files:
+	GCRCalibAlg.cxx GCRCalibAlg.h MuonAsymAlg.cxx MuonAsymAlg.h 
+	MuonCalibTkrAlg.cxx MuonCalibTkrAlg.h MuonMPDAlg.cxx 
+	MuonMPDAlg.h fitGCRHists.cxx genGCRHists.cxx genMuonAsym.cxx 
+	genMuonCalibTkr.cxx genMuonMPD.cxx 
+Log Message:
+moved application main() .cxx files to individual sub-folders
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Apr 21 13:42:38 PDT 2008
 calibGenCAL/src/CIDAC2ADC
 
