@@ -39,32 +39,45 @@ apply_pattern shared_library
 library calibGenCAL  lib/*.cxx lib/*.h \
                      lib/CalibDataTypes/*.cxx lib/CalibDataTypes/*.h \
                      lib/Hists/*.cxx lib/Hists/*.h \
-                     lib/Algs/*.cxx lib/Algs/*.h \
                      lib/Specs/*.cxx lib/Specs/*.h \
-                     lib/Util/*.cxx lib/Util/*.h
+                     lib/Util/*.cxx lib/Util/*.h \      
+                     lib/Algs/*.cxx lib/Algs/*.h
 
-application genMuonPed genMuonPed.cxx
+application genMuonPed Ped/genMuonPed.cxx Ped/MuonPedAlg.cxx Ped/MuonPedAlg.h
 
-application genCIDAC2ADC genCIDAC2ADC.cxx
+application genCIDAC2ADC CIDAC2ADC/genCIDAC2ADC.cxx CIDAC2ADC/IntNonlinAlg.cxx CIDAC2ADC/IntNonlinAlg.h
 
-application genMuonAsym genMuonAsym.cxx
+application splitDigi CIDAC2ADC/splitDigi.cxx
 
-application genMuonMPD genMuonMPD.cxx 
+application genNeighborXtalk CIDAC2ADC/genNeighborXtalk.cxx CIDAC2ADC/NeighborXtalkAlg.cxx CIDAC2ADC/NeighborXtalkAlg.h
 
-# not currently used, uncomment to enable
-#application runMuTrigEff runMuTrigEff.cxx 
+application genMuonAsym Optical/genMuonAsym.cxx Optical/MuonAsymAlg.cxx Optical/MuonAsymAlg.h
 
-application genGCRHists genGCRHists.cxx
+application genMuonMPD Optical/genMuonMPD.cxx Optical/MuonMPDAlg.cxx Optical/MuonMPDAlg.h
 
-application fitGCRHists fitGCRHists.cxx
+application genGCRHists Optical/genGCRHists.cxx Optical/GCRCalibAlg.cxx Optical/GCRCalibAlg.h
 
-# not currently used, uncomment to enable
-#application emiAnal emiAnal.cxx
+application fitGCRHists Optical/fitGCRHists.cxx
 
-application genMuonCalibTkr genMuonCalibTkr.cxx
+application genMuonCalibTkr Optical/genMuonCalibTkr.cxx Optical/MuonCalibTkrAlg.cxx  Optical/MuonCalibTkrAlg.h
 
-application fitMuonCalibTkr fitMuonCalibTkr.cxx
+application fitMuonCalibTkr Optical/fitMuonCalibTkr.cxx
 
-application genNeighborXtalk genNeighborXtalk.cxx
+application genLACHists Thresh/genLACHists.cxx
 
-application splitDigi splitDigi.cxx
+application fitLACHists Thresh/fitLACHists.cxx
+
+application fitThreshSlopes Thresh/fitThreshSlopes.cxx
+
+application genFLEHists Thresh/genFLEHists.cxx Thresh/LPAFleAlg.cxx Thresh/LPAFleAlg.h 
+
+application genFHEHists Thresh/genFHEHists.cxx Thresh/LPAFheAlg.cxx Thresh/LPAFheAlg.h 
+
+application fitTrigHists Thresh/fitTrigHists.cxx
+
+application genULDHists Thresh/genULDHists.cxx
+
+application fitULDHists Thresh/fitULDHists.cxx
+
+application fitULDSlopes Thresh/fitULDSlopes.cxx
+
