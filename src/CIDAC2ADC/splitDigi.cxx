@@ -12,8 +12,8 @@
 
 //----- local includes
 
-#include "../src/lib/Util/RootFileAnalysis.h"
-#include "../src/lib/Util/CGCUtil.h"
+#include "src/lib/Util/RootFileAnalysis.h"
+#include "src/lib/Util/CGCUtil.h"
 
 using namespace std;
 using namespace CalUtil;
