@@ -5,12 +5,11 @@
 */
 
 // LOCAL INCLUDES
-#include "lib/Hists/AsymHists.h"
-#include "lib/Hists/MPDHists.h"
-#include "lib/Algs/MuonCalibTkrAlg.h"
-#include "lib/Util/CfgMgr.h"
-#include "lib/Util/CGCUtil.h"
-#include "lib/Util/string_util.h"
+#include "src/lib/Hists/AsymHists.h"
+#include "src/lib/Hists/MPDHists.h"
+#include "src/lib/Util/CfgMgr.h"
+#include "src/lib/Util/CGCUtil.h"
+#include "src/lib/Util/string_util.h"
 
 
 // GLAST INCLUDES
