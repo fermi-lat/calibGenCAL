@@ -7,8 +7,8 @@ some assumptions are made about calibGenCAL delimited TXT file conventions
 __facility__  = "Offline"
 __abstract__  = "Tool to generate ROOT ntuple file from txt."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2007/03/20 19:23:47 $"
-__version__   = "$Revision: 1.8 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/03 00:51:50 $"
+__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -71,7 +71,7 @@ if __name__ == '__main__':
             # don't process this line
             if has_header:
                 continue
-        
+
         vals = [float(x) for x in line]
         data = array.array('f',vals)
         tpl.Fill(data)
