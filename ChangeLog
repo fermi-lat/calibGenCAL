@@ -1,4 +1,19 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Apr 21 07:36:57 PDT 2008
+calibGenCAL/python
+
+Modified Files:
+	dacSlopesTXT2XML.py dacSlopesXML2TXT.py dacXML2TXT.py 
+	inlDumpSlopes.py inlXML2TXT.py txt2tuple.py 
+Added Files:
+	inlPlot.py mergeDacSlopes.py muSlopeXML2TXT.py 
+Log Message:
+inlPlot.py added (tool to plot intNonlin files)
+mergeDacSlopes.py added (tool to create overall dacSlopes file from TXT file for each threshold DAC type)
+muSlopeXML2TXT.py added (convert muSlopes calibration file to TXT format)
+
+    *
+------------------------------------------------------------
 User: chehtman  Fri Apr 18 14:47:42 PDT 2008
 calibGenCAL/src/lib/Util
 
