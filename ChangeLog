@@ -1,4 +1,21 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Apr 21 13:35:30 PDT 2008
+calibGenCAL/src/lib/Algs
+
+Added Files:
+	LPATrigAlg.cxx LPATrigAlg.h 
+Removed Files:
+	GCRCalibAlg.cxx GCRCalibAlg.h IntNonlinAlg.cxx IntNonlinAlg.h 
+	MuTrigAlg.cxx MuTrigAlg.h MuonAsymAlg.cxx MuonAsymAlg.h 
+	MuonCalibTkrAlg.cxx MuonCalibTkrAlg.h MuonMPDAlg.cxx 
+	MuonMPDAlg.h MuonPedAlg.cxx MuonPedAlg.h NeighborXtalkAlg.cxx 
+	NeighborXtalkAlg.h 
+Log Message:
+moved many alg classes to program specific folders (not needed as part of the library)
+LPATrigAlg is abstract class, however, shared by > 1 application.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Apr 21 13:32:33 PDT 2008
 calibGenCAL/src/lib/Hists
 
