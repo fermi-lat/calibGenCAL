@@ -1,14 +1,16 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.24 2007/06/13 22:42:11 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.25 2008/01/22 19:40:58 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
+
+    extract Cal pedestals from LPA data (periodic trigger, external trigger, or non zero suppressed particle data)
 */
 
 // LOCAL INCLUDES
-#include "lib/Algs/MuonPedAlg.h"
-#include "lib/Util/CfgMgr.h"
-#include "lib/Util/CGCUtil.h"
-#include "lib/Util/string_util.h"
+#include "MuonPedAlg.h"
+#include "src/lib/Util/CfgMgr.h"
+#include "src/lib/Util/CGCUtil.h"
+#include "src/lib/Util/string_util.h"
 
 // GLAST INCLUDES
 #include "CalUtil/SimpleCalCalib/CalPed.h"
@@ -26,6 +28,7 @@ using namespace calibGenCAL;
 using namespace CfgMgr;
 using namespace CalUtil;
 
+/// Manage application configuration parameters
 class AppCfg {
 public:
   AppCfg(const int argc,

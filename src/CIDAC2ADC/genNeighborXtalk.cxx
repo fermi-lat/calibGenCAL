@@ -1,13 +1,13 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genNeighborXtalk.cxx,v 1.14 2007/06/13 22:42:11 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genNeighborXtalk.cxx,v 1.15 2008/01/22 19:40:58 fewtrell Exp $
 
 /** @file Gen Neighboring Crystal Cross-talk calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
 */
 
 // LOCAL INCLUDES
-#include "lib/Algs/NeighborXtalkAlg.h"
-#include "lib/Util/CfgMgr.h"
-#include "lib/Util/CGCUtil.h"
+#include "NeighborXtalkAlg.h"
+#include "src/lib/Util/CfgMgr.h"
+#include "src/lib/Util/CGCUtil.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"
@@ -26,6 +26,7 @@ using namespace calibGenCAL;
 using namespace CalUtil;
 using namespace CfgMgr;
 
+/// Manage application configuration parameters
 class AppCfg {
 public:
   AppCfg(const int argc,
