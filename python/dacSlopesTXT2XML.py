@@ -9,7 +9,7 @@ where:
     -d           = specify which dtd file to load from calibUtil/xml folder (default = 'calCalib_v2r3.dtd')
 
     input.txt    = dacSlopes input txt file, space delimited in following format: (one line per xtal face)
-                   "twr lyr col face lac_slope lac_offest fle_slope fle_offset fhe_slope fhe_offset lac_slope_err lac_offset_err fle_slope_err fle_offset_err fhe_slope_err fhe_offset_err lex8_uld_slope lex8_uld_offset lex8_uld_saturation lex8_uld_slope_err lex8_uld_offset_err lex8_uld_saturation_err lex1_uld_slope lex1_uld_offset lex1_uld_saturation lex1_uld_slope_err lex1_uld_offset_err lex1_uld_saturation_err hex8_uld_slope hex8_uld_offset hex8_uld_saturation hex8_uld_slope_err hex8_uld_offset_err hex8_uld_saturation_err lac_dac_rng fle_dac_rng fhe_dac_rng lex8_uld_rng lex1_uld_rng hex8_uld_rng"
+                   "twr lyr col face lac_slope lac_offset fle_slope fle_offset fhe_slope fhe_offset lac_slope_err lac_offset_err fle_slope_err fle_offset_err fhe_slope_err fhe_offset_err lex8_uld_slope lex8_uld_offset lex8_uld_saturation lex8_uld_slope_err lex8_uld_offset_err lex8_uld_saturation_err lex1_uld_slope lex1_uld_offset lex1_uld_saturation lex1_uld_slope_err lex1_uld_offset_err lex1_uld_saturation_err hex8_uld_slope hex8_uld_offset hex8_uld_saturation hex8_uld_slope_err hex8_uld_offset_err hex8_uld_saturation_err lac_dac_rng fle_dac_rng fhe_dac_rng lex8_uld_rng lex1_uld_rng hex8_uld_rng"
         
     output.xml = properly formatted offline CAL dacSlopes XML file
 """
@@ -17,8 +17,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL DacSlopes calibration XML files from TXT."
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2008/02/03 00:51:49 $"
-__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/11 21:35:58 $"
+__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -103,7 +103,7 @@ if __name__ == '__main__':
         # read in values from current line
         [twr, lyr, col, face, 
 
-         lac_slope, lac_offest, 
+         lac_slope, lac_offset, 
          fle_slope, fle_offset, 
          fhe_slope, fhe_offset, 
          lac_slope_err, lac_offset_err, 
@@ -126,13 +126,13 @@ if __name__ == '__main__':
         twrSet.add(twr)
 
         # get online row indexing (as opposed to offline lyr indexing)
-        row = calCalibXML.layerToRow(int(lyr))
+        row = calCalibXML.layerToRow(lyr)
         # convert offline face numbering to online face numbering
         online_face = calConstant.offline_face_to_online[face]
 
 
         dacData[twr][row][online_face][col][0] = float(  lac_slope     )
-        dacData[twr][row][online_face][col][1] = float(  lac_offest    )
+        dacData[twr][row][online_face][col][1] = float(  lac_offset    )
         dacData[twr][row][online_face][col][2] = float(  fle_slope     )
         dacData[twr][row][online_face][col][3] = float(  fle_offset    )
         dacData[twr][row][online_face][col][4] = float(  fhe_slope     )

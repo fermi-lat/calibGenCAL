@@ -4,7 +4,8 @@ Dump GLAST Cal offline dacSlopes calibration xml into column delmited text on st
 output format is one line per crystal face:
 twr lyr col face lac_slope lac_offest fle_slope fle_offset fhe_slope fhe_offset lac_slope_err lac_offset_err fle_slope_err fle_offset_err fhe_slope_err fhe_offset_err lex8_uld_slope lex8_uld_offset lex8_uld_saturation lex8_uld_slope_err lex8_uld_offset_err lex8_uld_saturation_err lex1_uld_slope lex1_uld_offset lex1_uld_saturation lex1_uld_slope_err lex1_uld_offset_err lex1_uld_saturation_err hex8_uld_slope hex8_uld_offset hex8_uld_saturation hex8_uld_slope_err hex8_uld_offset_err hex8_uld_saturation_err lac_dac_rng fle_dac_rng fhe_dac_rng lex8_uld_rng lex1_uld_rng hex8_uld_rng
 
-python dacSlopesXML2TXT.py [-d delim] <input_xml_file>
+Usage:
+>python dacSlopesXML2TXT.py [-d delim] <input_xml_file>
 
 where:
     <input_xml_file> = input dacSlopes GLAST Cal offline calibration file
@@ -15,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Dump dacSlopes XML file to .txt file"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2008/02/03 00:51:49 $"
-__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/11 21:35:58 $"
+__version__   = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 

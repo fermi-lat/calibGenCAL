@@ -1,22 +1,22 @@
 """
-Dump GLAST Cal offline Integral Nonlinearity (ADC<->CIDAC) calibration xml into column delmited text on stdout
+Dump GLAST Cal offline muSlope calibration xml into column delmited text on stdout
 
 output format is:
-twr lyr col face range cidac adc
+twr lyr col face range muSlope error
 
-inlXML2TXT [-d delim] <input_xml_file>
+muSlopeXML2TXT [-d delim] <input_xml_file>
 
 where:
-    <input_xml_file> = input intNonlin GLAST Cal offline calibration file
+    <input_xml_file> = input muSlope  GLAST Cal offline calibration file
         -d delim         = optional field delimeter override (default = ' ')
 """
 
 
 __facility__  = "Offline"
-__abstract__  = "Dump offline intNonlin xml file to .txt file"
+__abstract__  = "Dump offline muSlope xml file to .txt file"
 __author__    = "Z. Fewtrell"
 __date__      = "$Date: 2008/02/11 21:35:58 $"
-__version__   = "$Revision: 1.12 $, $Author: fewtrell $"
+__version__   = "$Revision: 1.11 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -30,8 +30,6 @@ import numarray
 import calCalibXML
 import calConstant
 import cgc_util
-
-
                   
 if __name__ == '__main__':
 
@@ -56,16 +54,16 @@ if __name__ == '__main__':
     # retrieve commandline parms
     inName  = args[0]
 
-    # open and read XML intNonlin file
+    # open and read XML MuSlope file
 
-    xmlFile = calCalibXML.calIntNonlinCalibXML(inName)
-    (lenData, dacData, adcData) = xmlFile.read()
+    xmlFile = calCalibXML.calMuSlopeCalibXML(inName)
+    muSlopeData = xmlFile.read()
     towers = xmlFile.getTowers()
     xmlFile.close()
-
-    # print out header as comment
-    print ";twr lyr col face range cidac adc"
-
+    
+    # print header as comment
+    print ";twr lyr col face range muSlope error"
+    
     # print out txt file.
     for twr in towers:
         for lyr in range(calConstant.NUM_LAYER):
@@ -74,11 +72,10 @@ if __name__ == '__main__':
             for col in range(calConstant.NUM_FE):
                 for face in range(calConstant.NUM_END):
                     online_face = calConstant.offline_face_to_online[face]
-                    for rng in range(4):
-                        for pt in range(lenData[rng][twr][row][online_face][col]):
-                            print delim.join([str(x) for x in twr, lyr, col, face, rng,
-                                              dacData[rng][twr][row][online_face][col][pt],
-                                              adcData[rng][twr][row][online_face][col][pt]])
+                    for rng in range(calConstant.NUM_RNG):
+                        print delim.join([str(x) for x in twr, lyr, col, face, rng,
+                                          muSlopeData[twr][row][online_face][col][rng][0],
+                                          muSlopeData[twr][row][online_face][col][rng][1]])
                                           
 
  
