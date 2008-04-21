@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2008/02/11 21:35:59 $"
-__version__   = "$Revision: 1.17 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/15 22:47:22 $"
+__version__   = "$Revision: 1.18 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -2154,7 +2154,34 @@ class calDacSlopesCalibXML(calCalibXML):
     This class provides methods for accessing CAL DAC/energy
     calibration data stored in XML format.
     """
-        
+
+    DACDATA_LACDAC_SLOPE = 0
+    DACDATA_LACDAC_OFFSET = 1
+    DACDATA_FLEDAC_SLOPE = 2
+    DACDATA_FLEDAC_OFFSET = 3
+    DACDATA_FHEDAC_SLOPE = 4
+    DACDATA_FHEDAC_OFFSET = 5
+    DACDATA_LACDAC_SLOPE_ERR = 6
+    DACDATA_LACDAC_OFFSET_ERR = 7
+    DACDATA_FLEDAC_SLOPE_ERR = 8
+    DACDATA_FLEDAC_OFFSET_ERR = 9
+    DACDATA_FHEDAC_SLOPE_ERR = 10
+    DACDATA_FHEDAC_OFFSET_ERR = 11
+
+    ULDDATA_SLOPE = 0
+    ULDDATA_OFFSET = 1
+    ULDDATA_SAT = 2
+    ULDDATA_SLOPE_ERR = 3
+    ULDDATA_OFFSET_ERR = 4
+    ULDDATA_SAT_ERR = 5
+
+    RNGDATA_LACDAC = 0
+    RNGDATA_FLEDAC = 1
+    RNGDATA_FHEDAC = 2
+    RNGDATA_ULDDAC_LEX8 = 3
+    RNGDATA_ULDDAC_LEX1 = 4
+    RNGDATA_ULDDAC_HEX8 = 5
+
 
     def write(self, dacData, uldData, rangeData, tems = (0,)):
         """

@@ -6,8 +6,8 @@ Global calorimeter constant values
 __facility__      = "Online"
 __abstract__      = "Global calorimeter constant values"
 __author__        = "D.L. Wood"
-__date__          = "$Date: 2007/07/26 16:05:28 $"
-__version__       = "$Revision: 1.7 $, $Author: fewtrell $"
+__date__          = "$Date: 2007/12/20 00:36:51 $"
+__version__       = "$Revision: 1.8 $, $Author: fewtrell $"
 __release__       = "$Name:  $"
 __credits__       = "NRL code 7650"
 
@@ -106,11 +106,6 @@ NUM_GCRC = 4
 
 CMOD = ('FM104', 'FM103', 'FM117', 'FM118', 'FM105', 'FM102', 'FM115', 'FM116',
         'FM107', 'FM106', 'FM111', 'FM112', 'FM110', 'FM108', 'FM113', 'FM114')
-
-
-         
-
-
 
 def temToModule(tem):
     """
