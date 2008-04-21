@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Apr 21 13:42:49 PDT 2008
+calibGenCAL/src/Ped
+
+Added Files:
+	MuonPedAlg.cxx MuonPedAlg.h genMuonPed.cxx 
+Log Message:
+moved application main() .cxx files to individual sub-folders
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Apr 21 13:42:45 PDT 2008
 calibGenCAL/src/Optical
 
