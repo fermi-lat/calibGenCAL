@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRFit.cxx,v 1.2 2007/06/13 22:42:12 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRFit.cxx,v 1.3 2007/06/19 18:11:45 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -9,8 +9,8 @@
 #include "GCRHists.h"
 #include "HistIdx.h"
 #include "MPDHists.h"
-#include "../Util/CGCUtil.h"
-#include "../Util/ROOTUtil.h"
+#include "src/lib/Util/CGCUtil.h"
+#include "src/lib/Util/ROOTUtil.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"

@@ -1,14 +1,14 @@
 #ifndef HistVec_h
 #define HistVec_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistVec.h,v 1.5 2007/06/19 18:11:45 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistVec.h,v 1.6 2008/01/22 19:40:59 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
 */
 
 // LOCAL INCLUDES
-#include "../Util/ROOTUtil.h"
+#include "src/lib/Util/ROOTUtil.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalVec.h"

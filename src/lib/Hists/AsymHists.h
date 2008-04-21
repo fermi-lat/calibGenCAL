@@ -59,7 +59,7 @@ namespace calibGenCAL {
     /// count min number of entries in all enable histograms
     unsigned    getMinEntries() const;
 
-	void        fitHists(CalUtil::CalAsym &calAsym);
+    void        fitHists(CalUtil::CalAsym &calAsym);
 
     TH2S *getHist(const CalUtil::AsymType asymType,
                   const CalUtil::XtalIdx xtalIdx) {

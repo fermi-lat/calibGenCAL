@@ -7,7 +7,7 @@
 
 // LOCAL INCLUDES
 #include "HistIdx.h"
-#include "../Util/string_util.h"
+#include "src/lib/Util/string_util.h"
 
 // GLAST INCLUDES
 
