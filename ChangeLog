@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Apr 22 12:30:35 PDT 2008
+calibGenCAL/src/lib/Util
+
+Modified Files:
+	CGCUtil.cxx 
+Log Message:
+removing compiler warnings
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Apr 22 12:02:48 PDT 2008
 calibGenCAL/src/lib/Util
 
