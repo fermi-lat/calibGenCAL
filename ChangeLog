@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Apr 22 11:36:04 PDT 2008
+calibGenCAL/src/Optical
+
+Modified Files:
+	MuonAsymAlg.cxx 
+Log Message:
+added const_cast to allow use with older versions of digiRootData that do not have EventSummaryData::readout4() defined as class-constant.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Apr 21 14:08:59 PDT 2008
 calibGenCAL/src/Optical
 
