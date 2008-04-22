@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: fewtrell  Tue Apr 22 12:02:47 PDT 2008
+calibGenCAL/src/Thresh
+
+Modified Files:
+	fitLACHists.cxx fitULDHists.cxx 
+Log Message:
+made changes to address compiler errors under windows
+    *
+------------------------------------------------------------
+User: fewtrell  Tue Apr 22 12:02:47 PDT 2008
 calibGenCAL/src/CIDAC2ADC
 
 Modified Files:
