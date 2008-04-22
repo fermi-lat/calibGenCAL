@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Apr 22 12:02:48 PDT 2008
+calibGenCAL/src/lib/Util
+
+Modified Files:
+	CGCUtil.cxx 
+Log Message:
+made changes to address compiler errors under windows
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Apr 22 12:02:47 PDT 2008
 calibGenCAL/src/Thresh
 
