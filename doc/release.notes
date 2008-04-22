@@ -582,11 +582,15 @@ v5r1p7 fewtrell
 - dacDiff.sh - generates new histograms & creates txt log file
 - python .sh launcher scripts now use bash instead of sh
 
+-----------------------
+v5r2
+-----------------------
+- tools added to summarize and diff Cal LATC configurations
+
 ------------------------
-v5r2 fewtrell 01/17/08
+v5r3 fewtrell 01/17/08
 ------------------------
 - CalibDataTypes classes were moved to CalUtil/SimpleCalClaib where they can be available to Gleam test code
-
 
 - updated unit test
 - now using GLAST_EXT provided python
@@ -596,6 +600,14 @@ v5r2 fewtrell 01/17/08
 - added dacSlopesXML2TXT.py, dacSlopesTXT2XML.py tool
 
 ------------------------
-v5r2p1 fewtrell 02/27/08
+v5r3p1 fewtrell 02/27/08
 ------------------------
 - fix minor bug in asymVal.py commandline processing
+
+------------------------
+v5r4p0
+------------------------
+- full suite of tools added for calibration Cal discriminator thresholds from LPA data.
+- C++ file subfolders rearranged
+- works with CalUtil v3r12 which adds 'explicit' to some constructors
+- optionally support CU06 geometry
