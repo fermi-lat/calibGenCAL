@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/GCRCalibAlg.cxx,v 1.9 2008/01/22 19:40:58 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/GCRCalibAlg.cxx,v 1.1 2008/04/21 20:42:45 fewtrell Exp $
 
 /** @file 
     @author Zach Fewtrell
@@ -97,7 +97,7 @@ namespace calibGenCAL {
   void GCRCalibAlg::readCfg(string cfgPath) {
     /// default case
     if (cfgPath=="")
-      cfgPath = CGC_DEFAULT_CFGPATH;
+      cfgPath = CGC_DEFAULT_CFGPATH();
 
     Util::expandEnvVar(&cfgPath);
     const SimpleIniFile cfgFile(cfgPath);
@@ -339,9 +339,9 @@ namespace calibGenCAL {
       CalVec<XtalRng, float> adcPed;
       CalVec<DiodeNum, float> meanDAC;
       CalVec<XtalDiode, float> dac;
-      fill(adcPed.begin(), adcPed.end(), CIDAC2ADC::INVALID_ADC);
-      fill(meanDAC.begin(), meanDAC.end(), CIDAC2ADC::INVALID_ADC);
-      fill(dac.begin(), dac.end(), CIDAC2ADC::INVALID_ADC);
+      fill(adcPed.begin(), adcPed.end(), CIDAC2ADC::INVALID_ADC());
+      fill(meanDAC.begin(), meanDAC.end(), CIDAC2ADC::INVALID_ADC());
+      fill(dac.begin(), dac.end(), CIDAC2ADC::INVALID_ADC());
 
       for (RngNum rng(maxBestRng); rng.isValid(); rng++) {
         const DiodeNum diode(rng.getDiode());
@@ -370,8 +370,8 @@ namespace calibGenCAL {
         
         // mean dac
         if (rng == LEX1 || rng == HEX8)
-          if (dac[XtalDiode(POS_FACE,diode)] != CIDAC2ADC::INVALID_ADC &&
-              dac[XtalDiode(NEG_FACE,diode)] != CIDAC2ADC::INVALID_ADC) {
+          if (dac[XtalDiode(POS_FACE,diode)] != CIDAC2ADC::INVALID_ADC() &&
+              dac[XtalDiode(NEG_FACE,diode)] != CIDAC2ADC::INVALID_ADC()) {
             meanDAC[diode]  = sqrt(dac[XtalDiode(POS_FACE,diode)] *dac[XtalDiode(NEG_FACE,diode)]);
             
             // pathlength correct
@@ -385,7 +385,7 @@ namespace calibGenCAL {
           const XtalRng xRng(face,rng);
 
           //-- MEAN ADC --//
-          if (adcPed[xRng] == CIDAC2ADC::INVALID_ADC)
+          if (adcPed[xRng] == CIDAC2ADC::INVALID_ADC())
             continue;
 
           const RngIdx rngIdx(xtalIdx, xRng);
@@ -394,7 +394,7 @@ namespace calibGenCAL {
           const XtalRng nextRng(face,
                                 RngNum(rng.val()+1)); 
           for (FaceNum face; face.isValid(); face++)
-            if (rng <= HEX8 && adcPed[nextRng] != CIDAC2ADC::INVALID_ADC)
+            if (rng <= HEX8 && adcPed[nextRng] != CIDAC2ADC::INVALID_ADC())
               algData.gcrHists->fillAdcRatio(rngIdx,
                                              adcPed[xRng],
                                              adcPed[nextRng]);
@@ -404,7 +404,7 @@ namespace calibGenCAL {
       for (DiodeNum diode; diode.isValid(); diode++) {
         //-- MEAN DAC --//
 
-        if (meanDAC[diode] == CIDAC2ADC::INVALID_ADC)
+        if (meanDAC[diode] == CIDAC2ADC::INVALID_ADC())
           continue;
 
         /// only fill these histograms for z's of interest.
@@ -426,8 +426,8 @@ namespace calibGenCAL {
       //-- MEAN DAC RATIO --//
       for (FaceNum face; face.isValid(); face++) {
         const FaceIdx faceIdx(xtalIdx,face);
-        if (dac[XtalDiode(face,LRG_DIODE)] != CIDAC2ADC::INVALID_ADC &&
-            dac[XtalDiode(face,SM_DIODE)] != CIDAC2ADC::INVALID_ADC) {
+        if (dac[XtalDiode(face,LRG_DIODE)] != CIDAC2ADC::INVALID_ADC() &&
+            dac[XtalDiode(face,SM_DIODE)] != CIDAC2ADC::INVALID_ADC()) {
           algData.gcrHists->fillDACRatio(faceIdx, 
                                          dac[XtalDiode(face,LRG_DIODE)],
                                          dac[XtalDiode(face,SM_DIODE)]);

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CalHodoscope.cxx,v 1.5 2007/10/05 21:07:20 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CalHodoscope.cxx,v 1.6 2008/01/22 19:41:00 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -25,8 +25,8 @@ namespace calibGenCAL {
 
   void CalHodoscope::clear() {
     // zero out all vectors
-    fill(adc_ped.begin(), adc_ped.end(), CIDAC2ADC::INVALID_ADC);
-    fill(dac.begin(), dac.end(), CIDAC2ADC::INVALID_ADC);
+    fill(adc_ped.begin(), adc_ped.end(), CIDAC2ADC::INVALID_ADC());
+    fill(dac.begin(), dac.end(), CIDAC2ADC::INVALID_ADC());
     fill_zero(perLyr);
     fill(bestRng.begin(), bestRng.end(), LEX8);
 
