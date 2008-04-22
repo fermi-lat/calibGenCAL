@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonAsymAlg.cxx,v 1.7 2008/01/22 19:40:58 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/MuonAsymAlg.cxx,v 1.1 2008/04/21 20:42:45 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -76,7 +76,7 @@ namespace calibGenCAL {
 
   void MuonAsymAlg::processEvent(const DigiEvent &digiEvent) {
     // check that we are in 4 range mode
-    const EventSummaryData &summary = digiEvent.getEventSummaryData();
+    EventSummaryData &summary = const_cast<EventSummaryData&>(digiEvent.getEventSummaryData());
     if (!summary.readout4())
       return;
 
