@@ -37,7 +37,7 @@ int main(const int argc, const char **argv)
     int  i, j, j0, j1;
 
     char buffer[3];
-    string element[nParts];
+    vector<string> element(nParts);
     for(i= 0; i < nParts; i++)
     {
         sprintf(buffer, "%02d", i+1);

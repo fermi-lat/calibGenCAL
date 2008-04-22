@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.25 2008/01/22 19:40:58 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitLACHists.cxx,v 1.1 2008/04/21 20:43:14 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -256,7 +256,6 @@ int main(const int argc, const char **argv) {
         const unsigned short twr = faceIdx.getTwr().val();
         const unsigned short lyr = faceIdx.getLyr().val();
         const unsigned short col = faceIdx.getCol().val();
-        const unsigned short face = faceIdx.getFace().val();
 
         LogStrm::get() << twr << " " << lyr << " " << col << " " << face << " "
                        << lac << " " << errlac << " " << pedDrift << " " 
