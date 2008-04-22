@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonPedAlg.cxx,v 1.7 2008/01/22 19:40:59 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Ped/MuonPedAlg.cxx,v 1.1 2008/04/21 20:42:49 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -203,13 +203,13 @@ namespace calibGenCAL {
     //-- PERIODIC_TRIGGER CUT
     if (algData.trigCut == PERIODIC_TRIGGER) {
       // quick check if we are in 4-range mode
-      const EventSummaryData & summary = digiEvent.getEventSummaryData();
+      const EventSummaryData &summary = digiEvent.getEventSummaryData();
       if (&summary == 0) {
         LogStrm::get() << "Warning, eventSummary data not found for event: "
                          << eventData.eventNum << endl;
         return;
       }
-      eventData.fourRange = summary.readout4();
+      eventData.fourRange = const_cast<EventSummaryData&>(summary).readout4();
 
       const float gemDeltaEventTime = gem->getDeltaEventTime()*0.05;
       if (gemConditionsWord != 32 ||     // skip unless we are periodic trigger only
