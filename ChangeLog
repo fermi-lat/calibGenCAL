@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Apr 22 14:17:57 PDT 2008
+calibGenCAL/src/Optical
+
+Modified Files:
+	GCRCalibAlg.cxx MuonCalibTkrAlg.cxx 
+Log Message:
+changed some public static library variables to static accessor methods as linking on windows dll's was not working correctly.
+    *
+------------------------------------------------------------
 TAG
 Tag name: calibGenCAL-05-04-00, operation: add
 Package: calibGenCAL
