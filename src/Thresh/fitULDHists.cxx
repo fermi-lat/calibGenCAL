@@ -1,4 +1,4 @@
-// $Header: /nfs/suld/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.25 2008/01/22 19:40:58 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitULDHists.cxx,v 1.1 2008/04/21 20:43:14 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -32,10 +32,6 @@ using namespace std;
 using namespace CfgMgr;
 using namespace calibGenCAL;
 using namespace CalUtil;
-
-namespace {
-  static const double SMALL_POS_DBL = nexttoward(0.0, 1.0);
-}
 
 /// Manage application configuration parameters
 class AppCfg {
