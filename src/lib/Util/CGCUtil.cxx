@@ -4,7 +4,7 @@
 
     \brief generic utility functions used in calibGenCAL pkg
 
-    $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.cxx,v 1.10 2008/04/22 19:02:48 fewtrell Exp $
+    $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.cxx,v 1.11 2008/04/22 19:30:35 fewtrell Exp $
 */
 
 // LOCAL INCLUDES
@@ -27,8 +27,8 @@ using namespace std;
 
 namespace calibGenCAL {
 
-  const string CVS_TAG("$Name:  $");
-  const string CGC_DEFAULT_CFGPATH("$(CALIBGENCALROOT)/cfg/defaults.cfg");
+  string CVS_TAG() {return "$Name:  $";}
+  string CGC_DEFAULT_CFGPATH() {return"$(CALIBGENCALROOT)/cfg/defaults.cfg";}
 
   void output_env_banner(ostream &ostrm) {
     // GENERATE TIME STRING

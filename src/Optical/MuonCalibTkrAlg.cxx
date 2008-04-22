@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonCalibTkrAlg.cxx,v 1.6 2008/01/22 19:40:58 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/MuonCalibTkrAlg.cxx,v 1.1 2008/04/21 20:42:45 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -303,7 +303,7 @@ namespace calibGenCAL {
         dac[xDiode]      = eventData.hscope.dac[diodeIdx];
         adc_ped[xDiode]  = eventData.hscope.adc_ped[diodeIdx];
 
-        dacValid[xDiode] = (dac[xDiode] != CIDAC2ADC::INVALID_ADC);
+        dacValid[xDiode] = (dac[xDiode] != CIDAC2ADC::INVALID_ADC());
       }
 
       //-- FILL HISTS --//
@@ -413,7 +413,7 @@ namespace calibGenCAL {
   void MuonCalibTkrAlg::readCfg(string cfgPath) {
     /// default case
     if (cfgPath=="")
-      cfgPath = CGC_DEFAULT_CFGPATH;
+      cfgPath = CGC_DEFAULT_CFGPATH();
     /// expand either unix or windows env vars
     Util::expandEnvVar(&cfgPath);
 
