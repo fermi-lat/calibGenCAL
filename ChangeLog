@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Apr 23 15:35:14 PDT 2008
+calibGenCAL/python
+
+Modified Files:
+	dacSlopesDiff.py mpdDiff.py 
+Log Message:
+added more detail for plotting tools
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Apr 23 12:41:16 PDT 2008
 calibGenCAL/python
 
