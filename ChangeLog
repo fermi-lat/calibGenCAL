@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Apr 23 10:10:53 PDT 2008
+calibGenCAL/src/CIDAC2ADC
+
+Modified Files:
+	splitDigi.cxx 
+Log Message:
+removed compiler warnings
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Apr 23 09:54:51 PDT 2008
 calibGenCAL/src/lib/Specs
 
