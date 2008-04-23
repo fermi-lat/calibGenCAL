@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL dacSlopes XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2008/02/11 21:35:58 $"
-__version__     = "$Revision: 1.5 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/04/21 20:25:18 $"
+__version__     = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -411,9 +411,6 @@ ROOT.gPad.SetGrid()
 ROOT.gPad.Print(rptFilename+"(")
 
 # print middle pages
-lacdac_4mev.Draw("colZ")
-ROOT.gPad.Print(rptFilename)
-
 lacdac_4mev.Draw("colZ")
 ROOT.gPad.Print(rptFilename)
 
