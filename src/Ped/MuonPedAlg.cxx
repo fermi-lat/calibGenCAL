@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Ped/MuonPedAlg.cxx,v 1.1 2008/04/21 20:42:49 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Ped/MuonPedAlg.cxx,v 1.2 2008/04/22 18:36:04 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -15,6 +15,7 @@
 #include "digiRootData/DigiEvent.h"
 #include "CalUtil/CalVec.h"
 #include "CalUtil/SimpleCalCalib/CalPed.h"
+#include "enums/GemConditionSummary.h"
 
 // EXTLIB INCLUDES
 #include "TH1S.h"
@@ -29,10 +30,6 @@ namespace calibGenCAL {
 
   using namespace CalUtil;
   using namespace std;
-
-  MuonPedAlg::MuonPedAlg()
-  {
-  }
 
   void MuonPedAlg::initHists() {
     for (RngIdx rngIdx; rngIdx.isValid(); rngIdx++)
@@ -212,15 +209,15 @@ namespace calibGenCAL {
       eventData.fourRange = const_cast<EventSummaryData&>(summary).readout4();
 
       const float gemDeltaEventTime = gem->getDeltaEventTime()*0.05;
-      if (gemConditionsWord != 32 ||     // skip unless we are periodic trigger only
+      if (gemConditionsWord != enums::PERIODIC ||     // skip unless we are periodic trigger only
           eventData.prev4Range      ||   // avoid bias from 4 range readout in prev event
           gemDeltaEventTime < 2000)      // avoid bias from shaped readout noise from adjacent event
         return;
     }
 
     //-- EXTERNAL_TRIGGER CUT
-    if (algData.trigCut == EXTERNAL_TRIGGER)
-      if (gemConditionsWord != 128)
+    if (algData.trigCut == EXTERNAL_TRIGGER) // cut on external trigger only
+      if (gemConditionsWord != enums::EXTERNAL)
         return;
 
     const TClonesArray *calDigiCol = digiEvent.getCalDigiCol();

@@ -67,7 +67,7 @@ public:
     cfgPath("cfgPath",
             'c',
             "(optional) read cfg info from this file (supports env var expansion)",
-			""),
+            ""),
     help("help",
          'h',
          "print usage info")

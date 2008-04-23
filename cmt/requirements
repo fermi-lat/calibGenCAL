@@ -15,7 +15,7 @@ use calibUtil
 use CLHEP * IExternal
 use gcrSelectRootData
 use python * IExternal
-
+use enums
 
 # make sure we have all graphical root libraries linked (stolen from rootanalysis)
 # used for line fitting in muonCalib
