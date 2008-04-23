@@ -1,6 +1,6 @@
 #ifndef MuonPedAlg_h
 #define MuonPedAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonPedAlg.h,v 1.5 2008/01/22 19:40:59 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Ped/MuonPedAlg.h,v 1.1 2008/04/21 20:42:49 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -40,7 +40,7 @@ namespace calibGenCAL {
   */
   class MuonPedAlg {
   public:
-    MuonPedAlg();
+    MuonPedAlg() {}
 
     /// which type of events should be filtered for
     /// pedestal processing?

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/MuonCalibTkrAlg.cxx,v 1.1 2008/04/21 20:42:45 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/MuonCalibTkrAlg.cxx,v 1.2 2008/04/22 21:17:56 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -21,6 +21,7 @@
 #include "CalUtil/SimpleCalCalib/CalPed.h"
 #include "CalUtil/SimpleCalCalib/CalAsym.h"
 #include "CalUtil/SimpleCalCalib/CalMPD.h"
+#include "enums/GemConditionSummary.h"
 
 // EXTLIB INCLUDES
 #include "CLHEP/Geometry/Vector3D.h"
@@ -122,7 +123,7 @@ namespace calibGenCAL {
 
       if (eventData.eventNum % 10000 == 0) {
         // quit if we have enough entries in each histogram
-        unsigned currentMin = m_mpdHists.getMinEntries();
+        const unsigned currentMin = m_mpdHists.getMinEntries();
         if (currentMin >= nEntries) break;
         LogStrm::get() << "Event: " << eventData.eventNum
                          << " min entries per histogram: " << currentMin
@@ -374,17 +375,23 @@ namespace calibGenCAL {
     return true;
   }
 
+  /// CUT 1: TKR trigger is hi
+  /// CUT 2: Tkr num tracks == 1
+  /// CUT 3: gem delta event time > threshold
   bool MuonCalibTkrAlg::eventCut() {
     algData.nTotalEvents++;
 
-    if (!(eventData.gemConditionsWord & 2))
+    /// CUT 1: TKR trigger is hi
+    if (!(eventData.gemConditionsWord & enums::TKR))
       return false;
     algData.passTrigWord++;
 
+    /// CUT 2: only 1 tracker track
     if (eventData.tkrNumTracks != 1)
       return false;
     algData.passTkrNumTracks++;
 
+    /// CUT 3: avoid event pileup
     if (eventData.gemDeltaEventTime
         < algData.minDeltaEventTime)
       return false;
