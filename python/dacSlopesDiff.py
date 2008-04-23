@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL dacSlopes XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2008/04/23 19:27:21 $"
-__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/04/23 19:41:16 $"
+__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -469,7 +469,7 @@ for twr in twrSet:
                       array.array('d',numarray.ravel(uld10pct2[2])),
                       dac_weights)
 
-# GENERATE REPORT #
+# GENERATE POSTSCRIPT REPORT #
 rptFilename = outputBasename + ".ps"
 # setup plotting options
 ROOT.gStyle.SetPalette(1)
