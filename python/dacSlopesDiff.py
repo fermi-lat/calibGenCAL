@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL dacSlopes XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2008/04/21 20:25:18 $"
-__version__     = "$Revision: 1.1 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/04/23 19:27:21 $"
+__version__     = "$Revision: 1.2 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -215,59 +215,101 @@ uld_sat_hist.GetYaxis().SetTitle(dacSlopesFilename2)
 # initialize DAC plots (evaluated linear model @ common threshold points
 lacdac_2mev = ROOT.TH2S("lacdac_2mev",
                         "lacdac_2mev",
-                        128,0,128,
-                        128,0,128)
+                        160,0,160,
+                        160,0,160)
 lacdac_2mev.GetXaxis().SetTitle(dacSlopesFilename1)
 lacdac_2mev.GetYaxis().SetTitle(dacSlopesFilename2)
 
 lacdac_4mev = ROOT.TH2S("lacdac_4mev",
                         "lacdac_4mev",
-                        128,0,128,
-                        128,0,128)
+                        160,0,160,
+                        160,0,160)
 lacdac_4mev.GetXaxis().SetTitle(dacSlopesFilename1)
 lacdac_4mev.GetYaxis().SetTitle(dacSlopesFilename2)
 
 fledac_100mev = ROOT.TH2S("fledac_100mev",
                         "fledac_100mev",
-                        128,0,128,
-                        128,0,128)
+                        160,0,160,
+                        160,0,160)
 fledac_100mev.GetXaxis().SetTitle(dacSlopesFilename1)
 fledac_100mev.GetYaxis().SetTitle(dacSlopesFilename2)
 
 fledac_150mev = ROOT.TH2S("fledac_150mev",
                         "fledac_150mev",
-                        128,0,128,
-                        128,0,128)
+                        160,0,160,
+                        160,0,160)
 fledac_150mev.GetXaxis().SetTitle(dacSlopesFilename1)
 fledac_150mev.GetYaxis().SetTitle(dacSlopesFilename2)
 
 fhedac_1000mev = ROOT.TH2S("fhedac_1000mev",
                         "fhedac_1000mev",
-                        128,0,128,
-                        128,0,128)
+                        160,0,160,
+                        160,0,160)
 fhedac_1000mev.GetXaxis().SetTitle(dacSlopesFilename1)
 fhedac_1000mev.GetYaxis().SetTitle(dacSlopesFilename2)
 
 fhedac_1500mev = ROOT.TH2S("fhedac_1500mev",
                         "fhedac_1500mev",
-                        128,0,128,
-                        128,0,128)
+                        160,0,160,
+                        160,0,160)
 fhedac_1500mev.GetXaxis().SetTitle(dacSlopesFilename1)
 fhedac_1500mev.GetYaxis().SetTitle(dacSlopesFilename2)
 
 ulddac_5pct = ROOT.TH2S("ulddac_5pct",
                         "ulddac_5pct",
-                        128,0,128,
-                        128,0,128)
+                        160,0,160,
+                        160,0,160)
 ulddac_5pct.GetXaxis().SetTitle(dacSlopesFilename1)
 ulddac_5pct.GetYaxis().SetTitle(dacSlopesFilename2)
 
 ulddac_10pct = ROOT.TH2S("ulddac_10pct",
                          "ulddac_10pct",
-                         128,0,128,
-                         128,0,128)
+                         160,0,160,
+                         160,0,160)
 ulddac_10pct.GetXaxis().SetTitle(dacSlopesFilename1)
 ulddac_10pct.GetYaxis().SetTitle(dacSlopesFilename2)
+
+ulddac_5pct_lex8 = ROOT.TH2S("ulddac_5pct_lex8",
+                        "ulddac_5pct_lex8",
+                        160,0,160,
+                        160,0,160)
+ulddac_5pct_lex8.GetXaxis().SetTitle(dacSlopesFilename1)
+ulddac_5pct_lex8.GetYaxis().SetTitle(dacSlopesFilename2)
+
+ulddac_10pct_lex8 = ROOT.TH2S("ulddac_10pct_lex8",
+                         "ulddac_10pct_lex8",
+                         160,0,160,
+                         160,0,160)
+ulddac_10pct_lex8.GetXaxis().SetTitle(dacSlopesFilename1)
+ulddac_10pct_lex8.GetYaxis().SetTitle(dacSlopesFilename2)
+
+ulddac_5pct_lex1 = ROOT.TH2S("ulddac_5pct_lex1",
+                        "ulddac_5pct_lex1",
+                        160,0,160,
+                        160,0,160)
+ulddac_5pct_lex1.GetXaxis().SetTitle(dacSlopesFilename1)
+ulddac_5pct_lex1.GetYaxis().SetTitle(dacSlopesFilename2)
+
+ulddac_10pct_lex1 = ROOT.TH2S("ulddac_10pct_lex1",
+                         "ulddac_10pct_lex1",
+                         160,0,160,
+                         160,0,160)
+ulddac_10pct_lex1.GetXaxis().SetTitle(dacSlopesFilename1)
+ulddac_10pct_lex1.GetYaxis().SetTitle(dacSlopesFilename2)
+
+ulddac_5pct_hex8 = ROOT.TH2S("ulddac_5pct_hex8",
+                        "ulddac_5pct_hex8",
+                        160,0,160,
+                        160,0,160)
+ulddac_5pct_hex8.GetXaxis().SetTitle(dacSlopesFilename1)
+ulddac_5pct_hex8.GetYaxis().SetTitle(dacSlopesFilename2)
+
+ulddac_10pct_hex8 = ROOT.TH2S("ulddac_10pct_hex8",
+                         "ulddac_10pct_hex8",
+                         160,0,160,
+                         160,0,160)
+ulddac_10pct_hex8.GetXaxis().SetTitle(dacSlopesFilename1)
+ulddac_10pct_hex8.GetYaxis().SetTitle(dacSlopesFilename2)
 
 # FILL HISTOGRAMS
 import array
@@ -278,8 +320,8 @@ for twr in twrSet:
     fleslope2 = numarray.ravel(fle_slopes2[twr,...])
     fheslope1 = numarray.ravel(fhe_slopes1[twr,...])
     fheslope2 = numarray.ravel(fhe_slopes2[twr,...])
-    uldslope1 = numarray.ravel(uld_slopes1[:,twr,...])
-    uldslope2 = numarray.ravel(uld_slopes2[:,twr,...])
+    uldslope1 = uld_slopes1[:,twr,...]
+    uldslope2 = uld_slopes2[:,twr,...]
 
     lacoffset1 = numarray.ravel(lac_offsets1[twr,...])
     lacoffset2 = numarray.ravel(lac_offsets2[twr,...])
@@ -287,11 +329,11 @@ for twr in twrSet:
     fleoffset2 = numarray.ravel(fle_offsets2[twr,...])
     fheoffset1 = numarray.ravel(fhe_offsets1[twr,...])
     fheoffset2 = numarray.ravel(fhe_offsets2[twr,...])
-    uldoffset1 = numarray.ravel(uld_offsets1[:,twr,...])
-    uldoffset2 = numarray.ravel(uld_offsets2[:,twr,...])
+    uldoffset1 = uld_offsets1[:,twr,...]
+    uldoffset2 = uld_offsets2[:,twr,...]
 
-    uldsat1 = numarray.ravel(uld_sat1[:,twr,...])
-    uldsat2 = numarray.ravel(uld_sat2[:,twr,...])
+    uldsat1 = uld_sat1[:,twr,...]
+    uldsat2 = uld_sat2[:,twr,...]
 
     lacrng1 = numarray.ravel(lac_rng1[twr,...])
     lacrng2 = numarray.ravel(lac_rng2[twr,...])
@@ -299,8 +341,8 @@ for twr in twrSet:
     flerng2 = numarray.ravel(fle_rng2[twr,...])
     fherng1 = numarray.ravel(fhe_rng1[twr,...])
     fherng2 = numarray.ravel(fhe_rng2[twr,...])
-    uldrng1 = numarray.ravel(uld_rng1[:,twr,...])
-    uldrng2 = numarray.ravel(uld_rng2[:,twr,...])
+    uldrng1 = uld_rng1[:,twr,...]
+    uldrng2 = uld_rng2[:,twr,...]
 
     # calculate dac settings for known thresholds
     lac2mev1    = (2    - lacoffset1)/lacslope1 + lacrng1*64
@@ -323,7 +365,7 @@ for twr in twrSet:
 
     # 'weight' arrays all equal 1
     dac_weights = array.array('d',[1]*len(lacslope1))
-    ulddac_weights = array.array('d',[1]*len(uldslope1))
+    ulddac_weights = array.array('d',[1]*len(numarray.ravel(uldslope1)))
 
     lac_slope_hist.FillN(len(lacslope1),
                          array.array('d',lacslope1),
@@ -338,8 +380,8 @@ for twr in twrSet:
                          array.array('d',fheslope2),
                          dac_weights)
     uld_slope_hist.FillN(len(uldslope1),
-                         array.array('d',uldslope1),
-                         array.array('d',uldslope2),
+                         array.array('d',numarray.ravel(uldslope1)),
+                         array.array('d',numarray.ravel(uldslope2)),
                          ulddac_weights)
 
 
@@ -356,13 +398,13 @@ for twr in twrSet:
                          array.array('d',fheoffset2),
                           dac_weights)
     uld_offset_hist.FillN(len(uldoffset1),
-                         array.array('d',uldoffset1),
-                         array.array('d',uldoffset2),
+                         array.array('d',numarray.ravel(uldoffset1)),
+                         array.array('d',numarray.ravel(uldoffset2)),
                          ulddac_weights)
 
     uld_sat_hist.FillN(len(uldsat1),
-                       array.array('d',uldsat1),
-                       array.array('d',uldsat2),
+                       array.array('d',numarray.ravel(uldsat1)),
+                       array.array('d',numarray.ravel(uldsat2)),
                        ulddac_weights)
 
 
@@ -392,13 +434,40 @@ for twr in twrSet:
                          dac_weights)
 
     ulddac_5pct.FillN(len(uld5pct1),
-                      array.array('d',uld5pct1),
-                      array.array('d',uld5pct2),
-                      ulddac_weights)
+                      array.array('d',numarray.ravel(uld5pct1)),
+                      array.array('d',numarray.ravel(uld5pct2)),
+                      dac_weights)
     ulddac_10pct.FillN(len(uld10pct1),
-                      array.array('d',uld10pct1),
-                      array.array('d',uld10pct2),
-                      ulddac_weights)
+                      array.array('d',numarray.ravel(uld10pct1)),
+                      array.array('d',numarray.ravel(uld10pct2)),
+                      dac_weights)
+
+    ulddac_5pct_lex8.FillN(len(uld5pct1[0]),
+                      array.array('d',numarray.ravel(uld5pct1[0])),
+                      array.array('d',numarray.ravel(uld5pct2[0])),
+                      dac_weights)
+    ulddac_10pct_lex8.FillN(len(uld10pct1[0]),
+                      array.array('d',numarray.ravel(uld10pct1[0])),
+                      array.array('d',numarray.ravel(uld10pct2[0])),
+                      dac_weights)
+
+    ulddac_5pct_lex1.FillN(len(uld5pct1[1]),
+                      array.array('d',numarray.ravel(uld5pct1[0])),
+                      array.array('d',numarray.ravel(uld5pct2[0])),
+                      dac_weights)
+    ulddac_10pct_lex1.FillN(len(uld10pct1[1]),
+                      array.array('d',numarray.ravel(uld10pct1[0])),
+                      array.array('d',numarray.ravel(uld10pct2[0])),
+                      dac_weights)
+
+    ulddac_5pct_hex8.FillN(len(uld5pct1[2]),
+                      array.array('d',numarray.ravel(uld5pct1[1])),
+                      array.array('d',numarray.ravel(uld5pct2[1])),
+                      dac_weights)
+    ulddac_10pct_hex8.FillN(len(uld10pct1[2]),
+                      array.array('d',numarray.ravel(uld10pct1[2])),
+                      array.array('d',numarray.ravel(uld10pct2[2])),
+                      dac_weights)
 
 # GENERATE REPORT #
 rptFilename = outputBasename + ".ps"
@@ -429,9 +498,30 @@ ROOT.gPad.Print(rptFilename)
 ulddac_5pct.Draw("colZ")
 ROOT.gPad.Print(rptFilename)
 
-# print last page in doc
 ulddac_10pct.Draw("colZ")
-ROOT.gPad.Print(rptFilename+")")
+ROOT.gPad.Print(rptFilename)
+
+ulddac_5pct_lex8.Draw("colZ")
+ROOT.gPad.Print(rptFilename)
+
+ulddac_10pct_lex8.Draw("colZ")
+ROOT.gPad.Print(rptFilename)
+
+ulddac_5pct_lex1.Draw("colZ")
+ROOT.gPad.Print(rptFilename)
+
+ulddac_10pct_lex1.Draw("colZ")
+ROOT.gPad.Print(rptFilename)
+
+ulddac_5pct_hex8.Draw("colZ")
+ROOT.gPad.Print(rptFilename)
+
+ulddac_10pct_hex8.Draw("colZ")
+ROOT.gPad.Print(rptFilename + ")")
+
+
+
+# print last page in doc
 
 
 log.info("Writing %s"%outputRootPath)
