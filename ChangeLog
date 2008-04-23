@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Apr 23 09:54:50 PDT 2008
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+use enumerations to specify Gem condition trigger bits.
+fix bug in Cal geometry calcs introduced with recent CU06 geometry support
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Apr 22 14:17:57 PDT 2008
 calibGenCAL/src/lib/Util
 
