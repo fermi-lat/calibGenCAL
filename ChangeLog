@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Apr 23 12:41:16 PDT 2008
+calibGenCAL/python
+
+Modified Files:
+	dacSlopesDiff.py 
+Log Message:
+added some extra plots, widened histogram margins to make plots more visible
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Apr 23 12:27:21 PDT 2008
 calibGenCAL/python
 
