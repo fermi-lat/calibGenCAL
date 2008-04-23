@@ -31,10 +31,10 @@ int main(const int argc, const char **argv)
 
     string inpFname= argv[1];
     string outFname= argv[2];
-    short  nParts= atoi(argv[3]);
+    unsigned  nParts= atoi(argv[3]);
 
     long N_totl, N_part;
-    int  i, j, j0, j1;
+    unsigned  i, j, j0, j1;
 
     char buffer[3];
     vector<string> element(nParts);
@@ -92,7 +92,7 @@ int main(const int argc, const char **argv)
         rootFile.getDigiChain()->SetBranchStatus("*", 0);
         rootFile.getDigiChain()->SetBranchStatus("m_eventId");
 
-        unsigned eventFirst, eventLast;
+        unsigned eventFirst=0, eventLast=0;
         unsigned eventn, nEvents= rootFile.getDigiChain()->GetEntries();
 
         for(j= 0; j < nEvents; j++)
