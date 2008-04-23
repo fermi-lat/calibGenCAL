@@ -1,5 +1,16 @@
 ------------------------------------------------------------
 User: fewtrell  Wed Apr 23 09:54:51 PDT 2008
+calibGenCAL/src/Thresh
+
+Modified Files:
+	genLACHists.cxx 
+Log Message:
+use enumerations to specify Gem condition trigger bits.
+fix bug in Cal geometry calcs introduced with recent CU06 geometry support
+
+    *
+------------------------------------------------------------
+User: fewtrell  Wed Apr 23 09:54:51 PDT 2008
 calibGenCAL/src/Ped
 
 Modified Files:
