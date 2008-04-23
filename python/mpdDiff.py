@@ -1,12 +1,12 @@
 """
 Diff 2 CAL mevPerDAC (mevPerDAC) offline calibration XML files.  The command line is:
 
-python mpdDiff.py <mpd_xml_file1> <mpd_xml_file2> <output_root_file>
+python mpdDiff.py <mpd_xml_file1> <mpd_xml_file2> <output_basename>
 
 where:
     <mpd_xml_file1>    = GLAST Cal mevPerDAC offline calib file
     <mpd_xml_file2>    = GLAST Cal mevPerDAC offline calib file
-    <output_root_file> = ROOT overplots & residuals will be saved here.
+    <output_basename>  = base filename for all output files
 
 
 """
@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL mevPerDAC XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2008/02/03 00:51:50 $"
-__version__     = "$Revision: 1.7 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/02/11 21:35:58 $"
+__version__     = "$Revision: 1.8 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -46,7 +46,7 @@ if len(sys.argv) != 4:
 # get filenames
 mpdPath1 = sys.argv[1]
 mpdPath2 = sys.argv[2]
-rootPath = sys.argv[3]
+outputBasename = sys.argv[3]
 
 # read in dac xml files
 log.info("Opening %s"%mpdPath1)
@@ -70,6 +70,7 @@ mpd2 = mpdFile2.read()
 # set up pyROOT
 import ROOT
 ROOT.gROOT.Reset()
+rootPath = outputBasename + ".root"
 log.info("Opening %s"%rootPath)
 rootFile = ROOT.TFile(rootPath,
                       "recreate",
@@ -118,24 +119,36 @@ for twr in mpdTwrs1:
 
 
 # gobal summary histograms
+import os
+mpdFilename1 = os.path.basename(mpdPath1)
+mpdFilename2 = os.path.basename(mpdPath2)
+
 lrg_diff_summary = ROOT.TH1I("lrg_diff_summary",
                              "lrg_diff_summary (mpd2 - mpd1)",
                              50, minDiff[cgc_util.mpdBigValIdx], maxDiff[cgc_util.mpdBigValIdx])
+lrg_diff_summary.GetXaxis().SetTitle(mpdFilename1)
+lrg_diff_summary.GetYaxis().SetTitle(mpdFilename2)
 
 
 lrg_err_diff_summary = ROOT.TH1I("lrg_err_diff_summary",
                                  "lrg_err_diff_summary (mpd2 - mpd)",
                                  50, minDiff[cgc_util.mpdBigSigIdx], maxDiff[cgc_util.mpdBigSigIdx])
+lrg_err_diff_summary.GetXaxis().SetTitle(mpdFilename1)
+lrg_err_diff_summary.GetYaxis().SetTitle(mpdFilename2)
 
 
 sm_diff_summary = ROOT.TH1I("sm_diff_summary",
                             "sm_diff_summary (mpd2 - mpd1)",
                             50, minDiff[cgc_util.mpdSmallValIdx], maxDiff[cgc_util.mpdSmallValIdx])
+sm_diff_summary.GetXaxis().SetTitle(mpdFilename1)
+sm_diff_summary.GetYaxis().SetTitle(mpdFilename2)
 
 
 sm_err_diff_summary = ROOT.TH1I("sm_err_diff_summary",
                                 "sm_err_diff_summary (mpd2 - mpd1)",
                                 50, minDiff[cgc_util.mpdSmallSigIdx], maxDiff[cgc_util.mpdSmallSigIdx])
+sm_err_diff_summary.GetXaxis().SetTitle(mpdFilename1)
+sm_err_diff_summary.GetYaxis().SetTitle(mpdFilename2)
 
 
 
@@ -145,38 +158,54 @@ lrg_scatter = ROOT.TH2S("lrg_scatter",
                         "lrg diode mpd change x=mpd1 y=mpd2",
                         100, minVals[cgc_util.mpdBigValIdx], maxVals[cgc_util.mpdBigValIdx],
                         100, minVals[cgc_util.mpdBigValIdx], maxVals[cgc_util.mpdBigValIdx])
+lrg_scatter.GetXaxis().SetTitle(mpdFilename1)
+lrg_scatter.GetYaxis().SetTitle(mpdFilename2)
 
 sm_scatter = ROOT.TH2S("sm_scatter",
                        "sm diode mpd change x=mpd1 y=mpd2",
                        100, minVals[cgc_util.mpdSmallValIdx], maxVals[cgc_util.mpdSmallValIdx],
                        100, minVals[cgc_util.mpdSmallValIdx], maxVals[cgc_util.mpdSmallValIdx])
+sm_scatter.GetXaxis().SetTitle(mpdFilename1)
+sm_scatter.GetYaxis().SetTitle(mpdFilename2)
 
 lrg_err_scatter = ROOT.TH2S("lrg_err_scatter",
                             "lrg diode mpd error change x=mpd1 y=mpd2",
                             100, minVals[cgc_util.mpdBigSigIdx], maxVals[cgc_util.mpdBigSigIdx],
                             100, minVals[cgc_util.mpdBigSigIdx], maxVals[cgc_util.mpdBigSigIdx])
+lrg_err_scatter.GetXaxis().SetTitle(mpdFilename1)
+lrg_err_scatter.GetYaxis().SetTitle(mpdFilename2)
 
 sm_err_scatter = ROOT.TH2S("sm_err_scatter",
                            "sm diode mpd error change x=mpd1 y=mpd2",
                            100, minVals[cgc_util.mpdSmallSigIdx], maxVals[cgc_util.mpdSmallSigIdx],
                            100, minVals[cgc_util.mpdSmallSigIdx], maxVals[cgc_util.mpdSmallSigIdx])
+sm_err_scatter.GetXaxis().SetTitle(mpdFilename1)
+sm_err_scatter.GetYaxis().SetTitle(mpdFilename2)
 
 
 lrg_prof = ROOT.TProfile("lrg_prof",
                          "lrg diode mpd change x=mpd1 y=mpd2",
                          100, 0, maxVals[cgc_util.mpdBigValIdx])
+lrg_prof.GetXaxis().SetTitle(mpdFilename1)
+lrg_prof.GetYaxis().SetTitle(mpdFilename2)
 
 sm_prof = ROOT.TProfile("sm_prof",
                         "sm diode mpd change x=mpd1 y=mpd2",
                         100, 0, maxVals[cgc_util.mpdSmallValIdx])
+sm_prof.GetXaxis().SetTitle(mpdFilename1)
+sm_prof.GetYaxis().SetTitle(mpdFilename2)
 
 lrg_err_prof = ROOT.TProfile("lrg_err_prof",
                              "lrg diode mpd error change x=mpd1 y=mpd2",
                              100, 0, maxVals[cgc_util.mpdBigSigIdx])
+lrg_err_prof.GetXaxis().SetTitle(mpdFilename1)
+lrg_err_prof.GetYaxis().SetTitle(mpdFilename2)
 
 sm_err_prof = ROOT.TProfile("sm_err_prof",
                             "sm diode mpd error change x=mpd1 y=mpd2",
                             100, 0, maxVals[cgc_util.mpdSmallSigIdx])
+sm_err_prof.GetXaxis().SetTitle(mpdFilename1)
+sm_err_prof.GetYaxis().SetTitle(mpdFilename2)
 
 # fill histograms
 for twr in mpdTwrs1:
@@ -251,6 +280,28 @@ lrg_prof.Fit("pol1","Q")
 sm_prof.Fit("pol1","Q")
 lrg_err_prof.Fit("pol1","Q")
 sm_err_prof.Fit("pol1","Q")
+
+# GENERATE POSTSCRIPT REPORT #
+rptFilename = outputBasename + ".ps"
+# setup plotting options
+ROOT.gStyle.SetPalette(1)
+
+# print first page in doc
+lrg_scatter.Draw("colZ")
+ROOT.gPad.SetGrid()
+ROOT.gPad.Print(rptFilename+"(")
+
+# print middle pages
+sm_scatter.Draw("colZ")
+ROOT.gPad.Print(rptFilename)
+
+lrg_err_scatter.Draw("colZ")
+ROOT.gPad.Print(rptFilename)
+
+# print last page in doc
+sm_err_scatter.Draw("colZ")
+ROOT.gPad.Print(rptFilename+")")
+
 
 log.info("Writing %s"%rootPath)
 rootFile.Write()
