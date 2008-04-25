@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Apr 25 12:25:10 PDT 2008
+calibGenCAL/src/CIDAC2ADC
+
+Modified Files:
+	genCIDAC2ADC.cxx 
+Log Message:
+update usage statement
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Apr 25 11:30:16 PDT 2008
 calibGenCAL/src/CIDAC2ADC
 
