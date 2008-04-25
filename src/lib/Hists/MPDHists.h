@@ -67,7 +67,7 @@ namespace calibGenCAL {
     void        trimHists();
 
     /// skip event processing & load histograms from previous analysis
-    void        loadHists();
+    void        loadHists(const TDirectory &readDir);
 
     /// allocate & create mpd histograms & pointer arrays
     /// \note you should cal this if you don't call loadHists() from file

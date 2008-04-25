@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/LangauFun.cxx,v 1.6 2007/10/15 15:17:32 golpa Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/LangauFun.cxx,v 1.7 2008/04/18 21:47:42 chehtman Exp $
 
 /** @file
     @author Zach Fewtrell
@@ -48,8 +48,8 @@ namespace calibGenCAL {
     static bool   fixParms[N_PARMS] = {
       true,
       false,
-      false,
-      false,
+      true,
+      true,
       true
     };
 

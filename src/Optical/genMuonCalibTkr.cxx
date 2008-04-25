@@ -199,7 +199,6 @@ int main(int argc,
     mpdHists.trimHists();
     asymHists.trimHists();
 
-    // READ IN TXT OUTPUT (SKIP HISTOGRAM FITS)
     LogStrm::get() << __FILE__ << ": fitting asymmetry histograms." << endl;
     asymHists.fitHists(calAsym);
 

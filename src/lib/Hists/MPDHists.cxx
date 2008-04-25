@@ -148,11 +148,11 @@ namespace calibGenCAL {
       // create histogram of residual after fit
       //createResidHist(histLL);
 
-      float mpdLrg    = MUON_ENERGY/mpv;
+      const float mpdLrg    = MUON_ENERGY/mpv;
       calMPD.setMPD(xtalIdx, LRG_DIODE, mpdLrg);
 
       // keep width proportional to new scale
-      float mpdErrLrg = mpdLrg * width/mpv;
+      const float mpdErrLrg = mpdLrg * width/mpv;
       calMPD.setMPDErr(xtalIdx, LRG_DIODE, mpdErrLrg);
 
       ////////////////////
@@ -171,8 +171,8 @@ namespace calibGenCAL {
       // trim outliers - 3 times cut out anything outside 3 sigma
       for (unsigned short iter = 0; iter < 3; iter++) {
         // get current mean & RMS
-        float av  = histL2S->GetMean();
-        float rms = histL2S->GetRMS();
+        const float av  = histL2S->GetMean();
+        const float rms = histL2S->GetRMS();
 
         // trim new histogram limits
         histL2S->SetAxisRange(av - 3*rms, av + 3*rms);
@@ -190,16 +190,16 @@ namespace calibGenCAL {
       // MPDSm     = MeV/SmDAC = (MeV/LrgDAC)*(LrgDAC/SmDAC)
       //              = MPDLrg/sm2lrg
 
-      float mpdSm = mpdLrg/sm2lrg;
+      const float mpdSm = mpdLrg/sm2lrg;
       calMPD.setMPD(xtalIdx, SM_DIODE, mpdSm);
 
       //-- Propogate errors
       // in order to combine slope & MPD error for final error
       // I need the relative error for both values - so sayeth sasha
-      float relLineErr = s2lsig/sm2lrg;
-      float relMPDErr  = mpdErrLrg/mpdLrg;
+      const float relLineErr = s2lsig/sm2lrg;
+      const float relMPDErr  = mpdErrLrg/mpdLrg;
 
-      float mpdErrSm   = mpdSm *
+      const float mpdErrSm   = mpdSm *
         sqrt(relLineErr *relLineErr + relMPDErr *relMPDErr);
 
       calMPD.setMPDErr(xtalIdx, SM_DIODE, mpdErrSm);
@@ -220,8 +220,8 @@ namespace calibGenCAL {
         nPts++;
 
         // retrieve sm & lrg dac vals
-        float smDAC  = p.GetBinContent(i+1);
-        float lrgDAC = p.GetBinCenter(i+1);
+        const float smDAC  = p.GetBinContent(i+1);
+        const float lrgDAC = p.GetBinCenter(i+1);
 
         // update graphsize & set point
         graph.Set(nPts);
@@ -244,11 +244,19 @@ namespace calibGenCAL {
   void MPDHists::fitChannel(TH1 &hist,
                             float &mpv,
                             float &width) {
-    m_fitFunc->SetParameter(2,hist.GetEntries()*hist.GetBinWidth(1));
-    m_fitFunc->SetParameter(1,30);
-    m_fitFunc->SetParameter(3,0.6);
-    m_fitFunc->SetParameter(4,0.0);
-    hist.Fit(m_fitFunc, "Q");
+
+    /// MPV
+    m_fitFunc->SetParameter(1, 30);
+    /// landau area
+    m_fitFunc->SetParameter(2, hist.GetEntries()*hist.GetBinWidth(1));
+    /// gaussian width (now fixed)
+    //m_fitFunc->SetParameter(3, 0.6);
+    /// background height (now fixed)
+    //m_fitFunc->SetParameter(4, 0.0);
+    const int fitResult = hist.Fit(m_fitFunc, "QL");
+    if (fitResult !=0)
+      LogStrm::get() << "MPD ROOT fitting error code: " << fitResult
+                     << " " << hist.GetName() << endl;
     mpv = m_fitFunc->GetParameter(1);
 
     switch (m_fitMethod) {
@@ -269,27 +277,27 @@ namespace calibGenCAL {
     }
   }
 
-  void MPDHists::loadHists() {
+  void MPDHists::loadHists(const TDirectory &readDir) {
     string histname;
 
     for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
       //-- DAC_LL HISTOGRAMS --//
       histname = genHistName("dacLL", xtalIdx.toStr());
-      TH1S *hist_LL = retrieveROOTObj < TH1S > (*gDirectory, histname);
+      TH1S *hist_LL = retrieveROOTObj < TH1S > (readDir, histname);
       if (!hist_LL) continue;
 
       m_dacLLHists[xtalIdx] = hist_LL;
 
       //-- DAC_L2S HISTOGRAMS --//
       histname = genHistName("dacL2S", xtalIdx.toStr());
-      TH1S *hist_L2S = retrieveROOTObj < TH1S > (*gDirectory, histname);
+      TH1S *hist_L2S = retrieveROOTObj < TH1S > (readDir, histname);
       if (!hist_L2S) continue;
 
       m_dacL2SHists[xtalIdx] = hist_L2S;
 
       //-- DAC_L2S HISTOGRAMS --//
       histname = genHistName("dacL2S_slope", xtalIdx.toStr());
-      TProfile *hist_L2S_slope = retrieveROOTObj < TProfile > (*gDirectory, histname);
+      TProfile *hist_L2S_slope = retrieveROOTObj < TProfile > (readDir, histname);
       if (!hist_L2S_slope) continue;
 
       m_dacL2SSlopeProfs[xtalIdx] = hist_L2S_slope;
@@ -305,7 +313,7 @@ namespace calibGenCAL {
 
 
     for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
-      unsigned nEntries = (unsigned)m_dacLLHists[xtalIdx]->GetEntries();
+      const unsigned nEntries = (unsigned)m_dacLLHists[xtalIdx]->GetEntries();
 
       // only count histograms that have been filled
       // (some histograms will never be filled if we are
@@ -358,11 +366,11 @@ namespace calibGenCAL {
     m_dacLLSumHist->Fill(dac);
 
     //-- alg statistics histograms
-    LyrNum lyr(xtalIdx.getLyr());
+    const LyrNum lyr(xtalIdx.getLyr());
 
-    TwrNum twr(xtalIdx.getTwr());
+    const TwrNum twr(xtalIdx.getTwr());
 
-    ColNum col(xtalIdx.getCol());
+    const ColNum col(xtalIdx.getCol());
 
     m_perLyr->Fill(lyr.val());
     m_perTwr->Fill(twr.val());
