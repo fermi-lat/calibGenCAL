@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Apr 25 07:49:18 PDT 2008
+calibGenCAL/src/Optical
+
+Modified Files:
+	fitMuonCalibTkr.cxx genMuonCalibTkr.cxx 
+Log Message:
+fixed mevPerDAC gaussian convolved landau fit params to make more stable fit.
+removed extraneous processing from fitMuonCalibTkr.exe
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Apr 23 15:35:14 PDT 2008
 calibGenCAL/python
 
