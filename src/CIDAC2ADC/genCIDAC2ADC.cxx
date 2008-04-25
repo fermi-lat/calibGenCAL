@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genCIDAC2ADC.cxx,v 1.26 2008/01/22 19:40:58 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/genCIDAC2ADC.cxx,v 1.1 2008/04/21 20:42:38 fewtrell Exp $
 
 /** @file Gen CIDAC2ADC calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
@@ -34,7 +34,7 @@ public:
     cmdParser(path_remove_ext(__FILE__)),
     rootFileHE("rootFileHE",
                'h',
-               "input HE DIODE singlex16 digi root file (one of eitehr -l or -h is required)",
+               "input HE DIODE singlex16 digi root file (one of either -l or -h is required)",
                ""),
     rootFileLE("rootFileLE",
                'l',
