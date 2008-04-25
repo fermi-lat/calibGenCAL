@@ -84,7 +84,8 @@ int main(const int argc, const char **argv)
     for(i= 0; i < nParts; i++)
     {
         rootFileList.clear();
-        rootFileList.push_back((outFname+element[i]+".root").c_str());
+        const string fname = outFname+"."+element[i]+".root";
+        rootFileList.push_back(fname.c_str());
         RootFileAnalysis rootFile(0, &rootFileList, 0);
 
         //----- enable only needed branches
