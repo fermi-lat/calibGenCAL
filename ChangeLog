@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Fri Apr 25 10:55:11 PDT 2008
+calibGenCAL/src/lib/Util
+
+Modified Files:
+	LangauFun.cxx 
+Log Message:
+LanGau moved from single precision to double precision as fits were not converging.
+
+    *
+------------------------------------------------------------
+User: fewtrell  Fri Apr 25 10:55:11 PDT 2008
 calibGenCAL/src/lib/Hists
 
 Modified Files:
