@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/LangauFun.cxx,v 1.7 2008/04/18 21:47:42 chehtman Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/LangauFun.cxx,v 1.8 2008/04/25 14:49:18 fewtrell Exp $
 
 /** @file
     @author Zach Fewtrell
@@ -38,42 +38,42 @@ namespace calibGenCAL {
     };
 
     static double startVals[N_PARMS] = {
-      .0526,
-      30.81,
-      5000,
-      .0618,
-      0.0
+      .0526, // LAN_WID
+      30.81, //  MPV
+      5000, // AREA
+      .0618, // GAU_WID
+      0.0 // BKG
     };
 
     static bool   fixParms[N_PARMS] = {
-      true,
-      false,
-      true,
-      true,
-      true
+      true, // LAN_WID
+      false, // MPV
+      false, // AREA
+      false, // GAU_WID
+      false // BKG
     };
 
     static bool   useLimits[N_PARMS] = {
-      true,
-      true,
-      false,
-      true,
-      true
+      true, // LAN_WID
+      true, // MPV
+      true,  // AREA
+      true, // GAU_WID
+      true // BKG
     };
 
     static double parmLo[N_PARMS] = {
       .01,
-      1,
+      1, // MPV
       0,
-      .01,
+      .05,
       0
     };
 
     static double parmHi[N_PARMS] = {
       0.2,
-      10000,
+      10000, // MPV
       1e9,
-      0.2,
+      0.08,
       1e6
     };
 
@@ -85,10 +85,10 @@ namespace calibGenCAL {
     ///
     /// background is level @ height below peak mpv & 0 afterwards w/
     /// exponential decay of width sigma between two regions
-    static inline float bckgnd_model(float x,
-                                     float height,
-                                     float mpv,
-                                     float sigma) {
+    static inline double bckgnd_model(double x,
+                                     double height,
+                                     double mpv,
+                                     double sigma) {
       return height/(1 + exp((x-mpv)/sigma));
     }
 
@@ -97,8 +97,8 @@ namespace calibGenCAL {
     {
       // Numeric constants
 
-      static const float invsq2pi    = pow(2*M_PI, -.5);      // (2 pi)^(-1/2)
-      static const float mpshift     = -0.22278298;           // Landau maximum location
+      static const double invsq2pi    = pow(2*M_PI, -.5);      // (2 pi)^(-1/2)
+      static const double mpshift     = -0.22278298;           // Landau maximum location
 
       // Control constants
 
@@ -107,18 +107,18 @@ namespace calibGenCAL {
 
       // Variables
 
-      float xx;
-      float mpc;
-      float fland;
-      float sum = 0.0;
-      float xlow, xupp;
-      float step;
+      double xx;
+      double mpc;
+      double fland;
+      double sum = 0.0;
+      double xlow, xupp;
+      double step;
       unsigned short i;
 
       // landau & gausian wid given as fraction
       // of mpv
-      float real_lan = par[PARM_LAN_WID]*par[PARM_MPV];
-      float real_gau = par[PARM_GAU_WID]*par[PARM_MPV];
+      double real_lan = par[PARM_LAN_WID]*par[PARM_MPV];
+      double real_gau = par[PARM_GAU_WID]*par[PARM_MPV];
 
 
       // MP shift correction
@@ -149,13 +149,13 @@ namespace calibGenCAL {
         }
 
       // combine sigmas for both landau & gaussian
-      float convolved_width = sqrt(real_gau*real_gau + real_lan*real_lan);
-      float bkgnd  = bckgnd_model(x[0],
+      double convolved_width = sqrt(real_gau*real_gau + real_lan*real_lan);
+      double bkgnd  = bckgnd_model(x[0],
                                   par[PARM_BKGND_HEIGHT], // bckgnd height
                                   par[PARM_MPV],          // mpv
                                   convolved_width);
 
-      float retVal = par[PARM_LAN_AREA]*step*sum*invsq2pi/real_gau + bkgnd;
+      double retVal = par[PARM_LAN_AREA]*step*sum*invsq2pi/real_gau + bkgnd;
 
       /*         LogStrm::get() << x[0] << " "
                  << str_join(par, par+N_PARMS)
@@ -257,7 +257,7 @@ namespace calibGenCAL {
 
 
     tuple_data[FIELD_XTAL]        = xtalId.val();
-    float mpv = func.GetParameter(PARM_MPV);
+    double mpv = func.GetParameter(PARM_MPV);
     tuple_data[FIELD_MPV]         = mpv;
     tuple_data[FIELD_MPV_ERR]     = func.GetParError(PARM_MPV);
     tuple_data[FIELD_LAN_WID]     = func.GetParameter(PARM_LAN_WID)*mpv;
