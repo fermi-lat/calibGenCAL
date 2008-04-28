@@ -1,6 +1,6 @@
 #ifndef IntNonlinAlg_h
 #define IntNonlinAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/IntNonlinAlg.h,v 1.6 2008/01/22 19:40:58 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.h,v 1.1 2008/04/21 20:42:38 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -35,7 +35,8 @@ namespace calibGenCAL {
   */
   class IntNonlinAlg {
   public:
-    IntNonlinAlg();
+    IntNonlinAlg() 
+    {}
 
     /// process digi root event file
     /// \param diode specify whether to analyze HE or LE circuits
