@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Apr 28 12:30:25 PDT 2008
+calibGenCAL/src/lib/Hists
+
+Modified Files:
+	MPDHists.cxx 
+Log Message:
+MPD fits still needed some tweaking, fixed the gaussian width as some histograms wanted to make it too wide, missing the most probably value
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Apr 28 07:58:29 PDT 2008
 calibGenCAL/src/CIDAC2ADC
 
