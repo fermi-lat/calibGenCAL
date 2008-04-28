@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/IntNonlinAlg.cxx,v 1.6 2008/01/22 19:40:58 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.cxx,v 1.1 2008/04/21 20:42:38 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -47,10 +47,6 @@ namespace calibGenCAL {
   static const unsigned short SMOOTH_SKIP_HI[]   = {
     6, 10, 6, 10
   };
-
-  IntNonlinAlg::IntNonlinAlg()
-  {
-  }
 
   void IntNonlinAlg::AlgData::initHists() {
     adcHists.reset(new TObjArray(RngIdx::N_VALS));
@@ -298,9 +294,12 @@ namespace calibGenCAL {
     // last idx will be last index that is <= 0.99*adc_max
     // it is the last point we intend on using.
     unsigned short last_idx = 0;
-    while (curADC[last_idx] <= 0.99*adc_max)
+    while (curADC[last_idx] <= 0.99*adc_max  
+           && 
+           last_idx < N_CIDAC_VALS-1) //bounds check
       last_idx++;
-    last_idx--;
+    if (last_idx > 0)
+      last_idx--;
 
     //-- CREATE GRAPH OBJECT for fitting --//
     copy(curADC.begin(),
