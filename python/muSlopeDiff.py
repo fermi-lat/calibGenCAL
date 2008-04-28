@@ -1,14 +1,13 @@
 """
 Diff 2 CAL muSlope (muSlope) offline calibration XML files.  The command line is:
 
-python muSlopeDiff.py [-p] [-x xaxis_width] <muSlope_xml_file1> <muSlope_xml_file2> <output_root_file>
-
+python muSlopeDiff.py [-p] [-x xaxis_width] <muSlope_xml_file1> <muSlope_xml_file2> <output_basename>
 where:
     -p                  = pctdiff (default = absolute diff)
     -x xaxis_width      = fixed x axis scaling (default = auto_scale
     <muSlope_xml_file1> = GLAST Cal muSlope offline calib file
     <muSlope_xml_file2> = GLAST Cal muSlope offline calib file
-    <output_root_file> = ROOT overplots & residuals will be saved here.
+    <output_basename>   = base filename for all output files
 
 
 """
@@ -16,8 +15,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL muSlope XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2008/02/03 00:51:50 $"
-__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/02/11 21:35:58 $"
+__version__     = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -74,7 +73,7 @@ if len(args) != 3:
 # get filenames
 muSlopePath1 = args[0]
 muSlopePath2 = args[1]
-rootPath = args[2]
+outputBasename = args[2]
 
 # read in dac xml files
 log.info("Opening %s"%muSlopePath1)
@@ -108,6 +107,7 @@ else:
 # set up pyROOT
 import ROOT
 ROOT.gROOT.Reset()
+rootPath = outputBasename + ".root"
 log.info("Opening %s"%rootPath)
 rootFile = ROOT.TFile(rootPath,
                       "recreate",
@@ -116,6 +116,19 @@ rootFile = ROOT.TFile(rootPath,
 # gobal summary histograms
 muSlopeHists = {}
 sigHists = {}
+scatterHists = {}
+# scatter plot histogram limits
+muSlope_lo = {}
+muSlope_hi = {}
+muSlope_lo[0] = .01
+muSlope_hi[0] = .05
+muSlope_lo[1] = .1
+muSlope_hi[1] = .5
+muSlope_lo[2] = 1
+muSlope_hi[2] = 5
+muSlope_lo[3] = 15
+muSlope_hi[3] = 25
+
 for rng in range(calConstant.NUM_RNG):
     muSlopeHists[rng] = ROOT.TH1S("EnergyPerBin%s_%s"%(optypeName,calConstant.CRNG[rng]),
                               "EnergyPerBin%s_%s"%(optypeName,calConstant.CRNG[rng]),
@@ -124,6 +137,12 @@ for rng in range(calConstant.NUM_RNG):
     sigHists[rng] = ROOT.TH1S("EnergyPerBinSigma%s_%s"%(optypeName,calConstant.CRNG[rng]),
                               "EnergyPerBinSigma%s_%s"%(optypeName,calConstant.CRNG[rng]),
                               nbins,xaxismin,xaxismax)
+
+    scatterHists[rng] = ROOT.TH2S("EnergyPerBinScatter_%s"%calConstant.CRNG[rng],
+                                  "EnergyPerBinScatter_%s"%calConstant.CRNG[rng],
+                                  nbins, muSlope_lo[rng], muSlope_hi[rng],
+                                  nbins, muSlope_lo[rng], muSlope_hi[rng])
+
 
 for twr in muSlopeTwrs1:
     # from calCalibXML.py
@@ -144,6 +163,31 @@ for twr in muSlopeTwrs1:
             muSlopeHists[rng].Fill(p)
         for s in numarray.ravel(sigDiff):
             sigHists[rng].Fill(s)
+
+        ms1 = array.array('d',numarray.ravel(muSlope1[twr,...,rng,0]))
+        ms2 = array.array('d',numarray.ravel(muSlope2[twr,...,rng,0]))
+        scatterHists[rng].FillN(len(ms1),
+                                ms1,
+                                ms2,
+                                array.array('d',[1]*len(ms1)) # weights
+                                )
+
+# GENERATE POSTSCRIPT REPORT #
+psPath = outputBasename + ".ps"
+log.info("Opening %s" % psPath)
+
+scatterHists[0].Draw("colZ")
+ROOT.gPad.SetGrid()
+ROOT.gPad.Print(psPath+"(")
+
+scatterHists[1].Draw("colZ")
+ROOT.gPad.Print(psPath)
+
+scatterHists[2].Draw("colZ")
+ROOT.gPad.Print(psPath)
+
+scatterHists[3].Draw("colZ")
+ROOT.gPad.Print(psPath+")")
 
 log.info("Writing %s"%rootPath)
 rootFile.Write()

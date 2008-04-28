@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL dacSlopes XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2008/04/23 19:41:16 $"
-__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/04/23 22:35:14 $"
+__version__     = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -475,6 +475,7 @@ rptFilename = outputBasename + ".ps"
 ROOT.gStyle.SetPalette(1)
 
 # print first page in doc
+log.info("Opening %s"%rptFilename)
 lacdac_2mev.Draw("colZ")
 ROOT.gPad.SetGrid()
 ROOT.gPad.Print(rptFilename+"(")
