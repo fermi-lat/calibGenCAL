@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Apr 28 07:58:29 PDT 2008
+calibGenCAL/src/CIDAC2ADC
+
+Modified Files:
+	IntNonlinAlg.cxx IntNonlinAlg.h 
+Log Message:
+fixed indexing bug when CIDAC2ADC gets funny data.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Apr 25 12:25:10 PDT 2008
 calibGenCAL/src/CIDAC2ADC
 
