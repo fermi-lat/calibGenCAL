@@ -249,8 +249,8 @@ namespace calibGenCAL {
     m_fitFunc->SetParameter(1, 30);
     /// landau area
     m_fitFunc->SetParameter(2, hist.GetEntries()*hist.GetBinWidth(1));
-    /// gaussian width
-    m_fitFunc->SetParameter(3, 0.6);
+    /// gaussian width ( currently fixed)
+    //m_fitFunc->SetParameter(3, 0.6);
     /// background height 
     m_fitFunc->SetParameter(4, 0.0);
     const int fitResult = hist.Fit(m_fitFunc, "QL");

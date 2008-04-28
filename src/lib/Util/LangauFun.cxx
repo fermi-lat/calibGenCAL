@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/LangauFun.cxx,v 1.8 2008/04/25 14:49:18 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/LangauFun.cxx,v 1.9 2008/04/25 17:55:11 fewtrell Exp $
 
 /** @file
     @author Zach Fewtrell
@@ -37,7 +37,7 @@ namespace calibGenCAL {
       N_PARMS
     };
 
-    static double startVals[N_PARMS] = {
+    static const double startVals[N_PARMS] = {
       .0526, // LAN_WID
       30.81, //  MPV
       5000, // AREA
@@ -45,15 +45,15 @@ namespace calibGenCAL {
       0.0 // BKG
     };
 
-    static bool   fixParms[N_PARMS] = {
+    static const bool   fixParms[N_PARMS] = {
       true, // LAN_WID
       false, // MPV
       false, // AREA
-      false, // GAU_WID
+      true, // GAU_WID
       false // BKG
     };
 
-    static bool   useLimits[N_PARMS] = {
+    static const bool useLimits[N_PARMS] = {
       true, // LAN_WID
       true, // MPV
       true,  // AREA
@@ -61,23 +61,23 @@ namespace calibGenCAL {
       true // BKG
     };
 
-    static double parmLo[N_PARMS] = {
-      .01,
-      1, // MPV
-      0,
-      .05,
-      0
+    static const double parmLo[N_PARMS] = {
+      .01, // LAN_WID
+      1,   // MPV
+      0,   // AREA
+      .05, // GAU_WID
+      0    // BKG
     };
 
-    static double parmHi[N_PARMS] = {
-      0.2,
+    static const double parmHi[N_PARMS] = {
+      0.2,   // LAN_WID
       10000, // MPV
-      1e9,
-      0.08,
-      1e6
+      1e9,   /// AREA
+      0.08,  // GAU_WID
+      1e6    // BKG
     };
 
-    static double fitRange[2] = {
+    static const double fitRange[2] = {
       0, 100
     };
 
