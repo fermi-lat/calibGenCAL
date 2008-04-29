@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2008/02/15 22:47:22 $"
-__version__   = "$Revision: 1.18 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/04/21 14:37:29 $"
+__version__   = "$Revision: 1.19 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -580,6 +580,11 @@ class calTholdCICalibXML(calCalibXML):
         # write output XML file
 
         self.writeFile()
+
+    # array indices
+    ADCDATA_LAC = 0
+    ADCDATA_FLE = 1
+    ADCDATA_FHE = 2
 
     def read(self):
         """
@@ -2155,6 +2160,7 @@ class calDacSlopesCalibXML(calCalibXML):
     calibration data stored in XML format.
     """
 
+    # array indices
     DACDATA_LACDAC_SLOPE = 0
     DACDATA_LACDAC_OFFSET = 1
     DACDATA_FLEDAC_SLOPE = 2

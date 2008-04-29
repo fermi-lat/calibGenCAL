@@ -1,4 +1,4 @@
-# $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/cfg/Makefile,v 1.14 2007/08/30 21:15:56 fewtrell Exp $
+# $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/cfg/Makefile,v 1.15 2007/10/19 15:33:05 fewtrell Exp $
 # @file calibGenCAL analysis Makefile - manage generation of all calibGenCAL outputs and accessory files
 # @requires GNU Make
 # @requires calibGenCAL package CMT environment setup - this means source your $CALIBGENCALROOT/cmt/setup.(csh|sh|bat)
@@ -207,7 +207,7 @@ MUONGAIN_FHE_VAL = ${MUONGAIN_DACSLOPES_BASE}.${MUONGAIN_FHE_THRESH}MeV.MUON_GAI
 MUONGAIN_LAC_VAL = ${MUONGAIN_DACSLOPES_BASE}.${MUONGAIN_LAC_THRESH}MeV.MUON_GAIN.lac.val.root
 MUONGAIN_ULD_VAL = ${MUONGAIN_DACSLOPES_BASE}.${MUONGAIN_ULD_THRESH}pct.MUON_GAIN.uld.val.root
 
-MUONGAIN_CALIBSET_VAL = $(addsuffix .calibSet..val.root, $(addsuffix ${MUONGAIN_SFX}, $(basename $(notdir ${FIRST_MUOPT_DIGI}))))
+MUONGAIN_CALIBSET_VAL = $(addsuffix .calibSet.val.root, $(addsuffix ${MUONGAIN_SFX}, $(basename $(notdir ${FIRST_MUOPT_DIGI}))))
 FLIGHTGAIN_CALIBSET_VAL = $(addsuffix .calibSet..val.root, $(addsuffix ${FLIGHTGAIN_SFX}, $(basename $(notdir ${FIRST_MUOPT_DIGI}))))
 
 
