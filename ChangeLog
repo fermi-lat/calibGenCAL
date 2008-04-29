@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Apr 29 08:46:36 PDT 2008
+calibGenCAL/python
+
+Added Files:
+	tholdCIDiff.py 
+Log Message:
+adding tholdCIDiff application (not tested yet)
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Apr 29 07:01:59 PDT 2008
 calibGenCAL/python/lib
 
