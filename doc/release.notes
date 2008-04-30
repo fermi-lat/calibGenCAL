@@ -605,7 +605,7 @@ v5r3p1 fewtrell 02/27/08
 - fix minor bug in asymVal.py commandline processing
 
 ------------------------
-v5r4p0
+v5r4p0 fewtrell
 ------------------------
 - full suite of tools added for calibration Cal discriminator thresholds from LPA data.
 - C++ file subfolders rearranged
@@ -613,10 +613,17 @@ v5r4p0
 - optionally support CU06 geometry
 
 -------------------------
-v5r5
+v5r5 fewtrell 04/30/08
 -------------------------
 - added / updated calib trending 'diff' applications. more scatter plots.  move toward 'relative' diff as default.
 - improved stability of muon MevPerDAC fitting.
 - fixed indexing crash when genCIDAC2ADC runs on incorrect data
 - fix bug in Cal geometry calcs introduced with recent CU06 geometry support
 - changed some public static library variables to static accessor methods as linking on windows dll's was not working correctly.
+
+-------------------------
+v5r5p1 fewtrell 04/30/08
+-------------------------
+- removed obsolete python scripts
+
+
