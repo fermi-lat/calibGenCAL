@@ -611,3 +611,12 @@ v5r4p0
 - C++ file subfolders rearranged
 - works with CalUtil v3r12 which adds 'explicit' to some constructors
 - optionally support CU06 geometry
+
+-------------------------
+v5r5
+-------------------------
+- added / updated calib trending 'diff' applications. more scatter plots.  move toward 'relative' diff as default.
+- improved stability of muon MevPerDAC fitting.
+- fixed indexing crash when genCIDAC2ADC runs on incorrect data
+- fix bug in Cal geometry calcs introduced with recent CU06 geometry support
+- changed some public static library variables to static accessor methods as linking on windows dll's was not working correctly.
