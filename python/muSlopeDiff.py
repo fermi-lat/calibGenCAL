@@ -1,9 +1,9 @@
 """
 Diff 2 CAL muSlope (muSlope) offline calibration XML files.  The command line is:
 
-python muSlopeDiff.py [-p] [-x xaxis_width] <muSlope_xml_file1> <muSlope_xml_file2> <output_basename>
+python muSlopeDiff.py [-a] [-x xaxis_width] <muSlope_xml_file1> <muSlope_xml_file2> <output_basename>
 where:
-    -p                  = pctdiff (default = absolute diff)
+    -a                  = absolute diff (default = % diff)
     -x xaxis_width      = fixed x axis scaling (default = auto_scale
     <muSlope_xml_file1> = GLAST Cal muSlope offline calib file
     <muSlope_xml_file2> = GLAST Cal muSlope offline calib file
@@ -15,8 +15,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL muSlope XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2008/02/11 21:35:58 $"
-__version__     = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/04/28 22:06:07 $"
+__version__     = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -44,20 +44,20 @@ log.setLevel(logging.INFO)
 
 # 1st check for optional args
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "px:")
+    opts, args = getopt.getopt(sys.argv[1:], "ax:")
 except getopt.GetoptError:
     log.error(__doc__)
     sys.exit(1)
 
-optype      = OPTYPE_DIFF
-optypeName  = "Diff"
+optype      = OPTYPE_PCTDIFF
+optypeName  = "PctDiff"
 xaxismin    = 0
 xaxismax    = 0
 nbins       = 100
 for o, a in opts:
-    if o == "-p":
-        optype      = OPTYPE_PCTDIFF
-        optypeName = "PctDiff"
+    if o == "-a":
+        optype      = OPTYPE_DIFF
+        optypeName = "Diff"
     elif o == "-x":
         xaxismax = float(a)
         xaxismin = -1*xaxismax

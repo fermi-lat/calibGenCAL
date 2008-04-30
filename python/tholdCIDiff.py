@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL tholdCI XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2008/04/28 22:06:07 $"
-__version__     = "$Revision: 1.5 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/04/29 15:46:36 $"
+__version__     = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -89,7 +89,7 @@ rootFile = ROOT.TFile(outputRootPath,
 
 # INITIALIZE HISTOGRAMS #
 # extract needed arrays
-(adcDat1, uldData1, pedData1) = tholdCI1
+(adcData1, uldData1, pedData1) = tholdCI1
 (adcData2, uldData2, pedData2) = tholdCI2
 
 # initialize scatter plots
@@ -104,11 +104,11 @@ lac_scatter_hist = ROOT.TH2S("lac_thold_scatter",
 lac_scatter_hist.GetXaxis().SetTitle(tholdCIFilename1)
 lac_scatter_hist.GetYaxis().SetTitle(tholdCIFilename2)
 
-lac_diff_hist = ROOT.TH1S("lac_relative_diff",
-                          "lac_relative_diff",
-                          100,0,0)
-lac_diff_hist.GetXaxis().SetTitle(tholdCIFilename1)
-lac_diff_hist.GetYaxis().SetTitle(tholdCIFilename2)
+lac_reldiff_hist = ROOT.TH1S("lac_relative_diff",
+                             "lac_relative_diff",
+                             100,-1,1)
+lac_reldiff_hist.GetXaxis().SetTitle(tholdCIFilename1)
+lac_reldiff_hist.GetYaxis().SetTitle(tholdCIFilename2)
 
 fle_scatter_hist = ROOT.TH2S("fle_thold_scatter",
                              "fle_thold_scatter",
@@ -117,11 +117,11 @@ fle_scatter_hist = ROOT.TH2S("fle_thold_scatter",
 fle_scatter_hist.GetXaxis().SetTitle(tholdCIFilename1)
 fle_scatter_hist.GetYaxis().SetTitle(tholdCIFilename2)
 
-fle_diff_hist = ROOT.TH1S("fle_relative_diff",
+fle_reldiff_hist = ROOT.TH1S("fle_relative_diff",
                           "fle_relative_diff",
-                          100,0,0)
-fle_diff_hist.GetXaxis().SetTitle(tholdCIFilename1)
-fle_diff_hist.GetYaxis().SetTitle(tholdCIFilename2)
+                          100,-1,1)
+fle_reldiff_hist.GetXaxis().SetTitle(tholdCIFilename1)
+fle_reldiff_hist.GetYaxis().SetTitle(tholdCIFilename2)
 
 
 fhe_scatter_hist = ROOT.TH2S("fhe_thold_scatter",
@@ -131,14 +131,15 @@ fhe_scatter_hist = ROOT.TH2S("fhe_thold_scatter",
 fhe_scatter_hist.GetXaxis().SetTitle(tholdCIFilename1)
 fhe_scatter_hist.GetYaxis().SetTitle(tholdCIFilename2)
 
-fhe_diff_hist = ROOT.TH1S("fhe_relative_diff",
+fhe_reldiff_hist = ROOT.TH1S("fhe_relative_diff",
                           "fhe_relative_diff",
-                          100,0,0)
-fhe_diff_hist.GetXaxis().SetTitle(tholdCIFilename1)
-fhe_diff_hist.GetYaxis().SetTitle(tholdCIFilename2)
+                          100,-1,1)
+fhe_reldiff_hist.GetXaxis().SetTitle(tholdCIFilename1)
+fhe_reldiff_hist.GetYaxis().SetTitle(tholdCIFilename2)
 
 # only do ULD threshold for bottom 3 ranges
 uld_scatter_hist = {}
+uld_reldiff_hist = {}
 for rng in range(3):
     uld_scatter_hist[rng] = ROOT.TH2S("uld_thold_scatter_%s"%calConstant.CRNG[rng],
                                       "uld_thold_scatter_%s"%calConstant.CRNG[rng],
@@ -147,27 +148,27 @@ for rng in range(3):
     uld_scatter_hist[rng].GetXaxis().SetTitle(tholdCIFilename1)
     uld_scatter_hist[rng].GetYaxis().SetTitle(tholdCIFilename2)
     
-    uld_diff_hist[rng] = ROOT.TH1S("uld_relative_diff_%s"%calConstant.CRNG[rng],
-                                   "uld_relative_diff_%s"%calConstant.CRNG[rng],
-                                   100,0,0)
-    uld_diff_hist[rng].GetXaxis().SetTitle(tholdCIFilename1)
-    uld_diff_hist[rng].GetYaxis().SetTitle(tholdCIFilename2)
+    uld_reldiff_hist[rng] = ROOT.TH1S("uld_relative_reldiff_%s"%calConstant.CRNG[rng],
+                                      "uld_relative_reldiff_%s"%calConstant.CRNG[rng],
+                                      100,-1,1)
+    uld_reldiff_hist[rng].GetXaxis().SetTitle(tholdCIFilename1)
+    uld_reldiff_hist[rng].GetYaxis().SetTitle(tholdCIFilename2)
 
 # FILL HISTOGRAMS
 import array
 for twr in twrSet:
     # 'weight' arrays all equal 1
-    dac_weights = array.array('d',[1]*len(lacslope1))
-    ulddac_weights = array.array('d',[1]*len(numarray.ravel(uldslope1)))
 
     lac1 = numarray.ravel(adcData1[twr,...,calCalibXML.calTholdCICalibXML.ADCDATA_LAC])
     lac2 = numarray.ravel(adcData2[twr,...,calCalibXML.calTholdCICalibXML.ADCDATA_LAC])
+    dac_weights = array.array('d',[1]*len(lac1))
     lac_scatter_hist.FillN(len(lac1),
                            array.array('d',lac1),
                            array.array('d',lac2),
-                           array.array('d',[1]*len(lac1)))
-    lac_diff_hist.FillN(len(lac1),
-                        array.array('d',lac2-lac1))
+                           dac_weights)
+    lac_reldiff_hist.FillN(len(lac1),
+                           array.array('d',(lac2-lac1)/lac1),
+                           dac_weights)
 
 
     fle1 = numarray.ravel(adcData1[twr,...,calCalibXML.calTholdCICalibXML.ADCDATA_FLE])
@@ -175,9 +176,10 @@ for twr in twrSet:
     fle_scatter_hist.FillN(len(fle1),
                            array.array('d',fle1),
                            array.array('d',fle2),
-                           array.array('d',[1]*len(fle1)))
-    fle_diff_hist.FillN(len(fle1),
-                        array.array('d',fle2-fle1))
+                           dac_weights)
+    fle_reldiff_hist.FillN(len(fle1),
+                           array.array('d',(fle2-fle1)/fle1),
+                           dac_weights)
 
 
     fhe1 = numarray.ravel(adcData1[twr,...,calCalibXML.calTholdCICalibXML.ADCDATA_FHE])
@@ -185,19 +187,22 @@ for twr in twrSet:
     fhe_scatter_hist.FillN(len(fhe1),
                            array.array('d',fhe1),
                            array.array('d',fhe2),
-                           array.array('d',[1]*len(fhe1)))
-    fhe_diff_hist.FillN(len(fhe1),
-                        array.array('d',fhe2-fhe1))
+                           dac_weights)
+    fhe_reldiff_hist.FillN(len(fhe1),
+                           array.array('d',(fhe2-fhe1)/fhe1),
+                           dac_weights)
 
     for rng in range(3):
         uld1 = numarray.ravel(uldData1[twr,...,rng])
         uld2 = numarray.ravel(uldData2[twr,...,rng])
+        ulddac_weights = array.array('d',[1]*len(numarray.ravel(uld1)))
         uld_scatter_hist[rng].FillN(len(uld1),
                                     array.array('d',uld1),
                                     array.array('d',uld2),
-                                    array.array('d',[1]*len(uld1)))
-        uld_diff_hist[rng].FillN(len(uld1),
-                                 array.array('d',uld2-uld1))
+                                    ulddac_weights)
+        uld_reldiff_hist[rng].FillN(len(uld1),
+                                    array.array('d',(uld2-uld1)/uld1),
+                                    ulddac_weights)
 
         
 

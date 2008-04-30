@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL dacSlopes XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2008/04/28 22:06:07 $"
-__version__     = "$Revision: 1.5 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/04/29 14:01:59 $"
+__version__     = "$Revision: 1.6 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -311,6 +311,93 @@ ulddac_10pct_hex8 = ROOT.TH2S("ulddac_10pct_hex8",
 ulddac_10pct_hex8.GetXaxis().SetTitle(dacSlopesFilename1)
 ulddac_10pct_hex8.GetYaxis().SetTitle(dacSlopesFilename2)
 
+
+
+lacdac_2mev_reldiff = ROOT.TH1S("lacdac_2mev_reldiff",
+                                "lacdac_2mev_reldiff",
+                                100,-1,1)
+lacdac_2mev_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
+lacdac_2mev_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+
+lacdac_4mev_reldiff = ROOT.TH1S("lacdac_4mev_reldiff",
+                                "lacdac_4mev_reldiff",
+                                100,-1,1)
+lacdac_4mev_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
+lacdac_4mev_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+
+fledac_100mev_reldiff = ROOT.TH1S("fledac_100mev_reldiff",
+                                  "fledac_100mev_reldiff",
+                                  100,-1,1)
+fledac_100mev_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
+fledac_100mev_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+
+fledac_150mev_reldiff = ROOT.TH1S("fledac_150mev_reldiff",
+                                  "fledac_150mev_reldiff",
+                                  100,-1,1)
+fledac_150mev_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
+fledac_150mev_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+
+fhedac_1000mev_reldiff = ROOT.TH1S("fhedac_1000mev_reldiff",
+                                   "fhedac_1000mev_reldiff",
+                                   100,-1,1)
+fhedac_1000mev_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
+fhedac_1000mev_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+
+fhedac_1500mev_reldiff = ROOT.TH1S("fhedac_1500mev_reldiff",
+                                   "fhedac_1500mev_reldiff",
+                                   100,-1,1)
+fhedac_1500mev_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
+fhedac_1500mev_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+
+ulddac_5pct_reldiff = ROOT.TH1S("ulddac_5pct_reldiff",
+                                "ulddac_5pct_reldiff",
+                                100,-1,1)
+ulddac_5pct_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
+ulddac_5pct_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+
+ulddac_10pct_reldiff = ROOT.TH1S("ulddac_10pct_reldiff",
+                                 "ulddac_10pct_reldiff",
+                                 100,-1,1)
+ulddac_10pct_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
+ulddac_10pct_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+
+ulddac_5pct_lex8_reldiff = ROOT.TH1S("ulddac_5pct_lex8_reldiff",
+                                     "ulddac_5pct_lex8_reldiff",
+                                     100,-1,1)
+ulddac_5pct_lex8_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
+ulddac_5pct_lex8_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+
+ulddac_10pct_lex8_reldiff = ROOT.TH1S("ulddac_10pct_lex8_reldiff",
+                                      "ulddac_10pct_lex8_reldiff",
+                                      100,-1,1)
+ulddac_10pct_lex8_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
+ulddac_10pct_lex8_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+
+ulddac_5pct_lex1_reldiff = ROOT.TH1S("ulddac_5pct_lex1_reldiff",
+                                     "ulddac_5pct_lex1_reldiff",
+                                     100,-1,1)
+ulddac_5pct_lex1_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
+ulddac_5pct_lex1_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+
+ulddac_10pct_lex1_reldiff = ROOT.TH1S("ulddac_10pct_lex1_reldiff",
+                                      "ulddac_10pct_lex1_reldiff",
+                                      100,-1,1)
+ulddac_10pct_lex1_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
+ulddac_10pct_lex1_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+
+ulddac_5pct_hex8_reldiff = ROOT.TH1S("ulddac_5pct_hex8_reldiff",
+                                     "ulddac_5pct_hex8_reldiff",
+                                     100,-1,1)
+ulddac_5pct_hex8_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
+ulddac_5pct_hex8_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+
+ulddac_10pct_hex8_reldiff = ROOT.TH1S("ulddac_10pct_hex8_reldiff",
+                                      "ulddac_10pct_hex8_reldiff",
+                                      100,-1,1)
+ulddac_10pct_hex8_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
+ulddac_10pct_hex8_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+
+
 # FILL HISTOGRAMS
 import array
 for twr in twrSet:
@@ -452,79 +539,93 @@ for twr in twrSet:
                       dac_weights)
 
     ulddac_5pct_lex1.FillN(len(uld5pct1[1]),
-                      array.array('d',numarray.ravel(uld5pct1[0])),
-                      array.array('d',numarray.ravel(uld5pct2[0])),
+                      array.array('d',numarray.ravel(uld5pct1[1])),
+                      array.array('d',numarray.ravel(uld5pct2[1])),
                       dac_weights)
     ulddac_10pct_lex1.FillN(len(uld10pct1[1]),
-                      array.array('d',numarray.ravel(uld10pct1[0])),
-                      array.array('d',numarray.ravel(uld10pct2[0])),
+                      array.array('d',numarray.ravel(uld10pct1[1])),
+                      array.array('d',numarray.ravel(uld10pct2[1])),
                       dac_weights)
 
     ulddac_5pct_hex8.FillN(len(uld5pct1[2]),
-                      array.array('d',numarray.ravel(uld5pct1[1])),
-                      array.array('d',numarray.ravel(uld5pct2[1])),
+                      array.array('d',numarray.ravel(uld5pct1[2])),
+                      array.array('d',numarray.ravel(uld5pct2[2])),
                       dac_weights)
     ulddac_10pct_hex8.FillN(len(uld10pct1[2]),
                       array.array('d',numarray.ravel(uld10pct1[2])),
                       array.array('d',numarray.ravel(uld10pct2[2])),
                       dac_weights)
 
-# GENERATE POSTSCRIPT REPORT #
-rptFilename = outputBasename + ".ps"
+
+
+    lacdac_2mev_reldiff.FillN(len(lac2mev1),
+                              array.array('d',(lac2mev1-lac2mev2)/lac2mev1),
+                              dac_weights)
+    lacdac_4mev_reldiff.FillN(len(lac4mev1),
+                              array.array('d',(lac4mev1-lac4mev2)/lac4mev1),
+                              dac_weights)
+    fledac_100mev_reldiff.FillN(len(fle100mev1),
+                                array.array('d',(fle100mev1-fle100mev2)/fle100mev1),
+                                dac_weights)
+    fledac_150mev_reldiff.FillN(len(fle150mev1),
+                                array.array('d',(fle150mev1-fle150mev2)/fle150mev1),
+                                dac_weights)
+    fhedac_1000mev_reldiff.FillN(len(fhe1000mev1),
+                                 array.array('d',(fhe1000mev1-fhe1000mev2)/fhe1000mev1),
+                                 dac_weights)
+    fhedac_1500mev_reldiff.FillN(len(fhe1500mev1),
+                                 array.array('d',(fhe1500mev1-fhe1500mev2)/fhe1500mev1),
+                                 dac_weights)
+
+    ulddac_5pct_reldiff.FillN(len(uld5pct1),
+                              array.array('d',numarray.ravel((uld5pct1-uld5pct2)/uld5pct1)),
+                              dac_weights)
+    ulddac_10pct_reldiff.FillN(len(uld10pct1),
+                               array.array('d',numarray.ravel((uld10pct1-uld10pct2)/uld10pct1)),
+                               dac_weights)
+
+    ulddac_5pct_lex8_reldiff.FillN(len(uld5pct1[0]),
+                                   array.array('d',numarray.ravel((uld5pct1[0]-uld5pct2[0])/uld5pct2[0])),
+                                   dac_weights)
+    ulddac_10pct_lex8_reldiff.FillN(len(uld10pct1[0]),
+                                    array.array('d',numarray.ravel((uld10pct1[0]-uld10pct2[0])/uld10pct2[0])),
+                                    dac_weights)
+
+    ulddac_5pct_lex1_reldiff.FillN(len(uld5pct1[1]),
+                                   array.array('d',numarray.ravel((uld5pct1[1]-uld5pct2[1])/uld5pct2[1])),
+                                   dac_weights)
+    ulddac_10pct_lex1_reldiff.FillN(len(uld10pct1[1]),
+                                    array.array('d',numarray.ravel((uld10pct1[1]-uld10pct2[1])/uld10pct2[1])),
+                                    dac_weights)
+
+    ulddac_5pct_hex8_reldiff.FillN(len(uld5pct1[2]),
+                                   array.array('d',numarray.ravel((uld5pct1[2]-uld5pct2[2])/uld5pct2[2])),
+                                   dac_weights)
+    ulddac_10pct_hex8_reldiff.FillN(len(uld10pct1[2]),
+                                    array.array('d',numarray.ravel((uld10pct1[2]-uld10pct2[2])/uld10pct2[2])),
+                                    dac_weights)
+
+# GENERATE PLOTS #
 # setup plotting options
 ROOT.gStyle.SetPalette(1)
 
-# print first page in doc
-log.info("Opening %s"%rptFilename)
-lacdac_2mev.Draw("colZ")
-ROOT.gPad.SetGrid()
-ROOT.gPad.Print(rptFilename+"(")
+import rootUtil
+rootUtil.colz_plot_hist(lacdac_2mev).Write()
+rootUtil.colz_plot_hist(lacdac_4mev).Write()
+rootUtil.colz_plot_hist(fledac_100mev).Write()
+rootUtil.colz_plot_hist(fledac_150mev).Write()
+rootUtil.colz_plot_hist(fhedac_1000mev).Write()
+rootUtil.colz_plot_hist(fhedac_1500mev).Write()
+rootUtil.colz_plot_hist(ulddac_5pct).Write()
+rootUtil.colz_plot_hist(ulddac_10pct).Write()
+rootUtil.colz_plot_hist(ulddac_5pct_lex8).Write()
+rootUtil.colz_plot_hist(ulddac_10pct_lex8).Write()
+rootUtil.colz_plot_hist(ulddac_5pct_lex1).Write()
+rootUtil.colz_plot_hist(ulddac_10pct_lex1).Write()
+rootUtil.colz_plot_hist(ulddac_5pct_hex8).Write()
+rootUtil.colz_plot_hist(ulddac_10pct_hex8).Write()
 
-# print middle pages
-lacdac_4mev.Draw("colZ")
-ROOT.gPad.Print(rptFilename)
-
-fledac_100mev.Draw("colZ")
-ROOT.gPad.Print(rptFilename)
-
-fledac_150mev.Draw("colZ")
-ROOT.gPad.Print(rptFilename)
-
-fhedac_1000mev.Draw("colZ")
-ROOT.gPad.Print(rptFilename)
-
-fhedac_1500mev.Draw("colZ")
-ROOT.gPad.Print(rptFilename)
-
-ulddac_5pct.Draw("colZ")
-ROOT.gPad.Print(rptFilename)
-
-ulddac_10pct.Draw("colZ")
-ROOT.gPad.Print(rptFilename)
-
-ulddac_5pct_lex8.Draw("colZ")
-ROOT.gPad.Print(rptFilename)
-
-ulddac_10pct_lex8.Draw("colZ")
-ROOT.gPad.Print(rptFilename)
-
-ulddac_5pct_lex1.Draw("colZ")
-ROOT.gPad.Print(rptFilename)
-
-ulddac_10pct_lex1.Draw("colZ")
-ROOT.gPad.Print(rptFilename)
-
-ulddac_5pct_hex8.Draw("colZ")
-ROOT.gPad.Print(rptFilename)
-
-ulddac_10pct_hex8.Draw("colZ")
-ROOT.gPad.Print(rptFilename + ")")
-
-
-
-# print last page in doc
-
-
+# write out ROOT file
 log.info("Writing %s"%outputRootPath)
 rootFile.Write()
 rootFile.Close()
