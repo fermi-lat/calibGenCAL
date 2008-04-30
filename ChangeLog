@@ -1,5 +1,17 @@
 ------------------------------------------------------------
 User: fewtrell  Wed Apr 30 09:53:41 PDT 2008
+calibGenCAL/python/lib
+
+Modified Files:
+	cgc_util.py 
+Added Files:
+	rootUtil.py 
+Log Message:
+updated calib trending / diff plots
+
+    *
+------------------------------------------------------------
+User: fewtrell  Wed Apr 30 09:53:41 PDT 2008
 calibGenCAL/python
 
 Modified Files:
