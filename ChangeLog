@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Apr 30 09:53:41 PDT 2008
+calibGenCAL/python
+
+Modified Files:
+	dacSlopesDiff.py mpdDiff.py muSlopeDiff.py tholdCIDiff.py 
+Log Message:
+updated calib trending / diff plots
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Apr 29 08:46:37 PDT 2008
 calibGenCAL/python/bin
 
