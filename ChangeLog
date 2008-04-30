@@ -1,4 +1,20 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Apr 30 10:01:11 PDT 2008
+calibGenCAL/python/old
+
+Removed Files:
+	build_dacslopes_cfg.py build_gensettings_cfg.cfg 
+	build_gensettings_cfg.py build_tholdci_cfg.py dacVal.py 
+	genFHEsettings.cfg genFHEsettings.py genFLEsettings.cfg 
+	genFLEsettings.py genGainSettings.py genLACsettings.cfg 
+	genLACsettings.py gensettings.py genULDsettings.cfg 
+	genULDsettings.py get_slac_calibdac.cfg get_slac_calibdac.py 
+	reverse_uld.py tholdCIGen_v4r5.cfg tholdCIGen_v4r5.py 
+	uldVal.py 
+Log Message:
+removing obsolete python code
+    *
+------------------------------------------------------------
 TAG
 Tag name: calibGenCAL-05-05-00, operation: add
 Package: calibGenCAL
