@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL mevPerDAC XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2008/02/11 21:35:58 $"
-__version__     = "$Revision: 1.8 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/04/23 22:35:14 $"
+__version__     = "$Revision: 1.9 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -77,7 +77,7 @@ rootFile = ROOT.TFile(rootPath,
                       "mpdDiff(%s,%s)"%(mpdPath1,mpdPath2))
 
 # calc diffs
-mpdDiff = mpd2 - mpd1
+mpdDiff = (mpd2 - mpd1)/mpd1
 
 #boolean map of active channels
 channelMap = mpd1.copy()
@@ -123,32 +123,32 @@ import os
 mpdFilename1 = os.path.basename(mpdPath1)
 mpdFilename2 = os.path.basename(mpdPath2)
 
-lrg_diff_summary = ROOT.TH1I("lrg_diff_summary",
-                             "lrg_diff_summary (mpd2 - mpd1)",
-                             50, minDiff[cgc_util.mpdBigValIdx], maxDiff[cgc_util.mpdBigValIdx])
-lrg_diff_summary.GetXaxis().SetTitle(mpdFilename1)
-lrg_diff_summary.GetYaxis().SetTitle(mpdFilename2)
+lrg_reldiff_summary = ROOT.TH1I("lrg_reldiff_summary",
+                                "lrg_reldiff_summary (mpd2 - mpd1)",
+                                50, minDiff[cgc_util.mpdBigValIdx], maxDiff[cgc_util.mpdBigValIdx])
+lrg_reldiff_summary.GetXaxis().SetTitle(mpdFilename1)
+lrg_reldiff_summary.GetYaxis().SetTitle(mpdFilename2)
 
 
-lrg_err_diff_summary = ROOT.TH1I("lrg_err_diff_summary",
-                                 "lrg_err_diff_summary (mpd2 - mpd)",
-                                 50, minDiff[cgc_util.mpdBigSigIdx], maxDiff[cgc_util.mpdBigSigIdx])
-lrg_err_diff_summary.GetXaxis().SetTitle(mpdFilename1)
-lrg_err_diff_summary.GetYaxis().SetTitle(mpdFilename2)
+lrg_err_reldiff_summary = ROOT.TH1I("lrg_err_reldiff_summary",
+                                    "lrg_err_reldiff_summary (mpd2 - mpd)",
+                                    50, minDiff[cgc_util.mpdBigSigIdx], maxDiff[cgc_util.mpdBigSigIdx])
+lrg_err_reldiff_summary.GetXaxis().SetTitle(mpdFilename1)
+lrg_err_reldiff_summary.GetYaxis().SetTitle(mpdFilename2)
 
 
-sm_diff_summary = ROOT.TH1I("sm_diff_summary",
-                            "sm_diff_summary (mpd2 - mpd1)",
-                            50, minDiff[cgc_util.mpdSmallValIdx], maxDiff[cgc_util.mpdSmallValIdx])
-sm_diff_summary.GetXaxis().SetTitle(mpdFilename1)
-sm_diff_summary.GetYaxis().SetTitle(mpdFilename2)
+sm_reldiff_summary = ROOT.TH1I("sm_reldiff_summary",
+                               "sm_reldiff_summary (mpd2 - mpd1)",
+                               50, minDiff[cgc_util.mpdSmallValIdx], maxDiff[cgc_util.mpdSmallValIdx])
+sm_reldiff_summary.GetXaxis().SetTitle(mpdFilename1)
+sm_reldiff_summary.GetYaxis().SetTitle(mpdFilename2)
 
 
-sm_err_diff_summary = ROOT.TH1I("sm_err_diff_summary",
-                                "sm_err_diff_summary (mpd2 - mpd1)",
-                                50, minDiff[cgc_util.mpdSmallSigIdx], maxDiff[cgc_util.mpdSmallSigIdx])
-sm_err_diff_summary.GetXaxis().SetTitle(mpdFilename1)
-sm_err_diff_summary.GetYaxis().SetTitle(mpdFilename2)
+sm_err_reldiff_summary = ROOT.TH1I("sm_err_reldiff_summary",
+                                   "sm_err_reldiff_summary (mpd2 - mpd1)",
+                                   50, minDiff[cgc_util.mpdSmallSigIdx], maxDiff[cgc_util.mpdSmallSigIdx])
+sm_err_reldiff_summary.GetXaxis().SetTitle(mpdFilename1)
+sm_err_reldiff_summary.GetYaxis().SetTitle(mpdFilename2)
 
 
 
@@ -225,7 +225,7 @@ for twr in mpdTwrs1:
     smErr2  = numarray.ravel(mpd2[twr, ..., cgc_util.mpdSmallSigIdx])
 
 
-    lrg_diff_summary.FillN(len(lrgDiff),
+    lrg_reldiff_summary.FillN(len(lrgDiff),
                            array.array('d',lrgDiff),
                            array.array('d',[1]*len(lrgDiff)))
     lrg_scatter.FillN(len(lrg1),
@@ -238,7 +238,7 @@ for twr in mpdTwrs1:
                            array.array('d',[1]*len(lrg1)))
 
 
-    lrg_err_diff_summary.FillN(len(lrgErrDiff),
+    lrg_err_reldiff_summary.FillN(len(lrgErrDiff),
                                array.array('d',lrgErrDiff),
                                array.array('d',[1]*len(lrgErrDiff)))
     lrg_err_scatter.FillN(len(lrgErr1),
@@ -251,7 +251,7 @@ for twr in mpdTwrs1:
                           array.array('d',[1]*len(lrgErr1)))
 
 
-    sm_diff_summary.FillN(len(smDiff),
+    sm_reldiff_summary.FillN(len(smDiff),
                           array.array('d',smDiff),
                           array.array('d',[1]*len(smDiff)))
     sm_scatter.FillN(len(sm1),
@@ -264,7 +264,7 @@ for twr in mpdTwrs1:
                       array.array('d',[1]*len(sm1)))
 
 
-    sm_err_diff_summary.FillN(len(smErrDiff),
+    sm_err_reldiff_summary.FillN(len(smErrDiff),
                               array.array('d',smErrDiff),
                               array.array('d',[1]*len(smErrDiff)))
     sm_err_scatter.FillN(len(smErr1),
