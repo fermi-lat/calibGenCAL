@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Apr 30 10:02:29 PDT 2008
+calibGenCAL/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+removing obsolete python code
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Apr 30 10:01:11 PDT 2008
 calibGenCAL/python/old
 
