@@ -44,7 +44,7 @@ namespace calibGenCAL {
     /// number of CIDAC values tested
     static const unsigned short N_CIDAC_VALS           = sizeof(CIDAC_TEST_VALS)/sizeof(*CIDAC_TEST_VALS);
     /// n pulses (events) per CIDAC val
-    static const unsigned short N_PULSES_PER_DAC       = 50;
+    static unsigned short N_PULSES_PER_DAC       = 100;
     /// n total pulsees per xtal (or column)
     static const unsigned N_PULSES_PER_XTAL      = N_CIDAC_VALS * N_PULSES_PER_DAC;
 

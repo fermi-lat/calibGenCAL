@@ -47,6 +47,11 @@ int main(const int argc, const char **argv)
     //----- open input digi ROOT file and get "Digi" tree
 
     TFile inp0(inpFname.c_str());
+    if (!inp0.IsOpen()) {
+      cout << __FILE__ ": Error opening file: " << inpFname << endl;
+      return -1;
+    }
+      
     TTree *t0= (TTree*)inp0.Get("Digi");
     t0->SetBranchStatus("*", 1);      // enable all branches in original tree
     N_totl= t0->GetEntries();         // total number of events in original file
@@ -57,7 +62,7 @@ int main(const int argc, const char **argv)
     j0= 0; j1= N_part;
     for(i= 0; i < nParts; i++)
     {
-        cout << "creating file " << outFname+element[i]+".root .." << endl;
+        cout << "creating file " << outFname+"."+element[i]+".root .." << endl;
 
         TFile out0((outFname+element[i]+".root").c_str(), "recreate");
 

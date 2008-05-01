@@ -627,3 +627,10 @@ v5r5p1 fewtrell 04/30/08
 - removed obsolete python scripts
 
 
+-------------------------
+v5r5p2 fewtrell 05/01/08
+-------------------------
+- genCIDAC2ADC (IntNonlin) now checks that LCICalConfiguration matches expected configuration, particularly the charge-injection DAC setting.
+- genCIDAC2ADC nSamples per DAC setting now configuration @ commandline - now defaults to 100 instead of 50 to match flight LCI script
+- genCIDAC2ADC now saves ROOT file with profiles for each ADC channel
+- some minor updates to splitDigi

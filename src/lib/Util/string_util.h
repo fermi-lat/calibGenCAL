@@ -1,7 +1,7 @@
 #ifndef string_util_h
 #define string_util_h
 
-//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/string_util.h,v 1.1 2007/06/13 22:42:13 fewtrell Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/string_util.h,v 1.2 2007/07/26 15:56:35 fewtrell Exp $
 
 // STD INCLUDES
 #include <string>
@@ -76,6 +76,11 @@ namespace calibGenCAL {
                            
       return tmp.str();
     }
+
+  /// print variable name and value to stdout
+  /// \note from http://snippets.dzone.com/posts/show/1797 , 05/01/08
+#define PRINT_VAR(x) std::cout << #x " = '" << x << "'";
+
 
 };
 
