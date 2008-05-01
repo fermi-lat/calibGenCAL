@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.cxx,v 1.1 2008/04/21 20:42:38 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.cxx,v 1.2 2008/04/28 14:58:29 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -9,10 +9,13 @@
 #include "src/lib/Specs/singlex16.h"
 #include "src/lib/Util/RootFileAnalysis.h"
 #include "src/lib/Util/CGCUtil.h"
+#include "src/lib/Util/string_util.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalVec.h"
 #include "digiRootData/DigiEvent.h"
+#include "digiRootData/Configuration.h"
+#include "digiRootData/MetaEvent.h"
 #include "CalUtil/SimpleCalCalib/CIDAC2ADC.h"
 #include "CalUtil/SimpleCalCalib/CalPed.h"
 
@@ -25,12 +28,8 @@
 #include <sstream>
 #include <cmath>
 
-namespace calibGenCAL {
 
-  using namespace CalUtil;
-  using namespace std;
-  using namespace singlex16;
-
+namespace {
   /// how many points for each smoothing 'group'?  (per adc range)
   static const unsigned short SMOOTH_GRP_WIDTH[] = {
     3, 4, 3, 4
@@ -48,8 +47,16 @@ namespace calibGenCAL {
     6, 10, 6, 10
   };
 
+};
+
+namespace calibGenCAL {
+
+  using namespace CalUtil;
+  using namespace std;
+  using namespace singlex16;
+  
   void IntNonlinAlg::AlgData::initHists() {
-    adcHists.reset(new TObjArray(RngIdx::N_VALS));
+    adcHists = new TObjArray(RngIdx::N_VALS);
 
     // delete histograms w/ TObjArray, do not save in file...
     adcHists->SetOwner(1);
@@ -64,12 +71,13 @@ namespace calibGenCAL {
 
       {
         ostringstream tmp;
-        tmp << "ciRaw_" << rngIdx.val();
+        tmp << "ciRaw_" << rngIdx.toStr();
         profiles[rngIdx] = new TProfile(tmp.str().c_str(),
                                         tmp.str().c_str(),
-                                        N_CIDAC_VALS,
-                                        -0.5,
-                                        N_CIDAC_VALS-0.5);
+                                        (MAX_DAC+1)/2,
+                                        0,
+                                        MAX_DAC+1);
+
       }
     }
   }
@@ -92,6 +100,8 @@ namespace calibGenCAL {
     // enable only needed branches in root file
     rootFile.getDigiChain()->SetBranchStatus("*", 0);
     rootFile.getDigiChain()->SetBranchStatus("m_calDigiCloneCol");
+    rootFile.getDigiChain()->SetBranchStatus("m_metaEvent");
+
 
     //-- CHECK N EVENTS --//
     const unsigned nEvents    = rootFile.getEntries();
@@ -154,6 +164,9 @@ namespace calibGenCAL {
     // how many samples for current DAC setting?
     eventData.iSamp   = (eventData.iGoodEvt%N_PULSES_PER_XTAL)%N_PULSES_PER_DAC;
 
+    if (!checkLCICfg(digiEvent))
+      return;
+
     const unsigned nDigis = calDigiCol->GetEntries();
     // event should have 1 hit for every xtal in each tower
     // we support any nTowers
@@ -171,7 +184,7 @@ namespace calibGenCAL {
     }
     else
       LogStrm::get() << " event " << eventData.eventNum << " contains "
-                       << nDigis << " digis - skipped" << endl;
+                     << nDigis << " digis - event skipped" << endl;
   }
 
   void IntNonlinAlg::processHit(const CalDigi &cdig) {
@@ -203,10 +216,10 @@ namespace calibGenCAL {
 
         // fill histogram
         const RngIdx rngIdx(twr,
-                      lyr,
-                      col,
-                      face,
-                      rng);
+                            lyr,
+                            col,
+                            face,
+                            rng);
 
         TH1S & h = *(dynamic_cast<TH1S *>(algData.adcHists->At(rngIdx.val())));
 
@@ -219,7 +232,8 @@ namespace calibGenCAL {
         // fill histogram
         h.Fill(adc);
         // fill optional profile
-        algData.profiles[rngIdx]->Fill(eventData.testDAC, adc);
+        const float cidac = CIDAC_TEST_VALS[eventData.testDAC];
+        algData.profiles[rngIdx]->Fill(cidac, adc);
 
         // save histogram data if we're on last sample for current
         // dac settigns
@@ -235,7 +249,7 @@ namespace calibGenCAL {
           }
           // assign to table
           algData.adcMeans->getPtsADC(rngIdx).push_back(av);
-          algData.adcMeans->getPtsDAC(rngIdx).push_back(CIDAC_TEST_VALS[eventData.testDAC]);
+          algData.adcMeans->getPtsDAC(rngIdx).push_back(cidac);
         }
       }   // foreach face
     }     // foreach readout
@@ -248,7 +262,7 @@ namespace calibGenCAL {
       // loop through each xtal face.
       for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
         const RngIdx rngIdx(faceIdx,
-                      rng);
+                            rng);
 
         // skip missing channels
         if (adcMeans.getPtsADC(rngIdx).empty())
@@ -388,6 +402,38 @@ namespace calibGenCAL {
     splineDAC.push_back(dac_max);
 
     delete [] tmpADC;
+  }
+  
+  /// return false if current event LCI config does not match that expected by this analysis algorithm
+  bool IntNonlinAlg::checkLCICfg(const DigiEvent &digiEvent) {
+    /// retrieve / check for LCI configuration data
+    const MetaEvent& metaEvt = digiEvent.getMetaEvent(); 
+    const LciCalConfiguration* lciCalConf = metaEvt.lciCalConfiguration(); 
+    if (lciCalConf == 0) {
+      static unsigned short nWarnings = 0;
+      if (nWarnings < 10000) {
+        LogStrm::get() << __FILE__ << ": LCI Cal Configuration not found" << endl;
+        nWarnings++;
+      }
+
+      /// this is a warning, not a failure
+      return true;
+    }
+
+    /// check charge injection DAC value
+    const UShort_t dac = lciCalConf->injected();
+    const UShort_t expectedDAC = static_cast<unsigned short>(CIDAC_TEST_VALS[eventData.testDAC]);
+
+    if (dac != expectedDAC) {
+      LogStrm::get() << __FILE__ << ": LCI DAC: " << dac 
+                     << " does not match expected CIDAC: " << expectedDAC
+                     << " eventNum: " << eventData.eventNum
+                     << endl;
+      return false;
+    }
+
+    return true;
+
   }
 }; // namespace calibGenCAL
 

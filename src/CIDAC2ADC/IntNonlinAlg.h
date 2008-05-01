@@ -1,6 +1,6 @@
 #ifndef IntNonlinAlg_h
 #define IntNonlinAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.h,v 1.1 2008/04/21 20:42:38 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.h,v 1.2 2008/04/28 14:58:29 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -35,18 +35,17 @@ namespace calibGenCAL {
   */
   class IntNonlinAlg {
   public:
-    IntNonlinAlg() 
-    {}
+    IntNonlinAlg() {}
 
     /// process digi root event file
     /// \param diode specify whether to analyze HE or LE circuits
     void readRootData(const std::string &rootFileName,
-		CalUtil::CIDAC2ADC &adcMeans,
+                      CalUtil::CIDAC2ADC &adcMeans,
                       const CalUtil::DiodeNum diode,
                       const bool bcastMode);
 
     /// smooth raw adc means for use in offline spline calibration
-	static void genSplinePts(const CalUtil::CIDAC2ADC &adcMeans,
+    static void genSplinePts(const CalUtil::CIDAC2ADC &adcMeans,
                              CalUtil::CIDAC2ADC &cidac2adc);
 
   private:
@@ -56,11 +55,14 @@ namespace calibGenCAL {
     /// fill histograms w/ data from single CalDigi hit
     void processHit(const CalDigi &cdig);
 
+    /// check that LCI configuration matches expected.
+    bool checkLCICfg(const DigiEvent &digiEvent);
+
     /// apply smoothing algorithm to single ADC curve.
     static void smoothSpline(const vector<float> &curADC,
-                      vector<float> &splineADC,
-                      vector<float> &splineDAC,
-                      const CalUtil::RngNum rng);
+                             vector<float> &splineADC,
+                             vector<float> &splineDAC,
+                             const CalUtil::RngNum rng);
 
     /// store cfg & status data pertinent to current algorithm run
     struct AlgData {
@@ -72,6 +74,7 @@ namespace calibGenCAL {
         diode     = CalUtil::LRG_DIODE;
         bcastMode = true;
         adcMeans  = 0;
+        adcHists = 0;
         initHists();
       }
 
@@ -79,7 +82,7 @@ namespace calibGenCAL {
       /// create one temporary histogram per adc channel.
       /// this histogram will be reused for each new CIDAC
       /// level.
-      auto_ptr<TObjArray>                                   adcHists;
+      TObjArray *adcHists;
 
       /// profiles owned by current ROOT directory/m_histFile.
       CalUtil::CalVec<CalUtil::RngIdx, TProfile *> profiles;
@@ -95,7 +98,7 @@ namespace calibGenCAL {
       bool              bcastMode;
 
       /// fill in the mean values for each DAC setting here.
-	  CalUtil::CIDAC2ADC        *adcMeans;
+      CalUtil::CIDAC2ADC        *adcMeans;
     } algData;
 
     /// store data pertinent to current event
@@ -127,10 +130,10 @@ namespace calibGenCAL {
       /// how many samples @ current setting?
       unsigned short  iSamp;
 
-      // current CIDAC index
+      /// current CIDAC index
       unsigned short  testDAC;
+
     } eventData;
   };
-
 }; // namespace calibGenCAL
 #endif

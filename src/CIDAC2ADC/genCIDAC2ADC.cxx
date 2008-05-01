@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/genCIDAC2ADC.cxx,v 1.1 2008/04/21 20:42:38 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/genCIDAC2ADC.cxx,v 1.2 2008/04/25 19:25:10 fewtrell Exp $
 
 /** @file Gen CIDAC2ADC calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
@@ -9,12 +9,14 @@
 #include "src/lib/Util/CfgMgr.h"
 #include "src/lib/Util/CGCUtil.h"
 #include "src/lib/Util/string_util.h"
+#include "src/lib/Specs/singlex16.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"
 #include "CalUtil/SimpleCalCalib/CIDAC2ADC.h"
 
 // EXTLIB INCLUDES
+#include "TFile.h"
 
 // STD INCLUDES
 #include <iostream>
@@ -40,6 +42,10 @@ public:
                'l',
                "input LE DIODE singlex16 digi root file (one of either -l or -h is required)",
                ""),
+    nSamplesPerCIDAC("nSamplesPerCIDAC",
+                    'n',
+                     "Number of samples for each CIDAC level",
+                     100),
     columnMode("columnMode",
                'c',
                "singlex16 pulses 12 columns individually"),
@@ -51,6 +57,7 @@ public:
     
     cmdParser.registerVar(rootFileHE);
     cmdParser.registerVar(rootFileLE);
+    cmdParser.registerVar(nSamplesPerCIDAC);
 
     cmdParser.registerSwitch(columnMode);
 
@@ -69,6 +76,7 @@ public:
   
   CmdOptVar<string> rootFileHE;
   CmdOptVar<string> rootFileLE;
+  CmdOptVar<unsigned short> nSamplesPerCIDAC;
 
   CmdSwitch columnMode;
   
@@ -88,12 +96,15 @@ int main(int argc,
       return -1;
     }
 
+    // setup global config (yuck!)
+    singlex16::N_PULSES_PER_DAC = cfg.nSamplesPerCIDAC.getVal();
+
     //-- SETUP LOG FILE --//
     /// multiplexing output streams
     /// simultaneously to cout and to logfile
     LogStrm::addStream(cout);
     // generate logfile name
-    string logfile(cfg.outputBasename.getVal() + ".log.txt");
+    const string logfile(cfg.outputBasename.getVal() + ".log.txt");
     ofstream tmpStrm(logfile.c_str());
 
     LogStrm::addStream(tmpStrm);
@@ -104,14 +115,19 @@ int main(int argc,
     cfg.cmdParser.printStatus(LogStrm::get());
     LogStrm::get() << endl;
 
-    // txt output filename
-    string       outputTXTFile(cfg.outputBasename.getVal() + ".txt");
+    /// txt output filename
+    const string outputTXTPath(cfg.outputBasename.getVal() + ".txt");
+
+    /// root output filename
+    const string outputROOTPath(cfg.outputBasename.getVal() + ".root");
+    TFile outputROOTFile(outputROOTPath.c_str(), "RECREATE");
 
     CIDAC2ADC    adcMeans;
     CIDAC2ADC    cidac2adc;
     IntNonlinAlg inlAlg;
 
-    const string       adcMeanFile(cfg.outputBasename.getVal() + ".adcmean.txt");
+    /// adc mean output filename
+    const string adcMeanPath(cfg.outputBasename.getVal() + ".adcmean.txt");
 
     if (cfg.rootFileLE.getVal().length()) {
       LogStrm::get() << __FILE__ << ": reading LE calibGen event file: " << cfg.rootFileLE.getVal() << endl;
@@ -124,14 +140,17 @@ int main(int argc,
     }
 
     LogStrm::get() << __FILE__ << ": saving adc means to txt file: "
-                     << adcMeanFile << endl;
-    adcMeans.writeTXT(adcMeanFile);
+                     << adcMeanPath << endl;
+    adcMeans.writeTXT(adcMeanPath);
 
     LogStrm::get() << __FILE__ << ": generating smoothed spline points: " << endl;
     inlAlg.genSplinePts(adcMeans, cidac2adc);
 
-    LogStrm::get() << __FILE__ << ": writing smoothed spline points: " << outputTXTFile << endl;
-    cidac2adc.writeTXT(outputTXTFile);
+    LogStrm::get() << __FILE__ << ": writing smoothed spline points: " << outputTXTPath << endl;
+    cidac2adc.writeTXT(outputTXTPath);
+
+    outputROOTFile.Write();
+    outputROOTFile.Close();
   } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
     return -1;
