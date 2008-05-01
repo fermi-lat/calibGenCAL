@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: fewtrell  Thu May  1 13:46:58 PDT 2008
+calibGenCAL/src/lib/Specs
+
+Modified Files:
+	singlex16.h 
+Log Message:
+- genCIDAC2ADC (IntNonlin) now checks that LCICalConfiguration matches expected configuration, particularly the charge-injection DAC setting.
+- genCIDAC2ADC nSamples per DAC setting now configuration @ commandline - now defaults to 100 instead of 50 to match flight LCI script
+- genCIDAC2ADC now saves ROOT file with profiles for each ADC channel
+- some minor updates to splitDigi
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu May  1 13:46:56 PDT 2008
 calibGenCAL/src/CIDAC2ADC
 
