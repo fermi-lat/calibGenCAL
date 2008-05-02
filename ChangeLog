@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri May  2 10:59:29 PDT 2008
+calibGenCAL/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+update singlex16 spec to support optional nPulsesPerDAC
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: calibGenCAL-05-05-02, operation: add
 Package: calibGenCAL
