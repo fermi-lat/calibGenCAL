@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: fewtrell  Fri May  2 10:59:39 PDT 2008
+calibGenCAL/src/lib/Specs
+
+Modified Files:
+	singlex16.h 
+Added Files:
+	singlex16.cxx 
+Log Message:
+update singlex16 spec to support optional nPulsesPerDAC
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri May  2 10:59:36 PDT 2008
 calibGenCAL/src/lib/Hists
 
