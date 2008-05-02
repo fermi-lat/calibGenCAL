@@ -1,12 +1,13 @@
 #ifndef NeighborXtalkAlg_h
 #define NeighborXtalkAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/NeighborXtalkAlg.h,v 1.7 2008/01/22 19:40:59 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/NeighborXtalkAlg.h,v 1.1 2008/04/21 20:42:38 fewtrell Exp $
 
 /** @file
     @author fewtrell
 */
 
 // LOCAL INCLUDES
+#include "src/lib/Specs/singlex16.h"
 
 // GLAST INCLUDES
 #include "CalUtil/SimpleCalCalib/NeighborXtalk.h"
@@ -30,7 +31,10 @@ namespace calibGenCAL {
   */
   class NeighborXtalkAlg {
   public:
-    NeighborXtalkAlg();
+    /// @param sx16 spec describing LCI script procedure
+    NeighborXtalkAlg(const singlex16 &sx16) :
+      m_singlex16(sx16)
+    {}
 
     /// process digi root event file
     void readRootData(const std::string &rootFileName,
@@ -103,6 +107,8 @@ namespace calibGenCAL {
       // current CIDAC index
       unsigned short  testDAC;
     } eventData;
+
+    const singlex16 &m_singlex16;
   };
 
 }; // namespace calibGenCAL

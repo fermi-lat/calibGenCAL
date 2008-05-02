@@ -1,7 +1,7 @@
 #ifndef HistMap_h
 #define HistMap_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistMap.h,v 1.5 2007/06/19 18:11:45 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistMap.h,v 1.6 2008/04/21 20:32:32 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -152,7 +152,7 @@ namespace calibGenCAL {
 
       // first check that histogram name matches pattern
       if (name.find(prefix) != 0)
-        throw std::runtime_error(string("Histogram : ") + name + "does not belong to collection: " + m_histBasename);
+        throw std::runtime_error(std::string("Histogram : ") + name + "does not belong to collection: " + m_histBasename);
 
       // trim collection string from histogram name
       return IdxType(name.substr(prefix.size()));

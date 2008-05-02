@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.cxx,v 1.2 2008/04/28 14:58:29 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.cxx,v 1.3 2008/05/01 20:46:55 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -53,7 +53,6 @@ namespace calibGenCAL {
 
   using namespace CalUtil;
   using namespace std;
-  using namespace singlex16;
   
   void IntNonlinAlg::AlgData::initHists() {
     adcHists = new TObjArray(RngIdx::N_VALS);
@@ -66,7 +65,7 @@ namespace calibGenCAL {
         tmp << "adc" << rngIdx.val();
         (*adcHists)[rngIdx.val()] = new TH1S(tmp.str().c_str(),
                                              tmp.str().c_str(),
-                                             MAX_DAC+1, -0.5, MAX_DAC+.5);
+                                             singlex16::MAX_DAC+1, -0.5, singlex16::MAX_DAC+.5);
       }
 
       {
@@ -74,9 +73,9 @@ namespace calibGenCAL {
         tmp << "ciRaw_" << rngIdx.toStr();
         profiles[rngIdx] = new TProfile(tmp.str().c_str(),
                                         tmp.str().c_str(),
-                                        (MAX_DAC+1)/2,
+                                        (singlex16::MAX_DAC+1)/2,
                                         0,
-                                        MAX_DAC+1);
+                                        singlex16::MAX_DAC+1);
 
       }
     }
@@ -105,7 +104,9 @@ namespace calibGenCAL {
 
     //-- CHECK N EVENTS --//
     const unsigned nEvents    = rootFile.getEntries();
-    const unsigned nEventsReq = (bcastMode) ? TOTAL_PULSES_BCAST : TOTAL_PULSES_COLWISE;
+    const unsigned nEventsReq = (bcastMode) ? 
+      m_singlex16.totalPulsesBCAST() : 
+      m_singlex16.totalPulsesCOLWISE();
 
     // 10 % margin is overly cautious.  occasionally there are a 1 or 2 'extra' events.
     if (abs((long)(nEvents - nEventsReq)) > .10*nEventsReq) {
@@ -158,11 +159,11 @@ namespace calibGenCAL {
 
     // which column are we testing?
     if (!algData.bcastMode)
-      eventData.testCol = eventData.iGoodEvt/N_PULSES_PER_XTAL;
+      eventData.testCol = eventData.iGoodEvt/m_singlex16.nPulsesPerXtal();
     // which DAC setting are we on?
-    eventData.testDAC = (eventData.iGoodEvt%N_PULSES_PER_XTAL)/N_PULSES_PER_DAC;
+    eventData.testDAC = (eventData.iGoodEvt%m_singlex16.nPulsesPerXtal())/m_singlex16.nPulsesPerDAC;
     // how many samples for current DAC setting?
-    eventData.iSamp   = (eventData.iGoodEvt%N_PULSES_PER_XTAL)%N_PULSES_PER_DAC;
+    eventData.iSamp   = (eventData.iGoodEvt%m_singlex16.nPulsesPerXtal())%m_singlex16.nPulsesPerDAC;
 
     if (!checkLCICfg(digiEvent))
       return;
@@ -226,18 +227,18 @@ namespace calibGenCAL {
         // reset histogram if we're starting a new DAC setting
         if (eventData.iSamp == 0) {
           h.Reset();
-          h.SetAxisRange(-0.5, MAX_DAC+.5);
+          h.SetAxisRange(-0.5, m_singlex16.MAX_DAC+.5);
         }
 
         // fill histogram
         h.Fill(adc);
         // fill optional profile
-        const float cidac = CIDAC_TEST_VALS[eventData.testDAC];
+        const float cidac = m_singlex16.CIDAC_TEST_VALS[eventData.testDAC];
         algData.profiles[rngIdx]->Fill(cidac, adc);
 
         // save histogram data if we're on last sample for current
         // dac settigns
-        if (eventData.iSamp == (N_PULSES_PER_DAC - 1)) {
+        if (eventData.iSamp == (m_singlex16.nPulsesPerDAC - 1)) {
           float av, err;
           // trim outliers
           av  = h.GetMean();
@@ -296,21 +297,21 @@ namespace calibGenCAL {
 
 
     // 2 dimensional poly line f() to use for spline fitting.
-    float *tmpADC(new float[N_CIDAC_VALS]);
+    float *tmpADC(new float[singlex16::N_CIDAC_VALS]);
 
     TF1 splineFunc("spline_fitter",
                    "pol2",
                    0,
-                   MAX_DAC);
+                   singlex16::MAX_DAC);
 
     //-- GET UPPER ADC BOUNDARY for this channel --//
-    const float adc_max  = curADC[N_CIDAC_VALS-1];
+    const float adc_max  = curADC[singlex16::N_CIDAC_VALS-1];
     // last idx will be last index that is <= 0.99*adc_max
     // it is the last point we intend on using.
     unsigned short last_idx = 0;
     while (curADC[last_idx] <= 0.99*adc_max  
            && 
-           last_idx < N_CIDAC_VALS-1) //bounds check
+           last_idx < singlex16::N_CIDAC_VALS-1) //bounds check
       last_idx++;
     if (last_idx > 0)
       last_idx--;
@@ -320,13 +321,13 @@ namespace calibGenCAL {
          curADC.end(),
          tmpADC);
     TGraph myGraph(last_idx+1,
-                   CIDAC_TEST_VALS,
+                   singlex16::CIDAC_TEST_VALS,
                    tmpADC);
 
     // PART I: EXTRAPOLATE INITIAL POINTS FROM MEAT OF CURVE
     for (unsigned short i = 0; i < extrapLo; i++) {
       // put new DAC val on global output list
-      const float &  dac  = CIDAC_TEST_VALS[i];
+      const float &  dac  = singlex16::CIDAC_TEST_VALS[i];
       splineDAC.push_back(dac);
 
       // extrapolate associated adc value from points later in curve
@@ -335,10 +336,10 @@ namespace calibGenCAL {
       // n points into curve from pt2
       const unsigned short pt1  = pt2+extrapLoFrom-1;
 
-      const float &  dac2 = CIDAC_TEST_VALS[pt2];
+      const float &  dac2 = singlex16::CIDAC_TEST_VALS[pt2];
       const float &  adc2 = curADC[pt2];
 
-      const float &  dac1 = CIDAC_TEST_VALS[pt1];
+      const float &  dac1 = singlex16::CIDAC_TEST_VALS[pt1];
       const float &  adc1 = curADC[pt1];
 
       float adc  = linear_extrap(dac1, dac2, dac,
@@ -358,14 +359,14 @@ namespace calibGenCAL {
 
       // fit curve to grouped points
       myGraph.Fit(&splineFunc, "QN", "",
-                  CIDAC_TEST_VALS[lp],
-                  CIDAC_TEST_VALS[hp]);
+                  singlex16::CIDAC_TEST_VALS[lp],
+                  singlex16::CIDAC_TEST_VALS[hp]);
       const float myPar1 = splineFunc.GetParameter(0);
       const float myPar2 = splineFunc.GetParameter(1);
       const float myPar3 = splineFunc.GetParameter(2);
 
       // use DAC value from center point
-      const float fitDAC = CIDAC_TEST_VALS[ctrIdx];
+      const float fitDAC = singlex16::CIDAC_TEST_VALS[ctrIdx];
       // eval smoothed ADC value
       const float fitADC = myPar1 + fitDAC*(myPar2 + fitDAC*myPar3);
 
@@ -385,7 +386,7 @@ namespace calibGenCAL {
       splineADC.push_back(curADC[i]);
 
       // put new DAC val on global output list
-      splineDAC.push_back(CIDAC_TEST_VALS[i]);
+      splineDAC.push_back(singlex16::CIDAC_TEST_VALS[i]);
     }
 
     //-- EXTRAPOLATE FINAL POINT --//
@@ -422,7 +423,7 @@ namespace calibGenCAL {
 
     /// check charge injection DAC value
     const UShort_t dac = lciCalConf->injected();
-    const UShort_t expectedDAC = static_cast<unsigned short>(CIDAC_TEST_VALS[eventData.testDAC]);
+    const UShort_t expectedDAC = static_cast<unsigned short>(m_singlex16.CIDAC_TEST_VALS[eventData.testDAC]);
 
     if (dac != expectedDAC) {
       LogStrm::get() << __FILE__ << ": LCI DAC: " << dac 

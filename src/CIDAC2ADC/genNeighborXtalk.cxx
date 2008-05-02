@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genNeighborXtalk.cxx,v 1.15 2008/01/22 19:40:58 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/genNeighborXtalk.cxx,v 1.1 2008/04/21 20:42:38 fewtrell Exp $
 
 /** @file Gen Neighboring Crystal Cross-talk calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
@@ -32,6 +32,10 @@ public:
   AppCfg(const int argc,
          const char **argv) :
     cmdParser(argv[0]),
+    nSamplesPerCIDAC("nSamplesPerCIDAC",
+                    'n',
+                     "Number of samples for each CIDAC level",
+                     100),
     rootFileLE("rootFileLE",
                "low energy input singlex16 digi root event file",
                ""),
@@ -48,6 +52,7 @@ public:
     cmdParser.registerArg(rootFileLE);
     cmdParser.registerArg(outputBasename);
     cmdParser.registerSwitch(help);
+    cmdParser.registerVar(nSamplesPerCIDAC);
 
     try {
       // parse commandline
@@ -63,6 +68,8 @@ public:
 
   // construct new parser
   CmdLineParser cmdParser;
+
+  CmdOptVar<unsigned short> nSamplesPerCIDAC;
 
   /// low energy input singlex16 digi root event file
   CmdArg<string> rootFileLE;
@@ -95,7 +102,8 @@ int main(const int argc,
     cfg.cmdParser.printStatus(LogStrm::get());
 
     NeighborXtalk       xtalk;
-    NeighborXtalkAlg    xtalkAlg;
+    const singlex16 sx16(cfg.nSamplesPerCIDAC.getVal());
+    NeighborXtalkAlg    xtalkAlg(sx16);
 
     //-- LOG SOFTWARE VERSION INFO --//
     output_env_banner(LogStrm::get());

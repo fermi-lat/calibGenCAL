@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.cxx,v 1.12 2007/06/13 22:42:12 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRHists.cxx,v 1.13 2008/04/21 20:32:32 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -27,8 +27,6 @@ using namespace std;
 using namespace CalUtil;
   
 namespace calibGenCAL {
-
-  using namespace singlex16;
 
   namespace {
     static const unsigned short MAX_INFERREDZ = 30;
