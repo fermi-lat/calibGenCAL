@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri May  2 13:37:36 PDT 2008
+calibGenCAL/src/CIDAC2ADC
+
+Modified Files:
+	IntNonlinAlg.cxx IntNonlinAlg.h 
+Log Message:
+added tuple to IntNonlinAlg which stores some fit results for each DAC step
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri May  2 10:59:39 PDT 2008
 calibGenCAL/src/lib/Specs
 
