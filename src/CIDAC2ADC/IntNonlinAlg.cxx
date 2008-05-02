@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.cxx,v 1.3 2008/05/01 20:46:55 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.cxx,v 1.4 2008/05/02 17:59:33 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -23,6 +23,7 @@
 #include "TH1S.h"
 #include "TProfile.h"
 #include "TF1.h"
+#include "TNtuple.h"
 
 // STD INCLUDES
 #include <sstream>
@@ -79,6 +80,11 @@ namespace calibGenCAL {
 
       }
     }
+
+    // init fit results tuple
+    m_fitResults = new TNtuple("inl_fit_results",
+                               "intNonlin_fit_results",
+                               "twr:lyr:col:face:rng:dac_idx:dac_val:raw_adcmean:raw_adcrms:final_adcmean:final_adcrms");
   }
 
   void IntNonlinAlg::readRootData(const string &rootFileName,
@@ -239,18 +245,35 @@ namespace calibGenCAL {
         // save histogram data if we're on last sample for current
         // dac settigns
         if (eventData.iSamp == (m_singlex16.nPulsesPerDAC - 1)) {
-          float av, err;
-          // trim outliers
-          av  = h.GetMean();
-          err = h.GetRMS();
+          //-- TRIM OUTLIERS
+          float adcmean, adcrms;
+          adcmean  = h.GetMean();
+          adcrms = h.GetRMS();
+
+          // remember initial average & rms
+          const float raw_adcmean = adcmean;
+          const float raw_adcrms  = adcrms;
           for ( unsigned short iter = 0; iter < 3; iter++ ) {
-            h.SetAxisRange(av-3*err, av+3*err);
-            av  = h.GetMean();
-            err = h.GetRMS();
+            h.SetAxisRange(adcmean-3*adcrms, adcmean+3*adcrms);
+            adcmean  = h.GetMean();
+            adcrms = h.GetRMS();
           }
           // assign to table
-          algData.adcMeans->getPtsADC(rngIdx).push_back(av);
+          algData.adcMeans->getPtsADC(rngIdx).push_back(adcmean);
           algData.adcMeans->getPtsDAC(rngIdx).push_back(cidac);
+
+          // fill nTuple
+          algData.m_fitResults->Fill(twr.val(),
+                                     lyr.val(),
+                                     col.val(),
+                                     face.val(),
+                                     rng.val(),
+                                     eventData.testDAC,
+                                     cidac,
+                                     raw_adcmean,
+                                     raw_adcrms,
+                                     adcmean,
+                                     adcrms);
         }
       }   // foreach face
     }     // foreach readout
