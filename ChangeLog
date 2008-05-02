@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Fri May  2 10:59:33 PDT 2008
+calibGenCAL/src/CIDAC2ADC
+
+Modified Files:
+	IntNonlinAlg.cxx IntNonlinAlg.h NeighborXtalkAlg.cxx 
+	NeighborXtalkAlg.h genCIDAC2ADC.cxx genNeighborXtalk.cxx 
+Log Message:
+update singlex16 spec to support optional nPulsesPerDAC
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri May  2 10:59:29 PDT 2008
 calibGenCAL/doc
 
