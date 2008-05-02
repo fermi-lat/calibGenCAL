@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/genCIDAC2ADC.cxx,v 1.2 2008/04/25 19:25:10 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/genCIDAC2ADC.cxx,v 1.3 2008/05/01 20:46:55 fewtrell Exp $
 
 /** @file Gen CIDAC2ADC calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
@@ -61,8 +61,6 @@ public:
 
     cmdParser.registerSwitch(columnMode);
 
-
-
     try {
       cmdParser.parseCmdLine(argc, argv);
     } catch (exception &e) {
@@ -96,9 +94,6 @@ int main(int argc,
       return -1;
     }
 
-    // setup global config (yuck!)
-    singlex16::N_PULSES_PER_DAC = cfg.nSamplesPerCIDAC.getVal();
-
     //-- SETUP LOG FILE --//
     /// multiplexing output streams
     /// simultaneously to cout and to logfile
@@ -124,7 +119,8 @@ int main(int argc,
 
     CIDAC2ADC    adcMeans;
     CIDAC2ADC    cidac2adc;
-    IntNonlinAlg inlAlg;
+    const singlex16 sx16(cfg.nSamplesPerCIDAC.getVal());
+    IntNonlinAlg inlAlg(sx16);
 
     /// adc mean output filename
     const string adcMeanPath(cfg.outputBasename.getVal() + ".adcmean.txt");

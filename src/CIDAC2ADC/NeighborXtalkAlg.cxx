@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/NeighborXtalkAlg.cxx,v 1.7 2008/01/22 19:40:59 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/NeighborXtalkAlg.cxx,v 1.1 2008/04/21 20:42:38 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -27,12 +27,7 @@ namespace calibGenCAL {
 
   using namespace std;
   using namespace CalUtil;
-  using namespace singlex16;
   using namespace SplineUtil;
-
-  NeighborXtalkAlg::NeighborXtalkAlg()
-  {
-  }
 
   void NeighborXtalkAlg::AlgData::initHists() {
     adcHists = new TObjArray(DiodeIdx::N_VALS);
@@ -45,7 +40,7 @@ namespace calibGenCAL {
         tmp << "adc" << diodeIdx.val();
         (*adcHists)[diodeIdx.val()] = new TH1S(tmp.str().c_str(),
                                                tmp.str().c_str(),
-                                               MAX_DAC+1, -0.5, MAX_DAC+.5);
+                                               singlex16::MAX_DAC+1, -0.5, singlex16::MAX_DAC+.5);
       }
     }
   }
@@ -67,7 +62,7 @@ namespace calibGenCAL {
 
     //-- CHECK N EVENTS --//
     const unsigned nEvents    = rootFile.getEntries();
-    const unsigned nEventsReq = TOTAL_PULSES_COLWISE;
+    const unsigned nEventsReq = m_singlex16.totalPulsesCOLWISE();
 
     // 10 % margin is overly cautious.  occasionally there are a 1 or 2 'extra' events.
     if (abs((long)(nEvents - nEventsReq)) > .10*nEventsReq) {
@@ -118,11 +113,11 @@ namespace calibGenCAL {
     //    note: only count good events            //
 
     // which column are we testing?
-    eventData.testCol = eventData.iGoodEvt/N_PULSES_PER_XTAL;
+    eventData.testCol = eventData.iGoodEvt/m_singlex16.nPulsesPerXtal();
     // which DAC setting are we on?
-    eventData.testDAC = (eventData.iGoodEvt%N_PULSES_PER_XTAL)/N_PULSES_PER_DAC;
+    eventData.testDAC = (eventData.iGoodEvt%m_singlex16.nPulsesPerXtal())/m_singlex16.nPulsesPerDAC;
     // how many samples for current DAC setting?
-    eventData.iSamp   = (eventData.iGoodEvt%N_PULSES_PER_XTAL)%N_PULSES_PER_DAC;
+    eventData.iSamp   = (eventData.iGoodEvt%m_singlex16.nPulsesPerXtal())%m_singlex16.nPulsesPerDAC;
 
     const unsigned nDigis = calDigiCol->GetEntries();
     // event should have 1 hit for every xtal in each tower
@@ -186,7 +181,7 @@ namespace calibGenCAL {
         // reset histogram if we're starting a new DAC setting
         if (eventData.iSamp == 0) {
           h.Reset();
-          h.SetAxisRange(-0.5, MAX_DAC+.5);
+          h.SetAxisRange(-0.5, m_singlex16.MAX_DAC+.5);
         }
 
         // fill histogram
@@ -194,7 +189,7 @@ namespace calibGenCAL {
 
         // save histogram data if we're on last sample for current
         // dac settigns
-        if (eventData.iSamp == (N_PULSES_PER_DAC - 1)) {
+        if (eventData.iSamp == (m_singlex16.nPulsesPerDAC - 1)) {
           float av, err;
           // trim outliers
           av  = h.GetMean();
@@ -215,7 +210,7 @@ namespace calibGenCAL {
 
           algData.xtalk->setPoint(diodeIdx,
                                   srcIdx,
-                                  CIDAC_TEST_VALS[eventData.testDAC],
+                                  m_singlex16.CIDAC_TEST_VALS[eventData.testDAC],
                                   av);
         }
       }

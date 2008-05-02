@@ -1,12 +1,13 @@
 #ifndef IntNonlinAlg_h
 #define IntNonlinAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.h,v 1.2 2008/04/28 14:58:29 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.h,v 1.3 2008/05/01 20:46:55 fewtrell Exp $
 
 /** @file
     @author fewtrell
 */
 
 // LOCAL INCLUDES
+#include "src/lib/Specs/singlex16.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"
@@ -35,7 +36,10 @@ namespace calibGenCAL {
   */
   class IntNonlinAlg {
   public:
-    IntNonlinAlg() {}
+    /// @param sx16 spec describing LCI script procedure
+    IntNonlinAlg(const singlex16 &sx16) :
+      m_singlex16(sx16)
+    {}
 
     /// process digi root event file
     /// \param diode specify whether to analyze HE or LE circuits
@@ -133,7 +137,10 @@ namespace calibGenCAL {
       /// current CIDAC index
       unsigned short  testDAC;
 
+
     } eventData;
+
+    const singlex16 &m_singlex16;
   };
 }; // namespace calibGenCAL
 #endif
