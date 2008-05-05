@@ -639,3 +639,5 @@ v5r5p2 fewtrell 05/01/08
 v5r5p3 fewtrell 05/02/08
 --------------------------
 update singlex16 spec to support varying nPulsesPerDAC
+updated unit_test results - earlier fix to MPD fit changed 'right' answers slightly, also genCIDAC2ADC.exe has slightly different commandline
+
