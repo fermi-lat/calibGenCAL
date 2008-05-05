@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Mon May  5 15:33:52 PDT 2008
+calibGenCAL/unit_test
+
+Modified Files:
+	unit_test_input.tgz unit_test_output.tgz 
+Log Message:
+updated unit test, results have changed slightly with improved MevPerDAC fits.
+also genCIDAC2ADC commandline needed to change
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri May  2 13:37:36 PDT 2008
 calibGenCAL/src/CIDAC2ADC
 
