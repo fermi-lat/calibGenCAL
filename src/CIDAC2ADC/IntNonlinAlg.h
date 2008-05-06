@@ -1,6 +1,6 @@
 #ifndef IntNonlinAlg_h
 #define IntNonlinAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.h,v 1.4 2008/05/02 17:59:33 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.h,v 1.5 2008/05/02 20:37:36 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -27,6 +27,7 @@ namespace CalUtil {
 }
 
 class TNtuple;
+class TTree;
 
 namespace calibGenCAL {
 
@@ -39,9 +40,8 @@ namespace calibGenCAL {
   class IntNonlinAlg {
   public:
     /// @param sx16 spec describing LCI script procedure
-    IntNonlinAlg(const singlex16 &sx16) :
-      m_singlex16(sx16)
-    {}
+    IntNonlinAlg(const singlex16 &sx16,
+                 const bool hugeTuple=false);
 
     /// process digi root event file
     /// \param diode specify whether to analyze HE or LE circuits
@@ -76,12 +76,12 @@ namespace calibGenCAL {
         init();
       }
 
+      /// one time initialization
       void init() {
         diode     = CalUtil::LRG_DIODE;
         bcastMode = true;
         adcMeans  = 0;
         adcHists = 0;
-        m_fitResults = 0;
         initHists();
       }
 
@@ -93,9 +93,6 @@ namespace calibGenCAL {
 
       /// profiles owned by current ROOT directory/m_histFile.
       CalUtil::CalVec<CalUtil::RngIdx, TProfile *> profiles;
-
-      /// ntuple keeps track of fit results
-      TNtuple *m_fitResults;
 
       /// create new histogram objects and accompanying TObjArray
       /// create TNtuple object for storing fit results
@@ -148,6 +145,23 @@ namespace calibGenCAL {
     } eventData;
 
     const singlex16 &m_singlex16;
+    
+    /// ntuple keeps track of fit results
+    TNtuple *m_fitResults;
+
+    /// keep track of every single readout for noise studies (optional)
+    TTree *m_hugeTuple;
+
+    struct HugeTupleData {
+      /// channel index
+      unsigned short rngIdx;
+      /// event sequence number (skips invalid events)
+      unsigned short goodEvt;
+      /// current charge injection value
+      unsigned short cidac;
+      /// adc readout value
+      unsigned short adc;
+    } m_tupleData;
   };
 }; // namespace calibGenCAL
 #endif

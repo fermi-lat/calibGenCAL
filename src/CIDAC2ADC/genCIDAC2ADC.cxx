@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/genCIDAC2ADC.cxx,v 1.3 2008/05/01 20:46:55 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/genCIDAC2ADC.cxx,v 1.4 2008/05/02 17:59:33 fewtrell Exp $
 
 /** @file Gen CIDAC2ADC calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
@@ -49,6 +49,9 @@ public:
     columnMode("columnMode",
                'c',
                "singlex16 pulses 12 columns individually"),
+    hugeTuple("hugeTuple",
+              't',
+              "generate HUGE tuple with every ADC value (good for in-depth noise studies"),
     outputBasename("outputBasename",
                    "all output files will use this basename + some_ext",
                    "")
@@ -60,6 +63,7 @@ public:
     cmdParser.registerVar(nSamplesPerCIDAC);
 
     cmdParser.registerSwitch(columnMode);
+    cmdParser.registerSwitch(hugeTuple);
 
     try {
       cmdParser.parseCmdLine(argc, argv);
@@ -77,6 +81,7 @@ public:
   CmdOptVar<unsigned short> nSamplesPerCIDAC;
 
   CmdSwitch columnMode;
+  CmdSwitch hugeTuple;
   
   CmdArg<string> outputBasename;
 
@@ -115,12 +120,12 @@ int main(int argc,
 
     /// root output filename
     const string outputROOTPath(cfg.outputBasename.getVal() + ".root");
-    TFile outputROOTFile(outputROOTPath.c_str(), "RECREATE");
+    TFile outputROOTFile(outputROOTPath.c_str(), "RECREATE", "Cal IntNolin calib", 9);
 
     CIDAC2ADC    adcMeans;
     CIDAC2ADC    cidac2adc;
     const singlex16 sx16(cfg.nSamplesPerCIDAC.getVal());
-    IntNonlinAlg inlAlg(sx16);
+    IntNonlinAlg inlAlg(sx16, cfg.hugeTuple.getVal());
 
     /// adc mean output filename
     const string adcMeanPath(cfg.outputBasename.getVal() + ".adcmean.txt");
