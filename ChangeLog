@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Tue May  6 08:49:30 PDT 2008
+calibGenCAL/src/CIDAC2ADC
+
+Modified Files:
+	IntNonlinAlg.cxx IntNonlinAlg.h genCIDAC2ADC.cxx 
+Log Message:
+added option for genCIDAC2ADC to generate tuple with all ADC readouts - this allows for detailed studies including noise studies.
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: calibGenCAL-05-05-03, operation: add
 Package: calibGenCAL
