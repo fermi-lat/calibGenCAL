@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.cxx,v 1.4 2008/05/02 17:59:33 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.cxx,v 1.5 2008/05/02 20:37:36 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -24,6 +24,7 @@
 #include "TProfile.h"
 #include "TF1.h"
 #include "TNtuple.h"
+#include "TTree.h"
 
 // STD INCLUDES
 #include <sstream>
@@ -54,6 +55,33 @@ namespace calibGenCAL {
 
   using namespace CalUtil;
   using namespace std;
+
+  IntNonlinAlg::IntNonlinAlg(const singlex16 &sx16,
+                             const bool hugeTuple) :
+    m_singlex16(sx16),
+    m_fitResults(0),
+    m_hugeTuple(0) 
+  {
+    
+    // init fit results tuple
+    m_fitResults = new TNtuple("inl_fit_results",
+                               "intNonlin_fit_results",
+                               "twr:lyr:col:face:rng:dac_idx:dac_val:raw_adcmean:raw_adcrms:final_adcmean:final_adcrms");
+
+    /// initialize optional tuple w/ all readouts
+    if (hugeTuple) {
+      m_hugeTuple = new TTree("inl_readout_tuple",
+                              "inl_readout_tuple");
+      //-- Add Branches to tree --//
+      if (!m_hugeTuple->Branch("rngIdx",         &m_tupleData.rngIdx,         "rngIdx/s")        ||
+          !m_hugeTuple->Branch("goodEventNum",   &m_tupleData.goodEvt,        "goodEventNum/s")  ||
+          !m_hugeTuple->Branch("cidac",          &m_tupleData.cidac,          "cidac/s")         ||
+          !m_hugeTuple->Branch("adc",            &m_tupleData.adc,           "adc/s")) {
+        LogStrm::get() << "ERROR: Couldn't initialize tuple." << endl;
+      }
+    }
+  }
+
   
   void IntNonlinAlg::AlgData::initHists() {
     adcHists = new TObjArray(RngIdx::N_VALS);
@@ -80,11 +108,6 @@ namespace calibGenCAL {
 
       }
     }
-
-    // init fit results tuple
-    m_fitResults = new TNtuple("inl_fit_results",
-                               "intNonlin_fit_results",
-                               "twr:lyr:col:face:rng:dac_idx:dac_val:raw_adcmean:raw_adcrms:final_adcmean:final_adcrms");
   }
 
   void IntNonlinAlg::readRootData(const string &rootFileName,
@@ -242,6 +265,15 @@ namespace calibGenCAL {
         const float cidac = m_singlex16.CIDAC_TEST_VALS[eventData.testDAC];
         algData.profiles[rngIdx]->Fill(cidac, adc);
 
+        /// fill optional tuple
+        if (m_hugeTuple) {
+          m_tupleData.rngIdx = rngIdx.val();
+          m_tupleData.goodEvt = eventData.iGoodEvt;
+          m_tupleData.cidac = cidac;
+          m_tupleData.adc = adc;
+          m_hugeTuple->Fill();
+        }
+
         // save histogram data if we're on last sample for current
         // dac settigns
         if (eventData.iSamp == (m_singlex16.nPulsesPerDAC - 1)) {
@@ -263,17 +295,17 @@ namespace calibGenCAL {
           algData.adcMeans->getPtsDAC(rngIdx).push_back(cidac);
 
           // fill nTuple
-          algData.m_fitResults->Fill(twr.val(),
-                                     lyr.val(),
-                                     col.val(),
-                                     face.val(),
-                                     rng.val(),
-                                     eventData.testDAC,
-                                     cidac,
-                                     raw_adcmean,
-                                     raw_adcrms,
-                                     adcmean,
-                                     adcrms);
+          m_fitResults->Fill(twr.val(),
+                             lyr.val(),
+                             col.val(),
+                             face.val(),
+                             rng.val(),
+                             eventData.testDAC,
+                             cidac,
+                             raw_adcmean,
+                             raw_adcrms,
+                             adcmean,
+                             adcrms);
         }
       }   // foreach face
     }     // foreach readout
