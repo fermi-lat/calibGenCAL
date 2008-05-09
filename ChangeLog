@@ -1,5 +1,20 @@
 ------------------------------------------------------------
 User: fewtrell  Fri May  9 14:51:38 PDT 2008
+calibGenCAL/src/lib/Hists
+
+Modified Files:
+	HistVec.h TrigHists.h 
+Log Message:
+    * moved splitDigi.cxx
+    * added sumHists.exe which sums histograms w/ same name accross multiple files
+
+    * TrigHists class now derives from HistVec, trigger histograms are stored in subfolders now
+    * added genTrigMonitor.exe which generates trigger threshold histograms from standard LAT configuration data
+
+
+    *
+------------------------------------------------------------
+User: fewtrell  Fri May  9 14:51:38 PDT 2008
 calibGenCAL/src/lib/Algs
 
 Modified Files:
