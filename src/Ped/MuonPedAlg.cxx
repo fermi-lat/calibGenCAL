@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Ped/MuonPedAlg.cxx,v 1.2 2008/04/22 18:36:04 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Ped/MuonPedAlg.cxx,v 1.3 2008/04/23 16:54:51 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -97,7 +97,7 @@ namespace calibGenCAL {
 
       DigiEvent const*const digiEvent = rootFile.getDigiEvent();
       if (!digiEvent) {
-        LogStrm::get() << __FILE__ << ": Unable to read DigiEvent " << eventData.eventNum  << endl;
+        LogStrm::get() << __FILE__ << ": Unable to read DigiEvent: " << eventData.eventNum  << endl;
         continue;
       }
 
@@ -158,7 +158,6 @@ namespace calibGenCAL {
 
   unsigned MuonPedAlg::getMinEntries() {
     unsigned retVal = ULONG_MAX;
-
 
     for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
       const RngIdx rngIdx(xtalIdx,

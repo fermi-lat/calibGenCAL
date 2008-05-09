@@ -1,6 +1,6 @@
 #ifndef LPATrigAlg_h
 #define LPATrigAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/LPATrigAlg.h,v 1.5 2008/01/22 19:40:59 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/LPATrigAlg.h,v 1.1 2008/04/21 20:35:30 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -8,6 +8,7 @@
 
 // LOCAL INCLUDES
 #include "src/lib/Util/CalSignalArray.h"
+#include "src/lib/Hists/TrigHists.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"
@@ -29,7 +30,6 @@ namespace CalUtil {
 
 namespace calibGenCAL {
   class RootFileAnalysis;
-  class TrigHists;
 
   /** \brief Abstract algorithm class fill & fit Trigger threshold histograms.
       @author Zachary Fewtrell
@@ -53,6 +53,7 @@ namespace calibGenCAL {
     LPATrigAlg(const TriggerPattern trigPattern,
                const CalUtil::CalPed &peds,
                const CalUtil::ADC2NRG &adc2nrg,
+               TrigHists &specHists,
                TrigHists &trigHists,
                const float expectedThresh,
                const float safetyMargin) :
@@ -60,6 +61,7 @@ namespace calibGenCAL {
       m_expectedThresh(expectedThresh),
       m_safetyMargin(safetyMargin),
       m_calPed(peds),
+      m_specHists(specHists),
       m_trigHists(trigHists),
       eventData(peds, adc2nrg)
     {}
@@ -107,7 +109,10 @@ namespace calibGenCAL {
     /// pedestal calibration data
     const CalUtil::CalPed &m_calPed;
 
-    // output histograms
+    /// output histograms
+    TrigHists &m_specHists;
+
+    /// output histograms
     TrigHists &m_trigHists;
     
     /// store cfg & status data pertinent to current algorithm run

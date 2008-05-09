@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.cxx,v 1.5 2008/05/02 20:37:36 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.cxx,v 1.6 2008/05/06 15:49:30 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -269,7 +269,7 @@ namespace calibGenCAL {
         if (m_hugeTuple) {
           m_tupleData.rngIdx = rngIdx.val();
           m_tupleData.goodEvt = eventData.iGoodEvt;
-          m_tupleData.cidac = cidac;
+          m_tupleData.cidac = (unsigned short)cidac;
           m_tupleData.adc = adc;
           m_hugeTuple->Fill();
         }

@@ -11,8 +11,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Plot all TCanvas & TH?? objects in ROOT file"
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/12/21 17:42:09 $"
-__version__     = "$Revision: 1.7 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/02/03 00:51:49 $"
+__version__     = "$Revision: 1.8 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -94,7 +94,7 @@ for k in rootFile.GetListOfKeys():
         print_canvas(cvs)
 
     # TCVS (plain ol' plots are stored in TCanvas
-    if cls.InheritsFrom("TCanvas"):
+    elif cls.InheritsFrom("TCanvas"):
         cvs = k.ReadObj()
 
         print_canvas(cvs)

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.25 2008/01/22 19:40:58 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/genFLEHists.cxx,v 1.1 2008/04/21 20:43:14 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -164,32 +164,40 @@ int main(int argc,
 
     /// load up previous calibrations
     CalPed calPed;
+    LogStrm::get() << __FILE__ << ": calib file: " << cfg.pedFilename.getVal() << endl;
     calPed.readTXT(cfg.pedFilename.getVal());
     /// load up previous calibrations
     ADC2NRG adc2nrg;
+    LogStrm::get() << __FILE__ << ": calib file: " << cfg.adc2nrgFilename.getVal() << endl;
     adc2nrg.readTXT(cfg.adc2nrgFilename.getVal());
 
     // open new output histogram file
     // output histogram file
-    const string histFileName(cfg.outputBasename.getVal() 
+    const string histfilePath(cfg.outputBasename.getVal() 
                               + ".FLE"
                               + "." + cfg.faceName.getVal()
                               + "." + cfg.triggerPattern.getVal() 
                               + ".root");
-    LogStrm::get() << __FILE__ << ": opening output histogram file: " << histFileName << endl;
-    TFile histfile(histFileName.c_str(),
+    LogStrm::get() << __FILE__ << ": opening output histogram file: " << histfilePath << endl;
+    TFile histfile(histfilePath.c_str(),
                    "RECREATE",
                    (string("FLE")
                     + "_" + cfg.triggerPattern.getVal()
                     + "_hists").c_str());
 
     /// store alogrithm histograms
-    TrigHists trigHists;
+    TrigHists trigHists("trigHist",
+                        &histfile, 0,
+                        100, 0, 300);
+    TrigHists specHists("specHist",
+                        &histfile, 0,
+                        100, 0, 300);
 
     LPAFleAlg lpaFleAlg(face,
                         trigPattern,
                         calPed,
                         adc2nrg,
+                        specHists,
                         trigHists,
                         cfg.expectedThresh.getVal(),
                         cfg.safetyMargin.getVal());
@@ -198,14 +206,11 @@ int main(int argc,
 
 
     LogStrm::get() << __FILE__ << ": reading root event file(s) starting w/ " << digiFileList[0] << endl;
-
+    
     //DEBUG
     lpaFleAlg.fillHists(nEntries,
-                         digiFileList);
+                        digiFileList);
 
-    /// delete unneeded histograms
-    trigHists.trimHists();
-    
     histfile.Write();
     histfile.Close();
   } catch (exception &e) {
