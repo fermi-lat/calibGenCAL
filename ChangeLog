@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri May  9 15:00:10 PDT 2008
+calibGenCAL/src/lib/Hists
+
+Removed Files:
+	TrigHists.cxx 
+Log Message:
+TrigHists class removed as replaced by HistVec
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri May  9 14:51:38 PDT 2008
 calibGenCAL/src/lib/Util
 
