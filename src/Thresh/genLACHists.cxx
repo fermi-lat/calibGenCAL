@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/genLACHists.cxx,v 1.1 2008/04/21 20:43:14 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/genLACHists.cxx,v 1.2 2008/04/23 16:54:51 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -155,9 +155,11 @@ int main(const int argc, const char **argv) {
 
     /// load up previous calibrations
     CalPed calPed;
+    LogStrm::get() << __FILE__ << ": calib file: " << cfg.pedFilename.getVal() << endl;
     calPed.readTXT(cfg.pedFilename.getVal());
     /// load up previous calibrations
     ADC2NRG adc2nrg;
+    LogStrm::get() << __FILE__ << ": calib file: " << cfg.adc2nrgFilename.getVal() << endl;
     adc2nrg.readTXT(cfg.adc2nrgFilename.getVal());
 
 

@@ -1,6 +1,6 @@
 #ifndef LPAFheAlg_h
 #define LPAFheAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/LPAFheAlg.h,v 1.5 2008/01/22 19:40:59 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/LPAFheAlg.h,v 1.1 2008/04/21 20:43:13 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -29,7 +29,6 @@ namespace CalUtil {
 
 namespace calibGenCAL {
   class RootFileAnalysis;
-  class TrigHists;
 
   /** \brief Algorithm class fill & fit FHE Trigger threshold histograms.
       @author Zachary Fewtrell
@@ -44,10 +43,11 @@ namespace calibGenCAL {
     LPAFheAlg(const TriggerPattern trigPattern,
               const CalUtil::CalPed &peds,
               const CalUtil::ADC2NRG &adc2nrg,
+              TrigHists &specHists,
               TrigHists &trigHists,
               const float expectedThresh=1000,
               const float safetyMargin=500) :
-      LPATrigAlg(trigPattern, peds, adc2nrg, trigHists, expectedThresh, safetyMargin)
+      LPATrigAlg(trigPattern, peds, adc2nrg, specHists, trigHists, expectedThresh, safetyMargin)
     {}
 
     /// Fill histograms w/ nEvt event data

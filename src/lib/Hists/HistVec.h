@@ -1,7 +1,7 @@
 #ifndef HistVec_h
 #define HistVec_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistVec.h,v 1.6 2008/01/22 19:40:59 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistVec.h,v 1.7 2008/04/21 20:32:32 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -9,6 +9,7 @@
 
 // LOCAL INCLUDES
 #include "src/lib/Util/ROOTUtil.h"
+#include "HistIdx.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalVec.h"
@@ -33,20 +34,21 @@ namespace calibGenCAL {
 
   /**  template class represents a CalUtil::CalVec or array 
        type collection of 1D ROOT histograms
+
+       \note histograms are created as needed.
      
        \param IdxType intended to be index data type following conventions set in CalUtil::CalDefs
   */
   template <typename IdxType,
-    typename HistType> 
-    class HistVec {
-    public:
+            typename HistType> 
+  class HistVec {
+  public:
     typedef IdxType index_type;
     typedef HistType histogram_type;
 
     /// \param histBasename all histograms will be created w/ name histBasename+idx.toStr()
-    /// \param writeDir (if non-zero) all new histograms will be written out to this directory opun class destruction.
-    /// \param readDir (if non-zero) any associated histograms will be read from this directory upon construction 
-
+    /// \param writeDir (if non-zero) all new histograms will be written out to this directory upon class destruction.
+    /// \param readDir (if non-zero) any associated histograms will be read from this directory upon construction
     HistVec(const std::string &histBasename,
             TDirectory *writeDir=0,
             TDirectory *readDir=0,
@@ -59,17 +61,22 @@ namespace calibGenCAL {
       m_loBinLimit(loBinLimit),
       m_hiBinLimit(hiBinLimit),
       m_writeDir(writeDir)
-      {
-        if (readDir != 0)
-          loadHists(*readDir);
+    {
+      if (readDir != 0)
+        loadHists(*readDir);
 
-        setDirectory(writeDir);
-      }
+      setDirectory(writeDir);
+    }
 
     /// act like STL vector
     typedef HistType& reference;
     /// act like STL vector
     typedef const HistType& const_reference;
+
+    /// return pointer to histogram for given index, return 0 if it doesn't exit
+    HistType *getHist(const IdxType &idx) {
+      return m_vec[idx];
+    }
 
     /// retrieve histogram for given index, build it if it doesn't exist.
     HistType &produceHist(const IdxType &idx) {
@@ -108,7 +115,27 @@ namespace calibGenCAL {
       m_writeDir = dir;
     }
 
-    private:
+    unsigned getMinEntries() {
+      unsigned retVal = ULONG_MAX;
+
+      for (IdxType idx; idx.isValid(); idx++) {
+        const unsigned nEntries = (unsigned)m_vec[idx]->GetEntries();
+
+        // only count histograms that have been filled
+        // (some histograms will never be filled if we are
+        // not using all 16 towers)
+        if (nEntries != 0)
+          retVal = min(retVal, nEntries);
+      }
+    
+      // case where there are no fills at all
+      if (retVal == ULONG_MAX)
+        return 0;
+
+      return retVal;
+    }
+
+  private:
     /// load all associated histogram from current ROOT directory 
     void loadHists(TDirectory &readDir) {
       /// loop through all possible histograms & search for each one in current root dir
@@ -187,7 +214,7 @@ namespace calibGenCAL {
     /// shared histogram name prefix
     const std::string m_histBasename;
     /// option for creating new histogram
-    const size_t m_nBins;
+    size_t m_nBins;
     /// option for creating new histogram
     const double m_loBinLimit;
     /// option for creating new histogram

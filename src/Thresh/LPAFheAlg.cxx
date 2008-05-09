@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonPedAlg.cxx,v 1.7 2008/01/22 19:40:59 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/LPAFheAlg.cxx,v 1.1 2008/04/21 20:43:13 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -9,7 +9,6 @@
 #include "LPAFheAlg.h"
 #include "src/lib/Util/ROOTUtil.h"
 #include "src/lib/Util/CGCUtil.h"
-#include "src/lib/Hists/TrigHists.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalVec.h"
@@ -37,8 +36,6 @@ namespace calibGenCAL {
 
   void LPAFheAlg::fillHists(const unsigned nEntries,
                             const std::vector<std::string> &digiFileList) {
-    m_trigHists.initHists(100,3000);
-
     /////////////////////////////////////////
     /// Open ROOT Event File  ///////////////
     /////////////////////////////////////////
@@ -123,7 +120,7 @@ namespace calibGenCAL {
     
 
     /// FILL 1: fill spectrum hist
-    m_trigHists.getSpecHist(faceIdx)->Fill(eventData.m_calSignalArray.getFaceSignal(faceIdx));
+    m_specHists.produceHist(faceIdx).Fill(eventData.m_calSignalArray.getFaceSignal(faceIdx));
 
     /// CUT 4 - FHE triggered for this tower, layer, and face
     if (!eventData.m_diagTrigBits[lyrIdx][XtalDiode(face, SM_DIODE)])
@@ -161,7 +158,7 @@ namespace calibGenCAL {
     }
     
     /// FILL 2: fill trigger histogram
-    m_trigHists.getTrigHist(faceIdx)->Fill(faceSignal);
+    m_trigHists.produceHist(faceIdx).Fill(faceSignal);
   }
 
   /// check that layer matches expected configuration (mostly that we're

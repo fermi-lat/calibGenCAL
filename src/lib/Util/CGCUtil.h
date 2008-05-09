@@ -1,7 +1,7 @@
 #ifndef CGCUtil_H
 #define CGCUtil_H
 
-//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.h,v 1.7 2008/04/21 20:31:30 fewtrell Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.h,v 1.8 2008/04/22 21:17:57 fewtrell Exp $
 
 // LOCAL INCLUDES
 
@@ -68,6 +68,14 @@ namespace calibGenCAL {
   std::vector<std::string> getLinesFromFile(const std::string &filename);
 
   std::string to_str(const int n);
+
+  /// return true if min <= x <= max
+  template <typename T>
+  bool between(const T& min,
+               const T& x,
+               const T& max) {
+    return (x >= min && x <= max);
+  }
 
 }; // namespace calibGenCAL
 #endif // CGCUtil_H

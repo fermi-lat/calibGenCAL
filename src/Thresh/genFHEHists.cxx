@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonPed.cxx,v 1.25 2008/01/22 19:40:58 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/genFHEHists.cxx,v 1.1 2008/04/21 20:43:14 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -11,7 +11,6 @@
 #include "src/lib/Util/CfgMgr.h"
 #include "src/lib/Util/CGCUtil.h"
 #include "src/lib/Util/string_util.h"
-#include "src/lib/Hists/TrigHists.h"
 
 // GLAST INCLUDES
 #include "CalUtil/SimpleCalCalib/CalPed.h"
@@ -155,9 +154,11 @@ int main(int argc,
 
     /// load up previous calibrations
     CalPed calPed;
+    LogStrm::get() << __FILE__ << ": calib file: " << cfg.pedFilename.getVal() << endl;
     calPed.readTXT(cfg.pedFilename.getVal());
     /// load up previous calibrations
     ADC2NRG adc2nrg;
+    LogStrm::get() << __FILE__ << ": calib file: " << cfg.adc2nrgFilename.getVal() << endl;
     adc2nrg.readTXT(cfg.adc2nrgFilename.getVal());
 
     // open new output histogram file
@@ -174,11 +175,16 @@ int main(int argc,
                     + "_hists").c_str());
 
     /// store alogrithm histograms
-    TrigHists trigHists;
-
+    TrigHists trigHists("trigHist",
+                        &histfile, 0,
+                        100,0,3000);
+    TrigHists specHists("specHist",
+                        &histfile, 0,
+                        100,0,3000);;
     LPAFheAlg lpaFheAlg(trigPattern,
                         calPed,
                         adc2nrg,
+                        specHists,
                         trigHists,
                         cfg.expectedThresh.getVal(),
                         cfg.safetyMargin.getVal());
@@ -192,9 +198,6 @@ int main(int argc,
     lpaFheAlg.fillHists(nEntries,
                         digiFileList);
 
-    /// delete unneeded histograms
-    trigHists.trimHists();
-    
     histfile.Write();
     histfile.Close();
   } catch (exception &e) {
