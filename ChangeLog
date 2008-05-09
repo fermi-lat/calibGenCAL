@@ -1,4 +1,19 @@
 ------------------------------------------------------------
+User: fewtrell  Fri May  9 14:51:36 PDT 2008
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+    * moved splitDigi.cxx
+    * added sumHists.exe which sums histograms w/ same name accross multiple files
+
+    * TrigHists class now derives from HistVec, trigger histograms are stored in subfolders now
+    * added genTrigMonitor.exe which generates trigger threshold histograms from standard LAT configuration data
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu May  8 08:18:41 PDT 2008
 calibGenCAL/src/Util
 
