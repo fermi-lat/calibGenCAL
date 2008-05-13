@@ -11,6 +11,7 @@
 #include "src/lib/Util/CfgMgr.h"
 #include "src/lib/Util/CGCUtil.h"
 #include "src/lib/Util/string_util.h"
+#include "src/lib/Util/stl_util.h"
 
 
 // GLAST INCLUDES
@@ -122,13 +123,13 @@ int main(int argc,
   try {
     AppCfg cfg(argc, argv);
 
-    vector<string> digiFileList(getLinesFromFile(cfg.digiFilenames.getVal()));
+    vector<string> digiFileList(getLinesFromFile(cfg.digiFilenames.getVal().c_str()));
     if (digiFileList.size() < 1) {
       cout << __FILE__ << ": No input files specified" << endl;
       return -1;
     }
 
-    vector<string> svacFileList(getLinesFromFile(cfg.svacFilenames.getVal()));
+    vector<string> svacFileList(getLinesFromFile(cfg.svacFilenames.getVal().c_str()));
     if (svacFileList.size() < 1) {
       cout << __FILE__ << ": No input files specified" << endl;
       return -1;

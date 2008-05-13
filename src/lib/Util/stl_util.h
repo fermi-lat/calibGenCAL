@@ -7,8 +7,10 @@
 #include <streambuf>
 #include <ostream>
 #include <ios>
+#include <istream>
+#include <fstream>
 
-//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.h,v 1.5 2007/06/07 17:45:43 fewtrell Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/stl_util.h,v 1.1 2007/06/13 22:42:13 fewtrell Exp $
 
 /** @file
     @author  Zachary Fewtrell
@@ -193,8 +195,16 @@ namespace calibGenCAL {
     }
   };
 
+  /// return vector of each line in txt file.
+  std::vector<std::string> getLinesFromFile(std::istream &infile);
 
+  /// return vector of each line in txt file.
+  inline std::vector<std::string> getLinesFromFile(const std::string &inpath) {
+    std::ifstream infile(inpath.c_str());
+    return getLinesFromFile(infile);
+  }
 
+  std::string to_str(const int n);
 }
 
 #endif

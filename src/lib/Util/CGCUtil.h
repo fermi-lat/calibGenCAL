@@ -1,7 +1,7 @@
 #ifndef CGCUtil_H
 #define CGCUtil_H
 
-//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.h,v 1.8 2008/04/22 21:17:57 fewtrell Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.h,v 1.9 2008/05/09 21:51:38 fewtrell Exp $
 
 // LOCAL INCLUDES
 
@@ -64,11 +64,6 @@ namespace calibGenCAL {
     return degrees*M_PI/180;
   }
                      
-  /// return vector of each lin in txt file.
-  std::vector<std::string> getLinesFromFile(const std::string &filename);
-
-  std::string to_str(const int n);
-
   /// return true if min <= x <= max
   template <typename T>
   bool between(const T& min,
