@@ -1,5 +1,18 @@
 ------------------------------------------------------------
 User: fewtrell  Tue May 13 09:54:01 PDT 2008
+calibGenCAL/src/lib/Util
+
+Modified Files:
+	CGCUtil.cxx CGCUtil.h stl_util.h 
+Added Files:
+	stl_util.cxx 
+Log Message:
+genTrigMonitorHists - now takes multiple input files
+sumHists.exe - now takes additional list of input files from stdin
+
+    *
+------------------------------------------------------------
+User: fewtrell  Tue May 13 09:54:01 PDT 2008
 calibGenCAL/src/lib/Hists
 
 Modified Files:
