@@ -1,7 +1,7 @@
 #ifndef GCRCalibAlg_h
 #define GCRCalibAlg_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/GCRCalibAlg.h,v 1.5 2008/01/22 19:40:58 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/GCRCalibAlg.h,v 1.1 2008/04/21 20:42:45 fewtrell Exp $
 
 /** @file
     @author Zach Fewtrell
@@ -52,7 +52,7 @@ namespace calibGenCAL {
     /// populate histograms from digi root event file
     /// \nEvents max # events to loop through
     void fillHists(const unsigned nEventsMax,
-                   const std::vector<std::string> &digiRootFileList,
+                   const std::vector<std::string> &digiFileList,
                    const std::vector<std::string> &gcrSelectRootFileList,
                    const CalUtil::CalPed &peds,
                    const CalUtil::CIDAC2ADC &dac2adc,

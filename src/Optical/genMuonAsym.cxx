@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/genMuonAsym.cxx,v 1.24 2008/01/22 19:40:58 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/genMuonAsym.cxx,v 1.1 2008/04/21 20:42:45 fewtrell Exp $
 
 /** @file generate Light Asymmetry calibrations from Muon event filesusing Cal Digi Hodoscope
     for track & hit information
@@ -12,6 +12,7 @@
 #include "src/lib/Util/CfgMgr.h"
 #include "src/lib/Util/CGCUtil.h"
 #include "src/lib/Util/string_util.h"
+#include "src/lib/Util/stl_util.h"
 
 // GLAST INCLUDES
 #include "CalUtil/SimpleCalCalib/CalPed.h"
@@ -96,8 +97,8 @@ int main(int argc,
     AppCfg cfg(argc, argv);
 
     // input file(s)
-    vector<string> rootFileList(getLinesFromFile(cfg.digiFilenames.getVal()));
-    if (rootFileList.size() < 1) {
+    vector<string> digiFileList(getLinesFromFile(cfg.digiFilenames.getVal().c_str()));
+    if (digiFileList.size() < 1) {
       cout << __FILE__ << ": No input files specified" << endl;
       return -1;
     }
@@ -154,9 +155,9 @@ int main(int argc,
                    "CAL Muon Asymmetry");
 
     LogStrm::get() << __FILE__ << ": reading root event file(s) starting w/ "
-                     << rootFileList[0] << endl;
+                     << digiFileList[0] << endl;
     muonAsym.fillHists(cfg.entriesPerHist.getVal(),
-                       rootFileList);
+                       digiFileList);
     asymHists.trimHists();
 
     // Save file to disk before entering fit portion (saves time if i crash during debugging).

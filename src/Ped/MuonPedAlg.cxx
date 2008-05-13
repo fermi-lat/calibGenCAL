@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Ped/MuonPedAlg.cxx,v 1.3 2008/04/23 16:54:51 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Ped/MuonPedAlg.cxx,v 1.4 2008/05/09 21:51:37 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -82,7 +82,7 @@ namespace calibGenCAL {
       /////////////////////////////////////////
       if (eventData.eventNum % 2000 == 0) {
         // quit if we have enough entries in each histogram
-        unsigned currentMin = getMinEntries();
+        const unsigned currentMin = getMinEntries();
         if (currentMin >= nEntries) break;
         LogStrm::get() << "Event: " << eventData.eventNum
                          << " min entries per histogram: " << currentMin

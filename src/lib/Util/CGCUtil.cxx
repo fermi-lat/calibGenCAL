@@ -4,7 +4,7 @@
 
     \brief generic utility functions used in calibGenCAL pkg
 
-    $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.cxx,v 1.11 2008/04/22 19:30:35 fewtrell Exp $
+    $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.cxx,v 1.12 2008/04/22 21:17:57 fewtrell Exp $
 */
 
 // LOCAL INCLUDES
@@ -71,24 +71,6 @@ namespace calibGenCAL {
 
   
 
-  vector<string> getLinesFromFile(const string &filename) {
-    vector<string> retval;
-    ifstream infile(filename.c_str());
-      
-    if (!infile.is_open())
-      throw runtime_error(string("Unable to open " + filename));
-    
-    string line;
-    while (infile.good()) {
-      
-      getline(infile, line);
-      if (infile.fail()) break; // bad get
-
-      retval.push_back(line);
-    }
-
-    return retval;
-  }
 
   /// hidden static instance is accessed by other classes
   /// through LogStrm::get() method.
@@ -103,12 +85,5 @@ namespace calibGenCAL {
     _logStrm.getostreams().push_back(&ostrm);
   }
 
-  std::string to_str(const int n) {
-    ostringstream tmpstrm;
-
-    tmpstrm << n;
-
-    return tmpstrm.str();
-  }
 
 }; // namespace calibGenCAL

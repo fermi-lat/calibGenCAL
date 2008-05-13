@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/genLACHists.cxx,v 1.2 2008/04/23 16:54:51 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/genLACHists.cxx,v 1.3 2008/05/09 21:51:37 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -14,6 +14,7 @@
 #include "src/lib/Util/CGCUtil.h"
 #include "src/lib/Util/RootFileAnalysis.h"
 #include "src/lib/Util/CalSignalArray.h"
+#include "src/lib/Util/stl_util.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"
@@ -147,7 +148,7 @@ int main(const int argc, const char **argv) {
 
     // open input files
     // input file(s)
-    vector<string> digiFileList(getLinesFromFile(cfg.digiFilenames.getVal()));
+    vector<string> digiFileList(getLinesFromFile(cfg.digiFilenames.getVal().c_str()));
     if (digiFileList.size() < 1) {
       cout << __FILE__ << ": No input files specified" << endl;
       return -1;

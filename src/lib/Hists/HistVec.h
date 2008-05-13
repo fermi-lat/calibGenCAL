@@ -1,7 +1,7 @@
 #ifndef HistVec_h
 #define HistVec_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistVec.h,v 1.7 2008/04/21 20:32:32 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistVec.h,v 1.8 2008/05/09 21:51:38 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -115,7 +115,7 @@ namespace calibGenCAL {
       m_writeDir = dir;
     }
 
-    unsigned getMinEntries() {
+    unsigned getMinEntries() const {
       unsigned retVal = ULONG_MAX;
 
       for (IdxType idx; idx.isValid(); idx++) {
@@ -163,7 +163,7 @@ namespace calibGenCAL {
       }
     }
 
-    std::string genHistName(const IdxType &idx) {
+    std::string genHistName(const IdxType &idx) const {
       return m_histBasename + "_" + idx.toStr();
     }
 
@@ -201,7 +201,7 @@ namespace calibGenCAL {
     }
   
     /// generate appropriate subdirectory for histogram
-    std::string genHistPath(const IdxType &idx) {
+    std::string genHistPath(const IdxType &idx) const {
       ostringstream tmp;
       tmp << m_histBasename << "/"
           << toPath(idx);

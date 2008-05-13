@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/genFLEHists.cxx,v 1.1 2008/04/21 20:43:14 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/genTrigMonitorHists.cxx,v 1.1 2008/05/09 21:51:37 fewtrell Exp $
 
 /** @file
     @author Z. Fewtrell
@@ -45,9 +45,10 @@ public:
   AppCfg(const int argc,
          const char **argv) :
     cmdParser(path_remove_ext(__FILE__)),
-    digiFile("digiFile",
-             "input Digi ROOT file",
-             ""),
+    digiFilenames("digiFilenames",
+                  "text file w/ newline delimited list of input digi ROOT files",
+                  ""
+                  ),
     pedFilename("pedFilename",
                 "text file with pedestal calibration data",
                 ""),
@@ -61,7 +62,7 @@ public:
          'h',
          "print usage info")
   {
-    cmdParser.registerArg(digiFile);
+    cmdParser.registerArg(digiFilenames);
     cmdParser.registerArg(pedFilename);
     cmdParser.registerArg(adc2nrgFilename);
     cmdParser.registerArg(outputBasename);
@@ -83,7 +84,7 @@ public:
   /// construct new parser
   CmdLineParser cmdParser;
 
-  CmdArg<string> digiFile;
+  CmdArg<string> digiFilenames;
 
   CmdArg<string> pedFilename;
 
@@ -113,7 +114,8 @@ int main(const int argc, const char **argv) {
     AppCfg cfg(argc,argv);
 
     // input file(s)
-    const vector<string> digiFileList(1,cfg.digiFile.getVal());
+    // input file(s)
+    vector<string> digiFileList(getLinesFromFile(cfg.digiFilenames.getVal().c_str()));
     if (digiFileList.size() < 1) {
       cout << __FILE__ << ": No input files specified" << endl;
       return -1;
@@ -136,7 +138,6 @@ int main(const int argc, const char **argv) {
     LogStrm::get() << endl;
 
     /// open ROOT event file
-    LogStrm::get() << __FILE__ << ": opening input Digi ROOT file. " << cfg.digiFile.getVal() << endl;
     RootFileAnalysis rootFile(0,             // mc
                               &digiFileList);
     // enable only needed branches in root file
@@ -195,8 +196,9 @@ int main(const int argc, const char **argv) {
       rootFile.getEvent(nEvt);
 
       // status print out
-      if (nEvt % N_EVENTS_STATUS == 0)
+      if (nEvt % N_EVENTS_STATUS == 0) {
         cerr << nEvt << endl;
+      }
 
       /// retrieve DigiEvent
       DigiEvent const*const digiEvent = rootFile.getDigiEvent();

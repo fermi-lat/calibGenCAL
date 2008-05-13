@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/GCRCalibAlg.cxx,v 1.1 2008/04/21 20:42:45 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/GCRCalibAlg.cxx,v 1.2 2008/04/22 21:17:56 fewtrell Exp $
 
 /** @file 
     @author Zach Fewtrell
@@ -134,7 +134,7 @@ namespace calibGenCAL {
   }
 
   void GCRCalibAlg::fillHists(const unsigned nEventsMax,
-                              const vector<string> &digiRootFileList,
+                              const vector<string> &digiFileList,
                               const vector<string> &gcrSelectRootFileList,
                               const CalPed &peds,
                               const CIDAC2ADC &dac2adc,
@@ -146,7 +146,7 @@ namespace calibGenCAL {
     algData.gcrHists = &gcrHists;
   
 
-    RootFileAnalysis rootFile(0, &digiRootFileList, 0, 0, &gcrSelectRootFileList);
+    RootFileAnalysis rootFile(0, &digiFileList, 0, 0, &gcrSelectRootFileList);
 
     // enable only needed branches in root file
     rootFile.getDigiChain()->SetBranchStatus("*", 0);
