@@ -1,5 +1,16 @@
 ------------------------------------------------------------
 User: fewtrell  Tue May 13 09:54:01 PDT 2008
+calibGenCAL/src/lib/Hists
+
+Modified Files:
+	HistVec.h 
+Log Message:
+genTrigMonitorHists - now takes multiple input files
+sumHists.exe - now takes additional list of input files from stdin
+
+    *
+------------------------------------------------------------
+User: fewtrell  Tue May 13 09:54:01 PDT 2008
 calibGenCAL/src/Util
 
 Modified Files:
