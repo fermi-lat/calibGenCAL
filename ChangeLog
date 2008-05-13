@@ -1,5 +1,17 @@
 ------------------------------------------------------------
 User: fewtrell  Tue May 13 09:54:00 PDT 2008
+calibGenCAL/src/Thresh
+
+Modified Files:
+	genFHEHists.cxx genFLEHists.cxx genLACHists.cxx 
+	genTrigMonitorHists.cxx genULDHists.cxx 
+Log Message:
+genTrigMonitorHists - now takes multiple input files
+sumHists.exe - now takes additional list of input files from stdin
+
+    *
+------------------------------------------------------------
+User: fewtrell  Tue May 13 09:54:00 PDT 2008
 calibGenCAL/src/Ped
 
 Modified Files:
