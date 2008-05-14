@@ -16,8 +16,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL pedestal XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2008/02/11 21:35:58 $"
-__version__     = "$Revision: 1.5 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/04/21 20:25:18 $"
+__version__     = "$Revision: 1.6 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -87,9 +87,9 @@ pedTwrs1 = pedFile1.getTowers()
 pedTwrs2 = pedFile2.getTowers()
 
 if (pedTwrs1 != pedTwrs2):
-    log.warning("input files have different n towers.  I quit! ;)")
+    log.warning("input files have different n towers.")
 
-twrSet = pedTwrs1 & pedTwrs2
+twrSet = set(pedTwrs1) & set(pedTwrs2)
 del pedTwrs1, pedTwrs2 # don't want to get confused & use these variables any more (twrSet subsumes them)
 log.info("Processing tower modules: %s"%twrSet)
 
