@@ -1,4 +1,19 @@
 ------------------------------------------------------------
+User: fewtrell  Wed May 14 11:39:47 PDT 2008
+calibGenCAL/src/Thresh
+
+Modified Files:
+	fitLACHists.cxx fitThreshSlopes.cxx fitTrigHists.cxx 
+	fitULDHists.cxx fitULDSlopes.cxx genLACHists.cxx 
+	genULDHists.cxx 
+Added Files:
+	fitTrigMonitorHists.cxx 
+Log Message:
+- split genCIDAC2ADC into genCIDAC2ADC & smoothCIDAC2ADC
+  - first app finds raw adc mean for each cidac val,
+  - 2nd app smooths the spline f() for each channel
+    *
+------------------------------------------------------------
 User: fewtrell  Wed May 14 11:39:46 PDT 2008
 calibGenCAL/src/CIDAC2ADC
 
