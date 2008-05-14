@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Wed May 14 11:39:46 PDT 2008
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+- split genCIDAC2ADC into genCIDAC2ADC & smoothCIDAC2ADC
+  - first app finds raw adc mean for each cidac val,
+  - 2nd app smooths the spline f() for each channel
+    *
+------------------------------------------------------------
 User: fewtrell  Tue May 13 09:54:01 PDT 2008
 calibGenCAL/src/lib/Util
 
