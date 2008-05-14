@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/genCIDAC2ADC.cxx,v 1.4 2008/05/02 17:59:33 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/genCIDAC2ADC.cxx,v 1.5 2008/05/06 15:49:30 fewtrell Exp $
 
 /** @file Gen CIDAC2ADC calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
@@ -43,7 +43,7 @@ public:
                "input LE DIODE singlex16 digi root file (one of either -l or -h is required)",
                ""),
     nSamplesPerCIDAC("nSamplesPerCIDAC",
-                    'n',
+                     'n',
                      "Number of samples for each CIDAC level",
                      100),
     columnMode("columnMode",
@@ -115,11 +115,9 @@ int main(int argc,
     cfg.cmdParser.printStatus(LogStrm::get());
     LogStrm::get() << endl;
 
-    /// txt output filename
-    const string outputTXTPath(cfg.outputBasename.getVal() + ".txt");
-
     /// root output filename
     const string outputROOTPath(cfg.outputBasename.getVal() + ".root");
+    LogStrm::get() << __FILE__ << ": opening output ROOT file: " << outputROOTPath << endl;
     TFile outputROOTFile(outputROOTPath.c_str(), "RECREATE", "Cal IntNolin calib", 9);
 
     CIDAC2ADC    adcMeans;
@@ -141,14 +139,8 @@ int main(int argc,
     }
 
     LogStrm::get() << __FILE__ << ": saving adc means to txt file: "
-                     << adcMeanPath << endl;
+                   << adcMeanPath << endl;
     adcMeans.writeTXT(adcMeanPath);
-
-    LogStrm::get() << __FILE__ << ": generating smoothed spline points: " << endl;
-    inlAlg.genSplinePts(adcMeans, cidac2adc);
-
-    LogStrm::get() << __FILE__ << ": writing smoothed spline points: " << outputTXTPath << endl;
-    cidac2adc.writeTXT(outputTXTPath);
 
     outputROOTFile.Write();
     outputROOTFile.Close();

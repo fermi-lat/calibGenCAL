@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/genLACHists.cxx,v 1.3 2008/05/09 21:51:37 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/genLACHists.cxx,v 1.4 2008/05/13 16:54:00 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -169,6 +169,7 @@ int main(const int argc, const char **argv) {
                               0);
 
     // open output files
+    LogStrm::get() << __FILE__ << ": opening output ROOT file: " << outputPath << endl;
     TFile output(outputPath.c_str(),"RECREATE");
 
     // ENABLE / REGISTER TUPLE BRANCHES

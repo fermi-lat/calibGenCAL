@@ -1,6 +1,6 @@
 #ifndef IntNonlinAlg_h
 #define IntNonlinAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.h,v 1.5 2008/05/02 20:37:36 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.h,v 1.6 2008/05/06 15:49:30 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -50,10 +50,6 @@ namespace calibGenCAL {
                       const CalUtil::DiodeNum diode,
                       const bool bcastMode);
 
-    /// smooth raw adc means for use in offline spline calibration
-    static void genSplinePts(const CalUtil::CIDAC2ADC &adcMeans,
-                             CalUtil::CIDAC2ADC &cidac2adc);
-
   private:
     /// fill histograms w/ data from single event
     void processEvent(const DigiEvent &digiEvent);
@@ -63,12 +59,6 @@ namespace calibGenCAL {
 
     /// check that LCI configuration matches expected.
     bool checkLCICfg(const DigiEvent &digiEvent);
-
-    /// apply smoothing algorithm to single ADC curve.
-    static void smoothSpline(const vector<float> &curADC,
-                             vector<float> &splineADC,
-                             vector<float> &splineDAC,
-                             const CalUtil::RngNum rng);
 
     /// store cfg & status data pertinent to current algorithm run
     struct AlgData {

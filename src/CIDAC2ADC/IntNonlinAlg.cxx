@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.cxx,v 1.6 2008/05/06 15:49:30 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.cxx,v 1.7 2008/05/09 21:51:37 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -22,7 +22,6 @@
 // EXTLIB INCLUDES
 #include "TH1S.h"
 #include "TProfile.h"
-#include "TF1.h"
 #include "TNtuple.h"
 #include "TTree.h"
 
@@ -32,22 +31,7 @@
 
 
 namespace {
-  /// how many points for each smoothing 'group'?  (per adc range)
-  static const unsigned short SMOOTH_GRP_WIDTH[] = {
-    3, 4, 3, 4
-  };
-  /// how many points at beginning of curve to extrapolate from following points
-  static const unsigned short EXTRAP_PTS_LO[]    = {
-    2, 2, 2, 2
-  };
-  /// how many points to extrapolate beginning of curve _from_
-  static const unsigned short EXTRAP_PTS_LO_FROM[] = {
-    5, 5, 5, 5
-  };
-  /// how many points at end of curve not to smooth (simply copy them over verbatim from raw data)
-  static const unsigned short SMOOTH_SKIP_HI[]   = {
-    6, 10, 6, 10
-  };
+  static const float warnMaxADCRMS = 20;
 
 };
 
@@ -306,159 +290,18 @@ namespace calibGenCAL {
                              raw_adcrms,
                              adcmean,
                              adcrms);
+          if (adcrms > warnMaxADCRMS) {
+            LogStrm::get() << "WARNING: adc_rms " << adcrms
+                           << " " << rngIdx.toStr()
+                           << "  cidac "  << cidac
+                           << endl;
+          }
         }
       }   // foreach face
     }     // foreach readout
   }
 
-  void IntNonlinAlg::genSplinePts(const CIDAC2ADC &adcMeans,
-                                  CIDAC2ADC &cidac2adc) {
-    // Loop through all 4 energy ranges
-    for (RngNum rng; rng.isValid(); rng++)
-      // loop through each xtal face.
-      for (FaceIdx faceIdx; faceIdx.isValid(); faceIdx++) {
-        const RngIdx rngIdx(faceIdx,
-                            rng);
 
-        // skip missing channels
-        if (adcMeans.getPtsADC(rngIdx).empty())
-          continue;
-
-        // point to current adc vector
-        const vector<float> &curADC = adcMeans.getPtsADC(rngIdx);
-
-        // point to output splines
-        vector<float> &splineADC = cidac2adc.getPtsADC(rngIdx);
-        vector<float> &splineDAC = cidac2adc.getPtsDAC(rngIdx);
-
-        smoothSpline(curADC, splineADC, splineDAC, rng);
-      } // xtalFace lop
-    // range loop
-
-    // subtract pedestals
-    cidac2adc.pedSubtractADCSplines();
-  }
-
-  void IntNonlinAlg::smoothSpline(const vector<float> &curADC,
-                                  vector<float> &splineADC,
-                                  vector<float> &splineDAC,
-                                  const RngNum rng
-                                  ) {
-    // following vals only change w/ rng, so i get them outside the other loops.
-    const unsigned short grpWid       = SMOOTH_GRP_WIDTH[rng.val()];
-    const unsigned short extrapLo     = EXTRAP_PTS_LO[rng.val()];
-    const unsigned short extrapLoFrom = EXTRAP_PTS_LO_FROM[rng.val()];
-    const unsigned short skpHi        = SMOOTH_SKIP_HI[rng.val()];
-
-
-    // 2 dimensional poly line f() to use for spline fitting.
-    float *tmpADC(new float[singlex16::N_CIDAC_VALS]);
-
-    TF1 splineFunc("spline_fitter",
-                   "pol2",
-                   0,
-                   singlex16::MAX_DAC);
-
-    //-- GET UPPER ADC BOUNDARY for this channel --//
-    const float adc_max  = curADC[singlex16::N_CIDAC_VALS-1];
-    // last idx will be last index that is <= 0.99*adc_max
-    // it is the last point we intend on using.
-    unsigned short last_idx = 0;
-    while (curADC[last_idx] <= 0.99*adc_max  
-           && 
-           last_idx < singlex16::N_CIDAC_VALS-1) //bounds check
-      last_idx++;
-    if (last_idx > 0)
-      last_idx--;
-
-    //-- CREATE GRAPH OBJECT for fitting --//
-    copy(curADC.begin(),
-         curADC.end(),
-         tmpADC);
-    TGraph myGraph(last_idx+1,
-                   singlex16::CIDAC_TEST_VALS,
-                   tmpADC);
-
-    // PART I: EXTRAPOLATE INITIAL POINTS FROM MEAT OF CURVE
-    for (unsigned short i = 0; i < extrapLo; i++) {
-      // put new DAC val on global output list
-      const float &  dac  = singlex16::CIDAC_TEST_VALS[i];
-      splineDAC.push_back(dac);
-
-      // extrapolate associated adc value from points later in curve
-      // 1st non extrapolated point
-      const unsigned short pt2  = extrapLo;
-      // n points into curve from pt2
-      const unsigned short pt1  = pt2+extrapLoFrom-1;
-
-      const float &  dac2 = singlex16::CIDAC_TEST_VALS[pt2];
-      const float &  adc2 = curADC[pt2];
-
-      const float &  dac1 = singlex16::CIDAC_TEST_VALS[pt1];
-      const float &  adc1 = curADC[pt1];
-
-      float adc  = linear_extrap(dac1, dac2, dac,
-                                 adc1, adc2);
-
-      splineADC.push_back(adc);
-    }
-
-    // PART II: GROUP & SMOOTH MIDDLE RANGE  ///////////////////////////////
-    // start one grp above skiplo & go as hi as you can w/out entering skpHi
-    for (unsigned short ctrIdx = extrapLo + grpWid - 1;
-         ctrIdx <= last_idx - max<unsigned short>(skpHi, grpWid-1);  // allow last group to overlap skpHi section.
-
-         ctrIdx += grpWid) {
-      const unsigned short lp  = ctrIdx - grpWid;                          // 1st point in group
-      const unsigned short hp  = ctrIdx + grpWid;                          // last point in group
-
-      // fit curve to grouped points
-      myGraph.Fit(&splineFunc, "QN", "",
-                  singlex16::CIDAC_TEST_VALS[lp],
-                  singlex16::CIDAC_TEST_VALS[hp]);
-      const float myPar1 = splineFunc.GetParameter(0);
-      const float myPar2 = splineFunc.GetParameter(1);
-      const float myPar3 = splineFunc.GetParameter(2);
-
-      // use DAC value from center point
-      const float fitDAC = singlex16::CIDAC_TEST_VALS[ctrIdx];
-      // eval smoothed ADC value
-      const float fitADC = myPar1 + fitDAC*(myPar2 + fitDAC*myPar3);
-
-      // put new ADC val on list
-      splineADC.push_back(fitADC);
-
-      // put new DAC val on global output list
-      splineDAC.push_back(fitDAC);
-    }
-
-    // PART III: NO SMOOTHING/GROUPING FOR LAST SKPHI PTS //////////////////
-    // copy SKPHI points directly from face of array.
-    for (unsigned short i = last_idx+1 - skpHi;
-         i <= last_idx;
-         i++) {
-      // put new ADC val on list
-      splineADC.push_back(curADC[i]);
-
-      // put new DAC val on global output list
-      splineDAC.push_back(singlex16::CIDAC_TEST_VALS[i]);
-    }
-
-    //-- EXTRAPOLATE FINAL POINT --//
-    const unsigned short nPts = splineADC.size();
-    const float dac1          = splineDAC[nPts-2];
-    const float dac2          = splineDAC[nPts-1];
-    const float adc1          = splineADC[nPts-2];
-    const float adc2          = splineADC[nPts-1];
-    const float slope         = (dac2 - dac1)/(adc2 - adc1);
-    const float dac_max       = dac2 + (adc_max - adc2)*slope;
-
-    // put final point on the list.
-    splineADC.push_back(adc_max);
-    splineDAC.push_back(dac_max);
-
-    delete [] tmpADC;
-  }
   
   /// return false if current event LCI config does not match that expected by this analysis algorithm
   bool IntNonlinAlg::checkLCICfg(const DigiEvent &digiEvent) {

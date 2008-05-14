@@ -121,6 +121,7 @@ int main(const int argc, const char **argv) {
                               0);
 
     // open output files
+    LogStrm::get() << __FILE__ << ": Opening output ROOT file: " << outputPath << endl;
     TFile output(outputPath.c_str(),"RECREATE");
 
     // ENABLE / REGISTER TUPLE BRANCHES
