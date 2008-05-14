@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed May 14 13:12:37 PDT 2008
+calibGenCAL/src/Thresh
+
+Modified Files:
+	fitTrigMonitorHists.cxx 
+Log Message:
+got fitTrigMonitorHists to compile
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed May 14 12:01:16 PDT 2008
 calibGenCAL/python
 
