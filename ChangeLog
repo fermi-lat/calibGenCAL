@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed May 14 12:01:16 PDT 2008
+calibGenCAL/python
+
+Modified Files:
+	pedDiff.py 
+Log Message:
+bug, i tried to use python 'list' as 'set'
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed May 14 11:39:47 PDT 2008
 calibGenCAL/src/Util
 
