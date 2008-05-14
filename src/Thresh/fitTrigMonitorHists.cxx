@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitTrigHists.cxx,v 1.2 2008/05/09 21:51:37 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitTrigMonitorHists.cxx,v 1.1 2008/05/14 18:39:46 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -10,6 +10,7 @@
 // LOCAL INCLUDES
 #include "src/lib/Util/CfgMgr.h"
 #include "src/lib/Hists/TrigHists.h"
+#include "src/lib/Util/CGCUtil.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"
@@ -94,19 +95,20 @@ int main(const int argc, const char **argv) {
     LogStrm::get() << __FILE__ << ": Opening input ROOT file " << cfg.histFilePath.getVal() << endl;
     TFile inputROOT(cfg.histFilePath.getVal().c_str(),"READ");
 
+    /// read in histograms from file
+    TrigHists fleHists("fleHist",
+                       0, &inputROOT);
+    TrigHists fheHists("fheHist",
+                       0, &inputROOT);
+
     /// output filenames
     const string outTxtPath(cfg.outputBasename.getVal() + ".trig_thresh.txt");
     const string outRootPath(cfg.outputBasename.getVal() + ".trig_thresh.root");
 
     /// open output ROOT file
-    LogStrm::get() << __FILE__ << ": Openiing output ROOT file: " << outputRootPath << endl;
+    LogStrm::get() << __FILE__ << ": Openiing output ROOT file: " << outRootPath << endl;
     TFile outRootFile(outRootPath.c_str(),"RECREATE");
 
-    /// read in histograms from file
-    const TrigHists fleHists("fleHist",
-                       0, &histfile);
-    const TrigHists fheHists("fheHist",
-                       0, &histfile);
 
     /// create fitting stepction (straight line 'background' multiplied by a
     /// sigmoidal 'threshold')
@@ -134,19 +136,19 @@ int main(const int argc, const char **argv) {
       const DiodeNum diode = diodeIdx.getDiode();
 
       /// select histogram collection for current diode
-      const TrigHists &trigHists = (diode == LRG_DIODE) ? fleHists : fheHists;
+      TrigHists &trigHists = (diode == LRG_DIODE) ? fleHists : fheHists;
       
       /// retrieve histogram from collection
-      const FaceIdx = diodeIdx.getFaceIdx();
-      TH1S const*const trigHist = trigHists.getHist(faceIdx);
+      const FaceIdx faceIdx = diodeIdx.getFaceIdx();
+      TH1S *const trigHist = trigHists.getHist(faceIdx);
       /// we don't require every channel to be present
       if (!trigHist)
         continue;
       
       /// setup fitting parameters.
-      const float maxEne = trigHist.GetXaxis()->GetXmax();
-      const unsigned nBins = trigHist.GetNbinsX();
-      const double maxHeight = trigHist.GetMaximum();
+      const float maxEne = trigHist->GetXaxis()->GetXmax();
+      const unsigned nBins = trigHist->GetNbinsX();
+      const double maxHeight = trigHist->GetMaximum();
       /// threshold must be on x-axis, start @ middle of hist
       step->SetParLimits(NPARM_THOLD,0, maxEne);
       step->SetParameter(NPARM_THOLD, maxEne/2);
@@ -160,24 +162,24 @@ int main(const int argc, const char **argv) {
       step->SetParameter(NPARM_BKG, 0);
 
       /// fit histogram
-      const unsigned fitStat = trigHist.Fit(&step,"QLB","");
+      const unsigned fitstat = trigHist->Fit(step,"QLB","");
       /// get fit results
       const float threshMeV = step->GetParameter(0);
       const float threshErrMeV = step->GetParError(0);
       const float chisq = step->GetChisquare();
-      const unsigned nEntries = effHist.GetEntries();
+      const unsigned nEntries = (unsigned)trigHist->GetEntries();
       const float width = step->GetParameter(1);
 
       /// output results
       LogStrm::get() << diodeIdx.getTwr().val()
-                     << " " << diodeIdx.getLyr.val()
-                     << " " << diodeIdx.getCol.val()
-                     << " " << diodeIdx.getFace.val()
-                     << " " << diodeIdx.getDiode.val()
+                     << " " << diodeIdx.getLyr().val()
+                     << " " << diodeIdx.getCol().val()
+                     << " " << diodeIdx.getFace().val()
+                     << " " << diodeIdx.getDiode().val()
                      << " " << threshMeV
-                     << " " << errThreshMeV
+                     << " " << threshErrMeV
                      << " " << width
-                     << " " << chi2
+                     << " " << chisq
                      << " " << nEntries
                      << " " << fitstat
                      << endl;

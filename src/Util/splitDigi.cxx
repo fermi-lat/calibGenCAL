@@ -62,7 +62,7 @@ int main(const int argc, const char **argv)
   j0= 0; j1= N_part;
 
   // generate element output filenames
-  const vector<string> elementFilenames(nParts);
+  vector<string> elementFilenames(nParts);
   for(i= 0; i < nParts; i++)
       elementFilenames[i] = outFname+"."+element[i]+".root";
 
