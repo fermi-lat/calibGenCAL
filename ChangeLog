@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Wed May 14 13:12:37 PDT 2008
+calibGenCAL/src/Util
+
+Modified Files:
+	splitDigi.cxx 
+Log Message:
+got fitTrigMonitorHists to compile
+
+    *
+------------------------------------------------------------
+User: fewtrell  Wed May 14 13:12:37 PDT 2008
 calibGenCAL/src/Thresh
 
 Modified Files:
