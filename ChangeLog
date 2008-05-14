@@ -1,5 +1,16 @@
 ------------------------------------------------------------
 User: fewtrell  Wed May 14 11:39:47 PDT 2008
+calibGenCAL/src/Util
+
+Modified Files:
+	splitDigi.cxx 
+Log Message:
+- split genCIDAC2ADC into genCIDAC2ADC & smoothCIDAC2ADC
+  - first app finds raw adc mean for each cidac val,
+  - 2nd app smooths the spline f() for each channel
+    *
+------------------------------------------------------------
+User: fewtrell  Wed May 14 11:39:47 PDT 2008
 calibGenCAL/src/Thresh
 
 Modified Files:
