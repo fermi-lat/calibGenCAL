@@ -47,6 +47,8 @@ application genMuonPed Ped/genMuonPed.cxx Ped/MuonPedAlg.cxx Ped/MuonPedAlg.h
 
 application genCIDAC2ADC CIDAC2ADC/genCIDAC2ADC.cxx CIDAC2ADC/IntNonlinAlg.cxx CIDAC2ADC/IntNonlinAlg.h
 
+application smoothCIDAC2ADC CIDAC2ADC/smoothCIDAC2ADC.cxx
+
 application splitDigi Util/splitDigi.cxx
 
 application sumHists Util/sumHists.cxx
@@ -84,3 +86,6 @@ application fitULDHists Thresh/fitULDHists.cxx
 application fitULDSlopes Thresh/fitULDSlopes.cxx
 
 application genTrigMonitorHists Thresh/genTrigMonitorHists.cxx
+
+application fitTrigMonitorHists Thresh/fitTrigMonitorHists.cxx
+

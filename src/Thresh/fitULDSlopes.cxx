@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitULDSlopes.cxx,v 1.1 2008/04/21 20:43:14 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitULDSlopes.cxx,v 1.2 2008/05/09 21:51:37 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 
@@ -190,6 +190,7 @@ int main(const int argc, const char **argv) {
 
     // generate output filename
     const string outfilePath(cfg.outputBasename.getVal() + ".thold_slopes.txt");
+    LogStrm::get() << __FILE__ << ": Opening output TXT file: " << outfilePath << endl;
     ofstream outfile(outfilePath.c_str());
     // output column headers
     outfile << ";twr lyr col face rng slopeMeV offsetMeV dac_rng" << endl;
@@ -199,8 +200,10 @@ int main(const int argc, const char **argv) {
 
     // open dac settings files
     CalDAC dac1;
+    LogStrm::get() << __FILE__ << ": reading dac settings file: " << cfg.dac1Path.getVal() << endl;
     dac1.readTXT(cfg.dac1Path.getVal());
     CalDAC dac2;
+    LogStrm::get() << __FILE__ << ": reading dac settings file: " << cfg.dac2Path.getVal() << endl;
     dac2.readTXT(cfg.dac2Path.getVal());
 
     /// load up previous calibrations
@@ -220,6 +223,7 @@ int main(const int argc, const char **argv) {
                      thresh2);
     
 
+    LogStrm::get() << __FILE__ << ": Opening output ROOT file: " << rootFilePath << endl;
     TFile f(rootFilePath.c_str(),"RECREATE");
     TNtuple* nt = new TNtuple("nttholddac","nttholddac",
                               "twr:lyr:col:face:rng:tholdoffMeV:tholdslopeMeV:dac1:dac2:thresh1ADC:thresh2ADC:thresh1MeV:thresh2MeV:uldSaturationMeV");

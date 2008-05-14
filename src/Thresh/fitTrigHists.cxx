@@ -1,9 +1,10 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitTrigHists.cxx,v 1.1 2008/04/21 20:43:14 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitTrigHists.cxx,v 1.2 2008/05/09 21:51:37 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
 
-    Fit Trig threshold histograms for each crystal face from.
+    Fit Trigger threshold histograms for each crystal face using
+    histograms from genTrigHists.exe.
 */
 
 // LOCAL INCLUDES
@@ -29,7 +30,6 @@
 #include <string>
 #include <fstream>
 #include <algorithm>
-#include <memory>
 #include <cmath>
 
 using namespace std;
@@ -242,10 +242,11 @@ int main(const int argc, const char **argv) {
     LogStrm::addStream(tmpStrm);
 
     /// output filenames
-    string outTxtPath(cfg.outputBasename.getVal() + ".trig_thresh.txt");
-    string outRootPath(cfg.outputBasename.getVal() + ".trig_thresh.root");
+    const string outTxtPath(cfg.outputBasename.getVal() + ".trig_thresh.txt");
+    const string outRootPath(cfg.outputBasename.getVal() + ".trig_thresh.root");
 
     // open input file for read
+    LogStrm::get() << __FILE__ << ": Opening input ROOT file: " << cfg.histFilePath.getVal() << endl;
     TFile inputROOT(cfg.histFilePath.getVal().c_str(),"READ");
 
     // read in input histograms
@@ -253,15 +254,17 @@ int main(const int argc, const char **argv) {
     TrigHists specHists("specHist", 0, &inputROOT);
 
     /// open output TXT file
+    LogStrm::get() << __FILE__ << ": Opening output TXT file: " << outTxtPath << endl;
     ofstream outfileTXT(outTxtPath.c_str());
 
     /// open output ROOT file
+    LogStrm::get() << __FILE__ << ": Opening output ROOT file: " << outRootPath << endl;
     TFile outRootFile(outRootPath.c_str(),"RECREATE");
 
+    // generate output ntuple
     TNtuple* ntp = 
       new TNtuple("trig_ntp","trig_ntp",
                   "twr:lyr:col:face:threshMeV:errThreshMeV:chi2:fitstat:nent:width");
-
 
     /// print column headers
     LogStrm::get() << ";twr lyr col face threshMeV errThreshMeV width chi2 nEntries fitstat" << endl;

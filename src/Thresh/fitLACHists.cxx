@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitLACHists.cxx,v 1.2 2008/04/22 19:02:47 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitLACHists.cxx,v 1.3 2008/05/09 21:51:37 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -101,9 +101,10 @@ int main(const int argc, const char **argv) {
     ofstream tmpStrm(logfile.c_str());
     LogStrm::addStream(tmpStrm);
 
-    string outputTxt(cfg.outputBasename.getVal() + ".lac_fit.txt");
+    string outputTXTPath(cfg.outputBasename.getVal() + ".lac_fit.txt");
   
-    ofstream outfile(outputTxt.c_str());
+    LogStrm::get() << __FILE__ << ": opening output TXT file: " << outputTXTPath << endl;
+    ofstream outfile(outputTXTPath.c_str());
     /// print column headers
     outfile << ";twr lyr col face lac errlac pedDrift lacMeV errlacMeV" << endl;
     LogStrm::get() << ";twr lyr col face lac errlac pedDrift lacMeV fitstat chi2 mev_slope mev_offset" << endl;
@@ -114,6 +115,7 @@ int main(const int argc, const char **argv) {
     adc2nrg.readTXT(cfg.adc2nrgFilename.getVal());
 
     // open output files
+    LogStrm::get() << __FILE__ << ": opening output histogram file: " << cfg.histFilePath.getVal() << endl;
     TFile fhist(cfg.histFilePath.getVal().c_str(),"UPDATE");
     TNtuple* ntp = 
       new TNtuple("lacadcntp","lacadcntp",
@@ -263,9 +265,10 @@ int main(const int argc, const char **argv) {
                        << lacMeV << " " << fitstat << " " << chi2 << " " 
                        << mev_slope << " " << mev_offset << " " 
                        << endl;
-        outfile << twr << " " << lyr << " " << col << " " << face << " " << lacMeV << " " << errlacMeV << endl;
 
         ntp->Fill(twr,lyr,col,face,lac,errlac,pedDrift,lacMeV,errlacMeV,bkg_constant,bkg_steepness,chi2,nent,fitstat);
+
+        outfile << twr << " " << lyr << " " << col << " " << face << " " << lacMeV << " " << errlacMeV << endl;
 
         canv->Update();
       }

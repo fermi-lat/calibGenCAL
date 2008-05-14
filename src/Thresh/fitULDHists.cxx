@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitULDHists.cxx,v 1.1 2008/04/21 20:43:14 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitULDHists.cxx,v 1.2 2008/04/22 19:02:47 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -111,13 +111,15 @@ int main(const int argc, const char **argv) {
     ofstream tmpStrm(logfile.c_str());
     LogStrm::addStream(tmpStrm);
 
-    string outputTxt(cfg.outputBasename.getVal() + ".uld_fit.txt");
+    string outputTXTPath(cfg.outputBasename.getVal() + ".uld_fit.txt");
   
-    ofstream outfile(outputTxt.c_str());
+    LogStrm::get() << __FILE__ << ": Opening output TXT file: " << outputTXTPath << endl;
+    ofstream outfile(outputTXTPath.c_str());
     /// output column headers
     outfile << ";twr lyr col face rng uld erruld" << endl;
 
     // open output files
+    LogStrm::get() << __FILE__ << ": Opening ROOT file for update: " << cfg.histFilePath.getVal() << endl;
     TFile fhist(cfg.histFilePath.getVal().c_str(),"UPDATE");
     TNtuple* ntp = 
       new TNtuple("uld_ntp","uld_ntp",
