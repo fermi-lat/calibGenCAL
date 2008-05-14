@@ -1,5 +1,18 @@
 ------------------------------------------------------------
 User: fewtrell  Wed May 14 11:39:46 PDT 2008
+calibGenCAL/src/CIDAC2ADC
+
+Modified Files:
+	IntNonlinAlg.cxx IntNonlinAlg.h genCIDAC2ADC.cxx 
+Added Files:
+	smoothCIDAC2ADC.cxx 
+Log Message:
+- split genCIDAC2ADC into genCIDAC2ADC & smoothCIDAC2ADC
+  - first app finds raw adc mean for each cidac val,
+  - 2nd app smooths the spline f() for each channel
+    *
+------------------------------------------------------------
+User: fewtrell  Wed May 14 11:39:46 PDT 2008
 calibGenCAL/cmt
 
 Modified Files:
