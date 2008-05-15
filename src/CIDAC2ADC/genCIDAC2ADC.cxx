@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/genCIDAC2ADC.cxx,v 1.5 2008/05/06 15:49:30 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/genCIDAC2ADC.cxx,v 1.6 2008/05/14 18:39:46 fewtrell Exp $
 
 /** @file Gen CIDAC2ADC calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
@@ -126,7 +126,7 @@ int main(int argc,
     IntNonlinAlg inlAlg(sx16, cfg.hugeTuple.getVal());
 
     /// adc mean output filename
-    const string adcMeanPath(cfg.outputBasename.getVal() + ".adcmean.txt");
+    const string adcMeanPath(cfg.outputBasename.getVal() + ".txt");
 
     if (cfg.rootFileLE.getVal().length()) {
       LogStrm::get() << __FILE__ << ": reading LE calibGen event file: " << cfg.rootFileLE.getVal() << endl;
