@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri May 16 13:56:36 PDT 2008
+calibGenCAL/cfg
+
+Modified Files:
+	Makefile 
+Log Message:
+new make file breaks genCIDAC2ADC into 2 parts (genCIDAC2ADC & smoothCIDAC2ADC)
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri May 16 13:54:58 PDT 2008
 calibGenCAL/unit_test
 
