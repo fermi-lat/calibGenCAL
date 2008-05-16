@@ -28,6 +28,8 @@ FLIGHTGAIN_PED_NENTRIES_PERHIST = 1000
 ## SECTION B: INT-NONLIN (CIDAC2ADC) ##
 # set to '-c' if inl data is in column mode, blank if not
 #INL_COLMODE    = -c
+# change to 100 for later LCI scripts (post 01/08)
+INL_NSAMP       = 50
 
 ### B1: MUONGAIN INT-NONLIN
 # input LE singlex16 digi root event file (muongain, calibGain=on, calibGen element#201)
@@ -81,6 +83,7 @@ MUONGAIN_ULD_THRESH = 1.5
 ### AUTOGEN_FILENAMES ###
 #########################
 INL_SFX         = .cidac2adc
+ADCMEAN_SFX     = .adcmean
 PED_SFX         = .calPed
 ASYM_SFX        = .calAsym
 MPD_SFX         = .calMPD
@@ -93,10 +96,17 @@ MUONGAIN_SFX   = .MUON_GAIN
 DACSLOPES_SFX   = .dacSlopes
 THOLDCI_SFX     = .tholdCI
 
+MUONGAIN_ADCMEAN_BASE = $(addsuffix ${ADCMEAN_SFX}, $(addsuffix ${MUONGAIN_SFX}, $(basename $(notdir ${MUONGAIN_INL_DIGI_LE}))))
+MUONGAIN_ADCMEAN_TXT  = $(addsuffix .txt, ${MUONGAIN_ADCMEAN_BASE})
+
 MUONGAIN_INL_BASE = $(addsuffix ${INL_SFX}, $(addsuffix ${MUONGAIN_SFX}, $(basename $(notdir ${MUONGAIN_INL_DIGI_LE}))))
 MUONGAIN_INL_TXT  = $(addsuffix .txt, ${MUONGAIN_INL_BASE})
 MUONGAIN_INL_XML  = $(addsuffix .xml, ${MUONGAIN_INL_BASE})
 MUONGAIN_INL_VAL  = $(addsuffix .val.root, ${MUONGAIN_INL_BASE})
+
+FLIGHTGAIN_ADCMEAN_BASE = $(addsuffix ${ADCMEAN_SFX}, $(addsuffix ${FLIGHTGAIN_SFX}, $(basename $(notdir ${FLIGHTGAIN_INL_DIGI_LE}))))
+FLIGHTGAIN_ADCMEAN_TXT  = $(addsuffix .txt, ${FLIGHTGAIN_ADCMEAN_BASE})
+
 
 FLIGHTGAIN_INL_BASE = $(addsuffix ${INL_SFX}, $(addsuffix ${FLIGHTGAIN_SFX}, $(basename $(notdir ${FLIGHTGAIN_INL_DIGI_LE}))))
 FLIGHTGAIN_INL_TXT  = $(addsuffix .txt, ${FLIGHTGAIN_INL_BASE})
@@ -106,13 +116,20 @@ FLIGHTGAIN_INL_VAL  = $(addsuffix .val.root, ${FLIGHTGAIN_INL_BASE})
 CG_BASE    = $(basename $(notdir ${CG_DIGI_CGON}))
 CG_TXT = $(addsuffix .txt, $(addsuffix ${CG_SFX}, ${CG_BASE}))
 
+CG_ON_ADCMEAN_BASE = $(addsuffix ${ADCMEAN_SFX}, $(addsuffix .calibGainOn, ${CG_BASE}))
+CG_ON_ADCMEAN_TXT = $(addsuffix .txt, ${CG_ON_ADCMEAN_BASE})
+
 CG_ON_BASE = $(addsuffix ${INL_SFX}, $(addsuffix .calibGainOn, ${CG_BASE}))
 CG_ON_TXT = $(addsuffix .txt, ${CG_ON_BASE})
 CG_ON_XML = $(addsuffix .xml, ${CG_ON_BASE})
 
-CG_OFF_BASE = $(addsuffix ${INL_SFX}, $(addsuffix .calibGainOff, $(basename $(notdir ${CG_DIGI_CGOFF}))))
+CG_OFF_ADCMEAN_BASE = $(addsuffix ${ADCMEAN_SFX}, $(addsuffix .calibGainOff, ${CG_BASE}))
+CG_OFF_ADCMEAN_TXT = $(addsuffix .txt, ${CG_OFF_ADCMEAN_BASE})
+
+CG_OFF_BASE = $(addsuffix ${INL_SFX}, $(addsuffix .calibGainOff, ${CG_BASE}))
 CG_OFF_TXT = $(addsuffix .txt, ${CG_OFF_BASE})
 CG_OFF_XML = $(addsuffix .xml, ${CG_OFF_BASE})
+
 
 
 FIRST_MUONGAIN_PED_DIGI = $(shell head -n 1 ${MUONGAIN_PED_DIGI_FILES})
@@ -195,8 +212,6 @@ MUONGAIN_LAC_XML = ${MUONGAIN_DACSLOPES_BASE}.${MUONGAIN_LAC_THRESH}MeV.MUON_GAI
 MUONGAIN_ULD_XML = ${MUONGAIN_DACSLOPES_BASE}.${MUONGAIN_ULD_THRESH}pct.MUON_GAIN.uld.xml
 MUONGAIN_DACSETTINGS_XML = ${MUONGAIN_FLE_XML} ${MUONGAIN_FHE_XML} ${MUONGAIN_LAC_XML} ${MUONGAIN_ULD_XML}
 
-MUONGAIN_DACSETTINGS_XML = ${MUONGAIN_FLE_XML} ${MUONGAIN_FHE_XML} ${MUONGAIN_LAC_XML} ${MUONGAIN_ULD_XML}
-
 FLIGHTGAIN_FLE_VAL = latc_CAL_FLE.${FLIGHTGAIN_FLE_THRESH}MeV_000000000000_CFE.val.root
 FLIGHTGAIN_FHE_VAL = latc_CAL_FHE.${FLIGHTGAIN_FHE_THRESH}MeV_000000000000_CFE.val.root
 FLIGHTGAIN_LAC_VAL = latc_CAL_LAC.${FLIGHTGAIN_LAC_THRESH}MeV_000000000000_CFE.val.root
@@ -207,7 +222,7 @@ MUONGAIN_FHE_VAL = ${MUONGAIN_DACSLOPES_BASE}.${MUONGAIN_FHE_THRESH}MeV.MUON_GAI
 MUONGAIN_LAC_VAL = ${MUONGAIN_DACSLOPES_BASE}.${MUONGAIN_LAC_THRESH}MeV.MUON_GAIN.lac.val.root
 MUONGAIN_ULD_VAL = ${MUONGAIN_DACSLOPES_BASE}.${MUONGAIN_ULD_THRESH}pct.MUON_GAIN.uld.val.root
 
-MUONGAIN_CALIBSET_VAL = $(addsuffix .calibSet.val.root, $(addsuffix ${MUONGAIN_SFX}, $(basename $(notdir ${FIRST_MUOPT_DIGI}))))
+MUONGAIN_CALIBSET_VAL = $(addsuffix .calibSet..val.root, $(addsuffix ${MUONGAIN_SFX}, $(basename $(notdir ${FIRST_MUOPT_DIGI}))))
 FLIGHTGAIN_CALIBSET_VAL = $(addsuffix .calibSet..val.root, $(addsuffix ${FLIGHTGAIN_SFX}, $(basename $(notdir ${FIRST_MUOPT_DIGI}))))
 
 
@@ -271,8 +286,11 @@ muongain_inl_xml : ${MUONGAIN_INL_XML}
 .PHONY: muongain_inl_txt
 muongain_inl_txt : ${MUONGAIN_INL_TXT} 
 
-${MUONGAIN_INL_TXT} : ${MUONGAIN_INL_DIGI_LE} ${MUONGAIN_INL_DIGI_HE}
-	genCIDAC2ADC.exe ${INL_COLMODE} -l ${MUONGAIN_INL_DIGI_LE} -h  ${MUONGAIN_INL_DIGI_HE} ${MUONGAIN_INL_BASE}
+${MUONGAIN_ADCMEAN_TXT} : ${MUONGAIN_INL_DIGI_LE} ${MUONGAIN_INL_DIGI_HE}
+	genCIDAC2ADC.exe -t -n ${INL_NSAMP} ${INL_COLMODE} -l ${MUONGAIN_INL_DIGI_LE} -h  ${MUONGAIN_INL_DIGI_HE} ${MUONGAIN_ADCMEAN_BASE}
+
+${MUONGAIN_INL_TXT} : ${MUONGAIN_ADCMEAN_TXT}
+	smoothCIDAC2ADC.exe $< ${MUONGAIN_INL_BASE}
 
 .PHONY: flightgain_inl
 flightgain_inl : flightgain_inl_val
@@ -286,8 +304,11 @@ flightgain_inl_xml : ${FLIGHTGAIN_INL_XML}
 .PHONY: flightgain_inl_txt
 flightgain_inl_txt : ${FLIGHTGAIN_INL_TXT} 
 
-${FLIGHTGAIN_INL_TXT} : ${FLIGHTGAIN_INL_DIGI_LE} ${FLIGHTGAIN_INL_DIGI_HE}
-	genCIDAC2ADC.exe ${INL_COLMODE} -l ${FLIGHTGAIN_INL_DIGI_LE} -h  ${FLIGHTGAIN_INL_DIGI_HE} ${FLIGHTGAIN_INL_BASE}
+${FLIGHTGAIN_ADCMEAN_TXT} : ${FLIGHTGAIN_INL_DIGI_LE} ${FLIGHTGAIN_INL_DIGI_HE}
+	genCIDAC2ADC.exe -t -n ${INL_NSAMP} ${INL_COLMODE} -l ${FLIGHTGAIN_INL_DIGI_LE} -h  ${FLIGHTGAIN_INL_DIGI_HE} ${FLIGHTGAIN_ADCMEAN_BASE}
+
+${FLIGHTGAIN_INL_TXT} : ${FLIGHTGAIN_ADCMEAN_TXT}
+	smoothCIDAC2ADC.exe $< ${FLIGHTGAIN_INL_BASE}
 
 .PHONY: calib_gain
 calib_gain : cg_txt
@@ -299,14 +320,21 @@ ${CG_TXT}: ${CG_ON_XML} ${CG_OFF_XML}
 
 .PHONY: cg_on_txt
 cg_on_txt: ${CG_ON_TXT}
-${CG_ON_TXT}:
-	genCIDAC2ADC.exe  ${INL_COLMODE} -h ${CG_DIGI_CGON} ${CG_ON_BASE}
+
+${CG_ON_ADCMEAN_TXT}:
+	genCIDAC2ADC.exe  -t -n ${INL_NSAMP} ${INL_COLMODE} -h ${CG_DIGI_CGON} ${CG_ON_ADCMEAN_BASE}
+
+${CG_ON_TXT} : ${CG_ON_ADCMEAN_TXT}
+	smoothCIDAC2ADC.exe $< ${CG_ON_BASE}
 
 .PHONY: cg_off_txt
 cg_off_txt: ${CG_OFF_TXT}
-${CG_OFF_TXT}:
-	genCIDAC2ADC.exe  ${INL_COLMODE} -h ${CG_DIGI_CGOFF} ${CG_OFF_BASE}
 
+${CG_OFF_ADCMEAN_TXT}:
+	genCIDAC2ADC.exe  -t -n ${INL_NSAMP} ${INL_COLMODE} -h ${CG_DIGI_CGOFF} ${CG_OFF_ADCMEAN_BASE}
+
+${CG_OFF_TXT} : ${CG_OFF_ADCMEAN_TXT}
+	smoothCIDAC2ADC.exe $< ${CG_OFF_BASE}
 
 .PHONY: peds
 peds : ped
