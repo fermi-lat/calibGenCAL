@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Fri May 16 13:54:58 PDT 2008
+calibGenCAL/unit_test
+
+Modified Files:
+	unit_test_input.tgz unit_test_output.tgz 
+Log Message:
+unit test cfg uses new smoothCIDAC2ADC app (breaks genCIDAC2ADC into 2 parts) returns.
+unit test output has new right answers (same w/in 5 decimal points, just some round lost in TXT file write / read)
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu May 15 14:19:18 PDT 2008
 calibGenCAL/src/CIDAC2ADC
 
