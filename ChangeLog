@@ -1,5 +1,16 @@
 ------------------------------------------------------------
 User: fewtrell  Mon May 19 10:37:28 PDT 2008
+calibGenCAL/src/Ped
+
+Modified Files:
+	genMuonPed.cxx 
+Log Message:
+print out updates.
+fitTrigMonitorHists works, but not all fits are perfect
+
+    *
+------------------------------------------------------------
+User: fewtrell  Mon May 19 10:37:28 PDT 2008
 calibGenCAL/src/Optical
 
 Modified Files:
