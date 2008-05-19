@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/genMuonAsym.cxx,v 1.1 2008/04/21 20:42:45 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/genMuonAsym.cxx,v 1.2 2008/05/13 16:53:59 fewtrell Exp $
 
 /** @file generate Light Asymmetry calibrations from Muon event filesusing Cal Digi Hodoscope
     for track & hit information
@@ -174,6 +174,8 @@ int main(int argc,
     LogStrm::get() << __FILE__ << ": writing histogram file: "
                      << histFilename << endl;
     histFile.Write();
+
+    LogStrm::get() << __FILE__ << "Successfully completed." << endl;
   } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
     return -1;

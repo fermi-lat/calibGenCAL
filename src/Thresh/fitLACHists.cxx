@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitLACHists.cxx,v 1.3 2008/05/09 21:51:37 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitLACHists.cxx,v 1.4 2008/05/14 18:39:46 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -274,9 +274,11 @@ int main(const int argc, const char **argv) {
       }
 
   
+    LogStrm::get() << __FILE__ << "Writing output ROOT file." << endl;
     fhist.Write();
     fhist.Close();
 
+    LogStrm::get() << __FILE__ << "Successfully completed." << endl;
   } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
     return -1;

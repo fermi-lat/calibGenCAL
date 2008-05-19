@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Ped/genMuonPed.cxx,v 1.1 2008/04/21 20:42:49 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Ped/genMuonPed.cxx,v 1.2 2008/05/13 16:54:00 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -201,6 +201,8 @@ int main(int argc,
 
     mupedHistfile.Write();
     mupedHistfile.Close();
+
+    LogStrm::get() << __FILE__ << "Successfully completed." << endl;
   } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
     return -1;

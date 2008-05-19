@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/genGCRHists.cxx,v 1.1 2008/04/21 20:42:45 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/genGCRHists.cxx,v 1.2 2008/05/13 16:53:59 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -200,9 +200,9 @@ int main(const int argc,
     histFile.Close();
 
     // output txt file name
-    string outputTXTFile(cfg.outputBasename.getVal() + ".txt");
+    const string outputTXTFile(cfg.outputBasename.getVal() + ".txt");
 
-
+    LogStrm::get() << __FILE__ << "Successfully completed." << endl;
   } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
     return -1;

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/genCIDAC2ADC.cxx,v 1.5 2008/05/06 15:49:30 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/smoothCIDAC2ADC.cxx,v 1.1 2008/05/14 18:39:46 fewtrell Exp $
 
 /** @file Generate smoothed IntNonlin (cidac2adc) curves from raw
     cidac2adc points, expects adcmean output from genCIDAC2ADC as input.
@@ -269,6 +269,7 @@ int main(int argc,
     LogStrm::get() << __FILE__ << ": writing smoothed spline points: " << outputTXTPath << endl;
     cidac2adc.writeTXT(outputTXTPath);
 
+    LogStrm::get() << __FILE__ << "Successfully completed." << endl;
   } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
     return -1;

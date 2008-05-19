@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/fitGCRHists.cxx,v 1.12 2008/01/22 19:40:58 fewtrell Exp $ //
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/fitGCRHists.cxx,v 1.1 2008/04/21 20:42:45 fewtrell Exp $ //
 
 /** @file 
     @author Zachary Fewtrell
@@ -125,8 +125,11 @@ int main(const int argc,
     //const string   outputTXTFile(cfg.outputBasename.getVal()+".txt");
     //calMPD.writeTXT(outputTXTFile);
     
+    LogStrm::get() << __FILE__ << "Writing output ROOT file." << endl;
     outputROOTFile.Write();
     outputROOTFile.Close();
+
+    LogStrm::get() << __FILE__ << "Successfully completed." << endl;
   } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
     return -1;
