@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/genTrigMonitorHists.cxx,v 1.1 2008/05/09 21:51:37 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/genTrigMonitorHists.cxx,v 1.2 2008/05/13 16:54:00 fewtrell Exp $
 
 /** @file
     @author Z. Fewtrell
@@ -127,7 +127,7 @@ int main(const int argc, const char **argv) {
     LogStrm::addStream(cout);
 
     // generate logfile name
-    const string logfile(cfg.outputBasename.getVal() + ".fle_hist.log.txt");
+    const string logfile(cfg.outputBasename.getVal() + ".log.txt");
     ofstream tmpStrm(logfile.c_str());
     LogStrm::addStream(tmpStrm);
 
@@ -197,7 +197,7 @@ int main(const int argc, const char **argv) {
 
       // status print out
       if (nEvt % N_EVENTS_STATUS == 0) {
-        cerr << nEvt << endl;
+        LogStrm::get() << nEvt << endl;
       }
 
       /// retrieve DigiEvent
@@ -263,10 +263,11 @@ int main(const int argc, const char **argv) {
       }
     }
 
-
+    LogStrm::get() << __FILE__ << "Writing output ROOT file." << endl;
     histfile.Write();
     histfile.Close();
 
+    LogStrm::get() << __FILE__ << "Successfully completed." << endl;
   } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
     return -1;
