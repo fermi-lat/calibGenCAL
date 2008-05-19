@@ -1,5 +1,17 @@
 ------------------------------------------------------------
 User: fewtrell  Mon May 19 10:37:28 PDT 2008
+calibGenCAL/src/Optical
+
+Modified Files:
+	fitGCRHists.cxx fitMuonCalibTkr.cxx genGCRHists.cxx 
+	genMuonAsym.cxx genMuonCalibTkr.cxx genMuonMPD.cxx 
+Log Message:
+print out updates.
+fitTrigMonitorHists works, but not all fits are perfect
+
+    *
+------------------------------------------------------------
+User: fewtrell  Mon May 19 10:37:28 PDT 2008
 calibGenCAL/src/CIDAC2ADC
 
 Modified Files:
