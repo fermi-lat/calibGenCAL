@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitTrigMonitorHists.cxx,v 1.3 2008/05/19 14:17:34 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitTrigMonitorHists.cxx,v 1.4 2008/05/19 17:37:29 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -130,7 +130,7 @@ int main(const int argc, const char **argv) {
 
     TNtuple* ntp = 
       new TNtuple("trig_fit_ntp","trig_fit_ntp",
-                  "twr:lyr:col:face:diode:thresh:err:width:bkg_scale:bkg_constantchisq:nEntries:fitstat");
+                  "twr:lyr:col:face:diode:thresh:err:width:bkg_scale:bkg_constant:chisq:nEntries:fitstat");
 
 
     /// print column headers
@@ -156,16 +156,16 @@ int main(const int argc, const char **argv) {
       const float maxBinCenter = trigHist->GetBinCenter(maxBin);
 
       /// threshold must be on x-axis, start @ middle of hist
-      step->SetParLimits(NPARM_THOLD,0, maxEne);
-      step->SetParameter(NPARM_THOLD, maxEne/2);
+      step->SetParLimits(NPARM_THOLD, maxBinCenter*.75, min<float>(maxBinCenter*1.25,maxEne));
+      step->SetParameter(NPARM_THOLD, maxBinCenter);
 
       /// threshold width should be roughly one bin.
       step->FixParameter(NPARM_WIDTH, nBins/maxEne);
 
       /// 'scale' is positive, limited by maxheight
       step->SetParLimits(NPARM_BKG_SCALE, 
-                         .5*maxHeight*maxBinCenter*maxBinCenter, 
-                         2*maxHeight*maxBinCenter*maxBinCenter);
+                         0,
+                         1.2*maxHeight*maxBinCenter*maxBinCenter);
       step->SetParameter(NPARM_BKG_SCALE, maxHeight*maxBinCenter*maxBinCenter);
 
       /// 'bkg constant' is positive (start @ 0)
