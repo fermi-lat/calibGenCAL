@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Mon May 19 07:17:34 PDT 2008
+calibGenCAL/src/Ped
+
+Modified Files:
+	genMuonPed.cxx 
+Log Message:
+added some status print statements
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon May 19 07:17:33 PDT 2008
 calibGenCAL/src/Optical
 
