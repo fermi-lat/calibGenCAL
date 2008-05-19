@@ -1,4 +1,18 @@
 ------------------------------------------------------------
+User: fewtrell  Mon May 19 10:37:29 PDT 2008
+calibGenCAL/src/Thresh
+
+Modified Files:
+	fitLACHists.cxx fitThreshSlopes.cxx fitTrigHists.cxx 
+	fitTrigMonitorHists.cxx fitULDHists.cxx fitULDSlopes.cxx 
+	genFHEHists.cxx genFLEHists.cxx genLACHists.cxx 
+	genTrigMonitorHists.cxx genULDHists.cxx 
+Log Message:
+print out updates.
+fitTrigMonitorHists works, but not all fits are perfect
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon May 19 10:37:28 PDT 2008
 calibGenCAL/src/Ped
 
