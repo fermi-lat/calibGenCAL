@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: fewtrell  Mon May 19 14:38:17 PDT 2008
+calibGenCAL/python
+
+Modified Files:
+	xdiodeXtalk.py 
+Log Message:
+minor updates, bug in detecting saturation due to floating point inequality test, but in using numarry instead of numpy.
+added extra print outs
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon May 19 12:04:17 PDT 2008
 calibGenCAL/src/Thresh
 
