@@ -8,21 +8,19 @@ Algorithm is as follows:
 
 Note: xdiodeXtalk attempts to autodetect if input data is for partial LAT only (<16 towers).
 
-xdiodeXtalk <FLIGHT_GAIN|MUON_GAIN> cidac2adc.xml xtalk.xml output.xml
+xdiodeXtalk <FLIGHT_GAIN|MUON_GAIN> cidac2adc.xml xtalk.xml output_basename
 where:
-     -m            muon gain mode
-     cidac2adc.xml input intNonlin XML file
-     xtalk.xml     intNonlin XML file contains LE->HE crosstalk values in HE channels.
-     output.xml    output, xtalk corrected, intNonlin XML file
-
-
+     FLIGHT_GAIN|MUON_GAIN specify Cal gain cfg
+     cidac2adc.xml         input intNonlin XML file
+     xtalk.xml             intNonlin XML file contains LE->HE crosstalk values in HE channels.
+     output_basename       all output filenames will be based on this string
 """
 
 __facility__  = "Offline"
 __abstract__  = "Tool to apply cross-diode crosstalk correction to intNonlin XML files"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2008/02/03 00:51:50 $"
-__version__   = "$Revision: 1.8 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/11 21:35:58 $"
+__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -83,7 +81,17 @@ if __name__ == '__main__':
         log.error("Wrong # of paramters: %s"%__doc__)
         sys.exit(1)
 
-    (gain,inPath,xtalkPath,outPath) = args
+    (gain,inPath,xtalkPath,output_basename) = args
+
+    # add logfile
+    logPath = output_basename+".log.txt"
+    if os.path.exists(logPath):
+        log.debug('Removing old log file %s', logPath)
+        os.remove(logPath)
+    hdl = logging.FileHandler(logPath)
+    fmt = logging.Formatter('%(levelname)s %(message)s')
+    hdl.setFormatter(fmt)
+    log.addHandler(hdl)
 
     if gain == "MUON_GAIN":
         muonGain = True
@@ -128,7 +136,7 @@ if __name__ == '__main__':
                         # only dealing w/ HEX1 / HEX8 ranges
                         for rng in range(2,4):
                             # find 1st point which will saturate dac scale after normalizing
-                            saturated = xtalkDAC[rng][twr,row,online_face,col] > max_dac_muon
+                            saturated = xtalkDAC[rng][twr,row,online_face,col] > max_dac_muon*0.999
                             try:
                                 index = saturated.tolist().index(1)
                                 # length only reset if index() does not throw exception
@@ -236,22 +244,21 @@ if __name__ == '__main__':
                                             len(avgXtalkDAC)
                                             )
 
-
     ## output new xtalk file ##
-#     (basename,ext) = os.path.splitext(xtalkPath)
-#     xtalkOutPath = basename + ".xdiodeXtalkNormalized.xml"
-#     log.info("output final xtalk values:%s",xtalkOutPath)
-#     xtalkOutFile = calCalibXML.calIntNonlinCalibXML(xtalkOutPath, calCalibXML.MODE_CREATE)
-#     xtalkOutFile.write(xtalkLen, xtalkDAC, xtalkADC, tems=xtalkTwrSet)
-#     xtalkOutFile.close()
-#     calCalibXML.insertDTD(xtalkOutPath, dtdPath)
+    (basename,ext) = os.path.splitext(xtalkPath)
+    xtalkOutPath = basename + ".xdiodeXtalkNormalized.xml"
+    log.info("output final xtalk values:%s",xtalkOutPath)
+    xtalkOutFile = calCalibXML.calIntNonlinCalibXML(xtalkOutPath, calCalibXML.MODE_CREATE)
+    xtalkOutFile.write(xtalkLen, xtalkDAC, xtalkADC, tems=xtalkTwrSet)
+    xtalkOutFile.close()
+    calCalibXML.insertDTD(xtalkOutPath, dtdPath)
 
     log.info("Average xtalk")
     for rng in range(2,4):
         for idx in range(len(avgXtalkDAC)):
-            print [rng,  
-                   avgXtalkDAC[idx], 
-                   avgXtalkADC[rng][idx]]
+            log.info([rng,  
+                      avgXtalkDAC[idx], 
+                      avgXtalkADC[rng][idx]])
 
 
 
@@ -266,7 +273,7 @@ if __name__ == '__main__':
                     online_face = calConstant.offline_face_to_online[face]
                     for rng in range(2,4):
                         npts = inLen[rng][twr,row,online_face,col,0]
-                        max_adc = inADC[rng][twr,row,online_face,col,npts-1].copy()
+                        max_adc = inADC[rng][twr,row,online_face,col,npts-1]
 
                         for idx in range(inLen[rng][twr,row,online_face,col,0]):
                             # get dac value for this data point #
@@ -281,7 +288,7 @@ if __name__ == '__main__':
                             inADC[rng][twr,row,online_face,col,idx] = new_adc
 
                         # check if we've saturated the adc scale
-                        saturated = inADC[rng][twr,row,online_face,col,:] > max_adc
+                        saturated = inADC[rng][twr,row,online_face,col,:] > max_adc*0.999
 
                         try:
                             index = saturated.tolist().index(1)
@@ -307,11 +314,12 @@ if __name__ == '__main__':
                         inDAC[rng][twr,row,online_face,col,index] = dac3
 
     ## write output file ##
-    log.info("Building new inl file: %s"%outPath)
-    outFile = calCalibXML.calIntNonlinCalibXML(outPath, calCalibXML.MODE_CREATE)
+    xmlOutPath = output_basename + ".xml"
+    log.info("Building new inl file: %s"%xmlOutPath)
+    outFile = calCalibXML.calIntNonlinCalibXML(xmlOutPath, calCalibXML.MODE_CREATE)
     outFile.write(inLen,inDAC,inADC,tems=inTwrSet)
     outFile.close()
 
-    calCalibXML.insertDTD(outPath, dtdPath)
+    calCalibXML.insertDTD(xmlOutPath, dtdPath)
 
     sys.exit(0)
