@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Mon May 19 10:37:28 PDT 2008
+calibGenCAL/src/CIDAC2ADC
+
+Modified Files:
+	genCIDAC2ADC.cxx genNeighborXtalk.cxx smoothCIDAC2ADC.cxx 
+Log Message:
+print out updates.
+fitTrigMonitorHists works, but not all fits are perfect
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon May 19 07:17:34 PDT 2008
 calibGenCAL/src/Thresh
 
