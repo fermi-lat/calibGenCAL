@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/genTrigMonitorHists.cxx,v 1.2 2008/05/13 16:54:00 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/genTrigMonitorHists.cxx,v 1.3 2008/05/19 14:17:34 fewtrell Exp $
 
 /** @file
     @author Z. Fewtrell
@@ -263,11 +263,11 @@ int main(const int argc, const char **argv) {
       }
     }
 
-    LogStrm::get() << __FILE__ << "Writing output ROOT file." << endl;
+    LogStrm::get() << __FILE__ << ": Writing output ROOT file." << endl;
     histfile.Write();
     histfile.Close();
 
-    LogStrm::get() << __FILE__ << "Successfully completed." << endl;
+    LogStrm::get() << __FILE__ << ": Successfully completed." << endl;
   } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
     return -1;

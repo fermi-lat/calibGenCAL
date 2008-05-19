@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitThreshSlopes.cxx,v 1.2 2008/05/14 18:39:46 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitThreshSlopes.cxx,v 1.3 2008/05/19 14:17:34 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 
@@ -254,11 +254,11 @@ int main(const int argc, const char **argv) {
                      << thresh1 << endl;
     }
 
-    LogStrm::get() << __FILE__ << "Writing output ROOT file." << endl;
+    LogStrm::get() << __FILE__ << ": Writing output ROOT file." << endl;
     nt->Write();
     f.Close();
 
-    LogStrm::get() << __FILE__ << "Successfully completed." << endl;
+    LogStrm::get() << __FILE__ << ": Successfully completed." << endl;
   } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
     return -1;

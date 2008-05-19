@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitTrigMonitorHists.cxx,v 1.2 2008/05/14 20:12:37 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitTrigMonitorHists.cxx,v 1.3 2008/05/19 14:17:34 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -19,7 +19,7 @@
 #include "TFile.h"
 #include "TH1S.h"
 #include "TF1.h"
-
+#include "TNtuple.h"
 
 // STD INCLUDES
 #include <string>
@@ -93,45 +93,48 @@ int main(const int argc, const char **argv) {
 
     // open input file for read
     LogStrm::get() << __FILE__ << ": Opening input ROOT file " << cfg.histFilePath.getVal() << endl;
-    TFile inputROOT(cfg.histFilePath.getVal().c_str(),"READ");
-
-    /// read in histograms from file
-    TrigHists fleHists("fleHist",
-                       0, &inputROOT);
-    TrigHists fheHists("fheHist",
-                       0, &inputROOT);
-
+    TFile inROOTFile(cfg.histFilePath.getVal().c_str(),"READ");
+    /// open output ROOT file
     /// output filenames
     const string outTxtPath(cfg.outputBasename.getVal() + ".trig_thresh.txt");
     const string outRootPath(cfg.outputBasename.getVal() + ".trig_thresh.root");
+    LogStrm::get() << __FILE__ << ": Opening output ROOT file: " << outRootPath << endl;
+    TFile outROOTFile(outRootPath.c_str(),"RECREATE");
 
-    /// open output ROOT file
-    LogStrm::get() << __FILE__ << ": Openiing output ROOT file: " << outRootPath << endl;
-    TFile outRootFile(outRootPath.c_str(),"RECREATE");
-
+    /// read in histograms from file
+    TrigHists fleHists("fleHist",
+                       &outROOTFile, &inROOTFile);
+    TrigHists fheHists("fheHist",
+                       &outROOTFile, &inROOTFile);
 
     /// create fitting stepction (straight line 'background' multiplied by a
     /// sigmoidal 'threshold')
     TF1* step = new TF1("trig_fit",
-                       "([2]*x+[3])/(1+exp(([0]-x)/[1]))");
+                        "([2]/(x*x)+[3])/(1+exp(([0]-x)/[1]))");
     step->SetNpx(500);
     
     /// enumerate fit paramters.
     typedef enum {
       NPARM_THOLD,
       NPARM_WIDTH,
-      NPARM_BKG,
-      NPARM_SLOPE
+      NPARM_BKG_SCALE,
+      NPARM_BKG_CONSTANT
     } TRIGHIST_PARMS;
 
     step->SetParName(NPARM_THOLD, "threshold");
     step->SetParName(NPARM_WIDTH, "threshold width");
-    step->SetParName(NPARM_BKG,   "bkg slope");
-    step->SetParName(NPARM_SLOPE, "bkg constant");
+    step->SetParName(NPARM_BKG_SCALE,   "bkg scale");
+    step->SetParName(NPARM_BKG_CONSTANT, "bkg constant");
+
+
+
+    TNtuple* ntp = 
+      new TNtuple("trig_fit_ntp","trig_fit_ntp",
+                  "twr:lyr:col:face:diode:thresh:err:width:bkg_scale:bkg_constantchisq:nEntries:fitstat");
 
 
     /// print column headers
-    LogStrm::get() << ";twr lyr col face diode threshMeV errThreshMeV width chi2 nEntries fitstat" << endl;
+    LogStrm::get() << ";twr lyr col face diode threshMeV errThreshMeV width bkg_scale bkg_constant chi2 nEntries fitstat" << endl;
     for (DiodeIdx diodeIdx; diodeIdx.isValid(); diodeIdx++) {
       const DiodeNum diode = diodeIdx.getDiode();
 
@@ -148,27 +151,37 @@ int main(const int argc, const char **argv) {
       /// setup fitting parameters.
       const float maxEne = trigHist->GetXaxis()->GetXmax();
       const unsigned nBins = trigHist->GetNbinsX();
-      const double maxHeight = trigHist->GetMaximum();
+      const float maxHeight = trigHist->GetMaximum();
+      const unsigned maxBin = trigHist->GetMaximumBin();
+      const float maxBinCenter = trigHist->GetBinCenter(maxBin);
+
       /// threshold must be on x-axis, start @ middle of hist
       step->SetParLimits(NPARM_THOLD,0, maxEne);
       step->SetParameter(NPARM_THOLD, maxEne/2);
+
       /// threshold width should be roughly one bin.
       step->FixParameter(NPARM_WIDTH, nBins/maxEne);
-      /// 'slope' is flat or negative (start flat)
-      step->SetParLimits(NPARM_SLOPE, -1*maxHeight, 0);
-      step->SetParameter(NPARM_SLOPE, 0);
-      /// 'bkg' is positive (start @ 0)
-      step->SetParLimits(NPARM_BKG, 0, maxHeight);
-      step->SetParameter(NPARM_BKG, 0);
+
+      /// 'scale' is positive, limited by maxheight
+      step->SetParLimits(NPARM_BKG_SCALE, 
+                         .5*maxHeight*maxBinCenter*maxBinCenter, 
+                         2*maxHeight*maxBinCenter*maxBinCenter);
+      step->SetParameter(NPARM_BKG_SCALE, maxHeight*maxBinCenter*maxBinCenter);
+
+      /// 'bkg constant' is positive (start @ 0)
+      step->SetParLimits(NPARM_BKG_CONSTANT, 0, maxHeight);
+      step->SetParameter(NPARM_BKG_CONSTANT, 0);
 
       /// fit histogram
       const unsigned fitstat = trigHist->Fit(step,"QLB","");
       /// get fit results
-      const float threshMeV = step->GetParameter(0);
-      const float threshErrMeV = step->GetParError(0);
+      const float threshMeV = step->GetParameter(NPARM_THOLD);
+      const float threshErrMeV = step->GetParError(NPARM_THOLD);
       const float chisq = step->GetChisquare();
       const unsigned nEntries = (unsigned)trigHist->GetEntries();
-      const float width = step->GetParameter(1);
+      const float width = step->GetParameter(NPARM_WIDTH);
+      const float bkg_scale = step->GetParameter(NPARM_BKG_SCALE);
+      const float bkg_const = step->GetParameter(NPARM_BKG_CONSTANT);
 
       /// output results
       LogStrm::get() << diodeIdx.getTwr().val()
@@ -179,13 +192,34 @@ int main(const int argc, const char **argv) {
                      << " " << threshMeV
                      << " " << threshErrMeV
                      << " " << width
+                     << " " << bkg_scale
+                     << " " << bkg_const
                      << " " << chisq
                      << " " << nEntries
                      << " " << fitstat
                      << endl;
+
+      ntp->Fill(diodeIdx.getTwr().val(),
+                diodeIdx.getLyr().val(),
+                diodeIdx.getCol().val(),
+                diodeIdx.getFace().val(),
+                diodeIdx.getDiode().val(),
+                threshMeV,
+                threshErrMeV,
+                width,
+                bkg_scale,
+                bkg_const,
+                chisq,
+                nEntries,
+                fitstat
+                );
     }
 
-    LogStrm::get() << __FILE__ << "Successfully completed." << endl;
+    LogStrm::get() << __FILE__ << ": Writing output ROOT file." << endl;
+    outROOTFile.Write();
+    outROOTFile.Close();
+
+    LogStrm::get() << __FILE__ << ": Successfully completed." << endl;
   } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
     return -1;

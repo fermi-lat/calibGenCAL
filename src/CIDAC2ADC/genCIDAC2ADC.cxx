@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/genCIDAC2ADC.cxx,v 1.7 2008/05/15 21:19:18 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/genCIDAC2ADC.cxx,v 1.8 2008/05/19 14:17:33 fewtrell Exp $
 
 /** @file Gen CIDAC2ADC calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
@@ -142,11 +142,11 @@ int main(int argc,
                    << adcMeanPath << endl;
     adcMeans.writeTXT(adcMeanPath);
 
-    LogStrm::get() << __FILE__ << "Writing output ROOT file." << endl;
+    LogStrm::get() << __FILE__ << ": Writing output ROOT file." << endl;
     outputROOTFile.Write();
     outputROOTFile.Close();
 
-    LogStrm::get() << __FILE__ << "Successfully completed." << endl;
+    LogStrm::get() << __FILE__ << ": Successfully completed." << endl;
   } catch (exception &e) {
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
     return -1;
