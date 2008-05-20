@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Tue May 20 04:31:31 PDT 2008
+calibGenCAL/python
+
+Modified Files:
+	intNonlinVal.py 
+Log Message:
+added some comments, longer variable name
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon May 19 14:38:17 PDT 2008
 calibGenCAL/python
 
