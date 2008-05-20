@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Tue May 20 07:12:25 PDT 2008
+calibGenCAL/python
+
+Modified Files:
+	inlPlot.py 
+Log Message:
+added summary histograms
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue May 20 04:31:31 PDT 2008
 calibGenCAL/python
 
