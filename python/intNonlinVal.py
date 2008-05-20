@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL IntNonlin calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2008/02/11 21:35:58 $"
-__version__   = "$Revision: 1.21 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/12 15:18:01 $"
+__version__   = "$Revision: 1.22 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -271,13 +271,16 @@ def rootHists(errData, fileName):
 
 
 def deriv2(d, a):
+    """
+    calculate '2nd derivative' for 3 points in a row
+    """
 
-     y0 = (a[1] - a[0]) / (d[1] - d[0])
-     y1 = (a[2] - a[1]) / (d[2] - d[1])
-     x0 = (d[0] + d[1]) / 2
-     x1 = (d[1] + d[2]) / 2
-     z = (y1 - y0) / (x1 - x0)
-     return math.fabs(z)
+    y0 = (a[1] - a[0]) / (d[1] - d[0])
+    y1 = (a[2] - a[1]) / (d[2] - d[1])
+    x0 = (d[0] + d[1]) / 2
+    x1 = (d[1] + d[2]) / 2
+    z = (y1 - y0) / (x1 - x0)
+    return math.fabs(z)
 
 
 
@@ -300,9 +303,9 @@ def calcError(lengthData, dacData, adcData):
                         dac = dacData[erng]
                         adc = adcData[erng]
                         length = lengthData[erng]
-                        dLen = length[tem, row, end, fe, 0] - 2
-                        
-                        for n in range(dLen):
+                        dacLen = length[tem, row, end, fe, 0] - 2
+
+                        for n in range(dacLen):
                             
                             d = [0, 0, 0]
                             a = [0, 0, 0]
