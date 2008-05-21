@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitTrigMonitorHists.cxx,v 1.4 2008/05/19 17:37:29 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitTrigMonitorHists.cxx,v 1.5 2008/05/19 19:04:17 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -24,6 +24,7 @@
 // STD INCLUDES
 #include <string>
 #include <fstream>
+#include <cmath>
 
 using namespace std;
 using namespace CfgMgr;
@@ -110,31 +111,37 @@ int main(const int argc, const char **argv) {
     /// create fitting stepction (straight line 'background' multiplied by a
     /// sigmoidal 'threshold')
     TF1* step = new TF1("trig_fit",
-                        "([2]/(x*x)+[3])/(1+exp(([0]-x)/[1]))");
+                        "([2]*x**[3]+[4])/(1+exp(([0]-x)/[1]))");
     step->SetNpx(500);
     
     /// enumerate fit paramters.
     typedef enum {
       NPARM_THOLD,
       NPARM_WIDTH,
-      NPARM_BKG_SCALE,
-      NPARM_BKG_CONSTANT
+      NPARM_SPEC_HEIGHT,
+      NPARM_SPEC_POWER,
+      NPARM_SPEC_CONST
     } TRIGHIST_PARMS;
+
+    static const float maxPowerIdx = 0;
+    static const float minPowerIdx = -4;
+    static const float initPowerIdx = -2;
 
     step->SetParName(NPARM_THOLD, "threshold");
     step->SetParName(NPARM_WIDTH, "threshold width");
-    step->SetParName(NPARM_BKG_SCALE,   "bkg scale");
-    step->SetParName(NPARM_BKG_CONSTANT, "bkg constant");
+    step->SetParName(NPARM_SPEC_HEIGHT,   "spectrum height");
+    step->SetParName(NPARM_SPEC_POWER, "spectral index");
+    step->SetParName(NPARM_SPEC_CONST, "constant background");
 
 
 
     TNtuple* ntp = 
       new TNtuple("trig_fit_ntp","trig_fit_ntp",
-                  "twr:lyr:col:face:diode:thresh:err:width:bkg_scale:bkg_constant:chisq:nEntries:fitstat");
+                  "twr:lyr:col:face:diode:thresh:err:width:spec_height:spec_const:spec_const:chisq:nEntries:fitstat");
 
 
     /// print column headers
-    LogStrm::get() << ";twr lyr col face diode threshMeV errThreshMeV width bkg_scale bkg_constant chi2 nEntries fitstat" << endl;
+    LogStrm::get() << ";twr lyr col face diode threshMeV errThreshMeV width spec_height spec_power spec_constant chi2 nEntries fitstat" << endl;
     for (DiodeIdx diodeIdx; diodeIdx.isValid(); diodeIdx++) {
       const DiodeNum diode = diodeIdx.getDiode();
 
@@ -160,17 +167,21 @@ int main(const int argc, const char **argv) {
       step->SetParameter(NPARM_THOLD, maxBinCenter);
 
       /// threshold width should be roughly one bin.
-      step->FixParameter(NPARM_WIDTH, nBins/maxEne);
+      step->FixParameter(NPARM_WIDTH, nBins/(5*maxEne));
 
-      /// 'scale' is positive, limited by maxheight
-      step->SetParLimits(NPARM_BKG_SCALE, 
+      ///  spectrum height limited by height of histogram
+      step->SetParLimits(NPARM_SPEC_HEIGHT, 
                          0,
-                         1.2*maxHeight*maxBinCenter*maxBinCenter);
-      step->SetParameter(NPARM_BKG_SCALE, maxHeight*maxBinCenter*maxBinCenter);
+                         2.0*maxHeight*pow(maxBinCenter, -1*minPowerIdx));
+      step->SetParameter(NPARM_SPEC_HEIGHT, maxHeight/pow(maxBinCenter,initPowerIdx));
 
-      /// 'bkg constant' is positive (start @ 0)
-      step->SetParLimits(NPARM_BKG_CONSTANT, 0, maxHeight);
-      step->SetParameter(NPARM_BKG_CONSTANT, 0);
+      /// spetrum power idx usually -2
+      step->SetParLimits(NPARM_SPEC_POWER, minPowerIdx, maxPowerIdx);
+      step->SetParameter(NPARM_SPEC_POWER, initPowerIdx);
+
+      /// background, limited by histogram height
+      step->SetParLimits(NPARM_SPEC_CONST, 0, maxHeight);
+      step->SetParameter(NPARM_SPEC_CONST, 0);
 
       /// fit histogram
       const unsigned fitstat = trigHist->Fit(step,"QLB","");
@@ -180,8 +191,9 @@ int main(const int argc, const char **argv) {
       const float chisq = step->GetChisquare();
       const unsigned nEntries = (unsigned)trigHist->GetEntries();
       const float width = step->GetParameter(NPARM_WIDTH);
-      const float bkg_scale = step->GetParameter(NPARM_BKG_SCALE);
-      const float bkg_const = step->GetParameter(NPARM_BKG_CONSTANT);
+      const float spec_height = step->GetParameter(NPARM_SPEC_HEIGHT);
+      const float spec_power = step->GetParameter(NPARM_SPEC_POWER);
+      const float spec_const = step->GetParameter(NPARM_SPEC_CONST);
 
       /// output results
       LogStrm::get() << diodeIdx.getTwr().val()
@@ -192,8 +204,9 @@ int main(const int argc, const char **argv) {
                      << " " << threshMeV
                      << " " << threshErrMeV
                      << " " << width
-                     << " " << bkg_scale
-                     << " " << bkg_const
+                     << " " << spec_height
+                     << " " << spec_power
+                     << " " << spec_const
                      << " " << chisq
                      << " " << nEntries
                      << " " << fitstat
@@ -207,8 +220,9 @@ int main(const int argc, const char **argv) {
                 threshMeV,
                 threshErrMeV,
                 width,
-                bkg_scale,
-                bkg_const,
+                spec_height,
+                spec_power,
+                spec_const,
                 chisq,
                 nEntries,
                 fitstat
