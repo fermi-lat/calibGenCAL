@@ -3,8 +3,12 @@ Apply LEdiode->HEdiode crosstalk correction to cidac2adc xml file.
 
 Algorithm is as follows:
 - Read in 2 intNonlin text files, one with full cidac2adc curves and another with measured cross-diode crosstalk.
-- extrapolate xtalk across full HE range apply it to the input cidac2adc curves.
+- extrapolate xtalk across full HE range add it to the input cidac2adc curves.
+ - for muon gain, always add averaged crosstalk for all channels
+ - for flight gain add average crosstalk for DAC < 500, individual crosstalk for DAC > 500
 - output new cidac2adc xml file.
+
+
 
 Note: xdiodeXtalk attempts to autodetect if input data is for partial LAT only (<16 towers).
 
@@ -19,8 +23,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to apply cross-diode crosstalk correction to intNonlin XML files"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2008/02/11 21:35:58 $"
-__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/05/19 21:38:17 $"
+__version__   = "$Revision: 1.10 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -45,6 +49,9 @@ extrapDACTo = 4095/XTALK_FACTOR_FLIGHT_GAIN
 # we want to specify points in 50 dac unit steps when we're done
 # or the cubic splines may go awry
 extrapPitch = 50/XTALK_FACTOR_FLIGHT_GAIN
+
+# xtalk curve has linear portion with positive intercept on DAC axis
+DAC_INTERCEPT_FLIGHT_GAIN = 500*XTALK_FACTOR_FLIGHT_GAIN
 
 # CFG VARS #
 muonGain     = False
@@ -260,8 +267,6 @@ if __name__ == '__main__':
                       avgXtalkDAC[idx], 
                       avgXtalkADC[rng][idx]])
 
-
-
     ## add xtalk ##
     log.info("Applying xtalk correction")
     for twr in inTwrSet:
@@ -275,21 +280,33 @@ if __name__ == '__main__':
                         npts = inLen[rng][twr,row,online_face,col,0]
                         max_adc = inADC[rng][twr,row,online_face,col,npts-1]
 
+                        ### APPLY XTALK TO EACH POINT ###a
                         for idx in range(inLen[rng][twr,row,online_face,col,0]):
                             # get dac value for this data point #
                             dac = inDAC[rng][twr,row,online_face,col,idx]
                             adc = inADC[rng][twr,row,online_face,col,idx]
                                              
                             # add crosstalk to adc for corresponding data point #
-                            xtalk_adc = avgXtalkSpline[rng].Eval(dac)
+
+                            # add average xtalk from all channels under following conditions
+                            # muon gain OR
+                            # dac < x-intercept of linear portion of xtalk curve 
+                            if (gain == "MUON_GAIN" or
+                                dac < DAC_INTERCEPT_FLIGHT_GAIN):
+                                xtalk_adc = avgXtalkSpline[rng].Eval(dac)
+                            else:
+                                # add individual crosstalk
+                                xtalkSpline = dac2adcXtalk[(twr,row,online_face,col,rng)]
+                                xtalk_adc = xtalkSpline.Eval(dac)
+
                             new_adc = adc + xtalk_adc
 
 
                             inADC[rng][twr,row,online_face,col,idx] = new_adc
 
+                        ### ADC SATURATION CORRECTION ###
                         # check if we've saturated the adc scale
                         saturated = inADC[rng][twr,row,online_face,col,:] > max_adc*0.999
-
                         try:
                             index = saturated.tolist().index(1)
                         except ValueError:
@@ -298,7 +315,7 @@ if __name__ == '__main__':
 
                         # set new length to included this last point
                         inLen[rng][twr,row,online_face,col,0] = index+1
-                        # extrapolate this last point out to adc = max_adc
+                        # extrapolate last point out to adc = max_adc
                         adc1 = inADC[rng][twr,row,online_face,col,index-2]
                         adc2 = inADC[rng][twr,row,online_face,col,index-1]
                         dac1 = inDAC[rng][twr,row,online_face,col,index-2]
