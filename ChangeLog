@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed May 21 07:12:26 PDT 2008
+calibGenCAL/src/Thresh
+
+Modified Files:
+	fitTrigMonitorHists.cxx 
+Log Message:
+allowed power law in fit to float, still not fitting all channels correctly
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue May 20 07:12:25 PDT 2008
 calibGenCAL/python
 
