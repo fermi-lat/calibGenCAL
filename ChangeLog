@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Wed May 21 13:14:13 PDT 2008
+calibGenCAL/python
+
+Modified Files:
+	inlDiff.py xdiodeXtalk.py 
+Log Message:
+add scatter plot to inlDiff.py
+xdiodeXtalk.py now applies average xtalk curve and individual xtalk curves to different ranges.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed May 21 07:12:26 PDT 2008
 calibGenCAL/src/Thresh
 
