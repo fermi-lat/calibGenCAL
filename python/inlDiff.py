@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL CIDAC2ADC XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2008/05/22 16:50:20 $"
-__version__     = "$Revision: 1.9 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/05/22 16:50:56 $"
+__version__     = "$Revision: 1.10 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -57,7 +57,6 @@ inlTwrs2 = inlFile2.getTowers()
 
 if (inlTwrs1 != inlTwrs2):
     log.error("input files have different nTowers.  I quit! ;)")
-    continue
 
 # load up arrays
 log.info("Reading %s"%inlPath1)
@@ -120,6 +119,7 @@ for twr in inlTwrs1:
                     # error condition if channel is missing from only one input file
                     if (length1 <2 or length2 <2):
                         log.error("Missing channel in one file: " + str([twr,lyr,row,col,face,rng]))
+                        continue
 
                     test_dac1 = inlDAC1[rng][twr,row,online_face,col,0:length1]
                     test_dac2 = inlDAC2[rng][twr,row,online_face,col,0:length2]
