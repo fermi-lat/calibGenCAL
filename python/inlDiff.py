@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL CIDAC2ADC XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2008/02/03 00:51:49 $"
-__version__     = "$Revision: 1.7 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/05/21 20:14:12 $"
+__version__     = "$Revision: 1.8 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -73,7 +73,7 @@ log.info("Building splines for %s"%inlPath1)
 inlSplines1 = cgc_util.build_inl_splines(inl1, inlTwrs1)
 (adc2dac1Splines, dac2adc1Splines) = inlSplines1
 
-log.info("Building splines for %s"%inlPath1)
+log.info("Building splines for %s"%inlPath2)
 inlSplines2 = cgc_util.build_inl_splines(inl2, inlTwrs2)
 (adc2dac2Splines, dac2adc2Splines) = inlSplines2
 
@@ -116,6 +116,10 @@ for twr in inlTwrs1:
                     # skip empty channels
                     if (length1 < 2 and length2 < 2):
                         continue
+
+                    # error condition if channel is missing from only one input file
+                    if (length1 <2 or length2 <2):
+                        log.error("Missing channel in one file: " + str([twr,lyr,row,col,face,rng]))
 
                     test_dac1 = inlDAC1[rng][twr,row,online_face,col,0:length1]
                     test_dac2 = inlDAC2[rng][twr,row,online_face,col,0:length2]
