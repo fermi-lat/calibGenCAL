@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL CIDAC2ADC XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2008/05/21 20:14:12 $"
-__version__     = "$Revision: 1.8 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/05/22 16:50:20 $"
+__version__     = "$Revision: 1.9 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -57,7 +57,7 @@ inlTwrs2 = inlFile2.getTowers()
 
 if (inlTwrs1 != inlTwrs2):
     log.error("input files have different nTowers.  I quit! ;)")
-
+    continue
 
 # load up arrays
 log.info("Reading %s"%inlPath1)
