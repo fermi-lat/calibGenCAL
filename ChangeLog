@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu May 22 09:50:20 PDT 2008
+calibGenCAL/python
+
+Modified Files:
+	inlDiff.py 
+Log Message:
+fixed print out statement, added sanity check
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu May 22 09:49:28 PDT 2008
 calibGenCAL/doc
 
