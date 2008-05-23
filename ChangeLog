@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: sanchez  Thu May 22 23:38:59 PDT 2008
+calibGenCAL/src/Thresh
+
+Modified Files:
+	fitLACHists.cxx 
+Log Message:
+change in the LAC fit method
+    *
+------------------------------------------------------------
 User: fewtrell  Thu May 22 10:13:21 PDT 2008
 calibGenCAL/python
 
