@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL ADC2NRG and muSlope calibration XML files from asymmetry, cidac2adc & mevPerDAC xml files"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2008/02/11 21:35:58 $"
-__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/06/01 16:28:15 $"
+__version__   = "$Revision: 1.8 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -53,14 +53,10 @@ dtdPath = os.path.join(calibUtilRoot, 'xml', dtdName)
 
 if __name__ == '__main__':
 
-    # constants
-    nTXTFields = 8
-
     # setup logger
     logging.basicConfig()
     log = logging.getLogger('genADC2NRG')
     log.setLevel(logging.INFO)
-
 
     # get environment settings
     try:
@@ -77,11 +73,7 @@ if __name__ == '__main__':
         log.exception("getopt exception: "+__doc__)
         sys.exit(-1)
 
-    if (len(args) != 5):
-        log.error("Need 5 filenames: " + __doc__)
-        sys.exit(1)
-
-    (gain,inlPath, asymPath, mpdPath, adc2nrgPath, muSlopePath) = args
+    (gain, inlPath, asymPath, mpdPath, adc2nrgPath, muSlopePath) = args
 
     if not gain in ("MUON_GAIN","FLIGHT_GAIN"):
         log.error("Invalid gain string: '" + gain + "', should be 'MUON_GAIN' or 'FLIGHT_GAIN'")
@@ -164,7 +156,7 @@ if __name__ == '__main__':
                         # generally, muon peak is selected, b/c that's where we actually
                         # calibrate, however, in flight gain, HEX ranges it's way too
                         # low on the scale (0.5 CIDAC) to get an accurate ratio.
-                        if gain == 'FLIGHT_GAIN' && diode == 1:
+                        if gain == 'FLIGHT_GAIN' and diode == 1:
                             test_energy = 1500 # roughly 50 CIDAC units @ 25 mevPerDAC
                         else:
                             test_energy = MUON_PEAK_ENERGY
