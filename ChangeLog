@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Sun Jun  1 09:28:15 PDT 2008
+calibGenCAL/python
+
+Modified Files:
+	genADC2NRG.py 
+Log Message:
+now evalutating adc2nrg @ higher energy point for HEX channels in flight gain
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri May 30 12:15:44 PDT 2008
 calibGenCAL/doc
 
