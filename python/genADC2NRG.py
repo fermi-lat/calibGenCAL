@@ -2,9 +2,10 @@
 Tool to generate CAL adc2nrg and muSlope XML file from asymmetry, cidac2adc & mevPerDAC xml files
 
 Usage:
-genADC2NRG cidac2adc.xml asym.xml mpd.xml adc2nrg.xml muSlope.xml
+genADC2NRG MUON_GAIN|FLIGHT_GAIN cidac2adc.xml asym.xml mpd.xml adc2nrg.xml muSlope.xml
 
 where:
+    MUON_GAIN|FLIGHT_GAIN - adc2nrg ratio is calculated @ different energy levels depending on gain setting.
     cidac2adc.xml - input intNonlin calibration file
     asym.xml      - input asymmetry calibration file
     mpd.xml       - input MevPerDAC calibration file
@@ -15,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL ADC2NRG and muSlope calibration XML files from asymmetry, cidac2adc & mevPerDAC xml files"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2008/02/03 00:51:49 $"
-__version__   = "$Revision: 1.6 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/11 21:35:58 $"
+__version__   = "$Revision: 1.7 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -53,7 +54,7 @@ dtdPath = os.path.join(calibUtilRoot, 'xml', dtdName)
 if __name__ == '__main__':
 
     # constants
-    nTXTFields = 7
+    nTXTFields = 8
 
     # setup logger
     logging.basicConfig()
@@ -80,7 +81,11 @@ if __name__ == '__main__':
         log.error("Need 5 filenames: " + __doc__)
         sys.exit(1)
 
-    (inlPath, asymPath, mpdPath, adc2nrgPath, muSlopePath) = args
+    (gain,inlPath, asymPath, mpdPath, adc2nrgPath, muSlopePath) = args
+
+    if not gain in ("MUON_GAIN","FLIGHT_GAIN"):
+        log.error("Invalid gain string: '" + gain + "', should be 'MUON_GAIN' or 'FLIGHT_GAIN'")
+        sys.exit(1)
 
     ### read input files ###
 
@@ -155,12 +160,21 @@ if __name__ == '__main__':
 
                         mpd = mpdData[twr,row,col,diode]
 
-                        muon_peak_dac = MUON_PEAK_ENERGY / mpd
+                        # select energy point for evaluation of adc2nrg ratio
+                        # generally, muon peak is selected, b/c that's where we actually
+                        # calibrate, however, in flight gain, HEX ranges it's way too
+                        # low on the scale (0.5 CIDAC) to get an accurate ratio.
+                        if gain == 'FLIGHT_GAIN' && diode == 1:
+                            test_energy = 1500 # roughly 50 CIDAC units @ 25 mevPerDAC
+                        else:
+                            test_energy = MUON_PEAK_ENERGY
+
+                        test_dac = test_energy / mpd
 
                         if face == calConstant.OFFLINE_FACE_POS:
-                            muon_peak_dac *= asym_ctr
+                            test_dac *= asym_ctr
                         else:
-                            muon_peak_dac /= asym_ctr
+                            test_dac /= asym_ctr
 
                         # now loop through both adc ranges in single diode
                         for thx in range(2):
@@ -168,9 +182,9 @@ if __name__ == '__main__':
 
                             d2a = dac2adc[(twr,row,online_face,col,rng)]
                         
-                            adc = d2a.Eval(muon_peak_dac)
+                            adc = d2a.Eval(test_dac)
 
-                            adc2nrg = MUON_PEAK_ENERGY / adc
+                            adc2nrg = test_energy / adc
 
                             # fill in muSlope array
                             muSlopeData[twr, row, online_face, col, rng, slopeIdx] = adc2nrg
