@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Sun Jun  1 12:55:45 PDT 2008
+calibGenCAL/python
+
+Modified Files:
+	genADC2NRG.py 
+Log Message:
+still modding genADC2NRG to calc HEX FLIGH_GAIN values @ 50 CIDAC units instead of 0.5
+
+    *
+------------------------------------------------------------
 User: fewtrell  Sun Jun  1 09:28:15 PDT 2008
 calibGenCAL/python
 
