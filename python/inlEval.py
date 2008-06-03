@@ -19,8 +19,8 @@ output:
 __facility__  = "Offline"
 __abstract__  = "Evaluate IntNonlin (CIDAC2ADC spline @ single point)"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2008/06/01 19:55:45 $"
-__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/06/03 01:41:14 $"
+__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -55,10 +55,6 @@ if __name__ == '__main__':
     (lenData, dacData, adcData) = inlData
     towers = xmlFile.getTowers()
     xmlFile.close()
-    log.info("Building inl splines")
-    import cgc_util
-    inlSplines = cgc_util.build_inl_splines(inlData, towers)
-    (adc2dac, dac2adc) = inlSplines
 
     # convert indeces
     [twr, lyr, col, face, rng] = [int(x) for x in  twr, lyr, col, face, rng]
@@ -68,11 +64,33 @@ if __name__ == '__main__':
     import calConstant
     online_face = calConstant.offline_face_to_online[face]
 
+    # build spline for this channel
+    length = int(lenData[rng][twr,row,online_face,col])
+    # skip empty channels: HACK WARNING!
+    # unfortunately i fear that calCalib .dtd requires that all channels have
+    # some entry, so sometimes I have put in empty channels w/ single point
+    # 0,0  This seems to break the TSpline objects in this script
+    # so I skip any channel w/ either 0 _or_ 1 entry in it.
+    if length <= 1:
+        log.error("Empty intNonlin channel")
+        sys.exit(-1)
+    
+    import array
+    dacArray = array.array('d', dacData[rng][twr,row,online_face,col,0:length])
+    adcArray = array.array('d', adcData[rng][twr,row,online_face,col,0:length])
+
+    import ROOT
     if dir == "d2a":
-        spline = dac2adc[(twr,row,online_face,col,rng)]
+        spline = ROOT.TSpline3("inlSpline",
+                               dacArray,
+                               adcArray,
+                               length)
     else:
-        spline = adc2dac[(twr,row,online_face,col,rng)]
-                        
+        spline = ROOT.TSpline3("inlSpline",
+                               adcArray,
+                               dacArray,
+                               length)
+        
     outVal = spline.Eval(inVal)
 
     print outVal
