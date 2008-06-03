@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Jun  3 11:48:41 PDT 2008
+calibGenCAL/python
+
+Modified Files:
+	inlEval.py 
+Log Message:
+OPTIMIZATION: now we only create one ROOT spline object for specified channel as opposed to all of them
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Jun  2 18:41:14 PDT 2008
 calibGenCAL/python/bin
 
