@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Jun  2 18:41:14 PDT 2008
+calibGenCAL/python
+
+Modified Files:
+	genADC2NRG.py mevPerDacVal.py 
+Added Files:
+	inlEval.py 
+Log Message:
+NEW PROGRAM: inlEval.py - evaluate intNonlin spline at specified point.
+MINOR MODS: comments, historam limits
+
+    *
+------------------------------------------------------------
 User: fewtrell  Sun Jun  1 13:31:20 PDT 2008
 calibGenCAL/unit_test
 
