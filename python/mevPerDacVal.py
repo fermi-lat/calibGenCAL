@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL MevPerDac calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2008/02/11 21:35:58 $"
-__version__   = "$Revision: 1.10 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/12 15:18:01 $"
+__version__   = "$Revision: 1.11 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -60,7 +60,7 @@ def rootHists(errData, fileName):
     cs.SetLogy()
 
     hName = "h_Summary_Big"      
-    hs = ROOT.TH1F(hName, 'MevPerDac_Big %s' % fileName, 100, 0.0, bigErrLim)
+    hs = ROOT.TH1F(hName, 'MevPerDac_Big %s' % fileName, 100, 0, 0)
 
     for tem in towers:
         for row in range(calConstant.NUM_ROW):
@@ -89,7 +89,7 @@ def rootHists(errData, fileName):
     cs.SetLogy()
 
     hName = "h_Summary_Small"      
-    hs = ROOT.TH1F(hName, 'MevPerDac_Small: %s' % fileName, 100, 0.0, smallErrLim)
+    hs = ROOT.TH1F(hName, 'MevPerDac_Small: %s' % fileName, 100, 0, 0)
 
     for tem in towers:
         for row in range(calConstant.NUM_ROW):
