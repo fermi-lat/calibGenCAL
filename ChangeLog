@@ -1,5 +1,15 @@
 ------------------------------------------------------------
 User: fewtrell  Wed Jun  4 11:21:26 PDT 2008
+calibGenCAL/src/Optical
+
+Modified Files:
+	MuonCalibTkrAlg.h 
+Log Message:
+inlDiff now calculates some relative differenes instead of absolute differences
+
+    *
+------------------------------------------------------------
+User: fewtrell  Wed Jun  4 11:21:26 PDT 2008
 calibGenCAL/python/lib
 
 Modified Files:
