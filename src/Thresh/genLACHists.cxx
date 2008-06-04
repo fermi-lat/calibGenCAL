@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/genLACHists.cxx,v 1.6 2008/05/19 14:17:34 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/genLACHists.cxx,v 1.7 2008/05/19 17:37:29 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -115,6 +115,8 @@ public:
 };
 
 
+static const unsigned MAX_DELTA_EVENT_TIME_MUS = 500;
+
 int main(const int argc, const char **argv) {
 
   // libCalibGenCAL will throw runtime_error
@@ -221,6 +223,8 @@ int main(const int argc, const char **argv) {
       //-- retrieve trigger data
       const Gem &gem =digiEvent->getGem();
       const unsigned gemConditionsWord = gem.getConditionSummary();
+      const float gemDeltaEventTime = gem.getDeltaEventTime()*0.05;
+
       
       // status print out
       if (nEvt % 1000 == 0)
@@ -237,6 +241,10 @@ int main(const int argc, const char **argv) {
           adc[tmpFace] = calSignalArray.getAdcPed(faceIdx);
           rng[tmpFace] = calSignalArray.getAdcRng(faceIdx);
         }
+
+        /// skip any events w/ gemDeltaEventTime < 500 muS
+        if (gemDeltaEventTime < MAX_DELTA_EVENT_TIME_MUS)
+          continue;
 
         /// avoid periodic triggers (pedestals)
         if(!gem.getPeriodicSet()){
