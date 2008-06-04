@@ -1,6 +1,6 @@
 #ifndef MuonCalibTkrAlg_h
 #define MuonCalibTkrAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonCalibTkrAlg.h,v 1.5 2008/01/22 19:40:58 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/MuonCalibTkrAlg.h,v 1.1 2008/04/21 20:42:45 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -221,7 +221,7 @@ namespace calibGenCAL {
       }
 
     public:
-		EventData(const CalUtil::CalPed &ped,
+      EventData(const CalUtil::CalPed &ped,
                 const CalUtil::CIDAC2ADC &dac2adc) :
         hscope(ped, dac2adc)
       {

@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL CIDAC2ADC XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2008/05/22 16:50:56 $"
-__version__     = "$Revision: 1.10 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/05/22 17:13:21 $"
+__version__     = "$Revision: 1.11 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -25,6 +25,7 @@ import calConstant
 import logging
 import cgc_util
 import array
+
 
 
 # setup logger
@@ -85,17 +86,22 @@ rootFile = ROOT.TFile(rootPath,
                       "inlDiff(%s,%s)"%(inlPath1,inlPath2))
 
 # gobal summary histogram
-resid_summary = []
+resid_sum_reldiff = []
 resid_sum_prof = []
+reldiff_summary = []
 for rng in range(calConstant.NUM_RNG):
-    resid_summary.append(ROOT.TH2S("resid_summary_%s"%rng,
-                                   "resid_summary_%s"%rng,
-                                   4096,0,4096,
-                                   8192,-4096,4096))
+    resid_sum_reldiff.append(ROOT.TH2S("relative_resid_summary_%s"%rng,
+                                       "relative_resid_summary_%s"%rng,
+                                       4096,0,4096,
+                                       2000,-1,1))
 
-    resid_sum_prof.append(ROOT.TProfile("resid_sum_prof_%s"%rng,
-                                        "resid_sum_prof_%s"%rng,
+    resid_sum_prof.append(ROOT.TProfile("resid_summary_%s"%rng,
+                                        "resid_summary_%s"%rng,
                                         400,0,4096))
+    reldiff_summary.append(ROOT.TH1S("inlreldiff_%s"%rng,
+                                     "inlreldiff_%s"%rng,
+                                     2000,-1,1))
+
                 
 # calc diffs for each channel
 for twr in inlTwrs1:
@@ -139,12 +145,10 @@ for twr in inlTwrs1:
 
                     ### INIT  ROOT HISTS ###
                     channel_str = "%d_%d_%d_%d_%d"%(twr,lyr,col,face,rng)
-                    diffHist = ROOT.TH1S("inlDiff_%s"%channel_str,
-                                         "inlDiff_%s"%channel_str,
-                                         100,0,0)
+
                     ### PLOT ARRAYS ###
                     x = array.array('f')
-                    resid = array.array('f')
+                    resid_reldiff = array.array('f')
                     
                     for dac in test_dac:
                         adc1 = dac2adc1.Eval(dac)
@@ -153,20 +157,23 @@ for twr in inlTwrs1:
                         ### POPULATE PLOTS & HISTS ###
                         x.append(dac)
                         diff = adc2 - adc1
-                        resid.append(diff)
-                        diffHist.Fill(diff)
-                        resid_summary[rng].Fill(dac,diff)
-                        resid_sum_prof[rng].Fill(dac,diff)
+                        reldiff = cgc_util.safe_reldiff(adc1,adc2)
+                        reldiff_summary[rng].Fill(reldiff)
+                        resid_sum_reldiff[rng].Fill(dac, reldiff)
+                        resid_sum_prof[rng].Fill(dac, diff)
+
+                        resid_reldiff.append(reldiff)
+
 
                     ### INIT PLOTS ###
 
                     # residual plot
-                    gResid = ROOT.TGraph(length, x, resid)
-                    gResid.SetNameTitle("inlResid_%s"%channel_str,
-                                        "inlResid_%s"%channel_str)
+                    gResid = ROOT.TGraph(length, x, resid_reldiff)
+                    gResid.SetNameTitle("inlResid_reldiff_%s"%channel_str,
+                                        "inlResid_reldiff_%s"%channel_str)
                                         
-                    cResid = ROOT.TCanvas("inlResid_%s"%channel_str,
-                                          "inlResid_%s"%channel_str,-1)
+                    cResid = ROOT.TCanvas("inlResid_reldiff_%s"%channel_str,
+                                          "inlResid_reldiff_%s"%channel_str,-1)
                     
                     gResid.Draw("AL*")
                     cResid.Write()
