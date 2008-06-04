@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitLACHists.cxx,v 1.6 2008/05/19 17:37:29 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitLACHists.cxx,v 1.7 2008/05/23 06:38:59 sanchez Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -86,6 +86,9 @@ public:
 
 };
 
+/// percent of max histogram hieght required for first significant bin
+static const float FIRSTBIN_FRAC_MAX = 0.15;
+
 int main(const int argc, const char **argv) {
   // libCalibGenCAL will throw runtime_error
   try {
@@ -168,6 +171,7 @@ int main(const int argc, const char **argv) {
         pedDrift = hped->GetFunction("gaus")->GetParameter(1);
 
         //-- PHASE 1: FIND THRESHOLD IN REBINNED HISTOGRAM --//
+        //-- get 'fist pass' estimates @ fitting parms
         TF1* funrb = new TF1(lacrbfitname.str().c_str(),
                              "([2]/x+[3])/(1+exp(([0]-x)/[1]))", -50, 300);
         funrb->SetNpx(500);
@@ -218,160 +222,161 @@ int main(const int argc, const char **argv) {
         canv->cd(1+(ipad%npad));
         ipad++;
 
-        //-- PHASE 2: FIND THRESHOLD WITH NORMAL BINNING --//
+        //-- PHASE 2: FIND precise THRESHOLD WITH NORMAL BINNING --//
 
-///////////////////////////////////////////////////////////////////////////////////
-	// DAVID SANCHEZ'S PATCH 05.21.08
-
-	//Decalration of variable
+        //Decalration of variable
         float fitstat, lac,errlac,chi2,nent;
 
+        // Look for the first bin w/ significant height (15% of max) in LEX8 histogram
+        float FirstBin=0;
+        int ibin=0;
 
+        const float maxHeight = h->GetMaximum();
+        const float maxBinCtr = h->GetBinCenter(h->GetMaximumBin());
+        while (ibin < h->GetEntries()){
+          if (h->GetBinContent(ibin) > FIRSTBIN_FRAC_MAX*maxHeight) {
+            FirstBin = h->GetBinWidth(ibin)*(ibin-1.);
+            break;
+          }
+          ibin++;
+        }
 
-	// Look for the first non-empty bin in LEX8 histogram
-	float FirstBin;
-	int ibin=0;
+        //CASE 1
+        // firstbin is > pedDrift+2*pedSigma
+        if (FirstBin > pedDrift+2*pedSigma) { 
+          TF1* fun = new TF1(lacfitname.str().c_str(),
+                             "([2]/x+[3])/(1+exp(([0]-x)/[1]))", -50, 300);
 
-	while (ibin < h->GetEntries()){
-		if (h->GetBinContent(ibin)>0.) {
-			FirstBin = h->GetBinWidth(ibin)*(ibin-1.);
-			break;
-		}
-		ibin++;
-	};
+          fun->SetNpx(500);
+          fun->SetParName(0,"lac threhsold");
+          fun->SetParName(1,"threshold width");
+          fun->SetParName(2,"bkg steepness");
+          fun->SetParName(3,"bkg constant");
 
-	//CASE 1
-	// firstbin is > pedDrift+2*pedSigma
-	if (FirstBin > pedDrift+2*pedSigma) { 
-       		TF1* fun = new TF1(lacfitname.str().c_str(),
-                           "([2]/x+[3])/(1+exp(([0]-x)/[1]))", -50, 300);
+          fun->SetParameters(lac_thresh,
+                             1.0,
+                             bkg_steepness,
+                             bkg_constant);
 
-        	fun->SetNpx(500);
-        	fun->SetParName(0,"lac threhsold");
-        	fun->SetParName(1,"threshold width");
-        	fun->SetParName(2,"bkg steepness");
-        	fun->SetParName(3,"bkg constant");
+          // lac threshold
+          fun->SetParLimits(0, FirstBin-10, 300);
 
-        	fun->SetParameters(lac_thresh,
-                           1.0,
-                           bkg_steepness,
-                           bkg_constant);
+          // thresh width
+          fun->FixParameter(1, 1.0);
 
-        	// lac threshold
-       	 	fun->SetParLimits(0, -50, 300);
-
-        	// thresh width
-        	fun->FixParameter(1, 1.0);
-
-        	// background steepness
-       		fun->SetParLimits(2,   0, h->GetEntries()*300);
+          // background steepness
+          fun->SetParLimits(2,   0, maxHeight*maxBinCtr);
         
-        	// bkg constant
-        	fun->SetParLimits(3, 0, h->GetEntries());
+          // bkg constant
+          fun->SetParLimits(3, 0, maxHeight);
 
-        	fitstat = h->Fit(lacfitname.str().c_str(),"RLQ");
+          fitstat = h->Fit(lacfitname.str().c_str(),"RLQ");
 
-        	lac = fun->GetParameter(0);
-        	errlac = fun->GetParError(0);
-        	chi2 = fun->GetChisquare();
-        	nent = h->GetEntries();
-        	bkg_steepness = fun->GetParameter(2);
-        	bkg_constant = fun->GetParameter(3);
-	};
+          lac = fun->GetParameter(0);
+          errlac = fun->GetParError(0);
+          chi2 = fun->GetChisquare();
+          nent = h->GetEntries();
+          bkg_steepness = fun->GetParameter(2);
+          bkg_constant = fun->GetParameter(3);
+        }
 
 
-	// CASE 2
-	// The LAC value is between pedDrift and pedDrift+2.*pedSigma
-	// the new fun is (fsigna+gauss)*feff
+        // CASE 2
+        // The LAC value is between pedDrift and pedDrift+2.*pedSigma
+        // the new fun is (fsigna+gauss)*feff
 
-	if (FirstBin < pedDrift+2.*pedSigma && FirstBin > pedDrift ) {
-		float Rmax = pedDrift+4.*pedSigma;
-		TF1* fun = new TF1(lacfitname.str().c_str(),
-                           "(gaus+([5]/x+[6]))/(1+exp(([3]-x)/[4]))", 0, 300);
-     		fun->SetNpx(500);
-     		fun->SetParName(3,"lac threhsold");
-      	  	fun->SetParName(4,"threshold width");
-        	fun->SetParName(5,"bkg steepness");
-        	fun->SetParName(6,"bkg constant");
+        else if (FirstBin < pedDrift+2.*pedSigma && FirstBin > pedDrift ) {
+          float Rmax = pedDrift+4.*pedSigma;
+          TF1* fun = new TF1(lacfitname.str().c_str(),
+                             "(gaus+([5]/x+[6]))/(1+exp(([3]-x)/[4]))", 0, 300);
+          fun->SetNpx(500);
+          fun->SetParName(3,"lac threhsold");
+          fun->SetParName(4,"threshold width");
+          fun->SetParName(5,"bkg steepness");
+          fun->SetParName(6,"bkg constant");
 
-        	fun->SetParameters(1.0,
-                               1.0,
-                               1.0,
-                               Rmax,
-                               1.0,
-                               bkg_steepness,
-                               bkg_constant);
+          fun->SetParameters(1.0,
+                             1.0,
+                             1.0,
+                             Rmax,
+                             1.0,
+                             bkg_steepness,
+                             bkg_constant);
 
-		//Fix the parameter og the gaussian equal to the parameter of the pedestal
-        	fun->FixParameter(1, pedDrift);
-        	fun->FixParameter(2, pedSigma);
+          //Fix the parameter og the gaussian equal to the parameter of the pedestal
+          fun->FixParameter(1, pedDrift);
+          fun->FixParameter(2, pedSigma);
 
-        	// lac threshold
-        	fun->SetParLimits(3, FirstBin*0.8, FirstBin*2);
+          // lac threshold
+          fun->SetParLimits(3, FirstBin*0.8, FirstBin*2);
 
-        	// thresh width
-        	fun->FixParameter(4, 1.0);
+          // thresh width
+          fun->FixParameter(4, 1.0);
 
-        	// background steepness
-        	fun->SetParLimits(5,   0, h->GetEntries()*300);
+          // background steepness
+          fun->SetParLimits(5,   0, maxHeight*maxBinCtr);
         
-        	// bkg constant
-        	fun->SetParLimits(6, 0, h->GetEntries());
+          // bkg constant
+          fun->SetParLimits(6, 0, maxHeight);
 
-		fitstat = h->Fit(lacfitname.str().c_str(),"RLQ");
+          fitstat = h->Fit(lacfitname.str().c_str(),"RLQ");
 
-        	lac = fun->GetParameter(3);
+          lac = fun->GetParameter(3);
 
-        	errlac = fun->GetParError(3);
-        	chi2 = fun->GetChisquare();
-       		nent = h->GetEntries();
-       		bkg_steepness = fun->GetParameter(5);
-        	bkg_constant = fun->GetParameter(6);
+          errlac = fun->GetParError(3);
+          chi2 = fun->GetChisquare();
+          nent = h->GetEntries();
+          bkg_steepness = fun->GetParameter(5);
+          bkg_constant = fun->GetParameter(6);
 
-	};
+        }
 
-	// CASE 3
-	// LAC value is below pedDrift
-	// new fun is gauss*feff
-	
-	if (FirstBin < pedDrift){
-		float Rmax = pedDrift+3.*pedSigma;
-		TF1* fun = new TF1(lacfitname.str().c_str(),
-                           "gaus/(1+exp(([3]-x)/[4]))", FirstBin, Rmax);
+        // CASE 3
+        // LAC value is below pedDrift
+        // new fun is gauss*feff
+        
+        else if (FirstBin < pedDrift) {
+          float Rmax = pedDrift+3.*pedSigma;
+          TF1* fun = new TF1(lacfitname.str().c_str(),
+                             "gaus/(1+exp(([3]-x)/[4]))", FirstBin, Rmax);
 
-     		fun->SetNpx(500);
-     		fun->SetParName(3,"lac threhsold");
-      	  	fun->SetParName(4,"threshold width");
+          fun->SetNpx(500);
+          fun->SetParName(3,"lac threhsold");
+          fun->SetParName(4,"threshold width");
 
-        	fun->SetParameters(1.0,
-                               1.0,
-                               1.0,
-                               Rmax,
-                               1.0);
+          fun->SetParameters(1.0,
+                             1.0,
+                             1.0,
+                             Rmax,
+                             1.0);
 
-		//Fix the parameter og the gaussian equal to the parameter of the pedestal
-        	fun->FixParameter(1, pedDrift);
-        	fun->FixParameter(2, pedSigma);
+          //Fix the parameter og the gaussian equal to the parameter of the pedestal
+          fun->FixParameter(1, pedDrift);
+          fun->FixParameter(2, pedSigma);
 
-        	// lac threshold
-        	fun->SetParLimits(3, FirstBin, Rmax);
+          // lac threshold
+          fun->SetParLimits(3, FirstBin, Rmax);
 
-        	// thresh width
-        	fun->FixParameter(4, 1.0);
+          // thresh width
+          fun->FixParameter(4, 1.0);
 
-		fitstat = h->Fit(lacfitname.str().c_str(),"RLQ","",0,Rmax);
+          fitstat = h->Fit(lacfitname.str().c_str(),"RLQ","",0,Rmax);
 
-        	lac = fun->GetParameter(3);
-        	errlac = fun->GetParError(3);
-        	chi2 = fun->GetChisquare();
-       		nent = h->GetEntries();
-       		bkg_steepness = 0.;
-        	bkg_constant = 0.;
-	};
+          lac = fun->GetParameter(3);
+          errlac = fun->GetParError(3);
+          chi2 = fun->GetChisquare();
+          nent = h->GetEntries();
+          bkg_steepness = 0.;
+          bkg_constant = 0.;
+        } 
+
+        else {
+          throw std::runtime_error("Invalid LAC fit condition.");
+        }
 
 
-	// END DAVID SANCHEZ'S PATCH
-///////////////////////////////////////////////////////////////////////////////////
+        // END DAVID SANCHEZ'S PATCH
+        ///////////////////////////////////////////////////////////////////////////////////
 
         const float lacMeV = (lac-pedDrift)*adc2nrg.getADC2NRG(RngIdx(faceIdx,LEX8));
         const float errlacMeV = errlac*lacMeV/(lac-pedDrift);

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitThreshSlopes.cxx,v 1.3 2008/05/19 14:17:34 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitThreshSlopes.cxx,v 1.4 2008/05/19 17:37:29 fewtrell Exp $
 /** @file
     @author Zachary Fewtrell
 
@@ -163,7 +163,7 @@ int main(const int argc, const char **argv) {
     LogStrm::get() << __FILE__ << ": Opening output TXT file: " << outfilePath << endl;
     ofstream outfile(outfilePath.c_str());
     // output column headers
-    outfile << ";twr lyr col face slope offset" << endl;
+    outfile << ";twr lyr col face slope offset dac_rng" << endl;
 
     /// ROOT output filename
     const string rootFilePath(cfg.outputBasename.getVal()  + ".thold_slopes.root");
