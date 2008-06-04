@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Jun  4 11:21:26 PDT 2008
+calibGenCAL/python
+
+Modified Files:
+	inlDiff.py 
+Log Message:
+inlDiff now calculates some relative differenes instead of absolute differences
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Jun  3 11:48:41 PDT 2008
 calibGenCAL/python
 
