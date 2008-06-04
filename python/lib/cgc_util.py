@@ -7,8 +7,8 @@ collection of simple utilities shared throughout code
 __facility__  = "Offline"
 __abstract__  = "collection of utility code"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2008/02/11 21:35:59 $"
-__version__   = "$Revision: 1.2 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/04/30 16:53:41 $"
+__version__   = "$Revision: 1.3 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -44,13 +44,13 @@ Number of CIDAC values sampled in standard singlex16 run
 N_DAC_PTS = 173
 
 
-"""
-build set of spline objects from intNonlin data
-return tuple of 2 dictionaries of ROOT.TSpline3 objects (adc2dac, dac2adc)
-dictionaries are indexed by tuples (twr,row,online_face,col,rng)
-input is intNonlin data as returned by calCalibXML.calIntNonlinCalibXML.read()
-"""
 def build_inl_splines(data, twrSet):
+    """
+    build set of spline objects from intNonlin data
+    return tuple of 2 dictionaries of ROOT.TSpline3 objects (adc2dac, dac2adc)
+    dictionaries are indexed by tuples (twr,row,online_face,col,rng)
+    input is intNonlin data as returned by calCalibXML.calIntNonlinCalibXML.read()
+    """
     import ROOT
     adc2dac = dict()
     dac2adc = dict()
@@ -94,15 +94,15 @@ def build_inl_splines(data, twrSet):
 
     return (adc2dac, dac2adc)
 
-"""
-read in txt file w/ per-xtal face cal data & return numarray array
-
-return tuple of (coeffs, twrSet) where:
- - coeffs array shape is [16,8,2,12] for onlin twr,row,col,online_face
- - twrSet is python list of active LAT towers.
-
-"""
 def read_perFace_txt(filename):
+    """
+    read in txt file w/ per-xtal face cal data & return numarray array
+    
+    return tuple of (coeffs, twrSet) where:
+    - coeffs array shape is [16,8,2,12] for onlin twr,row,col,online_face
+    - twrSet is python list of active LAT towers.
+    
+    """
     # constants
     nTXTFields = 5
     
@@ -161,21 +161,20 @@ def read_perFace_txt(filename):
 
 
 
-"""
-return y3 such that (y2 - y1)/(x2 - x1) = (y3 - y2)/(x3 - x2)
-"""
-
 def linear_extrap(x1, x2, x3, y1, y2):
+    """
+    return y3 such that (y2 - y1)/(x2 - x1) = (y3 - y2)/(x3 - x2)
+    """
     return (x3-x2)*(y2-y1)/(x2-x1) + y2;
 
 
-"""
-build set of spline objects from cal asymmetry data
-return tuple of 2 dictionaries of ROOT.TSpline3 objects (pos2asym, asym2pos)
-dictionaries are indexed by tuples (twr, row, online_face, col, diode_size)
-input is cal light asymmetry data as returned by calCalibXML.calIntNonlinCalibXML.read()
-"""
 def build_asym_splines(data, twrSet):
+    """
+    build set of spline objects from cal asymmetry data
+    return tuple of 2 dictionaries of ROOT.TSpline3 objects (pos2asym, asym2pos)
+    dictionaries are indexed by tuples (twr, row, online_face, col, diode_size)
+    input is cal light asymmetry data as returned by calCalibXML.calIntNonlinCalibXML.read()
+    """
     import ROOT
 
     pos2asym = dict()
@@ -242,8 +241,10 @@ CIDAC_TEST_VALS = \
              3871, 3903,  3935,   3967,   3999,   4031,    4063,    4095
              ]
 
-# convert linear index to (twr,lyr,col,face,rng)
 def rngIdx2tuple(rngIdx):
+    """
+    convert linear index to (twr,lyr,col,face,rng)
+    """
     rngIdx = int(rngIdx)
     
     rng = rngIdx % calConstant.NUM_RNG
@@ -262,9 +263,11 @@ def rngIdx2tuple(rngIdx):
 
     return (twr, lyr, col, face, rng)
 
-# generate linear index from component indices
-# input is tuple (twr,lyr,col,face,rng)
 def tuple2rngIdx(tpl):
+    """
+    generate linear index from component indices
+    input is tuple (twr,lyr,col,face,rng)
+    """
     (twr, lyr, col, face, rng) = tpl
 
     return rng + calConstant.NUM_RNG* \
@@ -273,8 +276,10 @@ def tuple2rngIdx(tpl):
              (lyr + calConstant.NUM_LAYER*twr)))
                                       
            
-# convert linear index to (twr,lyr,col,face,diode)
 def diodeIdx2tuple(diodeIdx):
+    """
+    convert linear index to (twr,lyr,col,face,diode)
+    """
     diodeIdx = int(diodeIdx)
     
     diode = diodeIdx % calConstant.NUM_DIODE
@@ -293,9 +298,11 @@ def diodeIdx2tuple(diodeIdx):
 
     return (twr, lyr, col, face, diode)
 
-# generate linear index from component indices
-# input is tuple (twr,lyr,col,face,diode)
 def tuple2diodeIdx(tpl):
+    """
+    generate linear index from component indices
+    input is tuple (twr,lyr,col,face,diode)
+    """
     (twr, lyr, col, face, diode) = tpl
 
     return diode + calConstant.NUM_DIODE* \
@@ -304,11 +311,24 @@ def tuple2diodeIdx(tpl):
              (lyr + calConstant.NUM_LAYER*twr)))
                                       
            
-# test if object can be converted to a number
-# return true if yes, false if no
 def isNumber(v):
+    """
+    test if object can be converted to a number
+    return true if yes, false if no
+    """
     try:
         float(v)
         return True
     except ValueError:
         return False
+
+def safe_reldiff(a,b):
+    """
+    return relative difference between a and b. (b-a)/a
+    avoid divide by zero.
+    """
+    if a == 0:
+        return 1
+    if b == 0:
+        return 1
+    return (b-a)/a
