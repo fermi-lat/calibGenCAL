@@ -644,10 +644,14 @@ updated unit_test results - earlier fix to MPD fit changed 'right' answers sligh
 --------------------------
 v5r6 fewtrell 05/22/08
 --------------------------
-- NEW PROGRAM: sumHists.cxx sums histograms with same name acroos multiple files
-- NEW PROGRAM: genTrigMonitorHists.exe  saves Cal trigger threshold histograms from standard science LAT config data.
-- NEW PROGRAM: fitTrigMonitorHists.exe fits Cal trigger threhsold histograms from genTrigMonitorHists - fit function itself is still unstable, needs some work.
-- NEW PROGRAM: smoothCIDAC2ADC replaces 2nd part of genCIDAC2ADC.  now genCIDAC fills hists only & smoothCIDAC fits them.
+- NEW PROGRAM: sumHists.cxx - sums histograms with same name acroos multiple files
+- NEW PROGRAM: genTrigMonitorHists.exe - saves Cal trigger threshold histograms from standard science LAT config data.
+- NEW PROGRAM: fitTrigMonitorHists.exe - fits Cal trigger threhsold histograms from genTrigMonitorHists - fit function itself is still unstable, needs some work.
+- NEW PROGRAM: smoothCIDAC2ADC - replaces 2nd part of genCIDAC2ADC.  now genCIDAC fills hists only & smoothCIDAC fits them.
+- NEW PROGRAM: inlEval - evaluate intNonlin spline @ specified point from commandline.
 - NEW FEATURE: genCIDAC2ADC now optionally stores tuple with ADC readout for every single DAC pulse
+- NEW FEATURE: fitLACHists now handles cases where LAC thresholds overlap with pedestal distrution
+- MOD: now evaluate adc2nrg @ 15 cidac units for flight gain HEX channels (instead of 0.5 which was imprecise)
+- MOD: genLACHists now cuts on gemDeltaEventTime < 500 mic
 
 
