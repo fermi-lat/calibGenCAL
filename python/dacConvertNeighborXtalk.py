@@ -1,5 +1,5 @@
 """
-Convert neighbor xtalk curves from (src=LECIDAC_CGOFF, dest=HEX8ADC) to (src=HEDAC_SCINTILLATED_CGOFF, dest=HEDAC_SCINTILLATED_CGOFF)
+Convert neighbor xtalk curves from (src=LECIDAC_CGOFF, dest=HEX8ADC) to (src=HEDAC_CGN, dest=HEDAC_CGON)
 output is same format as neighborXtalk txt
 
 python dacConvertNeighborXtalk.py <neighborXtalk.txt> <calibGain.txt> <inlCgOff.xml> <mevPerDAC.xml> <asym.xml> <outputROOTfile>
@@ -14,10 +14,10 @@ where:
 """
 
 __facility__    = "Offline"
-__abstract__    = "Convert neighbor xtalk curves from (src=LECIDAC_CGOFF, dest=HEX8ADC) to (src=HEDAC_SCINTILLATED_CGOFF, dest=HEDAC_SCINTILLATED_CGOFF)"
+__abstract__    = "Convert neighbor xtalk curves from (src=LECIDAC_CGOFF, dest=HEX8ADC) to (src=HEDAC_CGON, dest=HEDAC_CGON)"
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2008/02/03 00:51:49 $"
-__version__     = "$Revision: 1.4 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/06/09 21:05:33 $"
+__version__     = "$Revision: 1.5 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
