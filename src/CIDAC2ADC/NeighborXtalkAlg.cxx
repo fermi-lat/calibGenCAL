@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/NeighborXtalkAlg.cxx,v 1.1 2008/04/21 20:42:38 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/NeighborXtalkAlg.cxx,v 1.2 2008/05/02 17:59:33 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -23,11 +23,109 @@
 // STD INCLUDES
 #include <sstream>
 
+namespace {
+
+  using namespace calibGenCAL;
+
+  /// spec alternate LCI loop scheme used in run #077015240
+  class  alt_singlex16 {
+  public:
+
+    alt_singlex16(const singlex16 &sx16) {
+      
+      CIDAC_GROUP_LEN[0] = 33;
+      CIDAC_GROUP_LEN[1] = 28;
+      CIDAC_GROUP_LEN[2] = 112;
+      
+      // starting index of each group
+      CIDAC_GROUP_START[0]=0;
+      for(unsigned short i=1;i<N_CIDAC_GROUPS;i++)
+        CIDAC_GROUP_START[i]=CIDAC_GROUP_START[i-1]+CIDAC_GROUP_LEN[i-1];
+
+      // number of pulses per column
+      for(unsigned short i=0;i<N_CIDAC_GROUPS;i++)
+        N_PULSES_PER_COL[i] = sx16.nPulsesPerDAC*CIDAC_GROUP_LEN[i];
+      
+      // number of pulses per group
+      for(unsigned short i=0;i<N_CIDAC_GROUPS;i++)
+        N_PULSES_PER_GROUP[i]= N_PULSES_PER_COL[i]*CalUtil::ColNum::N_VALS;
+      
+
+      //first pulse in group
+      GROUP_FIRST_PULSE[0]=0;
+      for(unsigned short i=1;i<N_CIDAC_GROUPS;i++)
+        GROUP_FIRST_PULSE[i] = GROUP_FIRST_PULSE[i-1] + N_PULSES_PER_GROUP[i-1];
+
+      //last pulse in group
+      for(unsigned short i=1;i<N_CIDAC_GROUPS;i++)
+        GROUP_LAST_PULSE[i]=GROUP_FIRST_PULSE[i]+N_PULSES_PER_GROUP[i]-1;
+    }
+
+    /// number of groups of CI DAC values with the same stepsize
+    static const unsigned short N_CIDAC_GROUPS = 3;
+    
+    /// number of CI DAC values in each group
+    unsigned short CIDAC_GROUP_LEN[N_CIDAC_GROUPS];
+
+    /// starting index of each group
+    unsigned CIDAC_GROUP_START[N_CIDAC_GROUPS];
+
+    /// number of pulses per column
+    unsigned N_PULSES_PER_COL[N_CIDAC_GROUPS];
+
+    /// number of pulses per group
+    unsigned N_PULSES_PER_GROUP[N_CIDAC_GROUPS];
+    
+    ///first pulse in a group
+    unsigned GROUP_FIRST_PULSE[N_CIDAC_GROUPS];
+    
+    ///last pulse in a group
+    unsigned GROUP_LAST_PULSE[N_CIDAC_GROUPS];
+  };
+  
+}
+
 namespace calibGenCAL {
 
   using namespace std;
   using namespace CalUtil;
   using namespace SplineUtil;
+
+  void NeighborXtalkAlg::EventData::nextEvent() {
+    iGoodEvt++;
+
+    /// standard loop scheme
+    if (!m_altLoopScheme) { 
+      // which column are we testing?
+      testCol = iGoodEvt/m_singlex16.nPulsesPerXtal();
+      // which DAC setting are we on?
+      testDAC = (iGoodEvt%m_singlex16.nPulsesPerXtal())/m_singlex16.nPulsesPerDAC;
+      // how many samples for current DAC setting?
+      iSamp   = (iGoodEvt%m_singlex16.nPulsesPerXtal())%m_singlex16.nPulsesPerDAC;
+    } 
+
+    /// alternate loop scheme
+    else {
+      static alt_singlex16 asx(m_singlex16);
+
+      //in what group of dac settigs are we?
+      unsigned short iGroup = 0;
+      for(unsigned int igr=0;igr<asx.N_CIDAC_GROUPS;igr++)
+        if (iGoodEvt>=asx.GROUP_FIRST_PULSE[igr] && iGoodEvt<=asx.GROUP_LAST_PULSE[igr])
+          iGroup=igr;
+
+      // which column are we testing?
+      testCol = (iGoodEvt-asx.GROUP_FIRST_PULSE[iGroup])/asx.N_PULSES_PER_COL[iGroup];
+
+      // which DAC setting are we on?
+      testDAC = asx.CIDAC_GROUP_START[iGroup]+
+        ((iGoodEvt-asx.GROUP_FIRST_PULSE[iGroup])%asx.N_PULSES_PER_COL[iGroup])/m_singlex16.nPulsesPerDAC;
+
+      // how many samples for current DAC setting?
+      iSamp = ((iGoodEvt-asx.GROUP_FIRST_PULSE[iGroup])%asx.N_PULSES_PER_COL[iGroup])%m_singlex16.nPulsesPerDAC;
+
+    }
+  }
 
   void NeighborXtalkAlg::AlgData::initHists() {
     adcHists = new TObjArray(DiodeIdx::N_VALS);
@@ -101,7 +199,6 @@ namespace calibGenCAL {
   void NeighborXtalkAlg::processEvent(const DigiEvent &digiEvent) {
     const TClonesArray *calDigiCol = digiEvent.getCalDigiCol();
 
-
     if (!calDigiCol) {
       ostringstream tmp;
       tmp << __FILE__ << ":" << __LINE__ << " "
@@ -109,22 +206,10 @@ namespace calibGenCAL {
       throw runtime_error(tmp.str());
     }
 
-    // -- Determine test config for this event -- //
-    //    note: only count good events            //
-
-    // which column are we testing?
-    eventData.testCol = eventData.iGoodEvt/m_singlex16.nPulsesPerXtal();
-    // which DAC setting are we on?
-    eventData.testDAC = (eventData.iGoodEvt%m_singlex16.nPulsesPerXtal())/m_singlex16.nPulsesPerDAC;
-    // how many samples for current DAC setting?
-    eventData.iSamp   = (eventData.iGoodEvt%m_singlex16.nPulsesPerXtal())%m_singlex16.nPulsesPerDAC;
-
     const unsigned nDigis = calDigiCol->GetEntries();
     // event should have 1 hit for every xtal in each tower
     // we support any nTowers
     if (nDigis > 0 && nDigis%tXtalIdx::N_VALS == 0) {
-      eventData.iGoodEvt++;
-
       //loop through each 'hit' in one event
       TIter calDigiIter(calDigiCol);
 
@@ -133,10 +218,12 @@ namespace calibGenCAL {
         const CalDigi &cdig = *pdig;    // shorthand.
         processHit(cdig);
       }                                 // foreach xtal
+
+      eventData.nextEvent();
     }
     else
       LogStrm::get() << " event " << eventData.eventNum << " contains "
-                       << nDigis << " digis - skipped" << endl;
+                     << nDigis << " digis - skipped" << endl;
   }
 
   void NeighborXtalkAlg::processHit(const CalDigi &cdig) {
@@ -171,10 +258,10 @@ namespace calibGenCAL {
 
         // fill histogram
         const DiodeIdx diodeIdx(twr,
-                          lyr,
-                          col,
-                          face,
-                          diode);
+                                lyr,
+                                col,
+                                face,
+                                diode);
 
         TH1S & h = *(dynamic_cast<TH1S *>(algData.adcHists->At(diodeIdx.val())));
 
@@ -203,10 +290,10 @@ namespace calibGenCAL {
           // assign to table
           // 'source' channel is current injected channel / LEX8
           const DiodeIdx srcIdx(twr,
-                          lyr,
-                          eventData.testCol,
-                          face,
-                          LRG_DIODE);
+                                lyr,
+                                eventData.testCol,
+                                face,
+                                LRG_DIODE);
 
           algData.xtalk->setPoint(diodeIdx,
                                   srcIdx,

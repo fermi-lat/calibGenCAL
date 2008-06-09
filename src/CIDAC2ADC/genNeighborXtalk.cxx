@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/genNeighborXtalk.cxx,v 1.3 2008/05/19 14:17:33 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/genNeighborXtalk.cxx,v 1.4 2008/05/19 17:37:28 fewtrell Exp $
 
 /** @file Gen Neighboring Crystal Cross-talk calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
@@ -42,6 +42,9 @@ public:
     outputBasename("outputBasename",
                    "output file path w/o extention (file extensions will be appended",
                    ""),
+    altLoopScheme("altLoopScheme",
+                  'a',
+                  "enable alternate LCI loop scheme used in run #077015240"),
     help("help",
          'h',
          "print usage info")
@@ -51,8 +54,9 @@ public:
     // register positional arguments
     cmdParser.registerArg(rootFileLE);
     cmdParser.registerArg(outputBasename);
-    cmdParser.registerSwitch(help);
     cmdParser.registerVar(nSamplesPerCIDAC);
+    cmdParser.registerSwitch(altLoopScheme);
+    cmdParser.registerSwitch(help);
 
     try {
       // parse commandline
@@ -77,8 +81,12 @@ public:
   /// output file path w/o extention (file extensions will be appended)
   CmdArg<string> outputBasename;
 
+  ///  enable alternate LCI loop scheme used in run #077015240
+  CmdSwitch altLoopScheme;
+
   /// print usage string
   CmdSwitch help;
+
 };
 
 int main(const int argc,
@@ -103,7 +111,7 @@ int main(const int argc,
 
     NeighborXtalk       xtalk;
     const singlex16 sx16(cfg.nSamplesPerCIDAC.getVal());
-    NeighborXtalkAlg    xtalkAlg(sx16);
+    NeighborXtalkAlg    xtalkAlg(sx16, cfg.altLoopScheme.getVal());
 
     //-- LOG SOFTWARE VERSION INFO --//
     output_env_banner(LogStrm::get());
@@ -118,12 +126,12 @@ int main(const int argc,
     xtalk.pedSubtractADC();
     
 
-    string txtfile = cfg.outputBasename.getVal() + ".txt";
+    const string txtfile = cfg.outputBasename.getVal() + ".txt";
     LogStrm::get() << __FILE__ << ": saving xtalk to txt file: "
                      << txtfile << endl;
     xtalk.writeTXT(txtfile);
 
-    string tuplefile = cfg.outputBasename.getVal() + ".tuple.root";
+    const string tuplefile = cfg.outputBasename.getVal() + ".tuple.root";
     LogStrm::get() << __FILE__ << ": saving xtalk to tuple ROOT file: "
                      << tuplefile << endl;
     xtalk.writeTuples(tuplefile);

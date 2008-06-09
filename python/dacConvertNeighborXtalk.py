@@ -1,5 +1,5 @@
 """
-Convert neighbor xtalk curves from (src=LECIDAC_CGON, dest=HEX8ADC) to (src=HEDAC_SCINT_CGOFF, dest=HEDAC_SCINT_CGOFF)
+Convert neighbor xtalk curves from (src=LECIDAC_CGOFF, dest=HEX8ADC) to (src=HEDAC_SCINTILLATED_CGOFF, dest=HEDAC_SCINTILLATED_CGOFF)
 output is same format as neighborXtalk txt
 
 python dacConvertNeighborXtalk.py <neighborXtalk.txt> <calibGain.txt> <inlCgOff.xml> <mevPerDAC.xml> <asym.xml> <outputROOTfile>
@@ -14,10 +14,10 @@ where:
 """
 
 __facility__    = "Offline"
-__abstract__    = "Convert neighbor xtalk curves from (src=LECIDAC_CGON, dest=HEX8ADC) to (src=HEDAC_SCINT_CGOFF, dest=HEDAC_SCINT_CGOFF)"
+__abstract__    = "Convert neighbor xtalk curves from (src=LECIDAC_CGOFF, dest=HEX8ADC) to (src=HEDAC_SCINTILLATED_CGOFF, dest=HEDAC_SCINTILLATED_CGOFF)"
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/08/17 16:35:28 $"
-__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/02/03 00:51:49 $"
+__version__     = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -28,7 +28,6 @@ import getopt
 import array
 import math
 
-import ROOT
 import csv
 
 import calConstant
@@ -48,13 +47,12 @@ except getopt.GetoptError:
     log.error(__doc__)
     sys.exit(1)
 
-# now check for req'd params
-if len(args) != 5:
+# get filenames
+try:
+    (xtalkTXTPath, calibGainTXTPath, inlHEPath, mpdXMLPath, asymXMLPath) = args
+except:
     log.error("bad n args: " + str(len(args)) + " " + __doc__)
     sys.exit(1)
-
-# get filenames
-(xtalkTXTPath, calibGainTXTPath, inlHEPath, mpdXMLPath, asymXMLPath) = args
 
 # open and read XML intNonlin file
 log.info("Reading cgoff inl file %s"%inlHEPath)
@@ -112,7 +110,7 @@ for row in infile:
     destIdx = int(row[0])
     srcIdx  = int(row[1])
 
-    # initial units=sourceing xtal, LEDAC, CGOFF
+    # initial units=source xtal, LEDAC, CGOFF
     srcLEDACCgOff = float(row[2])
     # initial units=destination xtal ADC
     destADC      = float(row[3])
@@ -132,6 +130,10 @@ for row in infile:
         log.warning("Expecting source channel to be LE diode")
         continue
 
+    # also assume dest xtal is he dac
+    if destDiode != calConstant.CDIODE_SM:
+        #log.warning("Expecting dest channel to be HE diode")
+        continue
 
     ### DAC SCALE CONVERSION(S) ###
    
