@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Jun  9 14:05:33 PDT 2008
+calibGenCAL/python
+
+Modified Files:
+	dacConvertNeighborXtalk.py fitNeighborXtalk.py 
+Log Message:
+NEW FEATURE: genNeighborXtalk.exe now supports alternate LCI loop order used in at least one LCI run #077015240
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Jun  6 07:24:37 PDT 2008
 calibGenCAL/doc
 
