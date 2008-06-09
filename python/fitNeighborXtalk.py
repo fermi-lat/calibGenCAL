@@ -2,7 +2,7 @@
 Fit max(0,pol1) to all neighbor xtalk curves.
 
 output is space delimited, to .txt file:
-destIdx, srcIdx, srcDAC, destDAC
+destIdx, srcIdx, x_offset, slope
 
 python fitNeighborXtalk.py <neighborXtalk.txt> <outputROOTPath>
 
@@ -15,8 +15,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Fit max(0,pol1) to all neighbor xtalk curves."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2007/08/17 16:35:28 $"
-__version__     = "$Revision: 1.3 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/02/03 00:51:49 $"
+__version__     = "$Revision: 1.4 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 

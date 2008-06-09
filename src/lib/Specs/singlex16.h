@@ -1,7 +1,7 @@
 #ifndef singlex16_h
 #define singlex16_h
 
-// $Header: $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Specs/singlex16.h,v 1.5 2008/05/02 17:59:39 fewtrell Exp $
 
 /** @file Specification of online 'singlex16' LCI script data
     @author fewtrell
@@ -20,7 +20,7 @@ namespace calibGenCAL {
 
   class singlex16 {
   public:
-    singlex16( unsigned nPulsesPerDAC=100) :
+    singlex16( const unsigned nPulsesPerDAC=100) :
       nPulsesPerDAC(nPulsesPerDAC) 
     {}
 
