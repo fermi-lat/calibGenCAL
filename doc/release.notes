@@ -651,7 +651,8 @@ v5r6 fewtrell 05/22/08
 - NEW PROGRAM: inlEval - evaluate intNonlin spline @ specified point from commandline.
 - NEW FEATURE: genCIDAC2ADC now optionally stores tuple with ADC readout for every single DAC pulse
 - NEW FEATURE: fitLACHists now handles cases where LAC thresholds overlap with pedestal distrution
+- NEW FEATURE: genNeighborXtalk.exe now supports alternate LCI loop orderused in LCI run #077015240
 - MOD: now evaluate adc2nrg @ 15 cidac units for flight gain HEX channels (instead of 0.5 which was imprecise)
-- MOD: genLACHists now cuts on gemDeltaEventTime < 500 mic
+- MOD: genLACHists now cuts on gemDeltaEventTime < 500 us
 
 
