@@ -89,3 +89,6 @@ application genTrigMonitorHists Thresh/genTrigMonitorHists.cxx
 
 application fitTrigMonitorHists Thresh/fitTrigMonitorHists.cxx
 
+application genAliveHists Thresh/genAliveHists.cxx
+
+application genSciLACHists Thresh/genSciLACHists.cxx
