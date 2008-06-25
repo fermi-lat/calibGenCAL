@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: chehtman  Wed Jun 25 08:32:06 PDT 2008
+calibGenCAL/cmt
+
+Modified Files:
+	requirements 
+Log Message:
+
+added two new applications genAliveHists and genSciLACHists
+
+
+    *
+------------------------------------------------------------
 User: chehtman  Wed Jun 25 08:15:41 PDT 2008
 calibGenCAL/src/Thresh
 
