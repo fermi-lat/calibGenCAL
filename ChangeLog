@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: chehtman  Wed Jun 25 08:11:04 PDT 2008
+calibGenCAL/src/Thresh
+
+Added Files:
+	genSciLACHists.cxx 
+Log Message:
+
+Added new application genSciLACHists.cxx to fill LAC histograms from science configuration digi file
+
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: calibGenCAL-05-06-00, operation: add
 Package: calibGenCAL
