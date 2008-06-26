@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Thu Jun 26 06:58:41 PDT 2008
+calibGenCAL/src/lib/Util
+
+Modified Files:
+	CalHodoscope.cxx 
+Log Message:
+constified some variables
+
+    *
+------------------------------------------------------------
 User: chehtman  Wed Jun 25 08:32:06 PDT 2008
 calibGenCAL/cmt
 
