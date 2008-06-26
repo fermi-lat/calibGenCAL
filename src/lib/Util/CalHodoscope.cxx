@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CalHodoscope.cxx,v 1.6 2008/01/22 19:41:00 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CalHodoscope.cxx,v 1.7 2008/04/22 21:17:57 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -60,15 +60,15 @@ namespace calibGenCAL {
       DiodeIdx  diodeIdx(xtalIdx,
                          xDiode);
 
-      float adc = calDigi.getAdcSelectedRange(rng.val(), (CalXtalId::XtalFace)face.val());   // raw adc
+      const float adc = calDigi.getAdcSelectedRange(rng.val(), (CalXtalId::XtalFace)face.val());   // raw adc
       if (adc < 0)
         continue;
 
-      float ped = m_peds.getPed(rngIdx);
+      const float ped = m_peds.getPed(rngIdx);
       adc_ped[diodeIdx] = adc - ped;
 
       // fill best range info
-      FaceIdx faceIdx(xtalIdx,
+      const FaceIdx faceIdx(xtalIdx,
                       face);
 
       bestRng[faceIdx]  = RngNum(calDigi.getRange(0, (CalXtalId::XtalFace)face.val()));
@@ -81,11 +81,11 @@ namespace calibGenCAL {
     }
 
     // DO WE HAVE A HIT? (sum up both ends LEX8 i.e LRG_DIODE)
-    float &adcPedPL = adc_ped[DiodeIdx(xtalIdx, POS_FACE, LRG_DIODE)];
-    float &adcPedNL = adc_ped[DiodeIdx(xtalIdx, NEG_FACE, LRG_DIODE)];
+    const float &adcPedPL = adc_ped[DiodeIdx(xtalIdx, POS_FACE, LRG_DIODE)];
+    const float &adcPedNL = adc_ped[DiodeIdx(xtalIdx, NEG_FACE, LRG_DIODE)];
 
-    float adcSigPL = m_peds.getPedSig(RngIdx(xtalIdx, POS_FACE, LEX8));
-    float adcSigNL = m_peds.getPedSig(RngIdx(xtalIdx, NEG_FACE, LEX8));
+    const float adcSigPL = m_peds.getPedSig(RngIdx(xtalIdx, POS_FACE, LEX8));
+    const float adcSigNL = m_peds.getPedSig(RngIdx(xtalIdx, NEG_FACE, LEX8));
 
     //-- HIT CUT --//
     // - total deposited energy should be > threshold
