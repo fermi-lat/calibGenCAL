@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Jun 27 07:31:37 PDT 2008
+calibGenCAL/src/Ped
+
+Modified Files:
+	MuonPedAlg.cxx 
+Log Message:
+change maxDeltaEventTime
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Jun 27 07:31:03 PDT 2008
 calibGenCAL/src/Thresh
 
