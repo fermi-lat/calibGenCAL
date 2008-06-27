@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Jun 27 07:31:03 PDT 2008
+calibGenCAL/src/Thresh
+
+Modified Files:
+	genLACHists.cxx 
+Log Message:
+change minDeltaEventTime
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Jun 27 07:04:29 PDT 2008
 calibGenCAL/src/Thresh
 
