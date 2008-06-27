@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Jun 27 05:12:37 PDT 2008
+calibGenCAL/src/lib/Hists
+
+Modified Files:
+	HistVec.h 
+Log Message:
+HistVec::minEntries() did not check for null pointers, now fixed.
+
+
+    *
+------------------------------------------------------------
 User: fewtrell  Thu Jun 26 06:58:41 PDT 2008
 calibGenCAL/src/lib/Util
 
