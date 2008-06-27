@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Jun 27 07:04:29 PDT 2008
+calibGenCAL/src/Thresh
+
+Modified Files:
+	fitTrigHists.cxx 
+Log Message:
+check for histogram w/ zero events
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Jun 27 06:00:04 PDT 2008
 calibGenCAL/src/lib/Hists
 
