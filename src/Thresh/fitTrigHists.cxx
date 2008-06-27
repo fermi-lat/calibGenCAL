@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitTrigHists.cxx,v 1.4 2008/05/19 14:17:34 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitTrigHists.cxx,v 1.5 2008/05/19 17:37:29 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -283,7 +283,11 @@ int main(const int argc, const char **argv) {
                        << "from file " << cfg.histFilePath.getVal() << endl;
         return -1;
       }
-      
+
+      /// skip empty histograms
+      if (specHist->GetEntries() <= 0)
+        continue;
+
       FitResults fr = fitHists(faceIdx, *trigHist, *specHist);
 
       const float twr = faceIdx.getTwr().val();
