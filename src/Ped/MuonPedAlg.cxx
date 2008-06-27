@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Ped/MuonPedAlg.cxx,v 1.4 2008/05/09 21:51:37 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Ped/MuonPedAlg.cxx,v 1.5 2008/05/13 16:54:00 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -210,7 +210,7 @@ namespace calibGenCAL {
       const float gemDeltaEventTime = gem->getDeltaEventTime()*0.05;
       if (gemConditionsWord != enums::PERIODIC ||     // skip unless we are periodic trigger only
           eventData.prev4Range      ||   // avoid bias from 4 range readout in prev event
-          gemDeltaEventTime < 2000)      // avoid bias from shaped readout noise from adjacent event
+          gemDeltaEventTime < 100)      // avoid bias from shaped readout noise from adjacent event
         return;
     }
 
