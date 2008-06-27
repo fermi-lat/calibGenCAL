@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/genLACHists.cxx,v 1.7 2008/05/19 17:37:29 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/genLACHists.cxx,v 1.8 2008/06/04 21:15:57 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -115,7 +115,7 @@ public:
 };
 
 
-static const unsigned MAX_DELTA_EVENT_TIME_MUS = 500;
+static const unsigned MAX_DELTA_EVENT_TIME_MUS = 100;
 
 int main(const int argc, const char **argv) {
 
@@ -224,7 +224,6 @@ int main(const int argc, const char **argv) {
       const Gem &gem =digiEvent->getGem();
       const unsigned gemConditionsWord = gem.getConditionSummary();
       const float gemDeltaEventTime = gem.getDeltaEventTime()*0.05;
-
       
       // status print out
       if (nEvt % 1000 == 0)
