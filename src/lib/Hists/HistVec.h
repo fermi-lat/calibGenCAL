@@ -1,7 +1,7 @@
 #ifndef HistVec_h
 #define HistVec_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistVec.h,v 1.9 2008/05/13 16:54:01 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistVec.h,v 1.10 2008/06/27 12:12:37 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -65,7 +65,8 @@ namespace calibGenCAL {
       if (readDir != 0)
         loadHists(*readDir);
 
-      setDirectory(writeDir);
+      if (writeDir != 0)
+        setDirectory(writeDir);
     }
 
     /// act like STL vector
