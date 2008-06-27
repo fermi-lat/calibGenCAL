@@ -1,7 +1,7 @@
 #ifndef HistVec_h
 #define HistVec_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistVec.h,v 1.8 2008/05/09 21:51:38 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistVec.h,v 1.9 2008/05/13 16:54:01 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -119,6 +119,9 @@ namespace calibGenCAL {
       unsigned retVal = ULONG_MAX;
 
       for (IdxType idx; idx.isValid(); idx++) {
+        /// check for empty histograms
+        if (m_vec[idx] == 0)
+          continue;
         const unsigned nEntries = (unsigned)m_vec[idx]->GetEntries();
 
         // only count histograms that have been filled
