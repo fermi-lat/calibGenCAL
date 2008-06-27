@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Fri Jun 27 06:00:04 PDT 2008
+calibGenCAL/src/lib/Hists
+
+Modified Files:
+	HistVec.h 
+Log Message:
+'nother null ptr check
+
+    *
+------------------------------------------------------------
 User: fewtrell  Fri Jun 27 05:12:37 PDT 2008
 calibGenCAL/src/lib/Hists
 
