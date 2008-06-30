@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Util/sumHists.cxx,v 1.1 2008/05/09 21:51:38 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Util/sumHists.cxx,v 1.2 2008/05/13 16:54:00 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -8,7 +8,7 @@
     Side effect: All sub-directories from all files will be present in output file.
     Note: only histograms with same name and relative path within different fo;e will be summed.
 
-    @input: list of digi root files, either on commandline, newline delimited to stdin, or both.
+    @input: list of digi root files on commandline
     @output: single digi root file with all histograms from input files, histograms w/ same name & path are summed.
 */
 
@@ -87,11 +87,12 @@ namespace {
     }
   }
 
-  const string usage_str = "sumHists.cxx outputPath.root [inputPath.root]+\n"
-                                              "where: \n"
-                                              " outputPath.root = output ROOT file\n"
-                                              " inputPath.root  = 0 or more input ROOT files (input files may also be specified by newline delimited list to STDIN)";
-
+  const string usage_str = 
+  "sumHists.cxx outputPath.root [inputPath.root]+\n"
+  "where: \n"
+  " outputPath.root = output ROOT file\n"
+  " inputPath.root  = list of 1 or more input ROOT files";
+  
   vector<string> getLinesFromFile(istream &infile) {
     vector<string> retval;
 
@@ -111,7 +112,7 @@ namespace {
 
 int main(const int argc, char const*const*const argv) {
   /// check commandline
-  if (argc < 2) {
+  if (argc < 3) {
     cout << "Not enough paramters: " << endl;
     cout << usage_str << endl;
     return -1;
@@ -121,13 +122,7 @@ int main(const int argc, char const*const*const argv) {
   const string outputPath(argv[1]);
   vector<string> inputPaths;
   /// get input files from commandline
-  if (argc > 2)
-    inputPaths.insert(inputPaths.end(), &argv[2], &argv[argc]);
-  /// get input files from stdin
-  {
-    vector<string> stdinFileList = getLinesFromFile(cin);
-    inputPaths.insert(inputPaths.end(), stdinFileList.begin(), stdinFileList.end()); 
-  }
+  inputPaths.insert(inputPaths.end(), &argv[2], &argv[argc]);
   
   cout << "Opening output file: " << outputPath << endl;
   TFile outputFile(outputPath.c_str(), "RECREATE");
