@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Jun 30 13:56:32 PDT 2008
+calibGenCAL/src/CIDAC2ADC
+
+Modified Files:
+	IntNonlinAlg.cxx 
+Log Message:
+IntNonlin - added extra plots for when noisy channels detected
+suMHists  - skipped stdin input as it was confusing things (req'd explicit eof signal if no stdin data provided)
+
+    *
+------------------------------------------------------------
 User: fewtrell  Sun Jun 29 17:01:08 PDT 2008
 calibGenCAL/src/Util
 
