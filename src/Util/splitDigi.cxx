@@ -2,8 +2,10 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "TChain.h"
 #include "TFile.h"
 #include "TTree.h"
+#include "TStreamerInfo.h"
 
 //----- GLAST includes
 
@@ -29,9 +31,11 @@ int main(const int argc, const char **argv)
       exit(0);
     }
 
-  string inpFname= argv[1];
-  string outFname= argv[2];
-  unsigned  nParts= atoi(argv[3]);
+  const string inpFname= argv[1];
+  const string outFname= argv[2];
+  const unsigned  nParts= atoi(argv[3]);
+
+
 
   long N_totl, N_part;
   unsigned  i, j, j0, j1;
@@ -46,15 +50,24 @@ int main(const int argc, const char **argv)
 
   //----- open input digi ROOT file and get "Digi" tree
 
-  TFile inp0(inpFname.c_str());
-  if (!inp0.IsOpen()) {
+  TChain inp0("Digi");
+  if (inp0.AddFile(inpFname.c_str()) == 0) {
     cout << __FILE__ ": Error opening file: " << inpFname << endl;
     return -1;
   }
+
+  //-- check DigiEvent version in code matches data --//
+  const     int   codeDigiEventVer =
+    DigiEvent::Class()->GetClassVersion();
+  const int fileDigiEventVer = ((TStreamerInfo*)inp0.GetFile()->GetStreamerInfoList()->FindObject("DigiEvent"))->GetClassVersion();
+  if (fileDigiEventVer != codeDigiEventVer) {
+    cout  << "WARNING: digFile=" << inpFname << " "
+           << fileDigiEventVer << " code is linked to DigiEvent version"
+           << codeDigiEventVer << endl;
+  }
       
-  TTree *t0= (TTree*)inp0.Get("Digi");
-  t0->SetBranchStatus("*", 1);      // enable all branches in original tree
-  N_totl= t0->GetEntries();         // total number of events in original file
+  inp0.SetBranchStatus("*", 1);      // enable all branches in original tree
+  N_totl= inp0.GetEntries();         // total number of events in original file
   N_part= (int)(N_totl/nParts);
 
   if(N_totl%nParts!= 0) { cout << "given number of parts cannot split the file evenly..\a" << endl; exit(0); }
@@ -64,7 +77,7 @@ int main(const int argc, const char **argv)
   // generate element output filenames
   vector<string> elementFilenames(nParts);
   for(i= 0; i < nParts; i++)
-      elementFilenames[i] = outFname+"."+element[i]+".root";
+    elementFilenames[i] = outFname+"."+element[i]+".root";
 
   for(i= 0; i < nParts; i++)
     {
@@ -72,11 +85,13 @@ int main(const int argc, const char **argv)
 
       TFile out0(elementFilenames[i].c_str(), "RECREATE");
 
-      TTree* t1= t0->CloneTree(0);  // clone original tree, but
+      TTree* t1= inp0.CloneTree(0);  // clone original tree, but
       // do not copy any events yet
       for(j= j0; j < j1; j++)
         {
-          t0->GetEntry(j);
+          if (j % 1000 == 0)
+            cout << "Processing event: " << j << endl;
+          inp0.GetEntry(j);
           t1->Fill();
         }
 
