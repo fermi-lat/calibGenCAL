@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/smoothCIDAC2ADC.cxx,v 1.2 2008/05/19 14:17:33 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/smoothCIDAC2ADC.cxx,v 1.3 2008/05/19 17:37:28 fewtrell Exp $
 
 /** @file Generate smoothed IntNonlin (cidac2adc) curves from raw
     cidac2adc points, expects adcmean output from genCIDAC2ADC as input.
@@ -243,7 +243,7 @@ int main(int argc,
     /// simultaneously to cout and to logfile
     LogStrm::addStream(cout);
     // generate logfile name
-    const string logfile(cfg.outputBasename.getVal() + ".log.txt");
+    const string logfile(cfg.outputBasename.getVal() + ".cidac2adc.log.txt");
     ofstream tmpStrm(logfile.c_str());
     LogStrm::addStream(tmpStrm);
 
@@ -254,7 +254,7 @@ int main(int argc,
     LogStrm::get() << endl;
 
     /// txt output filename
-    const string outputTXTPath(cfg.outputBasename.getVal() + ".txt");
+    const string outputTXTPath(cfg.outputBasename.getVal() + ".cidac2adc.txt");
 
     CIDAC2ADC    adcMeans;
     CIDAC2ADC    cidac2adc;
