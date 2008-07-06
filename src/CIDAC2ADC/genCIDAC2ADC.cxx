@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/genCIDAC2ADC.cxx,v 1.8 2008/05/19 14:17:33 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/genCIDAC2ADC.cxx,v 1.9 2008/05/19 17:37:28 fewtrell Exp $
 
 /** @file Gen CIDAC2ADC calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
@@ -104,7 +104,7 @@ int main(int argc,
     /// simultaneously to cout and to logfile
     LogStrm::addStream(cout);
     // generate logfile name
-    const string logfile(cfg.outputBasename.getVal() + ".log.txt");
+    const string logfile(cfg.outputBasename.getVal() + ".adcmean.log.txt");
     ofstream tmpStrm(logfile.c_str());
 
     LogStrm::addStream(tmpStrm);
@@ -116,7 +116,7 @@ int main(int argc,
     LogStrm::get() << endl;
 
     /// root output filename
-    const string outputROOTPath(cfg.outputBasename.getVal() + ".root");
+    const string outputROOTPath(cfg.outputBasename.getVal() + ".adcmean.root");
     LogStrm::get() << __FILE__ << ": opening output ROOT file: " << outputROOTPath << endl;
     TFile outputROOTFile(outputROOTPath.c_str(), "RECREATE", "Cal IntNolin calib", 9);
 
@@ -126,7 +126,7 @@ int main(int argc,
     IntNonlinAlg inlAlg(sx16, cfg.hugeTuple.getVal());
 
     /// adc mean output filename
-    const string adcMeanPath(cfg.outputBasename.getVal() + ".txt");
+    const string adcMeanPath(cfg.outputBasename.getVal() + ".adcmean.txt");
 
     if (cfg.rootFileLE.getVal().length()) {
       LogStrm::get() << __FILE__ << ": reading LE calibGen event file: " << cfg.rootFileLE.getVal() << endl;

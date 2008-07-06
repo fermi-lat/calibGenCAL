@@ -53,15 +53,16 @@ public:
                    "all output files will use this basename + some_ext",
                    ""),
     nEvts("numEvents",
+          'n',
           "number of events to process",
-          0),
+          0xffffffff),
     help("help",
          'h',
          "print usage info")
   {
     cmdParser.registerArg(digiFilenames);
     cmdParser.registerArg(outputBasename);
-    cmdParser.registerArg(nEvts);
+    cmdParser.registerVar(nEvts);
     cmdParser.registerSwitch(help);
 
     try {
@@ -83,7 +84,7 @@ public:
   CmdArg<string> digiFilenames;
   CmdArg<string> outputBasename;
 
-  CmdArg<unsigned> nEvts;
+  CmdOptVar<unsigned> nEvts;
 
   /// print usage string
   CmdSwitch help;
