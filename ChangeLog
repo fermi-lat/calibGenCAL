@@ -1,5 +1,17 @@
 ------------------------------------------------------------
 User: fewtrell  Sun Jul  6 15:43:15 PDT 2008
+calibGenCAL/python/bin
+
+Added Files:
+	splitDacSlopes.bat splitDacSlopes.sh 
+Log Message:
+NEW PROGRAM - splitDacSlopes - split dacSlopes XML file into 4 txt files, one per threshold type
+MODIFICATION - genCIDAC2ADC - changed warn limits for generating noise warning plots
+MODIFICATION - genCIDAC2ADC, smoothCIDAC2ADC - modified auto-generated filenames
+
+    *
+------------------------------------------------------------
+User: fewtrell  Sun Jul  6 15:43:15 PDT 2008
 calibGenCAL/python
 
 Added Files:
