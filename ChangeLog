@@ -1,4 +1,16 @@
 ------------------------------------------------------------
+User: fewtrell  Sun Jul  6 15:43:16 PDT 2008
+calibGenCAL/src/Thresh
+
+Modified Files:
+	genULDHists.cxx 
+Log Message:
+NEW PROGRAM - splitDacSlopes - split dacSlopes XML file into 4 txt files, one per threshold type
+MODIFICATION - genCIDAC2ADC - changed warn limits for generating noise warning plots
+MODIFICATION - genCIDAC2ADC, smoothCIDAC2ADC - modified auto-generated filenames
+
+    *
+------------------------------------------------------------
 User: fewtrell  Sun Jul  6 15:43:15 PDT 2008
 calibGenCAL/src/CIDAC2ADC
 
