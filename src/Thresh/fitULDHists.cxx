@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitULDHists.cxx,v 1.4 2008/05/19 14:17:34 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitULDHists.cxx,v 1.5 2008/05/19 17:37:29 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -96,6 +96,24 @@ float findLastNonZeroBin(TH1S &h) {
   return h.GetBinCenter(currentBin);
 }
 
+/// find slope, offset for spectrum model
+/// \param slope output slope value
+/// \param offset oiutput offset value
+/// \param upper limit, upper limit of fit range
+void findSpectrumModel(TH1S &h, 
+                       float &slope,
+                       float &offset,
+                       const float ulimit) {
+  /// get x-axis minimum of histogram
+  const float x_min = h.GetXaxis()->GetXmin();
+  
+  /// fit straight line
+  h.Fit("pol1","Q","",x_min, ulimit);
+
+  offset = h.GetFunction("pol1")->GetParameter(0);
+  slope = h.GetFunction("pol1")->GetParameter(1);
+}
+
 int main(const int argc, const char **argv) {
   // libCalibGenCAL will throw runtime_error
   try {
@@ -123,7 +141,7 @@ int main(const int argc, const char **argv) {
     TFile fhist(cfg.histFilePath.getVal().c_str(),"UPDATE");
     TNtuple* ntp = 
       new TNtuple("uld_ntp","uld_ntp",
-                  "twr:lyr:col:face:rng:uld:erruld:bkg0:bkg1:chi2:nent:fitstat");
+                  "twr:lyr:col:face:rng:uld:erruld:spec0:spec1:chi2:nent:fitstat");
 
     TH1S* hadc;
   
@@ -148,36 +166,48 @@ int main(const int argc, const char **argv) {
 
       const float initial_uld_thresh = findLastNonZeroBin(*hadc);
 
+      /// find slope, offset for spectral model
+      float spec_slope=0, spec_offset=0;
+      findSpectrumModel(*hadc, 
+                        spec_slope, 
+                        spec_offset,
+                        initial_uld_thresh-50);
+      
+
       // fit params
-      // [0] = uld threshold level
-      // [1] = uld sharpness (small val is sharper)
-      // [2] = bkg spectrum slope
-      // [3] = bkg spectrum constant
-      TF1* fun = new TF1(uldfitname.str().c_str(),"([2]*(x-3595)+[3])/(1+exp((x-[0])/[1]))",3095,4095);
+      typedef enum {
+        PARMID_ULD_THOLD,
+        PARMID_ULD_SHARPNESS,
+        PARMID_SPEC_SLOPE,
+        PARMID_SPEC_OFFSET
+      } PARMID;
+      TF1* fun = new TF1(uldfitname.str().c_str(),"([2]*x+[3])/(1+exp((x-[0])/[1]))",3095,4095);
       fun->SetNpx(500);
       // INIT/LIMIT FIT PARMS
-      fun->SetParameters(initial_uld_thresh, 3, 0, 1);
+      static const float uld_sharpness = 3;
+      fun->SetParameters(initial_uld_thresh, uld_sharpness, spec_slope, spec_offset);
 
       /// limit ULD thresh to real ADC values
-      fun->SetParName(0, "uld threshold (adc)");
-      fun->SetParLimits(0, 3095, 4096);
+      fun->SetParName(PARMID_ULD_THOLD, "uld threshold (adc)");
+      fun->SetParLimits(PARMID_ULD_THOLD, 3095, 4096);
       /// sharpness is positive value (should be very small)
-      fun->SetParName(1, "threshold sharpness");
-      fun->SetParLimits(1, 3, 3);
-      /// bkg slope
-      fun->SetParName(2, "bkg slope");
+      fun->SetParName(PARMID_ULD_SHARPNESS, "threshold sharpness");
+      fun->FixParameter(PARMID_ULD_SHARPNESS, uld_sharpness);
+      /// spec slope
+      fun->SetParName(PARMID_SPEC_SLOPE, "spec slope");
+      fun->FixParameter(PARMID_SPEC_SLOPE, spec_slope);
       /// limit background constant to positive values (scale to size of histogram)
-      fun->SetParName(3, "bkg constant");
-      fun->SetParLimits(3, 0, hadc->GetEntries());
+      fun->SetParName(PARMID_SPEC_OFFSET, "spec constant");
+      fun->FixParameter(PARMID_SPEC_OFFSET, spec_offset);
       
-      const float fitstat = hadc->Fit(uldfitname.str().c_str(),"RLQ");
+      const float fitstat = hadc->Fit(uldfitname.str().c_str(),"QRLB");
       
       const float uld = fun->GetParameter(0);
       const float erruld = fun->GetParError(0);
       const float chi2 = fun->GetChisquare();
       const float nent = hadc->GetEntries();
-      const float bkg1 = fun->GetParameter(2);
-      const float bkg0 = fun->GetParameter(3);
+      const float spec1 = fun->GetParameter(2);
+      const float spec0 = fun->GetParameter(3);
 
       const unsigned short twr = rngIdx.getTwr().val();
       const unsigned short lyr = rngIdx.getLyr().val();
@@ -192,7 +222,7 @@ int main(const int argc, const char **argv) {
       outfile << twr << " " << lyr << " " << col << " " << face << " " << rng << " " << uld << " " << erruld << endl;
 
       ntp->Fill(twr,lyr,col,face,rng,
-                uld, erruld, bkg0, bkg1,
+                uld, erruld, spec0, spec1,
                 chi2, nent, fitstat);
 
     }
