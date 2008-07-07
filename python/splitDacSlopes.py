@@ -25,8 +25,8 @@ twr lyr col face range uld_slope(mev/adc) uld_offset(mev) uld_dac_range(0,1)
 __facility__  = "Offline"
 __abstract__  = "Split dacSlopes XML file into individual TXT files"
 __author__    = "Z.Fewtrell"
-__date__      = "$Date: 2008/04/21 14:36:57 $"
-__version__   = "$Revision: 1.5 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/07/06 22:43:14 $"
+__version__   = "$Revision: 1.1 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -114,6 +114,6 @@ if __name__ == '__main__':
                             str(x) for x in twr, lyr, col, face, rng,
                             uldData[rng][twr][row][online_face][col][calDacSlopesCalibXML.ULDDATA_SLOPE],\
                             uldData[rng][twr][row][online_face][col][calDacSlopesCalibXML.ULDDATA_OFFSET],\
-                            uldData[rng][twr][row][online_face][col][calDacSlopesCalibXML.ULDDATA_SAT],\
-                            rngData[twr][row][online_face][col][calDacSlopesCalibXML.RNGDATA_ULDDAC_LEX8+rng]]))
+                            rngData[twr][row][online_face][col][calDacSlopesCalibXML.RNGDATA_ULDDAC_LEX8+rng],\
+                            uldData[rng][twr][row][online_face][col][calDacSlopesCalibXML.ULDDATA_SAT]]))
                         uldFile.write("\n")
