@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL dacSlopes XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2008/04/29 14:01:59 $"
-__version__     = "$Revision: 1.6 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/04/30 16:53:40 $"
+__version__     = "$Revision: 1.7 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -313,89 +313,89 @@ ulddac_10pct_hex8.GetYaxis().SetTitle(dacSlopesFilename2)
 
 
 
-lacdac_2mev_reldiff = ROOT.TH1S("lacdac_2mev_reldiff",
-                                "lacdac_2mev_reldiff",
-                                100,-1,1)
-lacdac_2mev_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
-lacdac_2mev_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+lacdac_2mev_dacdiff = ROOT.TH1S("lacdac_2mev_dacdiff",
+                                "lacdac_2mev_dacdiff",
+                                256,-128,128)
+lacdac_2mev_dacdiff.GetXaxis().SetTitle(dacSlopesFilename1)
+lacdac_2mev_dacdiff.GetYaxis().SetTitle(dacSlopesFilename2)
 
-lacdac_4mev_reldiff = ROOT.TH1S("lacdac_4mev_reldiff",
-                                "lacdac_4mev_reldiff",
-                                100,-1,1)
-lacdac_4mev_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
-lacdac_4mev_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+lacdac_4mev_dacdiff = ROOT.TH1S("lacdac_4mev_dacdiff",
+                                "lacdac_4mev_dacdiff",
+                                256,-128,128)
+lacdac_4mev_dacdiff.GetXaxis().SetTitle(dacSlopesFilename1)
+lacdac_4mev_dacdiff.GetYaxis().SetTitle(dacSlopesFilename2)
 
-fledac_100mev_reldiff = ROOT.TH1S("fledac_100mev_reldiff",
-                                  "fledac_100mev_reldiff",
-                                  100,-1,1)
-fledac_100mev_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
-fledac_100mev_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+fledac_100mev_dacdiff = ROOT.TH1S("fledac_100mev_dacdiff",
+                                  "fledac_100mev_dacdiff",
+                                  256,-128,128)
+fledac_100mev_dacdiff.GetXaxis().SetTitle(dacSlopesFilename1)
+fledac_100mev_dacdiff.GetYaxis().SetTitle(dacSlopesFilename2)
 
-fledac_150mev_reldiff = ROOT.TH1S("fledac_150mev_reldiff",
-                                  "fledac_150mev_reldiff",
-                                  100,-1,1)
-fledac_150mev_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
-fledac_150mev_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+fledac_150mev_dacdiff = ROOT.TH1S("fledac_150mev_dacdiff",
+                                  "fledac_150mev_dacdiff",
+                                  256,-128,128)
+fledac_150mev_dacdiff.GetXaxis().SetTitle(dacSlopesFilename1)
+fledac_150mev_dacdiff.GetYaxis().SetTitle(dacSlopesFilename2)
 
-fhedac_1000mev_reldiff = ROOT.TH1S("fhedac_1000mev_reldiff",
-                                   "fhedac_1000mev_reldiff",
-                                   100,-1,1)
-fhedac_1000mev_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
-fhedac_1000mev_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+fhedac_1000mev_dacdiff = ROOT.TH1S("fhedac_1000mev_dacdiff",
+                                   "fhedac_1000mev_dacdiff",
+                                   256,-128,128)
+fhedac_1000mev_dacdiff.GetXaxis().SetTitle(dacSlopesFilename1)
+fhedac_1000mev_dacdiff.GetYaxis().SetTitle(dacSlopesFilename2)
 
-fhedac_1500mev_reldiff = ROOT.TH1S("fhedac_1500mev_reldiff",
-                                   "fhedac_1500mev_reldiff",
-                                   100,-1,1)
-fhedac_1500mev_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
-fhedac_1500mev_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+fhedac_1500mev_dacdiff = ROOT.TH1S("fhedac_1500mev_dacdiff",
+                                   "fhedac_1500mev_dacdiff",
+                                   256,-128,128)
+fhedac_1500mev_dacdiff.GetXaxis().SetTitle(dacSlopesFilename1)
+fhedac_1500mev_dacdiff.GetYaxis().SetTitle(dacSlopesFilename2)
 
-ulddac_5pct_reldiff = ROOT.TH1S("ulddac_5pct_reldiff",
-                                "ulddac_5pct_reldiff",
-                                100,-1,1)
-ulddac_5pct_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
-ulddac_5pct_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+ulddac_5pct_dacdiff = ROOT.TH1S("ulddac_5pct_dacdiff",
+                                "ulddac_5pct_dacdiff",
+                                256,-128,128)
+ulddac_5pct_dacdiff.GetXaxis().SetTitle(dacSlopesFilename1)
+ulddac_5pct_dacdiff.GetYaxis().SetTitle(dacSlopesFilename2)
 
-ulddac_10pct_reldiff = ROOT.TH1S("ulddac_10pct_reldiff",
-                                 "ulddac_10pct_reldiff",
-                                 100,-1,1)
-ulddac_10pct_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
-ulddac_10pct_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+ulddac_10pct_dacdiff = ROOT.TH1S("ulddac_10pct_dacdiff",
+                                 "ulddac_10pct_dacdiff",
+                                 256,-128,128)
+ulddac_10pct_dacdiff.GetXaxis().SetTitle(dacSlopesFilename1)
+ulddac_10pct_dacdiff.GetYaxis().SetTitle(dacSlopesFilename2)
 
-ulddac_5pct_lex8_reldiff = ROOT.TH1S("ulddac_5pct_lex8_reldiff",
-                                     "ulddac_5pct_lex8_reldiff",
-                                     100,-1,1)
-ulddac_5pct_lex8_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
-ulddac_5pct_lex8_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+ulddac_5pct_lex8_dacdiff = ROOT.TH1S("ulddac_5pct_lex8_dacdiff",
+                                     "ulddac_5pct_lex8_dacdiff",
+                                     256,-128,128)
+ulddac_5pct_lex8_dacdiff.GetXaxis().SetTitle(dacSlopesFilename1)
+ulddac_5pct_lex8_dacdiff.GetYaxis().SetTitle(dacSlopesFilename2)
 
-ulddac_10pct_lex8_reldiff = ROOT.TH1S("ulddac_10pct_lex8_reldiff",
-                                      "ulddac_10pct_lex8_reldiff",
-                                      100,-1,1)
-ulddac_10pct_lex8_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
-ulddac_10pct_lex8_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+ulddac_10pct_lex8_dacdiff = ROOT.TH1S("ulddac_10pct_lex8_dacdiff",
+                                      "ulddac_10pct_lex8_dacdiff",
+                                      256,-128,128)
+ulddac_10pct_lex8_dacdiff.GetXaxis().SetTitle(dacSlopesFilename1)
+ulddac_10pct_lex8_dacdiff.GetYaxis().SetTitle(dacSlopesFilename2)
 
-ulddac_5pct_lex1_reldiff = ROOT.TH1S("ulddac_5pct_lex1_reldiff",
-                                     "ulddac_5pct_lex1_reldiff",
-                                     100,-1,1)
-ulddac_5pct_lex1_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
-ulddac_5pct_lex1_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+ulddac_5pct_lex1_dacdiff = ROOT.TH1S("ulddac_5pct_lex1_dacdiff",
+                                     "ulddac_5pct_lex1_dacdiff",
+                                     256,-128,128)
+ulddac_5pct_lex1_dacdiff.GetXaxis().SetTitle(dacSlopesFilename1)
+ulddac_5pct_lex1_dacdiff.GetYaxis().SetTitle(dacSlopesFilename2)
 
-ulddac_10pct_lex1_reldiff = ROOT.TH1S("ulddac_10pct_lex1_reldiff",
-                                      "ulddac_10pct_lex1_reldiff",
-                                      100,-1,1)
-ulddac_10pct_lex1_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
-ulddac_10pct_lex1_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+ulddac_10pct_lex1_dacdiff = ROOT.TH1S("ulddac_10pct_lex1_dacdiff",
+                                      "ulddac_10pct_lex1_dacdiff",
+                                      256,-128,128)
+ulddac_10pct_lex1_dacdiff.GetXaxis().SetTitle(dacSlopesFilename1)
+ulddac_10pct_lex1_dacdiff.GetYaxis().SetTitle(dacSlopesFilename2)
 
-ulddac_5pct_hex8_reldiff = ROOT.TH1S("ulddac_5pct_hex8_reldiff",
-                                     "ulddac_5pct_hex8_reldiff",
-                                     100,-1,1)
-ulddac_5pct_hex8_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
-ulddac_5pct_hex8_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+ulddac_5pct_hex8_dacdiff = ROOT.TH1S("ulddac_5pct_hex8_dacdiff",
+                                     "ulddac_5pct_hex8_dacdiff",
+                                     256,-128,128)
+ulddac_5pct_hex8_dacdiff.GetXaxis().SetTitle(dacSlopesFilename1)
+ulddac_5pct_hex8_dacdiff.GetYaxis().SetTitle(dacSlopesFilename2)
 
-ulddac_10pct_hex8_reldiff = ROOT.TH1S("ulddac_10pct_hex8_reldiff",
-                                      "ulddac_10pct_hex8_reldiff",
-                                      100,-1,1)
-ulddac_10pct_hex8_reldiff.GetXaxis().SetTitle(dacSlopesFilename1)
-ulddac_10pct_hex8_reldiff.GetYaxis().SetTitle(dacSlopesFilename2)
+ulddac_10pct_hex8_dacdiff = ROOT.TH1S("ulddac_10pct_hex8_dacdiff",
+                                      "ulddac_10pct_hex8_dacdiff",
+                                      256,-128,128)
+ulddac_10pct_hex8_dacdiff.GetXaxis().SetTitle(dacSlopesFilename1)
+ulddac_10pct_hex8_dacdiff.GetYaxis().SetTitle(dacSlopesFilename2)
 
 
 # FILL HISTOGRAMS
@@ -558,51 +558,51 @@ for twr in twrSet:
 
 
 
-    lacdac_2mev_reldiff.FillN(len(lac2mev1),
-                              array.array('d',(lac2mev1-lac2mev2)/lac2mev1),
+    lacdac_2mev_dacdiff.FillN(len(lac2mev1),
+                              array.array('d',(lac2mev1-lac2mev2)),
                               dac_weights)
-    lacdac_4mev_reldiff.FillN(len(lac4mev1),
-                              array.array('d',(lac4mev1-lac4mev2)/lac4mev1),
+    lacdac_4mev_dacdiff.FillN(len(lac4mev1),
+                              array.array('d',(lac4mev1-lac4mev2)),
                               dac_weights)
-    fledac_100mev_reldiff.FillN(len(fle100mev1),
-                                array.array('d',(fle100mev1-fle100mev2)/fle100mev1),
+    fledac_100mev_dacdiff.FillN(len(fle100mev1),
+                                array.array('d',(fle100mev1-fle100mev2)),
                                 dac_weights)
-    fledac_150mev_reldiff.FillN(len(fle150mev1),
-                                array.array('d',(fle150mev1-fle150mev2)/fle150mev1),
+    fledac_150mev_dacdiff.FillN(len(fle150mev1),
+                                array.array('d',(fle150mev1-fle150mev2)),
                                 dac_weights)
-    fhedac_1000mev_reldiff.FillN(len(fhe1000mev1),
-                                 array.array('d',(fhe1000mev1-fhe1000mev2)/fhe1000mev1),
+    fhedac_1000mev_dacdiff.FillN(len(fhe1000mev1),
+                                 array.array('d',(fhe1000mev1-fhe1000mev2)),
                                  dac_weights)
-    fhedac_1500mev_reldiff.FillN(len(fhe1500mev1),
-                                 array.array('d',(fhe1500mev1-fhe1500mev2)/fhe1500mev1),
+    fhedac_1500mev_dacdiff.FillN(len(fhe1500mev1),
+                                 array.array('d',(fhe1500mev1-fhe1500mev2)),
                                  dac_weights)
 
-    ulddac_5pct_reldiff.FillN(len(uld5pct1),
-                              array.array('d',numarray.ravel((uld5pct1-uld5pct2)/uld5pct1)),
+    ulddac_5pct_dacdiff.FillN(len(uld5pct1),
+                              array.array('d',numarray.ravel((uld5pct1-uld5pct2))),
                               dac_weights)
-    ulddac_10pct_reldiff.FillN(len(uld10pct1),
-                               array.array('d',numarray.ravel((uld10pct1-uld10pct2)/uld10pct1)),
+    ulddac_10pct_dacdiff.FillN(len(uld10pct1),
+                               array.array('d',numarray.ravel((uld10pct1-uld10pct2))),
                                dac_weights)
 
-    ulddac_5pct_lex8_reldiff.FillN(len(uld5pct1[0]),
-                                   array.array('d',numarray.ravel((uld5pct1[0]-uld5pct2[0])/uld5pct2[0])),
+    ulddac_5pct_lex8_dacdiff.FillN(len(uld5pct1[0]),
+                                   array.array('d',numarray.ravel((uld5pct1[0]-uld5pct2[0]))),
                                    dac_weights)
-    ulddac_10pct_lex8_reldiff.FillN(len(uld10pct1[0]),
-                                    array.array('d',numarray.ravel((uld10pct1[0]-uld10pct2[0])/uld10pct2[0])),
+    ulddac_10pct_lex8_dacdiff.FillN(len(uld10pct1[0]),
+                                    array.array('d',numarray.ravel((uld10pct1[0]-uld10pct2[0]))),
                                     dac_weights)
 
-    ulddac_5pct_lex1_reldiff.FillN(len(uld5pct1[1]),
-                                   array.array('d',numarray.ravel((uld5pct1[1]-uld5pct2[1])/uld5pct2[1])),
+    ulddac_5pct_lex1_dacdiff.FillN(len(uld5pct1[1]),
+                                   array.array('d',numarray.ravel((uld5pct1[1]-uld5pct2[1]))),
                                    dac_weights)
-    ulddac_10pct_lex1_reldiff.FillN(len(uld10pct1[1]),
-                                    array.array('d',numarray.ravel((uld10pct1[1]-uld10pct2[1])/uld10pct2[1])),
+    ulddac_10pct_lex1_dacdiff.FillN(len(uld10pct1[1]),
+                                    array.array('d',numarray.ravel((uld10pct1[1]-uld10pct2[1]))),
                                     dac_weights)
 
-    ulddac_5pct_hex8_reldiff.FillN(len(uld5pct1[2]),
-                                   array.array('d',numarray.ravel((uld5pct1[2]-uld5pct2[2])/uld5pct2[2])),
+    ulddac_5pct_hex8_dacdiff.FillN(len(uld5pct1[2]),
+                                   array.array('d',numarray.ravel((uld5pct1[2]-uld5pct2[2]))),
                                    dac_weights)
-    ulddac_10pct_hex8_reldiff.FillN(len(uld10pct1[2]),
-                                    array.array('d',numarray.ravel((uld10pct1[2]-uld10pct2[2])/uld10pct2[2])),
+    ulddac_10pct_hex8_dacdiff.FillN(len(uld10pct1[2]),
+                                    array.array('d',numarray.ravel((uld10pct1[2]-uld10pct2[2]))),
                                     dac_weights)
 
 # GENERATE PLOTS #
