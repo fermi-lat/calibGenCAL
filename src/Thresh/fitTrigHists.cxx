@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitTrigHists.cxx,v 1.5 2008/05/19 17:37:29 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitTrigHists.cxx,v 1.6 2008/06/27 14:04:28 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -130,11 +130,11 @@ FitResults fitChannel(const FaceIdx faceIdx,
   float * const effErr_arr = new float[nBins];
 
   const unsigned short nPts = mev.size();
+
   copy(mev.begin(), mev.end(), mev_arr);
   /// fill mevErr_arr with equal value
-  fill(mevErr_arr, 
-       mevErr_arr+sizeof(mevErr_arr)/sizeof(*mevErr_arr),
-       0);
+  for (int i=0;i<nBins;i++)mevErr_arr[i]=1.0;
+
   copy(eff.begin(), eff.end(), eff_arr);
   copy(effErr.begin(), effErr.end(), effErr_arr);
   
@@ -166,9 +166,17 @@ FitResults fitChannel(const FaceIdx faceIdx,
   fr.nEntries = effHist.GetEntries();
   fr.width = step.GetParameter(1);
 
-  effHist.SetMaximum(20);
-  effHist.Draw();
-  geffs.Draw("SAME");
+
+
+  TH1S heff(effHist);   
+  heff.Reset();
+  heff.SetMaximum(3);
+  heff.SetMinimum(-1.5); 
+  heff.Draw();
+
+  geffs.SetMarkerStyle(22);
+  geffs.SetMarkerSize(0.8);
+  geffs.Draw("PSAME");
 
   c.Write();
 
@@ -284,9 +292,11 @@ int main(const int argc, const char **argv) {
         return -1;
       }
 
+
       /// skip empty histograms
       if (specHist->GetEntries() <= 0)
         continue;
+
 
       FitResults fr = fitHists(faceIdx, *trigHist, *specHist);
 
