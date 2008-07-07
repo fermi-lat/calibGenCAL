@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Jul  7 14:39:35 PDT 2008
+calibGenCAL/python
+
+Modified Files:
+	dacSlopesDiff.py 
+Log Message:
+MOD: dac settings difference plots now in absolute DAC scale (not relative diff)
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Jul  7 12:12:06 PDT 2008
 calibGenCAL/src/Thresh
 
