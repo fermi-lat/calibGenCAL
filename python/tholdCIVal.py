@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Validate CAL Thold_CI calibration data in XML format"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2008/02/12 15:18:01 $"
-__version__   = "$Revision: 1.28 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/15 22:47:14 $"
+__version__   = "$Revision: 1.29 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -58,7 +58,7 @@ def rootHists(adcData, uldData, pedData, fileName):
     cs.SetGrid()
     sumLeg = ROOT.TLegend(0.88, 0.88, 0.99, 0.99)
 
-    for erng in range(calConstant.NUM_RNG):
+    for erng in range(calConstant.NUM_RNG-1): # ignore HEX1 ULD
 
         hName = "h_Summary_ULD_%s" % calConstant.CRNG[erng]       
         hs = ROOT.TH1F(hName, 'TholdCI_Summary_ULD: %s' % fileName, 100, uldErrLimit, 4095)
@@ -87,7 +87,7 @@ def rootHists(adcData, uldData, pedData, fileName):
         xtalLeg = ROOT.TLegend(0.88, 0.88, 0.99, 0.99)
         hists = [None, None, None, None]
                         
-        for erng in range(calConstant.NUM_RNG):
+        for erng in range(calConstant.NUM_RNG-1): #ignore HEX1 ULD
                             
             hName = "h_%s_%d_%s" % (title, tem, calConstant.CRNG[erng])
             hx = ROOT.TH1F(hName, 'TholdCI_ULD_%s: %s' % (title, fileName), 100, uldErrLimit, 4095)
@@ -104,21 +104,22 @@ def rootHists(adcData, uldData, pedData, fileName):
             for row in range(calConstant.NUM_ROW):
                 for end in range(calConstant.NUM_END):
                     for fe in range(calConstant.NUM_FE):
-                        uld = uldData[tem, row, end, fe, erng]                        
-                        hx.Fill(uld)
-                        hs.Fill(uld)
+                        uld = uldData[tem, row, end, fe, erng]
+                        ped = pedData[tem, row, end, fe, erng]
+                        hx.Fill(uld+ped)
+                        hs.Fill(uld+ped)
 
             hists[erng] = hx
             xtalLeg.AddEntry(hx, calConstant.CRNG[erng], 'L')
             cx.Update()
 
         hMax = 0
-        for erng in range(calConstant.NUM_RNG):
+        for erng in range(calConstant.NUM_RNG-1):
             hx = hists[erng]
             if hx.GetMaximum() > hMax:
                 hMax = hx.GetMaximum()
 
-        for erng in range(calConstant.NUM_RNG):
+        for erng in range(calConstant.NUM_RNG-1):
             if erng == 0:
                 dopt = ''
             else:
@@ -135,12 +136,12 @@ def rootHists(adcData, uldData, pedData, fileName):
     cs.cd()
 
     hMax = 0
-    for erng in range(calConstant.NUM_RNG):
+    for erng in range(calConstant.NUM_RNG-1):
         hs = sumHists[erng]
         if hs.GetMaximum() > hMax:
             hMax = hs.GetMaximum()    
         
-    for erng in range(calConstant.NUM_RNG):
+    for erng in range(calConstant.NUM_RNG-1):
 
         hs = sumHists[erng]
         if erng == 0:
