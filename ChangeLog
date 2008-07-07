@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Jul  7 14:40:25 PDT 2008
+calibGenCAL/python
+
+Modified Files:
+	tholdCIVal.py 
+Log Message:
+MOD: HEX1 ULD ignored in plots, plots now plot ULD in non-pedestal subtracted scale
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Jul  7 14:39:35 PDT 2008
 calibGenCAL/python
 
