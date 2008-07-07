@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Jul  7 12:12:06 PDT 2008
+calibGenCAL/src/Thresh
+
+Modified Files:
+	fitULDHists.cxx 
+Log Message:
+MODIFICATION: fitULDHists - pre-fit & fix spectrum model before uld fit, all fits now converge reliably
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Jul  7 10:59:28 PDT 2008
 calibGenCAL/python
 
