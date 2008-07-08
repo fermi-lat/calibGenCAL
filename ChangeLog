@@ -1,5 +1,17 @@
 ------------------------------------------------------------
 User: fewtrell  Tue Jul  8 07:53:29 PDT 2008
+calibGenCAL/python/lib
+
+Modified Files:
+	calCalibXML.py 
+Log Message:
+dacSlopeDiff - BUGFIX - fixed bug where not all ULD data was being plotted
+dacSlopeDiff - MOD - now diffs file2 - file 1 & labels itself as such
+tholdCIGen, calCalibXML - MOD - no longer uses FLE/FHE bias, LCI pedestals switched to periodic pedestals
+
+    *
+------------------------------------------------------------
+User: fewtrell  Tue Jul  8 07:53:29 PDT 2008
 calibGenCAL/python
 
 Modified Files:
