@@ -11,8 +11,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Plot all TCanvas & TH?? objects in ROOT file"
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2008/02/03 00:51:49 $"
-__version__     = "$Revision: 1.8 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/05/09 21:51:36 $"
+__version__     = "$Revision: 1.9 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -52,7 +52,7 @@ except getopt.GetoptError:
     log.error(__doc__)
     sys.exit(1)
 
-imgType = "pdf" #default 
+imgType = "png" #default 
 for o, a in opts:
     if o == "-f":
         imgType = a
