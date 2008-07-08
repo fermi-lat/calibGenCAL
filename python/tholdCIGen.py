@@ -13,8 +13,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to produce CAL TholdCI XML calibration data files"
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2008/02/11 21:35:58 $"
-__version__   = "$Revision: 1.34 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/02/15 22:47:14 $"
+__version__   = "$Revision: 1.35 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -240,51 +240,17 @@ if __name__ == '__main__':
         log.error("Config file %s missing [adcfiles] section" % configName)
         sys.exit(1)
 
-    pedAdcFiles = []
-
     options = configFile.options('adcfiles')
-    for opt in options:
-        
-        optList = opt.split('_')
-        if len(optList) != 2:
-            continue
-        if optList[0] == 'pedestals':
-            fList = pedAdcFiles
-        else:
-            continue
-
-        destTwr = int(optList[1])        
-        if destTwr < 0 or destTwr > 15:
-            log.error("Index for [adcfiles] option %s out of range (0 - 15)", opt)
-            sys.exit(1)
-            
-        value = configFile.get('adcfiles', opt)
-        nameList = value.split(',')
-        nameLen = len(nameList)
-        if nameLen == 2:
-            name = nameList[0]
-            srcTwr = int(nameList[1])
-        else:
-            log.error("Incorrect option format %s", value)
-            sys.exit(1)
-        if srcTwr < 0 or srcTwr > 15:
-            log.error("Src index for [adcfiles] option %s out of range (0 - 15)", opt)
-            sys.exit(1)    
-        inFile = inputFile(srcTwr, destTwr, name)
-        fList.append(inFile)
-        
-        log.debug('Adding %s file %s to input as tower %d (from %d)', optList[0], name,
-                  destTwr, srcTwr)
-
-    if 'bias' not in options:
-        log.error("Config file %s missing [adcfiles]:bias option" % configName)
-        sys.exit(1)
-    biasName = configFile.get('adcfiles', 'bias')    
 
     if 'intnonlin' not in options:
         log.error("Config file %s missing [adcfiles]:intnonlin option" % configName)
         sys.exit(1)
     intNonlinName = configFile.get('adcfiles', 'intnonlin')
+
+    if 'pedestals' not in options:
+        log.error("Config file %s missing [adcfiles]:pedestals option" % configName)
+        sys.exit(1)
+    pedestalName = configFile.get('adcfiles', 'pedestals')
 
     if 'muslope' not in options:
         log.error("Config file %s missing [adcfiles]:muslope option" % configName)
@@ -433,30 +399,11 @@ if __name__ == '__main__':
                              calConstant.NUM_END, calConstant.NUM_FE), numarray.Float32)
 
     # read pedestal values files
-
-    for f in pedAdcFiles:    
-
-        log.info("Reading file %s", f.name)
-        pedFile = calFitsXML.calFitsXML(fileName = f.name, mode = calFitsXML.MODE_READONLY)
-        i = pedFile.info()
-        if i['TTYPE1'] != 'pedestal value':
-            log.error("File %s not a PED ADC file", f.name)
-            sys.exit(1)
-        twrs = pedFile.getTowers()
-        if f.srcTwr not in twrs:
-            log.error("Src twr %d data not found in file %s", f.srcTwr, f.name)
-            sys.exit(1)
-        adcData = pedFile.read()
-        pedData[f.destTwr,...] = adcData[:]
-        pedFile.close()
-
-    # read bias correction file
-
-    log.info("Reading file %s", biasName)
-    biasFile = calDacXML.calEnergyXML(biasName, 'thrBias')
-    biasAdcData = biasFile.read()
-    tlist = biasFile.getTowers()
-    biasFile.close()
+    log.info("Reading file %s", pedestalName)
+    pedestalFile = calCalibXML.calPedCalibXML(pedestalName)
+    pedData = pedestalFile.read()
+    tlist = pedestalFile.getTowers()
+    pedestalFile.close()
 
     # read ADC non-linearity characterization data
 
@@ -478,8 +425,7 @@ if __name__ == '__main__':
     c0 = dacSlopeData[0][...,5]
     eng = linear(c1, c0)
     gain = muSlopeData[...,calConstant.CRNG_HEX8,0]
-    bias = biasAdcData[...,1]
-    adc = (eng / gain[...,numarray.NewAxis]) - bias[...,numarray.NewAxis]
+    adc = (eng / gain[...,numarray.NewAxis]) 
     fheAdcData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
         calConstant.NUM_FE, 128), numarray.Float32)
     fheAdcData[...,0:64] = adc[:]
@@ -493,10 +439,9 @@ if __name__ == '__main__':
     c0 = dacSlopeData[0][...,3]
     eng = linear(c1, c0)
     gain = muSlopeData[...,calConstant.CRNG_LEX1,0]
-    bias = biasAdcData[...,0]
     adc = (eng / gain[...,numarray.NewAxis])
     scale = (gain / muSlopeData[...,calConstant.CRNG_LEX8,0])
-    adc = (adc * scale[...,numarray.NewAxis]) - bias[...,numarray.NewAxis]
+    adc = (adc * scale[...,numarray.NewAxis]) 
     fleAdcData = numarray.zeros((calConstant.NUM_TEM, calConstant.NUM_ROW, calConstant.NUM_END,
         calConstant.NUM_FE, 128), numarray.Float32)
     fleAdcData[...,0:64] = adc[:]
@@ -589,11 +534,8 @@ if __name__ == '__main__':
     for f in lacDacFiles:
         c = doc.createComment("Input LAC DAC settings file = %s" % os.path.basename(f.name)) 
         doc.appendChild(c) 
-    for f in pedAdcFiles:
-        c = doc.createComment("Input pedestal value file = %s" % os.path.basename(f.name))
-        doc.appendChild(c) 
-    c = doc.createComment("Input bias value file = %s" % os.path.basename(biasName))
-    doc.appendChild(c)     
+    c = doc.createComment("Input Pedestal file = %s" % os.path.basename(pedestalName))
+    doc.appendChild(c)
     c = doc.createComment("Input IntNonlin file = %s" % os.path.basename(intNonlinName))
     doc.appendChild(c)
     c = doc.createComment("Input DacSlope file = %s" % os.path.basename(dacSlopeName))
@@ -604,7 +546,7 @@ if __name__ == '__main__':
     dacData = (uldDacData, lacDacData, fleDacData, fheDacData)
     adcData = (uldAdcData, lacAdcData, fleAdcData, fheAdcData)
     calibFile.generate(dacData, adcData, intNonlinAdcData[calConstant.CRNG_HEX1], intNonlinLengthData[calConstant.CRNG_HEX1],
-                       pedData, leGainData, heGainData, biasAdcData, tems = tlist)
+                       pedData, leGainData, heGainData, tems = tlist)
     calibFile.close()
 
 

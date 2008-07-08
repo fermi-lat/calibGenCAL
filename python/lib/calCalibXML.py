@@ -6,8 +6,8 @@ Classes to represent CAL calibration XML documents.
 __facility__  = "Offline"
 __abstract__  = "Classes to represent CAL calibration XML documents."
 __author__    = "D.L.Wood"
-__date__      = "$Date: 2008/04/21 14:37:29 $"
-__version__   = "$Revision: 1.19 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/04/29 14:01:59 $"
+__version__   = "$Revision: 1.20 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -254,7 +254,7 @@ class calTholdCICalibXML(calCalibXML):
     """
 
     def generate(self, dacData, adcData, intNonlinData, intNonlinLength, pedData,
-                 lrefGain, hrefGain, biasData, tems = (0,)):
+                 lrefGain, hrefGain, tems = (0,)):
         """
         Calculate threshold values in ADC units & write data to a CAL TholdCI XML file
 
@@ -277,14 +277,11 @@ class calTholdCICalibXML(calCalibXML):
             data for HEX1 energy range (16, 8, 2, 12, <N>).
         Param: intNonlinLength = A numarray array of ADC intnonlin data lengths for
             HEX1 energy range (16, 8, 2, 12, 1)
-        Param: pedData - A numarray array of pedestal value data
-            (16, 9, 4, 8, 2, 12).
+        Param: pedData - A numarray array of pedestal value data as returned from calPedCalibXML.read()
         Param: lrefGain A numarray array of LE gain index settings data
             (16, 8, 2, 12)
         Param: hrefGain A numarray array of HE gain index settings data
             (16, 8, 2, 12).
-        Param: biasData A numarray array of bias correction values
-            (16, 8, 2, 12, 2)
         Param: tems A list of TEM ID's to write out.
         """
 
@@ -370,14 +367,12 @@ class calTholdCICalibXML(calCalibXML):
                         
                         dac = int(fleDac[tem, row, end, fe])
                         adc = fleAdc[tem, row, end, fe, dac]
-                        adc += biasData[tem, row, end, fe, 0]
                         cs += 'FLE DAC = %d, ' % dac
                         tc.setAttributeNS(None, 'FLEVal', "%0.3f" % adc)
                         tc.setAttributeNS(None, 'FLESig', '0')
 
                         dac = int(fheDac[tem, row, end, fe])
                         adc = fheAdc[tem, row, end, fe, dac]
-                        adc += biasData[tem, row, end, fe, 1]
                         cs += 'FHE DAC = %d, ' % dac
                         tc.setAttributeNS(None, 'FHEVal', "%0.3f" % adc)
                         tc.setAttributeNS(None, 'FHESig', '0')
@@ -388,25 +383,12 @@ class calTholdCICalibXML(calCalibXML):
                         cs += 'LE gain = %d, ' % lrefGain[tem, row, end, fe]
                         cs += 'HE gain = %d, ' % hrefGain[tem, row, end, fe]
 
-                        cs += 'LE bias = %0.3f, ' % biasData[tem, row, end, fe, 0]
-                        cs += 'HE bias = %0.3f' % biasData[tem, row, end, fe, 1]
-
                         c = doc.createComment(cs)                        
                         tc.appendChild(c)
                         
                         f.appendChild(tc)
                         
                         for erng in range(3):
-
-                            # get gain setting for channel
-
-                            if erng < calConstant.CRNG_HEX8:
-                                gain = lrefGain[tem, row, end, fe]
-                            else:
-                                gain = (hrefGain[tem, row, end, fe] - 8)
-                                if gain < 0:
-                                    gain = 8
-                            gain = int(gain)
                        
                             # insert <tholdCIRange> elements
 
@@ -420,9 +402,10 @@ class calTholdCICalibXML(calCalibXML):
                             tcr.setAttributeNS(None, 'ULDVal', "%0.3f" % adc)
                             tcr.setAttributeNS(None, 'ULDSig', '30')
 
-                            ped = pedData[tem, gain, erng, row, end, fe]                        
+                            ped = pedData[tem, row, end, fe, erng, calPedCalibXML.PED_VAL_IDX]
+                            pedSig = pedData[tem, row, end, fe, erng, calPedCalibXML.PED_SIG_IDX]
                             tcr.setAttributeNS(None, 'pedVal', "%0.3f" % ped)
-                            tcr.setAttributeNS(None, 'pedSig', '0')                            
+                            tcr.setAttributeNS(None, 'pedSig', "%0.3f" % pedSig)
                             
                             tc.appendChild(tcr)
 
@@ -438,13 +421,10 @@ class calTholdCICalibXML(calCalibXML):
                         tcr.setAttributeNS(None, 'ULDVal', '%0.3f' % adc)
                         tcr.setAttributeNS(None, 'ULDSig', '30')
 
-                        gain = hrefGain[tem, row, end, fe] - 8
-                        if gain < 0:
-                            gain = 8
-                        gain = int(gain)
-                        ped = pedData[tem, gain, calConstant.CRNG_HEX1, row, end, fe]
+                        ped = pedData[tem, row, end, fe, calConstant.CRNG_HEX1, calPedCalibXML.PED_VAL_IDX]
+                        pedSig = pedData[tem, row, end, fe, calConstant.CRNG_HEX1, calPedCalibXML.PED_SIG_IDX]
                         tcr.setAttributeNS(None, 'pedVal', "%0.3f" % ped)
-                        tcr.setAttributeNS(None, 'pedSig', '0')
+                        tcr.setAttributeNS(None, 'pedSig', "%0.3f" % pedSig)
                         
                         tc.appendChild(tcr)
                     
@@ -1824,6 +1804,9 @@ class calPedCalibXML(calCalibXML):
     This class provides methods for accessing CAL pedestal
     calibration data stored in XML format.
     """
+
+    PED_VAL_IDX = 0
+    PED_SIG_IDX = 1
             
 
     def write(self, pedData, tems = (0,)):
