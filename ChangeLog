@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Jul 21 10:59:40 PDT 2008
+calibGenCAL/src/CIDAC2ADC
+
+Modified Files:
+	IntNonlinAlg.cxx IntNonlinAlg.h 
+Log Message:
+MOD: genCIDAC2ADC - now creates (quickly) noise warning plots for any noisy points in calibGen LCI analysis.
+FEATURE-ADD: dumpROOTPlots.py - now can filter on simple name patterns for plots
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Jul 21 10:59:39 PDT 2008
 calibGenCAL/python
 
