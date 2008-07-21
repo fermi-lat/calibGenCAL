@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Jul 21 10:59:39 PDT 2008
+calibGenCAL/python
+
+Modified Files:
+	dumpROOTPlots.py 
+Log Message:
+MOD: genCIDAC2ADC - now creates (quickly) noise warning plots for any noisy points in calibGen LCI analysis.
+FEATURE-ADD: dumpROOTPlots.py - now can filter on simple name patterns for plots
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Jul  8 07:53:29 PDT 2008
 calibGenCAL/python/lib
 
