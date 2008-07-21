@@ -1,6 +1,6 @@
 #ifndef IntNonlinAlg_h
 #define IntNonlinAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.h,v 1.6 2008/05/06 15:49:30 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.h,v 1.7 2008/05/14 18:39:46 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -21,6 +21,7 @@
 class DigiEvent;
 class CalDigi;
 class TProfile;
+class TGraph;
 
 namespace CalUtil {
   class CIDAC2ADC;
@@ -83,6 +84,9 @@ namespace calibGenCAL {
 
       /// profiles owned by current ROOT directory/m_histFile.
       CalUtil::CalVec<CalUtil::RngIdx, TProfile *> profiles;
+
+      /// graph all samples for given dac setting & channel
+      CalUtil::CalVec<CalUtil::RngIdx, TGraph *> noiseGraphs;
 
       /// create new histogram objects and accompanying TObjArray
       /// create TNtuple object for storing fit results

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.cxx,v 1.9 2008/06/30 20:56:31 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.cxx,v 1.10 2008/07/06 22:43:15 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -25,6 +25,7 @@
 #include "TNtuple.h"
 #include "TTree.h"
 #include "TCanvas.h"
+#include "TGraph.h"
 
 // STD INCLUDES
 #include <sstream>
@@ -33,9 +34,9 @@
 
 namespace {
   /// warning limit on RMS per ADC range
-  static const float rmsWarnLimit[CalUtil::RngIdx::N_VALS] = {20,
-                                                              15,
-                                                              12,
+  static const float rmsWarnLimit[CalUtil::RngIdx::N_VALS] = {10,
+                                                              3,
+                                                              10,
                                                               3};
 };
 
@@ -80,9 +81,12 @@ namespace calibGenCAL {
       {
         ostringstream tmp;
         tmp << "adc" << rngIdx.val();
-        (*adcHists)[rngIdx.val()] = new TH1S(tmp.str().c_str(),
-                                             tmp.str().c_str(),
-                                             singlex16::MAX_DAC+1, -0.5, singlex16::MAX_DAC+.5);
+        TH1S *h = new TH1S(tmp.str().c_str(),
+                           tmp.str().c_str(),
+                           singlex16::MAX_DAC+1, -0.5, singlex16::MAX_DAC+.5);
+        h->SetDirectory(0);
+        
+        (*adcHists)[rngIdx.val()] = h;
       }
 
       {
@@ -93,7 +97,6 @@ namespace calibGenCAL {
                                         (singlex16::MAX_DAC+1)/2,
                                         0,
                                         singlex16::MAX_DAC+1);
-
       }
     }
   }
@@ -241,17 +244,23 @@ namespace calibGenCAL {
 
         TH1S & h = *(dynamic_cast<TH1S *>(algData.adcHists->At(rngIdx.val())));
 
+        const float cidac = m_singlex16.CIDAC_TEST_VALS[eventData.testDAC];
+
         // reset histogram if we're starting a new DAC setting
         if (eventData.iSamp == 0) {
           h.Reset();
           h.SetAxisRange(-0.5, m_singlex16.MAX_DAC+.5);
+          // update noise graph
+          delete algData.noiseGraphs[rngIdx];
+          algData.noiseGraphs[rngIdx] = new TGraph(m_singlex16.nPulsesPerDAC);
         }
 
         // fill histogram
         h.Fill(adc);
         // fill optional profile
-        const float cidac = m_singlex16.CIDAC_TEST_VALS[eventData.testDAC];
         algData.profiles[rngIdx]->Fill(cidac, adc);
+        // fill noise graph
+        algData.noiseGraphs[rngIdx]->SetPoint(eventData.iSamp, eventData.iSamp, adc);
 
         /// fill optional tuple
         if (m_hugeTuple) {
@@ -303,23 +312,22 @@ namespace calibGenCAL {
                            << endl;
 
             /// draw optional graph of this channel if we have the info
-            if (m_hugeTuple) {
-              ostringstream plotname;
-              plotname << "noise_warning_" << rngIdx.toStr()
-                            << "_dac_" << cidac;
-              TCanvas c(plotname.str().c_str(),
-                        plotname.str().c_str(),
-                        -1);
-              ostringstream cut;
-              cut << "cidac==" << cidac
-                  << " && rngIdx==" << rngIdx.val();
-              m_hugeTuple->Draw("adc:goodEventNum",
-                                cut.str().c_str(),
-                                "*");
-              c.Write();
+            ostringstream plotname;
 
-              
-            }
+            plotname << "noise_warning_dac_" << lpad(toString(cidac),4,'0')
+                     << "_" << rngIdx.toStr();
+
+            /// fix precision @ 000.00
+            plotname.setf(ios::fixed,ios::floatfield);
+            plotname.precision(2);
+            plotname << "_rms_" << adcrms;
+
+            TCanvas c(plotname.str().c_str(),
+                      plotname.str().c_str(),
+                      -1);
+            algData.noiseGraphs[rngIdx]->GetHistogram()->Draw(); /// if you know a better way to do this, please tell me.
+            algData.noiseGraphs[rngIdx]->Draw("*");
+            c.Write();
           }
         }
       }   // foreach face
@@ -359,5 +367,7 @@ namespace calibGenCAL {
     return true;
 
   }
-}; // namespace calibGenCAL
+
+} // namespace calibGenCAL
+
 
