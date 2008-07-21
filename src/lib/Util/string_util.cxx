@@ -117,5 +117,22 @@ namespace calibGenCAL {
     throw runtime_error(tmp.str());
   }
 
+  /// left pad inStr out to padLen with padchar
+  /// \note new string object is created and returned on stack
+  std::string lpad(const std::string &inStr, const size_t padLen, const char padChar) {
+    const size_t inLen = inStr.size();
+    /// only pad if inStr is shorted than padLen
+    if (padLen <= inLen)
+      return inStr;
+
+    const size_t padSize = padLen - inLen;
+
+    string retVal(padLen,padChar);
+
+    retVal.replace(padSize, inStr.size(), inStr);
+      
+    return retVal;
+  }
+
 
 };
