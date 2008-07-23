@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Jul 23 13:31:03 PDT 2008
+calibGenCAL/src/Thresh
+
+Modified Files:
+	fitTrigMonitorHists.cxx 
+Log Message:
+improved fitting of background spectra
+
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Jul 21 10:59:40 PDT 2008
 calibGenCAL/src/lib/Util
 
