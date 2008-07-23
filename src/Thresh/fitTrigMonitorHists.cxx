@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitTrigMonitorHists.cxx,v 1.5 2008/05/19 19:04:17 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitTrigMonitorHists.cxx,v 1.6 2008/05/21 14:12:26 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -77,6 +77,55 @@ public:
 
 };
 
+
+/// fit background spectrum for given channel, only fit portion above maxbin
+/// \param h histogram to fit
+/// \param height return height of spectrum.
+/// \param power return spectral power index
+/// \param constant return background constant level
+void fitSpectrum(TH1S &h, float &height, float &power, float &constant) {
+  typedef enum {
+    NPARM_SPEC_HEIGHT,
+    NPARM_SPEC_POWER,
+    NPARM_SPEC_CONST
+  } SPECHIST_PARMS;
+
+  TF1 spec("spec_fit",
+           "([0]*x**[1]+[2])");
+  spec.SetParName(NPARM_SPEC_HEIGHT,   "spectrum height");
+  spec.SetParName(NPARM_SPEC_POWER, "spectral index");
+  spec.SetParName(NPARM_SPEC_CONST, "constant background");
+  
+  const unsigned maxBin = h.GetMaximumBin();
+  const float maxBinCenter = h.GetBinCenter(maxBin);
+  const float maxEne = h.GetXaxis()->GetXmax();
+  const float maxHeight = h.GetMaximum();
+
+  /// spetrum power idx usually -2
+  static const float maxPowerIdx = 0;
+  static const float minPowerIdx = -4;
+  static const float initPowerIdx = -2;
+
+  /// spectrum height limited by height of histogram
+  spec.SetParLimits(NPARM_SPEC_HEIGHT, 
+                    0,
+                    2.0*maxHeight*pow(maxBinCenter, -1*minPowerIdx));
+  spec.SetParameter(NPARM_SPEC_HEIGHT, maxHeight/pow(maxBinCenter,initPowerIdx));
+
+  spec.SetParLimits(NPARM_SPEC_POWER, minPowerIdx, maxPowerIdx);
+  spec.SetParameter(NPARM_SPEC_POWER, initPowerIdx);
+
+  /// background, limited by histogram height
+  spec.SetParLimits(NPARM_SPEC_CONST, 0, maxHeight);
+  spec.SetParameter(NPARM_SPEC_CONST, 0);
+
+  h.Fit(&spec,"QLB","",maxBinCenter, maxEne);
+
+  height = spec.GetParameter(NPARM_SPEC_HEIGHT);
+  power = spec.GetParameter(NPARM_SPEC_POWER);
+  constant = spec.GetParameter(NPARM_SPEC_CONST);
+}
+
 int main(const int argc, const char **argv) {
   // libCalibGenCAL will throw runtime_error
   try {
@@ -123,22 +172,15 @@ int main(const int argc, const char **argv) {
       NPARM_SPEC_CONST
     } TRIGHIST_PARMS;
 
-    static const float maxPowerIdx = 0;
-    static const float minPowerIdx = -4;
-    static const float initPowerIdx = -2;
-
     step->SetParName(NPARM_THOLD, "threshold");
     step->SetParName(NPARM_WIDTH, "threshold width");
     step->SetParName(NPARM_SPEC_HEIGHT,   "spectrum height");
     step->SetParName(NPARM_SPEC_POWER, "spectral index");
     step->SetParName(NPARM_SPEC_CONST, "constant background");
 
-
-
     TNtuple* ntp = 
       new TNtuple("trig_fit_ntp","trig_fit_ntp",
-                  "twr:lyr:col:face:diode:thresh:err:width:spec_height:spec_const:spec_const:chisq:nEntries:fitstat");
-
+                  "twr:lyr:col:face:diode:thresh:err:width:spec_height:spec_power:spec_const:chisq:nEntries:fitstat");
 
     /// print column headers
     LogStrm::get() << ";twr lyr col face diode threshMeV errThreshMeV width spec_height spec_power spec_constant chi2 nEntries fitstat" << endl;
@@ -154,11 +196,14 @@ int main(const int argc, const char **argv) {
       /// we don't require every channel to be present
       if (!trigHist)
         continue;
+
+      /// find background spectrum
+      float spec_height, spec_power, spec_const;
+      fitSpectrum(*trigHist, spec_height, spec_power, spec_const);
       
       /// setup fitting parameters.
       const float maxEne = trigHist->GetXaxis()->GetXmax();
       const unsigned nBins = trigHist->GetNbinsX();
-      const float maxHeight = trigHist->GetMaximum();
       const unsigned maxBin = trigHist->GetMaximumBin();
       const float maxBinCenter = trigHist->GetBinCenter(maxBin);
 
@@ -169,19 +214,10 @@ int main(const int argc, const char **argv) {
       /// threshold width should be roughly one bin.
       step->FixParameter(NPARM_WIDTH, nBins/(5*maxEne));
 
-      ///  spectrum height limited by height of histogram
-      step->SetParLimits(NPARM_SPEC_HEIGHT, 
-                         0,
-                         2.0*maxHeight*pow(maxBinCenter, -1*minPowerIdx));
-      step->SetParameter(NPARM_SPEC_HEIGHT, maxHeight/pow(maxBinCenter,initPowerIdx));
-
-      /// spetrum power idx usually -2
-      step->SetParLimits(NPARM_SPEC_POWER, minPowerIdx, maxPowerIdx);
-      step->SetParameter(NPARM_SPEC_POWER, initPowerIdx);
-
-      /// background, limited by histogram height
-      step->SetParLimits(NPARM_SPEC_CONST, 0, maxHeight);
-      step->SetParameter(NPARM_SPEC_CONST, 0);
+      /// background spectra now defined.
+      step->FixParameter(NPARM_SPEC_HEIGHT, spec_height);
+      step->FixParameter(NPARM_SPEC_POWER, spec_power);
+      step->FixParameter(NPARM_SPEC_CONST, spec_const);
 
       /// fit histogram
       const unsigned fitstat = trigHist->Fit(step,"QLB","");
@@ -191,9 +227,9 @@ int main(const int argc, const char **argv) {
       const float chisq = step->GetChisquare();
       const unsigned nEntries = (unsigned)trigHist->GetEntries();
       const float width = step->GetParameter(NPARM_WIDTH);
-      const float spec_height = step->GetParameter(NPARM_SPEC_HEIGHT);
-      const float spec_power = step->GetParameter(NPARM_SPEC_POWER);
-      const float spec_const = step->GetParameter(NPARM_SPEC_CONST);
+      //spec_height = step->GetParameter(NPARM_SPEC_HEIGHT);
+      //spec_power = step->GetParameter(NPARM_SPEC_POWER);
+      //spec_const = step->GetParameter(NPARM_SPEC_CONST);
 
       /// output results
       LogStrm::get() << diodeIdx.getTwr().val()
