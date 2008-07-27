@@ -1,4 +1,15 @@
 ------------------------------------------------------------
+User: fewtrell  Sun Jul 27 13:41:27 PDT 2008
+calibGenCAL/python
+
+Modified Files:
+	dumpROOTPlots.py 
+Log Message:
+MOD: dumpROOTPlots - now recursively processes sub directories
+MOD: fitTrigMonitorHists - now fits background triggers below threshold.
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Jul 23 13:31:03 PDT 2008
 calibGenCAL/src/Thresh
 
