@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitTrigMonitorHists.cxx,v 1.6 2008/05/21 14:12:26 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitTrigMonitorHists.cxx,v 1.7 2008/07/23 20:31:03 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -83,47 +83,37 @@ public:
 /// \param height return height of spectrum.
 /// \param power return spectral power index
 /// \param constant return background constant level
-void fitSpectrum(TH1S &h, float &height, float &power, float &constant) {
+void fitSpectrum(TH1S &h, float &height, float &power) {
   typedef enum {
     NPARM_SPEC_HEIGHT,
-    NPARM_SPEC_POWER,
-    NPARM_SPEC_CONST
+    NPARM_SPEC_POWER
   } SPECHIST_PARMS;
 
-  TF1 spec("spec_fit",
-           "([0]*x**[1]+[2])");
+  TF1 spec("spec_fit", "([0]*x**[1])");
   spec.SetParName(NPARM_SPEC_HEIGHT,   "spectrum height");
   spec.SetParName(NPARM_SPEC_POWER, "spectral index");
-  spec.SetParName(NPARM_SPEC_CONST, "constant background");
   
   const unsigned maxBin = h.GetMaximumBin();
   const float maxBinCenter = h.GetBinCenter(maxBin);
   const float maxEne = h.GetXaxis()->GetXmax();
   const float maxHeight = h.GetMaximum();
 
-  /// spetrum power idx usually -2
+  /// spectrum power idx usually -2
   static const float maxPowerIdx = 0;
   static const float minPowerIdx = -4;
   static const float initPowerIdx = -2;
 
   /// spectrum height limited by height of histogram
-  spec.SetParLimits(NPARM_SPEC_HEIGHT, 
-                    0,
-                    2.0*maxHeight*pow(maxBinCenter, -1*minPowerIdx));
+  spec.SetParLimits(NPARM_SPEC_HEIGHT, 0, 2.0*maxHeight*pow(maxBinCenter, -1*minPowerIdx));
   spec.SetParameter(NPARM_SPEC_HEIGHT, maxHeight/pow(maxBinCenter,initPowerIdx));
 
   spec.SetParLimits(NPARM_SPEC_POWER, minPowerIdx, maxPowerIdx);
   spec.SetParameter(NPARM_SPEC_POWER, initPowerIdx);
 
-  /// background, limited by histogram height
-  spec.SetParLimits(NPARM_SPEC_CONST, 0, maxHeight);
-  spec.SetParameter(NPARM_SPEC_CONST, 0);
-
   h.Fit(&spec,"QLB","",maxBinCenter, maxEne);
 
   height = spec.GetParameter(NPARM_SPEC_HEIGHT);
   power = spec.GetParameter(NPARM_SPEC_POWER);
-  constant = spec.GetParameter(NPARM_SPEC_CONST);
 }
 
 int main(const int argc, const char **argv) {
@@ -159,8 +149,7 @@ int main(const int argc, const char **argv) {
 
     /// create fitting stepction (straight line 'background' multiplied by a
     /// sigmoidal 'threshold')
-    TF1* step = new TF1("trig_fit",
-                        "([2]*x**[3]+[4])/(1+exp(([0]-x)/[1]))");
+    TF1* step = new TF1("trig_fit","([2]*x**[3])*([4]+(1-[4])/(1+exp(([0]-x)/[1])))");
     step->SetNpx(500);
     
     /// enumerate fit paramters.
@@ -169,21 +158,21 @@ int main(const int argc, const char **argv) {
       NPARM_WIDTH,
       NPARM_SPEC_HEIGHT,
       NPARM_SPEC_POWER,
-      NPARM_SPEC_CONST
+      NPARM_BKG_PCT
     } TRIGHIST_PARMS;
 
     step->SetParName(NPARM_THOLD, "threshold");
     step->SetParName(NPARM_WIDTH, "threshold width");
     step->SetParName(NPARM_SPEC_HEIGHT,   "spectrum height");
     step->SetParName(NPARM_SPEC_POWER, "spectral index");
-    step->SetParName(NPARM_SPEC_CONST, "constant background");
+    step->SetParName(NPARM_BKG_PCT, "trigger efficiency below threshold");
 
     TNtuple* ntp = 
       new TNtuple("trig_fit_ntp","trig_fit_ntp",
-                  "twr:lyr:col:face:diode:thresh:err:width:spec_height:spec_power:spec_const:chisq:nEntries:fitstat");
+                  "twr:lyr:col:face:diode:thresh:err:width:spec_height:spec_power:bkg:chisq:nEntries:fitstat");
 
     /// print column headers
-    LogStrm::get() << ";twr lyr col face diode threshMeV errThreshMeV width spec_height spec_power spec_constant chi2 nEntries fitstat" << endl;
+    LogStrm::get() << ";twr lyr col face diode threshMeV errThreshMeV width spec_height spec_power bkg chi2 nEntries fitstat" << endl;
     for (DiodeIdx diodeIdx; diodeIdx.isValid(); diodeIdx++) {
       const DiodeNum diode = diodeIdx.getDiode();
 
@@ -198,8 +187,8 @@ int main(const int argc, const char **argv) {
         continue;
 
       /// find background spectrum
-      float spec_height, spec_power, spec_const;
-      fitSpectrum(*trigHist, spec_height, spec_power, spec_const);
+      float spec_height, spec_power;
+      fitSpectrum(*trigHist, spec_height, spec_power);
       
       /// setup fitting parameters.
       const float maxEne = trigHist->GetXaxis()->GetXmax();
@@ -208,28 +197,35 @@ int main(const int argc, const char **argv) {
       const float maxBinCenter = trigHist->GetBinCenter(maxBin);
 
       /// threshold must be on x-axis, start @ middle of hist
-      step->SetParLimits(NPARM_THOLD, maxBinCenter*.75, min<float>(maxBinCenter*1.25,maxEne));
+      step->SetParLimits(NPARM_THOLD, maxBinCenter*.75, std::min<float>(maxBinCenter*1.25,maxEne));
       step->SetParameter(NPARM_THOLD, maxBinCenter);
 
       /// threshold width should be roughly one bin.
-      step->FixParameter(NPARM_WIDTH, nBins/(5*maxEne));
+      step->FixParameter(NPARM_WIDTH, maxEne/nBins);
 
       /// background spectra now defined.
       step->FixParameter(NPARM_SPEC_HEIGHT, spec_height);
       step->FixParameter(NPARM_SPEC_POWER, spec_power);
-      step->FixParameter(NPARM_SPEC_CONST, spec_const);
+
+      step->SetParLimits(NPARM_BKG_PCT,0,.5);
+      step->SetParameter(NPARM_BKG_PCT,0);
 
       /// fit histogram
-      const unsigned fitstat = trigHist->Fit(step,"QLB","");
+      unsigned fitstat = 0;
+
+      fitstat = trigHist->Fit(step,
+                              "QLB",
+                              "",
+                              maxBinCenter/2,
+                              maxEne); // start fitting @ 50% of threshold (background is usually flat above this point)
+
       /// get fit results
       const float threshMeV = step->GetParameter(NPARM_THOLD);
       const float threshErrMeV = step->GetParError(NPARM_THOLD);
+      const float bkg = step->GetParameter(NPARM_BKG_PCT);
       const float chisq = step->GetChisquare();
       const unsigned nEntries = (unsigned)trigHist->GetEntries();
       const float width = step->GetParameter(NPARM_WIDTH);
-      //spec_height = step->GetParameter(NPARM_SPEC_HEIGHT);
-      //spec_power = step->GetParameter(NPARM_SPEC_POWER);
-      //spec_const = step->GetParameter(NPARM_SPEC_CONST);
 
       /// output results
       LogStrm::get() << diodeIdx.getTwr().val()
@@ -242,7 +238,7 @@ int main(const int argc, const char **argv) {
                      << " " << width
                      << " " << spec_height
                      << " " << spec_power
-                     << " " << spec_const
+                     << " " << bkg
                      << " " << chisq
                      << " " << nEntries
                      << " " << fitstat
@@ -258,7 +254,7 @@ int main(const int argc, const char **argv) {
                 width,
                 spec_height,
                 spec_power,
-                spec_const,
+                bkg,
                 chisq,
                 nEntries,
                 fitstat

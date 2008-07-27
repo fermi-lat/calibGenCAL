@@ -12,8 +12,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Plot all TCanvas & TH?? objects in ROOT file"
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2008/07/08 14:53:29 $"
-__version__     = "$Revision: 1.10 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/07/21 17:59:39 $"
+__version__     = "$Revision: 1.11 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -25,6 +25,7 @@ import logging
 import getopt
 
 from ROOT import TFile, TCanvas, TH1, gROOT
+import ROOT
 
 # setup logger
 logging.basicConfig()
@@ -84,29 +85,52 @@ if imgType not in imgTypes:
 gROOT.Reset()
 rootFile = TFile(rootPath,"READ")
 
-for k in rootFile.GetListOfKeys():
-    cls = gROOT.GetClass(k.GetClassName());
 
-    # optional name check
-    if namematch != "":
-        if k.GetName().find(namematch) < 0:
-            continue
+def processDir(directory):
+    """
+    make image file for each TCanvas & TH1 in directory
+    directory could either be a ROOT TFile or TDirectory
+    recusively process sub directories
+    """
 
-    # HISTOGRAMS:
-    if cls.InheritsFrom("TH1"):
-        hist = k.ReadObj()
-        # Draw me to a canvas before printing....
-        cvs = TCanvas(hist.GetTitle(), hist.GetName(),-1)
-        hist.Draw()
-        cvs.Update()
+    # don't know if inputDir is TFile or TDirectory, simplest is to
+    # treat all as if TDirectory, if I want to do this, I need to read
+    # all objs into memory (otherwise I would have to use
+    # GetListOfKeys() instead of GetList())
+    #
+    # if you know a better way, don't be shy!
+    directory.ReadAll()
 
-        print_canvas(cvs)
+    l = directory.GetList()
+    for obj in l:
+        cls = ROOT.gROOT.GetClass(obj.ClassName())
 
-    # TCVS (plain ol' plots are stored in TCanvas
-    elif cls.InheritsFrom("TCanvas"):
-        cvs = k.ReadObj()
+        # optional name check
+        if namematch != "":
+            if k.GetName().find(namematch) < 0:
+                continue
 
-        print_canvas(cvs)
+        # HISTOGRAMS:
+        if cls.InheritsFrom("TH1"):
+            hist = obj
+            # Draw me to a canvas before printing....
+            cvs = TCanvas(hist.GetTitle(), hist.GetName(),-1)
+            hist.Draw()
+            cvs.Update()
+            
+            print_canvas(cvs)
+
+            # TCVS (plain ol' plots are stored in TCanvas
+        elif cls.InheritsFrom("TCanvas"):
+            cvs = obj
+            print_canvas(cvs)
+                
+        elif cls.InheritsFrom("TDirectory"):
+            processDir(obj)
+
+processDir(rootFile)
+
+
 
 
 
