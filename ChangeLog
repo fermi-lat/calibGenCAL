@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Jul 29 13:03:26 PDT 2008
+calibGenCAL/src/CIDAC2ADC
+
+Modified Files:
+	IntNonlinAlg.cxx NeighborXtalkAlg.cxx genCIDAC2ADC.cxx 
+	smoothCIDAC2ADC.cxx 
+Log Message:
+some static variables defined in header files were causing troubles across windows link.  Changed them to accessor methods.
+    *
+------------------------------------------------------------
 User: fewtrell  Sun Jul 27 13:41:28 PDT 2008
 calibGenCAL/src/Thresh
 
