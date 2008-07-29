@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: fewtrell  Tue Jul 29 13:03:26 PDT 2008
+calibGenCAL/src/Optical
+
+Modified Files:
+	GCRCalibAlg.cxx fitGCRHists.cxx genGCRHists.cxx 
+Log Message:
+some static variables defined in header files were causing troubles across windows link.  Changed them to accessor methods.
+    *
+------------------------------------------------------------
+User: fewtrell  Tue Jul 29 13:03:26 PDT 2008
 calibGenCAL/src/CIDAC2ADC
 
 Modified Files:
