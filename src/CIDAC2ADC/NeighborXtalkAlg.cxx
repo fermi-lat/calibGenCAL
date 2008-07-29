@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/NeighborXtalkAlg.cxx,v 1.2 2008/05/02 17:59:33 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/NeighborXtalkAlg.cxx,v 1.3 2008/06/09 21:05:33 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -297,7 +297,7 @@ namespace calibGenCAL {
 
           algData.xtalk->setPoint(diodeIdx,
                                   srcIdx,
-                                  m_singlex16.CIDAC_TEST_VALS[eventData.testDAC],
+                                  m_singlex16.CIDACTestVals()[eventData.testDAC],
                                   av);
         }
       }

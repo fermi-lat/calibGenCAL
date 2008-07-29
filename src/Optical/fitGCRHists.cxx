@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/fitGCRHists.cxx,v 1.2 2008/05/19 14:17:33 fewtrell Exp $ //
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/fitGCRHists.cxx,v 1.3 2008/05/19 17:37:28 fewtrell Exp $ //
 
 /** @file 
     @author Zachary Fewtrell
@@ -94,7 +94,7 @@ int main(const int argc,
     /// simultaneously to cout and to logfile
     LogStrm::addStream(cout);
     // generate logfile name
-    const string logfile(cfg.outputBasename.getVal() + ".log.txt");
+    const string logfile(cfg.outputBasename.getVal() + ".gcr_fit.log.txt");
     ofstream tmpStrm(logfile.c_str());
 
     LogStrm::addStream(tmpStrm);
@@ -105,7 +105,7 @@ int main(const int argc,
     cfg.cmdParser.printStatus(LogStrm::get());
     LogStrm::get() << endl;
 
-    const string outputROOTFilename(cfg.outputBasename.getVal() + ".root");
+    const string outputROOTFilename(cfg.outputBasename.getVal() + ".gcr_fit.root");
     LogStrm::get() << __FILE__ << ": opening output histogram file: " << outputROOTFilename << endl;
     TFile outputROOTFile(outputROOTFilename.c_str(),
                          "RECREATE",
@@ -115,7 +115,6 @@ int main(const int argc,
     LogStrm::get() << __FILE__ << ": opening input histogram file: " << cfg.inputROOTPath.getVal() << endl;
     TFile inputROOTFile(cfg.inputROOTPath.getVal().c_str(),"READ");
     GCRHists  gcrHists(cfg.summaryMode.getVal(), &outputROOTFile, &inputROOTFile);
-
     
     CalMPD calMPD;
     LogStrm::get() << __FILE__ << ": fitting histograms" << endl;

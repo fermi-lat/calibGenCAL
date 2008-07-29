@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/genCIDAC2ADC.cxx,v 1.9 2008/05/19 17:37:28 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/genCIDAC2ADC.cxx,v 1.10 2008/07/06 22:43:15 fewtrell Exp $
 
 /** @file Gen CIDAC2ADC calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
@@ -67,7 +67,7 @@ public:
 
     try {
       cmdParser.parseCmdLine(argc, argv);
-    } catch (exception &e) {
+    } catch (exception &) {
       cmdParser.printUsage();
       exit(-1);
     }

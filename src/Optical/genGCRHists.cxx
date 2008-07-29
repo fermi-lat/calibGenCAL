@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/genGCRHists.cxx,v 1.3 2008/05/19 14:17:33 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/genGCRHists.cxx,v 1.4 2008/05/19 17:37:28 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -67,9 +67,9 @@ public:
             'c',
             "(optional) path to configuration file",
             ""),
-    nEntries("nEntries",
+    nEvents("nEvents",
              'n',
-             "stop filling histograms when min nEntries= n",
+             "stop processing after n events",
              ULONG_MAX)
   {
     cmdParser.registerArg(pedTXTFile);
@@ -82,7 +82,7 @@ public:
     cmdParser.registerSwitch(summaryMode);
 
     cmdParser.registerVar(cfgPath);
-    cmdParser.registerVar(nEntries);
+    cmdParser.registerVar(nEvents);
 
     try {
       cmdParser.parseCmdLine(argc, argv);
@@ -115,8 +115,7 @@ public:
 
   CmdOptVar<string> cfgPath;
 
-  /// stop filling histograms when min nEnties = n (defaulit = MAX_UNSIGNED_INT)
-  CmdOptVar<unsigned> nEntries;
+  CmdOptVar<unsigned> nEvents;
 
 };
 
@@ -146,7 +145,7 @@ int main(const int argc,
     /// simultaneously to cout and to logfile
     LogStrm::addStream(cout);
     // generate logfile name
-    string logfile(cfg.outputBasename.getVal() + ".log.txt");
+    string logfile(cfg.outputBasename.getVal() + ".gcr_hist.log.txt");
     ofstream tmpStrm(logfile.c_str());
 
     LogStrm::addStream(tmpStrm);
@@ -172,7 +171,7 @@ int main(const int argc,
     //-- GCR MPD
 
     // output histogram file name
-    string histFilename(cfg.outputBasename.getVal() + ".root");
+    string histFilename(cfg.outputBasename.getVal() + ".gcr_hist.root");
 
     // open file to save output histograms.
     LogStrm::get() << __FILE__ << ": opening output histogram file: " << histFilename << endl;
@@ -185,7 +184,7 @@ int main(const int argc,
     CalMPD calMPD;
 
     LogStrm::get() << __FILE__ << ": reading digiRoot event file(s) starting w/ " << digiFileList[0] << endl;
-    gcrCalib.fillHists(cfg.nEntries.getVal(),
+    gcrCalib.fillHists(cfg.nEvents.getVal(),
                        digiFileList,
                        gcrSelectRootFileList,
                        peds,
