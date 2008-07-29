@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/smoothCIDAC2ADC.cxx,v 1.3 2008/05/19 17:37:28 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/smoothCIDAC2ADC.cxx,v 1.4 2008/07/06 22:43:15 fewtrell Exp $
 
 /** @file Generate smoothed IntNonlin (cidac2adc) curves from raw
     cidac2adc points, expects adcmean output from genCIDAC2ADC as input.
@@ -61,7 +61,7 @@ namespace {
 
 
     // 2 dimensional poly line f() to use for spline fitting.
-    float *tmpADC(new float[singlex16::N_CIDAC_VALS]);
+    float *tmpADC(new float[singlex16::nCIDACVals()]);
 
     TF1 splineFunc("spline_fitter",
                    "pol2",
@@ -69,13 +69,13 @@ namespace {
                    singlex16::MAX_DAC);
 
     //-- GET UPPER ADC BOUNDARY for this channel --//
-    const float adc_max  = curADC[singlex16::N_CIDAC_VALS-1];
+    const float adc_max  = curADC[singlex16::nCIDACVals()-1];
     // last idx will be last index that is <= 0.99*adc_max
     // it is the last point we intend on using.
     unsigned short last_idx = 0;
     while (curADC[last_idx] <= 0.99*adc_max  
            && 
-           last_idx < singlex16::N_CIDAC_VALS-1) //bounds check
+           last_idx < singlex16::nCIDACVals()-1) //bounds check
       last_idx++;
     if (last_idx > 0)
       last_idx--;
@@ -85,13 +85,13 @@ namespace {
          curADC.end(),
          tmpADC);
     TGraph myGraph(last_idx+1,
-                   singlex16::CIDAC_TEST_VALS,
+                   singlex16::CIDACTestVals(),
                    tmpADC);
 
     // PART I: EXTRAPOLATE INITIAL POINTS FROM MEAT OF CURVE
     for (unsigned short i = 0; i < extrapLo; i++) {
       // put new DAC val on global output list
-      const float &  dac  = singlex16::CIDAC_TEST_VALS[i];
+      const float &  dac  = singlex16::CIDACTestVals()[i];
       splineDAC.push_back(dac);
 
       // extrapolate associated adc value from points later in curve
@@ -100,10 +100,10 @@ namespace {
       // n points into curve from pt2
       const unsigned short pt1  = pt2+extrapLoFrom-1;
 
-      const float &  dac2 = singlex16::CIDAC_TEST_VALS[pt2];
+      const float &  dac2 = singlex16::CIDACTestVals()[pt2];
       const float &  adc2 = curADC[pt2];
 
-      const float &  dac1 = singlex16::CIDAC_TEST_VALS[pt1];
+      const float &  dac1 = singlex16::CIDACTestVals()[pt1];
       const float &  adc1 = curADC[pt1];
 
       float adc  = linear_extrap(dac1, dac2, dac,
@@ -123,14 +123,14 @@ namespace {
 
       // fit curve to grouped points
       myGraph.Fit(&splineFunc, "QN", "",
-                  singlex16::CIDAC_TEST_VALS[lp],
-                  singlex16::CIDAC_TEST_VALS[hp]);
+                  singlex16::CIDACTestVals()[lp],
+                  singlex16::CIDACTestVals()[hp]);
       const float myPar1 = splineFunc.GetParameter(0);
       const float myPar2 = splineFunc.GetParameter(1);
       const float myPar3 = splineFunc.GetParameter(2);
 
       // use DAC value from center point
-      const float fitDAC = singlex16::CIDAC_TEST_VALS[ctrIdx];
+      const float fitDAC = singlex16::CIDACTestVals()[ctrIdx];
       // eval smoothed ADC value
       const float fitADC = myPar1 + fitDAC*(myPar2 + fitDAC*myPar3);
 
@@ -150,7 +150,7 @@ namespace {
       splineADC.push_back(curADC[i]);
 
       // put new DAC val on global output list
-      splineDAC.push_back(singlex16::CIDAC_TEST_VALS[i]);
+      splineDAC.push_back(singlex16::CIDACTestVals()[i]);
     }
 
     //-- EXTRAPOLATE FINAL POINT --//

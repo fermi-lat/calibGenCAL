@@ -1,7 +1,7 @@
 #ifndef singlex16_h
 #define singlex16_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Specs/singlex16.h,v 1.5 2008/05/02 17:59:39 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Specs/singlex16.h,v 1.6 2008/06/09 21:05:33 fewtrell Exp $
 
 /** @file Specification of online 'singlex16' LCI script data
     @author fewtrell
@@ -25,16 +25,16 @@ namespace calibGenCAL {
     {}
 
     /// sequence if charge injection DAC test values
-    static const float CIDAC_TEST_VALS[];
+    static const float *CIDACTestVals();
 
     /// number of CIDAC values tested
-    static const unsigned short N_CIDAC_VALS;
+    static unsigned short nCIDACVals();
 
     /// n pulses (events) per CIDAC val
     unsigned short nPulsesPerDAC;
 
     /// n total pulsees per xtal (or column)
-    unsigned nPulsesPerXtal() const {return N_CIDAC_VALS * nPulsesPerDAC;}
+    unsigned nPulsesPerXtal() const {return nCIDACVals() * nPulsesPerDAC;}
 
     /// total number of pulses in broadcast mode singlex16
     unsigned totalPulsesBCAST() const {return nPulsesPerXtal();}

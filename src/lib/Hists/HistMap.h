@@ -1,7 +1,7 @@
 #ifndef HistMap_h
 #define HistMap_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistMap.h,v 1.6 2008/04/21 20:32:32 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistMap.h,v 1.7 2008/05/02 17:59:36 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -124,7 +124,7 @@ namespace calibGenCAL {
     void insertHist(HistType *hist_ptr) {
       assert(hist_ptr != 0);
          
-      std::string name(hist_ptr->GetName());
+      const std::string name(hist_ptr->GetName());
 
       IdxType idx(name2Idx(name));
 
@@ -133,12 +133,13 @@ namespace calibGenCAL {
 
     /// load all associated histograms from histogram file
     void loadHists(TDirectory &readDir) {
-      std::vector<HistType*> histList(harvestROOTObjs<HistType>(readDir, m_histBasename));
+      typedef std::vector<HistType*> HistList;
+      HistList histList(harvestROOTObjs<HistType>(readDir, m_histBasename));
       
-      std::for_each(histList.begin(),
-                    histList.end(),
-                    std::bind1st(std::mem_fun(&HistMap<IdxType,HistType>::insertHist),this));
-               
+      for (typename HistList::const_iterator it = histList.begin();
+           it != histList.end();
+           it++) 
+        insertHist(*it);
     }
 
     std::string genHistName(const IdxType &idx) {
