@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Mon Aug  4 07:54:59 PDT 2008
+calibGenCAL/src/Optical
+
+Modified Files:
+	fitGCRHists.cxx 
+Log Message:
+BUGFIX: fitGCRHists was crashing on reading in histogram collection, now fixed
+
+    *
+------------------------------------------------------------
 User: fewtrell  Tue Jul 29 13:03:27 PDT 2008
 calibGenCAL/src/lib/Specs
 
