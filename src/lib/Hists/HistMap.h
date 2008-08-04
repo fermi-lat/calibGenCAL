@@ -1,7 +1,7 @@
 #ifndef HistMap_h
 #define HistMap_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistMap.h,v 1.7 2008/05/02 17:59:36 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistMap.h,v 1.8 2008/07/29 20:03:26 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -126,9 +126,13 @@ namespace calibGenCAL {
          
       const std::string name(hist_ptr->GetName());
 
-      IdxType idx(name2Idx(name));
-
-      m_map[idx] = hist_ptr;
+      try {
+        IdxType idx(name2Idx(name));
+        m_map[idx] = hist_ptr;
+      } catch (InvalidHistName &e) {
+        /// case where histogram name does not match, do nothing & return
+        return;
+      }
     }
 
     /// load all associated histograms from histogram file
@@ -147,13 +151,20 @@ namespace calibGenCAL {
       return m_histBasename + "_" + idx.toStr();
     }
 
+    class InvalidHistName : public std::runtime_error {
+    public:
+      InvalidHistName(const std::string &desc) :
+        std::runtime_error(desc)
+      {}
+    };
+
     /// convert histogram name back to index obj
     IdxType name2Idx(const std::string &name) {
       static std::string prefix(m_histBasename + "_");
 
       // first check that histogram name matches pattern
       if (name.find(prefix) != 0)
-        throw std::runtime_error(std::string("Histogram : ") + name + "does not belong to collection: " + m_histBasename);
+        throw InvalidHistName(std::string("Histogram : ") + name + " does not belong to collection: " + m_histBasename);
 
       // trim collection string from histogram name
       return IdxType(name.substr(prefix.size()));

@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/fitGCRHists.cxx,v 1.3 2008/05/19 17:37:28 fewtrell Exp $ //
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/fitGCRHists.cxx,v 1.4 2008/07/29 20:03:26 fewtrell Exp $ //
 
 /** @file 
     @author Zachary Fewtrell
@@ -121,8 +121,8 @@ int main(const int argc,
     GCRFit::gcrFitGaus(gcrHists, calMPD, &outputROOTFile);
 
     // output txt file name
-    //const string   outputTXTFile(cfg.outputBasename.getVal()+".txt");
-    //calMPD.writeTXT(outputTXTFile);
+    const string   outputTXTFile(cfg.outputBasename.getVal()+".txt");
+    calMPD.writeTXT(outputTXTFile);
     
     LogStrm::get() << __FILE__ << ": Writing output ROOT file." << endl;
     outputROOTFile.Write();
