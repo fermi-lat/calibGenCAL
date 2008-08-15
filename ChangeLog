@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: ecephas  Fri Aug 15 14:22:45 PDT 2008
+GlastRelease-scons/calibGenCAL
+
+Added Files:
+	SConscript 
+Log Message:
+Added SConscript files for packages
+    *
+------------------------------------------------------------
 User: fewtrell  Mon Aug  4 07:54:59 PDT 2008
 calibGenCAL/src/lib/Hists
 
