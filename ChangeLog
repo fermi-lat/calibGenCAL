@@ -1,4 +1,22 @@
 ------------------------------------------------------------
+User: fewtrell  Wed Sep 17 13:32:44 PDT 2008
+calibGenCAL/cfg
+
+Modified Files:
+	defaults.cfg 
+Log Message:
+GCR Calibration:
+- now includes asymmetry
+- now looks @ all Z's simultaneously (although still includes some per Z plots)
+- now recalculates pedestals for each input file. (peds drift during flight)
+
+Asymmetry calibration:
+  - now subtracts out average asymmetry from each data point in histogram - reducing spread in each bin - average asym is added back in during fit stage.
+  - now supports multiple # of slices per xtal
+
+
+    *
+------------------------------------------------------------
 User: ecephas  Fri Aug 15 14:42:37 PDT 2008
 GlastRelease-scons/calibGenCAL
 
