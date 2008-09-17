@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitTrigHists.cxx,v 1.6 2008/06/27 14:04:28 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/fitTrigHists.cxx,v 1.7 2008/07/07 23:52:56 chehtman Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -133,7 +133,7 @@ FitResults fitChannel(const FaceIdx faceIdx,
 
   copy(mev.begin(), mev.end(), mev_arr);
   /// fill mevErr_arr with equal value
-  for (int i=0;i<nBins;i++)mevErr_arr[i]=1.0;
+  for (unsigned i=0;i<nBins;i++)mevErr_arr[i]=1.0;
 
   copy(eff.begin(), eff.end(), eff_arr);
   copy(effErr.begin(), effErr.end(), effErr_arr);

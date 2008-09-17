@@ -153,7 +153,7 @@ int main(int argc,
     //-- RETRIEVE PEDESTALS
     
     CalPed peds;
-    LogStrm::get() << __FILE__ << ": reading in muon pedestal file: " << cfg.pedTXTFile.getVal() << endl;
+    LogStrm::get() << __FILE__ << ": reading in pedestal file: " << cfg.pedTXTFile.getVal() << endl;
     peds.readTXT(cfg.pedTXTFile.getVal());
 
     //-- RETRIEVE CIDAC2ADC
@@ -166,9 +166,9 @@ int main(int argc,
 
     //-- MUON CALIB
     // output histogram file name
-    string histFilename(cfg.outputBasename.getVal() + ".root");
-    string   asymTXTFile(cfg.outputBasename.getVal() + ".calAsym.txt");
-    string   mpdTXTFile(cfg.outputBasename.getVal() + ".calMPD.txt");
+    const string histFilename(cfg.outputBasename.getVal() + ".root");
+    const string   asymTXTFile(cfg.outputBasename.getVal() + ".calAsym.txt");
+    const string   mpdTXTFile(cfg.outputBasename.getVal() + ".calMPD.txt");
 
     ///////////////////////////////////////
     //-- OPEN HISTOGRAM FILE             //
@@ -180,7 +180,7 @@ int main(int argc,
                      << histFilename << endl;
     TFile histFile(histFilename.c_str(), "RECREATE", "CAL Muon Calib");
 
-    AsymHists asymHists;
+    AsymHists asymHists(CalResponse::MUON_GAIN, 12, 10, &histFile);
     MPDHists     mpdHists(MPDHists::FitMethods::LANGAU);
 
     CalAsym   calAsym;
@@ -203,7 +203,7 @@ int main(int argc,
     LogStrm::get() << __FILE__ << ": fitting asymmetry histograms." << endl;
     asymHists.fitHists(calAsym);
 
-    LogStrm::get() << __FILE__ << ": writing muon asymmetry: "
+    LogStrm::get() << __FILE__ << ": writing light asymmetry: "
                      << asymTXTFile << endl;
     calAsym.writeTXT(asymTXTFile);
 

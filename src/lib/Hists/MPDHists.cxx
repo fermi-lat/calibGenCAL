@@ -9,6 +9,7 @@
 #include "src/lib/Util/LangauFun.h"
 #include "src/lib/Util/CGCUtil.h"
 #include "src/lib/Util/ROOTUtil.h"
+#include "src/lib/Specs/CalResponse.h"
 
 // GLAST INCLUDES
 
@@ -30,8 +31,6 @@ namespace calibGenCAL {
 
   using namespace std;
   using namespace CalUtil;
-
-  const float MPDHists::MUON_ENERGY = 11.2;
 
   /// map fitting method enum to ROOT TF1 fitting function
   typedef std::map<MPDHists::FitMethods::FitMethod, TF1 *> FitFuncMap;
@@ -148,7 +147,7 @@ namespace calibGenCAL {
       // create histogram of residual after fit
       //createResidHist(histLL);
 
-      const float mpdLrg    = MUON_ENERGY/mpv;
+      const float mpdLrg    = CalResponse::CsIMuonPeak/mpv;
       calMPD.setMPD(xtalIdx, LRG_DIODE, mpdLrg);
 
       // keep width proportional to new scale

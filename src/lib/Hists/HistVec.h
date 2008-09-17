@@ -1,7 +1,7 @@
 #ifndef HistVec_h
 #define HistVec_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistVec.h,v 1.10 2008/06/27 12:12:37 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistVec.h,v 1.11 2008/06/27 13:00:04 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -21,6 +21,11 @@
 #include "TList.h"
 #include "TObject.h"
 
+#include "TH1S.h"
+#include "TH1I.h"
+#include "TH2S.h"
+#include "TProfile.h"
+
 // STD INCLUDES
 #include <string>
 #include <algorithm>
@@ -31,6 +36,35 @@
 #include <sstream>
 
 namespace calibGenCAL {
+  template <typename HistType>
+  inline HistType *__constructHist(const unsigned nXBins,
+                                   const float loXLimit,
+                                   const float hiXLimit,
+                                   const unsigned,
+                                   const float,
+                                   const float) {
+    return new HistType("","",
+                        nXBins,
+                        loXLimit,
+                        hiXLimit);
+  }
+
+  template <>
+  inline TH2S *__constructHist<TH2S>(const unsigned nXBins,
+                                     const float loXLimit,
+                                     const float hiXLimit,
+                                     const unsigned nYBins,
+                                     const float loYLimit,
+                                     const float hiYLimit) {
+    return new TH2S("","",
+                    nXBins,
+                    loXLimit,
+                    hiXLimit,
+                    nYBins,
+                    loYLimit,
+                    hiYLimit);
+  }
+                          
 
   /**  template class represents a CalUtil::CalVec or array 
        type collection of 1D ROOT histograms
@@ -38,6 +72,7 @@ namespace calibGenCAL {
        \note histograms are created as needed.
      
        \param IdxType intended to be index data type following conventions set in CalUtil::CalDefs
+       \param HistType expected to be descendent of ROOT TH1 class
   */
   template <typename IdxType,
             typename HistType> 
@@ -52,15 +87,21 @@ namespace calibGenCAL {
     HistVec(const std::string &histBasename,
             TDirectory *writeDir=0,
             TDirectory *readDir=0,
-            const size_t nBins=1000,
-            const double loBinLimit=0,
-            const double hiBinLimit=0
+            const unsigned int nXBins=100,
+            const float loXLimit=0,
+            const float hiXLimit=0,
+            const unsigned nYBins=0,
+            const float loYLimit=0,
+            const float hiYLimit=0
             ) :
+      m_writeDir(writeDir),
       m_histBasename(histBasename),
-      m_nBins(nBins),
-      m_loBinLimit(loBinLimit),
-      m_hiBinLimit(hiBinLimit),
-      m_writeDir(writeDir)
+      m_nXBins(nXBins),
+      m_loXLimit(loXLimit),
+      m_hiXLimit(hiXLimit),
+      m_nYBins(nYBins),
+      m_loYLimit(loYLimit),
+      m_hiYLimit(hiYLimit)
     {
       if (readDir != 0)
         loadHists(*readDir);
@@ -69,12 +110,31 @@ namespace calibGenCAL {
         setDirectory(writeDir);
     }
 
+    /// leave histogram objects under ROOT control
+    virtual ~HistVec() {}
+
+    /// delete all histogram objects
+    void deleteHists() {
+      for (IdxType idx; idx.isValid(); idx++) 
+        if (m_vec[idx] !=0) {
+          delete m_vec[idx];
+          m_vec[idx] = 0;
+        }
+    }
+
+    /// call h.reset() for each h in histogram collection
+    void resetHists() {
+      for (IdxType idx; idx.isValid(); idx++) 
+        if (m_vec[idx] !=0)
+          m_vec[idx]->Reset();
+    }
+
     /// act like STL vector
     typedef HistType& reference;
     /// act like STL vector
     typedef const HistType& const_reference;
 
-    /// return pointer to histogram for given index, return 0 if it doesn't exit
+    /// return pointer to histogram for given index, return 0 if it doesn't exist
     HistType *getHist(const IdxType &idx) {
       return m_vec[idx];
     }
@@ -107,7 +167,6 @@ namespace calibGenCAL {
           if (histdir == 0)
             throw std::runtime_error(std::string("Unable to create directory: ") +
                                      dir->GetPath() + "/" + subdir);
-
           
           hist_ptr->SetDirectory(histdir);
         }
@@ -139,7 +198,73 @@ namespace calibGenCAL {
       return retVal;
     }
 
-  private:
+    /// delete any empty histograms
+    void trimHists() {
+      for (IdxType idx; idx.isValid(); idx++) 
+        if (m_vec[idx] !=0)
+          if (m_vec[idx]->GetEntries() == 0) {
+            delete m_vec[idx];
+            m_vec[idx] = 0;
+          }
+    }
+
+  protected:
+
+    /// create new histogram and register it w/ output directory
+    HistType *genHist(const IdxType &idx) {
+      if (m_writeDir == 0)
+        throw std::runtime_error("HistVec::genHist() : Write directory not set for HistVec class");
+
+      const std::string histname(genHistName(idx));
+      const std::string subdir(genHistPath(idx));
+      
+      std::ostringstream tmp;
+      tmp <<  m_writeDir->GetPath() << subdir << "/";
+      const std::string fullpath(tmp.str());
+
+      HistType *newHist=constructHist(idx);
+      newHist->SetNameTitle(histname.c_str(), histname.c_str());
+
+      if (newHist == 0) 
+        throw std::runtime_error(std::string("Unable to create histogram: ") +
+                                 histname);
+      
+      /// retrieve proper directory for hist (create if needed)
+      TDirectory *const histdir = deliverROOTDir(m_writeDir, subdir);
+      if (histdir == 0)
+        throw std::runtime_error(std::string("Unable to create directory: ") +
+                                 fullpath);
+
+      newHist->SetDirectory(histdir);
+
+      return newHist;
+    }
+
+    virtual HistType *constructHist(const IdxType &) {
+      return __constructHist<HistType>(m_nXBins,
+                                       m_loXLimit,
+                                       m_hiXLimit,
+                                       m_nYBins,
+                                       m_loYLimit,
+                                       m_hiYLimit);
+    }
+
+    /// all new histograms (& modified) written to this directory
+    TDirectory * m_writeDir;
+
+    std::string genHistName(const IdxType &idx) const {
+      return m_histBasename + "_" + idx.toStr();
+    }
+
+  
+    /// generate appropriate subdirectory for histogram
+    std::string genHistPath(const IdxType &idx) const {
+      ostringstream tmp;
+      tmp << m_histBasename << "/"
+          << toPath(idx);
+      return tmp.str();
+    }
+
     /// load all associated histogram from current ROOT directory 
     void loadHists(TDirectory &readDir) {
       /// loop through all possible histograms & search for each one in current root dir
@@ -167,68 +292,26 @@ namespace calibGenCAL {
       }
     }
 
-    std::string genHistName(const IdxType &idx) const {
-      return m_histBasename + "_" + idx.toStr();
-    }
-
-
-    /// generate histogram in  directory
-    HistType *genHist(const IdxType &idx) {
-      if (m_writeDir == 0)
-        throw std::runtime_error("HistVec::genHist() : Write directory not set for HistVec class");
-
-      const std::string histname(genHistName(idx));
-      const std::string subdir(genHistPath(idx));
-      
-      std::ostringstream tmp;
-      tmp <<  m_writeDir->GetPath() << subdir << "/";
-      const std::string fullpath(tmp.str());
-
-      HistType *newHist = new HistType(histname.c_str(),
-                                       histname.c_str(),
-                                       m_nBins,
-                                       m_loBinLimit,
-                                       m_hiBinLimit);
-      if (newHist == 0) 
-        throw std::runtime_error(std::string("Unable to create histogram: ") +
-                                 histname);
-      
-      /// retrieve proper directory for hist (create if needed)
-      TDirectory *const histdir = deliverROOTDir(m_writeDir, subdir);
-      if (histdir == 0)
-        throw std::runtime_error(std::string("Unable to create directory: ") +
-                                 fullpath);
-
-      newHist->SetDirectory(histdir);
-
-      return newHist;
-    }
-  
-    /// generate appropriate subdirectory for histogram
-    std::string genHistPath(const IdxType &idx) const {
-      ostringstream tmp;
-      tmp << m_histBasename << "/"
-          << toPath(idx);
-      return tmp.str();
-    }
 
     typedef CalUtil::CalVec<IdxType,HistType*> VecType;
     VecType m_vec;
  
     /// shared histogram name prefix
     const std::string m_histBasename;
-    /// option for creating new histogram
-    size_t m_nBins;
-    /// option for creating new histogram
-    const double m_loBinLimit;
-    /// option for creating new histogram
-    const double m_hiBinLimit;
 
-    /// all new histograms (& modified) written to this directory
-    TDirectory * m_writeDir;
+    const unsigned m_nXBins;
+    const float m_loXLimit;
+    const float m_hiXLimit;
 
+    const unsigned m_nYBins;
+    const float m_loYLimit;
+    const float m_hiYLimit;
+
+  public:
+    typedef typename VecType::const_iterator const_iterator;
+    const_iterator begin() const {return m_vec.begin();}
+    const_iterator end() const {return m_vec.end();}
 
   };
-
 }; // namespace calibGenCAL
 #endif

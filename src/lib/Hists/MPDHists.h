@@ -60,7 +60,7 @@ namespace calibGenCAL {
     /// fit histograms & save mean gain values to calMPD
     /// \param calMPD output calibration values
     /// \param fitMethod should be member of MPDHists::fitMethods
-	void        fitHists(CalUtil::CalMPD &calMPD);
+    void        fitHists(CalUtil::CalMPD &calMPD);
 
     /// delete empty histograms
     /// \note useful for data w/ < 16 Cal modules.
@@ -85,17 +85,13 @@ namespace calibGenCAL {
 
     template <typename T>
     static std::string genHistName(const std::string &type,
-                            const T& idx) {
+                                   const T& idx) {
       std::ostringstream tmp;
       
       tmp <<  type
           << "_" << idx;
       return tmp.str();
     }
-
-    /// most probable energy deposition of Muon passing vertically
-    /// through a GLAST Cal CsI crystal
-    static const float MUON_ENERGY;
 
     void fillDacLL(CalUtil::XtalIdx xtalIdx,
                    float dac);

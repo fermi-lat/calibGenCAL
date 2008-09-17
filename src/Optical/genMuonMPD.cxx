@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/genMuonMPD.cxx,v 1.3 2008/05/19 14:17:33 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/genMuonMPD.cxx,v 1.4 2008/05/19 17:37:28 fewtrell Exp $
 
 /** @file Gen MevPerDAC calibrations from Muon event files using Cal Digi Hodoscope
     for track & hit information
@@ -126,7 +126,7 @@ int main(int argc,
 
     //-- RETRIEVE PEDESTALS
     CalPed    peds;
-    LogStrm::get() << __FILE__ << ": reading in muon pedestal file: " << cfg.pedTXTFile.getVal() << endl;
+    LogStrm::get() << __FILE__ << ": reading in pedestal file: " << cfg.pedTXTFile.getVal() << endl;
     peds.readTXT(cfg.pedTXTFile.getVal());
 
     // first see if use has explicitly chosen a txt filename
@@ -138,7 +138,7 @@ int main(int argc,
 
     //-- RETRIEVE ASYM
     CalAsym asym;
-    LogStrm::get() << __FILE__ << ": reading in muon asym file: " << cfg.asymTXTFile.getVal() << endl;
+    LogStrm::get() << __FILE__ << ": reading in light asym file: " << cfg.asymTXTFile.getVal() << endl;
     asym.readTXT(cfg.asymTXTFile.getVal());
     LogStrm::get() << __FILE__ << ": building asymmetry splines: " << endl;
     asym.genSplines();

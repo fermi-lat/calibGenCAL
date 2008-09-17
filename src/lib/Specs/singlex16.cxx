@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Specs/singlex16.cxx,v 1.1 2008/05/02 17:59:39 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Specs/singlex16.cxx,v 1.2 2008/07/29 20:03:27 fewtrell Exp $
 
 /** @file implement singlex16.h
     @author fewtrell
@@ -39,6 +39,6 @@ namespace {
 };
 
 namespace calibGenCAL {
-	const float *singlex16::CIDACTestVals() { return __CIDACTestVals;}
-    unsigned short singlex16::nCIDACVals() {return sizeof(__CIDACTestVals)/sizeof(*__CIDACTestVals);}
+  const float *singlex16::CIDACTestVals() { return __CIDACTestVals;}
+  unsigned short singlex16::nCIDACVals() {return sizeof(__CIDACTestVals)/sizeof(*__CIDACTestVals);}
 }

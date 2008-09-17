@@ -1,6 +1,6 @@
 #ifndef MuonCalibTkrAlg_h
 #define MuonCalibTkrAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/MuonCalibTkrAlg.h,v 1.1 2008/04/21 20:42:45 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/MuonCalibTkrAlg.h,v 1.2 2008/06/04 18:21:26 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -48,7 +48,7 @@ namespace calibGenCAL {
     /// \param dac2adc cal intNonlin calibrations
     /// \param asymHists output asymmetry histograms
     /// \param mpdHists output mevPerDAC histograms
-	  MuonCalibTkrAlg(const CalUtil::CalPed &ped,
+    MuonCalibTkrAlg(const CalUtil::CalPed &ped,
                     const CalUtil::CIDAC2ADC &dac2adc,
                     AsymHists &asymHists,
                     MPDHists &mpdHists,

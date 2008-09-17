@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/GCRCalibAlg.cxx,v 1.3 2008/05/13 16:53:59 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/GCRCalibAlg.cxx,v 1.4 2008/07/29 20:03:26 fewtrell Exp $
 
 /** @file 
     @author Zach Fewtrell
@@ -7,6 +7,7 @@
 // LOCAL INCLUDES
 #include "GCRCalibAlg.h"
 #include "src/lib/Hists/GCRHists.h"
+#include "src/lib/Hists/AsymHists.h"
 #include "src/lib/Specs/CalGeom.h"
 #include "src/lib/Util/RootFileAnalysis.h"
 #include "src/lib/Util/SimpleIniFile.h"
@@ -16,8 +17,10 @@
 #include "gcrSelectRootData/GcrSelectEvent.h"
 #include "digiRootData/DigiEvent.h"
 #include "facilities/Util.h"
+#include "facilities/commonUtilities.h"
 #include "CalUtil/SimpleCalCalib/CalPed.h"
 #include "CalUtil/SimpleCalCalib/CIDAC2ADC.h"
+#include "CalUtil/stl_util.h"
 
 // EXTLIB INCLUDES
 
@@ -28,32 +31,50 @@ using namespace std;
 using namespace CalUtil;
 using namespace facilities;
 
-namespace calibGenCAL {
+namespace {
+  using namespace calibGenCAL;
 
-  namespace defaults {
-    static const float MAX_ORTHOGONAL_SIN(0.5);
-    static const float MAX_LONGITUDINAL_SIN(sqrt(3.0)/2.0);
-    static const float MM_CUT_FROM_END(30);
-    static const int zListArr[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 26};
-    static const int zListSz(sizeof(zListArr)/sizeof(zListArr[0]));
-    static const vector<int> zList(zListArr, zListArr+zListSz);
-  };
-
-  namespace {
-    /// represent possible faces a GcrSelect track can cross on a single crystal.
-    typedef enum {
-      XFACE_ZTOP,
-      XFACE_ZBOT,
-      XFACE_XLEFT,
-      XFACE_XRIGHT,
-      XFACE_YLEFT,
-      XFACE_YRIGHT
-    } XFACE_BITPOS;
+  /// represent possible faces a GcrSelect track can cross on a single crystal.
+  typedef enum {
+    XFACE_ZTOP,
+    XFACE_ZBOT,
+    XFACE_XLEFT,
+    XFACE_XRIGHT,
+    XFACE_YLEFT,
+    XFACE_YRIGHT
+  } XFACE_BITPOS;
 
 
-    static const unsigned topBtmOnly =
-    1<<XFACE_ZTOP | 1<<XFACE_ZBOT;
-  };
+  static const unsigned topBtmOnly =
+  1<<XFACE_ZTOP | 1<<XFACE_ZBOT;
+
+  /// calculate MeV using nominal calibrations & diode signal levels
+  /// return CIDAC2ADC::INVALID_ADC() if data not present.
+  static float getNominalMeV(const CalVec<XtalDiode, float> &cidac,
+                             const IdealCalCalib &idealCalib) {
+
+    /// signal in MeV @ each face.
+    CalVec<FaceNum, float> faceSignal(FaceNum::N_VALS, CIDAC2ADC::INVALID_ADC());
+    for (FaceNum face;
+         face.isValid();
+         face++)
+      for (DiodeNum diode;
+           diode.isValid();
+           diode++) {
+        XtalDiode xDiode(face,diode);
+        if (cidac[xDiode] != CIDAC2ADC::INVALID_ADC()) {
+          faceSignal[face] = cidac[xDiode]*idealCalib.getMPD(diode);
+          break;
+        }
+      } // for diode
+
+    if (contains(faceSignal, CIDAC2ADC::INVALID_ADC()))
+      return CIDAC2ADC::INVALID_ADC();
+
+    /// final energy is geometric mean of both faces.
+    return sqrt(faceSignal[POS_FACE]*faceSignal[NEG_FACE]);
+  }
+
 
 
   /// return longitudinal center of xtal in xtal direction
@@ -83,15 +104,57 @@ namespace calibGenCAL {
     }
   }
 
+  /// return longitudinal position along xtal  in mm from xtal center
+  static float hitLongPos(const GcrSelectedXtal &gcrXtal) {
+    // get path info.
+    const TVector3 entryPoint = gcrXtal.getEntryPoint();
+    const TVector3 exitPoint  = gcrXtal.getExitPoint();
+    const TVector3 midPoint = (entryPoint+exitPoint)*.5;
 
-  GCRCalibAlg::GCRCalibAlg(const string &cfgPath) :
+    const CalXtalId xtalId = gcrXtal.getXtalId();
+    const TwrNum twr(xtalId.getTower());
+    const DirNum dir(LyrNum(xtalId.getLayer()).getDir());
+
+    const float  xtalCtr = xtalLongCtr(dir, twr);
+
+    if (dir == X_DIR)
+      return midPoint.x() - xtalCtr;
+    else
+      return midPoint.y() - xtalCtr;
+  }
+                        
+} // anonymous namespace
+
+namespace calibGenCAL {
+
+  namespace defaults {
+    static const float MAX_ORTHOGONAL_SIN(0.5);
+    static const float MAX_LONGITUDINAL_SIN(sqrt(3.0)/2.0);
+    static const float MM_CUT_FROM_END(30);
+    static const float MIN_ASYM_MEV(200);
+    static const float MAX_ASYM_MEV(900);
+  } // namespace defaults
+
+  GCRCalibAlg::GCRCalibAlg(const string &cfgPath, const string &inputMPDTXTPath) :
     cutCrossedFaces(true),
     cutTrackAngle(true),
     cutLongitudinalPos(true),
     maxOrthogonalSin(defaults::MAX_ORTHOGONAL_SIN),
     maxLongitudinalSin(defaults::MAX_LONGITUDINAL_SIN),
-    mmCutFromEnd(defaults::MM_CUT_FROM_END) {
+    mmCutFromEnd(defaults::MM_CUT_FROM_END),
+    minAsymMeV(defaults::MIN_ASYM_MEV),
+    maxAsymMeV(defaults::MAX_ASYM_MEV)
+  {
     readCfg(cfgPath);
+    // setup $(CALUTILXMLPATH) type variables
+    facilities::commonUtilities::setupEnvironment();
+    m_idealCalib.readCfgFile("$(CALUTILXMLPATH)/idealCalib_flight.xml");
+
+    if (inputMPDTXTPath != "") {
+      m_inputMPD.reset(new CalMPD());
+      m_inputMPD->readTXT(inputMPDTXTPath);
+    }
+
   }
 
   void GCRCalibAlg::readCfg(string cfgPath) {
@@ -125,12 +188,13 @@ namespace calibGenCAL {
                                         "CUT_LONGITUDINAL_POS",
                                         true);
   
-    vector<int> zVec(cfgFile.getVector<int>("GCR_CALIB",
-                                            "Z_LIST",
-                                            ", ",
-                                            defaults::zList));
+    minAsymMeV = cfgFile.getVal("GCR_CALIB",
+                                "MIN_ASYM_MEV",
+                                defaults::MIN_ASYM_MEV);
 
-    zList.insert(zVec.begin(), zVec.end());
+    maxAsymMeV = cfgFile.getVal("GCR_CALIB",
+                                "MAX_ASYM_MEV",
+                                defaults::MAX_ASYM_MEV);
   }
 
   void GCRCalibAlg::fillHists(const unsigned nEventsMax,
@@ -138,13 +202,14 @@ namespace calibGenCAL {
                               const vector<string> &gcrSelectRootFileList,
                               const CalPed &peds,
                               const CIDAC2ADC &dac2adc,
-                              GCRHists &gcrHists
+                              GCRHists &gcrHists,
+                              AsymHists &asymHists
                               ) {
     algData.clear();
     algData.calPed  = &peds;
     algData.dac2adc = &dac2adc;
     algData.gcrHists = &gcrHists;
-  
+    algData.asymHists = &asymHists;
 
     RootFileAnalysis rootFile(0, &digiFileList, 0, 0, &gcrSelectRootFileList);
 
@@ -210,7 +275,10 @@ namespace calibGenCAL {
           << "nHitsAngle: " << nHitsAngle << endl
           << "nHitsPos: " << nHitsPos << endl
           << "nFillsLE: " << nFills[LRG_DIODE] << endl
-          << "nFillsHE: " << nFills[SM_DIODE]  << endl;
+          << "nFillsHE: " << nFills[SM_DIODE]  << endl
+          << "nAsymFillsLE: " << nAsymFills[LRG_DIODE] << endl
+          << "nAsymFillsHE: " << nAsymFills[SM_DIODE]  << endl;
+
   }
 
   void GCRCalibAlg::processGcrEvent() {
@@ -248,7 +316,7 @@ namespace calibGenCAL {
   void GCRCalibAlg::processGcrHit(const GcrSelectedXtal &gcrXtal) {
     //-- CUT 1: CROSSED XTAL FACES --//
     if (cutCrossedFaces) {
-      unsigned crossedFaces = gcrXtal.getCrossedFaces();
+      const unsigned crossedFaces = gcrXtal.getCrossedFaces();
       if (!crossedFaceCut(crossedFaces))
         return;
     }
@@ -365,9 +433,9 @@ namespace calibGenCAL {
           // only process DAC in LEX1 / HEX8
           if (rng == LEX1 || rng == HEX8)
             dac[XtalDiode(face,diode)] = algData.dac2adc->adc2dac(rngIdx, adcPed[xRng]);
-        }
+        } /// face loop
         
-        // mean dac
+        // mean dac (lage diode mean DAC always calculated from LEX1, small diode always from HEX8)
         if (rng == LEX1 || rng == HEX8)
           if (dac[XtalDiode(POS_FACE,diode)] != CIDAC2ADC::INVALID_ADC() &&
               dac[XtalDiode(NEG_FACE,diode)] != CIDAC2ADC::INVALID_ADC()) {
@@ -376,28 +444,7 @@ namespace calibGenCAL {
             // pathlength correct
             meanDAC[diode] *= CalGeom::CsIHeight/gcrXtal.getPathLength();
           }
-      }
-      
-      //-- FILL ADC HISTOGRAMS --//
-      for (FaceNum face; face.isValid(); face++)
-        for (RngNum rng(maxBestRng); rng.isValid(); rng++) {
-          const XtalRng xRng(face,rng);
-
-          //-- MEAN ADC --//
-          if (adcPed[xRng] == CIDAC2ADC::INVALID_ADC())
-            continue;
-
-          const RngIdx rngIdx(xtalIdx, xRng);
-
-          //-- ADC RATIO --//
-          const XtalRng nextRng(face,
-                                RngNum(rng.val()+1)); 
-          for (FaceNum face; face.isValid(); face++)
-            if (rng <= HEX8 && adcPed[nextRng] != CIDAC2ADC::INVALID_ADC())
-              algData.gcrHists->fillAdcRatio(rngIdx,
-                                             adcPed[xRng],
-                                             adcPed[nextRng]);
-        }
+      } /// rng loop
 
       //-- FILL DAC HISTOGRAMS --//
       for (DiodeNum diode; diode.isValid(); diode++) {
@@ -406,13 +453,6 @@ namespace calibGenCAL {
         if (meanDAC[diode] == CIDAC2ADC::INVALID_ADC())
           continue;
 
-        /// only fill these histograms for z's of interest.
-        if (zList.find(eventData.inferredZ) != zList.end())
-          algData.gcrHists->fillMeanCIDACZ(xtalIdx,
-                                           diode,
-                                           eventData.inferredZ,
-                                           meanDAC[diode]);
-
         /// fill in histograms which do not use Z information
         algData.gcrHists->fillMeanCIDAC(xtalIdx,
                                         diode,
@@ -420,7 +460,13 @@ namespace calibGenCAL {
 
         algData.nFills[diode]++;
 
-      }
+        if (m_inputMPD.get() != 0) {
+          const float mpd = m_inputMPD->getMPD(xtalIdx, diode);
+          const float mev = meanDAC[diode]*mpd;
+          algData.gcrHists->fillMeV(xtalIdx, diode, mev, eventData.inferredZ);
+        }
+
+      } // for DiodeNum
 
       //-- MEAN DAC RATIO --//
       for (FaceNum face; face.isValid(); face++) {
@@ -431,9 +477,35 @@ namespace calibGenCAL {
                                          dac[XtalDiode(face,LRG_DIODE)],
                                          dac[XtalDiode(face,SM_DIODE)]);
         }
+      } // for FaceNum 
 
-      } // for (rng) /* fill histograms */
-    }   // gcrXtal
+      //-- ASYMMETRY FILL --//
+      /// cut asymmetry on specified energy range
+      const float nominalMeV = getNominalMeV(dac, m_idealCalib);
+      if (between_incl(minAsymMeV, nominalMeV, maxAsymMeV))
+        for (AsymType asymType; asymType.isValid(); asymType++) {
+          /// dac value on positive xtal face
+          const float pDAC = dac[XtalDiode(POS_FACE, asymType.getDiode(POS_FACE))];
+          if (pDAC == CIDAC2ADC::INVALID_ADC())
+            continue;
+
+          /// dac value on negative xtal face
+          const float nDAC = dac[XtalDiode(NEG_FACE, asymType.getDiode(NEG_FACE))];
+          if (nDAC == CIDAC2ADC::INVALID_ADC())
+            continue;
+
+          algData.asymHists->fill(asymType, 
+                                  xtalIdx, 
+                                  hitLongPos(gcrXtal), 
+                                  pDAC, 
+                                  nDAC);
+
+          if (asymType == ASYM_LL)
+            algData.nAsymFills[LRG_DIODE]++;
+          else if (asymType == ASYM_SS)
+            algData.nAsymFills[SM_DIODE]++;
+        }
+    } // if hit in selected hit list
   }
 
   bool GCRCalibAlg::crossedFaceCut( const unsigned crossedFaces) const {
@@ -487,5 +559,12 @@ namespace calibGenCAL {
 
     return true;
   }
+
+  void GCRCalibAlg::fillAsymHit(const CalUtil::CalVec<CalUtil::XtalDiode, float> &cidac) {
+  }
+
 }; // namespace calibGenCAL
 
+    
+  
+  

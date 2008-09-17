@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/fitGCRHists.cxx,v 1.4 2008/07/29 20:03:26 fewtrell Exp $ //
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/fitGCRHists.cxx,v 1.5 2008/08/04 14:54:58 fewtrell Exp $ //
 
 /** @file 
     @author Zachary Fewtrell
@@ -110,6 +110,10 @@ int main(const int argc,
     TFile outputROOTFile(outputROOTFilename.c_str(),
                          "RECREATE",
                          "Fitted GCR Histograms");
+    if (!outputROOTFile.IsOpen()) {
+      LogStrm::get() << __FILE__ << ": ERROR: Opening file: " << outputROOTFilename << endl;
+      return -1;
+    }
 
     /// retrieve histograms from previous analysis.
     LogStrm::get() << __FILE__ << ": opening input histogram file: " << cfg.inputROOTPath.getVal() << endl;

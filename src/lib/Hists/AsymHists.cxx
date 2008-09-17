@@ -8,6 +8,7 @@
 #include "AsymHists.h"
 #include "src/lib/Util/ROOTUtil.h"
 #include "src/lib/Util/CGCUtil.h"
+#include "src/lib/Specs/CalGeom.h"
 
 // GLAST INCLUDES
 
@@ -18,175 +19,164 @@
 
 // STD INCLUDES
 #include <sstream>
+#include <string>
 
 using namespace CalUtil;
 using namespace std;
 
 namespace calibGenCAL {
+  /// \param nSlicesPerXtal number of slices along entire crystal length
+  /// \arapm nSlicesPerHist only the middle 'n' slices will actually be measued as outer most slices have very high error
+  AsymHists::AsymHists(const CalResponse::CAL_GAIN_INTENT calGain,
+                       const unsigned short nSlicesPerXtal,
+                       const unsigned short nSlicesPerHist,
+                       TDirectory *const writeDir,
+                       TDirectory *const readDir) 
+    :
+    m_nSlicesPerXtal(nSlicesPerXtal),
+    m_nSlicesPerHist(nSlicesPerHist),
+    m_mmCoveredByHists(CalGeom::CsILength*nSlicesPerHist/nSlicesPerXtal),
+    m_mmIgnoredOnXtalEnd((CalGeom::CsILength-m_mmCoveredByHists)/2),
+    m_writeDir(writeDir),
+    m_calGain(calGain)
+  {
+    if (readDir != 0)
+      loadHists(*readDir);
+    else
+      initHists();
+    
+    /// move loaded histograms to output dir.
+    if (writeDir)
+      setDirectory(writeDir);
+  }
+
   void AsymHists::initHists() {
-    // fill in min & max histogram levels.
-    CalVec<AsymType, float> asymMin;
-    CalVec<AsymType, float> asymMax;
+    m_asymHists.reset(new AsymHistCol("asym",
+                                      m_writeDir,
+                                      0,
+                                      m_nSlicesPerHist,
+                                      -1*(CalGeom::CsILength/2-m_mmIgnoredOnXtalEnd),
+                                      CalGeom::CsILength/2-m_mmIgnoredOnXtalEnd,
+                                      400,
+                                      -1,
+                                      1));
 
-    asymMin[ASYM_LL] = -2;
-    asymMax[ASYM_LL] = 2;
-    asymMin[ASYM_LS] = -1;
-    asymMax[ASYM_LS] = 7;
-    asymMin[ASYM_SL] = -7;
-    asymMax[ASYM_SL] = 1;
-    asymMin[ASYM_SS] = -2;
-    asymMax[ASYM_SS] = 2;
-
-    for (AsymType asymType; asymType.isValid(); asymType++)
-      // PER XTAL LOOP
-      for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
-        string tmp = genHistName(asymType, xtalIdx);
-        // columns are #'d 0-11, hist contains 1-10.
-        // .5 & 10.5 limit puts 1-10 at center of bins
-        m_histograms[asymType][xtalIdx] = new TH2S(tmp.c_str(),
-                                                   tmp.c_str(),
-                                                   CalAsym::N_ASYM_PTS,
-                                                   .5,
-                                                   10.5,
-                                                   (unsigned)(100*(asymMax[asymType] -
-                                                                   asymMin[asymType])),
-                                                   asymMin[asymType],
-                                                   asymMax[asymType]);
-      }
   }
 
   void AsymHists::summarizeHists(ostream &ostrm) const {
     ostrm << "XTAL\tNHITS" << endl;
-    for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++)
-      if (m_histograms[ASYM_SS][xtalIdx])
-        if (m_histograms[ASYM_SS][xtalIdx]->GetEntries() > 0)
-          ostrm << xtalIdx.val() << "\t"
-                << m_histograms[ASYM_SS][xtalIdx]->GetEntries()
-                << endl;
-  }
-
-  void AsymHists::loadHists(const TDirectory &readDir) {
-    for (AsymType asymType; asymType.isValid(); asymType++)
-      // PER XTAL LOOP
-      for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
-        const string histname = genHistName(asymType, xtalIdx);
-        TH2S  *hist_ptr = retrieveROOTObj < TH2S > (readDir, histname);
-        if (!hist_ptr)
-          continue;
-
-        m_histograms[asymType][xtalIdx] = hist_ptr;
-      }
-  }
-
-  string AsymHists::genHistName(const AsymType asymType,
-                                const XtalIdx xtalIdx) {
-    ostringstream tmp;
-
-
-    tmp <<  "asym"
-        << asymType.getDiode(POS_FACE).val()
-        << asymType.getDiode(NEG_FACE).val()
-        << "_" << xtalIdx.toStr();
-    return tmp.str();
-  }
-
-  unsigned AsymHists::getMinEntries() const {
-    unsigned      retVal  = ULONG_MAX;
-
-    unsigned long sum     = 0;
-    unsigned      n = 0;
-    unsigned      maxHits = 0;
-
-
     for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
-      unsigned nEntries = (unsigned)m_histograms[ASYM_SS][xtalIdx]->GetEntries();
-
-      // only count histograms that have been filled
-      // (some histograms will never be filled if we are
-      // not using all 16 towers)
-      if (nEntries != 0) {
-        sum    += nEntries;
-        n++;
-        retVal  = min(retVal, nEntries);
-        maxHits = max(maxHits, nEntries);
-      }
+      AsymHistId histId(ASYM_SS, xtalIdx);
+      TH2S const*const hist = m_asymHists->getHist(histId);
+      if (hist!=0)
+        if (hist->GetEntries() > 0)
+          ostrm << xtalIdx.val() << "\t"
+                << hist->GetEntries()
+                << endl;
     }
-
-    LogStrm::get() << " Channels Detected: "  << n
-                     << " Avg Hits/channel: " << ((n) ? (double)sum/n : 0)
-                     << " Max: " << maxHits
-                     << endl;
-
-    // case where there are no fills at all
-    if (retVal == ULONG_MAX)
-      return 0;
-
-    return retVal;
   }
 
-  void AsymHists::trimHists() {
-    for (AsymType asymType; asymType.isValid(); asymType++)
-      for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++)
-        if (m_histograms[asymType][xtalIdx])
-          if (!m_histograms[asymType][xtalIdx]->GetEntries()) {
-            delete m_histograms[asymType][xtalIdx];
-            m_histograms[asymType][xtalIdx] = 0;
-          }
+  void AsymHists::loadHists(TDirectory &readDir) {
+    m_asymHists.reset(new AsymHistCol("asym",
+                                      m_writeDir,
+                                      &readDir,
+                                      m_nSlicesPerHist,
+                                      -1*(CalGeom::CsILength/2-m_mmIgnoredOnXtalEnd),
+                                      CalGeom::CsILength/2-m_mmIgnoredOnXtalEnd));
+
   }
 
   void AsymHists::fitHists(CalAsym &calAsym) {
-    for (AsymType asymType; asymType.isValid(); asymType++)
+    for (AsymHistId histId; histId.isValid(); histId++) {
+      TH2S *const hist = m_asymHists->getHist(histId);
+      // skip non existant hists
+      if (hist == 0)
+        continue;
 
-      // PER XTAL LOOP
-      for (XtalIdx xtalIdx; xtalIdx.isValid(); xtalIdx++) {
-        // skip non existant hists
-        if (!m_histograms[asymType][xtalIdx])
-          continue;
+      // loop through all nSlicesPerXtal bins in asymmetry profile
 
-        // loop through all N_ASYM_PTS bins in asymmetry profile
+      // skip empty histograms
+      TH2S &h = *hist;
+      if (h.GetEntries() == 0)
+        continue;
 
-        // skip empty histograms
-        TH2S &h = *(m_histograms[asymType][xtalIdx]);
-        if (h.GetEntries() == 0)
-          continue;
+      const AsymType asymType(histId.getAsymType());
 
-        for (unsigned short i = 0; i < CalAsym::N_ASYM_PTS; i++) {
-          // get slice of 2D histogram for each X bin
-          // HISTOGRAM BINS START AT 1 NOT ZERO! (hence 'i+1')
-          TH1D &slice = *(h.ProjectionY("slice", i+1, i+1));
+      for (unsigned short i = 0; i < m_nSlicesPerHist; i++) {
+        // get slice of 2D histogram for each X bin
+        const unsigned short binNum = i+1;
+        // HISTOGRAM BINS START AT 1 NOT ZERO! (hence 'i+1')
+        TH1D &slice = *(h.ProjectionY("slice", binNum, binNum));
 
-          // point local references to output values
-          float av;
-          float rms;
-
-          // trim outliers - 3 times cut out anything outside 3 sigma
-          for (unsigned short iter = 0; iter < 3; iter++) {
-            // get current mean & RMS
-            av  = slice.GetMean();
-            rms = slice.GetRMS();
-
-            // trim new histogram limits
-            slice.SetAxisRange(av - 3*rms, av + 3*rms);
-          }
-
-          // update new mean & sigma
-          av = slice.GetMean(); rms = slice.GetRMS();
-
-          LogStrm::get() << xtalIdx.val() << " "
-                           << asymType.val() << " "
-                           << i   << " "
-                           << av  << " "
-                           << rms << " "
-                           << endl;
-
-          calAsym.getPtsAsym(xtalIdx, asymType).push_back(av);
-          calAsym.getPtsErr(xtalIdx, asymType).push_back(rms);
-
-          // evidently ROOT doesn't like reusing the slice
-          // histograms as much as they claim they do.
-          slice.Delete();
+        // rebin HE histograms to binWidth>=.02 in log(asym) scale
+        if (asymType != ASYM_LL) {
+          float binWidth = slice.GetBinWidth(1);
+          if (binWidth < .02)
+            slice.Rebin((int)(.02/binWidth));
         }
+
+        // point local references to output values
+        float av;
+        float rms;
+
+        // trim outliers - 3 times cut out anything outside 3 sigma
+        for (unsigned short iter = 0; iter < 3; iter++) {
+          // get current mean & RMS
+          av  = slice.GetMean();
+          rms = slice.GetRMS();
+
+          // trim new histogram limits
+          slice.SetAxisRange(av - 3*rms, av + 3*rms);
+        }
+
+        // update new mean & sigma
+        //av = slice.GetMean(); rms = slice.GetRMS();
+        // fit w/ gaussian to avoid bias from outliers
+        slice.Fit("gaus","Q","", av - 3*rms, av+3*rms);
+        av = ((TF1&)*slice.GetFunction("gaus")).GetParameter(1);
+        rms = ((TF1&)*slice.GetFunction("gaus")).GetParameter(2);
+
+        // add nominal asymmetry slope back in
+        av += nominalAsymSlope()*h.GetBinCenter(binNum);
+        
+        // add average asymmetry back in
+        av += nominalAsymCtr(asymType, m_calGain);
+
+        const AsymType asymType(histId.getAsymType());
+        const XtalIdx xtalIdx(histId.getXtalIdx());
+
+        LogStrm::get() << histId.toStr() << " "
+                       << i   << " "
+                       << av  << " "
+                       << rms << " "
+                       << endl;
+
+        calAsym.getPtsAsym(xtalIdx,asymType).push_back(av);
+        calAsym.getPtsErr(xtalIdx,asymType).push_back(rms);
+
+        // evidently ROOT doesn't like reusing the slice
+        // histograms as much as they claim they do.
+        slice.Delete();
       }
+    }
   }
 
+  void AsymHists::fill(const CalUtil::AsymType asymType,
+                       const CalUtil::XtalIdx xtalIdx,
+                       const float mmFromCtrLong,
+                       const float posDAC,
+                       const float negDAC) {
+    float asym = log(posDAC/negDAC);
+
+    // subtract nominal asymmetry slope to get flat residual histogram
+    asym -= nominalAsymSlope()*mmFromCtrLong;
+
+    // move average asymmetry across entire crystal to 0
+    asym -= nominalAsymCtr(asymType, m_calGain);
+
+    AsymHistId histId(asymType, xtalIdx);
+    TH2S &hist = m_asymHists->produceHist(histId);
+
+    hist.Fill(mmFromCtrLong, asym);
+  }
 }; // namespace calibGenCAL

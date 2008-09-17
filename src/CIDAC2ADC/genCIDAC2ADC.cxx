@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/genCIDAC2ADC.cxx,v 1.10 2008/07/06 22:43:15 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/genCIDAC2ADC.cxx,v 1.11 2008/07/29 20:03:26 fewtrell Exp $
 
 /** @file Gen CIDAC2ADC calibrations from singlex16 charge injection event files
     @author Zachary Fewtrell
@@ -119,6 +119,11 @@ int main(int argc,
     const string outputROOTPath(cfg.outputBasename.getVal() + ".adcmean.root");
     LogStrm::get() << __FILE__ << ": opening output ROOT file: " << outputROOTPath << endl;
     TFile outputROOTFile(outputROOTPath.c_str(), "RECREATE", "Cal IntNolin calib", 9);
+    if (!outputROOTFile.IsOpen()) {
+      LogStrm::get() << __FILE__ << ": ERROR: Opening file: " << outputROOTPath << endl;
+      return -1;
+    }
+    
 
     CIDAC2ADC    adcMeans;
     CIDAC2ADC    cidac2adc;

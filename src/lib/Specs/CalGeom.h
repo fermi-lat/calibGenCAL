@@ -1,7 +1,7 @@
 #ifndef CalGeom_H
 #define CalGeom_H
 
-//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Specs/CalGeom.h,v 1.3 2007/05/25 21:06:48 fewtrell Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Specs/CalGeom.h,v 1.4 2008/04/18 21:46:26 chehtman Exp $
 
 // LOCAL INCLUDES=
 
@@ -56,6 +56,14 @@ namespace calibGenCAL {
     /// return
     Vec3D            xtalCtrPos(const CalUtil::XtalIdx xtalIdx);
   };
+
+  /// convert longitudinal slice of crystal to mm from center of xtal
+  /// \param sliceNum input slice number to convert
+  /// \param nSlicesTotal total number of slices in sinngle crystal
+  inline float xtalSliceToMMFromCtr(const unsigned short sliceNum,
+                                    const unsigned short nSlicesTotal) {
+    return (sliceNum+.5)*CalGeom::CsILength/nSlicesTotal - CalGeom::CsILength/2;
+  }
 
 }; // namespace calibGenCAL
 #endif // CalGeom_H

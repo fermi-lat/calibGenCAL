@@ -43,7 +43,7 @@ library calibGenCAL  lib/*.cxx lib/*.h \
                      lib/Util/*.cxx lib/Util/*.h \      
                      lib/Algs/*.cxx lib/Algs/*.h
 
-application genMuonPed Ped/genMuonPed.cxx Ped/MuonPedAlg.cxx Ped/MuonPedAlg.h
+application genMuonPed Ped/genMuonPed.cxx 
 
 application genCIDAC2ADC CIDAC2ADC/genCIDAC2ADC.cxx CIDAC2ADC/IntNonlinAlg.cxx CIDAC2ADC/IntNonlinAlg.h
 
@@ -92,3 +92,5 @@ application fitTrigMonitorHists Thresh/fitTrigMonitorHists.cxx
 application genAliveHists Thresh/genAliveHists.cxx
 
 application genSciLACHists Thresh/genSciLACHists.cxx
+
+application fitAsymHists Optical/fitAsymHists.cxx

@@ -1,7 +1,7 @@
 #ifndef CGCUtil_H
 #define CGCUtil_H
 
-//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.h,v 1.9 2008/05/09 21:51:38 fewtrell Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/CGCUtil.h,v 1.10 2008/05/13 16:54:01 fewtrell Exp $
 
 // LOCAL INCLUDES
 
@@ -64,9 +64,9 @@ namespace calibGenCAL {
     return degrees*M_PI/180;
   }
                      
-  /// return true if min <= x <= max
+  /// return true if min <= x <= max (inclusive)
   template <typename T>
-  bool between(const T& min,
+  bool between_incl(const T& min,
                const T& x,
                const T& max) {
     return (x >= min && x <= max);
