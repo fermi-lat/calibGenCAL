@@ -1,5 +1,23 @@
 ------------------------------------------------------------
 User: fewtrell  Wed Sep 17 13:32:45 PDT 2008
+calibGenCAL/src/Thresh
+
+Modified Files:
+	fitTrigHists.cxx genAliveHists.cxx genTrigMonitorHists.cxx 
+Log Message:
+GCR Calibration:
+- now includes asymmetry
+- now looks @ all Z's simultaneously (although still includes some per Z plots)
+- now recalculates pedestals for each input file. (peds drift during flight)
+
+Asymmetry calibration:
+  - now subtracts out average asymmetry from each data point in histogram - reducing spread in each bin - average asym is added back in during fit stage.
+  - now supports multiple # of slices per xtal
+
+
+    *
+------------------------------------------------------------
+User: fewtrell  Wed Sep 17 13:32:45 PDT 2008
 calibGenCAL/src/Ped
 
 Modified Files:
