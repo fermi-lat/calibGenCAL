@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/MuonAsymAlg.cxx,v 1.1 2008/04/21 20:42:45 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/MuonAsymAlg.cxx,v 1.2 2008/04/22 18:36:04 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -10,6 +10,7 @@
 #include "src/lib/Util/TwrHodoscope.h"
 #include "src/lib/Hists/AsymHists.h"
 #include "src/lib/Util/CGCUtil.h"
+#include "src/lib/Specs/CalGeom.h"
 
 // GLAST INCLUDES
 #include "digiRootData/DigiEvent.h"
@@ -153,9 +154,12 @@ namespace calibGenCAL {
         for (AsymType asymType; asymType.isValid(); asymType++) {
           const float dacP = hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), POS_FACE, asymType.getDiode(POS_FACE))];
           const float dacN = hscope.dac[tDiodeIdx(xtalIdx.getTXtalIdx(), NEG_FACE, asymType.getDiode(NEG_FACE))];
-          const float asym = log(dacP/dacN);
 
-          m_asymHists.getHist(asymType, xtalIdx)->Fill(pos, asym);
+          m_asymHists.fill(asymType, 
+                           xtalIdx, 
+                           xtalSliceToMMFromCtr(pos,ColNum::N_VALS), 
+                           dacP, 
+                           dacN);
         }
         //           logStrm << "HIT: " << eventData.eventNum
         //                   << " " << xtalIdx.val()
@@ -169,8 +173,6 @@ namespace calibGenCAL {
 
   void MuonAsymAlg::fillHists(unsigned nEntries,
                               const vector<string> &rootFileList) {
-    m_asymHists.initHists();
-
     RootFileAnalysis rootFile(0,
                               &rootFileList,
                               0);

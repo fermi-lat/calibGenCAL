@@ -85,7 +85,7 @@ int main(int argc,
     /// multiplexing output streams
     /// simultaneously to cout and to logfile
     LogStrm::addStream(cout);
-    string logfile(cfg.outputBasename.getVal() + ".log.txt");
+    const string logfile(cfg.outputBasename.getVal() + ".log.txt");
     ofstream tmpStrm(logfile.c_str());
 
     LogStrm::addStream(tmpStrm);
@@ -98,8 +98,8 @@ int main(int argc,
 
     //-- MUON CALIB
     // output histogram file name
-    string histFilename(cfg.outputBasename.getVal() + ".root");
-    string mpdTXTFile(cfg.outputBasename.getVal() + ".calMPD.txt");
+    const string histFilename(cfg.outputBasename.getVal() + ".root");
+    const string mpdTXTFile(cfg.outputBasename.getVal() + ".calMPD.txt");
 
     ///////////////////////////////////////
     //-- OPEN HISTOGRAM FILE             //
@@ -119,13 +119,13 @@ int main(int argc,
     if (!cfg.skipAsym.getVal()) {
       CalAsym   calAsym;
 
-      AsymHists asymHists;
+      AsymHists asymHists(CalResponse::MUON_GAIN);
       asymHists.loadHists(histFile);
       LogStrm::get() << __FILE__ << ": fitting asymmetry histograms." << endl;
       asymHists.fitHists(calAsym);
       
       string asymTXTFile(cfg.outputBasename.getVal() + ".calAsym.txt");
-      LogStrm::get() << __FILE__ << ": writing muon asymmetry: "
+      LogStrm::get() << __FILE__ << ": writing light asymmetry: "
                      << asymTXTFile << endl;
       calAsym.writeTXT(asymTXTFile);
     }

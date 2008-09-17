@@ -1,6 +1,6 @@
 #ifndef MuonAsymAlg_h
 #define MuonAsymAlg_h
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Algs/MuonAsymAlg.h,v 1.6 2008/01/22 19:40:58 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/MuonAsymAlg.h,v 1.1 2008/04/21 20:42:45 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -37,7 +37,7 @@ namespace calibGenCAL {
   */
   class MuonAsymAlg {
   public:
-	  MuonAsymAlg(const CalUtil::CalPed &ped,
+    MuonAsymAlg(const CalUtil::CalPed &ped,
                 const CalUtil::CIDAC2ADC &dac2adc,
                 AsymHists &asymHists);
 
@@ -90,7 +90,7 @@ namespace calibGenCAL {
       }
 
     public:
-		EventData(const CalUtil::CalPed &peds,
+      EventData(const CalUtil::CalPed &peds,
                 const CalUtil::CIDAC2ADC &dac2adc) :
         hscopes(CalUtil::TwrNum::N_VALS,
                 TwrHodoscope(peds, dac2adc)),

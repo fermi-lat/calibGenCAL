@@ -1,7 +1,7 @@
 #ifndef GCRCalibAlg_h
 #define GCRCalibAlg_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/GCRCalibAlg.h,v 1.1 2008/04/21 20:42:45 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/GCRCalibAlg.h,v 1.2 2008/05/13 16:53:59 fewtrell Exp $
 
 /** @file
     @author Zach Fewtrell
@@ -12,6 +12,8 @@
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"
 #include "CalUtil/CalVec.h"
+#include "CalUtil/SimpleCalCalib/CalMPD.h"
+#include "CalUtil/SimpleCalCalib/IdealCalCalib.h"
 
 // EXTLIB INCLUDES
 
@@ -20,6 +22,7 @@
 #include <string>
 #include <map>
 #include <set>
+#include <memory>
 
 class TVector3;
 class GcrSelectedXtal;
@@ -33,11 +36,11 @@ namespace CalUtil {
   class CalPed;
   class CIDAC2ADC;
   class CalMPD;
-
 }
 
 namespace calibGenCAL {
   class GCRHists;
+  class AsymHists;
 
   /** \brief Algorithm-type class for generating GLAST Cal optical Calibrations for 
       GCR events
@@ -47,7 +50,9 @@ namespace calibGenCAL {
   class GCRCalibAlg {
   public:
     /// \param cfgPath (optional) ini type filename for loading optional parameters.  set to "" for defautls (supports env var expansion)
-    GCRCalibAlg(const std::string &cfgPath="");
+    /// \param inputMPDTxtPath (optional) path to MeVPerDAC text calibration file.  If != "", enables histograms with energy scale axes.
+    GCRCalibAlg(const std::string &cfgPath="",
+                const std::string &inputMPDTxtPath="");
 
     /// populate histograms from digi root event file
     /// \nEvents max # events to loop through
@@ -56,7 +61,8 @@ namespace calibGenCAL {
                    const std::vector<std::string> &gcrSelectRootFileList,
                    const CalUtil::CalPed &peds,
                    const CalUtil::CIDAC2ADC &dac2adc,
-                   GCRHists &gcrHists);
+                   GCRHists &gcrHists,
+                   AsymHists &asymHists);
 
 
 
@@ -78,6 +84,9 @@ namespace calibGenCAL {
 
     /// process single CalDigi hit
     void     processDigiHit(const CalDigi &calDigi);
+
+    /// fill asymmetry histograms w/ dac signal info
+    void fillAsymHit(const CalUtil::CalVec<CalUtil::XtalDiode, float> &cidac);
 
     /// cut xtal hit based on track entry & exit face.
     /// return true for good hit.
@@ -127,8 +136,12 @@ namespace calibGenCAL {
       unsigned                                       nHitsAngle;
       /// number of hits pass the distance xtal pos cut
       unsigned                                       nHitsPos;
+
       /// number of histogram fills.
       CalUtil::CalVec<CalUtil::DiodeNum, unsigned> nFills;
+
+      /// number of asymmetry histogram fills
+      CalUtil::CalVec<CalUtil::DiodeNum, unsigned> nAsymFills;
 
       /// adc pedestals for use by algorithm
       const CalUtil::CalPed *                                 calPed;
@@ -137,6 +150,7 @@ namespace calibGenCAL {
       const CalUtil::CIDAC2ADC *                              dac2adc;
 
       GCRHists *                               gcrHists;
+      AsymHists * asymHists;
     }     algData;
 
     /// store data pertinent to current event
@@ -197,9 +211,19 @@ namespace calibGenCAL {
     float mmCutFromEnd;
     /// directly based on mmCutFromEnd
     float mmCutFromCtr;
+    /// energy limit for asymmetry histograms
+    float minAsymMeV;
+    /// energy limit for asymmetry histograms
+    float maxAsymMeV;
 
     /// list of particles 'of interest' for storage in histograms
     std::set<int> zList;
+
+    /// if !="", enables energy scale histogram axes.
+    std::auto_ptr<CalUtil::CalMPD> m_inputMPD;
+
+    /// stores ideal (average) calibration values.
+    CalUtil::IdealCalCalib m_idealCalib;
   };
 
 

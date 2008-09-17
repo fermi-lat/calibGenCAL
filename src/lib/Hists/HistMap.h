@@ -1,7 +1,7 @@
 #ifndef HistMap_h
 #define HistMap_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistMap.h,v 1.8 2008/07/29 20:03:26 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistMap.h,v 1.9 2008/08/04 14:54:59 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -56,13 +56,13 @@ namespace calibGenCAL {
             TDirectory *const writeDir=0,
             TDirectory *const readDir=0,
             const size_t nBins=1000,
-            const double loBinLimit=0,
-            const double hiBinLimit=0
+            const double loLimit=0,
+            const double hiLimit=0
             ) :
       m_histBasename(histBasename),
       m_nBins(nBins),
-      m_loBinLimit(loBinLimit),
-      m_hiBinLimit(hiBinLimit),
+      m_loLimit(loLimit),
+      m_hiLimit(hiLimit),
       m_writeDir(writeDir)
     {
       /// load data from file
@@ -71,6 +71,8 @@ namespace calibGenCAL {
 
       setDirectory(writeDir);
     }
+
+    virtual ~HistMap() {}
 
 
     /// retrieve histogram for given index, build it if it doesn't exist.
@@ -117,9 +119,7 @@ namespace calibGenCAL {
     const_iterator end() const {return m_map.end();}
 
 
-  private:
-
-
+  protected:
     /// insert histogram into proper slot
     void insertHist(HistType *hist_ptr) {
       assert(hist_ptr != 0);
@@ -170,19 +170,17 @@ namespace calibGenCAL {
       return IdxType(name.substr(prefix.size()));
     }
 
+    /// create new histogram & register it w/ output directory
     HistType *genHist(const IdxType &idx) {
       if (m_writeDir == 0)
-        throw std::runtime_error("HistVec::genHist() : Write directory not set for HistVec class");
+        throw std::runtime_error("HistMap::genHist() : Write directory not set for HistMap class");
 
       const std::string histname(genHistName(idx));
 
       const std::string subdir(genHistPath(idx));
 
-      HistType *const hist(new HistType(histname.c_str(),
-                                        histname.c_str(),
-                                        m_nBins,
-                                        m_loBinLimit,
-                                        m_hiBinLimit));
+      HistType *hist=constructHist(idx);
+      hist->SetNameTitle(histname.c_str(), histname.c_str());
 
       TDirectory *const histdir(deliverROOTDir(m_writeDir, subdir));
       hist->SetDirectory(histdir);
@@ -190,8 +188,15 @@ namespace calibGenCAL {
       return hist;
     }
 
-    MapType m_map;
+    virtual HistType *constructHist(const IdxType &) {
+      return new HistType("","",
+                          m_nBins,
+                          m_loLimit,
+                          m_hiLimit);
+                          
+    }
 
+    MapType m_map;
     
     /// generate appropriate subdirectory for histogram
     std::string genHistPath(const IdxType &idx) {
@@ -206,9 +211,9 @@ namespace calibGenCAL {
     /// option for creating new histogram
     const size_t m_nBins;
     /// option for creating new histogram
-    const double m_loBinLimit;
+    const double m_loLimit;
     /// option for creating new histogram
-    const double m_hiBinLimit;
+    const double m_hiLimit;
 
     /// all new (& modified) histograms written to this directory
     TDirectory * m_writeDir;

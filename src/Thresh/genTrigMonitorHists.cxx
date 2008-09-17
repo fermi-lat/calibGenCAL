@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/genTrigMonitorHists.cxx,v 1.3 2008/05/19 14:17:34 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Thresh/genTrigMonitorHists.cxx,v 1.4 2008/05/19 17:37:29 fewtrell Exp $
 
 /** @file
     @author Z. Fewtrell
@@ -236,7 +236,7 @@ int main(const int argc, const char **argv) {
           const FaceIdx faceIdx(fleChannelIdx);
           const float mev = faceSignal[faceIdx];
 
-          if (between(FLE_HIST_MIN,mev,FLE_HIST_MAX)) {
+          if (between_incl(FLE_HIST_MIN,mev,FLE_HIST_MAX)) {
             /// fill this channel's histogram
             fleHists.produceHist(faceIdx).Fill(mev);
             /// fill cal-wide histogram
@@ -253,7 +253,7 @@ int main(const int argc, const char **argv) {
           const float mev = faceSignal[faceIdx];
 
 
-          if (between(FHE_HIST_MIN,mev,FHE_HIST_MAX)) {
+          if (between_incl(FHE_HIST_MIN,mev,FHE_HIST_MAX)) {
             /// fill this channel's histogram
             fheHists.produceHist(faceIdx).Fill(mev);
             /// fill cal-wide histogram

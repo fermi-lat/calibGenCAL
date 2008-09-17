@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Ped/genMuonPed.cxx,v 1.3 2008/05/19 14:17:34 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Ped/genMuonPed.cxx,v 1.4 2008/05/19 17:37:28 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -12,6 +12,7 @@
 #include "src/lib/Util/CGCUtil.h"
 #include "src/lib/Util/string_util.h"
 #include "src/lib/Util/stl_util.h"
+#include "src/lib/Hists/PedHists.h"
 
 // GLAST INCLUDES
 #include "CalUtil/SimpleCalCalib/CalPed.h"
@@ -122,7 +123,7 @@ int main(int argc,
 
     //-- ROUGH PEDS --//
     // - LEX8 only include hits in histograms.
-    MuonPedAlg muonRoughPed;
+    MuonPedAlg roughPedAlg;
     CalPed  roughPed;
 
     // txt output filename
@@ -142,7 +143,7 @@ int main(int argc,
     string trigCutStr(cfg.triggerCut.getVal());
     if (trigCutMap.find(trigCutStr) == trigCutMap.end()) {
       LogStrm::get() << __FILE__ << ": ERROR! Invalid trigger_cut string: " 
-                       << trigCutStr << endl;
+                     << trigCutStr << endl;
       return -1;
     }
     MuonPedAlg::TRIGGER_CUT trigCut     = trigCutMap[trigCutStr];
@@ -153,19 +154,22 @@ int main(int argc,
     LogStrm::get() << __FILE__ << ": opening output rough pedestal histogram file: " << roughPedHistFileName <<
       endl;
     TFile roughpedHistfile(roughPedHistFileName.c_str(),
-                         "RECREATE",
-                         "Muon rough pedestals");
+                           "RECREATE",
+                           "Muon rough pedestals");
+    PedHists roughPedHists(&roughpedHistfile);
+
 
     LogStrm::get() << __FILE__ << ": reading root event file(s) starting w/ " << digiFileList[0] << endl;
-    muonRoughPed.fillHists(nEntries,
-                           digiFileList,
-                           NULL,
-                           trigCut);
-    muonRoughPed.trimHists();
+    roughPedAlg.fillHists(nEntries,
+                          digiFileList,
+                          NULL,
+                          roughPedHists,
+                          trigCut);
+    roughPedHists.trimHists();
 
     
     LogStrm::get() << __FILE__ << ": fitting rough pedestal histograms." << endl;
-    muonRoughPed.fitHists(roughPed);
+    roughPedHists.fitHists(roughPed);
     LogStrm::get() << __FILE__ << ": writing rough pedestals: " << roughPedTXTFile << endl;
     roughPed.writeTXT(roughPedTXTFile);
     roughpedHistfile.Write();
@@ -173,31 +177,34 @@ int main(int argc,
 
     //-- MUON PEDS --//
     // - LEX8 only include hits in histograms.
-    MuonPedAlg  muPed;
+    MuonPedAlg  calPedAlg;
     CalPed   calPed;
+
     // txt output filename
-    const string   muPedTXTFile(cfg.outputBasename.getVal() + ".txt");
+    const string   calPedTXTFile(cfg.outputBasename.getVal() + ".txt");
     // output histogram file
-    const string   muPedHistFileName(cfg.outputBasename.getVal() + ".root");
+    const string   calPedHistFileName(cfg.outputBasename.getVal() + ".root");
 
     // open new output histogram file
-    LogStrm::get() << __FILE__ << ": opening muon pedestal output histogram file: " << muPedHistFileName << endl;
-    TFile mupedHistfile(muPedHistFileName.c_str(),
+    LogStrm::get() << __FILE__ << ": opening pedestal output histogram file: " << calPedHistFileName << endl;
+    TFile mupedHistfile(calPedHistFileName.c_str(),
                         "RECREATE",
-                        "Muon pedestals");
+                        "pedestals");
+    PedHists calPedHists(&mupedHistfile);
     
     LogStrm::get() << __FILE__ << ": reading root event file(s) starting w/ " << digiFileList[0] << endl;
-    muPed.fillHists(nEntries,
-                    digiFileList,
-                    &roughPed,
-                    trigCut);
-    muPed.trimHists();
+    calPedAlg.fillHists(nEntries,
+                        digiFileList,
+                        &roughPed,
+                        calPedHists,
+                        trigCut);
+    calPedHists.trimHists();
     
-    LogStrm::get() << __FILE__ << ": fitting muon pedestal histograms." << endl;
-    muPed.fitHists(calPed);
+    LogStrm::get() << __FILE__ << ": fitting pedestal histograms." << endl;
+    calPedHists.fitHists(calPed);
     
-    LogStrm::get() << __FILE__ << ": writing muon pedestals: " << muPedTXTFile << endl;
-    calPed.writeTXT(muPedTXTFile);
+    LogStrm::get() << __FILE__ << ": writing pedestals: " << calPedTXTFile << endl;
+    calPed.writeTXT(calPedTXTFile);
 
     mupedHistfile.Write();
     mupedHistfile.Close();
@@ -207,6 +214,7 @@ int main(int argc,
     cout << __FILE__ << ": exception thrown: " << e.what() << endl;
     return -1;
   }
+
   return 0;
 }
 

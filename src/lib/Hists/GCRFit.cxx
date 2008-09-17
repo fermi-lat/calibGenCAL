@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRFit.cxx,v 1.3 2007/06/19 18:11:45 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/GCRFit.cxx,v 1.4 2008/04/21 20:32:32 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -11,6 +11,7 @@
 #include "MPDHists.h"
 #include "src/lib/Util/CGCUtil.h"
 #include "src/lib/Util/ROOTUtil.h"
+#include "src/lib/Specs/CalResponse.h"
 
 // GLAST INCLUDES
 #include "CalUtil/CalDefs.h"
@@ -39,7 +40,7 @@ namespace calibGenCAL {
     /// return  mevPerDAC constant for given particle z & CIDAC peak
     /// \parm z atomic # of particle
     static float evalMevPerDAC(const unsigned char z, const float cidac) {
-      return (float)z*z*calibGenCAL::MPDHists::MUON_ENERGY / cidac;
+      return (float)z*z*CalResponse::CsIMuonPeak / cidac;
     }
 
     static float defaultMPD(DiodeNum diode) {
@@ -49,7 +50,7 @@ namespace calibGenCAL {
     }
       
     static float defaultDACPeak(DiodeNum diode, unsigned char z) {
-      return z*z*calibGenCAL::MPDHists::MUON_ENERGY/defaultMPD(diode);
+      return z*z*CalResponse::CsIMuonPeak/defaultMPD(diode);
     }
 
     /// tools for fitting GCR hists w/ simple gaussian shape
@@ -86,17 +87,14 @@ namespace calibGenCAL {
   
       /// generate ROOT tuple for fit parms
       static TTree *genTuple(TDirectory *const writeFile,
-                      const std::string &tupleName,
-                      TupleData &tupleData) {
+                             const std::string &tupleName,
+                             TupleData &tupleData) {
         TTree *tuple = new TTree(tupleName.c_str(),
                                  tupleName.c_str());
         assert(tuple != 0);
         if (!tuple->Branch("diode",
                            &tupleData.diode,
                            "diode/b") ||
-            !tuple->Branch("inferredZ",
-                           &tupleData.inferredZ,
-                           "inferredZ/b")||
             !tuple->Branch("peak",
                            &tupleData.peak,
                            "peak/F")||
@@ -123,65 +121,6 @@ namespace calibGenCAL {
                     CalMPD &calMPD,
                     TDirectory *const writeFile,
                     const std::string &tupleName) {
-      using namespace GCRFitGaus;
-      const string funcName("gcrGaus");
-      
-      TF1 func(funcName.c_str(),"gaus",0,4095);
-
-      /// fit individual xtals
-      GCRHists::MeanDACHistCol *const meanDACHists(histCol.getMeanDACHists());
-    
-      if (meanDACHists)
-        for (GCRHists::MeanDACHistCol::iterator it(meanDACHists->begin());
-             it != meanDACHists->end();
-             it++) {
-      
-          TH1S &hist(*(it->second));
-          GCRHists::MeanDACHistCol::index_type idx(it->first);
-          const unsigned int z = idx.getInferredZ();
-          /// skip unidentified particles
-          if (z == 0)
-              continue;
-           
-          hist.Fit(&func,"Q");
-        }
-
-      /// setup tuple
-      TupleData tupleData;
-      TTree *const tuple = genTuple(writeFile, tupleName + "_meanDACSum", tupleData);
-      assert(tuple != 0);
-
-           
-      /// fit summary histograms
-      GCRHists::MeanDACSumHistCol &meanDACSumHists(histCol.getMeanDACSumHists());
-      for (GCRHists::MeanDACSumHistCol::iterator it(meanDACSumHists.begin());
-           it != meanDACSumHists.end();
-           it++) {      
-      
-        TH1S &hist(*(it->second));
-        const GCRHists::MeanDACSumHistCol::index_type &idx(it->first);
-        const unsigned char z(idx.getInferredZ());
-        /// skip unidentified particles
-        if (z == 0)
-            continue;
-        
-        removeOutliers(hist);
-
-        /// fit w/in general region of expected peak
-        hist.Fit(&func, "Q", "");
-
-        tupleData.inferredZ = z;
-        tupleData.diode     = it->first.getDiode().val();
-        tupleData.peak      = hist.GetFunction(funcName.c_str())->GetParameter(1);
-        tupleData.width     = hist.GetFunction(funcName.c_str())->GetParameter(2);
-        tupleData.nEntries  = (unsigned)hist.GetEntries();
-        tupleData.mevPerDAC = evalMevPerDAC(it->first.getInferredZ(), tupleData.peak);
-
-        LogStrm::get() << hist.GetName() << " "
-                       << tupleData << endl;
-
-        tuple->Fill();
-      }
     } // gcrFitGaus
   } // namespace GCRFit
 } // namespace calibGenCAL 

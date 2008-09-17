@@ -58,7 +58,7 @@ namespace calibGenCAL {
     if (algData.trigCut == PERIODIC_TRIGGER || algData.trigCut == EXTERNAL_TRIGGER)
       rootFile.getDigiChain()->SetBranchStatus("m_gem");
 
-    unsigned nEvents = rootFile.getEntries();
+    const unsigned nEvents = rootFile.getEntries();
     LogStrm::get() << __FILE__ << ": Processing: " << nEvents << " events." << endl;
 
     /////////////////////////////////////////

@@ -16,8 +16,8 @@ where:
 __facility__  = "Offline"
 __abstract__  = "Tool to generate CAL ADC2NRG and muSlope calibration XML files from asymmetry, cidac2adc & mevPerDAC xml files"
 __author__    = "Z. Fewtrell"
-__date__      = "$Date: 2008/06/01 19:55:45 $"
-__version__   = "$Revision: 1.9 $, $Author: fewtrell $"
+__date__      = "$Date: 2008/06/03 01:41:14 $"
+__version__   = "$Revision: 1.10 $, $Author: fewtrell $"
 __release__   = "$Name:  $"
 __credits__   = "NRL code 7650"
 
@@ -73,6 +73,9 @@ if __name__ == '__main__':
         log.exception("getopt exception: "+__doc__)
         sys.exit(-1)
 
+    if len(args) != 6:
+        log.error("wrong # of commandline arguments: "+__doc__)
+        sys.exit(-1)
     (gain, inlPath, asymPath, mpdPath, adc2nrgPath, muSlopePath) = args
 
     if not gain in ("MUON_GAIN","FLIGHT_GAIN"):

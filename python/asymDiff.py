@@ -14,8 +14,8 @@ where:
 __facility__    = "Offline"
 __abstract__    = "Diff 2 CAL asymmetry XML files."
 __author__      = "Z.Fewtrell"
-__date__        = "$Date: 2008/02/03 00:51:49 $"
-__version__     = "$Revision: 1.6 $, $Author: fewtrell $"
+__date__        = "$Date: 2008/02/11 21:35:57 $"
+__version__     = "$Revision: 1.7 $, $Author: fewtrell $"
 __release__     = "$Name:  $"
 __credits__     = "NRL code 7650"
 
@@ -57,6 +57,7 @@ asymTwrs2 = asymFile2.getTowers()
 
 if (asymTwrs1 != asymTwrs2):
     log.error("input files have different n towers.  I quit! ;)")
+    sys.exit(-1)
 
 
 # load up arrays
@@ -80,21 +81,26 @@ ROOT.gROOT.Reset()
 log.info("Opening %s"%rootPath)
 rootFile = ROOT.TFile(rootPath,
                       "recreate",
-                      "asymDiff(%s,%s)"%(asymPath1,asymPath2))
+                      "asymDiff(%s,%s)"%(asymPath1,asymPath2),
+                      9)
 
 # gobal summary histogram
 # indexed by (pdiode,ndiode) tuple
 diff_summary = {}
 err_diff_summary = {}
 
+import os
+asymFile1 = os.path.basename(asymPath1)
+asymFile2 = os.path.basename(asymPath2)
+
 for pdiode in range(2):
     for ndiode in range(2):
         diode_tpl = (pdiode,ndiode)
         diff_summary[diode_tpl] = ROOT.TH1I("diff_summary_%d%d"%diode_tpl,
-                                            "diff_summary_%d%d"%diode_tpl,
+                                            "diff_summary_%d%d %s-%s"%(pdiode,ndiode,asymFile2,asymFile1),
                                             100,0,0)
         err_diff_summary[diode_tpl] = ROOT.TH1I("err_diff_summary_%d%d"%diode_tpl,
-                                                "err_diff_summary_%d%d"%diode_tpl,
+                                                "err_diff_summary_%d%d %s-%s"%(pdiode,ndiode,asymFile2,asymFile1),
                                                 100,0,0)
 
 
@@ -112,7 +118,7 @@ for twr in asymTwrs1:
 
                     channel_str = "%d_%d_%d_%d_%d"%(twr,lyr,col,pdiode,ndiode)
 
-                    ## CALC INDECES ##
+                    ## CALC INDICES ##
                     asymIdx = cgc_util.asymIdx[(pdiode,ndiode,False)]
                     errIdx  = cgc_util.asymIdx[(pdiode,ndiode,True)]
 
@@ -144,30 +150,24 @@ for twr in asymTwrs1:
                     # asym diffs
                     gAsym = ROOT.TGraph(length, xpos, asymDiff)
                     gAsym.SetNameTitle("asymDiff_%s"%channel_str,
-                                       "asymDiff_%s"%channel_str)
+                                       "asymDiff_%s %s-%s"%(channel_str,asymFile2,asymFile1))
                     cAsym = ROOT.TCanvas("asymDiff_%s"%channel_str,
-                                         "asymDiff_%s"%channel_str,-1)
+                                         "asymDiff_%s %s-%s"%(channel_str,asymFile2,asymFile1),-1)
                     gAsym.Draw("AL*")
                     cAsym.Write()
-
-                    # asym error diffs
-                    gErr  = ROOT.TGraph(length, xpos, errDiff)
-                    gErr.SetNameTitle("errDiff_%s"%channel_str,
-                                      "errDiff_%s"%channel_str)
-                    cErr = ROOT.TCanvas("errDiff_%s"%channel_str,
-                                        "errDiff_%s"%channel_str,-1)
-                    gErr.Draw("AL*")
-                    cErr.Write()
 
                     # overlay plots
                     mg = ROOT.TMultiGraph("overlay_%s"%channel_str,
                                           "overlay_%s"%channel_str)
+                    leg = ROOT.TLegend(0.91, 0.50, 0.98, 0.60)
                     gOld = ROOT.TGraphErrors(length,xpos, channel1,
                                              xerror, error1)
                     gOld.SetMarkerColor(1) # black
+                    leg.AddEntry(gOld, asymFile1,"P")
                     gNew = ROOT.TGraphErrors(length,xpos, channel2,
                                              xerror, error2)
                     gNew.SetMarkerColor(2) # red
+                    leg.AddEntry(gNew, asymFile2,"P")
                     mg.Add(gOld,"l*")
                     mg.Add(gNew,"l*")
 
@@ -176,25 +176,9 @@ for twr in asymTwrs1:
                                          "overlay_%s"%channel_str,
                                          -1)
                     mg.Draw("a")
+                    leg.Draw()
                     cOlay.Write()
 
 log.info("Writing %s"%rootPath)
 rootFile.Write()
 rootFile.Close()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
