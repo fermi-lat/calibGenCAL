@@ -663,3 +663,29 @@ v5r7 fewtrell, Chehktman 06/27/08
 - NEW PROGRAM: genAliveHists - fill the histograms for CAL aliveness report from science configuration digi file 
 - MOD: maxDeltaEventTime in genMuonPed & genLACHists lowered to 100 microsec from 2 ms to accomodate for higher flight trigger rates
 - BUGFIX: HistVec class had bugs when dealing with sparsely populated histogram arrays
+
+------------------------------------
+v5r9 fewtrell 09/27/08
+------------------------------------
+NEW PROGRAM: splitDacSlopes - split dacSlopes XML file into 4 txt files, one per threshold type
+
+NEW FEATURE: splitDigi - now works on xrootd files
+NEW FEATURE: intNonlin - add extra plots for noisy channels
+NEW FEATURE: dumpROOTPlots.py - now can filter on plotname, recursively process sub directories.
+NEW FEATURE: SConscript, calibGenCALLib.py
+NEW FEATURE: genGCRHists - now supports light asymmetry, process all Z's simultaneously (still includes some per-Z plots), calc pedestals on fly for each input file.
+
+MOD: genCIDAC2ADC, smoothCIDAC2ADC - modified auto-generated filenames
+MOD: sumHists - drop support for input filelist from stdin (didn't work right)
+MOD: fitULDHists - pre-fit & fix spectrum model before uld fit, all fits now converge reliably
+MOD: dacSlopesDiff - dac settings difference plots now in absolute DAC scale (not relative diff)
+MOD: dacSlopesDiff - improved plot labels
+MOD: tholdCIVal - HEX1 ULD ignored in plots, plots now plot ULD in non-pedestal subtracted scale
+MOD: tholdCIGen - no longer uses FLE/FHE bias, LCI pedestals switched to periodic pedestals.
+MOD: fitTrigMonitorHists - improved fitting of background spectra
+MOD: asym - histograms have average asymmetry subtracted out. reducing spread in each bin - average asym is added back in during fit stage, now supports multiple # of slices per xtal
+MOD: unit_test - updates with results from latest code
+
+
+BUGFIX: fitTrigHists - unitialized values.
+BUGFIX: dacSlopeDiff - not all ULD data was plotted
