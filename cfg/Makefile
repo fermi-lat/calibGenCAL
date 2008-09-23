@@ -96,39 +96,39 @@ MUONGAIN_SFX   = .MUON_GAIN
 DACSLOPES_SFX   = .dacSlopes
 THOLDCI_SFX     = .tholdCI
 
-MUONGAIN_ADCMEAN_BASE = $(addsuffix ${ADCMEAN_SFX}, $(addsuffix ${MUONGAIN_SFX}, $(basename $(notdir ${MUONGAIN_INL_DIGI_LE}))))
-MUONGAIN_ADCMEAN_TXT  = $(addsuffix .txt, ${MUONGAIN_ADCMEAN_BASE})
+MUONGAIN_ADCMEAN_BASE =  $(addsuffix ${MUONGAIN_SFX}, $(basename $(notdir ${MUONGAIN_INL_DIGI_LE})))
+MUONGAIN_ADCMEAN_TXT  = $(addsuffix .txt, $(addsuffix ${ADCMEAN_SFX}, ${MUONGAIN_ADCMEAN_BASE}))
 
-MUONGAIN_INL_BASE = $(addsuffix ${INL_SFX}, $(addsuffix ${MUONGAIN_SFX}, $(basename $(notdir ${MUONGAIN_INL_DIGI_LE}))))
-MUONGAIN_INL_TXT  = $(addsuffix .txt, ${MUONGAIN_INL_BASE})
-MUONGAIN_INL_XML  = $(addsuffix .xml, ${MUONGAIN_INL_BASE})
-MUONGAIN_INL_VAL  = $(addsuffix .val.root, ${MUONGAIN_INL_BASE})
+MUONGAIN_INL_BASE =  $(addsuffix ${MUONGAIN_SFX}, $(basename $(notdir ${MUONGAIN_INL_DIGI_LE})))
+MUONGAIN_INL_TXT  = $(addsuffix .txt, $(addsuffix ${INL_SFX}, ${MUONGAIN_INL_BASE}))
+MUONGAIN_INL_XML  = $(addsuffix .xml, $(addsuffix ${INL_SFX}, ${MUONGAIN_INL_BASE}))
+MUONGAIN_INL_VAL  = $(addsuffix .val.root, $(addsuffix ${INL_SFX}, ${MUONGAIN_INL_BASE}))
 
-FLIGHTGAIN_ADCMEAN_BASE = $(addsuffix ${ADCMEAN_SFX}, $(addsuffix ${FLIGHTGAIN_SFX}, $(basename $(notdir ${FLIGHTGAIN_INL_DIGI_LE}))))
-FLIGHTGAIN_ADCMEAN_TXT  = $(addsuffix .txt, ${FLIGHTGAIN_ADCMEAN_BASE})
+FLIGHTGAIN_ADCMEAN_BASE =  $(addsuffix ${FLIGHTGAIN_SFX}, $(basename $(notdir ${FLIGHTGAIN_INL_DIGI_LE})))
+FLIGHTGAIN_ADCMEAN_TXT  = $(addsuffix .txt, $(addsuffix ${ADCMEAN_SFX}, ${FLIGHTGAIN_ADCMEAN_BASE}))
 
 
-FLIGHTGAIN_INL_BASE = $(addsuffix ${INL_SFX}, $(addsuffix ${FLIGHTGAIN_SFX}, $(basename $(notdir ${FLIGHTGAIN_INL_DIGI_LE}))))
-FLIGHTGAIN_INL_TXT  = $(addsuffix .txt, ${FLIGHTGAIN_INL_BASE})
-FLIGHTGAIN_INL_XML  = $(addsuffix .xml, ${FLIGHTGAIN_INL_BASE})
-FLIGHTGAIN_INL_VAL  = $(addsuffix .val.root, ${FLIGHTGAIN_INL_BASE})
+FLIGHTGAIN_INL_BASE =  $(addsuffix ${FLIGHTGAIN_SFX}, $(basename $(notdir ${FLIGHTGAIN_INL_DIGI_LE})))
+FLIGHTGAIN_INL_TXT  = $(addsuffix .txt, $(addsuffix ${INL_SFX}, ${FLIGHTGAIN_INL_BASE}))
+FLIGHTGAIN_INL_XML  = $(addsuffix .xml, $(addsuffix ${INL_SFX}, ${FLIGHTGAIN_INL_BASE}))
+FLIGHTGAIN_INL_VAL  = $(addsuffix .val.root, $(addsuffix ${INL_SFX}, ${FLIGHTGAIN_INL_BASE}))
 
 CG_BASE    = $(basename $(notdir ${CG_DIGI_CGON}))
 CG_TXT = $(addsuffix .txt, $(addsuffix ${CG_SFX}, ${CG_BASE}))
 
-CG_ON_ADCMEAN_BASE = $(addsuffix ${ADCMEAN_SFX}, $(addsuffix .calibGainOn, ${CG_BASE}))
-CG_ON_ADCMEAN_TXT = $(addsuffix .txt, ${CG_ON_ADCMEAN_BASE})
+CG_ON_ADCMEAN_BASE =$(addsuffix .calibGainOn, ${CG_BASE})
+CG_ON_ADCMEAN_TXT = $(addsuffix .txt,  $(addsuffix ${ADCMEAN_SFX}, ${CG_ON_ADCMEAN_BASE}))
 
-CG_ON_BASE = $(addsuffix ${INL_SFX}, $(addsuffix .calibGainOn, ${CG_BASE}))
-CG_ON_TXT = $(addsuffix .txt, ${CG_ON_BASE})
-CG_ON_XML = $(addsuffix .xml, ${CG_ON_BASE})
+CG_ON_BASE =$(addsuffix .calibGainOn, ${CG_BASE})
+CG_ON_TXT = $(addsuffix .txt,  $(addsuffix ${INL_SFX}, ${CG_ON_BASE}))
+CG_ON_XML = $(addsuffix .xml,  $(addsuffix ${INL_SFX}, ${CG_ON_BASE}))
 
-CG_OFF_ADCMEAN_BASE = $(addsuffix ${ADCMEAN_SFX}, $(addsuffix .calibGainOff, ${CG_BASE}))
-CG_OFF_ADCMEAN_TXT = $(addsuffix .txt, ${CG_OFF_ADCMEAN_BASE})
+CG_OFF_ADCMEAN_BASE = $(addsuffix .calibGainOff, ${CG_BASE})
+CG_OFF_ADCMEAN_TXT = $(addsuffix .txt,  $(addsuffix ${ADCMEAN_SFX}, ${CG_OFF_ADCMEAN_BASE}))
 
-CG_OFF_BASE = $(addsuffix ${INL_SFX}, $(addsuffix .calibGainOff, ${CG_BASE}))
-CG_OFF_TXT = $(addsuffix .txt, ${CG_OFF_BASE})
-CG_OFF_XML = $(addsuffix .xml, ${CG_OFF_BASE})
+CG_OFF_BASE = $(addsuffix .calibGainOff, ${CG_BASE})
+CG_OFF_TXT = $(addsuffix .txt,  $(addsuffix ${INL_SFX},  ${CG_OFF_BASE}))
+CG_OFF_XML = $(addsuffix .xml,  $(addsuffix ${INL_SFX}, ${CG_OFF_BASE}))
 
 
 
@@ -450,7 +450,7 @@ muongain_muslope_val : ${MUONGAIN_MUSLOPE_VAL}
 muongain_muslope_xml : ${MUONGAIN_MUSLOPE_XML}
 
 ${MUONGAIN_MUSLOPE_XML} :  ${MUONGAIN_INL_XML} ${MUONGAIN_ASYM_XML} ${MUONGAIN_MPD_XML}
-	genADC2NRG.sh ${MUONGAIN_INL_XML} ${MUONGAIN_ASYM_XML} ${MUONGAIN_MPD_XML} ${MUONGAIN_ADC2NRG_XML} ${MUONGAIN_MUSLOPE_XML}
+	genADC2NRG.sh MUON_GAIN ${MUONGAIN_INL_XML} ${MUONGAIN_ASYM_XML} ${MUONGAIN_MPD_XML} ${MUONGAIN_ADC2NRG_XML} ${MUONGAIN_MUSLOPE_XML}
 
 
 .PHONY: flightgain_muslope_val
@@ -460,7 +460,7 @@ flightgain_muslope_val : ${FLIGHTGAIN_MUSLOPE_VAL}
 flightgain_muslope_xml : ${FLIGHTGAIN_MUSLOPE_XML}
 
 ${FLIGHTGAIN_MUSLOPE_XML} :  ${FLIGHTGAIN_INL_XML} ${FLIGHTGAIN_ASYM_XML} ${FLIGHTGAIN_MPD_XML}
-	genADC2NRG.sh ${FLIGHTGAIN_INL_XML} ${FLIGHTGAIN_ASYM_XML} ${FLIGHTGAIN_MPD_XML} ${FLIGHTGAIN_ADC2NRG_XML} ${FLIGHTGAIN_MUSLOPE_XML}
+	genADC2NRG.sh FLIGHT_GAIN ${FLIGHTGAIN_INL_XML} ${FLIGHTGAIN_ASYM_XML} ${FLIGHTGAIN_MPD_XML} ${FLIGHTGAIN_ADC2NRG_XML} ${FLIGHTGAIN_MUSLOPE_XML}
 
 
 .PHONY: dacslopes

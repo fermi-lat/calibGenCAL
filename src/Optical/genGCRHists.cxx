@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/genGCRHists.cxx,v 1.5 2008/07/29 20:03:26 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Optical/genGCRHists.cxx,v 1.6 2008/09/17 20:32:45 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -16,7 +16,7 @@
 #include "src/lib/Util/CGCUtil.h"
 #include "src/lib/Util/stl_util.h"
 #include "src/lib/Util/string_util.h"
-#include "src/Ped/MuonPedAlg.h"
+#include "src/lib/Algs/MuonPedAlg.h"
 
 // GLAST INCLUDES
 #include "CalUtil/SimpleCalCalib/CalPed.h"
