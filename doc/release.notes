@@ -689,3 +689,9 @@ MOD: unit_test - updates with results from latest code
 
 BUGFIX: fitTrigHists - unitialized values.
 BUGFIX: dacSlopeDiff - not all ULD data was plotted
+
+
+----------------
+v5r9p1 fewtrell
+----------------
+BUGFIX: genMuonPeds - had to update an include file

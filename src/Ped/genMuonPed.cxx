@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Ped/genMuonPed.cxx,v 1.4 2008/05/19 17:37:28 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/Ped/genMuonPed.cxx,v 1.5 2008/09/17 20:32:45 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -7,7 +7,7 @@
 */
 
 // LOCAL INCLUDES
-#include "MuonPedAlg.h"
+#include "src/lib/Algs/MuonPedAlg.h"
 #include "src/lib/Util/CfgMgr.h"
 #include "src/lib/Util/CGCUtil.h"
 #include "src/lib/Util/string_util.h"
