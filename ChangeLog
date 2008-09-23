@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+User: fewtrell  Tue Sep 23 08:34:23 PDT 2008
+calibGenCAL/cfg
+
+Modified Files:
+	Makefile 
+Log Message:
+unit test makefile updated
+
+    *
+------------------------------------------------------------
 User: fewtrell  Wed Sep 17 14:36:44 PDT 2008
 calibGenCAL/unit_test
 
