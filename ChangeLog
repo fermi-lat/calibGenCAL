@@ -1,4 +1,22 @@
 ------------------------------------------------------------
+User: ecephas  Wed Nov  5 14:43:09 PST 2008
+GlastRelease-scons/calibGenCAL
+
+Modified Files:
+	calibGenCALLib.py 
+Log Message:
+Added the following libraries:
+     env.Tool('CalUtilLib')
+     env.Tool('calibUtilLib')
+     env.Tool('gcrSelectRootDataLib')
+     env.Tool('addLibrary', library = env['clhepLibs'])
+     env.Tool('reconRootDataLib')
+     env.Tool('digiRootDataLib')
+     env.Tool('mcRootDataLib')
+     env.Tool('addLibrary', library = env['pythonLibs'])
+
+    *
+------------------------------------------------------------
 User: ecephas  Wed Nov  5 14:42:03 PST 2008
 GlastRelease-scons/calibGenCAL
 
