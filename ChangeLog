@@ -1,4 +1,27 @@
 ------------------------------------------------------------
+User: ecephas  Wed Nov  5 14:42:03 PST 2008
+GlastRelease-scons/calibGenCAL
+
+Modified Files:
+	SConscript 
+Log Message:
+Removed
+	progEnv.Tool('addLibrary', library = baseEnv['rootLibs'])
+-----
+Replaced
+	genMuonPed = progEnv.Program('genMuonPed',['src/Ped/genMuonPed.cxx']+['src/Ped/MuonPedAlg.cxx'])
+
+with
+
+	genMuonPed = progEnv.Program('genMuonPed',['src/Ped/genMuonPed.cxx'])
+----
+
+Added the following parameter to, the progEnv.Tool('registerObjects',...) call:
+	 python = listFiles(['python/*.py', 'python/lib/*.py'])
+
+
+    *
+------------------------------------------------------------
 TAG
 Tag name: calibGenCAL-05-09-01, operation: add
 Package: calibGenCAL
