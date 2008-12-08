@@ -1,7 +1,7 @@
 # -*- python -*-
-# $Header: /nfs/slac/g/glast/ground/cvs/GlastRelease-scons/calibGenCAL/SConscript,v 1.3 2008/09/23 21:30:17 glastrm Exp $ 
+# $Header: /nfs/slac/g/glast/ground/cvs/GlastRelease-scons/calibGenCAL/SConscript,v 1.4 2008/11/05 22:42:03 ecephas Exp $ 
 # Authors: Zachary Fewtrell <zfewtrell@ssd5.nrl.navy.mil>
-# Version: calibGenCAL-05-09-01
+# Version: calibGenCAL-05-07-00
 Import('baseEnv')
 Import('listFiles')
 Import('packages')
@@ -14,7 +14,8 @@ calibGenCAL = libEnv.SharedLibrary('calibGenCAL', listFiles(['src/lib/*.cxx','sr
                                                              'src/lib/Util/*.cxx','src/lib/Algs/*.cxx']))
 
 progEnv.Tool('calibGenCALLib')
-genMuonPed = progEnv.Program('genMuonPed',['src/Ped/genMuonPed.cxx']) 
+
+genMuonPed = progEnv.Program('genMuonPed',['src/Ped/genMuonPed.cxx' ,'src/Ped/MuonPedAlg.cxx']) 
 genCIDAC2ADC = progEnv.Program('genCIDAC2ADC',['src/CIDAC2ADC/genCIDAC2ADC.cxx']+['src/CIDAC2ADC/IntNonlinAlg.cxx'])
 smoothCIDAC2ADC = progEnv.Program('smoothCIDAC2ADC',['src/CIDAC2ADC/smoothCIDAC2ADC.cxx'])
 splitDigi = progEnv.Program('splitDigi',['src/Util/splitDigi.cxx'])
@@ -41,7 +42,6 @@ genAliveHists = progEnv.Program('genAliveHists',['src/Thresh/genAliveHists.cxx']
 genSciLACHists = progEnv.Program('genSciLACHists',['src/Thresh/genSciLACHists.cxx'])
 
 progEnv.Tool('registerObjects', package = 'calibGenCAL', libraries = [calibGenCAL],
-             python = listFiles(['python/*.py', 'python/lib/*.py']),
 		binaries = [genMuonPed,genCIDAC2ADC,smoothCIDAC2ADC,splitDigi,sumHists,
                          genNeighborXtalk,genMuonAsym,genMuonMPD,genGCRHists,
                          genMuonCalibTkr,fitMuonCalibTkr,genLACHists,fitGCRHists,
