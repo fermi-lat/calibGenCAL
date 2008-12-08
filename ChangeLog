@@ -1,4 +1,14 @@
 ------------------------------------------------------------
+TAG
+Tag name: calibGenCAL-05-07-00, operation: add
+Package: calibGenCAL
+User: ecephas  Mon Dec  8 13:40:22 2008
+Files:
+  calibGenCAL/SConscript  1.5
+  calibGenCAL/SConscript  1.5
+
+    *
+------------------------------------------------------------
 User: ecephas  Mon Dec  8 13:40:16 PST 2008
 GlastRelease-scons/calibGenCAL
 
