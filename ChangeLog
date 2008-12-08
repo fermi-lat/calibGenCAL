@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: ecephas  Mon Dec  8 13:40:16 PST 2008
+GlastRelease-scons/calibGenCAL
+
+Modified Files:
+	SConscript 
+Log Message:
+Check in SConscript for calibGenCAL v5r7 (for branch-tag, GlastReleasev15r49) 
+    *
+------------------------------------------------------------
 User: ecephas  Wed Nov  5 14:43:09 PST 2008
 GlastRelease-scons/calibGenCAL
 
