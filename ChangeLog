@@ -1,4 +1,17 @@
 ------------------------------------------------------------
+TAG
+Tag name: calibGenCAL-05-07-00, operation: mov
+Package: calibGenCAL
+User: glastrm  Thu Jan 22 16:31:46 2009
+Files:
+  calibGenCAL/SConscript  1.6
+  calibGenCAL/SConscript  1.6
+  calibGenCAL/SConscript  1.6
+  calibGenCAL/calibGenCALLib.py  1.2
+  calibGenCAL/calibGenCALLib.py  1.2
+
+    *
+------------------------------------------------------------
 User: ecephas  Thu Jan 22 16:07:25 PST 2009
 GlastRelease-scons/calibGenCAL
 
