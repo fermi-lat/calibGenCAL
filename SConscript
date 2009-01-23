@@ -49,3 +49,4 @@ progEnv.Tool('registerObjects', package = 'calibGenCAL', libraries = [calibGenCA
                          fitTrigHists,genULDHists,fitULDHists,fitULDSlopes,
                          genTrigMonitorHists,fitTrigMonitorHists,genAliveHists,
                          genSciLACHists],includes = listFiles(['calibGenCAL/*.h']))
+
