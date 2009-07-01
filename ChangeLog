@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: heather  Wed Jul  1 09:38:00 PDT 2009
+calibGenCAL/doc
+
+Modified Files:
+	release.notes 
+Log Message:
+add EOH to release.notes
+    *
+------------------------------------------------------------
 TAG
 Tag name: calibGenCAL-05-07-00, operation: mov
 Package: calibGenCAL
