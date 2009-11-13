@@ -1,5 +1,5 @@
 # -*- python -*-
-# $Header: /nfs/slac/g/glast/ground/cvs/GlastRelease-scons/calibGenCAL/SConscript,v 1.4 2008/11/05 22:42:03 ecephas Exp $ 
+# $Header: /nfs/slac/g/glast/ground/cvs/GlastRelease-scons/calibGenCAL/SConscript,v 1.6 2009/01/23 00:07:25 ecephas Exp $ 
 # Authors: Zachary Fewtrell <zfewtrell@ssd5.nrl.navy.mil>
 # Version: calibGenCAL-05-07-00
 Import('baseEnv')
@@ -15,15 +15,16 @@ calibGenCAL = libEnv.SharedLibrary('calibGenCAL', listFiles(['src/lib/*.cxx','sr
 
 progEnv.Tool('calibGenCALLib')
 
-genMuonPed = progEnv.Program('genMuonPed',['src/Ped/genMuonPed.cxx' ,'src/Ped/MuonPedAlg.cxx']) 
-genCIDAC2ADC = progEnv.Program('genCIDAC2ADC',['src/CIDAC2ADC/genCIDAC2ADC.cxx']+['src/CIDAC2ADC/IntNonlinAlg.cxx'])
+genMuonPed = progEnv.Program('genMuonPed',['src/Ped/genMuonPed.cxx']) 
+genCIDAC2ADC = progEnv.Program('genCIDAC2ADC',
+                               ['src/CIDAC2ADC/genCIDAC2ADC.cxx','src/CIDAC2ADC/IntNonlinAlg.cxx'])
 smoothCIDAC2ADC = progEnv.Program('smoothCIDAC2ADC',['src/CIDAC2ADC/smoothCIDAC2ADC.cxx'])
 splitDigi = progEnv.Program('splitDigi',['src/Util/splitDigi.cxx'])
 sumHists = progEnv.Program('sumHists',['src/Util/sumHists.cxx'])
-genNeighborXtalk = progEnv.Program('genNeighborXtalk',['src/CIDAC2ADC/genNeighborXtalk.cxx']+['src/CIDAC2ADC/NeighborXtalkAlg.cxx'])
-genMuonAsym = progEnv.Program('genMuonAsym',['src/Optical/genMuonAsym.cxx']+['src/Optical/MuonAsymAlg.cxx'])
-genMuonMPD = progEnv.Program('genMuonMPD',['src/Optical/genMuonMPD.cxx']+['src/Optical/MuonMPDAlg.cxx'])
-genGCRHists = progEnv.Program('genGCRHists',['src/Optical/genGCRHists.cxx']+['src/Optical/GCRCalibAlg.cxx'])
+genNeighborXtalk = progEnv.Program('genNeighborXtalk',['src/CIDAC2ADC/genNeighborXtalk.cxx','src/CIDAC2ADC/NeighborXtalkAlg.cxx'])
+genMuonAsym = progEnv.Program('genMuonAsym',['src/Optical/genMuonAsym.cxx','src/Optical/MuonAsymAlg.cxx'])
+genMuonMPD = progEnv.Program('genMuonMPD',['src/Optical/genMuonMPD.cxx','src/Optical/MuonMPDAlg.cxx'])
+genGCRHists = progEnv.Program('genGCRHists',['src/Optical/genGCRHists.cxx','src/Optical/GCRCalibAlg.cxx'])
 fitGCRHists = progEnv.Program('fitGCRHists',['src/Optical/fitGCRHists.cxx'])
 genMuonCalibTkr = progEnv.Program('genMuonCalibTkr',['src/Optical/genMuonCalibTkr.cxx']+['src/Optical/MuonCalibTkrAlg.cxx'])
 fitMuonCalibTkr = progEnv.Program('fitMuonCalibTkr',['src/Optical/fitMuonCalibTkr.cxx'])
@@ -40,13 +41,20 @@ genTrigMonitorHists = progEnv.Program('genTrigMonitorHists',['src/Thresh/genTrig
 fitTrigMonitorHists = progEnv.Program('fitTrigMonitorHists',['src/Thresh/fitTrigMonitorHists.cxx'])
 genAliveHists = progEnv.Program('genAliveHists',['src/Thresh/genAliveHists.cxx'])
 genSciLACHists = progEnv.Program('genSciLACHists',['src/Thresh/genSciLACHists.cxx'])
-
-progEnv.Tool('registerObjects', package = 'calibGenCAL', libraries = [calibGenCAL],
-		binaries = [genMuonPed,genCIDAC2ADC,smoothCIDAC2ADC,splitDigi,sumHists,
-                         genNeighborXtalk,genMuonAsym,genMuonMPD,genGCRHists,
-                         genMuonCalibTkr,fitMuonCalibTkr,genLACHists,fitGCRHists,
-                         fitLACHists,fitThreshSlopes,genFLEHists,genFHEHists,
-                         fitTrigHists,genULDHists,fitULDHists,fitULDSlopes,
-                         genTrigMonitorHists,fitTrigMonitorHists,genAliveHists,
-                         genSciLACHists],includes = listFiles(['calibGenCAL/*.h']))
-
+fitAsymHists = progEnv.Program('fitAsymHists', ['src/Optical/fitAsymHists.cxx'])
+progEnv.Tool('registerTargets', package = 'calibGenCAL',
+             libraryCxts = [[calibGenCAL, libEnv]],
+             binaryCxts = [[genMuonPed,progEnv], [genCIDAC2ADC,progEnv],
+                           [smoothCIDAC2ADC,progEnv], [splitDigi,progEnv],
+                           [sumHists,progEnv], [genNeighborXtalk,progEnv],
+                           [genMuonAsym,progEnv], [genMuonMPD,progEnv],
+                           [genGCRHists,progEnv], [genMuonCalibTkr,progEnv],
+                           [fitMuonCalibTkr,progEnv], [genLACHists,progEnv],
+                           [fitGCRHists,progEnv], [fitLACHists,progEnv],
+                           [fitThreshSlopes,progEnv], [genFLEHists,progEnv],
+                           [genFHEHists,progEnv], [fitTrigHists,progEnv],
+                           [genULDHists,progEnv], [fitULDHists,progEnv],
+                           [fitULDSlopes,progEnv], [genTrigMonitorHists,progEnv],
+                           [fitTrigMonitorHists,progEnv], [genAliveHists,progEnv],
+                           [genSciLACHists,progEnv], [fitAsymHists, progEnv]],
+             includes = listFiles(['calibGenCAL/*.h'], recursive=True))
