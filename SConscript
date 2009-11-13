@@ -1,7 +1,7 @@
 # -*- python -*-
-# $Header: /nfs/slac/g/glast/ground/cvs/GlastRelease-scons/calibGenCAL/SConscript,v 1.6 2009/01/23 00:07:25 ecephas Exp $ 
+# $Header: /nfs/slac/g/glast/ground/cvs/GlastRelease-scons/calibGenCAL/SConscript,v 1.7 2009/11/13 00:46:24 jrb Exp $ 
 # Authors: Zachary Fewtrell <zfewtrell@ssd5.nrl.navy.mil>
-# Version: calibGenCAL-05-07-00
+# Version: calibGenCAL-05-09-02
 Import('baseEnv')
 Import('listFiles')
 Import('packages')
