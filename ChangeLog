@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: jrb  Thu Nov 12 16:46:24 PST 2009
+GlastRelease-scons/calibGenCAL
+
+Modified Files:
+	.cvsignore SConscript 
+Log Message:
+
+    *
+------------------------------------------------------------
 User: heather  Wed Jul  1 09:38:00 PDT 2009
 calibGenCAL/doc
 
