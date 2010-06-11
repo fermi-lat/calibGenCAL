@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: jrb  Thu Jun 10 17:41:21 PDT 2010
+GlastRelease-scons/calibGenCAL
+
+Modified Files:
+	SConscript 
+Log Message:
+updates for SCons build
+    *
+------------------------------------------------------------
 TAG
 Tag name: calibGenCAL-05-09-02, operation: add
 Package: calibGenCAL
