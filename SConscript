@@ -1,5 +1,5 @@
 # -*- python -*-
-# $Header: /nfs/slac/g/glast/ground/cvs/GlastRelease-scons/calibGenCAL/SConscript,v 1.7 2009/11/13 00:46:24 jrb Exp $ 
+# $Header: /nfs/slac/g/glast/ground/cvs/GlastRelease-scons/calibGenCAL/SConscript,v 1.8 2009/11/13 01:36:53 jrb Exp $ 
 # Authors: Zachary Fewtrell <zfewtrell@ssd5.nrl.navy.mil>
 # Version: calibGenCAL-05-09-02
 Import('baseEnv')
@@ -8,10 +8,14 @@ Import('packages')
 progEnv = baseEnv.Clone()
 libEnv = baseEnv.Clone()
 
-libEnv.Tool('calibGenCALLib', depsOnly = 1)
-calibGenCAL = libEnv.SharedLibrary('calibGenCAL', listFiles(['src/lib/*.cxx','src/lib/CalibDataTypes/*.cxx',
-                                                             'src/lib/Hists/*.cxx','src/lib/Specs/*.cxx',
-                                                             'src/lib/Util/*.cxx','src/lib/Algs/*.cxx']))
+libEnv.Tool('addLinkDeps', package='calibGenCAL', toBuild='shared')
+calibGenCAL = libEnv.SharedLibrary('calibGenCAL',
+                                   listFiles(['src/lib/*.cxx',
+                                              'src/lib/CalibDataTypes/*.cxx',
+                                              'src/lib/Hists/*.cxx',
+                                              'src/lib/Specs/*.cxx',
+                                              'src/lib/Util/*.cxx',
+                                              'src/lib/Algs/*.cxx']))
 
 progEnv.Tool('calibGenCALLib')
 
