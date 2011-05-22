@@ -1,7 +1,7 @@
 #ifndef CalGeom_H
 #define CalGeom_H
 
-//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Specs/CalGeom.h,v 1.4 2008/04/18 21:46:26 chehtman Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Specs/CalGeom.h,v 1.5 2008/09/17 20:32:46 fewtrell Exp $
 
 // LOCAL INCLUDES=
 
@@ -36,7 +36,7 @@ namespace calibGenCAL {
     /// z pos of z-center of Layer 0 Cal Xtal
     static const float lyr0ZCtr      = -58.07;
 
-    typedef Vector3D<float> Vec3D;
+    typedef HepGeom::Vector3D<float> Vec3D;
 
     /// return global LAT Z coordinate for z-center of given cal layer
     inline float lyrCtrZ(const CalUtil::LyrNum lyr) {
