@@ -2,6 +2,69 @@
 TAG
 Tag name: GlastRelease-17-35-24-gr16, operation: add
 Package: calibGenCAL
+User: heather  Thu Dec  8 08:16:51 2011
+Files:
+  calibGenCAL/src/lib/Algs/LPATrigAlg.cxx  1.1
+  calibGenCAL/src/lib/Algs/MuonPedAlg.cxx  1.9
+  calibGenCAL/src/lib/Algs/MuonPedAlg.h  1.7
+  calibGenCAL/src/lib/Algs/LPATrigAlg.h  1.2
+  calibGenCAL/src/lib/Hists/HistVec.h  1.12
+  calibGenCAL/src/lib/Hists/HistMap.h  1.10
+  calibGenCAL/src/lib/Hists/GCRFit.cxx  1.5
+  calibGenCAL/src/lib/Hists/MPDHists.h  1.8
+  calibGenCAL/src/lib/Hists/AsymHists.h  1.8
+  calibGenCAL/src/lib/Hists/GCRHists.cxx  1.16
+  calibGenCAL/src/lib/Hists/PedHists.h  1.1
+  calibGenCAL/src/lib/Hists/GCRHists.h  1.11
+  calibGenCAL/src/lib/Hists/MPDHists.cxx  1.15
+  calibGenCAL/src/lib/Hists/AsymHists.cxx  1.9
+  calibGenCAL/src/lib/Hists/TrigHists.h  1.2
+  calibGenCAL/src/lib/Hists/PedHists.cxx  1.1
+  calibGenCAL/src/lib/Hists/HistIdx.h  1.4
+  calibGenCAL/src/lib/Hists/GCRFit.h  1.3
+  calibGenCAL/src/lib/Hists/HistMap.cxx  1.1
+  calibGenCAL/src/lib/Specs/CalGeom.h  1.6
+  calibGenCAL/src/lib/Specs/singlex16.h  1.7
+  calibGenCAL/src/lib/Specs/CalGeom.cxx  1.6
+  calibGenCAL/src/lib/Specs/CalResponse.h  1.1
+  calibGenCAL/src/lib/Specs/singlex16.cxx  1.3
+  calibGenCAL/src/lib/Util/string_util.cxx  1.3
+  calibGenCAL/src/lib/Util/SimpleIniFile.cxx  1.4
+  calibGenCAL/src/lib/Util/CfgMgr.h  1.9
+  calibGenCAL/src/lib/Util/CalSignalArray.cxx  1.1
+  calibGenCAL/src/lib/Util/stl_util.cxx  1.1
+  calibGenCAL/src/lib/Util/CGCUtil.cxx  1.13
+  calibGenCAL/src/lib/Util/CalSignalArray.h  1.2
+  calibGenCAL/src/lib/Util/LangauFun.cxx  1.10
+  calibGenCAL/src/lib/Util/RootFileAnalysis.h  1.5
+  calibGenCAL/src/lib/Util/TwrHodoscope.cxx  1.6
+  calibGenCAL/src/lib/Util/stl_util.h  1.2
+  calibGenCAL/src/lib/Util/CGCUtil.h  1.11
+  calibGenCAL/src/lib/Util/ROOTUtil.h  1.4
+  calibGenCAL/src/lib/Util/LangauFun.h  1.3
+  calibGenCAL/src/lib/Util/CfgMgr.cxx  1.7
+  calibGenCAL/src/lib/Util/CalHodoscope.cxx  1.8
+  calibGenCAL/src/lib/Util/ROOTUtil.cxx  1.2
+  calibGenCAL/src/lib/Util/TwrHodoscope.h  1.4
+  calibGenCAL/src/lib/Util/SimpleIniFile.h  1.3
+  calibGenCAL/src/lib/Util/RootFileAnalysis.cxx  1.7
+  calibGenCAL/src/lib/Util/string_util.h  1.4
+  calibGenCAL/src/lib/Util/CalHodoscope.h  1.5
+  calibGenCAL/src/unit_tests/testCfgMgr.cxx  1.5
+  calibGenCAL/unit_test/unit_test_output.tgz  1.5
+  calibGenCAL/unit_test/unit_test_input.tgz  1.4
+  calibGenCAL/unit_test/README  1.6
+  calibGenCAL/xml/.cvsignore  1.1
+  calibGenCAL/xml/muonPeds.ideal.xml  1.1
+  calibGenCAL/xml/cidac2adc.ideal.xml  1.1
+  calibGenCAL/xml/calCalib_v2r3.dtd  1.1
+  calibGenCAL/xml/muonAsym.ideal.xml  1.1
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: GlastRelease-17-35-24-gr16, operation: add
+Package: calibGenCAL
 User: heather  Thu Dec  8 08:16:35 2011
 Files:
   calibGenCAL/src/Optical/MuonAsymAlg.h  1.2
