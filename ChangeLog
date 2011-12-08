@@ -2,6 +2,21 @@
 TAG
 Tag name: GlastRelease-17-35-24-gr16, operation: add
 Package: calibGenCAL
+User: heather  Thu Dec  8 08:16:29 2011
+Files:
+  calibGenCAL/src/CIDAC2ADC/NeighborXtalkAlg.cxx  1.4
+  calibGenCAL/src/CIDAC2ADC/genNeighborXtalk.cxx  1.5
+  calibGenCAL/src/CIDAC2ADC/smoothCIDAC2ADC.cxx  1.5
+  calibGenCAL/src/CIDAC2ADC/genCIDAC2ADC.cxx  1.12
+  calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.cxx  1.12
+  calibGenCAL/src/CIDAC2ADC/NeighborXtalkAlg.h  1.3
+  calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.h  1.8
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: GlastRelease-17-35-24-gr16, operation: add
+Package: calibGenCAL
 User: heather  Thu Dec  8 08:16:22 2011
 Files:
   calibGenCAL/python/pedDiff.py  1.7
