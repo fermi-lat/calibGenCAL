@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: jrb  Wed Jan  4 16:51:10 PST 2012
+GlastRelease-scons/calibGenCAL/src/lib/Util
+
+Modified Files:
+	stl_util.h 
+Log Message:
+patch for gcc41
+    *
+------------------------------------------------------------
 TAG
 Tag name: GlastRelease-17-35-24-gr17, operation: add
 Package: calibGenCAL
