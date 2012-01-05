@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: jrb  Wed Jan  4 16:51:49 PST 2012
+GlastRelease-scons/calibGenCAL
+
+Modified Files:
+	SConscript 
+Log Message:
+reformat; no substantive changes
+    *
+------------------------------------------------------------
 User: jrb  Wed Jan  4 16:51:10 PST 2012
 GlastRelease-scons/calibGenCAL/src/lib/Util
 
