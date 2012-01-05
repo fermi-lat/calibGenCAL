@@ -9,8 +9,9 @@
 #include <ios>
 #include <istream>
 #include <fstream>
+#include <iterator>
 
-//$Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Util/stl_util.h,v 1.1 2007/06/13 22:42:13 fewtrell Exp $
+//$Header: /nfs/slac/g/glast/ground/cvs/GlastRelease-scons/calibGenCAL/src/lib/Util/stl_util.h,v 1.2 2008/05/13 16:54:01 fewtrell Exp $
 
 /** @file
     @author  Zachary Fewtrell
@@ -108,8 +109,12 @@ namespace calibGenCAL {
 
   /// like STL back_insert_iterator instead it uses push() instead of push_back()
   /// \note 'inspired' by g++ 3.4 STL implementation of similar iterators
+  //  \note  (jrb) make it even more like STL implementation (inherit from
+  //         std::iterator) for 4.1 compile 
   template<typename ContainerType> 
-  class push_insert_iterator {
+  class push_insert_iterator 
+    : public std::iterator<std::output_iterator_tag, void, void, void, void>
+  {
   private:
     ContainerType *container;
   public:
@@ -117,7 +122,8 @@ namespace calibGenCAL {
 
     explicit push_insert_iterator(ContainerType &c) : container(&c) {}
 
-    push_insert_iterator& operator=(const typename container_type::value_type &val) {
+    /*    push_insert_iterator& operator=(const typename container_type::value_type &val) { */
+    push_insert_iterator& operator=(typename container_type::const_reference val) {
       container->push(val);
       return *this;
     }
