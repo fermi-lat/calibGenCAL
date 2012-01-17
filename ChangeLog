@@ -1,5 +1,14 @@
 ------------------------------------------------------------
 User: cohen  Tue Jan 17 08:52:01 PST 2012
+GlastRelease-scons/calibGenCAL/src/lib/Hists
+
+Modified Files:
+	HistVec.h MPDHists.cxx 
+Log Message:
+fix C library includes for gcc4.4 compilation
+    *
+------------------------------------------------------------
+User: cohen  Tue Jan 17 08:52:01 PST 2012
 GlastRelease-scons/calibGenCAL/src/CIDAC2ADC
 
 Modified Files:
