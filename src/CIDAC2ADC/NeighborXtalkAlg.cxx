@@ -1,4 +1,4 @@
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/CIDAC2ADC/NeighborXtalkAlg.cxx,v 1.3 2008/06/09 21:05:33 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/GlastRelease-scons/calibGenCAL/src/CIDAC2ADC/NeighborXtalkAlg.cxx,v 1.4 2008/07/29 20:03:26 fewtrell Exp $
 
 /** @file
     @author fewtrell
@@ -22,6 +22,7 @@
 
 // STD INCLUDES
 #include <sstream>
+#include <cstdlib>
 
 namespace {
 

@@ -1,7 +1,7 @@
 #ifndef HistVec_h
 #define HistVec_h
 
-// $Header: /nfs/slac/g/glast/ground/cvs/calibGenCAL/src/lib/Hists/HistVec.h,v 1.11 2008/06/27 13:00:04 fewtrell Exp $
+// $Header: /nfs/slac/g/glast/ground/cvs/GlastRelease-scons/calibGenCAL/src/lib/Hists/HistVec.h,v 1.12 2008/09/17 20:32:46 fewtrell Exp $
 
 /** @file
     @author Zachary Fewtrell
@@ -34,6 +34,7 @@
 #include <vector>
 #include <stdexcept>
 #include <sstream>
+#include <limits.h>
 
 namespace calibGenCAL {
   template <typename HistType>

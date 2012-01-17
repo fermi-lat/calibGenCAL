@@ -22,6 +22,7 @@
 #include "TStyle.h"
 
 // STD INCLUDES
+#include <limits.h>
 #include <string>
 #include <sstream>
 #include <stdexcept>
