@@ -698,6 +698,7 @@ BUGFIX: genMuonPeds - had to update an include file
 
 EOH 
 
+ calibGenCAL-05-09-06 23-Jan-2012    jrb Johann's patches for gcc41
  calibGenCAL-05-09-05 04-Jan-2012    jrb Patch for gcc41 compilation
  calibGenCAL-05-09-04 21-May-2011    hmk CLHEP 2.1.0.1 HepGeom namespace
  calibGenCAL-05-09-03 12-Jun-2010    jrb upgrades for SCons builds
