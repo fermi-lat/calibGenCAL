@@ -1,4 +1,13 @@
 ------------------------------------------------------------
+User: jrb  Thu May 10 10:56:34 PDT 2012
+calibGenCAL
+
+Modified Files:
+	SConscript 
+Log Message:
+stag/GoGui_auto-tag
+    *
+------------------------------------------------------------
 User: jrb  Wed May  9 12:02:03 PDT 2012
 GlastRelease-scons/calibGenCAL
 
