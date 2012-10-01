@@ -2,6 +2,94 @@
 TAG
 Tag name: GlastRelease-20-05-01, operation: add
 Package: calibGenCAL
+User: heather  Mon Oct  1 08:49:13 2012
+Files:
+  calibGenCAL/python/pedDiff.py  1.7
+  calibGenCAL/python/dacSlopesXML2Ntuple.py  1.3
+  calibGenCAL/python/tholdCIGen.py  1.36
+  calibGenCAL/python/calibGainCoeff.py  1.10
+  calibGenCAL/python/pedTXT2XML.py  1.11
+  calibGenCAL/python/adc2nrgXML2TXT.py  1.7
+  calibGenCAL/python/inlPedSubtract.py  1.7
+  calibGenCAL/python/genDACsettings.py  1.10
+  calibGenCAL/python/dacSlopesDiff.py  1.9
+  calibGenCAL/python/muSlopeVal.py  1.16
+  calibGenCAL/python/dacSlopesVal.py  1.17
+  calibGenCAL/python/fitNeighborXtalk.py  1.5
+  calibGenCAL/python/dumpROOTPlots.py  1.12
+  calibGenCAL/python/dacBlockSet.py  1.10
+  calibGenCAL/python/build_adcsmooth.py  1.17
+  calibGenCAL/python/genFlightGain.py  1.4
+  calibGenCAL/python/asymApplyCalibGain.py  1.5
+  calibGenCAL/python/mpdDiff.py  1.10
+  calibGenCAL/python/calCalibApplyRelgain.py  1.5
+  calibGenCAL/python/dacSlopesGen.py  1.17
+  calibGenCAL/python/genADC2NRG.py  1.11
+  calibGenCAL/python/dacDiff.py  1.10
+  calibGenCAL/python/biasTXT2XML.py  1.7
+  calibGenCAL/python/inlXML2TXT.py  1.13
+  calibGenCAL/python/muSlopeDiff.py  1.6
+  calibGenCAL/python/inlDumpSlopes.py  1.5
+  calibGenCAL/python/inlPlot.py  1.2
+  calibGenCAL/python/checkXML.py  1.2
+  calibGenCAL/python/intNonlinVal.py  1.23
+  calibGenCAL/python/mevPerDacMerge.py  1.14
+  calibGenCAL/python/dacXML2TXT.py  1.8
+  calibGenCAL/python/tholdCITXT2XML.py  1.1
+  calibGenCAL/python/charVal.py  1.17
+  calibGenCAL/python/pedMerge.py  1.14
+  calibGenCAL/python/mergeDacSlopes.py  1.2
+  calibGenCAL/python/dacConvertNeighborXtalk.py  1.6
+  calibGenCAL/python/inl2tuple.py  1.8
+  calibGenCAL/python/tholdCIDiff.py  1.2
+  calibGenCAL/python/dacSlopesXML2TXT.py  1.5
+  calibGenCAL/python/valDACsettings.py  1.9
+  calibGenCAL/python/biasVal.py  1.6
+  calibGenCAL/python/pedXML2TXT.py  1.11
+  calibGenCAL/python/splitDacSlopes.py  1.2
+  calibGenCAL/python/asymPlot.py  1.3
+  calibGenCAL/python/xdiodeXtalk.py  1.11
+  calibGenCAL/python/inlTXT2XML.py  1.7
+  calibGenCAL/python/pedVal.py  1.25
+  calibGenCAL/python/mevPerDacVal.py  1.12
+  calibGenCAL/python/asymMerge.py  1.13
+  calibGenCAL/python/intNonlinMerge.py  1.23
+  calibGenCAL/python/mpdXML2TXT.py  1.9
+  calibGenCAL/python/adc2nrgTXT2XML.py  1.9
+  calibGenCAL/python/linearDAC.py  1.8
+  calibGenCAL/python/txt2tuple.py  1.10
+  calibGenCAL/python/muSlopeTXT2XML.py  1.7
+  calibGenCAL/python/asymVal.py  1.17
+  calibGenCAL/python/inlDiff.py  1.12
+  calibGenCAL/python/mpdApplyCalibGain.py  1.6
+  calibGenCAL/python/diff_LATC_Cal_Thresh.py  1.7
+  calibGenCAL/python/dacSlopesPlot.py  1.4
+  calibGenCAL/python/inlEval.py  1.2
+  calibGenCAL/python/genFlightPed.py  1.5
+  calibGenCAL/python/asymXML2TXT.py  1.13
+  calibGenCAL/python/dacSlopesTXT2XML.py  1.4
+  calibGenCAL/python/muSlopeXML2TXT.py  1.1
+  calibGenCAL/python/calFitsMerge.py  1.3
+  calibGenCAL/python/summarize_LATC_CAL_Mode.py  1.5
+  calibGenCAL/python/summarize_LATC_Cal_Thresh.py  1.5
+  calibGenCAL/python/mpdTXT2XML.py  1.10
+  calibGenCAL/python/adcsmooth.py  1.12
+  calibGenCAL/python/asymTXT2XML.py  1.10
+  calibGenCAL/python/asymDiff.py  1.8
+  calibGenCAL/python/adcplot.py  1.8
+  calibGenCAL/python/.cvsignore  1.2
+  calibGenCAL/python/tholdCIXML2TXT.py  1.11
+  calibGenCAL/python/tholdCIVal.py  1.30
+  calibGenCAL/python/calibSetVal.py  1.7
+  calibGenCAL/python/roothist2csv.py  1.3
+  calibGenCAL/python/charplot.py  1.18
+  calibGenCAL/python/adc2nrgVal.py  1.8
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: GlastRelease-20-05-01, operation: add
+Package: calibGenCAL
 User: heather  Mon Oct  1 08:48:49 2012
 Files:
   calibGenCAL/.cvsignore  1.3
