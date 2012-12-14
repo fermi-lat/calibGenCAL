@@ -2,6 +2,23 @@
 TAG
 Tag name: GlastRelease-20-08-00, operation: add
 Package: calibGenCAL
+User: heather  Fri Dec 14 13:00:04 2012
+Files:
+  calibGenCAL/src/unit_tests/testCfgMgr.cxx  1.5
+  calibGenCAL/unit_test/unit_test_output.tgz  1.5
+  calibGenCAL/unit_test/unit_test_input.tgz  1.4
+  calibGenCAL/unit_test/README  1.6
+  calibGenCAL/xml/.cvsignore  1.1
+  calibGenCAL/xml/muonPeds.ideal.xml  1.1
+  calibGenCAL/xml/cidac2adc.ideal.xml  1.1
+  calibGenCAL/xml/calCalib_v2r3.dtd  1.1
+  calibGenCAL/xml/muonAsym.ideal.xml  1.1
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: GlastRelease-20-08-00, operation: add
+Package: calibGenCAL
 User: heather  Fri Dec 14 12:59:42 2012
 Files:
   calibGenCAL/python/bin/adc2nrgVal.sh  1.2
