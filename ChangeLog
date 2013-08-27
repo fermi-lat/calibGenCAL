@@ -2,6 +2,113 @@
 TAG
 Tag name: GlastRelease-17-35-24-lp51, operation: add
 Package: calibGenCAL
+User: heather  Tue Aug 27 05:41:21 2013
+Files:
+  calibGenCAL/src/mainpage.h  1.51
+  calibGenCAL/src/uncrustify.cfg  1.1
+  calibGenCAL/src/CIDAC2ADC/NeighborXtalkAlg.cxx  1.4
+  calibGenCAL/src/CIDAC2ADC/genNeighborXtalk.cxx  1.5
+  calibGenCAL/src/CIDAC2ADC/smoothCIDAC2ADC.cxx  1.5
+  calibGenCAL/src/CIDAC2ADC/genCIDAC2ADC.cxx  1.12
+  calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.cxx  1.12
+  calibGenCAL/src/CIDAC2ADC/NeighborXtalkAlg.h  1.3
+  calibGenCAL/src/CIDAC2ADC/IntNonlinAlg.h  1.8
+  calibGenCAL/src/Optical/MuonAsymAlg.h  1.2
+  calibGenCAL/src/Optical/fitAsymHists.cxx  1.1
+  calibGenCAL/src/Optical/fitMuonCalibTkr.cxx  1.6
+  calibGenCAL/src/Optical/MuonMPDAlg.cxx  1.1
+  calibGenCAL/src/Optical/MuonCalibTkrAlg.cxx  1.4
+  calibGenCAL/src/Optical/MuonCalibTkrAlg.h  1.3
+  calibGenCAL/src/Optical/GCRCalibAlg.h  1.3
+  calibGenCAL/src/Optical/genMuonMPD.cxx  1.5
+  calibGenCAL/src/Optical/MuonAsymAlg.cxx  1.3
+  calibGenCAL/src/Optical/genGCRHists.cxx  1.7
+  calibGenCAL/src/Optical/GCRCalibAlg.cxx  1.5
+  calibGenCAL/src/Optical/genMuonAsym.cxx  1.5
+  calibGenCAL/src/Optical/fitGCRHists.cxx  1.6
+  calibGenCAL/src/Optical/MuonMPDAlg.h  1.1
+  calibGenCAL/src/Optical/genMuonCalibTkr.cxx  1.7
+  calibGenCAL/src/Ped/genMuonPed.cxx  1.6
+  calibGenCAL/src/Thresh/genULDHists.cxx  1.6
+  calibGenCAL/src/Thresh/fitTrigHists.cxx  1.8
+  calibGenCAL/src/Thresh/genFHEHists.cxx  1.5
+  calibGenCAL/src/Thresh/genAliveHists.cxx  1.2
+  calibGenCAL/src/Thresh/fitThreshSlopes.cxx  1.5
+  calibGenCAL/src/Thresh/LPAFheAlg.h  1.2
+  calibGenCAL/src/Thresh/LPAFleAlg.h  1.2
+  calibGenCAL/src/Thresh/fitULDHists.cxx  1.6
+  calibGenCAL/src/Thresh/LPAFleAlg.cxx  1.2
+  calibGenCAL/src/Thresh/genLACHists.cxx  1.9
+  calibGenCAL/src/Thresh/fitULDSlopes.cxx  1.5
+  calibGenCAL/src/Thresh/genSciLACHists.cxx  1.1
+  calibGenCAL/src/Thresh/fitTrigMonitorHists.cxx  1.8
+  calibGenCAL/src/Thresh/genFLEHists.cxx  1.5
+  calibGenCAL/src/Thresh/genTrigMonitorHists.cxx  1.5
+  calibGenCAL/src/Thresh/fitLACHists.cxx  1.8
+  calibGenCAL/src/Thresh/LPAFheAlg.cxx  1.2
+  calibGenCAL/src/Util/sumHists.cxx  1.3
+  calibGenCAL/src/Util/splitDigi.cxx  1.4
+  calibGenCAL/src/lib/Algs/LPATrigAlg.cxx  1.1
+  calibGenCAL/src/lib/Algs/MuonPedAlg.cxx  1.9
+  calibGenCAL/src/lib/Algs/MuonPedAlg.h  1.7
+  calibGenCAL/src/lib/Algs/LPATrigAlg.h  1.2
+  calibGenCAL/src/lib/Hists/HistVec.h  1.12
+  calibGenCAL/src/lib/Hists/HistMap.h  1.10
+  calibGenCAL/src/lib/Hists/GCRFit.cxx  1.5
+  calibGenCAL/src/lib/Hists/MPDHists.h  1.8
+  calibGenCAL/src/lib/Hists/AsymHists.h  1.8
+  calibGenCAL/src/lib/Hists/GCRHists.cxx  1.16
+  calibGenCAL/src/lib/Hists/PedHists.h  1.1
+  calibGenCAL/src/lib/Hists/GCRHists.h  1.11
+  calibGenCAL/src/lib/Hists/MPDHists.cxx  1.15
+  calibGenCAL/src/lib/Hists/AsymHists.cxx  1.9
+  calibGenCAL/src/lib/Hists/TrigHists.h  1.2
+  calibGenCAL/src/lib/Hists/PedHists.cxx  1.1
+  calibGenCAL/src/lib/Hists/HistIdx.h  1.4
+  calibGenCAL/src/lib/Hists/GCRFit.h  1.3
+  calibGenCAL/src/lib/Hists/HistMap.cxx  1.1
+  calibGenCAL/src/lib/Specs/CalGeom.h  1.6
+  calibGenCAL/src/lib/Specs/singlex16.h  1.7
+  calibGenCAL/src/lib/Specs/CalGeom.cxx  1.6
+  calibGenCAL/src/lib/Specs/CalResponse.h  1.1
+  calibGenCAL/src/lib/Specs/singlex16.cxx  1.3
+  calibGenCAL/src/lib/Util/string_util.cxx  1.3
+  calibGenCAL/src/lib/Util/SimpleIniFile.cxx  1.4
+  calibGenCAL/src/lib/Util/CfgMgr.h  1.9
+  calibGenCAL/src/lib/Util/CalSignalArray.cxx  1.1
+  calibGenCAL/src/lib/Util/stl_util.cxx  1.1
+  calibGenCAL/src/lib/Util/CGCUtil.cxx  1.13
+  calibGenCAL/src/lib/Util/CalSignalArray.h  1.2
+  calibGenCAL/src/lib/Util/LangauFun.cxx  1.10
+  calibGenCAL/src/lib/Util/RootFileAnalysis.h  1.5
+  calibGenCAL/src/lib/Util/TwrHodoscope.cxx  1.6
+  calibGenCAL/src/lib/Util/stl_util.h  1.3
+  calibGenCAL/src/lib/Util/CGCUtil.h  1.11
+  calibGenCAL/src/lib/Util/ROOTUtil.h  1.4
+  calibGenCAL/src/lib/Util/LangauFun.h  1.3
+  calibGenCAL/src/lib/Util/CfgMgr.cxx  1.7
+  calibGenCAL/src/lib/Util/CalHodoscope.cxx  1.8
+  calibGenCAL/src/lib/Util/ROOTUtil.cxx  1.2
+  calibGenCAL/src/lib/Util/TwrHodoscope.h  1.4
+  calibGenCAL/src/lib/Util/SimpleIniFile.h  1.3
+  calibGenCAL/src/lib/Util/RootFileAnalysis.cxx  1.7
+  calibGenCAL/src/lib/Util/string_util.h  1.4
+  calibGenCAL/src/lib/Util/CalHodoscope.h  1.5
+  calibGenCAL/src/unit_tests/testCfgMgr.cxx  1.5
+  calibGenCAL/unit_test/unit_test_output.tgz  1.5
+  calibGenCAL/unit_test/unit_test_input.tgz  1.4
+  calibGenCAL/unit_test/README  1.6
+  calibGenCAL/xml/.cvsignore  1.1
+  calibGenCAL/xml/muonPeds.ideal.xml  1.1
+  calibGenCAL/xml/cidac2adc.ideal.xml  1.1
+  calibGenCAL/xml/calCalib_v2r3.dtd  1.1
+  calibGenCAL/xml/muonAsym.ideal.xml  1.1
+
+    *
+------------------------------------------------------------
+TAG
+Tag name: GlastRelease-17-35-24-lp51, operation: add
+Package: calibGenCAL
 User: heather  Tue Aug 27 05:40:57 2013
 Files:
   calibGenCAL/.cvsignore  1.3
